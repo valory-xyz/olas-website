@@ -1,0 +1,37 @@
+[
+  {
+    "id": "592db570-5427-450e-ab07-c7b0a74e0390",
+    "name": "Open Autonomy",
+    "description": "",
+    "url": "",
+    "iconFilename": "open-autonomy.png"
+  },
+  {
+    "id": "592db570-5427-450e-ab07-c7b0a74e0390",
+    "name": "Tokenomics",
+    "description": "",
+    "url": "",
+    "iconFilename": "tokenomics.png"
+  },
+  {
+    "id": "592db570-5427-450e-ab07-c7b0a74e0390",
+    "name": "Governance",
+    "description": "",
+    "url": "",
+    "iconFilename": "governance.png"
+  },
+  {
+    "id": "592db570-5427-450e-ab07-c7b0a74e0390",
+    "name": "Code Registry",
+    "description": "",
+    "url": "",
+    "iconFilename": "code-registry.png"
+  },
+  {
+    "id": "592db570-5427-450e-ab07-c7b0a74e0390",
+    "name": "OLAS Token",
+    "description": "",
+    "url": "",
+    "iconFilename": "olas-token.png"
+  }
+]

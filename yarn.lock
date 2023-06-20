@@ -1302,6 +1302,11 @@ inherits@2:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
+inter-font@^3.19.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/inter-font/-/inter-font-3.19.0.tgz#5c36374e7c88cf8f8ad264e12e965c2fc86f44ac"
+  integrity sha512-LKPEweQxslLgp6VaTZuz8vRC8dHsAMy8b28yipwQgcKlYSYJH//lCsLGXpH9cjOQ61K4SiEWCSrItVs8c9As4A==
+
 internal-slot@^1.0.3, internal-slot@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/internal-slot/-/internal-slot-1.0.5.tgz#f2a2ee21f668f8627a4667f309dc0f4fb6674986"

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "c37e90d6-70db-453c-8a53-c289baabd25b",
+    "name": "Autonomous Keeper Service",
+    "tag": ["automation"],
+    "description": "",
+    "url": "",
+    "iconFilename": "autonomous-keeper-service.png"
+  },
+  {
+    "id": "e2ad0ff2-4825-4c49-8acc-e582f7e3369c",
+    "name": "Price Oracle",
+    "tag": ["oracles"],
+    "description": "",
+    "url": "",
+    "iconFilename": "price-oracle.png"
+  },
+  {
+    "id": "76c38174-aac5-4e0d-99f5-c86765a8db1f",
+    "name": "ACN",
+    "tag": ["messaging"],
+    "description": "",
+    "url": "",
+    "iconFilename": "acn.png"
+  },
+  {
+    "id": "56b12a1e-556f-40f9-9afe-4384f18ab391",
+    "name": "AI Mechs",
+    "tag": ["ai"],
+    "description": "",
+    "url": "",
+    "iconFilename": "ai-mechs.png"
+  },
+  {
+    "id": "8fe553ea-a911-4e96-b101-18cbe17d6f16",
+    "name": "ML APY Prediction Oracle",
+    "tag": ["oracles"],
+    "description": "",
+    "url": "",
+    "iconFilename": "ml-apy-prediction-oracle.png"
+  }
+]
