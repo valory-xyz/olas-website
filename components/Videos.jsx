@@ -1,5 +1,6 @@
 import Video from "./Video";
 import videos from "../data/videos.json";
+import Link from "next/link";
 
 const Videos = ({ limit = null }) => {
   const sortedVideos = videos.sort((a, b) => {
@@ -15,12 +16,12 @@ const Videos = ({ limit = null }) => {
           </h2>
           {limit !== null && (
             <div className="mb-4">
-              <a
+              <Link
                 href="/videos"
                 className="text-xl text-primary hover:text-primary-800 transition-colors duration-300"
               >
                 See all ▶
-              </a>
+              </Link>
             </div>
           )}
         </div>

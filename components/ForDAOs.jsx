@@ -21,7 +21,7 @@ function ForDAOs() {
               <h2 className="text-heading mb-12 text-gray-800">A new wind for your sails</h2>
               <h3 className="text-2xl mb-4 text-gray-600">
                 Olas delivers a revolutionary staking model for your favorite
-                projects' tokens.
+                projects&apos; tokens.
               </h3>
               <p className="text-2xl mb-4 text-gray-600">
                 DAOs compose services and power them with their own token.

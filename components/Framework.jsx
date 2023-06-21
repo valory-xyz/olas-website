@@ -20,13 +20,19 @@ const Framework = () => {
               Exponential growth through composability
             </h2>
             <p className="text-xl mb-6">
-              Open Autonomy is Olas' open-source coding framework. It's designed
+              Open Autonomy is Olas&apos; open-source coding framework. It&apos;s designed
               from the ground up around leading multi-agent systems principles.
             </p>
             <p className="text-xl mb-6">
               For the first time, there is a full framework capable of building
               any off-chain service.
             </p>
+            <a
+              href="https://docs.autonolas.network/open-autonomy"
+              className="text-2xl text-link text-primary"
+            >
+              Dive into the docs
+            </a>
             <a
               href="https://docs.autonolas.network/open-autonomy"
               className="text-2xl text-link text-primary"

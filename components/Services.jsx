@@ -9,7 +9,7 @@ import SectionWrapper from "./SectionWrapper";
 const ServiceItem = ({ service }) => {
   return (
     <a
-      className="block rounded-xl border border-gray-200 shadow-sm hover:border-gray-200 hover:ring-1 hover:ring-gray-200 focus:outline-none focus:ring shadow-lg"
+      className="block rounded-xl border border-gray-200 shadow-sm hover:border-gray-200 hover:ring-1 hover:ring-gray-200 focus:outline-none focus:ring"
       href={service.url}
     >
       <Image
@@ -31,7 +31,22 @@ const ServiceItem = ({ service }) => {
               </div>
             );
           })}
+      <div className="p-4">
+        <h2 className="mb-2 font-bold">{service.name}</h2>
 
+        {service?.tags?.length > 0 &&
+          service.tags.map((tag) => {
+            return (
+              <div key={service.id + tag}>
+                <Badge>{tag}</Badge>
+              </div>
+            );
+          })}
+
+        <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
+          {service.description}
+        </p>
+      </div>
         <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
           {service.description}
         </p>
@@ -49,7 +64,7 @@ const CoreSubsection = () => {
             <h2 className="text-paragraph">Core</h2>
 
             <p className="mt-4 text-xl text-gray-600">
-              Olas' key modules.
+              Olas&apos; key modules.
             </p>
           </div>
 

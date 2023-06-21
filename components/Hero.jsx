@@ -17,7 +17,7 @@ const Hero = () => {
           </p>
           <a
             href="#"
-            class="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl text-center text-primary border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+            class="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl text-center border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
           >
             Get involved
           </a>
