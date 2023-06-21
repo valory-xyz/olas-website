@@ -33,12 +33,6 @@ const Framework = () => {
             >
               Dive into the docs
             </a>
-            <a
-              href="https://docs.autonolas.network/open-autonomy"
-              className="text-2xl text-link text-primary"
-            >
-              Dive into the docs
-            </a>
           </div>
         </div>
         <div className="w-full lg:w-1/2">

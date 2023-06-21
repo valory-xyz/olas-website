@@ -31,26 +31,11 @@ const ServiceItem = ({ service }) => {
               </div>
             );
           })}
-      <div className="p-4">
-        <h2 className="mb-2 font-bold">{service.name}</h2>
 
-        {service?.tags?.length > 0 &&
-          service.tags.map((tag) => {
-            return (
-              <div key={service.id + tag}>
-                <Badge>{tag}</Badge>
-              </div>
-            );
-          })}
-
-        <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
-          {service.description}
-        </p>
       </div>
         <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
           {service.description}
         </p>
-      </div>
     </a>
   );
 };
