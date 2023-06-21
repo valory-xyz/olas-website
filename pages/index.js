@@ -8,6 +8,9 @@ import Flywheel from '@/components/Flywheel'
 import OlasUtility from '@/components/OlasUtility'
 import Framework from '@/components/Framework'
 import Services from '@/components/Services'
+import Footer from '@/components/Footer'
+import Resources from '@/components/Resources'
+import Friends from '@/components/Friends'
 
 const inter = Inter({ subsets: ['latin'] })
 const manrope = Manrope({ subsets: ['latin'] })
@@ -23,6 +26,9 @@ export default function Home() {
       <OlasUtility />
       <Framework />
       <Services />
+      <Resources />
+      <Friends />
+      <Footer />
     </>
   )
 }

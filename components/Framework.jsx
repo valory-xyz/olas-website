@@ -1,29 +1,38 @@
 import Image from "next/image";
+import SectionWrapper from "./SectionWrapper";
 
 const Framework = () => {
   return (
-    <>
-      <div className="container flex flex-col px-6 pt-10 mx-auto space-y-6 lg:py-16 lg:flex-row lg:items-center">
+    <SectionWrapper customClasses="py-12" backgroundType={"SUBTLE_GRADIENT"}>
+      <div
+        className={`container flex flex-col px-6 pt-10 mx-auto space-y-6 lg:py-16 lg:flex-row lg:items-center`}
+      >
         <div className="w-full lg:w-1/2">
-            <Image
-            className="rounded shadow-md mb-4"
-              src="/images/exponent.png"
-              alt="Exponent"
-              width={100}
-              height={100}
-              />
+          <Image
+            src="/images/open-autonomy-logo.svg"
+            alt="Open Autonomy"
+            width="300"
+            height="90"
+            className="mb-6"
+          />
           <div className="lg:max-w-lg">
-            <h2 className="text-heading mb-6">
+            <h2 className="text-heading mb-6 text-purple-950">
               Exponential growth through composability
             </h2>
             <p className="text-xl mb-6">
               Open Autonomy is Olas' open-source coding framework. It's designed
-              around leading multi-agent systems principles from the ground up.
+              from the ground up around leading multi-agent systems principles.
             </p>
-            <p className="text-xl">
+            <p className="text-xl mb-6">
               For the first time, there is a full framework capable of building
               any off-chain service.
             </p>
+            <a
+              href="https://docs.autonolas.network/open-autonomy"
+              className="text-2xl text-link text-primary"
+            >
+              Dive into the docs
+            </a>
           </div>
         </div>
         <div className="w-full lg:w-1/2">
@@ -57,22 +66,7 @@ const Framework = () => {
           </div>
         </div>
       </div>
-      <div className="text-center mb-10">
-        <Image
-          src="/images/open-autonomy-logo.svg"
-          alt="Open Autonomy"
-          width="436"
-          height="90"
-          className="mx-auto mb-6"
-        />
-        <a
-          href="https://docs.autonolas.network/open-autonomy"
-          className="text-2xl text-link text-primary"
-        >
-          Dive into the docs
-        </a>
-      </div>
-    </>
+    </SectionWrapper>
   );
 };
 

@@ -2,7 +2,7 @@
   {
     "id": "6b091d6e-79c7-4ffc-8372-aa673842a09d",
     "name": "Autonomous Fund",
-    "tag": ["defi"],
+    "tags": ["DeFi"],
     "description": "",
     "url": "",
     "iconFilename": "autonomous-fund.png"
@@ -10,7 +10,7 @@
   {
     "id": "af6f2299-f489-4f49-a644-fe0df7105c5a",
     "name": "Governatooorr",
-    "tag": ["dao-tooling"],
+    "tags": ["DAO-Tooling"],
     "description": "",
     "url": "",
     "iconFilename": "governatooorr.png"
@@ -18,7 +18,7 @@
   {
     "id": "0fb96c76-8541-4bd5-a1cc-282c16b593ce",
     "name": "Centaurs",
-    "tag": ["dao-tooling"],
+    "tags": ["DAO-Tooling"],
     "description": "",
     "url": "",
     "iconFilename": "centaurs.png"
@@ -26,7 +26,7 @@
   {
     "id": "677f9897-1a04-4ff0-bcce-034c70884b42",
     "name": "Contribute",
-    "tag": ["dao-tooling"],
+    "tags": ["DAO-Tooling"],
     "description": "",
     "url": "",
     "iconFilename": "contribute.png"
@@ -34,7 +34,7 @@
   {
     "id": "7881a40c-6f4e-47b2-90db-cb3a4bef3a82",
     "name": "El Collectooorr",
-    "tag": ["nfts"],
+    "tags": ["NFTs"],
     "description": "",
     "url": "",
     "iconFilename": "el-collectooorr.png"

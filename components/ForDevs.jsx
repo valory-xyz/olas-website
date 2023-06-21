@@ -3,31 +3,28 @@ import Image from "next/image";
 function ForDevs() {
   return (
     <section>
-      <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8 bg-white">
-        <div className="relative z-10 lg:py-16">
-          <h2 className="text-heading text-center">
-            Liquidity mining,
-            <br />
-            but for code
-          </h2>
-          <div className="h-64 sm:h-80 lg:h-full">
+      <div className="mx-auto max-w-screen-2xl p-24 bg-dark-hexagons3 bg-repeat bg-size-25">
+        <div className="relative z-10 bg-white py-24 text-center rounded-3xl shadow-lg">
+          <div>
+            <h2 className="text-heading no-leading mb-16 text-purple-900">
+              Liquidity mining,
+              <br />
+              but for code
+            </h2>
             <Image
-              alt="Placeholder"
-              src="/path/to/your/image.jpg"
-              width={500}
-              height={300}
+              alt="Dev incentives diagram"
+              src="/images/ForDevs.svg"
+              width="965"
+              height="132"
+              className="mx-auto mb-12"
             />
           </div>
-        </div>
-        <div className="text-center">
-          <div className="p-8 sm:p-16 lg:p-24">
-            <h3 className="text-paragraph mb-12">
-              Olas protocol rewards developers for providing service code.
-            </h3>
-            <p className="text-paragraph">
-              Developers who provide more useful services get more rewards.
-            </p>
-          </div>
+          <h3 className="text-2xl text-gray-600 mb-12">
+            Olas protocol rewards developers for providing service code.
+          </h3>
+          <p className="text-2xl text-gray-600">
+            Developers who provide more useful contributions get more rewards.
+          </p>
         </div>
       </div>
     </section>

@@ -1,22 +1,23 @@
 import Image from "next/image";
 import React from "react";
+import SectionWrapper from "./SectionWrapper";
 
 const Hero = () => {
   return (
-    <section class="bg-white">
-      <div class="grid max-w-screen-xl py-10 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+    <SectionWrapper customClasses='py-16' backgroundType={"SUBTLE_GRADIENT"}>
+      <div class="grid max-w-screen-xl mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
         <div class="mr-auto place-self-center lg:col-span-6">
-          <h1 class="text-heading mb-4">
-            Crypto&apos;s ocean<br />of services
+          <h1 class="text-heading mb-4 text-purple-900">
+            Crypto&apos;s <span className="bg-dark-hexagons1 bg-repeat bg-size-50 background-clip">ocean</span><br />of services
           </h1>
-          <p class="mb-6 text-2xl">
+          <p class="mb-6 text-2xl text-gray-600">
             One single network for all the stuff that makes crypto work.
             Coordinated by the OLAS token, built on cutting edge autonomous
             agent technology.
           </p>
           <a
             href="#"
-            class="inline-flex items-center justify-center px-6 py-4 text-xl font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+            class="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl text-center text-primary border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
           >
             Get involved
           </a>
@@ -25,7 +26,7 @@ const Hero = () => {
           <Image src="/images/hero.svg" alt="hero" width={834} height={742} className="mx-auto" />
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
