@@ -1,0 +1,22 @@
+import React, { useMemo } from 'react';
+
+const SectionWrapper = ({ children, customClasses = "px-8 py-12 lg:p-24", backgroundType }) => {
+  const returnBackgroundType = useMemo(() => {
+    switch (backgroundType) {
+      case 'SUBTLE_GRADIENT':
+        return 'w-full h-full bg-gradient-to-r from-purple-100 via-white to-cyan-50 border-t border-b';
+      case 'GOVERNATOOORR':
+        return 'w-full h-full bg-governatooorr bg-size-50 bg-repeat';
+      default:
+        return 'bg-white dark:bg-gray-900';
+    }
+  }, [backgroundType]);
+
+  return (
+    <section className={`${customClasses} ${returnBackgroundType}`}>
+      {children}
+    </section>
+  );
+};
+
+export default SectionWrapper;

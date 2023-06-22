@@ -5,7 +5,7 @@
     "tags": ["Automation"],
     "description": "",
     "url": "",
-    "iconFilename": "autonomous-keeper-service.png"
+    "iconFilename": "autonomous-keeper-service.svg"
   },
   {
     "id": "e2ad0ff2-4825-4c49-8acc-e582f7e3369c",
@@ -13,7 +13,7 @@
     "tags": ["Oracles"],
     "description": "",
     "url": "",
-    "iconFilename": "price-oracle.png"
+    "iconFilename": "price-oracle.svg"
   },
   {
     "id": "76c38174-aac5-4e0d-99f5-c86765a8db1f",
@@ -21,7 +21,7 @@
     "tags": ["Messaging"],
     "description": "",
     "url": "",
-    "iconFilename": "acn.png"
+    "iconFilename": "acn.svg"
   },
   {
     "id": "56b12a1e-556f-40f9-9afe-4384f18ab391",
@@ -29,7 +29,7 @@
     "tags": ["AI"],
     "description": "",
     "url": "",
-    "iconFilename": "ai-mechs.png"
+    "iconFilename": "ai-mechs.svg"
   },
   {
     "id": "8fe553ea-a911-4e96-b101-18cbe17d6f16",
@@ -37,6 +37,6 @@
     "tags": ["Oracles"],
     "description": "",
     "url": "",
-    "iconFilename": "ml-apy-prediction-oracle.png"
+    "iconFilename": "ml-apy-prediction-oracle.svg"
   }
 ]

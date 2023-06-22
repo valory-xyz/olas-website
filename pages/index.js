@@ -1,24 +1,24 @@
 import Image from 'next/image'
-import { Inter, Manrope } from 'next/font/google'
-import Header from '@/components/Header'
-import Hero from '@/components/Hero'
-import ForDAOs from '@/components/ForDAOs'
-import ForDevs from '@/components/ForDevs'
-import Flywheel from '@/components/Flywheel'
-import OlasUtility from '@/components/OlasUtility'
-import Framework from '@/components/Framework'
-import Services from '@/components/Services'
-import Footer from '@/components/Footer'
-import Resources from '@/components/Resources'
-import Friends from '@/components/Friends'
+import { Inter } from 'next/font/google'
+import Header from '@/components/Layout/Header'
+import Hero from '@/components/HomepageSection/Hero'
+import ForDAOs from '@/components/HomepageSection/ForDAOs'
+import ForDevs from '@/components/HomepageSection/ForDevs'
+import Flywheel from '@/components/HomepageSection/Flywheel'
+import OlasUtility from '@/components/HomepageSection/OlasUtility'
+import Framework from '@/components/HomepageSection/Framework'
+import Services from '@/components/HomepageSection/Services'
+import AppShowcase from '@/components/HomepageSection/AppShowcase'
+import Footer from '@/components/Layout/Footer'
+import Content from '@/components/HomepageSection/Content'
+import Friends from '@/components/HomepageSection/Friends'
+import PageWrapper from '@/components/Layout/PageWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
-const manrope = Manrope({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <>
-      <Header />
+    <PageWrapper>
       <Hero />
       <ForDAOs />
       <ForDevs />
@@ -26,9 +26,9 @@ export default function Home() {
       <OlasUtility />
       <Framework />
       <Services />
-      <Resources />
+      <AppShowcase />
+      <Content />
       <Friends />
-      <Footer />
-    </>
+    </PageWrapper>
   )
 }

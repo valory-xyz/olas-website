@@ -1,0 +1,1625 @@
+[
+  {
+    "id": 57,
+    "attributes": {
+      "title": "Autonolas Community Update 014",
+      "datePublished": "2023-06-09",
+      "subtitle": "Multiple Intelligences Edition ",
+      "slug": "community-update-014",
+      "createdAt": "2023-06-09T14:49:02.206Z",
+      "updatedAt": "2023-06-09T14:50:31.350Z",
+      "publishedAt": "2023-06-09T14:49:03.439Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_01_06_Community_Update_14_b7c63d4a20.png",
+                  "hash": "large_01_06_Community_Update_14_b7c63d4a20",
+                  "mime": "image/png",
+                  "name": "large_01.06 Community Update 14.png",
+                  "path": null,
+                  "size": 602.81,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 56,
+    "attributes": {
+      "title": "Introducing the Autonomous Keeper Service",
+      "datePublished": "2023-06-08",
+      "subtitle": null,
+      "slug": "introducing-the-autonomous-keeper-service",
+      "createdAt": "2023-06-08T16:59:45.652Z",
+      "updatedAt": "2023-06-08T17:00:08.190Z",
+      "publishedAt": "2023-06-08T17:00:08.187Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_keeper_d6abdb1c00.png",
+                  "hash": "large_keeper_d6abdb1c00",
+                  "mime": "image/png",
+                  "name": "large_keeper.png",
+                  "path": null,
+                  "size": 599.83,
+                  "width": 1000,
+                  "height": 606
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 53,
+    "attributes": {
+      "title": "Introducing Centaurs",
+      "datePublished": "2023-05-19",
+      "subtitle": "Blazing New Trails in AI DAOs",
+      "slug": "introducing-centaurs-blazing-new-trails-in-ai-daos",
+      "createdAt": "2023-05-18T11:54:49.827Z",
+      "updatedAt": "2023-05-19T11:57:53.096Z",
+      "publishedAt": "2023-05-19T10:00:14.992Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Twitter_post_2_869c12c10a.png",
+                  "hash": "large_Twitter_post_2_869c12c10a",
+                  "mime": "image/png",
+                  "name": "large_Twitter post - 2.png",
+                  "path": null,
+                  "size": 105.61,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 55,
+    "attributes": {
+      "title": "Autonolas Community Update 013",
+      "datePublished": "2023-05-19",
+      "subtitle": "Coordinating Greatness Edition",
+      "slug": "autonolas-community-update-013",
+      "createdAt": "2023-05-19T10:30:12.543Z",
+      "updatedAt": "2023-05-19T10:35:51.400Z",
+      "publishedAt": "2023-05-19T10:30:51.006Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_18_05_Community_Update_013_55151720b5.png",
+                  "hash": "large_18_05_Community_Update_013_55151720b5",
+                  "mime": "image/png",
+                  "name": "large_18.05 Community Update 013.png",
+                  "path": null,
+                  "size": 492.32,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 51,
+    "attributes": {
+      "title": "Autonolas: Now available on Polygon",
+      "datePublished": "2023-05-11",
+      "subtitle": "A step forward in cross-chain governance",
+      "slug": "autonolas-now-available-on-polygon",
+      "createdAt": "2023-05-11T09:29:01.149Z",
+      "updatedAt": "2023-05-11T09:31:01.053Z",
+      "publishedAt": "2023-05-11T09:29:02.820Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_04_05_Polygon_Deployment_Blog_415615b0ff.png",
+                  "hash": "large_04_05_Polygon_Deployment_Blog_415615b0ff",
+                  "mime": "image/png",
+                  "name": "large_04.05 Polygon Deployment Blog.png",
+                  "path": null,
+                  "size": 238.01,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 50,
+    "attributes": {
+      "title": "Autonolas Contribute PoSe",
+      "datePublished": "2023-05-04",
+      "subtitle": "A major milestone in ownable decentralized off-chain services",
+      "slug": "autonolas-contribute-pose",
+      "createdAt": "2023-05-04T13:43:51.213Z",
+      "updatedAt": "2023-05-04T13:45:03.054Z",
+      "publishedAt": "2023-05-04T13:44:13.492Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_04_05_Po_Se_Blog_346ab05ce6.png",
+                  "hash": "large_04_05_Po_Se_Blog_346ab05ce6",
+                  "mime": "image/png",
+                  "name": "large_04.05 PoSe Blog.png",
+                  "path": null,
+                  "size": 253.53,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 54,
+    "attributes": {
+      "title": "Autonolas & Co-Owned AI (zkML & SMPC)",
+      "datePublished": "2023-04-19",
+      "subtitle": "A guest post from Autonolas community member Nox",
+      "slug": "autonolas-and-co-owned-ai-zk-ml-and-smpc",
+      "createdAt": "2023-05-18T16:26:12.566Z",
+      "updatedAt": "2023-05-19T10:19:42.786Z",
+      "publishedAt": "2023-05-19T10:10:19.994Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_25_04_Autonolas_and_Co_Owned_AI_Intro_to_zk_ML_and_SMPC_451c34357b.png",
+                  "hash": "large_25_04_Autonolas_and_Co_Owned_AI_Intro_to_zk_ML_and_SMPC_451c34357b",
+                  "mime": "image/png",
+                  "name": "large_25.04 Autonolas and Co-Owned AI_ Intro to zkML & SMPC.png",
+                  "path": null,
+                  "size": 469.61,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 48,
+    "attributes": {
+      "title": "Introducing the Open Autonomy Client SDK ",
+      "datePublished": "2023-04-07",
+      "subtitle": "A Simple Way to Query Autonomous Services",
+      "slug": "introducing-the-open-autonomy-client-sdk",
+      "createdAt": "2023-04-07T08:41:29.156Z",
+      "updatedAt": "2023-04-07T08:50:25.104Z",
+      "publishedAt": "2023-04-07T08:49:59.123Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_28_03_SDK_BLOG_b0eeb872f2.png",
+                  "hash": "large_28_03_SDK_BLOG_b0eeb872f2",
+                  "mime": "image/png",
+                  "name": "large_28.03_SDK_-_BLOG.png",
+                  "path": null,
+                  "size": 272.34,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 47,
+    "attributes": {
+      "title": "Introducing IEKit",
+      "datePublished": "2023-03-15",
+      "subtitle": null,
+      "slug": "introducing-iekit",
+      "createdAt": "2023-03-15T11:40:42.660Z",
+      "updatedAt": "2023-03-15T13:57:46.359Z",
+      "publishedAt": "2023-03-15T11:40:52.212Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_LP_IE_Kit_image_d795571449.png",
+                  "hash": "large_LP_IE_Kit_image_d795571449",
+                  "mime": "image/png",
+                  "name": "large_LP IEKit image.png",
+                  "path": null,
+                  "size": 333.6,
+                  "width": 1000,
+                  "height": 521
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 46,
+    "attributes": {
+      "title": "Autonolas Reaches a Major Milestone: Our Whitepaper is Here",
+      "datePublished": "2023-02-01",
+      "subtitle": null,
+      "slug": "autonolas-reaches-a-major-milestone-our-whitepaper-is-here",
+      "createdAt": "2023-02-01T12:10:33.035Z",
+      "updatedAt": "2023-02-01T12:28:51.607Z",
+      "publishedAt": "2023-02-01T12:28:51.605Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Whitepaper_Launch_v2_8693b83ea2.png",
+                  "hash": "large_Whitepaper_Launch_v2_8693b83ea2",
+                  "mime": "image/png",
+                  "name": "large_Whitepaper Launch v2.png",
+                  "path": null,
+                  "size": 527.05,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 44,
+    "attributes": {
+      "title": "Announcing a successful Ceramic Network grant proposal",
+      "datePublished": "2023-01-10",
+      "subtitle": "A new DAO coordination primitive",
+      "slug": "ceramic-grant",
+      "createdAt": "2023-01-10T15:32:22.914Z",
+      "updatedAt": "2023-01-11T11:22:10.143Z",
+      "publishedAt": "2023-01-10T15:51:02.881Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_ceramic_grant_v2_7f1359de51.png",
+                  "hash": "large_ceramic_grant_v2_7f1359de51",
+                  "mime": "image/png",
+                  "name": "large_ceramic grant v2.png",
+                  "path": null,
+                  "size": 313.43,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 43,
+    "attributes": {
+      "title": "2022 Year in Review",
+      "datePublished": "2022-12-30",
+      "subtitle": "A look back... ",
+      "slug": "year-in-review",
+      "createdAt": "2022-12-30T09:48:25.769Z",
+      "updatedAt": "2023-01-04T10:36:26.460Z",
+      "publishedAt": "2022-12-30T09:48:47.579Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_cover_87a69ddae8.png",
+                  "hash": "large_cover_87a69ddae8",
+                  "mime": "image/png",
+                  "name": "large_cover.png",
+                  "path": null,
+                  "size": 503.32,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 41,
+    "attributes": {
+      "title": "Introducing Autonolas Contribute",
+      "datePublished": "2022-12-13",
+      "subtitle": "A new product that streamlines the contribution experience for members of the Autonolas community",
+      "slug": "introducing-autonolas-contribute",
+      "createdAt": "2022-12-14T09:43:18.111Z",
+      "updatedAt": "2022-12-14T13:02:16.196Z",
+      "publishedAt": "2022-12-14T12:57:59.971Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".jpeg",
+                  "url": "/uploads/large_badge_cc94b3331d.jpeg",
+                  "hash": "large_badge_cc94b3331d",
+                  "mime": "image/jpeg",
+                  "name": "large_badge.jpeg",
+                  "path": null,
+                  "size": 30.32,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 40,
+    "attributes": {
+      "title": "Autonolas Community Update 012",
+      "datePublished": "2022-12-05",
+      "subtitle": "Bullish On Buidlers Edition",
+      "slug": "community-update-012",
+      "createdAt": "2022-12-05T16:24:43.022Z",
+      "updatedAt": "2022-12-05T16:27:48.859Z",
+      "publishedAt": "2022-12-05T16:25:06.691Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_29_11_Community_update_12_ea83d42240.png",
+                  "hash": "large_29_11_Community_update_12_ea83d42240",
+                  "mime": "image/png",
+                  "name": "large_29.11 Community update 12.png",
+                  "path": null,
+                  "size": 527.56,
+                  "width": 1000,
+                  "height": 501
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 39,
+    "attributes": {
+      "title": "Introducing the Autonomous Fund",
+      "datePublished": "2022-11-23",
+      "subtitle": "An autonomous service to manage a Balancer pool",
+      "slug": "intro-1",
+      "createdAt": "2022-11-23T17:55:33.380Z",
+      "updatedAt": "2023-01-18T12:03:22.464Z",
+      "publishedAt": "2022-11-23T18:02:25.394Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_24_11_Autonomous_fund_c19308c105.png",
+                  "hash": "large_24_11_Autonomous_fund_c19308c105",
+                  "mime": "image/png",
+                  "name": "large_24.11 Autonomous fund.png",
+                  "path": null,
+                  "size": 358.51,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 38,
+    "attributes": {
+      "title": "Autonomous Augmentations — Volume Three ",
+      "datePublished": "2022-11-16",
+      "subtitle": "Building Novel Services with Autonolas",
+      "slug": "autonom-1",
+      "createdAt": "2022-11-21T09:26:07.088Z",
+      "updatedAt": "2022-12-29T14:13:05.717Z",
+      "publishedAt": "2022-11-21T10:26:21.000Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_17_11_Autonomous_Augmentation_vol_3_46750b6295.png",
+                  "hash": "large_17_11_Autonomous_Augmentation_vol_3_46750b6295",
+                  "mime": "image/png",
+                  "name": "large_17.11 Autonomous Augmentation vol 3.png",
+                  "path": null,
+                  "size": 299.29,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 42,
+    "attributes": {
+      "title": "Introducing the ML APY Oracle ",
+      "datePublished": "2022-11-11",
+      "subtitle": null,
+      "slug": "introducing-the-ml-apy-oracle",
+      "createdAt": "2022-12-15T17:48:44.511Z",
+      "updatedAt": "2022-12-15T17:50:18.251Z",
+      "publishedAt": "2022-12-15T17:48:49.306Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_05_0a14178753.png",
+                  "hash": "large_05_0a14178753",
+                  "mime": "image/png",
+                  "name": "large_05.png",
+                  "path": null,
+                  "size": 130.79,
+                  "width": 1000,
+                  "height": 685
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 37,
+    "attributes": {
+      "title": "Autonolas Community Update 011",
+      "datePublished": "2022-11-01",
+      "subtitle": "Enterprising Explorers Edition",
+      "slug": "autonolas-community-update-011",
+      "createdAt": "2022-11-03T11:36:13.608Z",
+      "updatedAt": "2022-11-24T11:55:00.663Z",
+      "publishedAt": "2022-11-03T11:37:11.203Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "/uploads/large_2_11_Community_update_11_1_982f564f24.jpg",
+                  "hash": "large_2_11_Community_update_11_1_982f564f24",
+                  "mime": "image/jpeg",
+                  "name": "large_2.11-Community-update-11 (1).jpg",
+                  "path": null,
+                  "size": 64.59,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 35,
+    "attributes": {
+      "title": "Community Update 010",
+      "datePublished": "2022-10-01",
+      "subtitle": "Moving Up the Ranks Edition",
+      "slug": "community-update-010",
+      "createdAt": "2022-10-03T14:43:32.731Z",
+      "updatedAt": "2022-11-03T11:36:41.499Z",
+      "publishedAt": "2022-10-03T14:43:51.409Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_community_update_10_b9bca548b9.png",
+                  "hash": "large_community_update_10_b9bca548b9",
+                  "mime": "image/png",
+                  "name": "large_community update 10.png",
+                  "path": null,
+                  "size": 533.18,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 34,
+    "attributes": {
+      "title": "From Academy to Core",
+      "datePublished": "2022-09-30",
+      "subtitle": "How Cohort 1 graduate Ardian became a valued Valory team member",
+      "slug": "from-academy-to-core",
+      "createdAt": "2022-09-30T13:16:51.138Z",
+      "updatedAt": "2022-10-25T12:08:00.610Z",
+      "publishedAt": "2022-09-30T13:16:57.688Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "/uploads/large_30_09_Ardian_blog_249f90473e.jpg",
+                  "hash": "large_30_09_Ardian_blog_249f90473e",
+                  "mime": "image/jpeg",
+                  "name": "large_30.09-Ardian-blog.jpg",
+                  "path": null,
+                  "size": 60.66,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 33,
+    "attributes": {
+      "title": "The case for Blockchain and Autonomy",
+      "datePublished": "2022-09-22",
+      "subtitle": "An introduction for non technical audiences",
+      "slug": "the-case-for-blockchain-and-autonomy",
+      "createdAt": "2022-09-22T10:58:27.831Z",
+      "updatedAt": "2022-10-25T12:07:55.634Z",
+      "publishedAt": "2022-09-22T11:00:14.364Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_22_09_Intro_Blog_Post_2d3820a639.png",
+                  "hash": "large_22_09_Intro_Blog_Post_2d3820a639",
+                  "mime": "image/png",
+                  "name": "large_22.09_Intro_Blog_Post.png",
+                  "path": null,
+                  "size": 409.53,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 32,
+    "attributes": {
+      "title": "Autonolas Community Update 009",
+      "datePublished": "2022-09-01",
+      "subtitle": "Team Effort Edition",
+      "slug": "autonolas-community-update-009",
+      "createdAt": "2022-09-01T14:21:47.787Z",
+      "updatedAt": "2022-10-25T12:07:48.822Z",
+      "publishedAt": "2022-09-02T08:09:45.667Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "/uploads/large_02_09_Community_update_009_v2_8abe57e883.jpg",
+                  "hash": "large_02_09_Community_update_009_v2_8abe57e883",
+                  "mime": "image/jpeg",
+                  "name": "large_02.09-Community-update-009-v2.jpg",
+                  "path": null,
+                  "size": 58.74,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 31,
+    "attributes": {
+      "title": "Smart Managed Pools: A Balancer Grant using Autonolas",
+      "datePublished": "2022-08-31",
+      "subtitle": "Announcing a successful grant application by the Valory team",
+      "slug": "smart-managed-pools-a-balancer-grant-using-autonolas",
+      "createdAt": "2022-08-31T15:54:17.880Z",
+      "updatedAt": "2022-10-25T12:07:43.686Z",
+      "publishedAt": "2022-08-31T15:55:15.659Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_31_08_Balancer_v2_3a8984e19f.png",
+                  "hash": "large_31_08_Balancer_v2_3a8984e19f",
+                  "mime": "image/png",
+                  "name": "large_31.08 Balancer v2.png",
+                  "path": null,
+                  "size": 307.71,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 30,
+    "attributes": {
+      "title": "Introducing the Community Leaderboard Program",
+      "datePublished": "2022-08-26",
+      "subtitle": "Will you be our number one?",
+      "slug": "introducing-the-community-leaderboard-program",
+      "createdAt": "2022-08-26T16:56:23.701Z",
+      "updatedAt": "2022-10-25T12:07:36.565Z",
+      "publishedAt": "2022-08-26T16:56:49.387Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_29_08_Community_leaderboard_8fa95a8a62.png",
+                  "hash": "large_29_08_Community_leaderboard_8fa95a8a62",
+                  "mime": "image/png",
+                  "name": "large_29.08 Community leaderboard.png",
+                  "path": null,
+                  "size": 284.54,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 29,
+    "attributes": {
+      "title": "Maintaining and Resetting Consensus in Autonomous Services",
+      "datePublished": "2022-08-25",
+      "subtitle": "A Technical Overview ",
+      "slug": "maintaining-and-resetting-consensus-in-autonomous-services",
+      "createdAt": "2022-08-25T13:21:14.794Z",
+      "updatedAt": "2022-10-25T12:07:28.799Z",
+      "publishedAt": "2022-08-25T13:58:00.872Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_30_08_Managing_Resets_1_8b44e75b51.png",
+                  "hash": "large_30_08_Managing_Resets_1_8b44e75b51",
+                  "mime": "image/png",
+                  "name": "large_30.08 Managing Resets (1).png",
+                  "path": null,
+                  "size": 379.67,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 28,
+    "attributes": {
+      "title": "Announcing our Bug Bounty Program",
+      "datePublished": "2022-08-10",
+      "subtitle": "Find a bug or vulnerability and claim up to $50k 🤑",
+      "slug": "announcing-our-bug-bounty-program",
+      "createdAt": "2022-08-10T15:04:20.187Z",
+      "updatedAt": "2022-10-25T12:06:36.499Z",
+      "publishedAt": "2022-08-10T18:20:25.003Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_10_08_Autonolas_Bug_Bounty_05_ba15b39055.png",
+                  "hash": "large_10_08_Autonolas_Bug_Bounty_05_ba15b39055",
+                  "mime": "image/png",
+                  "name": "large_10.08 Autonolas Bug Bounty-05.png",
+                  "path": null,
+                  "size": 460.62,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 26,
+    "attributes": {
+      "title": "Autonolas Community Update 008 ",
+      "datePublished": "2022-08-04",
+      "subtitle": "Pushing the Autonomous Edge Edition",
+      "slug": "autonolas-community-update-008",
+      "createdAt": "2022-08-04T11:15:36.745Z",
+      "updatedAt": "2022-10-25T12:05:56.537Z",
+      "publishedAt": "2022-08-05T09:25:49.677Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_04_08_Community_Update_008_96eeecdaf8.png",
+                  "hash": "large_04_08_Community_Update_008_96eeecdaf8",
+                  "mime": "image/png",
+                  "name": "large_04.08 Community Update 008.png",
+                  "path": null,
+                  "size": 517.64,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 25,
+    "attributes": {
+      "title": "Community Showcase: El Collectooorr",
+      "datePublished": "2022-08-03",
+      "subtitle": "The first community built, Autonolas-based service is now live",
+      "slug": "community-showcase-el-collectooorr",
+      "createdAt": "2022-08-03T10:52:27.857Z",
+      "updatedAt": "2022-10-25T12:05:48.306Z",
+      "publishedAt": "2022-08-29T12:57:59.697Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_03_08_El_Collectooorr_4174765b45.png",
+                  "hash": "large_03_08_El_Collectooorr_4174765b45",
+                  "mime": "image/png",
+                  "name": "large_03.08 El Collectooorr.png",
+                  "path": null,
+                  "size": 435.85,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 24,
+    "attributes": {
+      "title": "Examining DAO Operations: Our Research, Collated",
+      "datePublished": "2022-08-01",
+      "subtitle": "What works, and what doesn't, in the world of DAO Ops",
+      "slug": "examining-dao-operations-our-research-collated",
+      "createdAt": "2022-08-01T13:33:11.086Z",
+      "updatedAt": "2023-01-23T11:08:32.654Z",
+      "publishedAt": "2022-08-02T12:10:29.923Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_02_08_DAO_Operations_1174e92679.png",
+                  "hash": "large_02_08_DAO_Operations_1174e92679",
+                  "mime": "image/png",
+                  "name": "large_02.08 DAO Operations.png",
+                  "path": null,
+                  "size": 333.63,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 23,
+    "attributes": {
+      "title": "Decentralizing Cross-Chain Bridges with Autonomous Services",
+      "datePublished": "2022-07-27",
+      "subtitle": "A detailed look at an Autonolas-based approach",
+      "slug": "decentralizing-cross-chain-bridges-with-autonomous-services",
+      "createdAt": "2022-07-27T09:15:46.937Z",
+      "updatedAt": "2022-10-25T12:05:30.343Z",
+      "publishedAt": "2022-07-27T10:00:33.873Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_27_07_bridges_blog_post_3cb7ed21d6.png",
+                  "hash": "large_27_07_bridges_blog_post_3cb7ed21d6",
+                  "mime": "image/png",
+                  "name": "large_27.07 bridges blog post.png",
+                  "path": null,
+                  "size": 427.94,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 22,
+    "attributes": {
+      "title": "Autonolas Community Update 007",
+      "datePublished": "2022-07-07",
+      "subtitle": "New Possibilities Edition",
+      "slug": "autonolas-community-update-007",
+      "createdAt": "2022-07-15T07:59:03.941Z",
+      "updatedAt": "2022-10-25T12:05:12.749Z",
+      "publishedAt": "2022-08-04T07:45:37.396Z",
+      "headerImage": { "data": [{ "attributes": { "formats": {} } }] }
+    }
+  },
+  {
+    "id": 20,
+    "attributes": {
+      "title": "A New Visual Identity for Autonolas",
+      "datePublished": "2022-07-05",
+      "subtitle": "How and why we've updated our look",
+      "slug": "a-new-visual-identity-for-autonolas",
+      "createdAt": "2022-07-05T09:46:06.479Z",
+      "updatedAt": "2022-10-25T12:03:11.152Z",
+      "publishedAt": "2022-07-05T09:46:11.374Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_blog_new_visual_identity_9bb10225ad.png",
+                  "hash": "large_blog_new_visual_identity_9bb10225ad",
+                  "mime": "image/png",
+                  "name": "large_blog-new-visual-identity.png",
+                  "path": null,
+                  "size": 636.39,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 17,
+    "attributes": {
+      "title": "Autonomous Augmentations — Volume Two ",
+      "datePublished": "2022-06-28",
+      "subtitle": "Community Ideas for Autonomous Services",
+      "slug": "autonomous-augmentations-volume-two",
+      "createdAt": "2022-06-27T14:56:04.652Z",
+      "updatedAt": "2022-10-25T12:02:36.124Z",
+      "publishedAt": "2022-06-29T14:24:49.074Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img19_a0e7668458.png",
+                  "hash": "large_img19_a0e7668458",
+                  "mime": "image/png",
+                  "name": "large_img19.png",
+                  "path": null,
+                  "size": 705.44,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 16,
+    "attributes": {
+      "title": "Unleashing Autonolas Oracles, Part Two: Polygon",
+      "datePublished": "2022-06-22",
+      "subtitle": "The first Autonolas-based service to be deployed on a mainnet",
+      "slug": "unleashing-autonolas-oracles-part-two-polygon",
+      "createdAt": "2022-06-23T15:58:16.524Z",
+      "updatedAt": "2022-11-24T12:11:17.269Z",
+      "publishedAt": "2022-06-29T14:11:34.918Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img18_8959e8a170.png",
+                  "hash": "large_img18_8959e8a170",
+                  "mime": "image/png",
+                  "name": "large_img18.png",
+                  "path": null,
+                  "size": 448,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 15,
+    "attributes": {
+      "title": "Build your own Autonomous Services",
+      "datePublished": "2022-06-15",
+      "subtitle": "Open-sourcing the codebase and documentation",
+      "slug": "build-your-own-autonomous-services",
+      "createdAt": "2022-06-23T15:56:36.718Z",
+      "updatedAt": "2022-10-25T11:59:11.499Z",
+      "publishedAt": "2022-06-29T14:09:50.883Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img17_4b5ba58816.png",
+                  "hash": "large_img17_4b5ba58816",
+                  "mime": "image/png",
+                  "name": "large_img17.png",
+                  "path": null,
+                  "size": 750.86,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 14,
+    "attributes": {
+      "title": "Autonomous Augmentations — Volume One",
+      "datePublished": "2022-06-13",
+      "subtitle": "Community Ideas for Autonomous Services",
+      "slug": "autonomous-augmentations-volume-one",
+      "createdAt": "2022-06-23T15:54:15.953Z",
+      "updatedAt": "2022-10-25T11:58:57.289Z",
+      "publishedAt": "2022-06-29T14:05:38.455Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img16_d4728758b0.png",
+                  "hash": "large_img16_d4728758b0",
+                  "mime": "image/png",
+                  "name": "large_img16.png",
+                  "path": null,
+                  "size": 774.21,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 13,
+    "attributes": {
+      "title": "Autonolas Community Update 006",
+      "datePublished": "2022-06-01",
+      "subtitle": "Depth and Breadth Edition",
+      "slug": "autonolas-community-update-006",
+      "createdAt": "2022-06-23T15:52:59.345Z",
+      "updatedAt": "2022-10-25T11:58:36.040Z",
+      "publishedAt": "2022-06-29T13:53:10.429Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img15_e8d29d8294.png",
+                  "hash": "large_img15_e8d29d8294",
+                  "mime": "image/png",
+                  "name": "large_img15.png",
+                  "path": null,
+                  "size": 731.13,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 12,
+    "attributes": {
+      "title": "Autonomous Asset Management with Autonolas",
+      "datePublished": "2022-05-26",
+      "subtitle": "A Detailed Overview",
+      "slug": "autonomous-asset-management-with-autonolas",
+      "createdAt": "2022-06-23T15:45:36.025Z",
+      "updatedAt": "2022-10-25T11:58:06.258Z",
+      "publishedAt": "2022-06-29T13:23:03.916Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img14_5cefba908d.png",
+                  "hash": "large_img14_5cefba908d",
+                  "mime": "image/png",
+                  "name": "large_img14.png",
+                  "path": null,
+                  "size": 498.08,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 11,
+    "attributes": {
+      "title": "Autonolas Oracles—Technical Details",
+      "datePublished": "2022-05-11",
+      "subtitle": "A look under the hood of the Autonolas Live Price Oracle",
+      "slug": "autonolas-oracles-technical-details",
+      "createdAt": "2022-06-23T15:43:00.905Z",
+      "updatedAt": "2022-10-25T11:57:51.478Z",
+      "publishedAt": "2022-06-29T13:11:57.640Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Screenshot_2022_08_08_at_14_23_06_beea95d219.png",
+                  "hash": "large_Screenshot_2022_08_08_at_14_23_06_beea95d219",
+                  "mime": "image/png",
+                  "name": "large_Screenshot 2022-08-08 at 14.23.06.png",
+                  "path": null,
+                  "size": 145.81,
+                  "width": 1000,
+                  "height": 577
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 18,
+    "attributes": {
+      "title": "Autonolas Community Update 005",
+      "datePublished": "2022-05-06",
+      "subtitle": "Springing Forward Edition",
+      "slug": "autonolas-community-update-005",
+      "createdAt": "2022-06-29T15:57:42.563Z",
+      "updatedAt": "2022-10-25T12:02:53.939Z",
+      "publishedAt": "2022-06-29T15:57:46.422Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img13_3381051110.png",
+                  "hash": "large_img13_3381051110",
+                  "mime": "image/png",
+                  "name": "large_img13.png",
+                  "path": null,
+                  "size": 775.27,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 10,
+    "attributes": {
+      "title": "Autonolas Community Update 004",
+      "datePublished": "2022-04-04",
+      "subtitle": "Brick by Brick Edition",
+      "slug": "autonolas-community-update-004",
+      "createdAt": "2022-06-23T15:41:13.220Z",
+      "updatedAt": "2022-10-25T11:56:47.087Z",
+      "publishedAt": "2022-06-29T12:54:59.461Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img12_acf7592a39.png",
+                  "hash": "large_img12_acf7592a39",
+                  "mime": "image/png",
+                  "name": "large_img12.png",
+                  "path": null,
+                  "size": 635.55,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 9,
+    "attributes": {
+      "title": "Unleashing Autonolas Oracles",
+      "datePublished": "2022-03-31",
+      "subtitle": "A proof-of-concept agent service, running live today",
+      "slug": "unleashing-autonolas-oracles",
+      "createdAt": "2022-06-23T15:32:51.792Z",
+      "updatedAt": "2022-10-25T11:56:23.585Z",
+      "publishedAt": "2022-06-29T12:47:41.427Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img11_c0354da0d1.png",
+                  "hash": "large_img11_c0354da0d1",
+                  "mime": "image/png",
+                  "name": "large_img11.png",
+                  "path": null,
+                  "size": 451.51,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 8,
+    "attributes": {
+      "title": "Autonolas Community Update 003",
+      "datePublished": "2022-02-25",
+      "subtitle": "Growing Together Edition",
+      "slug": "autonolas-community-update-003",
+      "createdAt": "2022-06-23T15:30:46.246Z",
+      "updatedAt": "2022-10-25T11:56:04.116Z",
+      "publishedAt": "2022-06-26T12:48:45.994Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img10_5f373704a2.png",
+                  "hash": "large_img10_5f373704a2",
+                  "mime": "image/png",
+                  "name": "large_img10.png",
+                  "path": null,
+                  "size": 744.41,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 7,
+    "attributes": {
+      "title": "Getting into Web3: A Guide for Developers",
+      "datePublished": "2022-02-15",
+      "subtitle": "Learning resources curated by a real team currently heads-down in the space",
+      "slug": "getting-into-web3-a-guide-for-developers",
+      "createdAt": "2022-06-23T15:27:31.517Z",
+      "updatedAt": "2022-10-25T11:55:42.533Z",
+      "publishedAt": "2022-06-29T12:30:38.071Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img06_78b627e870.png",
+                  "hash": "large_img06_78b627e870",
+                  "mime": "image/png",
+                  "name": "large_img06.png",
+                  "path": null,
+                  "size": 560.64,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 2,
+    "attributes": {
+      "title": "Agent Dev Academy: Cohort 1",
+      "datePublished": "2022-02-02",
+      "subtitle": "The participants’ experience, in their own words",
+      "slug": "agent-dev-academy-cohort-1",
+      "createdAt": "2022-06-23T15:01:46.192Z",
+      "updatedAt": "2022-10-25T11:52:06.343Z",
+      "publishedAt": "2022-06-26T12:48:35.318Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img09_ff2eaf7240.png",
+                  "hash": "large_img09_ff2eaf7240",
+                  "mime": "image/png",
+                  "name": "large_img09.png",
+                  "path": null,
+                  "size": 695.77,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 4,
+    "attributes": {
+      "title": "Autonolas Community Update 002",
+      "datePublished": "2022-01-27",
+      "subtitle": "Builders Rule Edition",
+      "slug": "autonolas-community-update-002",
+      "createdAt": "2022-06-23T15:13:09.163Z",
+      "updatedAt": "2022-10-25T11:54:22.627Z",
+      "publishedAt": "2022-06-26T12:48:42.132Z",
+      "headerImage": { "data": [{ "attributes": { "formats": {} } }] }
+    }
+  },
+  {
+    "id": 6,
+    "attributes": {
+      "title": "Tokens of Appreciation",
+      "datePublished": "2022-01-25",
+      "subtitle": "An NFT design process for the tangible recognition of early team members",
+      "slug": "tokens-of-appreciation",
+      "createdAt": "2022-06-23T15:17:07.225Z",
+      "updatedAt": "2022-10-25T11:55:17.698Z",
+      "publishedAt": "2022-06-29T12:04:46.929Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_header_01_min_1dc9e97373.png",
+                  "hash": "large_header_01_min_1dc9e97373",
+                  "mime": "image/png",
+                  "name": "large_header-01-min.png",
+                  "path": null,
+                  "size": 927.93,
+                  "width": 1000,
+                  "height": 534
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 19,
+    "attributes": {
+      "title": "Open Call: The Autonolas World Buildathon (with Prizes!)",
+      "datePublished": "2021-12-21",
+      "subtitle": "The world of Alter Orbis needs you!",
+      "slug": "open-call-the-autonolas-world-buildathon-with-prizes",
+      "createdAt": "2022-07-01T09:25:26.160Z",
+      "updatedAt": "2022-10-25T12:03:04.183Z",
+      "publishedAt": "2022-07-05T09:11:50.185Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_World_buildathon_header_min_5c7e3281e1.png",
+                  "hash": "large_World_buildathon_header_min_5c7e3281e1",
+                  "mime": "image/png",
+                  "name": "large_World buildathon header-min.png",
+                  "path": null,
+                  "size": 931.85,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 5,
+    "attributes": {
+      "title": "Cutting Through the Hype",
+      "datePublished": "2021-12-20",
+      "subtitle": "NFTs as tools for real community engagement",
+      "slug": "cutting-through-the-hype",
+      "createdAt": "2022-06-23T15:15:13.948Z",
+      "updatedAt": "2022-10-25T11:54:39.772Z",
+      "publishedAt": "2022-06-29T11:23:11.907Z",
+      "headerImage": { "data": [{ "attributes": { "formats": {} } }] }
+    }
+  },
+  {
+    "id": 3,
+    "attributes": {
+      "title": "Autonolas Community Update 001",
+      "datePublished": "2021-12-03",
+      "subtitle": "If You’re Reading This, You’re Early Edition",
+      "slug": "autonolas-community-update-001",
+      "createdAt": "2022-06-23T15:11:44.384Z",
+      "updatedAt": "2022-10-25T11:53:56.574Z",
+      "publishedAt": "2022-06-26T12:48:38.964Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img04_51aa7d167a.png",
+                  "hash": "large_img04_51aa7d167a",
+                  "mime": "image/png",
+                  "name": "large_img04.png",
+                  "path": null,
+                  "size": 705.89,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 1,
+    "attributes": {
+      "title": "Autonomy is Dead, Long Live Autonomy!",
+      "datePublished": "2021-11-21",
+      "subtitle": "How an open middleware layer will unlock the next level of crypto applications",
+      "slug": "autonomy-is-dead-long-live-autonomy",
+      "createdAt": "2022-06-23T14:58:38.035Z",
+      "updatedAt": "2022-10-25T11:49:25.168Z",
+      "publishedAt": "2022-06-26T12:48:27.715Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_img01_49a391d995.png",
+                  "hash": "large_img01_49a391d995",
+                  "mime": "image/png",
+                  "name": "large_img01.png",
+                  "path": null,
+                  "size": 441.37,
+                  "width": 1000,
+                  "height": 563
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "82e7e063-c42f-4c2a-9d20-9257109131d6",
+    "name": "Ceramic",
+    "url": "https://blog.ceramic.network/ceramic-and-autonolas-partner-to-revolutionize-ai-tooling-for-daos/",
+    "imageFilename": "ceramic.png"
+  },
+  {
+    "id": "d1ec5010-7e08-4780-a929-c08b8ffa4895",
+    "name": "Balancer",
+    "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
+    "imageFilename": "balancer-bal-logo.svg"
+  },
+  {
+    "id": "d7ea8ef8-bc70-4387-b1a8-c99641d88cf6",
+    "name": "Connext",
+    "url": "https://www.connext.network/",
+    "imageFilename": "connext.png"
+  },
+  {
+    "id": "8eb7ea3f-26bd-4fdb-b95b-ed4c8aa889eb",
+    "name": "CoW Protocol",
+    "url": "https://forum.cow.fi/t/grant-application-decentralizing-cow-s-watchtower/1681/6",
+    "imageFilename": "cow-protocol.svg"
+  },
+  {
+    "id": "07020348-a690-4991-b382-a5f629859465",
+    "name": "Keep3r",
+    "url": "https://keep3r.network/",
+    "imageFilename": "keep3r.svg"
+  },
+  {
+    "id": "9b905d9e-33f4-4330-9016-c00367e38498",
+    "name": "Orbis",
+    "url": "https://twitter.com/useOrbis/status/1659672023411613696?s=20",
+    "imageFilename": "orbis.svg"
+  },
+  {
+    "id": "dbf8fe26-6d29-483c-abbd-fccf302d98a9",
+    "name": "postmint",
+    "url": "https://www.postmint.xyz/",
+    "imageFilename": "postmint.png"
+  },
+  {
+    "id": "8c7282e2-15fc-4736-91cc-b9c372cb9ec8",
+    "name": "Valory",
+    "url": "https://www.valory.xyz/",
+    "imageFilename": "valory.png"
+  },
+  {
+    "id": "26a37bbf-aafe-42fb-8098-9f479302cbac",
+    "name": "DeFi Wonderland",
+    "url": "https://www.defi.sucks/",
+    "imageFilename": "wonderland.png"
+  }
+]

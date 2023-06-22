@@ -1,12 +1,11 @@
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import SectionWrapper from '@/components/SectionWrapper';
-import Videos from '../components/Videos'
+import PageWrapper from '@/components/Layout/PageWrapper';
+import SectionWrapper from '@/components/Layout/SectionWrapper';
+import Videos from '@/components/Content/Videos'
 
-const VideosPage = () => <>
-<Header />
-<SectionWrapper backgroundType={"SUBTLE_GRADIENT"}><Videos /></SectionWrapper>
-<Footer/>
-</>;
+const VideosPage = () =>
+  <PageWrapper>
+    <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}><Videos /></SectionWrapper>
+  </PageWrapper>
+  ;
 
 export default VideosPage;

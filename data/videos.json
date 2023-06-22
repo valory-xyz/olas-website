@@ -80,13 +80,15 @@
     "date": "30-May-23",
     "title": "David Minarsch at Crypto x AI Standards: Mini Conference - Full Talk",
     "platform": "YouTube - Valory",
-    "platform_link": "https://www.youtube.com/watch?v=4pXC_ZDwMko"
+    "platform_link": "https://www.youtube.com/watch?v=4pXC_ZDwMko",
+    "imageFilename": "dm-cryptoxAIstandards.png"
   },
   {
     "date": "7-Jun-23",
     "title": "Protocol Deep Dives w/ TheFett - Autonolas",
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1EEZ6Cv0CPNifG8X1S51-iI68ouzPmYMW/view?usp=drive_link",
-    "platform_link": "https://www.youtube.com/watch?v=oznC6JXb7EQ"
+    "platform_link": "https://www.youtube.com/watch?v=oznC6JXb7EQ",
+    "imageFilename": "the fett.png"
   }
 ]

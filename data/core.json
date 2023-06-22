@@ -5,7 +5,7 @@
     "description": "",
     "tags": [],
     "url": "",
-    "iconFilename": "open-autonomy2.png"
+    "iconFilename": "open-autonomy.svg"
   },
   {
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
@@ -13,7 +13,7 @@
     "description": "",
     "tags": [],
     "url": "",
-    "iconFilename": "tokenomics.png"
+    "iconFilename": "tokenomics.svg"
   },
   {
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
@@ -21,7 +21,7 @@
     "description": "",
     "tags": [],
     "url": "",
-    "iconFilename": "governance.png"
+    "iconFilename": "governance.svg"
   },
   {
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
@@ -29,7 +29,7 @@
     "description": "",
     "tags": [],
     "url": "",
-    "iconFilename": "code-registry.png"
+    "iconFilename": "code-registry.svg"
   },
   {
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
@@ -37,6 +37,6 @@
     "description": "",
     "tags": [],
     "url": "",
-    "iconFilename": "olas-token.png"
+    "iconFilename": "olas-token.svg"
   }
 ]

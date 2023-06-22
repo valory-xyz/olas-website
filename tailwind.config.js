@@ -12,8 +12,7 @@ module.exports = {
         'dark-hexagons1': "url('/images/dark-hexagons1.png')",
         'dark-hexagons2': "url('/images/dark-hexagons2.png')",
         'dark-hexagons3': "url('/images/dark-hexagons3.png')",
-        'gradient-radial': 'radial-gradient(#ac93f0 0%, #8bc6ec 100%)',
-        'gradient-conic': 'conic-gradient(#ac93f0 0%, #8bc6ec 100%)',
+        'governatooorr': "url('/images/governatooorr-tiled.png')",
       },
       backgroundSize: {
         'size-25': '25%',
