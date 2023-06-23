@@ -20,9 +20,6 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   return (
     <PageWrapper>
-      {/* <Head>
-        <title>Olas | Crypto&apos;s Ocean of Off-chain Services</title>
-      </Head> */}
       <Hero />
       <ForDAOs />
       <ForDevs />

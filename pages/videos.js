@@ -5,9 +5,9 @@ import Head from 'next/head';
 
 const VideosPage = () =>
   <PageWrapper>
-    {/* <Head>
+    <Head>
       <title>Olas | Videos</title>
-    </Head> */}
+    </Head>
     <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}><Videos /></SectionWrapper>
   </PageWrapper>
   ;

@@ -5,8 +5,7 @@ export default function Document() {
 
     <Html lang="en">
       <body>
-        <Head />
-        {/* <Head>
+        <Head>
           <meta name="title" content="Olas" />
           <meta name="description" content="The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents." />
 
@@ -21,7 +20,7 @@ export default function Document() {
           <meta property="twitter:title" content="Olas" />
           <meta property="twitter:description" content="The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents." />
           <meta property="twitter:image" content="/images/meta-tag.png" />
-        </Head> */}
+        </Head>
         <Main />
         <NextScript />
       </body>
