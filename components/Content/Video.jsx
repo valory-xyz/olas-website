@@ -20,7 +20,7 @@ const Video = ({ video }) => {
         )
       }
       <div className="p-6">
-        <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 ">
+        <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate">
             {video.title}
         </h2>
         <div class="flex justify-between items-center text-gray-500">

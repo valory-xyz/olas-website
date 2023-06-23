@@ -1,9 +1,13 @@
 import Articles from "@/components/Content/Articles";
 import PageWrapper from "@/components/Layout/PageWrapper";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
+import Head from "next/head";
 
 const ArticlesPage = () =>
   <PageWrapper>
+    <Head>
+      <title>Olas | Articles</title>
+    </Head>
     <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}>
       <Articles />
     </SectionWrapper>

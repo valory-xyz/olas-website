@@ -13,12 +13,16 @@ import Footer from '@/components/Layout/Footer'
 import Content from '@/components/HomepageSection/Content'
 import Friends from '@/components/HomepageSection/Friends'
 import PageWrapper from '@/components/Layout/PageWrapper'
+import Head from 'next/head'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
     <PageWrapper>
+      <Head>
+        <title>Olas | Crypto&apos;s Ocean of Off-chain Services</title>
+      </Head>
       <Hero />
       <ForDAOs />
       <ForDevs />

@@ -5,7 +5,25 @@ export default function Document() {
 
     <Html lang="en">
       <body>
-        <Head />
+        <Head>
+          {/* Primary Meta Tags */}
+          <meta name="title" content="Olas" />
+          <meta name="description" content="The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents." />
+
+          {/* Open Graph / Facebook */}
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://olas.network" />
+          <meta property="og:title" content="Olas" />
+          <meta property="og:description" content="The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents." />
+          <meta property="og:image" content="/images/meta-tag.png" />
+
+          {/* Twitter */}
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:url" content="https://metatags.io" />
+          <meta property="twitter:title" content="Olas" />
+          <meta property="twitter:description" content="The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents." />
+          <meta property="twitter:image" content="/images/meta-tag.png" />
+        </Head>
         <Main />
         <NextScript />
       </body>

@@ -19,7 +19,7 @@ const NetworkApp = ({ networkApp }) => {
           <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 ">
             {networkApp.name}
           </h2>
-          <div className="text-sm md:text-2xl lg:text-sm mb-4 text-gray-600">{networkApp.description}</div>
+          <div className="text-sm md:text-2xl lg:text-sm xl:text-lg mb-4 text-gray-600">{networkApp.description}</div>
         </div>
       </article>
     </a>
