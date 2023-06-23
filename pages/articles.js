@@ -4,7 +4,7 @@ import SectionWrapper from "@/components/Layout/SectionWrapper";
 
 const ArticlesPage = () =>
   <PageWrapper>
-    <SectionWrapper>
+    <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}>
       <Articles />
     </SectionWrapper>
   </PageWrapper>

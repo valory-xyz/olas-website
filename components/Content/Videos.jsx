@@ -11,14 +11,14 @@ const Videos = ({ limit = null }) => {
     <section>
       <div>
         <div>
-          <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+          <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
             Videos
           </h2>
           {limit !== null && (
             <div className="mb-4">
               <Link
                 href="/videos"
-                className="text-xl text-primary hover:text-primary-800 transition-colors duration-300"
+                className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
               >
                 See all ▶
               </Link>

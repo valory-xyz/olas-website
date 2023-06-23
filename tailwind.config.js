@@ -33,6 +33,7 @@ module.exports = {
         'paragraph': ['32px', {
           letterSpacing: '-2%',
           lineHeight: '1.35',
+          color: '#000000',
           fontWeight: '300',
           fontFamily: ['Inter', 'sans-serif'],
         }],

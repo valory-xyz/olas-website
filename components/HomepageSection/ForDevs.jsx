@@ -17,7 +17,14 @@ function ForDevs() {
               src="/images/ForDevs.svg"
               width="965"
               height="132"
-              className="mx-auto mb-12"
+              className="mx-auto mb-12 hidden md:block"
+            />
+            <Image
+              alt="Dev incentives diagram"
+              src="/images/ForDevs-xs.svg"
+              width="965"
+              height="132"
+              className="mx-auto mb-12 md:hidden"
             />
           </div>
           <h3 className="text-2xl text-gray-600 mb-12">

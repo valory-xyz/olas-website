@@ -7,7 +7,7 @@ const Video = ({ video }) => {
         target="_blank"
         rel="noopener noreferrer"
       >
-    <article class="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg">
+    <article class="bg-white rounded-lg border border-gray-200 shadow-md  hover:shadow-lg">
       {
         video.imageFilename && (
           <Image
@@ -20,11 +20,11 @@ const Video = ({ video }) => {
         )
       }
       <div className="p-6">
-        <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 ">
             {video.title}
         </h2>
         <div class="flex justify-between items-center text-gray-500">
-          <span class="text-sm">{video.date}</span>
+          <span class="text-sm md:text-xl lg:text-sm">{video.date}</span>
         </div>
       </div>
     </article>

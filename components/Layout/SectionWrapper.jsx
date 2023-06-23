@@ -8,7 +8,7 @@ const SectionWrapper = ({ children, customClasses = "px-8 py-12 lg:p-24", backgr
       case 'GOVERNATOOORR':
         return 'w-full h-full bg-governatooorr bg-size-50 bg-repeat';
       default:
-        return 'bg-white dark:bg-gray-900';
+        return 'bg-white';
     }
   }, [backgroundType]);
 

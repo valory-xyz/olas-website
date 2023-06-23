@@ -1050,17 +1050,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img19_a0e7668458.png",
-                  "hash": "large_img19_a0e7668458",
-                  "mime": "image/png",
-                  "name": "large_img19.png",
-                  "path": null,
-                  "size": 705.44,
-                  "width": 1000,
-                  "height": 500
-                }
               }
             }
           }
@@ -1083,17 +1072,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img18_8959e8a170.png",
-                  "hash": "large_img18_8959e8a170",
-                  "mime": "image/png",
-                  "name": "large_img18.png",
-                  "path": null,
-                  "size": 448,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1116,17 +1094,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img17_4b5ba58816.png",
-                  "hash": "large_img17_4b5ba58816",
-                  "mime": "image/png",
-                  "name": "large_img17.png",
-                  "path": null,
-                  "size": 750.86,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1149,17 +1116,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img16_d4728758b0.png",
-                  "hash": "large_img16_d4728758b0",
-                  "mime": "image/png",
-                  "name": "large_img16.png",
-                  "path": null,
-                  "size": 774.21,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1182,17 +1138,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img15_e8d29d8294.png",
-                  "hash": "large_img15_e8d29d8294",
-                  "mime": "image/png",
-                  "name": "large_img15.png",
-                  "path": null,
-                  "size": 731.13,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1215,17 +1160,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img14_5cefba908d.png",
-                  "hash": "large_img14_5cefba908d",
-                  "mime": "image/png",
-                  "name": "large_img14.png",
-                  "path": null,
-                  "size": 498.08,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1281,17 +1215,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img13_3381051110.png",
-                  "hash": "large_img13_3381051110",
-                  "mime": "image/png",
-                  "name": "large_img13.png",
-                  "path": null,
-                  "size": 775.27,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1314,17 +1237,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img12_acf7592a39.png",
-                  "hash": "large_img12_acf7592a39",
-                  "mime": "image/png",
-                  "name": "large_img12.png",
-                  "path": null,
-                  "size": 635.55,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1380,17 +1292,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img10_5f373704a2.png",
-                  "hash": "large_img10_5f373704a2",
-                  "mime": "image/png",
-                  "name": "large_img10.png",
-                  "path": null,
-                  "size": 744.41,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1413,17 +1314,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_img06_78b627e870.png",
-                  "hash": "large_img06_78b627e870",
-                  "mime": "image/png",
-                  "name": "large_img06.png",
-                  "path": null,
-                  "size": 560.64,
-                  "width": 1000,
-                  "height": 563
-                }
               }
             }
           }
@@ -1492,17 +1382,6 @@
           {
             "attributes": {
               "formats": {
-                "large": {
-                  "ext": ".png",
-                  "url": "/uploads/large_header_01_min_1dc9e97373.png",
-                  "hash": "large_header_01_min_1dc9e97373",
-                  "mime": "image/png",
-                  "name": "large_header-01-min.png",
-                  "path": null,
-                  "size": 927.93,
-                  "width": 1000,
-                  "height": 534
-                }
               }
             }
           }

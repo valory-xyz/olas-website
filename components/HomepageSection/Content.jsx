@@ -7,7 +7,7 @@ import NetworkApps from "../Content/NetworkApps"
 const Content = () => {
   return (
     <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}>
-      <h1 className="text-heading mb-12">Dive in</h1>
+      <h1 className="text-heading text-gray-800 mb-12">Dive in</h1>
       <div className="mb-12">
         <Videos limit={2} />
       </div>
