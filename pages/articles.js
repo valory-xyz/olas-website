@@ -5,9 +5,9 @@ import Head from "next/head";
 
 const ArticlesPage = () =>
   <PageWrapper>
-    <Head>
+    {/* <Head>
       <title>Olas | Articles</title>
-    </Head>
+    </Head> */}
     <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}>
       <Articles />
     </SectionWrapper>
