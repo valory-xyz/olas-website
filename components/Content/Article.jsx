@@ -27,7 +27,7 @@ const Article = ({ article }) => {
           </div>
         )}
         <div className="p-6">
-          <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate">
+          <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal">
             {title}
           </h2>
           <span class="text-sm md:text-2xl lg:text-sm text-gray-600">

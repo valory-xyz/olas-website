@@ -7,9 +7,9 @@ import SectionHeading from "../SectionHeading";
 const AppShowcase = () => {
   return (
     <SectionWrapper  backgroundType={"GOVERNATOOORR"}>
-      <div className="text-center bg-white max-w-[600px] mx-auto p-12 rounded-3xl">
+      <div className="text-center bg-white max-w-[600px] mx-auto p-6 rounded-3xl">
         <div className="text-2xl md:text-3xl lg:text-2xl text-gray-600 mb-4">App showcase</div>
-        <SectionHeading size="text-4xl md:text-6xl lg:text-4xl">
+        <SectionHeading size="text-4xl md:text-6xl lg:text-4xl break-words">
           Meet The Governatooorr
         </SectionHeading>
         <Badge>AI x Crypto</Badge>

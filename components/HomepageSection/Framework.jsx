@@ -17,7 +17,7 @@ const Framework = () => {
             className="mb-6"
           />
           <div className="lg:max-w-lg">
-            <SectionHeading size="text-5xl" color="text-purple-950">Exponential growth through composability</SectionHeading>
+            <SectionHeading size="text-4xl" color="text-purple-950">Exponential growth through composability</SectionHeading>
             <p className="text-xl md:text-3xl text-gray-600 mb-6">
               Open Autonomy is Olas&apos; open-source coding framework. It&apos;s designed
               from the ground up around leading multi-agent systems principles.

@@ -4,8 +4,8 @@ import SectionHeading from "../SectionHeading";
 
 function ForDAOs() {
   return (
-    <section>
-      <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8 bg-white">
+    <section className=" bg-white">
+      <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="relative z-10 lg:py-16">
             <div className="relative mb-6">
