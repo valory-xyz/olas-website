@@ -21,6 +21,9 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   return (
     <PageWrapper>
+      <Head>
+        <title>Olas | The unified network for off-chain services</title>
+      </Head>
       <Hero />
       <ForDAOs />
       <ForDevs />
