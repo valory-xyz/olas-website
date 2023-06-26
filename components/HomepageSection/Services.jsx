@@ -138,6 +138,7 @@ const AppsSubsection = () => {
 const Services = () => {
   return (
     <SectionWrapper>
+      <div id="ecosystem" />
       <div className="text-center">
         <SectionHeading color="text-purple-950">
           Already making waves

@@ -9,7 +9,7 @@ const Contribute = () => {
       <section>
         <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
           <div class="mx-auto max-w-screen-sm text-center">
-            <SectionHeading color="text-purple-950">
+            <SectionHeading color="text-purple-950" size="text-4xl md:text-6xl lg:text-4xl">
               Start contributing to Olas today
             </SectionHeading>
             <a
