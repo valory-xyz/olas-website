@@ -20,18 +20,23 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <PageWrapper>
-      <Hero />
-      <ForDAOs />
-      <ForDevs />
-      <Flywheel />
-      <OlasUtility />
-      <Framework />
-      <Services />
-      <AppShowcase />
-      <Content />
-      <Friends />
-      <Contribute />
-    </PageWrapper>
+    <>
+      <Head>
+        <title key="index">Olas | The unified network for off-chain services</title>
+      </Head>
+      <PageWrapper>
+        <Hero />
+        <ForDAOs />
+        <ForDevs />
+        <Flywheel />
+        <OlasUtility />
+        <Framework />
+        <Services />
+        <AppShowcase />
+        <Content />
+        <Friends />
+        <Contribute />
+      </PageWrapper>
+    </>
   )
 }
