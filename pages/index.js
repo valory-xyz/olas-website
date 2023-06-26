@@ -12,6 +12,7 @@ import AppShowcase from '@/components/HomepageSection/AppShowcase'
 import Footer from '@/components/Layout/Footer'
 import Content from '@/components/HomepageSection/Content'
 import Friends from '@/components/HomepageSection/Friends'
+import Contribute from '@/components/HomepageSection/Contribute'
 import PageWrapper from '@/components/Layout/PageWrapper'
 import Head from 'next/head'
 
@@ -30,6 +31,7 @@ export default function Home() {
       <AppShowcase />
       <Content />
       <Friends />
+      <Contribute />
     </PageWrapper>
   )
 }

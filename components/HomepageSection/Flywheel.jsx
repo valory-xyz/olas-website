@@ -12,14 +12,14 @@ function Flywheel() {
         Capital, meet code.
       </h2>
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-24 lg:w-3/4 xl:w-1/2 mx-auto">
-        The Olas protocol creates an economic whirlpool, sucking in code for services and funds.
+        The Olas protocol is designed to create an economic whirlpool, sucking in code and funds.
       </div>
       <div className="sm:h-80 lg:h-full mb-12">
         <Image
           alt="Placeholder"
           src="/images/whirlpool.svg"
-          width="1295"
-          height="480"
+          width="600"
+          height="400"
           className="mx-auto"
         />
       </div>

@@ -28,7 +28,7 @@ function ForDevs() {
             />
           </div>
           <h3 className="text-2xl text-gray-600 mb-12">
-            Devs are rewarded when they contribute service code.
+            Devs can receive rewards when they contribute service code.
           </h3>
           <p className="text-2xl text-gray-600">
             Better contributions, more rewards.

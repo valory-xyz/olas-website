@@ -18,11 +18,11 @@ const Framework = () => {
           />
           <div className="lg:max-w-lg">
             <SectionHeading size="text-4xl" color="text-purple-950">Exponential growth through composability</SectionHeading>
-            <p className="text-xl md:text-3xl text-gray-600 mb-6">
+            <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-6">
               Open Autonomy is Olas&apos; open-source coding framework. It&apos;s designed
               from the ground up around leading multi-agent systems principles.
             </p>
-            <p className="text-xl md:text-3xl text-gray-600 mb-6">
+            <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-6">
               For the first time, there is a full framework capable of building
               any off-chain service.
             </p>
@@ -44,7 +44,7 @@ const Framework = () => {
               height={100}
             />
             <div className="p-6 bg-white">
-              <p className="text-xl md:text-3xl text-gray-600 text-center">
+              <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
                 Developers create new infra services at breakneck speed
               </p>
             </div>
@@ -58,7 +58,7 @@ const Framework = () => {
               height={100}
             />
             <div className="p-6 bg-white">
-              <p className="text-xl md:text-3xl text-gray-600 text-center">
+              <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
                 Crypto projects combine services to meet their specific needs
               </p>
             </div>

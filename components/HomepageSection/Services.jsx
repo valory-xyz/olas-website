@@ -142,7 +142,7 @@ const Services = () => {
         <SectionHeading color="text-purple-950">
           Already making waves
         </SectionHeading>
-        <div className="text-2xl md:text-3xl mx-auto text-gray-600 mb-12 lg:w-3/4">
+        <div className=" text-3xl font-light tracking-tight text-gray-600 leading-normal mx-auto mb-12 lg:w-3/4">
           Olas&apos; core protocol is live. Many services are in production and
           being used by an emerging app ecosystem.
         </div>
@@ -150,7 +150,7 @@ const Services = () => {
       <CoreSubsection />
       <ServicesSubsection />
       <AppsSubsection />
-      <div className="text-center text-2xl md:text-3xl lg:text-2xl text-gray-600">
+      <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center text-gray-600">
         For the most up to date lists,
         <br />
         check out the community-maintained{" "}

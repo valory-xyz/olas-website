@@ -3,24 +3,24 @@
     "id": "8b91fd90-717f-45e0-8a29-95c9ae2d1ad3",
     "name": "Registry",
     "description": "Browse and register code",
-    "url": "https://registry.autonolas.network"
+    "url": "https://registry.olas.network"
   },
   {
     "id": "ea44a69c-c378-4ce8-8288-924f7a56ef35",
     "name": "Member",
     "description": "Manage veOLAS and buOLAS positions",
-    "url": "https://member.autonolas.network"
+    "url": "https://member.olas.network"
   },
   {
     "id": "b8b09c64-787d-4227-9426-3b53e9349fd7",
     "name": "Tokenomics",
     "description": "Make donations, check rewards and bond capital",
-    "url": "https://tokenomics.autonolas.network"
+    "url": "https://tokenomics.olas.network"
   },
   {
     "id": "972d7ac3-21a1-4321-901d-31ebd51c07a3",
     "name": "Contribute",
     "description": "Fulfil actions, earn points and grow your reputation in the community",
-    "url": "https://contribute.autonolas.network"
+    "url": "https://contribute.olas.network"
   }
 ]
