@@ -87,6 +87,10 @@ const ServicesSubsection = () => {
             <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
               Services
             </h2>
+
+            <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600">
+              More and more infra services act as primitives for apps to build on and consume.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -161,7 +165,7 @@ const Services = () => {
         >
           Awesome Autonolas
         </a>{" "}
-        repo
+        repo.
       </div>
     </SectionWrapper>
   );
