@@ -151,7 +151,7 @@ const Services = () => {
       <CoreSubsection />
       <ServicesSubsection />
       <AppsSubsection />
-      <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center text-gray-600">
+      <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
         For the most up to date lists,
         <br />
         check out the community-maintained{" "}

@@ -7,7 +7,7 @@ const Video = ({ video }) => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <article class="bg-white rounded-lg border border-gray-200 shadow-md  hover:shadow-lg max-w-full ">
+      <article class="bg-white rounded-lg border border-gray-200 shadow-md  hover:shadow-lg max-w-full min-h-[500px] flex flex-col justify-between">
         {video.imageFilename && (
           <Image
             src={`/images/videos/${video.imageFilename}`}

@@ -4,7 +4,7 @@
     "name": "Open Autonomy",
     "description": "",
     "tags": [],
-    "url": "",
+    "url": "https://docs.autonolas.network/open-autonomy/",
     "iconFilename": "open-autonomy.svg"
   },
   {
@@ -12,7 +12,7 @@
     "name": "Tokenomics",
     "description": "",
     "tags": [],
-    "url": "",
+    "url": "http://tokenomics.olas.network/",
     "iconFilename": "tokenomics.svg"
   },
   {
@@ -20,7 +20,7 @@
     "name": "Governance",
     "description": "",
     "tags": [],
-    "url": "",
+    "url": "https://boardroom.io/autonolas/proposals",
     "iconFilename": "governance.svg"
   },
   {
@@ -28,7 +28,7 @@
     "name": "Code Registry",
     "description": "",
     "tags": [],
-    "url": "",
+    "url": "https://registry.olas.network/",
     "iconFilename": "code-registry.svg"
   },
   {

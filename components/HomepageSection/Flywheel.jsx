@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
+import Link from "next/link";
 
 function Flywheel() {
   return (
@@ -36,7 +37,7 @@ function Flywheel() {
           (PoSe). These contribute to revenue for the DAO.
         </div>
         <div className="text-2xl text-gray-600 lg:w-3/4 xl:w-1/2 mx-auto mb-12">
-          The capital also provides yield to the DAO.
+          The capital also provides yield to the DAO.<Link href="/disclaimer" className="text-blue-500">*</Link>
         </div>
 
         <div className="flex justify-center space-x-3">
