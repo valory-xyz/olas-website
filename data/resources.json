@@ -47,5 +47,19 @@
     "description": "Collated guides, tools, and resources",
     "url": "https://github.com/N0xMare/awesome-autonolas",
     "imageFilename": "awesome-autonolas.svg"
+  },
+  {
+    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
+    "title": "Ecosystem Activity",
+    "description": "Dune dashboard showing activity across the Olas ecosystem",
+    "url": "https://dune.com/adrian0x/autonolas-ecosystem-activity",
+    "imageFilename": "awesome-autonolas.svg"
+  },
+  {
+    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
+    "title": "AKS Activity",
+    "description": "Dune dashboard showing activity on the Autonomous Keeper Services",
+    "url": "https://dune.com/adrian0x/aks",
+    "imageFilename": "awesome-autonolas.svg"
   }
 ]
