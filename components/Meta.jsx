@@ -11,6 +11,8 @@ const Meta = ({pageTitle}) => {
   
   return (
     <Head>
+      <title>{title}</title>
+      
       <meta name="title" content={title} />
       <meta
         name="description"
