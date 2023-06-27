@@ -36,7 +36,7 @@ function Flywheel() {
           (PoSe). These contribute to revenue for the DAO.
         </div>
         <div className="text-2xl text-gray-600 lg:w-3/4 xl:w-1/2 mx-auto mb-12">
-          The capital also provides financial returns to the DAO.
+          The capital also provides yield to the DAO.
         </div>
 
         <div className="flex justify-center space-x-3">
