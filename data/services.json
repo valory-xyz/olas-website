@@ -4,7 +4,7 @@
     "name": "Autonomous Keeper Service",
     "tags": ["Automation"],
     "description": "",
-    "url": "",
+    "url": "https://etherscan.io/address/0x0a9a74274b1C30845aF98683Ca7F843795f6DFA6#writeContract",
     "iconFilename": "autonomous-keeper-service.svg"
   },
   {
@@ -12,23 +12,15 @@
     "name": "Price Oracle",
     "tags": ["Oracles"],
     "description": "",
-    "url": "",
+    "url": "https://oracle.autonolas.network/price",
     "iconFilename": "price-oracle.svg"
-  },
-  {
-    "id": "76c38174-aac5-4e0d-99f5-c86765a8db1f",
-    "name": "ACN",
-    "tags": ["Messaging"],
-    "description": "",
-    "url": "",
-    "iconFilename": "acn.svg"
   },
   {
     "id": "56b12a1e-556f-40f9-9afe-4384f18ab391",
     "name": "AI Mechs",
     "tags": ["AI"],
     "description": "",
-    "url": "",
+    "url": "https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91",
     "iconFilename": "ai-mechs.svg"
   },
   {
@@ -36,7 +28,7 @@
     "name": "ML APY Prediction Oracle",
     "tags": ["Oracles"],
     "description": "",
-    "url": "",
+    "url": "https://oracle.autonolas.network/ml-apy-prediction",
     "iconFilename": "ml-apy-prediction-oracle.svg"
   }
 ]

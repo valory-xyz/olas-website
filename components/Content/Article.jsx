@@ -14,20 +14,20 @@ const Article = ({ article }) => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <article class="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg">
+      <article class="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg flex flex-col justify-between">
         {(url || width || height) && (
           <div>
             <Image
               src={imageDomain + url}
-              width={750}
-              height={(width / 750) * height || 400}
+              width={width}
+              height={height}
               alt={article.title}
-              className="rounded-t-lg"
+              className="rounded-t-lg h-[200px] object-cover"
             />
           </div>
         )}
-        <div className="p-6">
-          <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal">
+        <div className="p-6 min-h-[150px]">
+          <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2">
             {title}
           </h2>
           <span class="text-sm md:text-2xl lg:text-sm text-gray-600">
