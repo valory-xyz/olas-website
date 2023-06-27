@@ -11,7 +11,7 @@ const DisclaimerPage = () =>
         <div className='text-xl text-gray-600'>
           <ol className='list-decimal list-outside space-y-2 pl-4'>
             <li>This Website is owned by the Olas DAO and operated by&nbsp;<a href="https://centralitylabs.com/" target="_blank" rel="noopener noreferrer">Centrality Labs</a>. This Website is intended as an educational and navigation tool for the Olas community.</li>
-            <li>THIS WEBSITE IS PROVIDED "AS IS" AND "AS AVAILABLE," AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. Neither Olas nor Centrality Labs will be liable for any loss, whether such loss is direct, indirect, special or consequential, suffered by any party as a result of their use of this website.</li>
+            <li>THIS WEBSITE IS PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE,&quot; AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. Neither Olas nor Centrality Labs will be liable for any loss, whether such loss is direct, indirect, special or consequential, suffered by any party as a result of their use of this website.</li>
             <li>By accessing this website, you represent and warrant
               <ol  className='list-decimal list-inside pl-2'>
                 <li>that you are of legal age and that you will comply with any laws applicable to you and not engage in any illegal activities;</li>

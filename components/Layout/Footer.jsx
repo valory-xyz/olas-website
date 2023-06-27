@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer class="p-4 bg-white md:p-8 lg:p-10 ">
       <div class="mx-auto max-w-screen-xl text-center">
-        <a
+        <Link
           href="/"
           class="flex justify-center items-center text-2xl font-semibold text-gray-900 "
         >
@@ -16,23 +16,25 @@ const Footer = () => {
             height="88"
             className="mx-auto"
           />
-        </a>
+        </Link>
         <p class="my-6 text-gray-600 ">
           The unified network for off-chain services
         </p>
         <ul class="flex flex-wrap justify-center items-center mb-6 text-gray-900 ">
           <li>
-            <a href="/#ecosystem" class="mr-4 hover:underline md:mr-6 ">
+            <Link href="/#ecosystem" class="mr-4 hover:underline md:mr-6 ">
               Ecosystem
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/#resources" class="mr-4 hover:underline">
+            <Link href="/#resources" class="mr-4 hover:underline">
               Resources
-            </a>
+            </Link>
           </li>
         </ul>
-        <div className="text-gray-600">© Olas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link></div>
+        <div className="text-gray-600">
+          © Olas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
+        </div>
       </div>
     </footer>
   );
