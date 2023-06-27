@@ -11,12 +11,15 @@ import Content from '@/components/HomepageSection/Content'
 import Friends from '@/components/HomepageSection/Friends'
 import Contribute from '@/components/HomepageSection/Contribute'
 import PageWrapper from '@/components/Layout/PageWrapper'
+import Head from 'next/head'
+import Meta from '@/components/Meta'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
     <>
+      <Meta />
       <PageWrapper>
         <Hero />
         <ForDAOs />
