@@ -33,7 +33,7 @@ const Footer = () => {
           </li>
         </ul>
         <div className="text-gray-600">
-          © Olas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
+          © Autonolas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
         </div>
       </div>
     </footer>
