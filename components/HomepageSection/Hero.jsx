@@ -13,7 +13,7 @@ const Hero = () => {
           </SectionHeading>
           <p class="mb-6 text-3xl font-light tracking-tight text-gray-600 leading-normal">
             One single network for all the stuff that makes crypto work.
-            Coordinated by the OLAS token, built on cutting edge autonomous
+            Coordinated by the OLAS token and built on cutting edge, autonomous
             agent technology.
           </p>
           <a
