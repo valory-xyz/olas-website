@@ -52,5 +52,11 @@
     "name": "DeFi Wonderland",
     "url": "https://www.defi.sucks/",
     "imageFilename": "wonderland.png"
+  },
+  {
+    "id": "bd4aebf4-0dec-4ed0-969b-15face91be42",
+    "name": "Gnosis",
+    "url": "https://www.gnosis.io/",
+    "imageFilename": "gnosis.svg"
   }
 ]
