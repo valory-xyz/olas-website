@@ -31,6 +31,11 @@ const Footer = () => {
               Resources
             </Link>
           </li>
+          <li>
+            <Link href="/documents/press-kit-olas.pdf" class="mr-4 hover:underline">
+              Press Kit
+            </Link>
+          </li>
         </ul>
         <div className="text-gray-600">
           © Autonolas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
