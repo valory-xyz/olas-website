@@ -1,10 +1,41 @@
 [
   {
+    "id": 60,
+    "attributes": {
+      "title": "OLAS Launch: LBP Mechanics Overview",
+      "datePublished": "2023-07-03",
+      "subtitle": "LBP mechanics overview",
+      "slug": "olas-public-launch-lbp-mechanics-overview",
+      "createdAt": "2023-07-04T14:49:02.206Z",
+      "updatedAt": "2023-07-04T14:50:31.350Z",
+      "publishedAt": "2023-07-04T14:49:03.439Z",
+      "headerImage": {
+        "data": [
+          {
+            "attributes": {
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/LBP_Mechanics_251ad2d58b.png",
+                  "name": "LBP_Mechanics_251ad2d58b.png",
+                  "path": null,
+                  "size": 602.81,
+                  "width": 1000,
+                  "height": 500
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": 59,
     "attributes": {
-      "title": "OLAS Public Launch: 5th July 2023",
+      "title": "Announcing the OLAS Public Launch",
       "datePublished": "2023-07-03",
-      "subtitle": "",
+      "subtitle": "5th July 2023",
       "slug": "olas-public-launch",
       "createdAt": "2023-07-03T14:49:02.206Z",
       "updatedAt": "2023-07-03T14:50:31.350Z",
