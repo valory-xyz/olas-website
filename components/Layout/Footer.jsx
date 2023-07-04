@@ -32,7 +32,7 @@ const Footer = () => {
             </Link>
           </li>
           <li>
-            <Link href="/documents/press-kit-olas.pdf" class="mr-4 hover:underline">
+            <Link href="/documents/press-kit-olas.pdf" class="hover:underline">
               Press Kit
             </Link>
           </li>
