@@ -43,7 +43,7 @@ const DisclaimerPage = () =>
               In case this Site links to any platform on which OLAS tokens can be acquired, the following applies:
               <ol className="pl-6 list-decimal">
                 <li>
-                  To comply with local laws and regulations, we prohibit participants from the following countries in the sale: OFAC Restricted Countries, United States of America
+                  To comply with local laws and regulations, we prohibit participants from the following countries in the sale: <a className='text-primary' href="https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information" rel="noopener noreferrer" target="_blank">OFAC Restricted Countries</a>, United States of America
                 </li>
               </ol>
             </li>
