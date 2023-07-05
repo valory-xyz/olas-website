@@ -39,6 +39,14 @@ const DisclaimerPage = () =>
                 </li>
               </ol>
             </li>
+            <li>
+              In case this Site links to any platform on which OLAS tokens can be acquired, the following applies:
+              <ol className="pl-6 list-decimal">
+                <li>
+                  To comply with local laws and regulations, we prohibit participants from the following countries in the sale: OFAC Restricted Countries, United States of America
+                </li>
+              </ol>
+            </li>
           </ol>
         </div>
       </article>
