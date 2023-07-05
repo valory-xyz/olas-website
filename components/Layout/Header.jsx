@@ -18,12 +18,12 @@ const Header = () => {
           </Link>
           <div class="flex items-center lg:order-2">
             <a
-              href="https://contribute.olas.network/"
+              href="https://fjordfoundry.com/pools/mainnet/0x4131fD7B699155f69E0192145C36f27852BE7c11"
               class="text-purple-950 border border-purple-950  hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none "
               target="_blank"
               rel="noopener noreferrer"
             >
-              Get involved
+              Get OLAS
             </a>
           </div>
           <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
