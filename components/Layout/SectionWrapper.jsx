@@ -4,7 +4,7 @@ const SectionWrapper = ({ children, customClasses = "px-8 py-12 lg:p-24", backgr
   const returnBackgroundType = useMemo(() => {
     switch (backgroundType) {
       case 'SUBTLE_GRADIENT':
-        return 'w-full h-full bg-gradient-to-r from-purple-100 via-white to-cyan-50 border-t border-b';
+        return 'w-full h-full bg-gradient-to-br from-purple-100 via-white to-white border-t border-b';
       case 'GOVERNATOOORR':
         return 'w-full h-full bg-governatooorr bg-size-50 bg-repeat';
       default:

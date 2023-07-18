@@ -9,7 +9,7 @@ const Hero = () => {
       <div class="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div class="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-7xl lg:mb-6" color="text-purple-900">
-            Crypto&apos;s <span className="bg-dark-hexagons1 bg-repeat bg-size-50 background-clip">ocean</span><br />of services
+            Crypto&apos;s ocean<br />of services
           </SectionHeading>
           <p class="mb-6 text-3xl font-light tracking-tight text-gray-600 leading-normal">
             One single network for all the stuff that makes crypto work.
