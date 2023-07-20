@@ -1,5 +1,251 @@
 [
   {
+    "id": 64,
+    "attributes": {
+      "title": "Attracting code via developer rewards",
+      "datePublished": "2023-07-19",
+      "subtitle": "Attracting code via developer rewards",
+      "slug": "code-capital-attracting-code-via-developer-rewards",
+      "createdAt": "2023-07-19T13:16:54.723Z",
+      "updatedAt": "2023-07-19T15:34:50.226Z",
+      "publishedAt": "2023-07-19T13:29:19.323Z",
+      "headerImage": {
+        "data": [
+          {
+            "id": 295,
+            "attributes": {
+              "name": "Announcement_(4).png",
+              "alternativeText": "Announcement_(4).png",
+              "caption": "Announcement_(4).png",
+              "width": 1600,
+              "height": 900,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Announcement_4_b96f38dc60.png",
+                  "hash": "large_Announcement_4_b96f38dc60",
+                  "mime": "image/png",
+                  "name": "large_Announcement_(4).png",
+                  "path": null,
+                  "size": 591.91,
+                  "width": 1000,
+                  "height": 563
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "/uploads/small_Announcement_4_b96f38dc60.png",
+                  "hash": "small_Announcement_4_b96f38dc60",
+                  "mime": "image/png",
+                  "name": "small_Announcement_(4).png",
+                  "path": null,
+                  "size": 159.34,
+                  "width": 500,
+                  "height": 281
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "/uploads/medium_Announcement_4_b96f38dc60.png",
+                  "hash": "medium_Announcement_4_b96f38dc60",
+                  "mime": "image/png",
+                  "name": "medium_Announcement_(4).png",
+                  "path": null,
+                  "size": 343.13,
+                  "width": 750,
+                  "height": 422
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "/uploads/thumbnail_Announcement_4_b96f38dc60.png",
+                  "hash": "thumbnail_Announcement_4_b96f38dc60",
+                  "mime": "image/png",
+                  "name": "thumbnail_Announcement_(4).png",
+                  "path": null,
+                  "size": 42.63,
+                  "width": 245,
+                  "height": 138
+                }
+              },
+              "hash": "Announcement_4_b96f38dc60",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 377.8,
+              "url": "/uploads/Announcement_4_b96f38dc60.png",
+              "previewUrl": null,
+              "provider": "local",
+              "provider_metadata": null,
+              "createdAt": "2023-07-19T13:21:43.981Z",
+              "updatedAt": "2023-07-19T13:21:43.981Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 63,
+    "attributes": {
+      "title": "Attracting capital via bonding",
+      "datePublished": "2023-07-19",
+      "subtitle": "Attracting capital via bonding",
+      "slug": "code-capital-attracting-capital-via-bonding",
+      "createdAt": "2023-07-19T12:55:37.527Z",
+      "updatedAt": "2023-07-20T08:15:46.034Z",
+      "publishedAt": "2023-07-19T12:55:49.459Z",
+      "headerImage": {
+        "data": [
+          {
+            "id": 294,
+            "attributes": {
+              "name": "Announcement (3).png",
+              "alternativeText": "Announcement (3).png",
+              "caption": "Announcement (3).png",
+              "width": 1600,
+              "height": 900,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Announcement_3_71ea945d83.png",
+                  "hash": "large_Announcement_3_71ea945d83",
+                  "mime": "image/png",
+                  "name": "large_Announcement (3).png",
+                  "path": null,
+                  "size": 601.54,
+                  "width": 1000,
+                  "height": 563
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "/uploads/small_Announcement_3_71ea945d83.png",
+                  "hash": "small_Announcement_3_71ea945d83",
+                  "mime": "image/png",
+                  "name": "small_Announcement (3).png",
+                  "path": null,
+                  "size": 157.03,
+                  "width": 500,
+                  "height": 281
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "/uploads/medium_Announcement_3_71ea945d83.png",
+                  "hash": "medium_Announcement_3_71ea945d83",
+                  "mime": "image/png",
+                  "name": "medium_Announcement (3).png",
+                  "path": null,
+                  "size": 343.04,
+                  "width": 750,
+                  "height": 422
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "/uploads/thumbnail_Announcement_3_71ea945d83.png",
+                  "hash": "thumbnail_Announcement_3_71ea945d83",
+                  "mime": "image/png",
+                  "name": "thumbnail_Announcement (3).png",
+                  "path": null,
+                  "size": 41.41,
+                  "width": 245,
+                  "height": 138
+                }
+              },
+              "hash": "Announcement_3_71ea945d83",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 371.5,
+              "url": "/uploads/Announcement_3_71ea945d83.png",
+              "previewUrl": null,
+              "provider": "local",
+              "provider_metadata": null,
+              "createdAt": "2023-07-19T12:55:28.995Z",
+              "updatedAt": "2023-07-19T12:55:28.995Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 62,
+    "attributes": {
+      "title": "Inaugural Bonding Programme Proposal",
+      "datePublished": "2023-07-13",
+      "subtitle": null,
+      "slug": "inaugural-bonding-programme-proposal",
+      "createdAt": "2023-07-13T14:32:25.578Z",
+      "updatedAt": "2023-07-13T14:46:34.528Z",
+      "publishedAt": "2023-07-13T14:32:26.980Z",
+      "headerImage": {
+        "data": [
+          {
+            "id": 293,
+            "attributes": {
+              "name": "Bonding Program.png",
+              "alternativeText": "Bonding Program.png",
+              "caption": "Bonding Program.png",
+              "width": 1600,
+              "height": 900,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Bonding_Program_819bf7ec41.png",
+                  "hash": "large_Bonding_Program_819bf7ec41",
+                  "mime": "image/png",
+                  "name": "large_Bonding Program.png",
+                  "path": null,
+                  "size": 601.07,
+                  "width": 1000,
+                  "height": 563
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "/uploads/small_Bonding_Program_819bf7ec41.png",
+                  "hash": "small_Bonding_Program_819bf7ec41",
+                  "mime": "image/png",
+                  "name": "small_Bonding Program.png",
+                  "path": null,
+                  "size": 161.64,
+                  "width": 500,
+                  "height": 281
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "/uploads/medium_Bonding_Program_819bf7ec41.png",
+                  "hash": "medium_Bonding_Program_819bf7ec41",
+                  "mime": "image/png",
+                  "name": "medium_Bonding Program.png",
+                  "path": null,
+                  "size": 347.7,
+                  "width": 750,
+                  "height": 422
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "/uploads/thumbnail_Bonding_Program_819bf7ec41.png",
+                  "hash": "thumbnail_Bonding_Program_819bf7ec41",
+                  "mime": "image/png",
+                  "name": "thumbnail_Bonding Program.png",
+                  "path": null,
+                  "size": 43.84,
+                  "width": 245,
+                  "height": 138
+                }
+              },
+              "hash": "Bonding_Program_819bf7ec41",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 372.42,
+              "url": "/uploads/Bonding_Program_819bf7ec41.png",
+              "previewUrl": null,
+              "provider": "local",
+              "provider_metadata": null,
+              "createdAt": "2023-07-13T14:32:15.939Z",
+              "updatedAt": "2023-07-13T14:32:15.939Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": 61,
     "attributes": {
       "title": "From LBP to LP",
@@ -1173,8 +1419,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1195,8 +1440,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1217,8 +1461,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1239,8 +1482,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1261,8 +1503,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1283,8 +1524,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1338,8 +1578,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1360,8 +1599,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1415,8 +1653,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1437,8 +1674,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
@@ -1505,8 +1741,7 @@
         "data": [
           {
             "attributes": {
-              "formats": {
-              }
+              "formats": {}
             }
           }
         ]
