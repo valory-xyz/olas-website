@@ -36,6 +36,26 @@ const Footer = () => {
               Press Kit
             </Link>
           </li>
+          <li>
+            <a
+              href="https://twitter.com/autonolas"
+              class="ml-4 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Twitter
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://discord.com/invite/z2PT65jKqQ"
+              class="ml-4 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Discord
+            </a>
+          </li>
         </ul>
         <div className="text-gray-600">
           © Autonolas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
