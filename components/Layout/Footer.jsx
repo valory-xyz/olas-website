@@ -56,6 +56,16 @@ const Footer = () => {
               Discord
             </a>
           </li>
+          <li>
+            <a
+              href="https://www.coingecko.com/en/coins/autonolas"
+              class="ml-4 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Coingecko
+            </a>
+          </li>
         </ul>
         <div className="text-gray-600">
           © Autonolas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
