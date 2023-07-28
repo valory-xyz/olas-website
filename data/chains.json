@@ -1,0 +1,26 @@
+[
+  {
+    "id": "7931e93e-cf36-4875-ac22-e94aa2296b80",
+    "name": "Ethereum",
+    "url": "https://twitter.com/autonolas/status/1559467305989390336?s=20",
+    "iconFilename": "ethereum.svg"
+  },
+  {
+    "id": "31cf4c3d-f963-4467-83fa-da5686b5998f",
+    "name": "Polygon",
+    "url": "https://twitter.com/autonolas/status/1656594373696700417",
+    "iconFilename": "polygon.svg"
+  },
+  {
+    "id": "dee6f12d-009c-4e8c-ad5e-b3f3e9f3e00a",
+    "name": "Gnosis Chain",
+    "url": "https://twitter.com/autonolas/status/1661424574385524737?s=20",
+    "iconFilename": "gnosis-chain.svg"
+  },
+  {
+    "id": "dca9ccfb-6fc9-4c52-b769-0ce30b6ecd68",
+    "name": "Solana",
+    "url": "https://twitter.com/autonolas/status/1683885110419136514?s=20",
+    "iconFilename": "solana.svg"
+  }
+]
