@@ -3,7 +3,7 @@
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
     "name": "Open Autonomy",
     "description": "",
-    "tags": [],
+    "tags": ["Olas Stack"],
     "url": "https://docs.autonolas.network/open-autonomy/",
     "iconFilename": "open-autonomy.svg"
   },
@@ -11,7 +11,7 @@
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
     "name": "Tokenomics",
     "description": "",
-    "tags": [],
+    "tags": ["Olas Protocol"],
     "url": "http://tokenomics.olas.network/",
     "iconFilename": "tokenomics.svg"
   },
@@ -19,7 +19,7 @@
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
     "name": "Governance",
     "description": "",
-    "tags": [],
+    "tags": ["Olas Protocol"],
     "url": "https://boardroom.io/autonolas/proposals",
     "iconFilename": "governance.svg"
   },
@@ -27,7 +27,7 @@
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
     "name": "Code Registry",
     "description": "",
-    "tags": [],
+    "tags": ["Olas Protocol"],
     "url": "https://registry.olas.network/",
     "iconFilename": "code-registry.svg"
   },
@@ -35,8 +35,8 @@
     "id": "592db570-5427-450e-ab07-c7b0a74e0390",
     "name": "OLAS Token",
     "description": "",
-    "tags": [],
-    "url": "",
+    "tags": ["Olas Protocol"],
+    "url": "https://etherscan.io/token/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0",
     "iconFilename": "olas-token.svg"
   }
 ]

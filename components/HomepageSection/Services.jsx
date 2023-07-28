@@ -3,6 +3,7 @@ import Image from "next/image";
 import services from "@/data/services.json";
 import core from "@/data/core.json";
 import apps from "@/data/apps.json";
+import chains from "@/data/chains.json";
 import Badge from "../Badge";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
@@ -139,6 +140,36 @@ const AppsSubsection = () => {
   );
 };
 
+const ChainsSubsection = () => {
+  return (
+    <section>
+      <div className="max-w-screen-xl mb-12 mx-auto">
+        <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
+          <div>
+            <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
+              Chains
+            </h2>
+
+            <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
+              Olas Protocol is available on a growing list of chains. When Olas Protocol is deployed on a chain, it brings the power of Olas to that chain&apos;s ecosystem.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {chains.map((chain) => {
+              return (
+                <div key={chain.id}>
+                  <Item service={chain} category="chains" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Services = () => {
   return (
     <SectionWrapper>
@@ -155,6 +186,7 @@ const Services = () => {
       <CoreSubsection />
       <ServicesSubsection />
       <AppsSubsection />
+      <ChainsSubsection />
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
         For the most up to date lists,
         <br />
