@@ -1,0 +1,1 @@
+export const CTA = 'https://tokenomics.olas.network/bonding-products'

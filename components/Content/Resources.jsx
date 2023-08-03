@@ -2,10 +2,20 @@ import Resource from "./Resource";
 import resources from "@/data/resources.json";
 import Link from "next/link";
 
-const Resources = ({ limit = null }) => {
+const Resources = ({ limit = null, tagFilter = null }) => {
   const sortedResources = resources.sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   });
+
+  let newResources = []
+
+  if (tagFilter) {
+    newResources = sortedResources.filter(article => { 
+      return article?.tags.includes(tagFilter)})
+  } else {
+    newResources = sortedResources
+  }
+  
   
   return (
     <section>
@@ -14,7 +24,7 @@ const Resources = ({ limit = null }) => {
         <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
             Resources
           </h2>
-          {limit !== null && (
+          {(limit !== null && newResources.length > limit) && (
             <div className="mb-4">
               <Link
                 href="/resources"
@@ -26,7 +36,7 @@ const Resources = ({ limit = null }) => {
           )}
         </div>
         <div className="grid gap-8 lg:grid-cols-3">
-          {(limit ? resources.slice(0, limit) : resources).map((resource) => (
+          {(limit ? newResources.slice(0, limit) : newResources).map((resource) => (
             <div key={resource.platform_link}>
               <Resource resource={resource} />
             </div>

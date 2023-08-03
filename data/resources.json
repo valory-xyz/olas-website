@@ -4,69 +4,79 @@
     "title": "Documentation",
     "description": "Resource for all things technical",
     "url": "https://docs.autonolas.network",
-    "imageFilename": "docs.svg"
+    "imageFilename": "docs.svg",
+    "tags": ["bonds"]
   },
   {
     "id": "d02fa8c1-cf7f-487e-8487-f26672a79fa7",
     "title": "Developer Site",
     "description": "Collection of resources for developers to build on Olas",
     "url": "https://autonolas.network",
-    "imageFilename": "dev-site.svg"
+    "imageFilename": "dev-site.svg",
+    "tags": []
   },
   {
     "id": "a1ccb876-13f9-46e2-8740-9a7dc7009e20",
     "title": "Whitepaper",
     "description": "Detailed technical specification of Olas",
     "url": "https://www.autonolas.network/documents/whitepaper/Whitepaper%20v1.0.pdf",
-    "imageFilename": "whitepaper.svg"
+    "imageFilename": "whitepaper.svg",
+    "tags": []
   },
   {
     "id": "152d0356-67b3-4704-9ebc-b4bdd91d3121",
     "title": "Whitepaper Summary",
     "description": "All the important bits of the whitepaper, condensed",
     "url": "https://www.autonolas.network/documents/whitepaper/Whitepaper%20Summary%20v1.0.pdf",
-    "imageFilename": "whitepaper-summary.svg"
+    "imageFilename": "whitepaper-summary.svg",
+    "tags": []
   },
   {
     "id": "a65b9f21-8ee5-4b1e-8292-1e57ed4cbf5a",
     "title": "Tokenomics Paper",
     "description": "Detailed paper on the tokenomics of Olas",
     "url": "https://www.autonolas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf",
-    "imageFilename": "tokenomics.svg"
+    "imageFilename": "tokenomics.svg",
+    "tags": ["bonds"]
   },
   {
     "id": "9d1ef468-f6ff-41b0-90d9-09f6abd24649",
     "title": "Starter Education Articles",
     "description": "Easy to consume guides for beginners and the less technical",
     "url": "https://www.autonolas.network/education-articles",
-    "imageFilename": "education-articles.svg"
+    "imageFilename": "education-articles.svg",
+    "tags": []
   },
   {
     "id": "d6535223-279c-4c23-8933-a1dce57d7863",
     "title": "Awesome Autonolas",
     "description": "Collated guides, tools, and resources",
     "url": "https://github.com/N0xMare/awesome-autonolas",
-    "imageFilename": "awesome-autonolas.svg"
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   },
   {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "Ecosystem Activity",
     "description": "Dune dashboard showing activity across the Olas ecosystem",
     "url": "https://dune.com/adrian0x/autonolas-ecosystem-activity",
-    "imageFilename": "awesome-autonolas.svg"
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["bonds"]
   },
   {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "AKS Activity",
     "description": "Dune dashboard showing activity on the Autonomous Keeper Services",
     "url": "https://dune.com/adrian0x/aks",
-    "imageFilename": "awesome-autonolas.svg"
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   },
   {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "DAO Constitution",
     "description": "The DAO's governing rulebook",
     "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
-    "imageFilename": "awesome-autonolas.svg"
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]
