@@ -16,8 +16,8 @@
     "title": "Olas Dev Rewards",
     "description": "Get rewards when you add useful code to the protocol.",
     "cta": {
-      "buttonText": "Start earning",
-      "url": "/dev-rewards/#start-earning"
+      "buttonText": "Get started",
+      "url": "/dev-rewards/#get-started"
     },
     "learnMoreUrl": "/dev-rewards",
     "imageFilename": "olas-dev-rewards.svg"

@@ -28,7 +28,7 @@ const Item = ({ affordance, category }) => {
           {affordance.title}
         </h2>
 
-        <div className="mb-2 min-h-[55px]">{affordance.description}</div>
+        <div className="mb-2 min-h-[55px] text-slate-800">{affordance.description}</div>
 
       <Button size="md" className="mr-2" href={affordance.cta.url} isExternal={affordance.cta.external}>{affordance.cta.buttonText}</Button>
       {affordance.learnMoreUrl && <Button size="md" href={affordance.learnMoreUrl}>Learn more</Button>}
@@ -65,10 +65,6 @@ const Affordances = () => {
         <SectionHeading color="text-slate-700">
           Get Involved
         </SectionHeading>
-        {/* <div className=" text-3xl font-light tracking-tight text-gray-600 leading-normal mx-auto mb-12 lg:w-3/4">
-          Olas&apos; core protocol is live. Many affordances are in production and
-          being used by an emerging app ecosystem.
-        </div> */}
       </div>
       <CoreSubsection />
     </SectionWrapper>

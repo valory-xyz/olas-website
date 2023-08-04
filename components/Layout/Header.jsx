@@ -18,12 +18,10 @@ const Header = () => {
           </Link>
           <div class="flex items-center lg:order-2">
             <a
-              href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0"
+              href="#get-involved"
               class="text-purple-950 border border-purple-950  hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none "
-              target="_blank"
-              rel="noopener noreferrer"
             >
-              Get OLAS
+              Get involved
             </a>
           </div>
           <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
