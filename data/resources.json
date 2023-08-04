@@ -5,7 +5,7 @@
     "description": "Resource for all things technical",
     "url": "https://docs.autonolas.network",
     "imageFilename": "docs.svg",
-    "tags": ["bonds"]
+    "tags": ["bonds", "dev-rewards"]
   },
   {
     "id": "d02fa8c1-cf7f-487e-8487-f26672a79fa7",
@@ -13,7 +13,7 @@
     "description": "Collection of resources for developers to build on Olas",
     "url": "https://autonolas.network",
     "imageFilename": "dev-site.svg",
-    "tags": []
+    "tags": ["dev-rewards"]
   },
   {
     "id": "a1ccb876-13f9-46e2-8740-9a7dc7009e20",
@@ -37,7 +37,7 @@
     "description": "Detailed paper on the tokenomics of Olas",
     "url": "https://www.autonolas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf",
     "imageFilename": "tokenomics.svg",
-    "tags": ["bonds"]
+    "tags": ["bonds", "dev-rewards"]
   },
   {
     "id": "9d1ef468-f6ff-41b0-90d9-09f6abd24649",

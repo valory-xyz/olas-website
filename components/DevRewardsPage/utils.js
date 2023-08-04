@@ -1,0 +1,1 @@
+export const CTA_LINK = '/dev-rewards#get-started'
