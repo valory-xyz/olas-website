@@ -9,9 +9,9 @@ function HowItWorks() {
       <div class="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div class="lg:col-span-6 px-5 lg:p-0 mb-12">
           <SectionHeading>How it Works</SectionHeading>
-          <ol className="text-xl text-slate-800 list-decimal">
+          <ol className="text-xl text-slate-800 list-decimal leading-loose">
             <li><a href={CTA} className="text-primary">Browse</a> for bonding products</li>
-            <li>Get LP tokens</li>
+            <li>Get LP tokens on <a href={CTA} rel="noopener noreferrer" target="_blank" className="text-primary">Uniswap</a></li>
             <li>Bond LP tokens via <a href={CTA} className="text-primary">app</a></li>
             <li>Wait for bond to mature, then claim discounted OLAS</li>
           </ol>
