@@ -48,9 +48,6 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
       px-3
       py-2
       text-lg
-      sm:text-2xl
-      sm:px-6
-      sm:py-4
       lg:text-lg
       lg:px-3
       lg:py-2

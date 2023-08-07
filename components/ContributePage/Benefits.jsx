@@ -37,7 +37,7 @@ const Benefits = () => {
     <section class="bg-purple-950 text-white py-10">
       <div class="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
         <div class="mx-auto max-w-lg text-center">
-          <h1 class="text-4xl sm:text-5xl leading-loose">Your shortcut to<br />making an impact</h1>
+          <h1 class="text-4xl sm:text-5xl">Your shortcut to<br />making an impact</h1>
         </div>
 
         <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">

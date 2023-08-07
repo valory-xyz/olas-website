@@ -53,7 +53,7 @@ const features = [
 
 const Feature = ({ feature }) => {
   return (
-    <div class="flex items-start gap-4">
+    <div class="flex items-start gap-6 mb-6 sm:mb-0">
       <span class="shrink-0 rounded-lg border bg-purple-50 p-4 text-3xl">
         {feature.icon}
       </span>
