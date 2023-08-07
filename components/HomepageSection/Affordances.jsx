@@ -72,3 +72,18 @@ const Affordances = () => {
 };
 
 export default Affordances;
+
+
+// ,
+//   {
+//     "id": "8abf6376-fbd4-4864-9fff-180e0ef454e6",
+//     "title": "Olas Contribute",
+//     "description": "Earn recognition points to climb the leaderboard and evolve your badge.",
+//     "cta": {
+//       "buttonText": "Contribute now",
+//       "url": "https://contribute.olas.network/",
+//       "external": true
+//     },
+//     "learnMoreUrl": "/contribute",
+//     "imageFilename": "olas-contribute.svg"
+//   }
