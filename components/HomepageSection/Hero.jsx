@@ -11,7 +11,7 @@ const Hero = () => {
           <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-7xl lg:mb-6" color="text-purple-900">
             Crypto&apos;s ocean<br />of services
           </SectionHeading>
-          <p class="mb-6 text-3xl font-light tracking-tight text-gray-600 leading-normal">
+          <p class="mb-6 text-2xl font-light tracking-tight text-gray-600 leading-normal">
             One single network for all the stuff that makes crypto work.
             Coordinated by the OLAS token and built on cutting edge, autonomous
             agent technology.
