@@ -11,7 +11,7 @@ function HowItWorks() {
           <SectionHeading>How it Works</SectionHeading>
           <ol className="text-xl text-slate-800 list-decimal leading-loose">
             <li><a href={CTA} className="text-primary">Browse</a> for bonding products</li>
-            <li>Get LP tokens on <a href={CTA} rel="noopener noreferrer" target="_blank" className="text-primary">Uniswap</a></li>
+            <li>Get LP tokens on <a href='https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0' rel="noopener noreferrer" target="_blank" className="text-primary">Uniswap</a></li>
             <li>Bond LP tokens via <a href={CTA} className="text-primary">app</a></li>
             <li>Wait for bond to mature, then claim discounted OLAS</li>
           </ol>
