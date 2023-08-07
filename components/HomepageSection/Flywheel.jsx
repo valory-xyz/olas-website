@@ -1,6 +1,7 @@
 import Image from "next/image";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import Link from "next/link";
+import SectionHeading from "../SectionHeading";
 
 function Flywheel() {
   return (
@@ -9,9 +10,7 @@ function Flywheel() {
       backgroundType={"SUBTLE_GRADIENT"}
     >
       <div className="text-7xl lg:text-9xl mb-12">🌀</div>
-      <h2 className="text-heading text-center mb-12 text-purple-950">
-        Capital, meet code
-      </h2>
+      <SectionHeading color="text-purple-900">Capital, meet code</SectionHeading>
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-24 lg:w-3/4 xl:w-1/2 mx-auto">
         The Olas protocol is designed to create an economic whirlpool, sucking in code and funds.
       </div>

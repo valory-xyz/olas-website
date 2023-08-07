@@ -13,6 +13,7 @@ import Contribute from '@/components/HomepageSection/Contribute'
 import PageWrapper from '@/components/Layout/PageWrapper'
 import Head from 'next/head'
 import Meta from '@/components/Meta'
+import Affordances from '@/components/HomepageSection/Affordances'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,7 @@ export default function Home() {
       <PageWrapper>
         <Meta />
         <Hero />
+        <Affordances />
         <ForDAOs />
         <ForDevs />
         <Flywheel />

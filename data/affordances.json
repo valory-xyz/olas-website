@@ -1,0 +1,37 @@
+[
+  {
+    "id": "d9b2dae1-7237-47e3-9c7b-3abcde4c9f81",
+    "title": "OLAS Token",
+    "description": "Unlock protocol functionality with the network token.",
+    "cta": {
+      "buttonText": "Get OLAS",
+      "url": "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0",
+      "external": true
+    },
+    "learnMoreUrl": "/#olas-token",
+    "imageFilename": "olas-token.svg"
+  },
+  {
+    "id": "dd6a8bd7-3919-4d77-9a8a-843773d951cc",
+    "title": "Olas Dev Rewards",
+    "description": "Get rewards when you add useful code to the protocol.",
+    "cta": {
+      "buttonText": "Get started",
+      "url": "/dev-rewards/#get-started"
+    },
+    "learnMoreUrl": "/dev-rewards",
+    "imageFilename": "olas-dev-rewards.svg"
+  },
+  {
+    "id": "cba2c5de-0068-4de4-bada-fa8282a19a54",
+    "title": "Olas Bonds",
+    "description": "Get discounted OLAS when you lock LP tokens.",
+    "cta": {
+      "buttonText": "Start bonding",
+      "url": "https://tokenomics.olas.network/bonding-products",
+      "external": true
+    },
+    "learnMoreUrl": "/bonds",
+    "imageFilename": "olas-bonds.svg"
+  }
+]
