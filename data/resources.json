@@ -45,7 +45,7 @@
     "description": "Easy to consume guides for beginners and the less technical",
     "url": "https://www.autonolas.network/education-articles",
     "imageFilename": "education-articles.svg",
-    "tags": []
+    "tags": ["contribute"]
   },
   {
     "id": "d6535223-279c-4c23-8933-a1dce57d7863",
@@ -77,6 +77,6 @@
     "description": "The DAO's governing rulebook",
     "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
     "imageFilename": "awesome-autonolas.svg",
-    "tags": []
+    "tags": ["contribute"]
   }
 ]

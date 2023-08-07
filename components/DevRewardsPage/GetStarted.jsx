@@ -14,7 +14,7 @@ function GetStarted() {
             <li>Mint your code on <a href='https://registry.olas.network/services/mint' className="text-primary">Olas Protocol Registry</a></li>
             <li>Get rewards in ETH & OLAS*</li>
           </ol>
-          <div className="text-slate-500">*Requires that somebody with at least 10k veOLAS donates to your service.</div>
+          <div className="text-slate-500">*Requires that somebody with at least 10k veOLAS donates to a service that uses your code.</div>
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
           <Image

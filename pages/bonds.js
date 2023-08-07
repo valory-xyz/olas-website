@@ -5,7 +5,7 @@ import Meta from "@/components/Meta";
 
 const BondsPage = () =>
   <PageWrapper>
-    <Meta pageTitle="Bonds" />
+    <Meta pageTitle="Olas Bonds" />
       <Bonds />
   </PageWrapper>
   ;

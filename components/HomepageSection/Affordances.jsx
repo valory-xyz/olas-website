@@ -40,9 +40,9 @@ const Item = ({ affordance, category }) => {
 const CoreSubsection = () => {
   return (
     <section>
-      <div className="max-w-screen-xl mb-12 mx-auto">
+      <div className="mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
             {affordances.map((affordance) => {
               return (
                 <div key={affordance.id}>
