@@ -31,7 +31,7 @@ const Item = ({ affordance, category }) => {
         <div className="mb-2 min-h-[55px] text-slate-800">{affordance.description}</div>
 
       <Button size="md" className="mr-2" href={affordance.cta.url} isExternal={affordance.cta.external}>{affordance.cta.buttonText}</Button>
-      {affordance.learnMoreUrl && <Button size="md" href={affordance.learnMoreUrl}>Learn more</Button>}
+      {affordance.learnMoreUrl && <Button size="md" href={affordance.learnMoreUrl} type="secondary">Learn more</Button>}
       </div>
     </div>
   );

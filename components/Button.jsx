@@ -1,20 +1,35 @@
 import Link from "next/link";
 
-export function Button({ href, className, size = "lg", isExternal = false, ...props }) {
+export function Button({ href, className, size = "lg", isExternal = false, type = "primary", ...props }) {
   const fullClassName = `
     inline-flex
-    bg-purple-900
-    text-white
     items-center
-    justify-center
     text-center
+    justify-center
     border
-    border-primary
-    hover:bg-white
-    hover:bg-repeat
-    hover:text-purple-900
     focus:ring-4
-    focus:ring-gray-100
+
+    ${
+      type === "primary" && `
+      bg-purple-900
+      text-white
+      border-primary
+      hover:bg-white
+      hover:text-purple-900
+      focus:ring-gray-100
+      `
+    }
+
+    ${
+      type === "secondary" && `
+      bg-white
+      text-primary
+      border-primary
+      hover:bg-purple-900
+      hover:text-white
+      focus:ring-gray-100
+      `
+    }
 
     ${size === "lg" && `
       px-6
