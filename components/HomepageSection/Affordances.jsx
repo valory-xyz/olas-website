@@ -42,7 +42,7 @@ const CoreSubsection = () => {
     <section>
       <div className="mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {affordances.map((affordance) => {
               return (
                 <div key={affordance.id}>
@@ -72,18 +72,3 @@ const Affordances = () => {
 };
 
 export default Affordances;
-
-
-// ,
-//   {
-//     "id": "8abf6376-fbd4-4864-9fff-180e0ef454e6",
-//     "title": "Olas Contribute",
-//     "description": "Earn recognition points to climb the leaderboard and evolve your badge.",
-//     "cta": {
-//       "buttonText": "Contribute now",
-//       "url": "https://contribute.olas.network/",
-//       "external": true
-//     },
-//     "learnMoreUrl": "/contribute",
-//     "imageFilename": "olas-contribute.svg"
-//   }

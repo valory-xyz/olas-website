@@ -13,7 +13,7 @@ const features = [
     title: "Leaderboard",
     icon: "🏆",
     description:
-      "Rank your contributions against those of other community members. Stored on Ceramic.",
+      "Rank your contributions against those of other community members. Stored on <a href='https://ceramic.network'>Ceramic</a>.",
   },
   {
     id: "3c856d9f-b017-4245-bafd-d517b038ef9a",
@@ -61,7 +61,7 @@ const Feature = ({ feature }) => {
       <div>
         <h2 class="text-xl font-bold">{feature.title}</h2>
 
-        <p class="mt-1 text-md text-slate-600">{feature.description}</p>
+        <p class="mt-1 text-md text-slate-600">{JSON.stringify(feature.description)}</p>
       </div>
     </div>
   );
@@ -71,13 +71,6 @@ const Features = () => {
   return (
     <section class="bg-fuchsia-50 text-slate-800 py-12">
       <div class="max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-16 lg:px-8 mx-auto">
-        {/* <Image
-          className="mx-auto mb-12"
-          alt="OLAS Utility"
-          src="/images/contribute-page/how-it-works.png"
-          width="300"
-          height="200"
-        /> */}
         <div class="max-w-screen-xl">
           <h2 class="text-3xl font-bold sm:text-4xl text-center">Features</h2>
         </div>
