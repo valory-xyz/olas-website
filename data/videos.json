@@ -4,77 +4,89 @@
     "title": "David Minarsch & Oaksprout the Tan - Autonolas | Chorus One Podcast #54",
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1fkuW6vCpRo96iXO2WgtB57cIuSq-WoiU/view?usp=drive_link",
-    "platform_link": "https://www.youtube.com/watch?v=ucxwaJhBr20"
+    "platform_link": "https://www.youtube.com/watch?v=ucxwaJhBr20",
+    "imageFilename": "Chorus_One_Podcast.png"
   },
   {
     "date": "22-May-22",
     "title": "Autonolas: Automating offchain services for DAOs - The Crypto Podcast Ep. 3",
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1h8dZ2E87On0Lg77Q1q4eIY3o8vSfOpHN/view?usp=drive_link",
-    "platform_link": "https://www.youtube.com/watch?v=oNNXlizKnYM"
+    "platform_link": "https://www.youtube.com/watch?v=oNNXlizKnYM",
+    "imageFilename": "The_Crypto_Podcast.png"
   },
   {
     "date": "15-Jun-22",
     "title": "Initial Releases Screencast",
     "platform": "Google Drive",
-    "drive_link": "https://drive.google.com/file/d/18A0-dsfp6IxwZCTwhApa8e1yPLRh3SpG/view"
+    "drive_link": "https://drive.google.com/file/d/18A0-dsfp6IxwZCTwhApa8e1yPLRh3SpG/view",
+    "imageFilename": "Initial_Releases_Live_Stream.png"
   },
   {
     "date": "26-Jun-22",
     "title": "Oaksprout at NFTBerlin",
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/12DmbNNrj1cZ2SZ9Ttwg4Gsc_PlU-WnR3/view?usp=drive_link",
-    "platform_link": "https://www.youtube.com/watch?v=_m1jH-tCrOk"
+    "platform_link": "https://www.youtube.com/watch?v=_m1jH-tCrOk",
+    "imageFilename": "Oaksprout_at_NFT_Berlin.png"
   },
   {
     "date": "27-Jul-22",
     "title": "El Collectooorr - Introduction Presentation",
     "platform": "YouTube - Autonolas",
-    "platform_link": "https://www.youtube.com/watch?v=TFEmhM0XSQQ"
+    "platform_link": "https://www.youtube.com/watch?v=TFEmhM0XSQQ",
+    "imageFilename": "El_Collectoorr_The_Worlds_First.png"
   },
   {
     "date": "27-Jul-22",
     "title": "El Collectooorr - Demo",
     "platform": "YouTube - Autonolas",
-    "platform_link": "https://www.youtube.com/watch?v=x-wP8r6pyeY"
+    "platform_link": "https://www.youtube.com/watch?v=x-wP8r6pyeY",
+    "imageFilename": "El_Collectooorr_Demo.png"
   },
   {
     "date": "28-Jul-22",
     "title": "Upgrade your DAO with Autonomous Services: An Intro to Autonolas",
     "platform": "YouTube - Autonolas",
-    "platform_link": "https://www.youtube.com/watch?v=sWBy277MPIg"
+    "platform_link": "https://www.youtube.com/watch?v=sWBy277MPIg",
+    "imageFilename": "Upgrade_Your_DAO.png"
   },
   {
     "date": "2-Aug-22",
     "title": "Autonolas Protocol Launch Live Developer Chat and Demos Stream",
     "platform": "Google Drive",
-    "drive_link": "https://drive.google.com/file/d/1OOrYLwEpeMRgojNPF1i4NPFYM9LRxLV5/view"
+    "drive_link": "https://drive.google.com/file/d/1OOrYLwEpeMRgojNPF1i4NPFYM9LRxLV5/view",
+    "imageFilename": "Protocol_Launch.png"
   },
   {
     "date": "15-Nov-22",
     "title": "Oaksprout the Tan (Autonolas) with Carlos Noe Saavedra (Fyre) and Luca Mossini (Avantgarde Finance) moderated by Lawrence Chiu (Trading Strategy): The Trends in Modern DAO Treasury Management",
     "platform": "Google Drive",
-    "drive_link": "https://drive.google.com/file/d/1rF1kKT9jtyKbfFh4xes17VDHtQMXRw-e/view"
+    "drive_link": "https://drive.google.com/file/d/1rF1kKT9jtyKbfFh4xes17VDHtQMXRw-e/view",
+    "imageFilename": "Trends_in_Modern_DAO_Treasury_Management.png"
   },
   {
     "date": "8-Feb-23",
     "title": "David Galindo - Presentation at StarkNet",
     "platform": "Google Drive",
-    "drive_link": "https://drive.google.com/file/d/1o0QaFRz9JkaQ3naPRPReze31o-U_dWle/view"
+    "drive_link": "https://drive.google.com/file/d/1o0QaFRz9JkaQ3naPRPReze31o-U_dWle/view",
+    "imageFilename": "Fill_the_Gap_in_your_Web3_stack.png"
   },
   {
     "date": "4-Mar-23",
     "title": "Co-Owned AI - and why DAOs are its primal form with David Minarsch",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/1J3wZnzp8OhIF7QaiJI84HNRppriRRvqR/view",
-    "platform_link": "https://www.youtube.com/watch?v=bmBnv2g-mR8"
+    "platform_link": "https://www.youtube.com/watch?v=bmBnv2g-mR8",
+    "imageFilename": "Co-Owned_AI_and_Why_Daos.png"
   },
   {
     "date": "25-Apr-23",
     "title": "Decentralized Off-chain Backends - How Autonolas utilizes IPFS across its stack - David Minarsch",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/160P6eOatZ1_HzMU0J301jpHlZaapEFKh/view",
-    "platform_link": "https://www.youtube.com/watch?v=bzSjPTF-6G4"
+    "platform_link": "https://www.youtube.com/watch?v=bzSjPTF-6G4",
+    "imageFilename": "Decentralized_Off_Chain_Backends.png"
   },
   {
     "date": "30-May-23",
