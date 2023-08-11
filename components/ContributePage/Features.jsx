@@ -13,7 +13,7 @@ const features = [
     title: "Leaderboard",
     icon: "🏆",
     description:
-      "Rank your contributions against those of other community members. Stored on <a href='https://ceramic.network'>Ceramic</a>.",
+      "Rank your contributions against those of other community members. Stored on Ceramic.",
   },
   {
     id: "3c856d9f-b017-4245-bafd-d517b038ef9a",
@@ -61,7 +61,7 @@ const Feature = ({ feature }) => {
       <div>
         <h2 class="text-xl font-bold">{feature.title}</h2>
 
-        <p class="mt-1 text-md text-slate-600">{JSON.stringify(feature.description)}</p>
+        <p class="mt-1 text-md text-slate-600">{feature.description}</p>
       </div>
     </div>
   );
