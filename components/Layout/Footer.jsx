@@ -68,7 +68,17 @@ const Footer = () => {
           </li>
         </ul>
         <div className="text-gray-600">
-          © Autonolas DAO 2023 • <Link href="/disclaimer">Disclaimer</Link>
+          © Autonolas DAO 2023&nbsp;•&nbsp;
+          <Link href="/disclaimer">Disclaimer</Link>
+          &nbsp;•&nbsp;
+          <a
+            href="https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u"
+            target="_blank"
+            class="hover:underline"
+            rel="noopener noreferrer"
+          >
+            DAO Constitution
+          </a>
         </div>
       </div>
     </footer>
