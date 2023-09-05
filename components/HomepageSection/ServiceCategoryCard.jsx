@@ -9,11 +9,14 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
     return (
       <div className="border rounded mt-4">
         <div className="border-b p-4">
-            <h2 className="font-bold text-2xl text-slate-700 mb-1 align-bottom">
-            <span class="material-symbols-outlined">{serviceCategory.iconName}</span> {serviceCategory.name}
-            </h2>
-            <div className="text-slate-600 min-h-[45px]">{serviceCategory.description}</div>
-          </div>
+          <h2 className="font-bold text-2xl text-slate-700 align-bottom">
+            <span class="material-symbols-outlined">
+              {serviceCategory.iconName}
+            </span>{" "}
+            {serviceCategory.name}
+          </h2>
+          {/* <div className="text-slate-600 min-h-[45px]">{serviceCategory.description}</div> */}
+        </div>
         <div className="p-4 min-h-[200px]">
           {filteredServices.map((service) => {
             return (
@@ -28,9 +31,43 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
                 <div>
                   {service.name}
                   <div className="text-slate-500">
-                    {service.appUrl && <><a href={service.appUrl} rel="noopener noreferrer" target="_blank">Visit app</a></>}
-                    {service.marketingUrl && <> · <a href={service.marketingUrl} rel="noopener noreferrer" target="_blank">Learn more</a></>}
-                    {service.buildUrl && <> · <a href={service.buildUrl} rel="noopener noreferrer" target="_blank">Build your own</a></>}
+                    {service.appUrl && (
+                      <>
+                        <a
+                          href={service.appUrl}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Visit app
+                        </a>
+                      </>
+                    )}
+                    {service.marketingUrl && (
+                      <>
+                        {" "}
+                        ·{" "}
+                        <a
+                          href={service.marketingUrl}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Learn more
+                        </a>
+                      </>
+                    )}
+                    {service.buildUrl && (
+                      <>
+                        {" "}
+                        ·{" "}
+                        <a
+                          href={service.buildUrl}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Build your own
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

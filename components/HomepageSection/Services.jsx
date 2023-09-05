@@ -90,7 +90,7 @@ const ServicesSubsection = () => {
               Services
             </h2>
 
-            <div className="grid gap-4 grid-cols-3">
+            <div className="grid sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
               {serviceCategories.map((serviceCategory) => {
                 return (
                     <ServiceCategoryCard

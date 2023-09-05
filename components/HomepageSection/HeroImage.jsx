@@ -4,8 +4,7 @@ const HeroImage = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="506"
-      height="500"
+      viewBox="-10 -10 506 500"
     >
       <g filter="url(#a)">
         <path
