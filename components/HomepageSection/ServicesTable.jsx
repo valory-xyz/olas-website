@@ -24,7 +24,7 @@ const ServicesTable = () => {
         <tbody className="divide-y divide-gray-200">
           {services
             .sort((a, b) => {
-              return a.infraCategory.localeCompare(b.infraCategory);
+              return a.serviceCategory.localeCompare(b.serviceCategory);
             })
             .map((service) => {
               return (
@@ -41,7 +41,7 @@ const ServicesTable = () => {
                     <Link href={`/services/${service.id}`}>{service.name}</Link>
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    {service.infraCategory}
+                    {service.serviceCategory}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {service.appCategory}

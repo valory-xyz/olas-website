@@ -2,7 +2,7 @@
   {
     "id": "c37e90d6-70db-453c-8a53-c289baabd25b",
     "name": "Autonomous Keeper Service",
-    "infraCategory": "Automation",
+    "serviceCategory": "Automation",
     "description": "",
     "appUrl": "https://dune.com/adrian0x/aks",
     "marketingUrl": "https://www.autonolas.network/product/autonomous-keeper-service ",
@@ -12,7 +12,7 @@
   {
     "id": "e2ad0ff2-4825-4c49-8acc-e582f7e3369c",
     "name": "Price Oracle",
-    "infraCategory": "Oracles",
+    "serviceCategory": "Oracles",
     "description": "",
     "appUrl": "https://oracle.autonolas.network/price",
     "marketingUrl": "https://www.autonolas.network/oracles",
@@ -22,7 +22,7 @@
   {
     "id": "56b12a1e-556f-40f9-9afe-4384f18ab391",
     "name": "AI Mechs",
-    "infraCategory": "AI",
+    "serviceCategory": "AI",
     "description": "",
     "appUrl": "https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91",
     "marketingUrl": "https://twitter.com/valoryag/status/1658869890625978373",
@@ -32,7 +32,7 @@
   {
     "id": "8fe553ea-a911-4e96-b101-18cbe17d6f16",
     "name": "ML APY Prediction Oracle",
-    "infraCategory": "Oracles",
+    "serviceCategory": "Oracles",
     "description": "",
     "appUrl": "https://oracle.autonolas.network/ml-apy-prediction",
     "marketingUrl": "https://www.autonolas.network/blog/introducing-the-ml-apy-oracle",
@@ -42,7 +42,7 @@
   {
     "id": "6b091d6e-79c7-4ffc-8372-aa673842a09d",
     "name": "Autonomous Fund",
-    "infraCategory": "DeFi",
+    "serviceCategory": "DeFi",
     "description": "",
     "appUrl": "https://gnosisscan.io/address/0x71ef1f10009d98fb4abef463af7bf2d8fb731366#code",
     "marketingUrl": "https://twitter.com/tannedoaksprout/status/1676634426476748800?s=20",
@@ -52,7 +52,7 @@
   {
     "id": "af6f2299-f489-4f49-a644-fe0df7105c5a",
     "name": "Governatooorr",
-    "infraCategory": "AI",
+    "serviceCategory": "AI",
     "description": "",
     "appUrl": "https://governatooorr.autonolas.network",
     "marketingUrl": "https://twitter.com/valoryag/status/1643670672521195523?s=20",
@@ -62,9 +62,9 @@
   {
     "id": "7881a40c-6f4e-47b2-90db-cb3a4bef3a82",
     "name": "El Collectooorr",
-    "infraCategory": "NFTs",
+    "serviceCategory": "NFTs",
     "description": "",
-    "appUrl": "https://app.elcollectooorr.art",
+    "appUrl": "https://elcollectooorr.art/vaults/latest",
     "marketingUrl": "https://elcollectooorr.art",
     "buildUrl": "https://docs.autonolas.network/product/mintkit/",
     "iconFilename": "el-collectooorr.svg"
@@ -72,7 +72,7 @@
   {
     "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
     "name": "Olas Contribute",
-    "infraCategory": "DAO Tooling",
+    "serviceCategory": "DAO Tooling",
     "description": "",
     "appUrl": "https://contribute.olas.network",
     "marketingUrl": "https://olas.network/contribute",
@@ -82,7 +82,7 @@
   {
     "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
     "name": "Olas Messaging",
-    "infraCategory": "Messaging",
+    "serviceCategory": "Messaging",
     "description": "",
     "appUrl": "https://open-aea.docs.autonolas.tech/acn",
     "marketingUrl": "https://www.autonolas.network/product/messagingkit",
@@ -92,7 +92,7 @@
   {
     "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
     "name": "Prediction Agents",
-    "infraCategory": "AI",
+    "serviceCategory": "AI",
     "description": "",
     "appUrl": "https://predictions.oaksprout.repl.co/",
     "marketingUrl": "https://hackathon.olas.network",

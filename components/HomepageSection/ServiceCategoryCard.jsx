@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   const filteredServices = services.filter((service) => {
-    return service.infraCategory.includes(serviceCategory.name);
+    return service.serviceCategory.includes(serviceCategory.name);
   });
 
   if (filteredServices.length > 0)
