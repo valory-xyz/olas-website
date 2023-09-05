@@ -2,33 +2,101 @@
   {
     "id": "c37e90d6-70db-453c-8a53-c289baabd25b",
     "name": "Autonomous Keeper Service",
-    "tags": ["Automation"],
+    "infraCategory": "Automation",
     "description": "",
-    "url": "https://etherscan.io/address/0x0a9a74274b1C30845aF98683Ca7F843795f6DFA6#writeContract",
+    "appUrl": "https://dune.com/adrian0x/aks",
+    "marketingUrl": "https://www.autonolas.network/product/autonomous-keeper-service ",
+    "buildUrl": "https://www.autonolas.network/product/keeperkit",
     "iconFilename": "autonomous-keeper-service.svg"
   },
   {
     "id": "e2ad0ff2-4825-4c49-8acc-e582f7e3369c",
     "name": "Price Oracle",
-    "tags": ["Oracles"],
+    "infraCategory": "Oracles",
     "description": "",
-    "url": "https://oracle.autonolas.network/price",
+    "appUrl": "https://oracle.autonolas.network/price",
+    "marketingUrl": "https://www.autonolas.network/oracles",
+    "buildUrl": "https://docs.autonolas.network/product/oraclekit/",
     "iconFilename": "price-oracle.svg"
   },
   {
     "id": "56b12a1e-556f-40f9-9afe-4384f18ab391",
     "name": "AI Mechs",
-    "tags": ["AI"],
+    "infraCategory": "AI",
     "description": "",
-    "url": "https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91",
+    "appUrl": "https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91",
+    "marketingUrl": "https://twitter.com/valoryag/status/1658869890625978373",
+    "buildUrl": "https://www.autonolas.network/product/mechkit",
     "iconFilename": "ai-mechs.svg"
   },
   {
     "id": "8fe553ea-a911-4e96-b101-18cbe17d6f16",
     "name": "ML APY Prediction Oracle",
-    "tags": ["Oracles"],
+    "infraCategory": "Oracles",
     "description": "",
-    "url": "https://oracle.autonolas.network/ml-apy-prediction",
+    "appUrl": "https://oracle.autonolas.network/ml-apy-prediction",
+    "marketingUrl": "https://www.autonolas.network/blog/introducing-the-ml-apy-oracle",
+    "buildUrl": "https://docs.autonolas.network/product/mlkit/",
     "iconFilename": "ml-apy-prediction-oracle.svg"
+  },
+  {
+    "id": "6b091d6e-79c7-4ffc-8372-aa673842a09d",
+    "name": "Autonomous Fund",
+    "infraCategory": "DeFi",
+    "description": "",
+    "appUrl": "https://gnosisscan.io/address/0x71ef1f10009d98fb4abef463af7bf2d8fb731366#code",
+    "marketingUrl": "https://twitter.com/tannedoaksprout/status/1676634426476748800?s=20",
+    "buildUrl": "https://www.autonolas.network/autonomous-asset-management-infra",
+    "iconFilename": "autonomous-fund.svg"
+  },
+  {
+    "id": "af6f2299-f489-4f49-a644-fe0df7105c5a",
+    "name": "Governatooorr",
+    "infraCategory": "AI",
+    "description": "",
+    "appUrl": "https://governatooorr.autonolas.network",
+    "marketingUrl": "https://twitter.com/valoryag/status/1643670672521195523?s=20",
+    "buildUrl": "https://www.autonolas.network/product/govkit",
+    "iconFilename": "governatooorr.svg"
+  },
+  {
+    "id": "7881a40c-6f4e-47b2-90db-cb3a4bef3a82",
+    "name": "El Collectooorr",
+    "infraCategory": "NFTs",
+    "description": "",
+    "appUrl": "https://app.elcollectooorr.art",
+    "marketingUrl": "https://elcollectooorr.art",
+    "buildUrl": "https://docs.autonolas.network/product/mintkit/",
+    "iconFilename": "el-collectooorr.svg"
+  },
+  {
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "name": "Olas Contribute",
+    "infraCategory": "DAO Tooling",
+    "description": "",
+    "appUrl": "https://contribute.olas.network",
+    "marketingUrl": "https://olas.network/contribute",
+    "buildUrl": "https://docs.autonolas.network/product/coordinationkit/",
+    "iconFilename": "contribute.svg"
+  },
+  {
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "name": "Olas Messaging",
+    "infraCategory": "Messaging",
+    "description": "",
+    "appUrl": "https://open-aea.docs.autonolas.tech/acn",
+    "marketingUrl": "https://www.autonolas.network/product/messagingkit",
+    "buildUrl": "https://www.autonolas.network/product/messagingkit",
+    "iconFilename": "acn.svg"
+  },
+  {
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "name": "Prediction Agents",
+    "infraCategory": "AI",
+    "description": "",
+    "appUrl": "https://predictions.oaksprout.repl.co/",
+    "marketingUrl": "https://hackathon.olas.network",
+    "buildUrl": "https://hackathon.olas.network",
+    "iconFilename": "prediction-agents.svg"
   }
 ]

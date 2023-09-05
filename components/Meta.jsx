@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const SITE_TITLE = "Olas";
+const SITE_TITLE = "Olas | Crypto's Ocean of Services";
 const SITE_DESCRIPTION = "The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents.";
 const SITE_URL = "https://olas.network";
 const SITE_IMAGE_PATH = `${SITE_URL}/images/meta-tag.png`;

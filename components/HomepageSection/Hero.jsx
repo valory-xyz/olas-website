@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
+import HeroImage from "./HeroImage";
 
 const Hero = () => {
   return (
@@ -24,7 +25,7 @@ const Hero = () => {
           </a>
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
-          <Image src="/images/hero.svg" alt="hero" width={834} height={742} className="mx-auto w-3/4 xl:w-full" />
+          <HeroImage />
         </div>
       </div>
     </SectionWrapper>
