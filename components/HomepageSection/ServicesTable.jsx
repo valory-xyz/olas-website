@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import services from "../../data/services.json";
 
+// This component is not yet used but will likely be useful in the future
 const ServicesTable = () => {
   return (
     <div className="overflow-x-auto border rounded-lg">

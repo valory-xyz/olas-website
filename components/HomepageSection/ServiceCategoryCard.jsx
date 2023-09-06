@@ -5,47 +5,45 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
     return service.serviceCategory.includes(serviceCategory.name);
   });
 
-  if (filteredServices.length > 0)
-    return (
-      <div className="border rounded mt-4">
-        <div className="border-b p-4">
-          <h2 className="font-bold text-2xl text-slate-700 align-bottom">
-            <span class="material-symbols-outlined">
-              {serviceCategory.iconName}
-            </span>{" "}
-            {serviceCategory.name}
-          </h2>
-          {/* <div className="text-slate-600 min-h-[45px]">{serviceCategory.description}</div> */}
-        </div>
-        <div className="p-4 min-h-[200px]">
+  return (
+    <div className="rounded mt-2 border p-4">
+      <div className="mb-2">
+        <h2 className="font-bold text-xl text-slate-700 align-bottom">
+          {serviceCategory.name}
+        </h2>
+      </div>
+      {filteredServices.length > 0 ? (
+        <div>
           {filteredServices.map((service) => {
             return (
               <div key={service.id} className="mb-2 flex items-center">
-                <Image
-                  src={`/images/services/${service.iconFilename}`}
-                  width={50}
-                  height={50}
-                  alt={service.name + " icon"}
-                  className="mr-2"
-                />
+                <a
+                  href={service.appUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <Image
+                    src={`/images/services/${service.iconFilename}`}
+                    width={75}
+                    height={75}
+                    alt={service.name + " icon"}
+                    className="mr-4 hover:-translate-y-[2px] transition-transform duration-200 ease-in-out"
+                  />
+                </a>
                 <div>
-                  {service.name}
+                  <div className="mb-1">
+                    <a
+                      href={service.appUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      className="text-purple-800 hover:text-slate-800"
+                    >
+                      {service.name}
+                    </a>
+                  </div>
                   <div className="text-slate-500">
-                    {service.appUrl && (
-                      <>
-                        <a
-                          href={service.appUrl}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Visit app
-                        </a>
-                      </>
-                    )}
                     {service.marketingUrl && (
                       <>
-                        {" "}
-                        ·{" "}
                         <a
                           href={service.marketingUrl}
                           rel="noopener noreferrer"
@@ -74,8 +72,20 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
             );
           })}
         </div>
-      </div>
-    );
+      ) : (
+        <div className="mb-2 flex items-center">
+          <Image
+            src={`/images/services/empty.svg`}
+            width={75}
+            height={75}
+            alt={"No services yet"}
+            className="mr-4"
+          />
+          <div className="text-slate-400">No services yet</div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ServiceCategoryCard;

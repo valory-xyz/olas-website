@@ -5,14 +5,14 @@
     "description": "Consume and implement autonomous AI services such as models and agents."
   },
   {
-    "id": "27f1fab5-71a6-4f34-bafb-0151fc4bf824",
-    "name": "Automation",
-    "description": "Automate smart contract tasks that cannot be achieved purely on the blockchain."
-  },
-  {
     "id": "85aadeb8-bf71-4f9a-9957-70a79e54a395",
     "name": "Oracles",
     "description": "Get data onto the blockchain in a robust way."
+  },
+  {
+    "id": "27f1fab5-71a6-4f34-bafb-0151fc4bf824",
+    "name": "Automation",
+    "description": "Automate smart contract tasks that cannot be achieved purely on the blockchain."
   },
   {
     "id": "531be08a-5f82-49c8-b573-43edc386b9fe",
@@ -30,7 +30,7 @@
     "description": "Autonomous services for decentralized finance."
   },
   {
-    "id": "c571e664-dd11-4530-b1b9-3bc27bf38b7e",
+    "id": "5f42dcc7-e206-46d6-ae7f-0fae6bb23d08",
     "name": "NFTs",
     "description": "Autonomous services for NFT collection, dynamic metadata etc."
   },
