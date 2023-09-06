@@ -1,0 +1,42 @@
+[
+  {
+    "id": "908f19dd-40c4-47ff-8f74-718a1a7f6b28",
+    "name": "AI",
+    "description": "Consume and implement autonomous AI services such as models and agents."
+  },
+  {
+    "id": "85aadeb8-bf71-4f9a-9957-70a79e54a395",
+    "name": "Oracles",
+    "description": "Get data onto the blockchain in a robust way."
+  },
+  {
+    "id": "27f1fab5-71a6-4f34-bafb-0151fc4bf824",
+    "name": "Automation",
+    "description": "Automate smart contract tasks that cannot be achieved purely on the blockchain."
+  },
+  {
+    "id": "531be08a-5f82-49c8-b573-43edc386b9fe",
+    "name": "Relayers",
+    "description": "Simplify the process of issuing transactions to the blockchain."
+  },
+  {
+    "id": "28316fc0-972a-4f7d-bfb4-184054266896",
+    "name": "Messaging",
+    "description": "Communicate between blockchains, autonomous services and users."
+  },
+  {
+    "id": "c571e664-dd11-4530-b1b9-3bc27bf38b7e",
+    "name": "DeFi",
+    "description": "Autonomous services for decentralized finance."
+  },
+  {
+    "id": "5f42dcc7-e206-46d6-ae7f-0fae6bb23d08",
+    "name": "NFTs",
+    "description": "Autonomous services for NFT collection, dynamic metadata etc."
+  },
+  {
+    "id": "5942d18e-7fec-4723-81f8-8a1b97e71276",
+    "name": "DAO Tooling",
+    "description": "Infra for truly autonomous DAOs."
+  }
+]

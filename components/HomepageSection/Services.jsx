@@ -1,12 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import services from "@/data/services.json";
+import serviceCategories from "@/data/serviceCategories.json";
 import core from "@/data/core.json";
-import apps from "@/data/apps.json";
 import chains from "@/data/chains.json";
 import Badge from "../Badge";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
+import ServiceCategoryCard from "./ServiceCategoryCard";
 
 const Item = ({ service, category }) => {
   return (
@@ -81,7 +82,7 @@ const CoreSubsection = () => {
 
 const ServicesSubsection = () => {
   return (
-    <section classNam>
+    <section id="services">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
@@ -89,50 +90,17 @@ const ServicesSubsection = () => {
               Services
             </h2>
 
-            <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600">
-              More and more infra services act as primitives for apps to build on and consume.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {services.map((service) => {
-              return (
-                <div key={service.id}>
-                  <Item service={service} category="services" />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const AppsSubsection = () => {
-  return (
-    <section>
-      <div className="max-w-screen-xl mb-12 mx-auto">
-        <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
-          <div>
-            <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
-              Apps
-            </h2>
-
-            <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600">
-              There is already a growing ecosystem of apps built on Olas,
-              consuming infra services.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {apps.map((app) => {
-              return (
-                <div key={app.id}>
-                  <Item service={app} category="apps" />
-                </div>
-              );
-            })}
+            <div className="grid sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+              {serviceCategories.map((serviceCategory) => {
+                return (
+                    <ServiceCategoryCard
+                      serviceCategory={serviceCategory}
+                      services={services}
+                      key={serviceCategory.id}
+                    />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -151,7 +119,9 @@ const ChainsSubsection = () => {
             </h2>
 
             <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
-              Olas Protocol is available on a growing list of chains. When Olas Protocol is deployed on a chain, it brings the power of Olas to that chain&apos;s ecosystem.
+              Olas Protocol is available on a growing list of chains. When Olas
+              Protocol is deployed on a chain, it brings the power of Olas to
+              that chain&apos;s ecosystem.
             </p>
           </div>
 
@@ -185,7 +155,6 @@ const Services = () => {
       </div>
       <CoreSubsection />
       <ServicesSubsection />
-      <AppsSubsection />
       <ChainsSubsection />
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
         For the most up to date lists,

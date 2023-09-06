@@ -11,7 +11,6 @@ import Content from '@/components/HomepageSection/Content'
 import Friends from '@/components/HomepageSection/Friends'
 import Contribute from '@/components/HomepageSection/Contribute'
 import PageWrapper from '@/components/Layout/PageWrapper'
-import Head from 'next/head'
 import Meta from '@/components/Meta'
 import Affordances from '@/components/HomepageSection/Affordances'
 
@@ -24,12 +23,12 @@ export default function Home() {
         <Meta />
         <Hero />
         <Affordances />
+        <Services />
         <ForDAOs />
         <ForDevs />
         <Flywheel />
         <OlasUtility />
         <Framework />
-        <Services />
         <AppShowcase />
         <Content />
         <Friends />
