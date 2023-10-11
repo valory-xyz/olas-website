@@ -6,7 +6,7 @@ import SectionHeading from "../SectionHeading";
 
 const Contracts = () => (
   <SectionWrapper
-    customClasses="border-b border-t px-8 py-12 lg:p-24"
+    customClasses="border-b border-t px-8 py-12 lg:p-24 text-black"
     backgroundType="SUBTLE_GRADIENT"
   >
     <div>
