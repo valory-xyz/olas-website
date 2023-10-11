@@ -27,7 +27,6 @@ export default function Home() {
         <ForDAOs />
         <ForDevs />
         <Flywheel />
-        <OlasUtility />
         <Framework />
         <AppShowcase />
         <Content />

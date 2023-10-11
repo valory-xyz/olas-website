@@ -1,5 +1,88 @@
 [
   {
+    "id": 65,
+    "attributes": {
+      "title": "OLAS Liquidity on Gnosis Chain",
+      "datePublished": "2023-07-19",
+      "subtitle": "OLAS-xDAI liquidity pool launched on Gnosis Chain",
+      "slug": "olas-liquidity-on-gnosis-chain",
+      "tags": ["bonding"],
+      "createdAt": "2023-10-11T13:16:54.723Z",
+      "updatedAt": "2023-10-11T15:34:50.226Z",
+      "publishedAt": "2023-10-11T13:29:19.323Z",
+      "headerImage": {
+        "data": [
+          {
+            "id": 295,
+            "attributes": {
+              "name": "New_OLAS_LP_346220c5aa.png",
+              "alternativeText": "OLAS LP",
+              "caption": "OLAS LP Header",
+              "width": 1600,
+              "height": 900,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_New_OLAS_LP_346220c5aa.png",
+                  "hash": "large_New_OLAS_LP_346220c5aa",
+                  "mime": "image/png",
+                  "name": "large_Announcement_(4).png",
+                  "path": null,
+                  "size": 591.91,
+                  "width": 1000,
+                  "height": 563
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "/uploads/small_New_OLAS_LP_346220c5aa.png",
+                  "hash": "small_New_OLAS_LP_346220c5aa",
+                  "mime": "image/png",
+                  "name": "small_Announcement_(4).png",
+                  "path": null,
+                  "size": 159.34,
+                  "width": 500,
+                  "height": 281
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "/uploads/medium_New_OLAS_LP_346220c5aa.png",
+                  "hash": "medium_New_OLAS_LP_346220c5aa",
+                  "mime": "image/png",
+                  "name": "medium_Announcement_(4).png",
+                  "path": null,
+                  "size": 343.13,
+                  "width": 750,
+                  "height": 422
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "/uploads/thumbnail_New_OLAS_LP_346220c5aa.png",
+                  "hash": "thumbnail_New_OLAS_LP_346220c5aa",
+                  "mime": "image/png",
+                  "name": "thumbnail_Announcement_(4).png",
+                  "path": null,
+                  "size": 42.63,
+                  "width": 245,
+                  "height": 138
+                }
+              },
+              "hash": "Announcement_4_b96f38dc60",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 377.8,
+              "url": "/uploads/Announcement_4_b96f38dc60.png",
+              "previewUrl": null,
+              "provider": "local",
+              "provider_metadata": null,
+              "createdAt": "2023-07-19T13:21:43.981Z",
+              "updatedAt": "2023-07-19T13:21:43.981Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": 64,
     "attributes": {
       "title": "Attracting code via developer rewards",

@@ -5,10 +5,8 @@
     "description": "Unlock protocol functionality with the network token.",
     "cta": {
       "buttonText": "Get OLAS",
-      "url": "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0",
-      "external": true
+      "url": "/olas-token"
     },
-    "learnMoreUrl": "/#olas-token",
     "imageFilename": "olas-token.svg"
   },
   {
