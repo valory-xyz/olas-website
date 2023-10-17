@@ -1,5 +1,85 @@
 [
   {
+    "id": 66,
+    "attributes": {
+      "title": "New Bonding Products on Gnosis Chain Proposed",
+      "datePublished": "2023-10-16",
+      "subtitle": "",
+      "slug": "new-bonding-products-on-gnosis-chain-proposed",
+      "tags": ["bonding"],
+      "headerImage": {
+        "data": [
+          {
+            "id": 295,
+            "attributes": {
+              "name": "Product_Shot_with_text_7_a6710f4495.png",
+              "alternativeText": "OLAS LP",
+              "caption": "OLAS LP Header",
+              "width": 1600,
+              "height": 900,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "/uploads/large_Product_Shot_with_text_7_a6710f4495.png",
+                  "hash": "large_Product_Shot_with_text_7_a6710f4495",
+                  "mime": "image/png",
+                  "name": "large_Announcement_(4).png",
+                  "path": null,
+                  "size": 591.91,
+                  "width": 1000,
+                  "height": 563
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "/uploads/small_Product_Shot_with_text_7_a6710f4495.png",
+                  "hash": "small_Product_Shot_with_text_7_a6710f4495",
+                  "mime": "image/png",
+                  "name": "small_Announcement_(4).png",
+                  "path": null,
+                  "size": 159.34,
+                  "width": 500,
+                  "height": 281
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "/uploads/medium_Product_Shot_with_text_7_a6710f4495.png",
+                  "hash": "medium_Product_Shot_with_text_7_a6710f4495",
+                  "mime": "image/png",
+                  "name": "medium_Announcement_(4).png",
+                  "path": null,
+                  "size": 343.13,
+                  "width": 750,
+                  "height": 422
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "/uploads/thumbnail_Product_Shot_with_text_7_a6710f4495.png",
+                  "hash": "thumbnail_Product_Shot_with_text_7_a6710f4495",
+                  "mime": "image/png",
+                  "name": "thumbnail_Announcement_(4).png",
+                  "path": null,
+                  "size": 42.63,
+                  "width": 245,
+                  "height": 138
+                }
+              },
+              "hash": "Announcement_4_b96f38dc60",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 377.8,
+              "url": "/uploads/Announcement_4_b96f38dc60.png",
+              "previewUrl": null,
+              "provider": "local",
+              "provider_metadata": null,
+              "createdAt": "2023-07-19T13:21:43.981Z",
+              "updatedAt": "2023-07-19T13:21:43.981Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": 65,
     "attributes": {
       "title": "OLAS Liquidity on Gnosis Chain",
@@ -7,9 +87,6 @@
       "subtitle": "OLAS-xDAI liquidity pool launched on Gnosis Chain",
       "slug": "olas-liquidity-on-gnosis-chain",
       "tags": ["bonding"],
-      "createdAt": "2023-10-11T13:16:54.723Z",
-      "updatedAt": "2023-10-11T15:34:50.226Z",
-      "publishedAt": "2023-10-11T13:29:19.323Z",
       "headerImage": {
         "data": [
           {
