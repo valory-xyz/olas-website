@@ -19,7 +19,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emission Schedule</h2>
               <p className="text-slate-500">
-                How are OLAS tokens minted over time?
+                How are OLAS tokens minted by the protocol over time?
               </p>
             </div>
             <div className="p-4 border-b">
@@ -389,8 +389,8 @@ const Supply = () => {
                 protocol&apos;s first 10 years.
               </p>
               <p className="mb-4">
-                After year 10, an additional 2% is minted each year. This 2%
-                inflation rate can be adjusted by the DAO.
+                After year 10, an additional 2% can be minted each year. This 2%
+                inflation rate can be reduced by the DAO.
               </p>
               <p className="mb-0 text-slate-500">
                 To verify this schedule, call{" "}
