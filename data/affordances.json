@@ -7,7 +7,9 @@
       "buttonText": "Get OLAS",
       "url": "/olas-token"
     },
-    "imageFilename": "olas-token.svg"
+    "imageFilename": "olas-token.svg",
+    "learnMoreUrl": "/olas-token#supply"
+
   },
   {
     "id": "dd6a8bd7-3919-4d77-9a8a-843773d951cc",

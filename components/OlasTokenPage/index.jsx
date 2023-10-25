@@ -7,7 +7,7 @@ import SectionHeading from "../SectionHeading";
 
 const Supply = () => {
   return (
-    <div className="text-black border-b">
+    <div className="text-black border-b" id="supply">
       <SectionWrapper>
         <div className="text-5xl font-bold font-manrope tracking-tight mb-12 text-black text-center">
           Supply
