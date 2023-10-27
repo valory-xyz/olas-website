@@ -78,5 +78,13 @@
     "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["contribute"]
+  },
+  {
+    "id": "7e4c07b9-3572-4d6d-9359-2b5499c520b8",
+    "title": "Roadmap",
+    "description": "What's coming up for Olas",
+    "url": "https://contribute.olas.network/roadmap",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["contribute"]
   }
 ]

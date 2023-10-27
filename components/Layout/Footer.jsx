@@ -43,7 +43,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Twitter
+              Twitter ↗
             </a>
           </li>
           <li>
@@ -53,7 +53,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Discord
+              Discord ↗
             </a>
           </li>
           <li>
@@ -63,7 +63,17 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Coingecko
+              Coingecko ↗
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://contribute.olas.network/roadmap"
+              class="ml-4 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Roadmap ↗
             </a>
           </li>
         </ul>
