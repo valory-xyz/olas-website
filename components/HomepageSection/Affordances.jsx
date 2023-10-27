@@ -8,30 +8,38 @@ import { Button } from "../Button";
 
 const Item = ({ affordance, category }) => {
   return (
-    <div
-      className="rounded-xl border border-gray-300 shadow-sm "
-    >
-      <SectionWrapper
-        customClasses="rounded-t-xl border-t-0"
-        backgroundType="SUBTLE_GRADIENT"
-      >
+    <div className="rounded-xl border border-gray-300 shadow-sm">
+      <div className="border-b">
         <Image
           src={`/images/${category}/${affordance.imageFilename}`}
           alt={affordance.name}
           width={450}
           height={200}
-          className="mx-auto p-2 border-b"
+          className="mx-auto p-2"
         />
-      </SectionWrapper>
+      </div>
       <div className="p-4 md:p-6 lg:p-4">
         <h2 className="mb-2 font-bold text-2xl text-gray-700">
           {affordance.title}
         </h2>
 
-        <div className="mb-2 min-h-[55px] text-slate-800">{affordance.description}</div>
+        <div className="mb-2 min-h-[55px] text-slate-800">
+          {affordance.description}
+        </div>
 
-      <Button size="md" className="mr-2" href={affordance.cta.url} isExternal={affordance.cta.external}>{affordance.cta.buttonText}</Button>
-      {affordance.learnMoreUrl && <Button size="md" href={affordance.learnMoreUrl} type="secondary">Learn more</Button>}
+        <Button
+          size="md"
+          className="mr-2"
+          href={affordance.cta.url}
+          isExternal={affordance.cta.external}
+        >
+          {affordance.cta.buttonText}
+        </Button>
+        {affordance.learnMoreUrl && (
+          <Button size="md" href={affordance.learnMoreUrl} type="secondary">
+            Learn more
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -62,9 +70,7 @@ const Affordances = () => {
     <SectionWrapper>
       <div id="get-involved" />
       <div className="text-center">
-        <SectionHeading color="text-slate-700">
-          Get Involved
-        </SectionHeading>
+        <SectionHeading color="text-slate-700">Get Involved</SectionHeading>
       </div>
       <CoreSubsection />
     </SectionWrapper>
