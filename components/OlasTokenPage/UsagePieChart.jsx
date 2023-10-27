@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Web3 from "web3";
-import contractAbi from "../../data/ABIs/TokenomicsProxy.json";
 import Link from "next/link";
-import dayjs from "dayjs";
 import { Pie } from "react-chartjs-2";
 import { Chart, ArcElement } from "chart.js";
 import Verify from "../Verify";
@@ -11,7 +8,7 @@ import { TEXT_GRADIENT } from ".";
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-const UsagePieChart = ({ epoch, split }) => {
+const UsagePieChart = ({ epoch, split, loading }) => {
   return (
     <>
       <div>
@@ -21,7 +18,8 @@ const UsagePieChart = ({ epoch, split }) => {
           </h2>
           <div className="text-4xl font-extrabold">
             <span className={TEXT_GRADIENT}>
-              {epoch && epoch.toString()}
+              {loading && "--"}
+              {!loading && epoch?.toString()}
             </span>
           </div>
           <div className="mb-4">
@@ -38,7 +36,7 @@ const UsagePieChart = ({ epoch, split }) => {
           </h2>
           <div className="text-center mb-4">
             <span className="text-cyan-500 font-bold">
-              {split?.developers}%
+              {loading ? "--" : split?.developers}%
             </span>{" "}
             of new tokens go to{" "}
             <Link href="/dev-rewards" className="text-cyan-500 font-bold">
@@ -46,25 +44,33 @@ const UsagePieChart = ({ epoch, split }) => {
             </Link>
           </div>
           <div className="mb-4 max-w-[300px] mx-auto">
-            <Pie
-              data={{
-                labels: ["Developers", "Bonders"],
-                datasets: [
-                  {
-                    data: [split.developers, split.bonders],
-                    backgroundColor: ["#cffafe", "#a855f7"],
-                    hoverBackgroundColor: ["#cffafe", "#a855f7"],
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-              }}
-            />
+            {loading ? (
+              <div className="text-center">
+              Loading...
+              </div>
+            ) : (
+              <Pie
+                data={{
+                  labels: ["Developers", "Bonders"],
+                  datasets: [
+                    {
+                      data: [split.developers, split.bonders] || [0,0],
+                      backgroundColor: ["#cffafe", "#a855f7"],
+                      hoverBackgroundColor: ["#cffafe", "#a855f7"],
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                }}
+              />
+            )}
           </div>
           <div className="text-center mb-4">
-            <span className="text-purple-600 font-bold">{split?.bonders}%</span>{" "}
+            <span className="text-purple-600 font-bold">
+              {loading ? "--" : split?.bonders}%
+            </span>{" "}
             of new tokens go to{" "}
             <Link href="/bonds" className="text-purple-600 font-bold">
               Bonders
