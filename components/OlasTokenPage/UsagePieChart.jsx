@@ -19,7 +19,6 @@ const UsagePieChart = ({ epoch, split, loading }) => {
           <div className="text-4xl font-extrabold">
             <span className={TEXT_GRADIENT}>
               {loading ? "--" : epoch?.toString()}
-              {!loading && }
             </span>
           </div>
           <div className="mb-4">

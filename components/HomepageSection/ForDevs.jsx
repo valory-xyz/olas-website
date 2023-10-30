@@ -7,11 +7,11 @@ function ForDevs() {
       <div className="p-2 mx-auto max-w-screen-2xl lg:p-24">
         <div className="relative z-10 bg-white lg:py-24 py-8 px-4 text-center lg:rounded-2xl shadow-2xl">
           <div>
-            <SectionHeading color="text-purple-900">
+            <h2 className="text-purple-900 text-5xl mb-8 font-extrabold">
             Liquidity mining,
               <br />
               but for code
-            </SectionHeading>
+            </h2>
             <Image
               alt="Dev incentives diagram"
               src="/images/ForDevs.svg"
@@ -27,10 +27,10 @@ function ForDevs() {
               className="mx-auto mb-12 md:hidden"
             />
           </div>
-          <h3 className="text-2xl text-gray-600 mb-12">
+          <h3 className="text-xl font-light text-gray-600 mb-6">
             Devs can receive rewards when they contribute service code.
           </h3>
-          <p className="text-2xl text-gray-600">
+          <p className="text-xl font-light text-gray-600">
             Better contributions, more rewards.
           </p>
         </div>

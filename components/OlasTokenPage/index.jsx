@@ -33,6 +33,9 @@ const BACKUP_INFLATION_FOR_YEAR = [
 export const TEXT_GRADIENT =
   "bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400";
 
+const contractAddress = "0xc096362fa6f4A4B1a9ea68b1043416f3381ce300";
+const providerUrl = 'https://ethereum.publicnode.com';
+
 const Supply = () => {
   const [epoch, setEpoch] = useState(null);
   const [split, setSplit] = useState({});
@@ -44,8 +47,7 @@ const Supply = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const web3 = new Web3(window.ethereum);
-      const contractAddress = "0xc096362fa6f4A4B1a9ea68b1043416f3381ce300";
+      const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
       const contractInstance = new web3.eth.Contract(
         contractAbi,
@@ -64,7 +66,7 @@ const Supply = () => {
             .getInflationForYear(i)
             .call();
           // Convert result from wei to eth
-          inflationForYear[i] = web3.utils.fromWei(result.toString(), "ether");
+          inflationForYear.push(web3.utils.fromWei(result.toString(), "ether"));
         } catch (error) {
           console.error(`Error in getInflationForYear for year ${i}:`, error);
         }
@@ -83,7 +85,9 @@ const Supply = () => {
       const result = await contractInstance.methods
         .mapEpochTokenomics(epoch)
         .call();
+      // 6 is the index of the bonders % value
       const bonders = Number(result["6"]);
+      // subtract bonders % from 100 to get developers %
       const developers = 100 - bonders;
       setSplit({
         bonders,
@@ -93,17 +97,20 @@ const Supply = () => {
       setLoading(false);
     };
 
-    fetchData();
+    try {
+      fetchData();
+    } catch (error) {
+      notifyError('Could not get data');
+      console.error('Error fetching data:', error);
+    }
   }, []);
 
   return (
     <div className="text-black border-b" id="supply">
       <SectionWrapper>
-        <div className="text-5xl font-bold font-manrope tracking-tight mb-12 text-black text-center">
+        <div className="text-5xl font-bold font-manrope mb-4 tracking-tight text-black text-center">
           Supply
         </div>
-
-        {/* Emission Schedule */}
         <div className="grid lg:grid-cols-2 gap-8 mb-24">
           <div className="border rounded-lg mb-12 lg:mb-0">
             <div className="p-4 border-b">
@@ -130,7 +137,7 @@ const Supply = () => {
                 </h2>
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
-                    {loading ? '--' : currentYear?.toString()}
+                    {loading ? '--' : Number(currentYear)}
                   </span>
                 </div>
                 <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F9" />
@@ -144,13 +151,14 @@ const Supply = () => {
                 {loading ? 'Loading...' :
                 <Bar
                   data={{
-                    labels: inflationForYear.map((_, index) => `${index + 1}`),
+                    labels: inflationForYear.map((_, index) => index),
                     datasets: [
                       {
                         label: "Inflation",
                         data: inflationForYear || BACKUP_INFLATION_FOR_YEAR,
-                        backgroundColor: "#a855f7",
                         borderWidth: 0,
+                        // #a855f7 is Tailwind's purple-500 – our primary brand color
+                        backgroundColor: "#a855f7",
                         hoverBackgroundColor: "#a855f7",
                         hoverBorderColor: "#a855f7",
                       },
@@ -187,7 +195,7 @@ const Supply = () => {
 
               <p className="mb-4">
                 A maximum of 1bn OLAS tokens can be minted in the
-                protocol&apos;s first 10 years. The schedule started
+                protocol&apos;s first 10 years.
               </p>
               <p className="mb-4">
                 After year 10, an additional 2% can be minted each year. This 2%
