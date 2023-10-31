@@ -21,16 +21,16 @@ const AppShowcase = () => {
           className="my-8 rounded-xl border-2 border-pink-500 shadow-lg"
         />
         <div>
-          <p className="text-2xl md:text-3xl lg:text-2xl text-gray-600 mb-4">
+          <p className="text-xl font-light text-gray-600 mb-4">
             Governatooorr is the world&apos;s first autonomous, AI-powered
             governor.
           </p>
-          <p className="text-2xl md:text-3xl lg:text-2xl text-gray-600">
+          <p className="text-xl font-light text-gray-600">
             Governatooorr depends on an Olas service that automatically assesses
             DAO proposals and votes according to delegator preferences.{" "}
             <a
               href="https://twitter.com/valoryag/status/1643670672521195523"
-              className="text-link text-pink-500"
+              className="text-link underline underline-offset-2"
               target="_blank"
               rel="noopener noreferrer"
             >

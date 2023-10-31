@@ -19,15 +19,15 @@ function ForDAOs() {
           </div>
           <SectionWrapper customClasses="relative flex items-center bg-gray-50">
             <div className="p-8 sm:p-16 lg:p-24 text-center lg:text-left">
-            <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-7xl lg:mb-6">A new wind for your sails</SectionHeading>
-              <h3 className="text-3xl font-light tracking-tight text-gray-600 leading-normal sm:mb-8 ">
+            <h2 className="text-5xl text-slate-800 font-extrabold lg:mb-6">A new wind for your sails</h2>
+              <h3 className="text-xl font-light text-gray-600 leading-normal sm:mb-8 ">
                 Olas delivers a novel staking model for your favorite
                 projects&apos; tokens.
               </h3>
-              <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal sm:mb-8 ">
+              <p className="text-xl font-light text-gray-600 leading-normal sm:mb-8 ">
                 DAOs compose services and power them with their own token.
               </p>
-              <p className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-8 ">When DAOs win, Olas wins.</p>
+              <p className="text-xl font-light text-gray-600 leading-normal mb-8 ">When DAOs win, Olas wins.</p>
               <Image
                 src="/images/loves.svg"
                 alt="Olas loves your token"

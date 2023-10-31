@@ -16,30 +16,20 @@ const Item = ({ service, category }) => {
       href={service.url}
     >
       <SectionWrapper
-        customClasses="rounded-t-xl border-t-0"
-        backgroundType="SUBTLE_GRADIENT"
+        customClasses="rounded-t-xl border-t-0 border-b"
       >
         <Image
           src={`/images/${category}/${service.iconFilename}`}
           alt={service.name}
-          width={450}
-          height={200}
+          width={300}
+          height={300}
           className="mx-auto p-2"
         />
       </SectionWrapper>
       <div className="p-4 md:p-6 lg:p-4">
-        <h2 className="mb-2 font-bold text-2xl text-gray-700">
+        <h2 className="font-bold text-xl text-gray-700">
           {service.name}
         </h2>
-
-        {service?.tags?.length > 0 &&
-          service.tags.map((tag) => {
-            return (
-              <div key={service.id + tag}>
-                <Badge>{tag}</Badge>
-              </div>
-            );
-          })}
       </div>
       {service.description && (
         <p className="hidden sm:mt-1 sm:block sm:text-sm sm:text-gray-600">
@@ -56,7 +46,7 @@ const CoreSubsection = () => {
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
-            <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
+            <h2 className="text-3xl font-bold">
               Core
             </h2>
 
@@ -86,7 +76,7 @@ const ServicesSubsection = () => {
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
-            <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
+            <h2 className="text-3xl font-bold mb-2">
               Services
             </h2>
 
@@ -114,11 +104,11 @@ const ChainsSubsection = () => {
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
-            <h2 className="text-3xl font-light tracking-tight text-gray-600 leading-normal">
+            <h2 className="text-3xl font-bold mb-2">
               Chains
             </h2>
 
-            <p className="mt-4 text-xl md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
+            <p className="mt-4 text-xl font-light md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
               Olas Protocol is available on a growing list of chains. When Olas
               Protocol is deployed on a chain, it brings the power of Olas to
               that chain&apos;s ecosystem.
@@ -145,10 +135,10 @@ const Services = () => {
     <SectionWrapper>
       <div id="ecosystem" />
       <div className="text-center">
-        <SectionHeading color="text-purple-950">
+        <SectionHeading spacing="mb-6" color="text-purple-950">
           Already making waves
         </SectionHeading>
-        <div className=" text-3xl font-light tracking-tight text-gray-600 leading-normal mx-auto mb-12 lg:w-3/4">
+        <div className=" text-xl font-light text-gray-600 mx-auto mb-12 lg:w-2/4">
           Olas&apos; core protocol is live. Many services are in production and
           being used by an emerging app ecosystem.
         </div>
@@ -156,7 +146,7 @@ const Services = () => {
       <CoreSubsection />
       <ServicesSubsection />
       <ChainsSubsection />
-      <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal text-center">
+      <div className="text-xl font-light text-gray-600 text-center">
         For the most up to date lists,
         <br />
         check out the community-maintained{" "}
