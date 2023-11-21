@@ -94,5 +94,13 @@
     "url": "https://contribute.olas.network/calendar",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["contribute"]
+  },
+  {
+    "id": "bb94f531-11f5-47d8-9150-73a1da37daef",
+    "title": "FAQ",
+    "description": "Get answers to common questions",
+    "url": "/faq",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]
