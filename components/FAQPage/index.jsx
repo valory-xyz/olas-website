@@ -12,7 +12,7 @@ const Question = ({ text, children }) => {
 
 const FAQPage = () => {
   return (
-    <div className="p-4 max-w-screen-sm mx-auto">
+    <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
       <h1 className="text-5xl font-extrabold mb-12 text-slate-800 ">FAQ</h1>
       <Question text="What is Olas?">
         A unified network of off-chain services – like automation, oracles, and co-owned AI. Olas offers a composable stack for building these services, and a protocol for incentivizing their creation. Olas enables operating these services in a co-owned and decentralized way.
