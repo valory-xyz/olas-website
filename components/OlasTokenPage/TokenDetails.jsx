@@ -50,7 +50,7 @@ const TOKEN_DETAILS = [
   },
 ];
 
-const Contracts = () => (
+export const TokenDetails = () => (
   <>
     <a id="get-olas" />
     <SectionWrapper
@@ -62,7 +62,7 @@ const Contracts = () => (
           size="text-3xl sm:text-5xl lg:text-3xl xl:text-4xl lg:mb-10 text-center font-bold"
           color="text-black"
         >
-          Get OLAS
+          Token Details
         </SectionHeading>
         <div className="hidden md:block">
           <table className="table-auto w-full mt-6">
@@ -169,5 +169,3 @@ const Contracts = () => (
     </SectionWrapper>
   </>
 );
-
-export default Contracts;
