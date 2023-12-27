@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Hero from "./Hero";
-import Contracts from "./Contracts";
+import { TokenDetails } from "./TokenDetails";
 import OlasUtility from "../HomepageSection/OlasUtility";
 import SectionWrapper from "../Layout/SectionWrapper";
 import Web3 from "web3";
@@ -27,14 +27,14 @@ const BACKUP_INFLATION_FOR_YEAR = [
   "33293668.6",
   "20000000",
   "20400000",
-  "20808000"
-]
+  "20808000",
+];
 
 export const TEXT_GRADIENT =
   "bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400";
 
 const contractAddress = "0xc096362fa6f4A4B1a9ea68b1043416f3381ce300";
-const providerUrl = 'https://ethereum.publicnode.com';
+const providerUrl = "https://ethereum.publicnode.com";
 
 const Supply = () => {
   const [epoch, setEpoch] = useState(null);
@@ -100,8 +100,8 @@ const Supply = () => {
     try {
       fetchData();
     } catch (error) {
-      notifyError('Could not get data');
-      console.error('Error fetching data:', error);
+      notifyError("Could not get data");
+      console.error("Error fetching data:", error);
     }
   }, []);
 
@@ -126,7 +126,9 @@ const Supply = () => {
                 </h2>
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
-                    {loading ? '--' : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
+                    {loading
+                      ? "--"
+                      : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
                   </span>
                 </div>
                 <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F40" />
@@ -137,7 +139,7 @@ const Supply = () => {
                 </h2>
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
-                    {loading ? '--' : Number(currentYear)}
+                    {loading ? "--" : Number(currentYear)}
                   </span>
                 </div>
                 <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F9" />
@@ -148,49 +150,52 @@ const Supply = () => {
                 Emissions Per Year
               </h2>
               <div className="mb-4">
-                {loading ? 'Loading...' :
-                <Bar
-                  data={{
-                    labels: inflationForYear.map((_, index) => index),
-                    datasets: [
-                      {
-                        label: "Inflation",
-                        data: inflationForYear || BACKUP_INFLATION_FOR_YEAR,
-                        borderWidth: 0,
-                        // #a855f7 is Tailwind's purple-500 – our primary brand color
-                        backgroundColor: "#a855f7",
-                        hoverBackgroundColor: "#a855f7",
-                        hoverBorderColor: "#a855f7",
-                      },
-                    ],
-                  }}
-                  options={{
-                    scales: {
-                      x: {
-                        title: {
-                          display: true,
-                          text: "Year",
+                {loading ? (
+                  "Loading..."
+                ) : (
+                  <Bar
+                    data={{
+                      labels: inflationForYear.map((_, index) => index),
+                      datasets: [
+                        {
+                          label: "Inflation",
+                          data: inflationForYear || BACKUP_INFLATION_FOR_YEAR,
+                          borderWidth: 0,
+                          // #a855f7 is Tailwind's purple-500 – our primary brand color
+                          backgroundColor: "#a855f7",
+                          hoverBackgroundColor: "#a855f7",
+                          hoverBorderColor: "#a855f7",
                         },
-                        gridLines: {
-                          color: "white",
+                      ],
+                    }}
+                    options={{
+                      scales: {
+                        x: {
+                          title: {
+                            display: true,
+                            text: "Year",
+                          },
+                          gridLines: {
+                            color: "white",
+                          },
                         },
-                      },
-                      y: {
-                        // Y-axis configuration
-                        title: {
-                          display: true,
-                          text: "OLAS Emitted",
-                        },
-                        ticks: {
-                          callback: function (value, index, values) {
-                            // Format y-axis numbers as 20m, not 20,000,000
-                            return value / 1000000 + "m";
+                        y: {
+                          // Y-axis configuration
+                          title: {
+                            display: true,
+                            text: "OLAS Emitted",
+                          },
+                          ticks: {
+                            callback: function (value, index, values) {
+                              // Format y-axis numbers as 20m, not 20,000,000
+                              return value / 1000000 + "m";
+                            },
                           },
                         },
                       },
-                    },
-                  }}
-                />}
+                    }}
+                  />
+                )}
               </div>
 
               <p className="mb-4">
@@ -266,9 +271,9 @@ const OlasToken = () => {
   return (
     <>
       <Hero />
+      <TokenDetails />
       <Supply />
       <OlasUtility />
-      <Contracts />
     </>
   );
 };

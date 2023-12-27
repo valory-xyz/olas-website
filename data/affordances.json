@@ -5,11 +5,10 @@
     "description": "Unlock protocol functionality with the network token.",
     "cta": {
       "buttonText": "Get OLAS",
-      "url": "/olas-token"
+      "url": "/olas-token#get-olas"
     },
     "imageFilename": "olas-token.svg",
     "learnMoreUrl": "/olas-token#supply"
-
   },
   {
     "id": "dd6a8bd7-3919-4d77-9a8a-843773d951cc",
