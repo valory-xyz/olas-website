@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Hero from "./Hero";
-import Contracts from "./Contracts";
+import GetOLAS from "./GetOLAS";
 import OlasUtility from "../HomepageSection/OlasUtility";
 import SectionWrapper from "../Layout/SectionWrapper";
 import Web3 from "web3";
@@ -266,9 +266,9 @@ const OlasToken = () => {
   return (
     <>
       <Hero />
+      <GetOLAS />
       <Supply />
       <OlasUtility />
-      <Contracts />
     </>
   );
 };
