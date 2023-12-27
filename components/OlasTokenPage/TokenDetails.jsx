@@ -27,7 +27,7 @@ const TOKEN_DETAILS = [
   },
   {
     network: "Gnosis",
-    address: "0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f",
+    address: "0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f",
     explorerBaseUrl: "https://gnosisscan.io/token/",
     exchange: {
       name: "Balancer",
@@ -37,7 +37,7 @@ const TOKEN_DETAILS = [
   },
   {
     network: "Polygon",
-    address: "0xfef5d947472e72efbb2e388c730b7428406f2f95",
+    address: "0xFEF5d947472e72Efbb2E388c730B7428406F2F95",
     explorerBaseUrl: "https://polygonscan.com/token/",
     exchange: null,
     bridge: {
