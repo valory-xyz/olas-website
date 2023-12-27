@@ -102,5 +102,13 @@
     "url": "/faq",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "36e2bab3-1ba7-48a5-9537-afa8516f72e1",
+    "title": "Dev Academy Videos",
+    "description": "The what, why and how of becoming an Olas developer",
+    "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["build"]
   }
 ]
