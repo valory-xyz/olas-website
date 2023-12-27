@@ -18,6 +18,7 @@ const TOKEN_DETAILS = [
   {
     network: "Ethereum",
     address: "0x0001A500A6B18995B03f44bb040A5fFc28E45CB0",
+    explorerBaseUrl: "https://etherscan.io/token/",
     exchange: {
       name: "Uniswap",
       url: "https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0",
@@ -27,6 +28,7 @@ const TOKEN_DETAILS = [
   {
     network: "Gnosis",
     address: "0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f",
+    explorerBaseUrl: "https://gnosisscan.io/token/",
     exchange: {
       name: "Balancer",
       url: "https://app.balancer.fi/#/gnosis-chain/pool/0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067",
@@ -36,6 +38,7 @@ const TOKEN_DETAILS = [
   {
     network: "Polygon",
     address: "0xfef5d947472e72efbb2e388c730b7428406f2f95",
+    explorerBaseUrl: "https://polygonscan.com/token/",
     exchange: null,
     bridge: {
       name: "POS Bridge",
@@ -45,6 +48,7 @@ const TOKEN_DETAILS = [
   {
     network: "Solana",
     address: "Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM",
+    explorerBaseUrl: "https://solscan.io/token/",
     exchange: null,
     bridge: { name: "Portal", url: "https://portalbridge.com/" },
   },
@@ -93,7 +97,7 @@ export const TokenDetails = () => (
                   </td>
                   <td className="border px-4 py-4">
                     <a
-                      href={`https://etherscan.io/token/${token.address}`}
+                      href={`${token.explorerBaseUrl}${token.address}`}
                       title={token.address}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -140,7 +144,7 @@ export const TokenDetails = () => (
               <p>
                 <strong>Token Address:</strong>{" "}
                 <a
-                  href={`https://etherscan.io/token/${token.address}`}
+                  href={`${token.explorerBaseUrl}${token.address}`}
                   title={token.address}
                   target="_blank"
                   rel="noopener noreferrer"
