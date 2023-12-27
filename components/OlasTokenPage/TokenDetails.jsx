@@ -54,6 +54,9 @@ const TOKEN_DETAILS = [
   },
 ];
 
+const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
+
+
 export const TokenDetails = () => (
   <>
     <a id="get-olas" />
@@ -79,7 +82,9 @@ export const TokenDetails = () => (
               </tr>
             </thead>
             <tbody>
-              {TOKEN_DETAILS.map((token, index) => (
+              {TOKEN_DETAILS.map((token, index) => {
+                const explorerUrl = generateExplorerUrl(token);
+                return (
                 <tr key={index}>
                   <td className="border px-4 py-4">{token.network}</td>
                   <td className="border px-4 py-4">
@@ -95,14 +100,14 @@ export const TokenDetails = () => (
                       "TBD"
                     )}
                   </td>
-                  <td className="border px-4 py-4">
+                  <td className="border px-4 py-4 break-all">
                     <a
-                      href={`${token.explorerBaseUrl}${token.address}`}
+                      href={explorerUrl}
                       title={token.address}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {truncateAddress(token.address)} ↗
+                      {explorerUrl} ↗
                     </a>
                   </td>
                   <td className="border px-4 py-4">
@@ -119,12 +124,14 @@ export const TokenDetails = () => (
                     )}
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>
         <div className="md:hidden flex flex-col space-y-4">
-          {TOKEN_DETAILS.map((token, index) => (
+          {TOKEN_DETAILS.map((token, index) => {
+            const explorerUrl = generateExplorerUrl(token);
+            return (
             <div key={index} className="border p-4 rounded">
               <h3 className="font-bold mb-2">{token.network}</h3>
               <p>
@@ -144,7 +151,7 @@ export const TokenDetails = () => (
               <p>
                 <strong>Token Address:</strong>{" "}
                 <a
-                  href={`${token.explorerBaseUrl}${token.address}`}
+                  href={explorerUrl}
                   title={token.address}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -167,7 +174,7 @@ export const TokenDetails = () => (
                 )}
               </p>
             </div>
-          ))}
+          )})}
         </div>
       </div>
     </SectionWrapper>
