@@ -52,7 +52,10 @@ const TOKEN_DETAILS = [
     network: "Solana",
     address: "Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM",
     explorerBaseUrl: "https://solscan.io/token/",
-    exchange: null,
+    exchange: {
+      name: "Orca",
+      url: "https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3",
+    },
     bridge: { name: "Portal", url: "https://portalbridge.com/" },
   },
 ];
