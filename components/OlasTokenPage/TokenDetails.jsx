@@ -36,7 +36,7 @@ const TOKEN_DETAILS = [
     bridge: { name: "Omnibridge", url: "https://omni.gnosischain.com/bridge" },
   },
   {
-    network: "Polygon",
+    network: "Polygon POS",
     address: "0xFEF5d947472e72Efbb2E388c730B7428406F2F95",
     explorerBaseUrl: "https://polygonscan.com/token/",
     exchange: {
@@ -113,7 +113,7 @@ export const TokenDetails = () => (
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {explorerUrl} ↗
+                      {truncateAddress(token.address)} ↗
                     </a>
                   </td>
                   <td className="border px-4 py-4">
