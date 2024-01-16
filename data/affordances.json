@@ -44,5 +44,17 @@
     },
     "learnMoreUrl": "/contribute",
     "imageFilename": "olas-contribute.svg"
+  },
+  {
+    "id": "88fd5b1d-ccb1-49da-9ff2-638a9d9190c9",
+    "title": "Olas Operate",
+    "description": "Run agents, stake OLAS and potentially earn rewards.",
+    "cta": {
+      "buttonText": "Operate now",
+      "url": "https://operate.olas.network/",
+      "external": true
+    },
+    "learnMoreUrl": "/operate",
+    "imageFilename": "olas-operate.svg"
   }
 ]
