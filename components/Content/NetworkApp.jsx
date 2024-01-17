@@ -1,3 +1,4 @@
+import { TEXT } from "@/styles/globals";
 import Image from "next/image";
 
 const NetworkApp = ({ networkApp }) => {
@@ -7,7 +8,7 @@ const NetworkApp = ({ networkApp }) => {
         <div class="flex justify-between items-center">
           <div class="mx-auto mb-4">
             <Image
-              src={`/images/${networkApp.name}.svg`}
+              src={`/images/network-apps/network-app-icon-${networkApp.name}.svg`}
               alt={networkApp.name}
               width="300"
               height="300"
@@ -15,11 +16,11 @@ const NetworkApp = ({ networkApp }) => {
             />
           </div>
         </div>
-        <div className="min-h-[150px] md:min-h-[100px] lg:min-h-[150px]">
+        <div className="min-h-[100px] md:min-h-[100px] lg:min-h-[100px]">
           <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 ">
             {networkApp.name}
           </h2>
-          <div className="text-sm md:text-2xl lg:text-sm xl:text-lg mb-4 text-gray-600">{networkApp.description}</div>
+          <div className={TEXT}>{networkApp.description}</div>
         </div>
       </article>
     </a>

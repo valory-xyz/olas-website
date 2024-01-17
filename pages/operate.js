@@ -1,12 +1,12 @@
-import DevRewards from "@/components/DevRewardsPage";
+import Operate from "@/components/OperatePage";
 import PageWrapper from "@/components/Layout/PageWrapper";
 import Meta from "@/components/Meta";
 
-const DevRewardsPage = () =>
+const OperatePage = () =>
   <PageWrapper>
-    <Meta pageTitle="Olas Dev Rewards" />
-      <DevRewards />
+    <Meta pageTitle="Olas Operate" />
+      <Operate />
   </PageWrapper>
   ;
 
-export default DevRewardsPage;
+export default OperatePage;
