@@ -15,7 +15,7 @@
     "title": "Build",
     "description": "Get rewards when you add useful code to the protocol.",
     "cta": {
-      "buttonText": "Get started",
+      "buttonText": "Build now",
       "url": "/dev-rewards/#get-started"
     },
     "learnMoreUrl": "/dev-rewards",
@@ -47,7 +47,7 @@
   },
   {
     "id": "88fd5b1d-ccb1-49da-9ff2-638a9d9190c9",
-    "title": "Olas Operate",
+    "title": "Operate",
     "description": "Run agents, stake OLAS and potentially earn rewards.",
     "cta": {
       "buttonText": "Operate now",
