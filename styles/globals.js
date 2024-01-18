@@ -1,0 +1,1 @@
+export const TEXT = "text-xl font-light text-gray-600"

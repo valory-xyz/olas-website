@@ -25,7 +25,7 @@ const NetworkApps = ({ limit = null }) => {
             </div>
           )}
         </div>
-        <div className="grid gap-8 lg:grid-cols-4">
+        <div className="grid gap-8 lg:grid-cols-3">
           {(limit ? networkApps.slice(0, limit) : networkApps).map((networkApp) => (
             <div key={networkApp.platform_link}>
               <NetworkApp networkApp={networkApp} />
