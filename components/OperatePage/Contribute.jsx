@@ -9,7 +9,7 @@ const Contribute = () => {
         <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
           <div class="mx-auto max-w-screen-sm text-center">
             <SectionHeading color="text-purple-950" size="text-4xl md:text-6xl lg:text-4xl">
-              Get discounted OLAS today
+              Run an agent today
             </SectionHeading>
             <a
               href={CTA}
@@ -17,7 +17,7 @@ const Contribute = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Bond now
+              Operate now
             </a>
           </div>
         </div>
