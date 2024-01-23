@@ -9,6 +9,11 @@ import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
 import ServiceCategoryCard from "./ServiceCategoryCard";
 
+import kits from "data/kits.json";
+import { TEXT } from "styles/globals";
+import Link from "next/link";
+
+
 const Item = ({ service, category }) => {
   return (
     <a
@@ -39,6 +44,34 @@ const Item = ({ service, category }) => {
     </a>
   );
 };
+
+const KitCard = ({ kit }) => {
+  return (
+    <Link
+      className="block rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring"
+      href={`/kits/${kit.id}`}
+    >
+      <div className="p-6">
+        <Image
+          src={`/images/kits/${kit.id}kit.svg`}
+          alt={kit.title}
+          width={100}
+          height={100}
+          className="mb-6"
+        />
+        <h2 className="font-bold text-xl text-gray-700">
+          {kit.title}
+        </h2>
+        {kit.description && (
+          <div className={TEXT}>
+            {kit.description}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+};
+
 
 const CoreSubsection = () => {
   return (
@@ -74,7 +107,7 @@ const ServicesSubsection = () => {
   return (
     <section id="services">
       <div className="max-w-screen-xl mb-12 mx-auto">
-        <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
           <div>
             <h2 className="text-3xl font-bold mb-2">
               Services
@@ -98,11 +131,43 @@ const ServicesSubsection = () => {
   );
 };
 
+const KitsSubsection = () => {
+  return (
+    <section id="kits">
+      <div className="max-w-screen-xl mb-12 mx-auto">
+        <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">
+              Kits
+            </h2>
+
+            <p className={TEXT + " mb-4"}>
+              Olas builders have created a suite of kits to help you get started building agents and services.
+            </p>
+
+            <div className="grid sm:grid-cols-2 gap-6 xl:grid-cols-4">
+              {kits.map((kit) => {
+                return (
+                  <KitCard
+                    kit={kit}
+                    key={kit.id}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
 const ChainsSubsection = () => {
   return (
     <section>
       <div className="max-w-screen-xl mb-12 mx-auto">
-        <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
           <div>
             <h2 className="text-3xl font-bold mb-2">
               Chains
@@ -145,19 +210,8 @@ const Services = () => {
       </div>
       <CoreSubsection />
       <ServicesSubsection />
+      <KitsSubsection />
       <ChainsSubsection />
-      <div className="text-xl font-light text-gray-600 text-center">
-        For the most up to date lists,
-        <br />
-        check out the community-maintained{" "}
-        <a
-          href="https://github.com/N0xMare/awesome-autonolas"
-          className="text-primary"
-        >
-          Awesome Autonolas
-        </a>{" "}
-        repo.
-      </div>
     </SectionWrapper>
   );
 };

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "smp",
+    "category": "toolkit",
+    "title": "SMPKit",
+    "description": "Build autonomous asset management products",
+    "liveLink": {
+      "url": "https://twitter.com/tannedoaksprout/status/1676634426476748800",
+      "external": true
+    }
+  },
+  {
+    "id": "mint",
+    "category": "toolkit",
+    "title": "MintKit",
+    "description": "Build autonomous NFT collector funds",
+    "liveLink": {
+      "url": "https://elcollectooorr.art",
+      "external": false
+    }
+  },
+  {
+    "id": "coordination",
+    "category": "toolkit",
+    "title": "CoordinationKit",
+    "description": "Coordinate DAO contributors autonomously",
+    "liveLink": {
+      "url": "https://contribute.autonolas.network/",
+      "external": false
+    }
+  },
+  {
+    "id": "ml",
+    "category": "toolkit",
+    "title": "MLKit",
+    "description": "Build decentralized, ML-powered software services",
+    "liveLink": {
+      "url": "https://oracle.autonolas.network/ml-apy-prediction",
+      "external": false
+    }
+  },
+  {
+    "id": "oracle",
+    "category": "toolkit",
+    "title": "OracleKit",
+    "description": "Robust aggregation of CEX pricing data for cryptoassets",
+    "liveLink": {
+      "url": "https://oracle.autonolas.network/price",
+      "external": false
+    }
+  },
+  {
+    "id": "ie",
+    "category": "toolkit",
+    "title": "IEKit",
+    "description": "An open-source framework for creating and running Impact Evaluators with Ceramic and Autonolas",
+    "liveLink": {
+      "url": "https://contribute.autonolas.network",
+      "external": false
+    }
+  },
+  {
+    "id": "gov",
+    "category": "toolkit",
+    "title": "GovKit",
+    "description": "Build autonomous delegates for DAO governance",
+    "liveLink": {
+      "url": "https://governatooorr.autonolas.network/",
+      "external": false
+    }
+  },
+  {
+    "id": "mech",
+    "category": "toolkit",
+    "title": "MechKit",
+    "description": "Build services that offer web3 native access to AI models.",
+    "liveLink": {
+      "url": "https://aimechs.autonolas.network/",
+      "external": true
+    }
+  },
+  {
+    "id": "keeper",
+    "category": "toolkit",
+    "title": "KeeperKit",
+    "description": "Build autonomous keeper services for smart contract automation",
+    "liveLink": {
+      "url": "https://dune.com/adrian0x/aks",
+      "external": true
+    }
+  },
+  {
+    "id": "messaging",
+    "category": "toolkit",
+    "title": "MessagingKit",
+    "description": "Deploy a backend for wallet-based messaging using ACN",
+    "liveLink": {
+      "url": "https://open-aea.docs.autonolas.tech/acn/",
+      "external": true
+    }
+  }
+]

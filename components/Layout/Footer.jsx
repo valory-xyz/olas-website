@@ -37,8 +37,18 @@ const Footer = () => {
             </Link>
           </li>
           <li>
-            <Link href="/documents/press-kit-olas.pdf" class="hover:underline">
+            <Link href="/documents/press-kit-olas.pdf" class="mr-4 hover:underline">
               Press Kit
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="https://autonolas.world"
+              class="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Alter Orbis ↗
             </Link>
           </li>
           <li>
