@@ -3,10 +3,10 @@ import Head from "next/head";
 const SITE_TITLE = "Olas | Crypto's Ocean of Services";
 const SITE_DESCRIPTION = "The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents.";
 const SITE_URL = "https://olas.network";
-const SITE_IMAGE_PATH = `${SITE_URL}/images/meta-tag.png`;
+const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 
 
-const Meta = ({pageTitle}) => {
+const Meta = ({pageTitle, siteImageUrl = SITE_DEFAULT_IMAGE_URL }) => {
   const title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
   
   return (
@@ -26,7 +26,7 @@ const Meta = ({pageTitle}) => {
         property="og:description"
         content={SITE_DESCRIPTION}
       />
-      <meta property="og:image" content={SITE_IMAGE_PATH} />
+      <meta property="og:image" content={siteImageUrl} />
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={SITE_URL} />
@@ -35,7 +35,7 @@ const Meta = ({pageTitle}) => {
         property="twitter:description"
         content={SITE_DESCRIPTION}
       />
-      <meta property="twitter:image" content={SITE_IMAGE_PATH} />
+      <meta property="twitter:image" content={siteImageUrl} />
     </Head>
   );
 };
