@@ -3,6 +3,15 @@ module.exports = {
   images: {
     domains: ['cms-backend.autonolas.tech'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/articles',
+        destination: '/blog',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {

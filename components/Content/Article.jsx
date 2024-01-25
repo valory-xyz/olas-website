@@ -1,30 +1,31 @@
+import { useState } from 'react';
 import Image from "next/image";
+import Link from "next/link";
 
-const imageDomain = "https://cms-backend.autonolas.tech";
-const articleDomain = "https://autonolas.network/blog/";
+const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
 const Article = ({ article }) => {
+  const [imageError, setImageError] = useState(false);
+
   const { title, subtitle, datePublished, slug } = article.attributes;
-  const { url, width, height } =
-    article?.attributes?.headerImage?.data[0]?.attributes?.formats?.large || {};
+  const image = article?.attributes?.headerImage?.data[0]?.attributes?.formats?.large
+  const { url, width, height } = image || {};
+
 
   return (
-    <a
-      href={`${articleDomain}${slug}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Link href={`/blog/${slug}`}>
       <article class="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg flex flex-col justify-between">
-        {(url || width || height) && (
-          <div>
-            <Image
-              src={imageDomain + url}
-              width={width}
-              height={height}
-              alt={article.title}
-              className="rounded-t-lg h-[200px] object-cover"
-            />
-          </div>
+        {!imageError && (url || width || height) && (
+          <Image
+            src={imageDomain + url}
+            width={width}
+            height={height}
+            alt={article.title}
+            className="rounded-t-lg h-[200px] object-cover"
+            onError={() => {
+              setImageError(true);
+            }}
+          />
         )}
         <div className="p-6 min-h-[150px]">
           <h2 class="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2">
@@ -35,7 +36,7 @@ const Article = ({ article }) => {
           </span>
         </div>
       </article>
-    </a>
+    </Link>
   );
 };
 
