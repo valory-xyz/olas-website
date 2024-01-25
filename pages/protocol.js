@@ -6,7 +6,7 @@ import { TITLE } from '@/styles/globals';
 const ProtocolPage = () => {
   return (
     <PageWrapper>
-      <h1 className={TITLE}>Olas Protocol</h1>
+      <h1 className={TITLE.BIG}>Olas Protocol</h1>
       <a href={`${DOCS_BASE_URL}/protocol`}>Go to Documentation</a>
     </PageWrapper>
   );
