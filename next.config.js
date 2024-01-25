@@ -26,6 +26,15 @@ module.exports = {
           },
         ],
       },
+      {
+        source: '/:all*(svg|jpg|jpeg|png|gif|ico|css|js|mov|mp4)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, must-revalidate',
+          },
+        ],
+      }
     ];
   },
 };
