@@ -13,7 +13,7 @@ const Content = () => {
           Learn more about Olas Contribute
         </h1>
         <div className="mb-12">
-          <Articles limit={3} tagFilter="contribute" />
+          <Articles limit={3} tagFilter="contribute" showSeeAll />
         </div>
         <div className="mb-12">
           <Resources tagFilter="contribute" />

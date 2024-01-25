@@ -11,7 +11,7 @@ const Content = () => {
           Learn more about Olas Dev Rewards
         </h1>
         <div className="mb-12">
-          <Articles tagFilter="dev-rewards" />
+          <Articles tagFilter="dev-rewards" showSeeAll />
         </div>
         <div className="mb-12">
           <Resources tagFilter="dev-rewards" />

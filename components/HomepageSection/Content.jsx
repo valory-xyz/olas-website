@@ -6,14 +6,14 @@ import NetworkApps from "../Content/NetworkApps"
 
 const Content = () => {
   return (
-    <SectionWrapper backgroundType={"SUBTLE_GRADIENT"}>
+    <SectionWrapper customClasses="px-8 py-12 lg:p-24 border-b" backgroundType={"SUBTLE_GRADIENT"}>
       <div id="resources" />
       <h1 className="text-heading text-gray-800 mb-12">Dive in</h1>
       <div className="mb-12">
         <Videos limit={2} />
       </div>
       <div className="mb-12">
-        <Articles limit={3} />
+        <Articles limit={3} showSeeAll />
       </div>
       <div className="mb-12">
         <Resources />

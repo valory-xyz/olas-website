@@ -13,7 +13,7 @@ const Content = () => {
           Learn more about Olas Bonds
         </h1>
         <div className="mb-12">
-          <Articles limit={3} tagFilter="bonds" />
+          <Articles limit={3} tagFilter="bonds" showSeeAll />
         </div>
         <div className="mb-12">
           <Resources tagFilter="bonds" />
