@@ -6,7 +6,7 @@ import { TITLE } from '@/styles/globals';
 const StackPage = () => {
   return (
     <PageWrapper>
-      <h1 className={TITLE}>Olas Stack</h1>
+      <h1 className={TITLE.BIG}>Olas Stack</h1>
       <a href={`${DOCS_BASE_URL}/open-autonomy`}>Go to Documentation</a>
     </PageWrapper>
   );

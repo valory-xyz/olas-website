@@ -1,5 +1,5 @@
-import PageWrapper from 'components/Layout/PageWrapper';
-import { WhitepaperPage } from 'components/WhitepaperPage';
+import PageWrapper from '@/components/Layout/PageWrapper';
+import { WhitepaperPage } from '@/components/WhitepaperPage';
 
 const Whitepaper = () => <PageWrapper>
   <WhitepaperPage />
