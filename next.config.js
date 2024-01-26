@@ -10,6 +10,16 @@ module.exports = {
         destination: '/blog',
         permanent: true,
       },
+      {
+        source: '/stack',
+        destination: 'https://docs.autonolas.network/open-autonomy',
+        permanent: false,
+      },
+      {
+        source: '/protocol',
+        destination: 'https://docs.autonolas.network/protocol',
+        permanent: false,
+      },
     ]
   },
   async headers() {
