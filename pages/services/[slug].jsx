@@ -35,8 +35,8 @@ const ServiceDetail = () => {
     <PageWrapper>
       <Meta pageTitle={service.name} siteImageUrl={`/images/services/${service.iconFilename}`} />
       <SectionWrapper>
-        <div className={`flex flex-row justify-between`}>
-          <div className="flex flex-col justify-center"><div>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 justify-between max-w-5xl mx-auto'>
+          <div className="flex flex-col justify-center">
             <h1 className="text-5xl font-bold mb-4">
               {service.name}
             </h1>
@@ -49,7 +49,7 @@ const ServiceDetail = () => {
               {service.description && <FieldRow fieldName="Description" value={service.description} last />}
             </div>
             {service.appUrl &&
-              <Button size="lg" asChild className="mr-4">
+              <Button size="xl" asChild className="w-full lg:w-auto mb-4">
                 <a
                   href={service.appUrl}
                   target="_blank"
@@ -59,7 +59,7 @@ const ServiceDetail = () => {
                 </a>
               </Button>
             }
-            {service.marketingUrl && <Button size="lg" asChild className="mr-4">
+            {service.marketingUrl && <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
               <a
                 href={service.marketingUrl}
                 target="_blank"
@@ -70,7 +70,7 @@ const ServiceDetail = () => {
             </Button>
             }
             {service.buildUrl &&
-              <Button size="lg" asChild className="mr-4">
+              <Button size="xl" variant="outline" asChild className="w-full lg:w-auto">
                 <a
                   href={service.buildUrl}
                   target="_blank"
@@ -81,8 +81,7 @@ const ServiceDetail = () => {
               </Button>
             }
           </div>
-          </div>
-          <div className="flex justify-start">
+          <div className="flex justify-center">
             <Image
               src={`/images/services/${service.iconFilename}`}
               alt={`${service.name} icon`}

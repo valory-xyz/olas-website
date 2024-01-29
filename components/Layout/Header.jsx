@@ -18,7 +18,7 @@ const Header = () => {
               className="mx-auto"
             />
           </Link>
-          <Button asChild className="flex items-center lg:order-2" size="lg">
+          <Button asChild className="flex items-center lg:order-2" size="xl">
             <Link
               href="/#get-involved"
             >
