@@ -11,6 +11,7 @@ const apiCall = async (subURL, params) => {
   try {
     const response = await fetch(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`);
     const json = await response.json();
+    console.log('json', json)
     return json;
   } catch (error) {
     console.error(error);

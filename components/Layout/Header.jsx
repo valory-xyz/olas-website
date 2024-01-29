@@ -2,6 +2,7 @@ import { DOCS_BASE_URL } from "@/common-util/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Button } from "../ui/button";
 
 const Header = () => {
   return (
@@ -17,14 +18,13 @@ const Header = () => {
               className="mx-auto"
             />
           </Link>
-          <div class="flex items-center lg:order-2">
+          <Button asChild className="flex items-center lg:order-2" size="lg">
             <Link
               href="/#get-involved"
-              class="text-purple-950 border border-purple-950  hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none "
             >
               Get involved
             </Link>
-          </div>
+          </Button>
           <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
             <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
               <li>

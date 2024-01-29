@@ -18,21 +18,19 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <>
-      <PageWrapper>
-        <Meta />
-        <Hero />
-        <Affordances />
-        <Services />
-        <ForDAOs />
-        <ForDevs />
-        <Flywheel />
-        <Framework />
-        <AppShowcase />
-        <Content />
-        <Friends />
-        <Contribute />
-      </PageWrapper>
-    </>
+    <PageWrapper>
+      <Meta />
+      <Hero />
+      <Affordances />
+      <Services />
+      <ForDAOs />
+      <ForDevs />
+      <Flywheel />
+      <Framework />
+      <AppShowcase />
+      <Content />
+      <Friends />
+      <Contribute />
+    </PageWrapper>
   )
 }

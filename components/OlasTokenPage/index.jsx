@@ -108,7 +108,7 @@ const Supply = () => {
   return (
     <div className="text-black border-b" id="supply">
       <SectionWrapper>
-        <div className="text-5xl font-bold font-manrope mb-4 tracking-tight text-black text-center">
+        <div className="text-5xl font-bold mb-4 tracking-tight text-black text-center">
           Supply
         </div>
         <div className="grid lg:grid-cols-2 gap-8 mb-24">

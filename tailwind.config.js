@@ -47,7 +47,6 @@ module.exports = {
     },
     fontFamily: {
       'inter': ['Inter', 'sans-serif'],
-      'manrope': ['Manrope', 'sans-serif'],
     },
   },
   plugins: [

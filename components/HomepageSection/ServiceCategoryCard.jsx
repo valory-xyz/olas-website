@@ -1,5 +1,9 @@
 import Image from "next/image";
 
+const servicePath = (service) => {
+  return `/services/${service.slug}`;
+};
+
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   const filteredServices = services.filter((service) => {
     return service.serviceCategory.includes(serviceCategory.name);
@@ -18,9 +22,7 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
             return (
               <div key={service.id} className="mb-2 flex items-center">
                 <a
-                  href={service.appUrl}
-                  rel="noopener noreferrer"
-                  target="_blank"
+                  href={servicePath(service)}
                 >
                   <Image
                     src={`/images/services/${service.iconFilename}`}
@@ -33,39 +35,11 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
                 <div>
                   <div className="mb-1">
                     <a
-                      href={service.appUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      className="text-purple-800 hover:text-slate-800"
+                      href={servicePath(service)}
+                      className="text-purple-800 hover:text-slate-800 text-lg"
                     >
                       {service.name}
                     </a>
-                  </div>
-                  <div className="text-slate-500">
-                    {service.marketingUrl && (
-                      <>
-                        <a
-                          href={service.marketingUrl}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Learn more
-                        </a>
-                      </>
-                    )}
-                    {service.buildUrl && (
-                      <>
-                        {" "}
-                        ·{" "}
-                        <a
-                          href={service.buildUrl}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Build your own
-                        </a>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>
