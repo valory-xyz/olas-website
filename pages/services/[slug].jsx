@@ -40,7 +40,7 @@ const ServiceDetail = () => {
             <h1 className="text-5xl font-bold mb-4">
               {service.name}
             </h1>
-            {service.demo && <Badge variant="outline" className="mb-8">Demo</Badge>}
+            {service.demo && <div className="inline-block"><Badge variant="outline" className="mb-8">Demo</Badge></div>}
             <div className="border rounded-lg mb-8">
               {service.serviceCategory &&
                 <FieldRow fieldName="Category" value={service.serviceCategory} />
