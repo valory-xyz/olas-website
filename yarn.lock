@@ -3334,6 +3334,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lucide-react@^0.316.0:
+  version "0.316.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.316.0.tgz#df3a70515db81837496be255c534d8c9e3b18182"
+  integrity sha512-dTmYX1H4IXsRfVcj/KUxworV6814ApTl7iXaS21AimK2RUEl4j4AfOmqD3VR8phe5V91m4vEJ8tCK4uT1jE5nA==
+
 mdast-util-from-markdown@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/mdast-util-from-markdown/-/mdast-util-from-markdown-2.0.0.tgz#52f14815ec291ed061f2922fd14d6689c810cb88"
