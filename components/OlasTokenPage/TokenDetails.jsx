@@ -1,8 +1,8 @@
 import React from "react";
 
-import Image from "next/image";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 /**
  * Truncates an Ethereum address to show the first five characters, a ..., and the last three characters
@@ -58,6 +58,16 @@ const TOKEN_DETAILS = [
     },
     bridge: { name: "Portal", url: "https://portalbridge.com/" },
   },
+  {
+    network: "Arbitrum",
+    address: "0x064f8b858c2a603e1b106a2039f5446d32dc81c1",
+    explorerBaseUrl: "https://arbiscan.io/token/",
+    exchange: {
+      name: "Balancer",
+      url: "https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc",
+    },
+    bridge: { name: "Arbitrum Bridge", url: "https://bridge.arbitrum.io/" },
+  },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
@@ -78,109 +88,111 @@ export const TokenDetails = () => (
           Token Details
         </SectionHeading>
         <div className="hidden md:block">
-          <table className="table-auto w-full mt-6">
-            <thead>
-              <tr>
-                <th className="px-4 py-4 text-left border">Network</th>
-                <th className="px-4 py-4 text-left border">Get OLAS</th>
-                <th className="px-4 py-4 text-left border">Token Address</th>
-                <th className="px-4 py-4 text-left border">Bridge</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table className="mt-6">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-left border">Network</TableHead>
+                <TableHead className="text-left border">Get OLAS</TableHead>
+                <TableHead className="text-left border">Token Address</TableHead>
+                <TableHead className="text-left border">Bridge</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {TOKEN_DETAILS.map((token, index) => {
                 const explorerUrl = generateExplorerUrl(token);
                 return (
-                <tr key={index}>
-                  <td className="border px-4 py-4">{token.network}</td>
-                  <td className="border px-4 py-4">
-                    {token.exchange ? (
+                  <TableRow key={index}>
+                    <TableCell className="border">{token.network}</TableCell>
+                    <TableCell className="border">
+                      {token.exchange ? (
+                        <a
+                          href={token.exchange.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {token.exchange.name} ↗
+                        </a>
+                      ) : (
+                        "TBD"
+                      )}
+                    </TableCell>
+                    <TableCell className="border break-all">
                       <a
-                        href={token.exchange.url}
+                        href={explorerUrl}
+                        title={token.address}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {token.exchange.name} ↗
+                        {truncateAddress(token.address)} ↗
                       </a>
-                    ) : (
-                      "TBD"
-                    )}
-                  </td>
-                  <td className="border px-4 py-4 break-all">
-                    <a
-                      href={explorerUrl}
-                      title={token.address}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {truncateAddress(token.address)} ↗
-                    </a>
-                  </td>
-                  <td className="border px-4 py-4">
-                    {token.bridge ? (
-                      <a
-                        href={token.bridge.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {token.bridge.name} ↗
-                      </a>
-                    ) : (
-                      "n/a"
-                    )}
-                  </td>
-                </tr>
-              )})}
-            </tbody>
-          </table>
+                    </TableCell>
+                    <TableCell className="border">
+                      {token.bridge ? (
+                        <a
+                          href={token.bridge.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {token.bridge.name} ↗
+                        </a>
+                      ) : (
+                        "n/a"
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
         <div className="md:hidden flex flex-col space-y-4">
           {TOKEN_DETAILS.map((token, index) => {
             const explorerUrl = generateExplorerUrl(token);
             return (
-            <div key={index} className="border p-4 rounded">
-              <h3 className="font-bold mb-2">{token.network}</h3>
-              <p>
-                <strong>Get OLAS:</strong>{" "}
-                {token.exchange ? (
+              <div key={index} className="border p-4 rounded">
+                <h3 className="font-bold mb-2">{token.network}</h3>
+                <p>
+                  <strong>Get OLAS:</strong>{" "}
+                  {token.exchange ? (
+                    <a
+                      href={token.exchange.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {token.exchange.name} ↗
+                    </a>
+                  ) : (
+                    "TBD"
+                  )}
+                </p>
+                <p>
+                  <strong>Token Address:</strong>{" "}
                   <a
-                    href={token.exchange.url}
+                    href={explorerUrl}
+                    title={token.address}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {token.exchange.name} ↗
+                    {truncateAddress(token.address)} ↗
                   </a>
-                ) : (
-                  "TBD"
-                )}
-              </p>
-              <p>
-                <strong>Token Address:</strong>{" "}
-                <a
-                  href={explorerUrl}
-                  title={token.address}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {truncateAddress(token.address)} ↗
-                </a>
-              </p>
-              <p>
-                <strong>Bridge:</strong>{" "}
-                {token.bridge ? (
-                  <a
-                    href={token.bridge.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {token.bridge.name} ↗
-                  </a>
-                ) : (
-                  "n/a"
-                )}
-              </p>
-            </div>
-          )})}
+                </p>
+                <p>
+                  <strong>Bridge:</strong>{" "}
+                  {token.bridge ? (
+                    <a
+                      href={token.bridge.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {token.bridge.name} ↗
+                    </a>
+                  ) : (
+                    "n/a"
+                  )}
+                </p>
+              </div>
+            )
+          })}
         </div>
       </div>
     </SectionWrapper>
