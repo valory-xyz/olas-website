@@ -102,5 +102,40 @@
     "drive_link": "https://drive.google.com/file/d/1EEZ6Cv0CPNifG8X1S51-iI68ouzPmYMW/view?usp=drive_link",
     "platform_link": "https://www.youtube.com/watch?v=oznC6JXb7EQ",
     "imageFilename": "the fett.png"
+  },
+  {
+    "date": "7-Sep-23",
+    "title": "Proof of Coverage: A chat with David Minarsch",
+    "platform": "Spotify",
+    "platform_link": "https://podcasters.spotify.com/pod/show/proof-of-coverage/episodes/Episode-8---David-Minarsch--Founder-and-CEO-of-Autonolas-Network-Olas-e291oe9",
+    "imageFilename": "proof_of_coverage.png"
+  },
+  {
+    "date": "1-Dec-23",
+    "title": "In Plain Text: AI Agents with David Minarsch",
+    "platform": "Spotify",
+    "platform_link": "https://open.spotify.com/episode/6ZyQhtncai4aho8491MFQE",
+    "imageFilename": "plaintext.png"
+  },
+  {
+    "date": "1-May-23",
+    "title": "DAO talk: David @valory DT Interview #38",
+    "platform": "Spotify",
+    "platform_link": "https://open.spotify.com/episode/3OKbcO8Tyzs1EjfGMaou3o?si=4llwPJlYTP-JA4t8pdgkrQ&nd=1",
+    "imageFilename": "dao_talk.png"
+  },
+  {
+    "date": "13-Sep-23",
+    "title": "DappCon: Decentralized Autonomous Agents and Co-owned AI",
+    "platform": "YouTube",
+    "platform_link": "https://www.youtube.com/watch?v=jtYCkV1LjiU&t=23257s",
+    "imageFilename": "gnosisAI.png"
+  },
+  {
+    "date": "23-Nov-23",
+    "title": "Gnosis AI call",
+    "platform": "YouTube",
+    "platform_link": "https://www.youtube.com/watch?v=Iw5QLCZiXlQ&t=155s",
+    "imageFilename": "dappcon.png"
   }
 ]
