@@ -1,4 +1,5 @@
 import { HowToSection } from "../ui/section/how-to";
+import { ExternalLink } from "../ui/typography";
 
 const GetStarted = () => {
   const sectionId = "get-started";
