@@ -121,12 +121,12 @@
     "name": "Prediction Agents",
     "slug": "prediction-agents",
     "serviceCategory": "AI",
-    "description": "",
+    "description": "Hello",
     "appUrl": "",
     "marketingUrl": "https://hackathon.olas.network",
     "buildUrl": "https://hackathon.olas.network",
     "iconFilename": "prediction-agents.svg",
-    "demo": true,
+    "demo": false,
     "builder": "Valory"
   }
 ]

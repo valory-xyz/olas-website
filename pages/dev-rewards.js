@@ -5,7 +5,7 @@ import Meta from "@/components/Meta";
 const DevRewardsPage = () =>
   <PageWrapper>
     <Meta pageTitle="Olas Dev Rewards" />
-      <DevRewards />
+    <DevRewards />
   </PageWrapper>
   ;
 
