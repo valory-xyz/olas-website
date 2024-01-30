@@ -5,7 +5,7 @@ import { H1 } from "../typography";
 
 export const HowToSection = ({ sectionId, heading, image, body }) => {
   return (
-    <SectionWrapper customClasses="lg:p-24 px-4 py-12">
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       {sectionId && <div id={sectionId}></div>}
       <div class="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div class="lg:col-span-6 px-5 lg:p-0 mb-12">

@@ -2,10 +2,31 @@ import PageWrapper from "@/components/Layout/PageWrapper";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import Meta from "@/components/Meta";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { CTASection } from "@/components/ui/section/cta";
 import { HowToSection } from "@/components/ui/section/how-to";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { ExternalLink, H1, Lead, Small, Upcase } from "@/components/ui/typography";
 import Image from "next/image";
+
+const resources = [
+  {
+    title: "Broader Prediction System",
+    description: "Learn how prediction agents contribute to a broader prediction offering.",
+    action: {
+      url: "https://hackathon.olas.network/system-overview",
+      text: "See system overview"
+    }
+  },
+  {
+    title: "Trader",
+    description: "Visit the trader agent repo to learn more about the full implementation.",
+    action: {
+      url: "https://github.com/valory-xyz/trader",
+      text: "See the code"
+    }
+  }
+]
 
 const PredictionAgents = () =>
   <PageWrapper>
@@ -95,9 +116,9 @@ const PredictionAgents = () =>
               <TableCell className="text-center">
                 <div className="flex justify-between">
                   <div>
-                <span className="text-6xl">←</span>
-                <br />
-                  <span>Probability</span>
+                    <span className="text-6xl">←</span>
+                    <br />
+                    <span>Probability</span>
                   </div>
                   <div>
                     <span className="text-6xl">→</span>
@@ -167,6 +188,31 @@ const PredictionAgents = () =>
         </Table>
       </div>
     </SectionWrapper>
+    <SectionWrapper>
+      <H1 className="text-center mb-12">Further resources</H1>
+      <div className="grid md:grid-cols-2 gap-4">
+        {resources.map((resource, index) => (
+          <div key={index} className="mb-4 md:mb-0">
+            <Card className="max-w-sm mx-auto">
+              <CardHeader>
+                <CardTitle>{resource.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>{resource.description}</CardDescription>
+              </CardContent>
+              <CardFooter>
+                <Button asChild>
+                  <a href={resource.action.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary-800 transition-colors duration-300">
+                    {resource.action.text}
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </SectionWrapper>
+    <CTASection heading="Start predicting the future" ctaUrl="https://operate.olas.network" ctaText="Run an agent now" />
   </PageWrapper>;
 
 export default PredictionAgents;
