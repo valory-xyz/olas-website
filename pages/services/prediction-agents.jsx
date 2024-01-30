@@ -41,7 +41,7 @@ const PredictionAgents = () =>
     </SectionWrapper>
     <HowToSection
       sectionId="how-to"
-      heading="How to run Prediction Agents"
+      heading="How it works"
       image={{
         path: "/images/services/prediction-agents/how-to.png",
         width: 400,
