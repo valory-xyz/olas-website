@@ -171,7 +171,7 @@ const PredictionAgents = () =>
               <TableCell className="text-center">
                 <span className="text-6xl">←</span>
                 <br />
-                ? $
+                ? $ $
               </TableCell>
               <TableCell className="text-center">
                 <Image
