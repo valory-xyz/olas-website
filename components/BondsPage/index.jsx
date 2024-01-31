@@ -22,24 +22,24 @@ const BondingDetailsSection = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Network</TableHead>
+              <TableHead>Guide</TableHead>
               <TableHead>Exchange</TableHead>
               <TableHead>Pool Symbol</TableHead>
               <TableHead>LP Token Address</TableHead>
               <TableHead>Bridged LP Token Address</TableHead>
               <TableHead>Bridge</TableHead>
-              <TableHead>Guide</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {networks?.map((network, index) => (
               <TableRow key={index}>
                 <TableCell>{network?.network}</TableCell>
+                <TableCell><ExternalLink href={network?.bond?.guideUrl}>Guide</ExternalLink></TableCell>
                 <TableCell>{network?.exchange?.name}</TableCell>
                 <TableCell>{network?.bond?.lpTokenName}</TableCell>
                 <TableCell>{network?.bond?.lpTokenAddress ? <ExternalLink href={network?.explorerBaseUrl + network?.bond?.lpTokenAddress}>{truncateAddress(network?.bond?.lpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
                 <TableCell>{network?.bond?.bridgedLpTokenAddress ? <ExternalLink href={`https://etherscan.io/token/${network?.bond?.bridgedLpTokenAddress}`}>{truncateAddress(network?.bond?.bridgedLpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell>{network?.bridge?.name ? <ExternalLink href={network?.bond?.url}>{network?.bridge?.name}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell><ExternalLink href={network?.bond?.guideUrl}>Guide</ExternalLink></TableCell>
+                <TableCell>{network?.bridge?.name ? network?.bridge?.name : "n/a"}</TableCell>
               </TableRow>
             ))}
           </TableBody>
