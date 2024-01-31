@@ -1,5 +1,5 @@
 import { HowToSection } from "../ui/section/how-to";
-import { ExternalLink } from "../ui/typography";
+import { ExternalLink, Link } from "../ui/typography";
 import { CTA } from "./utils";
 
 const HowItWorks = () => {
@@ -14,7 +14,7 @@ const HowItWorks = () => {
   const body = {
     steps: [
       <span><ExternalLink href={CTA}>Browse</ExternalLink> for bonding products</span>,
-      "Get LP tokens on the relevant exchange & if applicable bridge to Ethereum",
+      <span>Get LP tokens on the relevant exchange & if applicable <Link href="#bonding-details">bridge</Link> to Ethereum</span>,
       <span>Bond LP tokens via <ExternalLink href={CTA}>Tokenomics app</ExternalLink></span>,
       "Wait for bond to mature, then claim discounted OLAS"
     ]

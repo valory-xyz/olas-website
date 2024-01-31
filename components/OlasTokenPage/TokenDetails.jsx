@@ -15,7 +15,7 @@ export const truncateAddress = (address) => (address
   ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
   : '--');
 
-const TOKEN_DETAILS = [
+export const TOKEN_DETAILS = [
   {
     network: 'Ethereum',
     address: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0',
@@ -25,6 +25,12 @@ const TOKEN_DETAILS = [
       url: 'https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0x0001a500a6b18995b03f44bb040a5ffc28e45cb0',
     },
     bridge: null,
+    bond: {
+      guideUrl: 'https://olas.network/blog/inaugural-bonding-programme-proposal',
+      lpTokenName: 'OLAS-ETH',
+      bridgedLpTokenAddress: null,
+      lpTokenAddress: '0x09d1d767edf8fa23a64c51fa559e0688e526812f'
+    },
   },
   {
     network: 'Gnosis',
@@ -35,6 +41,12 @@ const TOKEN_DETAILS = [
       url: 'https://app.balancer.fi/#/gnosis-chain/pool/0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067',
     },
     bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
+    bond: {
+      guideUrl: 'https://olas.network/blog/olas-liquidity-on-gnosis-chain',
+      lpTokenName: 'OLAS-WXDAI',
+      bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
+      lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985'
+    },
   },
   {
     network: 'Polygon POS',
@@ -48,6 +60,12 @@ const TOKEN_DETAILS = [
       name: 'POS Bridge',
       url: 'https://portal.polygon.technology/bridge',
     },
+    bond: {
+      guideUrl: 'https://olas.network/blog/bonding-guide-for-olas-matic-products-on-polygon',
+      lpTokenName: 'WMATIC-OLAS',
+      bridgedLpTokenAddress: '0x06512E620A8317da51a73690A596Aca97287b31D',
+      lpTokenAddress: '0x62309056c759c36879cde93693e7903bf415e4bc'
+    },
   },
   {
     network: 'Solana',
@@ -58,17 +76,19 @@ const TOKEN_DETAILS = [
       url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
     },
     bridge: { name: 'Portal', url: 'https://portalbridge.com/' },
+    bond: null
   },
-  {
-    network: 'Arbitrum',
-    address: '0x064f8b858c2a603e1b106a2039f5446d32dc81c1',
-    explorerBaseUrl: 'https://arbiscan.io/token/',
-    exchange: {
-      name: 'Balancer',
-      url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
-    },
-    bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/' },
-  },
+  // {
+  //   network: 'Arbitrum',
+  //   address: '0x064f8b858c2a603e1b106a2039f5446d32dc81c1',
+  //   explorerBaseUrl: 'https://arbiscan.io/token/',
+  //   exchange: {
+  //     name: 'Balancer',
+  //     url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
+  //   },
+  //   bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/' },
+  //   bond: null
+  // },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
