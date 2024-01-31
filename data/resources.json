@@ -8,18 +8,10 @@
     "tags": ["bonds", "dev-rewards"]
   },
   {
-    "id": "d02fa8c1-cf7f-487e-8487-f26672a79fa7",
-    "title": "Developer Site",
-    "description": "Collection of resources for developers to build on Olas",
-    "url": "https://autonolas.network",
-    "imageFilename": "dev-site.svg",
-    "tags": ["dev-rewards"]
-  },
-  {
     "id": "a1ccb876-13f9-46e2-8740-9a7dc7009e20",
     "title": "Whitepaper",
     "description": "Detailed technical specification of Olas",
-    "url": "https://www.autonolas.network/documents/whitepaper/Whitepaper%20v1.0.pdf",
+    "url": "/documents/whitepaper/Whitepaper%20v1.0.pdf",
     "imageFilename": "whitepaper.svg",
     "tags": []
   },
@@ -27,7 +19,7 @@
     "id": "152d0356-67b3-4704-9ebc-b4bdd91d3121",
     "title": "Whitepaper Summary",
     "description": "All the important bits of the whitepaper, condensed",
-    "url": "https://www.autonolas.network/documents/whitepaper/Whitepaper%20Summary%20v1.0.pdf",
+    "url": "/documents/whitepaper/Whitepaper%20Summary%20v1.0.pdf",
     "imageFilename": "whitepaper-summary.svg",
     "tags": []
   },
@@ -35,17 +27,9 @@
     "id": "a65b9f21-8ee5-4b1e-8292-1e57ed4cbf5a",
     "title": "Tokenomics Paper",
     "description": "Detailed paper on the tokenomics of Olas",
-    "url": "https://www.autonolas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf",
+    "url": "documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf",
     "imageFilename": "tokenomics.svg",
     "tags": ["bonds", "dev-rewards"]
-  },
-  {
-    "id": "9d1ef468-f6ff-41b0-90d9-09f6abd24649",
-    "title": "Starter Education Articles",
-    "description": "Easy to consume guides for beginners and the less technical",
-    "url": "https://www.autonolas.network/education-articles",
-    "imageFilename": "education-articles.svg",
-    "tags": ["contribute"]
   },
   {
     "id": "d6535223-279c-4c23-8933-a1dce57d7863",
