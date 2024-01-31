@@ -28,7 +28,7 @@ const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
       <div>
         <div>
         <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
-            Articles
+            Blog
           </h2>
           {showSeeAll && (
             <div className="mb-4">

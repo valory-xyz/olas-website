@@ -75,7 +75,7 @@ const KitCard = ({ kit }) => {
 
 const CoreSubsection = () => {
   return (
-    <section>
+    <section id="core">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
@@ -165,7 +165,7 @@ const KitsSubsection = () => {
 
 const ChainsSubsection = () => {
   return (
-    <section>
+    <section id="chains">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
           <div>

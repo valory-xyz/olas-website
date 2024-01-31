@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import affordances from "@/data/affordances.json";
-import Badge from "../Badge";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
 import { Button } from "../Button";

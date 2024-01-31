@@ -1,7 +1,7 @@
 [
   {
     "id": "1701827e-54d4-4ba9-98b1-044217ccd85f",
-    "title": "Documentation",
+    "title": "Docs",
     "description": "Resource for all things technical",
     "url": "https://docs.autonolas.network",
     "imageFilename": "docs.svg",
@@ -10,33 +10,9 @@
   {
     "id": "a1ccb876-13f9-46e2-8740-9a7dc7009e20",
     "title": "Whitepaper",
-    "description": "Detailed technical specification of Olas",
-    "url": "/documents/whitepaper/Whitepaper%20v1.0.pdf",
+    "description": "Detailed specification of Olas technology and economics",
+    "url": "/whitepaper",
     "imageFilename": "whitepaper.svg",
-    "tags": []
-  },
-  {
-    "id": "152d0356-67b3-4704-9ebc-b4bdd91d3121",
-    "title": "Whitepaper Summary",
-    "description": "All the important bits of the whitepaper, condensed",
-    "url": "/documents/whitepaper/Whitepaper%20Summary%20v1.0.pdf",
-    "imageFilename": "whitepaper-summary.svg",
-    "tags": []
-  },
-  {
-    "id": "a65b9f21-8ee5-4b1e-8292-1e57ed4cbf5a",
-    "title": "Tokenomics Paper",
-    "description": "Detailed paper on the tokenomics of Olas",
-    "url": "documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf",
-    "imageFilename": "tokenomics.svg",
-    "tags": ["bonds", "dev-rewards"]
-  },
-  {
-    "id": "d6535223-279c-4c23-8933-a1dce57d7863",
-    "title": "Awesome Autonolas",
-    "description": "Collated guides, tools, and resources",
-    "url": "https://github.com/N0xMare/awesome-autonolas",
-    "imageFilename": "awesome-autonolas.svg",
     "tags": []
   },
   {
@@ -46,6 +22,14 @@
     "url": "https://dune.com/adrian0x/autonolas-ecosystem-activity",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["bonds"]
+  },
+  {
+    "id": "d6535223-279c-4c23-8933-a1dce57d7863",
+    "title": "Awesome Autonolas",
+    "description": "Collated guides, tools, and resources",
+    "url": "https://github.com/N0xMare/awesome-autonolas",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   },
   {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",

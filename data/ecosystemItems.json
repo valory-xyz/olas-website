@@ -1,0 +1,32 @@
+[
+  {
+    "id": "core",
+    "title": "Core",
+    "description": "Olas' key modules.",
+    "url": "/#core"
+  },
+  {
+    "id": "services",
+    "title": "Services",
+    "description": "Live autonomous services.",
+    "url": "/#services"
+  },
+  {
+    "id": "kits",
+    "title": "Kits",
+    "description": "Browse kits to help bootstrap new agents and services.",
+    "url": "/#kits"
+  },
+  {
+    "id": "chains",
+    "title": "Chains",
+    "description": "Olas Protocol is available on a growing list of chains.",
+    "url": "/#chains"
+  },
+  {
+    "id": "network-apps",
+    "title": "Network Apps",
+    "description": "Interact with the protocol, contribute to the DAO and more.",
+    "url": "/#network-apps"
+  }
+]

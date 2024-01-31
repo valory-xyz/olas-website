@@ -8,7 +8,7 @@ const NetworkApps = ({ limit = null }) => {
   });
   
   return (
-    <section>
+    <section id="network-apps">
       <div>
         <div>
           <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
