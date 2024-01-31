@@ -1,3 +1,5 @@
+import { default as NextLink } from 'next/link';
+
 export const H1 = ({ children, className }) => {
   return (
     <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
@@ -28,5 +30,16 @@ export const ExternalLink = ({ children, className, href }) => {
     >
       {children} ↗
     </a>
+  )
+}
+
+export const Link = ({ children, className, href }) => {
+  return (
+    <NextLink
+      className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
+      href={href}
+    >
+      {children}
+    </NextLink>
   )
 }

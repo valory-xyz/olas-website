@@ -1,4 +1,5 @@
 import { HowToSection } from "../ui/section/how-to";
+import { ExternalLink } from "../ui/typography";
 
 const GetStarted = () => {
   const sectionId = "get-started";
@@ -11,8 +12,8 @@ const GetStarted = () => {
   };
   const body = {
     steps: [
-      "Write code using Open Autonomy",
-      "Mint your code on Olas Protocol Registry",
+      <span>Write code using <ExternalLink href="https://docs.autonolas.network/open-autonomy">Open Autonomy</ExternalLink></span>,
+      <span>Mint your code on <ExternalLink href="https://registry.olas.network/">Olas Protocol Registry</ExternalLink></span>,
       "Get rewards in ETH & OLAS*"
     ],
     extra: "*Requires that somebody with at least 10k veOLAS donates to a service that uses your code."
