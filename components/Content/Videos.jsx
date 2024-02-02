@@ -25,7 +25,7 @@ const Videos = ({ limit = null }) => {
             </div>
           )}
         </div>
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-8 lg:grid-cols-3">
           {(limit ? videos.slice(0, limit) : videos).map((video) => (
             <div key={video.platform_link}>
               <Video video={video} />

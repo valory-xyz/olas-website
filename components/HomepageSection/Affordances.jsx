@@ -67,7 +67,7 @@ const CoreSubsection = () => {
 const Affordances = () => {
   return (
     <SectionWrapper>
-      <div id="get-involved" />
+      <div id="get-involved" className="scroll-mt-[100px]" />
       <div className="text-center">
         <SectionHeading color="text-slate-700">Get Involved</SectionHeading>
       </div>

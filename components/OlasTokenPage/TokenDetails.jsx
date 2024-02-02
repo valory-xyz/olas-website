@@ -57,8 +57,8 @@ export const TOKEN_DETAILS = [
       url: 'https://app.balancer.fi/#/polygon/pool/0x62309056c759c36879cde93693e7903bf415e4bc000200000000000000000d5f',
     },
     bridge: {
-      name: 'POS Bridge',
-      url: 'https://portal.polygon.technology/bridge',
+      name: 'Portal',
+      url: 'https://portalbridge.com/advanced-tools/#/transfer',
     },
     bond: {
       guideUrl: 'https://olas.network/blog/bonding-guide-for-olas-matic-products-on-polygon',
@@ -75,7 +75,7 @@ export const TOKEN_DETAILS = [
       name: 'Orca',
       url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
     },
-    bridge: { name: 'Portal', url: 'https://portalbridge.com/' },
+    bridge: { name: 'Portal', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
     bond: null
   },
   // {

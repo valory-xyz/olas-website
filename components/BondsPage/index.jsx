@@ -16,7 +16,7 @@ const BondingDetailsSection = () => {
   return (
     <SectionWrapper>
       <a id="bonding-details" />
-      <H1 className="text-center mb-12">Cross-chain Details</H1>
+      <H1 className="text-center mb-12">Details</H1>
       <Card>
         <Table>
           <TableHeader>
@@ -39,7 +39,7 @@ const BondingDetailsSection = () => {
                 <TableCell>{network?.bond?.lpTokenName}</TableCell>
                 <TableCell>{network?.bond?.lpTokenAddress ? <ExternalLink href={network?.explorerBaseUrl + network?.bond?.lpTokenAddress}>{truncateAddress(network?.bond?.lpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
                 <TableCell>{network?.bond?.bridgedLpTokenAddress ? <ExternalLink href={`https://etherscan.io/token/${network?.bond?.bridgedLpTokenAddress}`}>{truncateAddress(network?.bond?.bridgedLpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell>{network?.bridge?.name ? network?.bridge?.name : "n/a"}</TableCell>
+                <TableCell>{network?.bridge?.name ? <ExternalLink href={network?.bridge?.url}>{network?.bridge?.name}</ExternalLink> : "n/a"}</TableCell>
               </TableRow>
             ))}
           </TableBody>

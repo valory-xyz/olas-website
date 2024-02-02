@@ -75,8 +75,8 @@ const KitCard = ({ kit }) => {
 
 const CoreSubsection = () => {
   return (
-    <section id="core">
-      <div className="max-w-screen-xl mb-12 mx-auto">
+    <SectionWrapper id="core">
+      <div className="mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
             <h2 className="text-3xl font-bold">
@@ -99,13 +99,13 @@ const CoreSubsection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
 const ServicesSubsection = () => {
   return (
-    <section id="services">
+    <SectionWrapper id="services">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
           <div>
@@ -127,13 +127,13 @@ const ServicesSubsection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
 const KitsSubsection = () => {
   return (
-    <section id="kits">
+    <SectionWrapper id="kits">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-1 lg:gap-x-16">
           <div>
@@ -158,14 +158,14 @@ const KitsSubsection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
 
 const ChainsSubsection = () => {
   return (
-    <section id="chains">
+    <SectionWrapper id="chains">
       <div className="max-w-screen-xl mb-12 mx-auto">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
           <div>
@@ -191,14 +191,13 @@ const ChainsSubsection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
 const Services = () => {
   return (
-    <SectionWrapper>
-      <div id="ecosystem" />
+    <SectionWrapper id="ecosystem">
       <div className="text-center">
         <SectionHeading spacing="mb-6" color="text-purple-950">
           Already making waves

@@ -1,6 +1,7 @@
 import Resource from "./Resource";
 import resources from "@/data/resources.json";
 import Link from "next/link";
+import SectionWrapper from "../Layout/SectionWrapper";
 
 const Resources = ({ limit = null, tagFilter = null }) => {
   const sortedResources = resources.sort((a, b) => {
@@ -18,7 +19,7 @@ const Resources = ({ limit = null, tagFilter = null }) => {
   
   
   return (
-    <section id="resources">
+    <SectionWrapper id="resources" backgroundType="NONE">
       <div>
         <div>
         <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
@@ -43,7 +44,7 @@ const Resources = ({ limit = null, tagFilter = null }) => {
           ))}
         </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
