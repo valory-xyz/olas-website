@@ -78,17 +78,17 @@ export const TOKEN_DETAILS = [
     bridge: { name: 'Portal', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
     bond: null
   },
-  // {
-  //   network: 'Arbitrum',
-  //   address: '0x064f8b858c2a603e1b106a2039f5446d32dc81c1',
-  //   explorerBaseUrl: 'https://arbiscan.io/token/',
-  //   exchange: {
-  //     name: 'Balancer',
-  //     url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
-  //   },
-  //   bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/' },
-  //   bond: null
-  // },
+  {
+    network: 'Arbitrum',
+    address: '0x064f8b858c2a603e1b106a2039f5446d32dc81c1',
+    explorerBaseUrl: 'https://arbiscan.io/token/',
+    exchange: {
+      name: 'Balancer',
+      url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
+    },
+    bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/' },
+    bond: null
+  },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
