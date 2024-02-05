@@ -22,5 +22,11 @@
     "name": "Solana",
     "url": "https://twitter.com/autonolas/status/1683885110419136514?s=20",
     "iconFilename": "solana.svg"
+  },
+  {
+    "id": "dca9ccfb-6fc9-4c52-b769-0ce30b6ecd67",
+    "name": "Arbitrum",
+    "url": "https://x.com/autonolas/status/1754561779366343164?s=20",
+    "iconFilename": "arbitrum.svg"
   }
 ]
