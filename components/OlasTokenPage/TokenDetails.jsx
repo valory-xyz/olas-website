@@ -61,7 +61,7 @@ export const TOKEN_DETAILS = [
       url: 'https://portalbridge.com/advanced-tools/#/transfer',
     },
     bond: {
-      guideUrl: '#',
+      guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
       lpTokenName: 'WMATIC-OLAS',
       bridgedLpTokenAddress: '0xf9825A563222f9eFC81e369311DAdb13D68e60a4',
       lpTokenAddress: '0x62309056c759c36879cde93693e7903bf415e4bc'
@@ -88,7 +88,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
     bond: {
-      guideUrl: '#',
+      guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
       lpTokenName: 'OLAS-WETH',
       bridgedLpTokenAddress: '0x36B203Cb3086269f005a4b987772452243c0767f',
       lpTokenAddress: '0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f8'
