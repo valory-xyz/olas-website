@@ -40,9 +40,9 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/gnosis-chain/pool/0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067',
     },
-    bridge: { name: 'Omnibridge', url: 'https://omnibridge.gnosischain.com/bridge' },
+    bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
     bond: {
-      guideUrl: 'https://olas.network/blog/new-bonding-products-on-gnosis-chain-proposed',
+      guideUrl: 'https://olas.network/blog/olas-liquidity-on-gnosis-chain',
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
       lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985'
