@@ -75,7 +75,7 @@ export const TOKEN_DETAILS = [
       name: 'Orca',
       url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
     },
-    bridge: { name: 'Portal', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
+    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
     bond: null
   },
   {
