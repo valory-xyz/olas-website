@@ -22,7 +22,7 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Bond now
+            Operate now
           </a>
           <div className={TEXT}>
             *rewards are dependent on individual agent implementations as well as operator performance.
