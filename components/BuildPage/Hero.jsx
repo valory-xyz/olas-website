@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React from 'react';
 import SectionWrapper from '@/components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
-import { CTA, CTA_LINK } from './utils';
+import { CTA_LINK } from './utils';
 
 const Hero = () => (
   <SectionWrapper customClasses="py-16" backgroundType="SUBTLE_GRADIENT">
