@@ -5,7 +5,7 @@ const sectionId = 'build-with-olas';
 const heading = 'Build with OLAS';
 const image = {
   alt: 'OLAS Utility',
-  path: '/images/dev-rewards-page/get-started.png',
+  path: '/images/build-page/get-started.png',
   width: '500',
   height: '474',
 };
