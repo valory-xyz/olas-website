@@ -2,11 +2,11 @@ import PageWrapper from '@/components/Layout/PageWrapper';
 import Meta from '@/components/Meta';
 import Build from '@/components/BuildPage';
 
-const DevRewardsPage = () => (
+const BuildPage = () => (
   <PageWrapper>
     <Meta pageTitle="Olas Build" />
     <Build />
   </PageWrapper>
 );
 
-export default DevRewardsPage;
+export default BuildPage;
