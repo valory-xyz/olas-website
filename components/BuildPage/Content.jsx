@@ -13,32 +13,62 @@ const Content = () => (
       <p className={pClass}>OLAS Build Rewards is a part of the protocol that facilitates the distribution of capital to developers who contribute to various services in the ecosystem. This system is designed to reward both the contribution of code components and the provision of agents to the services.</p>
       <strong className={pClass}>Here's how the distribution works:</strong>
       <ul className={ulClass}>
-        <li>Individuals holding over 10k veOLAS (a locked variant of the OLAS token) have the ability to donate ETH to services via the protocol.</li>
-        <li>The donated ETH is then distributed among developers who have contributed to that particular service. Part of it goes to those who have provided code components, and part goes to those who have supplied agents.</li>
-        <li>A small portion of the ETH is set to go to the protocol itself, although currently, this is set to zero, meaning none goes to the protocol at the moment.</li>
-        <li>No portion of the ETH goes directly to the service owner.</li>
+        <li>
+          Anyone has the ability to donate ETH to services via the protocol.
+        </li>
+        <li>The donated ETH is then distributed among developers who have contributed to that particular service. Specifically, donations to the protocol are distributed to agent or component developers. No portion of the donations goes to the service owners.</li>
+        <li>
+          A portion of the ETH can go to the protocol itself, although currently, this is set to zero. So no portion of donations goes to the protocol at the moment.
+        </li>
       </ul>
-      <p className={pClass}>In addition to ETH, the protocol also provides top-ups in the form of OLAS tokens to those above the veOLAS threshold. These are allocated proportionally to the amount of ETH that each contributor has directed towards other services.</p>
-      <p className={pClass}>Developers receive different splits of ETH and OLAS top-ups, which can vary, but an example ratio provided is 30% to 70%. This ratio is a protocol parameter that can be configured by the Olas DAO.</p>
-      <strong className={pClass}>An illustrative example explains the reward mechanism further:</strong>
+      <p className={pClass}>
+        Additionally, whether a donor of a service or service owner holds at least 10k veOLAS, the protocol also provides top-ups in the form of OLAS tokens to component and agent developers within the service.
+      </p>
+
+      <p className={pClass}>Developers receive different splits of ETH and OLAS top-ups proportionally to the usefulness of their code within the ecosystem.</p>
+      <strong className={pClass}>
+        An illustrative example explains the reward mechanism further:
+      </strong>
       <ul className={ulClass}>
-        <li>There are two services within the protocol.</li>
-        <li>Service #1 consists of an agent and a component, each owned by different developers.</li>
-        <li>Service #2 is similar but includes two components, each with their respective owners.</li>
-        <li>A developer, owning more than 10k veOLAS, donates 1 ETH to each service.</li>
+        <li>
+          There are two services within the protocol.
+        </li>
+        <li>
+          Service #1 consists of an agent owned by the developer D1 and a component owned by developer D2.
+        </li>
+        <li>Service #2 consists of  an agent owned by the developer D3 and two components owned by developer D4 and D5 respectively.</li>
       </ul>
-      <strong className={pClass}>Based on a 30/70 agent/component split, the breakdown of ETH earnings would be as follows:</strong>
+      <p className={pClass}>
+        Assume that a donor, holding more than 10k veOLAS, donates 1 ETH to each service. Additionally, assume that the ratio for ETH donation reserved to components is 83% while 17% for agents, similarly, assume that the ratio for top-ups donation reserved to components is 82% while 18% for agents.
+        <a href="#footnote-1"><sup>1</sup></a>
+      </p>
+
+      <p className={pClass}>
+        Then the distribution of ETH rewards is the following.
+      </p>
       <ul className={ulClass}>
-        <li>Service #1 earns no ETH directly. However, the agent's developer earns 0.3 ETH, and the component's developer receives 0.7 ETH.</li>
-        <li>Service #2, likewise, earns no ETH directly. The agent's developer and the two component developers split the ETH, each earning portions according to the predetermined ratio.</li>
+        <li>Service #1: The agent's developer D1 earns 0.17 ETH, and the component's developer D2 receives 0.83 ETH.</li>
+        <li>Service #2: The agent's developer D3 earns 0.17 ETH, and component developers D4 and D5 receive 0.415 ETH each.</li>
       </ul>
-      <strong className={pClass}>For OLAS rewards, assuming there is 100k OLAS available for this epoch:</strong>
+      <p className={pClass}>
+        For OLAS rewards, assuming there is 10k OLAS available for this epoch, the OLAS top-up distribution is the following.
+      </p>
       <ul className={ulClass}>
-        <li>Service #1 would have 50k OLAS allocated for contributors. The agent's developer would receive 15k OLAS (30% of 50k), and the component's developer would receive 35k OLAS (70% of 50k).</li>
-        <li>Service #2 would also have 50k OLAS allocated for contributors. The agent's developer would receive 15k OLAS, while the two components' developers would receive 17.5k OLAS each, reflecting a 35% share of the 50k OLAS.</li>
+        <li>Service #1: The agent's developer D1 would receive 900 OLAS, and the component's developer D2 would receive 4100 OLAS.</li>
+        <li>Service #2: The agent's developer would receive 900k OLAS, while the two component developers D4 and D5 would receive 2050 OLAS each.</li>
       </ul>
-      <p className={pClass}>If only one service had received ETH donations, the contributors to that service would have received a larger share of OLAS, demonstrating the incentive mechanism's fluidity and proportionality.</p>
-      <p className={pClass}>The OLAS Build Rewards system is designed to be a dynamic and fair way to incentivise and reward the community of developers who contribute to the growth and maintenance of services within the OLAS ecosystem.</p>
+      <p className={pClass}>
+        If service #1 had received a more substantial ETH donation, or if developer D1 had possessed ownership of one or both components of the alternative service, developers D1 and D2 associated with that service would have received a higher allocation of OLAS and ETH. This illustrates how the incentive mechanism effectively aligned incentives with the usefulness of code contributions within the ecosystem.
+      </p>
+      <p className={pClass}>
+        The OLAS Build Rewards system is designed to be a dynamic and fair way to incentivise and reward the community of developers who contribute to the growth and maintenance of services within the OLAS ecosystem.
+      </p>
+      <em id="footnote-1">
+        <sup>1</sup>
+        {' '}
+        Note that the ratio is a protocol parameter that can be configured by the Olas DAO via a governance vote.
+      </em>
+
     </div>
   </SectionWrapper>
 );
