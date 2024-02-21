@@ -18,7 +18,7 @@ const Content = () => (
         <li>A small portion of the ETH is set to go to the protocol itself, although currently, this is set to zero, meaning none goes to the protocol at the moment.</li>
         <li>No portion of the ETH goes directly to the service owner.</li>
       </ul>
-      <p className={pClass}>In addition to ETH, the protocol also provides top-ups in the form of OLAS tokens. These are allocated proportionally to the amount of ETH that each contributor has directed towards other services.</p>
+      <p className={pClass}>In addition to ETH, the protocol also provides top-ups in the form of OLAS tokens to those above the veOLAS threshold. These are allocated proportionally to the amount of ETH that each contributor has directed towards other services.</p>
       <p className={pClass}>Developers receive different splits of ETH and OLAS top-ups, which can vary, but an example ratio provided is 30% to 70%. This ratio is a protocol parameter that can be configured by the Olas DAO.</p>
       <strong className={pClass}>An illustrative example explains the reward mechanism further:</strong>
       <ul className={ulClass}>
