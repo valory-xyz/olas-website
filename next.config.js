@@ -20,7 +20,12 @@ module.exports = {
         destination: 'https://docs.autonolas.network/protocol',
         permanent: false,
       },
-    ]
+      {
+        source: '/dev-rewards',
+        destination: '/build',
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [
@@ -53,7 +58,7 @@ module.exports = {
             value: 'public, max-age=31536000, must-revalidate',
           },
         ],
-      }
+      },
     ];
   },
 };
