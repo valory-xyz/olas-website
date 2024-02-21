@@ -8,7 +8,7 @@ const CTA = () => (
       <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center">
           <SectionHeading color="text-purple-950" size="text-4xl md:text-6xl lg:text-4xl">
-            Start earning dev rewards
+            Start earning rewards
           </SectionHeading>
           <a
             href={CTA_LINK}
