@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { BasicSection } from '../ui/section/basic';
-import { Button } from '../ui/button';
+import { Button } from '../Button';
 
 const sectionId = 'build-with-olas';
 const heading = 'Build with OLAS';
@@ -10,18 +9,21 @@ const image = {
   width: '500',
   height: '474',
 };
-const links = {
+
+const buttonLinks = {
   exploreBuildPath: 'https://build.olas.network',
   visitTheDocs: '#',
 };
 
+const pClass = 'text-xl font-light text-gray-600';
+
 const body = (
   <div className="flex flex-col gap-5">
-    <p>The Olas protocol is designed to reward developers who make useful code contributions.</p>
-    <p>You can build full services, individual agents or even just AI tools and other code components.</p>
+    <p className={pClass}>The Olas protocol is designed to reward developers who make useful code contributions.</p>
+    <p className={pClass}>You can build full services, individual agents or even just AI tools and other code components.</p>
     <div className="flex gap-5">
-      <Button href={links.exploreBuildPath}>Explore Build Paths</Button>
-      <Link href={links.visitTheDocs}>Visit the Docs</Link>
+      <Button href={buttonLinks.exploreBuildPath}>Explore Build Paths</Button>
+      <Button href={buttonLinks.visitTheDocs} type="secondary">Visit the Docs</Button>
     </div>
   </div>
 );
