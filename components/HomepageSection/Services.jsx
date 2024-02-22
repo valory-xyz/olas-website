@@ -4,7 +4,7 @@ import services from "@/data/services.json";
 import serviceCategories from "@/data/serviceCategories.json";
 import core from "@/data/core.json";
 import chains from "@/data/chains.json";
-import Badge from "../Badge";
+import builders from "@/data/builders.json";
 import SectionWrapper from "@/components/Layout/SectionWrapper";
 import SectionHeading from "../SectionHeading";
 import ServiceCategoryCard from "./ServiceCategoryCard";
@@ -23,13 +23,15 @@ const Item = ({ service, category }) => {
       <SectionWrapper
         customClasses="rounded-t-xl border-t-0 border-b"
       >
-        <Image
-          src={`/images/${category}/${service.iconFilename}`}
-          alt={service.name}
-          width={300}
-          height={300}
-          className="mx-auto p-2"
-        />
+        <div style={{ width: "100%", height: 200, display: "flex" }}>
+          <Image
+            src={`/images/${category}/${service.iconFilename}`}
+            alt={service.name}
+            width={300}
+            height={300}
+            className="mx-auto p-2 my-auto"
+          />          
+        </div>
       </SectionWrapper>
       <div className="p-4 md:p-6 lg:p-4">
         <h2 className="font-bold text-xl text-gray-700">
@@ -195,6 +197,36 @@ const ChainsSubsection = () => {
   );
 };
 
+const BuildersSubsection = () => {
+  return (
+    <SectionWrapper id="builders">
+      <div className="max-w-screen-xl mb-12 mx-auto">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">
+              Builders
+            </h2>
+
+            <p className="mt-4 text-xl font-light md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
+              Olas has a growing ecosystem of talented developer organizations, pushing the autonomous edge every day, build autonomous agents and services.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {builders.map((builder) => {
+              return (
+                <div key={builder.id}>
+                  <Item service={builder} category="builders" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+  );
+};
+
 const Services = () => {
   return (
     <SectionWrapper id="ecosystem">
@@ -211,6 +243,7 @@ const Services = () => {
       <ServicesSubsection />
       <KitsSubsection />
       <ChainsSubsection />
+      <BuildersSubsection />
     </SectionWrapper>
   );
 };
