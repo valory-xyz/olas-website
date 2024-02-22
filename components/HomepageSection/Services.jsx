@@ -208,7 +208,7 @@ const BuildersSubsection = () => {
             </h2>
 
             <p className="mt-4 text-xl font-light md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
-              Olas has a growing ecosystem of talented developer organizations, pushing the autonomous edge every day, build autonomous agents and services.
+              Olas has a growing ecosystem of talented developer organizations, pushing the autonomous edge every day, building autonomous agents and services.
             </p>
           </div>
 
