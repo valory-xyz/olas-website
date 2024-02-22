@@ -5,8 +5,8 @@ const pClass = 'text-xl';
 const ulClass = 'ml-6 list-disc text-xl flex flex-col gap-3';
 
 const Content = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-    <div className="max-w-screen-xl mx-auto flex flex-col gap-5">
+  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id='rewards'>
+    <div className="max-w-[800px] mx-auto flex flex-col gap-5">
       <H1 className="mb-12">
         How do Build Rewards work?
       </H1>
@@ -55,7 +55,7 @@ const Content = () => (
       </p>
       <ul className={ulClass}>
         <li>Service #1: The agent's developer D1 receives 900 OLAS and the component's developer D2 receives 4100 OLAS.</li>
-        <li>Service #2: The agent's developer D3 receives 900k OLAS, while the component developers D4 and D5 receive 2050 OLAS each.</li>
+        <li>Service #2: The agent's developer D3 receives 900 OLAS, while the component developers D4 and D5 receive 2050 OLAS each.</li>
       </ul>
       <p className={pClass}>
         If service #1 had received a more substantial ETH donation, or if developer D1 had possessed ownership of one or both components of the alternative service, developers D1 and D2 would have received a higher allocation of OLAS and ETH. This illustrates how the incentive mechanism effectively aligned incentives with the usefulness of code contributions within the services in the ecosystem.

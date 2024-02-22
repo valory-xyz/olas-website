@@ -137,5 +137,12 @@
     "platform": "YouTube",
     "platform_link": "https://www.youtube.com/watch?v=Iw5QLCZiXlQ&t=155s",
     "imageFilename": "gnosisAI.png"
+  },
+  {
+    "date": "27-Jan-24",
+    "title": "David Minarsch: Autonolas - Autonomous AI Agents",
+    "platform": "Spotify",
+    "platform_link": "https://open.spotify.com/episode/11iywoxEydmel2iwojBjIN",
+    "imageFilename": "david-minarsch-on-epicenter.png"
   }
 ]

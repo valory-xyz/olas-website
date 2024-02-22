@@ -10,7 +10,7 @@ const Content = () => {
       <div id="resources" />
       <h1 className="text-heading text-gray-800 mb-12">Dive in</h1>
       <div className="mb-12">
-        <Videos limit={2} />
+        <Videos limit={3} />
       </div>
       <div className="mb-12">
         <Articles limit={3} showSeeAll />

@@ -78,5 +78,21 @@
     "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["build"]
+  },
+  {
+    "id": "f48a1ee0-d19c-11ee-9e5c-f9b4f0d6e638",
+    "title": "OLAS Dune Dashboard",
+    "description": "Dune dashboard showing activity across the Olas ecosystem",
+    "url": "https://dune.com/adrian0x/olas",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "12aad400-d19d-11ee-9e5c-f9b4f0d6e638",
+    "title": "Staking Dashboard",
+    "description": "Dune dashboard showing staking activity across the Olas ecosystem",
+    "url": "https://dune.com/pi_/staker-expeditions",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]

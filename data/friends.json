@@ -37,7 +37,7 @@
   },
   {
     "id": "dbf8fe26-6d29-483c-abbd-fccf302d98a9",
-    "name": "postmint",
+    "name": "Postmint",
     "url": "https://www.postmint.xyz/",
     "imageFilename": "postmint.png"
   },
@@ -58,5 +58,53 @@
     "name": "Gnosis",
     "url": "https://www.gnosis.io/",
     "imageFilename": "gnosis.svg"
+  },
+  {
+    "id": "c8b2129b-4c7a-4acf-a530-6bda008a2773",
+    "name": "Nevermined",
+    "url": "https://nevermined.io/",
+    "imageFilename": "nevermined.png"
+  },
+  {
+    "id": "ce126b05-0ac9-4a1c-9b68-e117eb7ede0e",
+    "name": "Naptha AI",
+    "url": "https://www.naptha.ai/",
+    "imageFilename": "naptha-ai.png"
+  },
+  {
+    "id": "2d21690f-0500-4bcc-9caa-40b0ff7e8c72",
+    "name": "Origin Trail",
+    "url": "https://www.origintrail.io/",
+    "imageFilename": "origin-trail.png"
+  },
+  {
+    "id": "6853c5f6-eb3f-4671-b9b4-94d896cf1688",
+    "name": "Omen",
+    "url": "https://aiomen.eth.limo/#/liquidity",
+    "imageFilename": "omen.svg"
+  },
+  {
+    "id": "8b677149-dd61-4582-b305-5dec0c737c85",
+    "name": "Kleros",
+    "url": "https://kleros.io/",
+    "imageFilename": "kleros.png"
+  },
+  {
+    "id": "d0211bbd-2672-486f-af65-8523652b9fd0",
+    "name": "Safe",
+    "url": "https://safe.global/",
+    "imageFilename": "safe.svg"
+  },
+  {
+    "id": "30546c11-e354-457a-95ad-91a2b07f71c5",
+    "name": "FLock",
+    "url": "https://flock.io/",
+    "imageFilename": "flock.svg"
+  },
+  {
+    "id": "c378520f-0721-4d3f-a968-1193715cb68e",
+    "name": "8baller",
+    "url": "https://twitter.com/8baller11",
+    "imageFilename": "8baller.svg"
   }
 ]
