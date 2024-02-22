@@ -215,7 +215,7 @@ const BuildersSubsection = () => {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {builders.map((builder) => {
               return (
-                <div key={builder.id}>
+                <div key={builder.id} className="grayscale">
                   <Item service={builder} category="builders" />
                 </div>
               );

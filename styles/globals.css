@@ -80,3 +80,7 @@
     height: unset !important;
   }
 }
+
+.grayscale {
+  filter: grayscale(100%);
+}
