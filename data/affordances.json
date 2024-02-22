@@ -16,9 +16,9 @@
     "description": "Get rewards when you add useful code to the protocol.",
     "cta": {
       "buttonText": "Build now",
-      "url": "/dev-rewards/#get-started"
+      "url": "https://build.olas.network/"
     },
-    "learnMoreUrl": "/dev-rewards",
+    "learnMoreUrl": "/build",
     "imageFilename": "olas-dev-rewards.svg"
   },
   {

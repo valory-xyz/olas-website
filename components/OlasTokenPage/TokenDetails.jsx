@@ -29,7 +29,8 @@ export const TOKEN_DETAILS = [
       guideUrl: 'https://olas.network/blog/inaugural-bonding-programme-proposal',
       lpTokenName: 'OLAS-ETH',
       bridgedLpTokenAddress: null,
-      lpTokenAddress: '0x09d1d767edf8fa23a64c51fa559e0688e526812f'
+      lpTokenAddress: '0x09d1d767edf8fa23a64c51fa559e0688e526812f',
+      bridge: null,
     },
   },
   {
@@ -42,10 +43,11 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
     bond: {
-      guideUrl: 'https://olas.network/blog/olas-liquidity-on-gnosis-chain',
+      guideUrl: 'https://olas.network/blog/new-bonding-products-on-gnosis-chain-proposed',
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
-      lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985'
+      lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985',
+      lpTokenBridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
     },
   },
   {
@@ -57,14 +59,18 @@ export const TOKEN_DETAILS = [
       url: 'https://app.balancer.fi/#/polygon/pool/0x62309056c759c36879cde93693e7903bf415e4bc000200000000000000000d5f',
     },
     bridge: {
-      name: 'Wormhole: Portal Token Bridge',
-      url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      name: 'Polygon Portal',
+      url: 'https://portal.polygon.technology/bridge',
     },
     bond: {
       guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
       lpTokenName: 'WMATIC-OLAS',
       bridgedLpTokenAddress: '0xf9825A563222f9eFC81e369311DAdb13D68e60a4',
-      lpTokenAddress: '0x62309056c759c36879cde93693e7903bf415e4bc'
+      lpTokenAddress: '0x62309056c759c36879cde93693e7903bf415e4bc',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
     },
   },
   {
@@ -86,12 +92,16 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
     },
-    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
+    bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum' },
     bond: {
       guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
       lpTokenName: 'OLAS-WETH',
       bridgedLpTokenAddress: '0x36B203Cb3086269f005a4b987772452243c0767f',
-      lpTokenAddress: '0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f8'
+      lpTokenAddress: '0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f8',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
     }
   },
 ];
@@ -119,7 +129,7 @@ export const TokenDetails = () => (
                 <TableHead className="text-left border">Network</TableHead>
                 <TableHead className="text-left border">Get OLAS</TableHead>
                 <TableHead className="text-left border">Token Address</TableHead>
-                <TableHead className="text-left border">Bridge</TableHead>
+                <TableHead className="text-left border">Bridge from Ethereum to Network</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -38,7 +38,7 @@ const UsagePieChart = ({ epoch, split, loading }) => {
               {loading ? "--" : split?.developers}%
             </span>{" "}
             of new tokens go to{" "}
-            <Link href="/dev-rewards" className="text-cyan-500 font-bold">
+            <Link href="/build" className="text-cyan-500 font-bold">
               Developers
             </Link>
           </div>
