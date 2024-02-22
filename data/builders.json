@@ -1,0 +1,40 @@
+[
+    
+  {
+    "id": "f3e3e3e3-3e3e-3e3e-3e3e-3e3e3e3e3e3e",
+    "name": "8baller",
+    "url": "https://twitter.com/8baller11",
+    "iconFilename": "8baller.svg"
+  },
+  {
+    "id": "c8b2129b-4c7a-4acf-a530-6bda008a2773",
+    "name": "Nevermined",
+    "url": "https://nevermined.io/",
+    "iconFilename": "nevermined.png"
+  },
+  
+  {
+    "id": "ce126b05-0ac9-4a1c-9b68-e117eb7ede0e",
+    "name": "Naptha AI",
+    "url": "https://www.naptha.ai/",
+    "iconFilename": "naptha-ai.png"
+  },  
+  {
+    "id": "dbf8fe26-6d29-483c-abbd-fccf302d98a9",
+    "name": "Postmint",
+    "url": "https://www.postmint.xyz/",
+    "iconFilename": "postmint.png"
+  },
+  {
+    "id": "8c7282e2-15fc-4736-91cc-b9c372cb9ec8",
+    "name": "Valory",
+    "url": "https://www.valory.xyz/",
+    "iconFilename": "valory.png"
+  },
+  {
+    "id": "bd4aebf4-0dec-4ed0-969b-15face91be42",
+    "name": "Gnosis",
+    "url": "https://www.gnosis.io/",
+    "iconFilename": "gnosis.svg"
+  }
+]
