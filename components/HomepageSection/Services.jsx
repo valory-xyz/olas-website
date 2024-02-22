@@ -23,7 +23,7 @@ const Item = ({ service, category }) => {
       <SectionWrapper
         customClasses="rounded-t-xl border-t-0 border-b"
       >
-        <div style={{ width: "100%", height: 200, display: "flex" }}>
+        <div className="image-container" style={{ height: 200, display: "flex" }}>
           <Image
             src={`/images/${category}/${service.iconFilename}`}
             alt={service.name}
