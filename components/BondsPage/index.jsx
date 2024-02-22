@@ -27,7 +27,7 @@ const BondingDetailsSection = () => {
               <TableHead>Pool Symbol</TableHead>
               <TableHead>LP Token Address</TableHead>
               <TableHead>Bridged LP Token Address</TableHead>
-              <TableHead>Bridge</TableHead>
+              <TableHead>Bridge LP Token from Network to Ethereum</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -39,7 +39,7 @@ const BondingDetailsSection = () => {
                 <TableCell>{network?.bond?.lpTokenName}</TableCell>
                 <TableCell>{network?.bond?.lpTokenAddress ? <ExternalLink href={network?.explorerBaseUrl + network?.bond?.lpTokenAddress}>{truncateAddress(network?.bond?.lpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
                 <TableCell>{network?.bond?.bridgedLpTokenAddress ? <ExternalLink href={`https://etherscan.io/token/${network?.bond?.bridgedLpTokenAddress}`}>{truncateAddress(network?.bond?.bridgedLpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell>{network?.bridge?.name ? <ExternalLink href={network?.bridge?.url}>{network?.bridge?.name}</ExternalLink> : "n/a"}</TableCell>
+                <TableCell>{network?.bond?.lpTokenBridge ? <ExternalLink href={network?.bond?.lpTokenBridge?.url}>{network?.bond?.lpTokenBridge?.name}</ExternalLink> : "n/a"}</TableCell>
               </TableRow>
             ))}
           </TableBody>
