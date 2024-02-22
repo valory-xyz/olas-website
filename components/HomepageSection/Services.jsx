@@ -23,7 +23,7 @@ const Item = ({ service, category }) => {
       <SectionWrapper
         customClasses="rounded-t-xl border-t-0 border-b"
       >
-        <div className="image-container" style={{ height: 200, display: "flex" }}>
+        <div className="w-full h-[200px] flex">
           <Image
             src={`/images/${category}/${service.iconFilename}`}
             alt={service.name}
@@ -234,7 +234,7 @@ const Services = () => {
         <SectionHeading spacing="mb-6" color="text-purple-950">
           Already making waves
         </SectionHeading>
-        <div className=" text-xl font-light text-gray-600 mx-auto mb-12 lg:w-2/4">
+        <div className="text-xl font-light text-gray-600 mx-auto mb-12 lg:w-2/4">
           Olas&apos; core protocol is live. Many services are in production and
           being used by an emerging app ecosystem.
         </div>
