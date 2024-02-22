@@ -57,8 +57,8 @@ export const TOKEN_DETAILS = [
       url: 'https://app.balancer.fi/#/polygon/pool/0x62309056c759c36879cde93693e7903bf415e4bc000200000000000000000d5f',
     },
     bridge: {
-      name: 'Wormhole: Portal Token Bridge',
-      url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      name: 'Polygon Portal',
+      url: 'https://portal.polygon.technology/bridge',
     },
     bond: {
       guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
@@ -86,7 +86,7 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
     },
-    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
+    bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum' },
     bond: {
       guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
       lpTokenName: 'OLAS-WETH',
@@ -119,7 +119,7 @@ export const TokenDetails = () => (
                 <TableHead className="text-left border">Network</TableHead>
                 <TableHead className="text-left border">Get OLAS</TableHead>
                 <TableHead className="text-left border">Token Address</TableHead>
-                <TableHead className="text-left border">Bridge</TableHead>
+                <TableHead className="text-left border">Bridge from Ethereum to Network</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
