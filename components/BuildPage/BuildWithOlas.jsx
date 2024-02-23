@@ -12,7 +12,7 @@ const image = {
 
 const buttonLinks = {
   exploreBuildPath: 'https://build.olas.network',
-  visitTheDocs: '#',
+  visitTheDocs: 'https://docs.autonolas.network',
 };
 
 const pClass = 'text-xl font-light text-gray-600';
@@ -22,8 +22,8 @@ const body = (
     <p className={pClass}>The Olas protocol is designed to reward developers who make useful code contributions.</p>
     <p className={pClass}>You can build full services, individual agents or even just AI tools and other code components.</p>
     <div className="flex gap-5">
-      <Button href={buttonLinks.exploreBuildPath}>Explore Build Paths</Button>
-      <Button href={buttonLinks.visitTheDocs} type="secondary">Visit the Docs</Button>
+      <Button href={buttonLinks.exploreBuildPath} isExternal>Explore Build Paths</Button>
+      <Button href={buttonLinks.visitTheDocs} type="secondary" isExternal>Visit the Docs</Button>
     </div>
   </div>
 );
