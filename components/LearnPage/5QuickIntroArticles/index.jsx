@@ -12,7 +12,6 @@ const QuickIntroArticles = () => {
     const fetchEducationArticles = async () => {
       const articles = await getEducationArticles();
       setEducationArticles(articles);
-      console.log(articles);
     };
 
     fetchEducationArticles();
@@ -21,9 +20,8 @@ const QuickIntroArticles = () => {
   return (
   <div className="section" id="quick-intro-articles">
     <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">Quick intro articles</h2>
-    {JSON.stringify(educationArticles)}
     <div className="flex justify-end">
-      <Link href="/education-articles" className="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+      <Link href="/education-articles" className="text-blue-600 hover:text-blue-800 visited:text-purple-600" legacyBehavior>
         See all education articles
       </Link>
     </div>
@@ -35,7 +33,7 @@ const QuickIntroArticles = () => {
 
         return (
           <div key={`articles-${id}`}>
-            <Link href={`/education-articles/${id}`}>
+            <Link href={`/learn/education-articles/${id}`} legacyBehavior>
               <a className="column">
                 <div
                   className="w-full h-64 bg-cover bg-center"

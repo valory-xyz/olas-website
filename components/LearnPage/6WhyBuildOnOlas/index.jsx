@@ -19,10 +19,10 @@ const LIST = [
   },
 ];
 
-const WhyBuildOnAutonolas = () => (
-  <div className="section bg-gray-100 py-10" id="why-build-on-autonolas">
-    <div className="header text-center" title="Why build on Autonolas?">
-      <h2>Why build on Autonolas?</h2>
+const WhyBuildOnOlas = () => (
+  <div className="section bg-gray-100 py-10" id="why-build-on-olas">
+    <div className="header text-center" title="Why build on Olas?">
+      <h2>Why build on Olas?</h2>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -30,7 +30,7 @@ const WhyBuildOnAutonolas = () => (
         <div key={imageUrl} className={`column column-${index + 1}`}>
           <div className="img-container">
             <img
-              src={`/images/learn/6WhyBuildOnAutonolas/${imageUrl}.png`}
+              src={`/images/learn/6WhyBuildOnOlas/${imageUrl}.png`}
               alt={`${heading} Icon`}
             />
           </div>
@@ -46,4 +46,4 @@ const WhyBuildOnAutonolas = () => (
   </div>
 );
 
-export default WhyBuildOnAutonolas;
+export default WhyBuildOnOlas;

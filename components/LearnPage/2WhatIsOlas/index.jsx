@@ -18,15 +18,15 @@ const LIST = [
   },
 ];
 
-const WhatIsAutonolas = () => (
-  <section className="section bg-gray-100 py-10" id="what-is-autonolas">
+const WhatIsOlas = () => (
+  <section className="section bg-gray-100 py-10" id="what-is-olas">
     <div className="max-w-4xl mx-auto px-4">
       <h2 className="text-3xl font-bold mb-6">LEARN</h2>
 
       <div className="text-5xl font-bold mb-6">
         What&nbsp;
         <span className="text-3xl">is&nbsp;</span>
-        Autonolas?
+        Olas?
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -34,7 +34,7 @@ const WhatIsAutonolas = () => (
           <div key={item.imageUrl} className={`flex flex-col items-center p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200`}>
             <div className="w-24 h-24 mb-4">
               <Image
-                src={`/images/learn/2WhatIsAutonolas/${item.imageUrl}.png`}
+                src={`/images/learn/2WhatIsOlas/${item.imageUrl}.png`}
                 alt={`${item.heading} Icon`}
                 width={96}
                 height={96}
@@ -50,5 +50,5 @@ const WhatIsAutonolas = () => (
   </section>
 );
 
-export default WhatIsAutonolas;
+export default WhatIsOlas;
 

@@ -35,6 +35,7 @@ export const getEducationArticle = async id => {
     populate: '*',
   };
   const json = await apiCall(`education-articles/${id}`, params);
+  console.log('json', json)
   const data = get(json, 'data') || null;
   return data;
 };

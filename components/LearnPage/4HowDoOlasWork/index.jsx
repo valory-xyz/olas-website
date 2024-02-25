@@ -23,7 +23,7 @@ const WhatAreWeBuilding = () => (
       <div className="flex-1">
         <div className="img-container">
           <Image
-            src="/images/learn/4HowDoAutonolasWork/main.svg"
+            src="/images/learn/4HowDoOlasWork/main.svg"
             alt="How do autonomous services work?"
             width={500}
             height={500}
@@ -33,7 +33,7 @@ const WhatAreWeBuilding = () => (
 
       <div className="flex-1">
         {DATA.map((item, index) => (
-          <div className="content my-4" key={`how-autonolas-${index}`}>
+          <div className="content my-4" key={`how-olas-${index}`}>
             <div className="sr-no w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-4">{index + 1}</div>
             <div className="text">{item}</div>
           </div>
