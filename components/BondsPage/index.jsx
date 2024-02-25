@@ -10,8 +10,6 @@ import { truncateAddress } from "../OlasTokenPage/TokenDetails";
 import { TOKEN_DETAILS } from "../OlasTokenPage/TokenDetails";
 
 const BondingDetailsSection = () => {
-  const networks = TOKEN_DETAILS.filter(token => token.bond !== null);
-
   return (
     <SectionWrapper>
       <a id="bonding-details" />
@@ -30,15 +28,15 @@ const BondingDetailsSection = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {networks?.map((network, index) => (
+            {TOKEN_DETAILS?.map((network, index) => (
               <TableRow key={index}>
                 <TableCell>{network?.network}</TableCell>
-                <TableCell><ExternalLink href={network?.bond?.guideUrl}>Guide</ExternalLink></TableCell>
+                <TableCell>{network?.bond?.guideUrl ? <ExternalLink href={network?.bond?.guideUrl}>Guide</ExternalLink> : "TBC"}</TableCell>
                 <TableCell>{network?.exchange?.name}</TableCell>
-                <TableCell>{network?.bond?.lpTokenName}</TableCell>
-                <TableCell>{network?.bond?.lpTokenAddress ? <ExternalLink href={network?.explorerBaseUrl + network?.bond?.lpTokenAddress}>{truncateAddress(network?.bond?.lpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell>{network?.bond?.bridgedLpTokenAddress ? <ExternalLink href={`https://etherscan.io/token/${network?.bond?.bridgedLpTokenAddress}`}>{truncateAddress(network?.bond?.bridgedLpTokenAddress)}</ExternalLink> : "n/a"}</TableCell>
-                <TableCell>{network?.bond?.lpTokenBridge ? <ExternalLink href={network?.bond?.lpTokenBridge?.url}>{network?.bond?.lpTokenBridge?.name}</ExternalLink> : "n/a"}</TableCell>
+                <TableCell>{network?.bond?.lpTokenName ? network?.bond?.lpTokenName : 'TBC'}</TableCell>
+                <TableCell>{network?.bond?.lpTokenAddress ? <ExternalLink href={network?.explorerBaseUrl + network?.bond?.lpTokenAddress}>{truncateAddress(network?.bond?.lpTokenAddress)}</ExternalLink> : "TBC"}</TableCell>
+                <TableCell>{network?.bond?.bridgedLpTokenAddress ? <ExternalLink href={`https://etherscan.io/token/${network?.bond?.bridgedLpTokenAddress}`}>{truncateAddress(network?.bond?.bridgedLpTokenAddress)}</ExternalLink> : "TBC"}</TableCell>
+                <TableCell>{network?.bond?.lpTokenBridge ? <ExternalLink href={network?.bond?.lpTokenBridge?.url}>{network?.bond?.lpTokenBridge?.name}</ExternalLink> : "TBC"}</TableCell>
               </TableRow>
             ))}
           </TableBody>

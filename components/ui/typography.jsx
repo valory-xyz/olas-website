@@ -28,7 +28,7 @@ export const ExternalLink = ({ children, className, href }) => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      {children} ↗
+      {children}&nbsp;↗
     </a>
   )
 }

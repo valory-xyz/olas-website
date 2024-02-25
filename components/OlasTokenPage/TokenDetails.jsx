@@ -76,17 +76,6 @@ export const TOKEN_DETAILS = [
     },
   },
   {
-    network: 'Solana',
-    address: 'Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM',
-    explorerBaseUrl: 'https://solscan.io/token/',
-    exchange: {
-      name: 'Orca',
-      url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
-    },
-    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
-    bond: null
-  },
-  {
     network: 'Arbitrum',
     address: '0x064f8b858c2a603e1b106a2039f5446d32dc81c1',
     explorerBaseUrl: 'https://arbiscan.io/token/',
@@ -100,6 +89,22 @@ export const TOKEN_DETAILS = [
       lpTokenName: 'OLAS-WETH',
       bridgedLpTokenAddress: '0x36B203Cb3086269f005a4b987772452243c0767f',
       lpTokenAddress: '0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f8',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
+    }
+  },
+  {
+    network: 'Solana',
+    address: 'Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM',
+    explorerBaseUrl: 'https://solscan.io/token/',
+    exchange: {
+      name: 'Orca',
+      url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
+    },
+    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
+    bond: {
       lpTokenBridge: {
         name: 'Wormhole: Portal Token Bridge',
         url: 'https://portalbridge.com/advanced-tools/#/transfer',
