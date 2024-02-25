@@ -25,6 +25,11 @@ module.exports = {
         destination: '/build',
         permanent: true,
       },
+      {
+        source: '/bonds',
+        destination: '/bond',
+        permanent: true,
+      },
     ];
   },
   async headers() {
