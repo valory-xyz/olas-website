@@ -1,29 +1,31 @@
 import React from 'react';
 import Link from 'next/link';
-import WhatIsAutonolas from './2WhatIsAutonolas';
+import WhatIsOlas from './2WhatIsOlas';
 import DecentralizedAndSophisticated from './3DecentralizedAndSophisticated';
-import HowDoAutonolasWork from './4HowDoAutonolasWork';
+import HowDoOlasWork from './4HowDoOlasWork';
 import QuickIntroArticles from './5QuickIntroArticles';
-import WhyBuildOnAutonolas from './6WhyBuildOnAutonolas';
+import WhyBuildOnOlas from './6WhyBuildOnOlas';
 import WhatCouldYouBuild from './8WhatCouldYouBuild';
-import Mission from './9Mission';
+// import Mission from './9Mission';
 import PageWrapper from '../Layout/PageWrapper';
+import Meta from '../Meta';
 
 export const LEARN_LIST = [
-  { name: 'What is Autonolas?', id: 'what-is-autonolas' },
+  { name: 'What is Olas?', id: 'what-is-olas' },
   { name: 'What are autonomous services?', id: 'what-are-autonomous-services' },
   {
     name: 'How do autonomous services work?',
     id: 'how-do-autonomous-services-work',
   },
   { name: 'Quick intro articles', id: 'quick-intro-articles' },
-  { name: 'Why build on Autonolas?', id: 'why-build-on-autonolas' },
+  { name: 'Why build on Olas?', id: 'why-build-on-olas' },
   { name: 'What could you build?', id: 'what-could-you-build' },
   { name: 'What’s our mission?', id: 'mission' },
 ];
 
 const LearnPage = () => (
   <PageWrapper>
+    <Meta title='Learn' description='Build your understanding of what Olas is and how it works.' />
     <section className="bg-white shadow-md rounded-lg p-10 mb-10">
       <h2 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Learn</h2>
       <h4 className="text-2xl font-semibold text-center mb-8">Jump To:</h4>
@@ -41,13 +43,13 @@ const LearnPage = () => (
     </section>
 
     <div className="container mx-auto px-4">
-      <WhatIsAutonolas />
+      <WhatIsOlas />
       <DecentralizedAndSophisticated />
-      <HowDoAutonolasWork />
+      <HowDoOlasWork />
       <QuickIntroArticles />
-      <WhyBuildOnAutonolas />
+      <WhyBuildOnOlas />
       <WhatCouldYouBuild />
-      <Mission />
+      {/* <Mission /> */}
     </div>
   </PageWrapper>
 );

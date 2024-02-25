@@ -1,28 +1,28 @@
-import { useRouter } from 'next/router';
-import Image from "next/image";
+import { getEducationArticle } from '@/common-util/api';
 import PageWrapper from '@/components/Layout/PageWrapper';
 import { useEffect, useState } from 'react';
-import { getBlog } from '@/common-util/api';
-import { TEXT, TITLE, markdownComponents } from '@/styles/globals';
-import Markdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
+import { useRouter } from 'next/router';
+// import Image from "next/image";
 import Meta from '@/components/Meta';
 import { Spinner } from '@/components/Spinner';
+import { TEXT, TITLE, markdownComponents } from '@/styles/globals';
 
-const BlogItem = () => {
+const EducationArticle = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const [blogItem, setBlogItem] = useState(null);
+  const { educationArticleId } = router.query;
+  const [educationArticle, setEducationArticle] = useState(null);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      getBlog(id).then(setBlogItem);
+    if (educationArticleId) {
+      getEducationArticle(educationArticleId).then(setEducationArticle);
     }
-  }, [id]);
-  
-  if (!blogItem) return <Spinner />;
+  }, [educationArticleId]);
 
-  const { title, datePublished, body: content, headerImage } = blogItem.attributes;
+  if (!educationArticle) return <Spinner />;
+
+  const { title, body: content, headerImage } = educationArticle.attributes;
   const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
   const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${imagePath}`;
 
@@ -30,7 +30,7 @@ const BlogItem = () => {
     <PageWrapper>
       <Meta pageTitle={title} siteImageUrl={imageUrl} />
       <div className="max-w-3xl mx-auto p-4">
-        {!imageError && (
+        {/* {!imageError && (
           <Image
             src={imageUrl}
             width={headerImage.data[0].attributes.formats.large.width}
@@ -41,18 +41,25 @@ const BlogItem = () => {
               setImageError(true);
             }}
           />
-          )}
+          )} */}
         <div className={`${TITLE.SMALL} mb-4`}>{title}</div>
-        <div className={`${TEXT} mb-4`}>{datePublished}</div>
-        <Markdown
+        <ReactMarkdown
           className={TEXT}
           components={markdownComponents}
         >
           {content}
-        </Markdown>
+        </ReactMarkdown>
       </div>
     </PageWrapper>
   );
 };
 
-export default BlogItem;
+export default EducationArticle;
+
+export async function getServerSideProps({ params }) {
+  return {
+    props: {
+      educationArticleId: params.educationArticleId,
+    },
+  };
+}

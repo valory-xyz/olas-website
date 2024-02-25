@@ -8,6 +8,14 @@
     "tags": ["bonds", "dev-rewards"]
   },
   {
+    "id": "1701827e-54d4-4ba9-98b1-044217ccd85f",
+    "title": "Learn",
+    "description": "Simple explanations of Olas concepts",
+    "url": "/learn",
+    "imageFilename": "docs.svg",
+    "tags": []
+  },
+  {
     "id": "a1ccb876-13f9-46e2-8740-9a7dc7009e20",
     "title": "Whitepaper",
     "description": "Detailed specification of Olas technology and economics",

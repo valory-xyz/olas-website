@@ -12,9 +12,6 @@ export const useBlogItems = async () => {
 
   const { data, error } = useSWR(`${URL}/blog-posts`, fetcher);
 
-
-  console.log('data', data.data);
-
   return {
     blogItems: data.data,
     isLoading: !error && !data,
