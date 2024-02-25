@@ -11,7 +11,6 @@ const apiCall = async (subURL, params) => {
   try {
     const response = await fetch(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`);
     const json = await response.json();
-    console.log('json', json)
     return json;
   } catch (error) {
     console.error(error);
@@ -35,7 +34,6 @@ export const getEducationArticle = async id => {
     populate: '*',
   };
   const json = await apiCall(`education-articles/${id}`, params);
-  console.log('json', json)
   const data = get(json, 'data') || null;
   return data;
 };
