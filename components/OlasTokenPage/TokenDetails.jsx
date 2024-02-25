@@ -15,6 +15,8 @@ export const truncateAddress = (address) => (address
   ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
   : '--');
 
+const BOND_BASE_URL = 'https://bond.olas.network/paths/';
+
 export const TOKEN_DETAILS = [
   {
     network: 'Ethereum',
@@ -26,7 +28,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: null,
     bond: {
-      guideUrl: 'https://olas.network/blog/inaugural-bonding-programme-proposal',
+      guideUrl: BOND_BASE_URL + 'olas-eth-via-uniswap-on-ethereum',
       lpTokenName: 'OLAS-ETH',
       bridgedLpTokenAddress: null,
       lpTokenAddress: '0x09d1d767edf8fa23a64c51fa559e0688e526812f',
@@ -43,7 +45,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
     bond: {
-      guideUrl: 'https://olas.network/blog/new-bonding-products-on-gnosis-chain-proposed',
+      guideUrl: BOND_BASE_URL + 'olas-wxdai-via-balancer-on-gnosis-chain',
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
       lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985',
@@ -63,7 +65,7 @@ export const TOKEN_DETAILS = [
       url: 'https://portal.polygon.technology/bridge',
     },
     bond: {
-      guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
+      guideUrl: BOND_BASE_URL + 'olas-wmatic-via-balancer-on-polygon-pos',
       lpTokenName: 'WMATIC-OLAS',
       bridgedLpTokenAddress: '0xf9825A563222f9eFC81e369311DAdb13D68e60a4',
       lpTokenAddress: '0x62309056c759c36879cde93693e7903bf415e4bc',
@@ -94,7 +96,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum' },
     bond: {
-      guideUrl: 'https://olas.network/blog/bonding-guide-polygon-arbitrum',
+      guideUrl: BOND_BASE_URL + 'olas-weth-via-balancer-on-arbitrum',
       lpTokenName: 'OLAS-WETH',
       bridgedLpTokenAddress: '0x36B203Cb3086269f005a4b987772452243c0767f',
       lpTokenAddress: '0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f8',

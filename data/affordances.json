@@ -16,7 +16,8 @@
     "description": "Get rewards when you add useful code to the protocol.",
     "cta": {
       "buttonText": "Build now",
-      "url": "https://build.olas.network/"
+      "url": "https://build.olas.network/",
+      "external": true
     },
     "learnMoreUrl": "/build",
     "imageFilename": "olas-dev-rewards.svg"
@@ -27,10 +28,10 @@
     "description": "Get discounted OLAS when you lock LP tokens.",
     "cta": {
       "buttonText": "Bond now",
-      "url": "https://tokenomics.olas.network/bonding-products",
+      "url": "https://bond.olas.network/",
       "external": true
     },
-    "learnMoreUrl": "/bonds",
+    "learnMoreUrl": "/bond",
     "imageFilename": "olas-bonds.svg"
   },
   {

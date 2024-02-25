@@ -4,7 +4,6 @@ import { ExternalLink, H1, Link } from "../ui/typography";
 import Content from "./Content";
 import Contribute from "./Contribute";
 import Hero from "./Hero";
-import HowItWorks from "./HowItWorks";
 import NetworkRole from "./NetworkRole";
 import { Card } from "../ui/card";
 import { truncateAddress } from "../OlasTokenPage/TokenDetails";
@@ -52,7 +51,6 @@ const BondingDetailsSection = () => {
 const Bonds = () => {
   return <>
     <Hero />
-    <HowItWorks />
     <BondingDetailsSection />
     <Content />
     <NetworkRole />

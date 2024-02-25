@@ -6,10 +6,10 @@ import { CTA } from "./utils";
 
 const Hero = () => {
   return (
-    <SectionWrapper customClasses='py-16' backgroundType={"SUBTLE_GRADIENT"}>
+    <SectionWrapper customClasses='py-16 border-b' backgroundType={"SUBTLE_GRADIENT"}>
       <div class="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div class="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-          <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">Olas Bonds</div>
+          <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">Olas Bond</div>
           <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12" color="text-purple-900">
             Provide liquidity,<br />
             get discounted OLAS
