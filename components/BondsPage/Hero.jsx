@@ -6,21 +6,29 @@ import { CTA } from "./utils";
 
 const Hero = () => {
   return (
-    <SectionWrapper customClasses='py-16' backgroundType={"SUBTLE_GRADIENT"}>
+    <SectionWrapper customClasses='py-16 border-b' backgroundType={"SUBTLE_GRADIENT"}>
       <div class="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div class="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-          <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">Olas Bonds</div>
+          <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">Olas Bond</div>
           <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12" color="text-purple-900">
             Provide liquidity,<br />
             get discounted OLAS
           </SectionHeading>
           <a
             href={CTA}
-            class="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4"
+            class="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4 lg:mr-4 sm:mb-4"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Bond now
+            Explore bond paths
+          </a>
+          <a
+            href='https://tokenomics.olas.network/bonding-products'
+            class="inline-flex bg-white text-purple-900 items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-primary rounded-lg hover:bg-gray-100 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View bonding products
           </a>
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
