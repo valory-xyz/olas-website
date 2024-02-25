@@ -121,17 +121,6 @@ const WhatCouldYouBuild = () => (
       );
     })}
 
-    <div className="oracle-sell mt-8">
-      <h1 className="text-2xl font-bold">*Future-proof your stack with a customizable oracle</h1>
-      <p className="text-lg oracle-sell-description">
-        Olas Oracles are a unique way to advance the capabilities of your
-        stack.
-      </p>
-      <br />
-      <Link href="/oracles" passHref>
-        <Button>Learn more</Button>
-      </Link>
-    </div>
   </section>
 );
 
