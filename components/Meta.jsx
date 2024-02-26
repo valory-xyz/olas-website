@@ -11,31 +11,35 @@ const Meta = ({pageTitle, siteImageUrl = SITE_DEFAULT_IMAGE_URL }) => {
   
   return (
     <Head>
-      <title>{title}</title>
+      <title key={"title"}>{title}</title>
       
-      <meta name="title" content={title} />
+      <meta name="title" content={title} key={"meta-title"}/>
       <meta
+        key={"meta-description"}
         name="description"
         content={SITE_DESCRIPTION}
       />
 
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={SITE_URL} />
-      <meta property="og:title" content={title} />
+      <meta property="og:type" content="website" key={"og-type"}/>
+      <meta property="og:url" content={SITE_URL} key={"og-url"}/>
+      <meta property="og:title" content={title} key={"og-title"}/>
       <meta
+        key={"og-description"}
         property="og:description"
         content={SITE_DESCRIPTION}
       />
-      <meta property="og:image" content={siteImageUrl} />
+      <meta property="og:image" content={siteImageUrl} key={"og-image"} />
 
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={SITE_URL} />
-      <meta property="twitter:title" content={title} />
+      <meta property="twitter:card" content="summary_large_image" key={"twitter-card"} />
+      <meta property="twitter:url" content={SITE_URL} key={"twitter-url"}/>
+      <meta property="twitter:title" content={title} key={"twitter-title"} />
       <meta
+        key={"twitter-description"}
         property="twitter:description"
         content={SITE_DESCRIPTION}
       />
-      <meta property="twitter:image" content={siteImageUrl} />
+      <meta key={"twitter-image-alt"} 
+        property="twitter:image" content={siteImageUrl} />
     </Head>
   );
 };
