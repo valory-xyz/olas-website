@@ -24,30 +24,7 @@ export const LEARN_LIST = [
   { name: 'What’s our mission?', id: 'mission' },
 ];
 
-const LearnPage = () => <>
-  <Head>
-      <title key={"title"}>Learn | Olas</title>
-      <meta name="title" content="Learn | Olas" key={"meta-title"}/>
-      <meta
-        key={"meta-description"}
-        name="description"
-        content="Build your understanding of what Olas is and how it works."/>
-      <meta property="og:type" content="website" key={"og-type"}/>
-      <meta property="og:url" content="https://olas.network/learn" key={"og-url"}/>
-      <meta property="og:title" content="Learn | Olas" key={"og-title"}/>
-      <meta
-        key={"og-description"}
-        property="og:description"
-        content="Build your understanding of what Olas is and how it works."/>
-      <meta property="og:image" content="https://olas.network/images/meta-tag.png" key={"og-image"} />
-      <meta property="twitter:card" content="summary_large_image" key={"twitter-card"} />
-      <meta property="twitter:url" content="https://olas.network/learn" key={"twitter-url"}/>
-      <meta property="twitter:title" content="Learn | Olas" key={"twitter-title"} />
-      <meta
-        key={"twitter-description"}
-        property="twitter:description"
-        content="Build your understanding of what Olas is and how it works."/>
-  </Head>
+const LearnPage = () => (
   <PageWrapper>
     <Meta title='Learn' description='Build your understanding of what Olas is and how it works.' />
     <section className="bg-white mb-10 container px-4 mt-4">
@@ -76,6 +53,6 @@ const LearnPage = () => <>
       {/* <Mission /> */}
     </div>
   </PageWrapper>
-  </>;
+);
 
 export default LearnPage;
