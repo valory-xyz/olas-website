@@ -15,7 +15,6 @@ const Meta = ({pageTitle, siteImageUrl = SITE_DEFAULT_IMAGE_URL }) => {
       
       <meta name="title" content={title} />
       <meta
-        key={"meta-description"}
         name="description"
         content={SITE_DESCRIPTION}
       />
