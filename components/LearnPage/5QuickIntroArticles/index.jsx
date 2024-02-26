@@ -18,7 +18,7 @@ const QuickIntroArticles = () => {
   }, []);
 
   return (
-  <div className="section" id="quick-intro-articles">
+  <div className="section rounded-lg" id="quick-intro-articles">
     <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">Quick intro articles</h2>
     {/* <div className="flex justify-end">
       <Link href="/education-articles" className="text-blue-600 hover:text-blue-800 visited:text-purple-600" legacyBehavior>

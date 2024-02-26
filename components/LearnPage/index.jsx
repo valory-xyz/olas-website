@@ -9,6 +9,7 @@ import WhatCouldYouBuild from './8WhatCouldYouBuild';
 // import Mission from './9Mission';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
+import Head from 'next/head';
 
 export const LEARN_LIST = [
   { name: 'What is Olas?', id: 'what-is-olas' },
@@ -26,10 +27,10 @@ export const LEARN_LIST = [
 const LearnPage = () => (
   <PageWrapper>
     <Meta title='Learn' description='Build your understanding of what Olas is and how it works.' />
-    <section className="bg-white shadow-md rounded-lg p-10 mb-10">
+    <section className="bg-white mb-10 container px-4 mt-4">
       <h2 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Learn</h2>
       <h4 className="text-2xl font-semibold text-center mb-8">Jump To:</h4>
-      <div className="bg-gray-100 shadow-lg rounded-lg p-6">
+      <div className="bg-gray-100 rounded-lg p-6 mx-auto">
         <ul>
           {LEARN_LIST.map(e => (
             <li key={e.id} className="mb-4">
@@ -46,7 +47,7 @@ const LearnPage = () => (
       <WhatIsOlas />
       <DecentralizedAndSophisticated />
       <HowDoOlasWork />
-      <QuickIntroArticles />
+      {/* <QuickIntroArticles /> */}
       <WhyBuildOnOlas />
       <WhatCouldYouBuild />
       {/* <Mission /> */}

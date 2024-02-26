@@ -19,7 +19,7 @@ const LIST = [
 ];
 
 const WhatIsOlas = () => (
-  <section className="section bg-gray-100 py-10" id="what-is-olas">
+  <section className="section bg-gray-100 py-10 rounded-lg" id="what-is-olas">
     <div className="max-w-4xl mx-auto px-4">
       <h2 className="text-3xl font-bold mb-6">LEARN</h2>
 
@@ -30,8 +30,8 @@ const WhatIsOlas = () => (
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {LIST.map((item, index) => (
-          <div key={item.imageUrl} className={`flex flex-col items-center p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200`}>
+        {LIST.map((item) => (
+          <div key={item.imageUrl} className={`flex flex-col items-center p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 bg-white`}>
             <div className="w-24 h-24 mb-4">
               <Image
                 src={`/images/learn/2WhatIsOlas/${item.imageUrl}.png`}
