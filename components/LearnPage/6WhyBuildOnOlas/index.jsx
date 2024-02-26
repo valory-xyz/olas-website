@@ -20,9 +20,9 @@ const LIST = [
 ];
 
 const WhyBuildOnOlas = () => (
-  <div className="section bg-gray-100 py-10" id="why-build-on-olas">
+  <div className="section bg-gray-100 py-10 p-4 rounded-lg" id="why-build-on-olas">
     <div className="header text-center" title="Why build on Olas?">
-      <h2>Why build on Olas?</h2>
+      <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">Why build on Olas?</h2>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -35,7 +35,7 @@ const WhyBuildOnOlas = () => (
             />
           </div>
           <div className="text-content">
-            <div className="header-text">{heading}</div>
+            <h3 className="text-2xl font-bold mt-4">{heading}</h3>
             <div className="sub-text">{subHeading}</div>
           </div>
         </div>
