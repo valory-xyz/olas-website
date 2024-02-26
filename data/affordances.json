@@ -57,5 +57,17 @@
     },
     "learnMoreUrl": "/operate",
     "imageFilename": "olas-operate.svg"
+  },
+  {
+    "id": "02638f2d-1fa1-46c3-a937-e5dc93c208ab",
+    "title": "Launch",
+    "description": "Discover a market need, coordinate developers to build a service and bring it to market.",
+    "cta": {
+      "buttonText": "Launch now",
+      "url": "https://launch.olas.network/",
+      "external": true
+    },
+    "learnMoreUrl": null,
+    "imageFilename": "olas-launch.svg"
   }
 ]
