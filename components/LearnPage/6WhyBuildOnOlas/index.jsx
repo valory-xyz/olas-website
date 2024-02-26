@@ -35,7 +35,9 @@ const WhyBuildOnOlas = () => (
             />
           </div>
           <div className="text-content">
-            <span className="text-xl font-semibold mb-2">{heading}</span>
+            <span className="flex justify-center">
+              <span className="text-xl font-semibold mb-2">{heading}</span>
+            </span>
             <div className="sub-text">{subHeading}</div>
           </div>
         </div>
