@@ -19,7 +19,7 @@ const LIST = [
 ];
 
 const WhatIsOlas = () => (
-  <section className="section bg-gray-100 py-10" id="what-is-olas">
+  <section className="section bg-gray-100 py-10 rounded-lg" id="what-is-olas">
     <div className="max-w-4xl mx-auto px-4">
       <h2 className="text-3xl font-bold mb-6">LEARN</h2>
 
