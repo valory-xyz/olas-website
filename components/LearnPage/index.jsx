@@ -50,7 +50,7 @@ const LearnPage = () => <>
   </Head>
   <PageWrapper>
     <Meta title='Learn' description='Build your understanding of what Olas is and how it works.' />
-    <section className="bg-white mb-10 container px-4">
+    <section className="bg-white mb-10 container px-4 mt-4">
       <h2 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Learn</h2>
       <h4 className="text-2xl font-semibold text-center mb-8">Jump To:</h4>
       <div className="bg-gray-100 rounded-lg p-6 mx-auto">
