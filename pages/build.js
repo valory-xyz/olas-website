@@ -4,7 +4,7 @@ import Build from '@/components/BuildPage';
 
 const BuildPage = () => (
   <PageWrapper>
-    <Meta pageTitle="Olas Build" />
+    <Meta pageTitle="Build" />
     <Build />
   </PageWrapper>
 );
