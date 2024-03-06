@@ -41,7 +41,6 @@
     "react/prop-types": "off",
     "no-unused-vars": "off",
     "import/extensions": "off",
-    "jsx-a11y/heading-has-content": "off",
     "import/no-named-default": "off",
     "max-len": "off",
     "no-irregular-whitespace": "off",
