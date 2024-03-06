@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import SectionWrapper from '@/components/Layout/SectionWrapper';
-import SectionHeading from '../SectionHeading';
 
 const Framework = () => (
   <SectionWrapper customClasses="py-12" backgroundType="SUBTLE_GRADIENT">

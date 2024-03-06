@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import PageWrapper from '@/components/Layout/PageWrapper';
 import SectionWrapper from '@/components/Layout/SectionWrapper';
-import Videos from '@/components/Content/Videos';
 import SectionHeading from '@/components/SectionHeading';
 import Meta from '@/components/Meta';
 

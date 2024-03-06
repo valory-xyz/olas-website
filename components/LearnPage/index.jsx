@@ -1,10 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
 import WhatIsOlas from './2WhatIsOlas';
 import DecentralizedAndSophisticated from './3DecentralizedAndSophisticated';
 import HowDoOlasWork from './4HowDoOlasWork';
-import QuickIntroArticles from './5QuickIntroArticles';
 import WhyBuildOnOlas from './6WhyBuildOnOlas';
 import WhatCouldYouBuild from './8WhatCouldYouBuild';
 // import Mission from './9Mission';

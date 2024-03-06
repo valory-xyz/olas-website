@@ -187,7 +187,7 @@ const Supply = () => {
                             text: 'OLAS Emitted',
                           },
                           ticks: {
-                            callback(value, index, values) {
+                            callback(value) {
                               // Format y-axis numbers as 20m, not 20,000,000
                               return `${value / 1000000}m`;
                             },

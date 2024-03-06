@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { DOCS_BASE_URL } from '@/common-util/constants';
 import { Menu } from './Menu';
-import { MenuMobileDrawer } from './MenuMobileDrawer';
+// import { MenuMobileDrawer } from './MenuMobileDrawer';
 
 const Header = () => (
   <header className="sticky top-0 z-50 border-b">

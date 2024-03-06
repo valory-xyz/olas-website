@@ -3,37 +3,33 @@ import NetworkApp from './NetworkApp';
 import networkApps from '@/data/networkApps.json';
 import SectionWrapper from '../Layout/SectionWrapper';
 
-const NetworkApps = ({ limit = null }) => {
-  const sortedNetworkApps = networkApps.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  return (
-    <SectionWrapper id="network-apps" backgroundType="NONE">
+const NetworkApps = ({ limit = null }) => (
+  <SectionWrapper id="network-apps" backgroundType="NONE">
+    <div>
       <div>
-        <div>
-          <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
-            Network Apps
-          </h2>
-          {limit !== null && (
-            <div className="mb-4">
-              <Link
-                href="/network-apps"
-                className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
-              >
-                See all ▶
-              </Link>
-            </div>
-          )}
+        <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
+          Network Apps
+        </h2>
+        {limit !== null && (
+        <div className="mb-4">
+          <Link
+            href="/network-apps"
+            className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
+          >
+            See all ▶
+          </Link>
         </div>
-        <div className="grid gap-8 lg:grid-cols-3">
-          {(limit ? networkApps.slice(0, limit) : networkApps).map((networkApp) => (
-            <div key={networkApp.platform_link}>
-              <NetworkApp networkApp={networkApp} />
-            </div>
-          ))}
-        </div>
+        )}
       </div>
-    </SectionWrapper>
-  );
-};
+      <div className="grid gap-8 lg:grid-cols-3">
+        {(limit ? networkApps.slice(0, limit) : networkApps).map((networkApp) => (
+          <div key={networkApp.platform_link}>
+            <NetworkApp networkApp={networkApp} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </SectionWrapper>
+);
 
 export default NetworkApps;

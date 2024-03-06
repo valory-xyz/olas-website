@@ -12,7 +12,7 @@ export const Lead = ({ children, className }) => (
   </p>
 );
 
-export const Upcase = ({ children, className }) => (
+export const Upcase = ({ children }) => (
   <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">{children}</div>
 );
 

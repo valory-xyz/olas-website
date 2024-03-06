@@ -12,7 +12,7 @@ const EducationArticle = () => {
   const router = useRouter();
   const { educationArticleId } = router.query;
   const [educationArticle, setEducationArticle] = useState(null);
-  const [imageError, setImageError] = useState(false);
+  // const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (educationArticleId) {

@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 const features = [
   {
     id: 'f1bec8d4-d16f-4ae5-b8bc-1e3b4fdc7ae7',

@@ -12,7 +12,7 @@ import {
   Table, TableBody, TableCell, TableRow,
 } from '@/components/ui/table';
 import {
-  ExternalLink, H1, Lead, Small, Upcase,
+  ExternalLink, H1, Lead, Upcase,
 } from '@/components/ui/typography';
 
 const resources = [

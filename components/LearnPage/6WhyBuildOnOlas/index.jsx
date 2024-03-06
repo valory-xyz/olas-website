@@ -26,7 +26,7 @@ const WhyBuildOnOlas = () => (
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-      {LIST.map(({ imageUrl, heading, subHeading }, index) => (
+      {LIST.map(({ imageUrl, heading, subHeading }) => (
         <div key={imageUrl} className="flex flex-col items-center p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
           <div className="w-24 h-24 mb-4">
             <img

@@ -9,7 +9,7 @@ export const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 export const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
+const Articles = ({ limit = 1000, showSeeAll = false }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -17,7 +17,7 @@ const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
   };
   const stringifyParams = qs.stringify(params);
 
-  const { data, error, isLoading } = useSWR(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, fetcher);
+  const { data, isLoading } = useSWR(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, fetcher);
 
   const blogItems = data?.data ?? [];
 

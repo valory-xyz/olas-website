@@ -2,7 +2,7 @@ import SectionWrapper from '../Layout/SectionWrapper';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '../ui/table';
-import { ExternalLink, H1, Link } from '../ui/typography';
+import { ExternalLink, H1 } from '../ui/typography';
 import Content from './Content';
 import Contribute from './Contribute';
 import Hero from './Hero';

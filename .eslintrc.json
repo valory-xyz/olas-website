@@ -39,7 +39,6 @@
     "react/forbid-prop-types": "off",
     "react/destructuring-assignment": "off",
     "react/prop-types": "off",
-    "no-unused-vars": "off",
     "import/extensions": "off",
     "import/no-named-default": "off",
     "max-len": "off",

@@ -8,7 +8,7 @@ const Article = ({ article }) => {
   const [imageError, setImageError] = useState(false);
 
   const {
-    title, subtitle, datePublished, slug,
+    title, datePublished, slug,
   } = article.attributes;
   const image = article?.attributes?.headerImage?.data[0]?.attributes?.formats?.large;
   const { url, width, height } = image || {};

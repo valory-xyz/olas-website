@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import SectionWrapper from '@/components/Layout/SectionWrapper';
-import SectionHeading from '@/components/SectionHeading';
 import { H1 } from '../typography';
 
 export const HowToSection = ({
