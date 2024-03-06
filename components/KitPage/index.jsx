@@ -31,7 +31,6 @@ export const KitPage = () => {
             </a>
           </div>
           <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={`${kit.title} Illustration`}
               src={`/images/kits/${kit.id}kit.svg`}
