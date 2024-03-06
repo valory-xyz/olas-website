@@ -9,7 +9,7 @@ import Meta from '../Meta';
 export const KitPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const kit = kits.find((kit) => kit.id === id);
+  const kit = kits.find((item) => item.id === id);
 
   if (!kit) {
     return <div>Kit not found</div>;

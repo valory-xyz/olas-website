@@ -44,7 +44,6 @@
     "import/no-named-default": "off",
     "max-len": "off",
     "no-irregular-whitespace": "off",
-    "no-shadow": "off",
     "import/no-cycle": "off",
     "no-plusplus": "off",
     "no-await-in-loop": "off",

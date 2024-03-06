@@ -23,7 +23,7 @@ const ServiceDetail = () => {
 
   useEffect(() => {
     if (slug) {
-      const matchedService = servicesData.find((service) => service.slug === slug);
+      const matchedService = servicesData.find((item) => item.slug === slug);
       setService(matchedService);
     }
   }, [slug]);

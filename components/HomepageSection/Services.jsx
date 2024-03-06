@@ -83,9 +83,9 @@ const CoreSubsection = () => (
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {core.map((core) => (
-            <div key={core.id}>
-              <Item service={core} category="core" />
+          {core.map((item) => (
+            <div key={item.id}>
+              <Item service={item} category="core" />
             </div>
           ))}
         </div>

@@ -55,11 +55,11 @@ const Supply = () => {
         contractAddress,
       );
 
-      const timeLaunch = await contractInstance.methods.timeLaunch().call();
-      setTimeLaunch(timeLaunch);
+      const newTimeLaunch = await contractInstance.methods.timeLaunch().call();
+      setTimeLaunch(newTimeLaunch);
 
       // Call getInflationForYear method repeatedly for 0 through 12
-      const inflationForYear = [];
+      const newInflationForYear = [];
 
       for (let i = 0; i <= 12; i++) {
         try {
@@ -67,20 +67,20 @@ const Supply = () => {
             .getInflationForYear(i)
             .call();
           // Convert result from wei to eth
-          inflationForYear.push(web3.utils.fromWei(result.toString(), 'ether'));
+          newInflationForYear.push(web3.utils.fromWei(result.toString(), 'ether'));
         } catch (error) {
           console.error(`Error in getInflationForYear for year ${i}:`, error);
         }
       }
 
-      setInflationForYear(inflationForYear);
+      setInflationForYear(newInflationForYear);
 
-      const currentYear = await contractInstance.methods.currentYear().call();
-      setCurrentYear(currentYear);
+      const newCurrentYear = await contractInstance.methods.currentYear().call();
+      setCurrentYear(newCurrentYear);
 
       // Call epochCounter to get the current epoch
-      const epoch = await contractInstance.methods.epochCounter().call();
-      setEpoch(epoch);
+      const newEpoch = await contractInstance.methods.epochCounter().call();
+      setEpoch(newEpoch);
 
       // Use the result as the parameter for mapEpochTokenomics
       const result = await contractInstance.methods
