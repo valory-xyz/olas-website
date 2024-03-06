@@ -1,18 +1,17 @@
-import Head from "next/head";
+import Head from 'next/head';
 
 const SITE_TITLE = "Olas | Crypto's Ocean of Services";
-const SITE_DESCRIPTION = "The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents.";
-const SITE_URL = "https://olas.network";
+const SITE_DESCRIPTION = 'The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents.';
+const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 
-
-const Meta = ({pageTitle, siteImageUrl = SITE_DEFAULT_IMAGE_URL }) => {
+const Meta = ({ pageTitle, siteImageUrl = SITE_DEFAULT_IMAGE_URL }) => {
   const title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
-  
+
   return (
     <Head>
       <title>{title}</title>
-      
+
       <meta name="title" content={title} />
       <meta
         name="description"

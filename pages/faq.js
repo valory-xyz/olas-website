@@ -1,12 +1,12 @@
-import FAQ from "@/components/FAQPage";
-import PageWrapper from "@/components/Layout/PageWrapper";
-import Meta from "@/components/Meta";
+import FAQ from '@/components/FAQPage';
+import PageWrapper from '@/components/Layout/PageWrapper';
+import Meta from '@/components/Meta';
 
-const FAQPage = () =>
+const FAQPage = () => (
   <PageWrapper>
     <Meta pageTitle="Olas FAQ" />
-      <FAQ />
+    <FAQ />
   </PageWrapper>
-  ;
+);
 
 export default FAQPage;

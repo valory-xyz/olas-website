@@ -1,13 +1,11 @@
-import NetworkApp from "./NetworkApp";
-import networkApps from "@/data/networkApps.json";
-import Link from "next/link";
-import SectionWrapper from "../Layout/SectionWrapper";
+import Link from 'next/link';
+import NetworkApp from './NetworkApp';
+import networkApps from '@/data/networkApps.json';
+import SectionWrapper from '../Layout/SectionWrapper';
 
 const NetworkApps = ({ limit = null }) => {
-  const sortedNetworkApps = networkApps.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
-  
+  const sortedNetworkApps = networkApps.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
     <SectionWrapper id="network-apps" backgroundType="NONE">
       <div>

@@ -5,7 +5,7 @@ const pClass = 'text-xl';
 const ulClass = 'ml-6 list-disc text-xl flex flex-col gap-3';
 
 const Content = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id='rewards'>
+  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
     <div className="max-w-[800px] mx-auto flex flex-col gap-5">
       <H1 className="mb-12">
         How do Build Rewards work?

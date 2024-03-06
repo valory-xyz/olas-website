@@ -1,28 +1,24 @@
-import Resource from "./Resource";
-import resources from "@/data/resources.json";
-import Link from "next/link";
-import SectionWrapper from "../Layout/SectionWrapper";
+import Link from 'next/link';
+import Resource from './Resource';
+import resources from '@/data/resources.json';
+import SectionWrapper from '../Layout/SectionWrapper';
 
 const Resources = ({ limit = null, tagFilter = null }) => {
-  const sortedResources = resources.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
+  const sortedResources = resources.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  let newResources = []
+  let newResources = [];
 
   if (tagFilter) {
-    newResources = sortedResources.filter(article => { 
-      return article?.tags.includes(tagFilter)})
+    newResources = sortedResources.filter((article) => article?.tags.includes(tagFilter));
   } else {
-    newResources = sortedResources
+    newResources = sortedResources;
   }
-  
-  
+
   return (
     <SectionWrapper id="resources" backgroundType="NONE">
       <div>
         <div>
-        <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
+          <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
             Resources
           </h2>
           {(limit !== null && newResources.length > limit) && (

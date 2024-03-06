@@ -9,9 +9,8 @@ import { Spinner } from '@/components/Spinner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-
 const FieldRow = ({ fieldName, value }) => (
-  <div className={'p-4 flex justify-between'}>
+  <div className="p-4 flex justify-between">
     <div>{fieldName}</div>
     <div>{value}</div>
   </div>
@@ -24,7 +23,7 @@ const ServiceDetail = () => {
 
   useEffect(() => {
     if (slug) {
-      const matchedService = servicesData.find(service => service.slug === slug);
+      const matchedService = servicesData.find((service) => service.slug === slug);
       setService(matchedService);
     }
   }, [slug]);
@@ -37,20 +36,20 @@ const ServiceDetail = () => {
     <PageWrapper>
       <Meta pageTitle={service.name} siteImageUrl={`/images/services/${service.iconFilename}`} />
       <SectionWrapper>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 justify-between max-w-5xl mx-auto'>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 justify-between max-w-5xl mx-auto">
           <div className="flex flex-col justify-center">
             <h1 className="text-5xl font-bold mb-4">
               {service.name}
             </h1>
             {service.demo && <div className="inline-block"><Badge variant="outline" className="mb-8">Demo</Badge></div>}
             <div className="border rounded-lg mb-8">
-              {service.serviceCategory &&
-                <FieldRow fieldName="Category" value={service.serviceCategory} />
-              }
+              {service.serviceCategory
+                && <FieldRow fieldName="Category" value={service.serviceCategory} />}
               {service.builder && <FieldRow fieldName="Builder" value={service.builder} />}
               {service.description && <FieldRow fieldName="Description" value={service.description} last />}
             </div>
-            {service.appUrl &&
+            {service.appUrl
+              && (
               <Button size="xl" asChild className="w-full lg:w-auto mb-4">
                 <a
                   href={service.appUrl}
@@ -60,8 +59,9 @@ const ServiceDetail = () => {
                   View app
                 </a>
               </Button>
-            }
-            {service.marketingUrl && <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
+              )}
+            {service.marketingUrl && (
+            <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
               <a
                 href={service.marketingUrl}
                 target="_blank"
@@ -70,18 +70,19 @@ const ServiceDetail = () => {
                 Learn more
               </a>
             </Button>
-            }
-            {service.buildUrl &&
+            )}
+            {service.buildUrl
+              && (
               <Button size="xl" variant="outline" asChild className="w-full lg:w-auto">
                 <a
                   href={service.buildUrl}
                   target="_blank"
-                  rel="noopener nor eferrer"
+                  rel="noopener nor eferrer noreferrer"
                 >
                   Build your own
                 </a>
               </Button>
-            }
+              )}
           </div>
           <div className="flex justify-center">
             <Image
@@ -94,9 +95,8 @@ const ServiceDetail = () => {
           </div>
         </div>
       </SectionWrapper>
-    </PageWrapper >
+    </PageWrapper>
   );
 };
 
 export default ServiceDetail;
-

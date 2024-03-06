@@ -1,13 +1,13 @@
-import Image from "next/image";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import Link from "next/link";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
+import Link from 'next/link';
+import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionHeading from '../SectionHeading';
 
 function Flywheel() {
   return (
     <SectionWrapper
       customClasses="text-center py-12 px-4"
-      backgroundType={"SUBTLE_GRADIENT"}
+      backgroundType="SUBTLE_GRADIENT"
     >
       <div className="text-7xl lg:text-9xl mb-12">🌀</div>
       <SectionHeading color="text-purple-900">Capital, meet code</SectionHeading>
@@ -36,15 +36,16 @@ function Flywheel() {
           (PoSe). These contribute to revenue for the DAO.
         </div>
         <div className="text-2xl font-light text-gray-600 lg:w-3/4 xl:w-1/2 mx-auto mb-12">
-          The capital also provides yield to the DAO.<Link href="/disclaimer" className="text-blue-500">*</Link>
+          The capital also provides yield to the DAO.
+          <Link href="/disclaimer" className="text-blue-500">*</Link>
         </div>
 
         <div className="flex justify-center space-x-3">
-            {Array.from({ length: 7 }, (_, index) => (
-              <div key={index} className="animate-spin text-3xl">
-                🌀
-              </div>
-            ))}
+          {Array.from({ length: 7 }, (_, index) => (
+            <div key={index} className="animate-spin text-3xl">
+              🌀
+            </div>
+          ))}
         </div>
       </div>
     </SectionWrapper>

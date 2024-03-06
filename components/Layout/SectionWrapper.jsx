@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 
-const SectionWrapper = ({ children, customClasses = "px-8 py-12 lg:p-24", backgroundType, id = "" }) => {
+const SectionWrapper = ({
+  children, customClasses = 'px-8 py-12 lg:p-24', backgroundType, id = '',
+}) => {
   const returnBackgroundType = useMemo(() => {
     switch (backgroundType) {
       case 'SUBTLE_GRADIENT':

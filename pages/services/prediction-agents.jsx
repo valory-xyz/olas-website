@@ -1,34 +1,40 @@
-import PageWrapper from "@/components/Layout/PageWrapper";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import Meta from "@/components/Meta";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CTASection } from "@/components/ui/section/cta";
-import { HowToSection } from "@/components/ui/section/how-to";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { ExternalLink, H1, Lead, Small, Upcase } from "@/components/ui/typography";
-import Image from "next/image";
+import Image from 'next/image';
+import PageWrapper from '@/components/Layout/PageWrapper';
+import SectionWrapper from '@/components/Layout/SectionWrapper';
+import Meta from '@/components/Meta';
+import { Button } from '@/components/ui/button';
+import {
+  Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
+} from '@/components/ui/card';
+import { CTASection } from '@/components/ui/section/cta';
+import { HowToSection } from '@/components/ui/section/how-to';
+import {
+  Table, TableBody, TableCell, TableRow,
+} from '@/components/ui/table';
+import {
+  ExternalLink, H1, Lead, Small, Upcase,
+} from '@/components/ui/typography';
 
 const resources = [
   {
-    title: "Broader Prediction System",
-    description: "Learn how prediction agents contribute to a broader prediction offering.",
+    title: 'Broader Prediction System',
+    description: 'Learn how prediction agents contribute to a broader prediction offering.',
     action: {
-      url: "https://hackathon.olas.network/system-overview",
-      text: "See system overview"
-    }
+      url: 'https://hackathon.olas.network/system-overview',
+      text: 'See system overview',
+    },
   },
   {
-    title: "Trader",
-    description: "Visit the trader agent repo to learn more about the full implementation.",
+    title: 'Trader',
+    description: 'Visit the trader agent repo to learn more about the full implementation.',
     action: {
-      url: "https://github.com/valory-xyz/trader",
-      text: "See the code"
-    }
-  }
-]
+      url: 'https://github.com/valory-xyz/trader',
+      text: 'See the code',
+    },
+  },
+];
 
-const PredictionAgents = () =>
+const PredictionAgents = () => (
   <PageWrapper>
     <Meta pageTitle="Prediction Agents" siteImageUrl="/images/services/prediction-agents.png" />
     <SectionWrapper>
@@ -64,18 +70,23 @@ const PredictionAgents = () =>
       sectionId="how-to"
       heading="How it works"
       image={{
-        path: "/images/services/prediction-agents/how-to.png",
+        path: '/images/services/prediction-agents/how-to.png',
         width: 400,
-        height: 400
+        height: 400,
       }}
       body={{
         steps: [
           <ExternalLink href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements">
             Get the requirements in place
           </ExternalLink>,
-          <span>Run the <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">quickstart script</ExternalLink> - choose to participate in staking programs, if available</span>,
-          "Tweak strategy to maximize earnings"
-        ]
+          <span>
+            Run the
+            <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">quickstart script</ExternalLink>
+            {' '}
+            - choose to participate in staking programs, if available
+          </span>,
+          'Tweak strategy to maximize earnings',
+        ],
       }}
     />
     <SectionWrapper>
@@ -213,6 +224,7 @@ const PredictionAgents = () =>
       </div>
     </SectionWrapper>
     <CTASection heading="Start predicting the future" ctaUrl="https://operate.olas.network" ctaText="Run an agent now" />
-  </PageWrapper>;
+  </PageWrapper>
+);
 
 export default PredictionAgents;

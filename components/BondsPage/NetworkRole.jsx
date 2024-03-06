@@ -1,6 +1,6 @@
-import Image from "next/image";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
+import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionHeading from '../SectionHeading';
 
 function NetworkRole() {
   return (

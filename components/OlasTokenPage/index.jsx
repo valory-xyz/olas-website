@@ -1,40 +1,41 @@
-import React, { useState, useEffect } from "react";
-import Hero from "./Hero";
-import { TokenDetails } from "./TokenDetails";
-import OlasUtility from "../HomepageSection/OlasUtility";
-import SectionWrapper from "../Layout/SectionWrapper";
-import Web3 from "web3";
-import dayjs from "dayjs";
-import contractAbi from "../../data/ABIs/TokenomicsProxy.json";
-import UsagePieChart from "./UsagePieChart";
-import Verify from "../Verify";
-import { Bar } from "react-chartjs-2";
-import { Chart, CategoryScale, LinearScale, BarElement } from "chart.js";
+import React, { useState, useEffect } from 'react';
+import Web3 from 'web3';
+import dayjs from 'dayjs';
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart, CategoryScale, LinearScale, BarElement,
+} from 'chart.js';
+import Hero from './Hero';
+import { TokenDetails } from './TokenDetails';
+import OlasUtility from '../HomepageSection/OlasUtility';
+import SectionWrapper from '../Layout/SectionWrapper';
+import contractAbi from '../../data/ABIs/TokenomicsProxy.json';
+import UsagePieChart from './UsagePieChart';
+import Verify from '../Verify';
 
 // manually register arc element, category scale, linear scale, and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 const BACKUP_INFLATION_FOR_YEAR = [
-  "3159000",
-  "40254084",
-  "71239135.5",
-  "67347922.22",
-  "62539734.28",
-  "57193406.97",
-  "51626757.14",
-  "46088099.54",
-  "40758191.75",
-  "33293668.6",
-  "20000000",
-  "20400000",
-  "20808000",
+  '3159000',
+  '40254084',
+  '71239135.5',
+  '67347922.22',
+  '62539734.28',
+  '57193406.97',
+  '51626757.14',
+  '46088099.54',
+  '40758191.75',
+  '33293668.6',
+  '20000000',
+  '20400000',
+  '20808000',
 ];
 
-export const TEXT_GRADIENT =
-  "bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400";
+export const TEXT_GRADIENT = 'bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400';
 
-const contractAddress = "0xc096362fa6f4A4B1a9ea68b1043416f3381ce300";
-const providerUrl = "https://ethereum.publicnode.com";
+const contractAddress = '0xc096362fa6f4A4B1a9ea68b1043416f3381ce300';
+const providerUrl = 'https://ethereum.publicnode.com';
 
 const Supply = () => {
   const [epoch, setEpoch] = useState(null);
@@ -51,7 +52,7 @@ const Supply = () => {
 
       const contractInstance = new web3.eth.Contract(
         contractAbi,
-        contractAddress
+        contractAddress,
       );
 
       const timeLaunch = await contractInstance.methods.timeLaunch().call();
@@ -66,7 +67,7 @@ const Supply = () => {
             .getInflationForYear(i)
             .call();
           // Convert result from wei to eth
-          inflationForYear.push(web3.utils.fromWei(result.toString(), "ether"));
+          inflationForYear.push(web3.utils.fromWei(result.toString(), 'ether'));
         } catch (error) {
           console.error(`Error in getInflationForYear for year ${i}:`, error);
         }
@@ -86,7 +87,7 @@ const Supply = () => {
         .mapEpochTokenomics(epoch)
         .call();
       // 6 is the index of the bonders % value
-      const bonders = Number(result["6"]);
+      const bonders = Number(result['6']);
       // subtract bonders % from 100 to get developers %
       const developers = 100 - bonders;
       setSplit({
@@ -100,8 +101,8 @@ const Supply = () => {
     try {
       fetchData();
     } catch (error) {
-      notifyError("Could not get data");
-      console.error("Error fetching data:", error);
+      notifyError('Could not get data');
+      console.error('Error fetching data:', error);
     }
   }, []);
 
@@ -127,7 +128,7 @@ const Supply = () => {
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
                     {loading
-                      ? "--"
+                      ? '--'
                       : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
                   </span>
                 </div>
@@ -139,7 +140,7 @@ const Supply = () => {
                 </h2>
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
-                    {loading ? "--" : Number(currentYear)}
+                    {loading ? '--' : Number(currentYear)}
                   </span>
                 </div>
                 <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F9" />
@@ -151,20 +152,20 @@ const Supply = () => {
               </h2>
               <div className="mb-4">
                 {loading ? (
-                  "Loading..."
+                  'Loading...'
                 ) : (
                   <Bar
                     data={{
                       labels: inflationForYear.map((_, index) => index),
                       datasets: [
                         {
-                          label: "Inflation",
+                          label: 'Inflation',
                           data: inflationForYear || BACKUP_INFLATION_FOR_YEAR,
                           borderWidth: 0,
                           // #a855f7 is Tailwind's purple-500 – our primary brand color
-                          backgroundColor: "#a855f7",
-                          hoverBackgroundColor: "#a855f7",
-                          hoverBorderColor: "#a855f7",
+                          backgroundColor: '#a855f7',
+                          hoverBackgroundColor: '#a855f7',
+                          hoverBorderColor: '#a855f7',
                         },
                       ],
                     }}
@@ -173,22 +174,22 @@ const Supply = () => {
                         x: {
                           title: {
                             display: true,
-                            text: "Year",
+                            text: 'Year',
                           },
                           gridLines: {
-                            color: "white",
+                            color: 'white',
                           },
                         },
                         y: {
                           // Y-axis configuration
                           title: {
                             display: true,
-                            text: "OLAS Emitted",
+                            text: 'OLAS Emitted',
                           },
                           ticks: {
-                            callback: function (value, index, values) {
+                            callback(value, index, values) {
                               // Format y-axis numbers as 20m, not 20,000,000
-                              return value / 1000000 + "m";
+                              return `${value / 1000000}m`;
                             },
                           },
                         },
@@ -267,15 +268,13 @@ const Supply = () => {
   );
 };
 
-const OlasToken = () => {
-  return (
-    <>
-      <Hero />
-      <TokenDetails />
-      <Supply />
-      <OlasUtility />
-    </>
-  );
-};
+const OlasToken = () => (
+  <>
+    <Hero />
+    <TokenDetails />
+    <Supply />
+    <OlasUtility />
+  </>
+);
 
 export default OlasToken;

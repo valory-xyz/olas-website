@@ -1,6 +1,6 @@
-import Image from "next/image";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
+import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionHeading from '../SectionHeading';
 
 function ForDAOs() {
   return (
@@ -19,7 +19,7 @@ function ForDAOs() {
           </div>
           <SectionWrapper customClasses="relative flex items-center bg-gray-50">
             <div className="p-8 sm:p-16 lg:p-24 text-center lg:text-left">
-            <h2 className="text-5xl text-slate-800 font-extrabold lg:mb-6">A new wind for your sails</h2>
+              <h2 className="text-5xl text-slate-800 font-extrabold lg:mb-6">A new wind for your sails</h2>
               <h3 className="text-xl font-light text-gray-600 leading-normal sm:mb-8 ">
                 Olas delivers a novel staking model for your favorite
                 projects&apos; tokens.

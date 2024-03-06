@@ -1,6 +1,8 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-export function Button({ href, className, size = "lg", isExternal = false, type = "primary", ...props }) {
+export function Button({
+  href, className, size = 'lg', isExternal = false, type = 'primary', ...props
+}) {
   const fullClassName = `
     inline-flex
     items-center
@@ -10,7 +12,7 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
     focus:ring-4
 
     ${
-      type === "primary" && `
+  type === 'primary' && `
       bg-purple-900
       text-white
       border-primary
@@ -18,10 +20,10 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
       hover:text-purple-900
       focus:ring-gray-100
       `
-    }
+}
 
     ${
-      type === "secondary" && `
+  type === 'secondary' && `
       bg-white
       text-primary
       border-primary
@@ -29,9 +31,9 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
       hover:text-white
       focus:ring-gray-100
       `
-    }
+}
 
-    ${size === "lg" && `
+    ${size === 'lg' && `
       px-6
       py-4
       text-xl
@@ -44,7 +46,7 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
       rounded-lg
     `}
 
-    ${size === "md" && `
+    ${size === 'md' && `
       px-3
       py-2
       text-lg
@@ -57,7 +59,7 @@ export function Button({ href, className, size = "lg", isExternal = false, type 
     ${className}`;
 
   return href ? (
-    <Link href={href} className={fullClassName} rel={isExternal && 'noopener noreferrer'} target={isExternal && "_blank"} {...props} />
+    <Link href={href} className={fullClassName} rel={isExternal && 'noopener noreferrer'} target={isExternal && '_blank'} {...props} />
   ) : (
     <button className={fullClassName} {...props} />
   );

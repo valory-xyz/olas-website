@@ -1,12 +1,10 @@
-import Video from "./Video";
-import videos from "@/data/videos.json";
-import Link from "next/link";
+import Link from 'next/link';
+import Video from './Video';
+import videos from '@/data/videos.json';
 
 const Videos = ({ limit = null }) => {
-  const sortedVideos = videos.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
-  
+  const sortedVideos = videos.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
     <section>
       <div>
