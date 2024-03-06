@@ -8,7 +8,7 @@ const ServicesTable = () => (
     <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm text-left">
       <thead>
         <tr>
-          <th className="w-[150px]" />
+          <th aria-hidden className="w-[150px]" />
           <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
             Name
           </th>
