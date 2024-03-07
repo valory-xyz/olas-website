@@ -42,7 +42,6 @@
     "import/extensions": "off",
     "max-len": "off",
     "import/no-cycle": "off",
-    "no-plusplus": "off",
     "no-await-in-loop": "off",
     "no-undef": "off",
     "react/no-unescaped-entities": "off",

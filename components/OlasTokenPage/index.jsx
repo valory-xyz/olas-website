@@ -61,7 +61,7 @@ const Supply = () => {
       // Call getInflationForYear method repeatedly for 0 through 12
       const newInflationForYear = [];
 
-      for (let i = 0; i <= 12; i++) {
+      for (let i = 0; i <= 12; i += 1) {
         try {
           const result = await contractInstance.methods
             .getInflationForYear(i)
