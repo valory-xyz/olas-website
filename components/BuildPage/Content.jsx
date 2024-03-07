@@ -11,7 +11,7 @@ const Content = () => (
         How do Build Rewards work?
       </H1>
       <p className={pClass}>OLAS Build Rewards is a part of the protocol that facilitates the distribution of capital to developers who contribute to various services in the ecosystem. This system is designed to reward both the contribution of code components and the provision of agents to the services.</p>
-      <strong className={pClass}>Here's how the distribution works:</strong>
+      <strong className={pClass}>Here&apos;s how the distribution works:</strong>
       <ul className={ulClass}>
         <li>
           Anyone has the ability to donate ETH to services via the protocol.
@@ -47,15 +47,15 @@ const Content = () => (
         Then the distribution of ETH rewards is as follows:
       </p>
       <ul className={ulClass}>
-        <li>Service #1: The agent's developer D1 earns 0.17 ETH and the component's developer D2 receives 0.83 ETH.</li>
-        <li>Service #2: The agent's developer D3 earns 0.17 ETH and component developers D4 and D5 receive 0.415 ETH each.</li>
+        <li>Service #1: The agent&apos;s developer D1 earns 0.17 ETH and the component&apos;s developer D2 receives 0.83 ETH.</li>
+        <li>Service #2: The agent&apos;s developer D3 earns 0.17 ETH and component developers D4 and D5 receive 0.415 ETH each.</li>
       </ul>
       <p className={pClass}>
         For OLAS top-ups, assuming there is 10k OLAS available for this epoch, the OLAS top-up distribution is as follows:
       </p>
       <ul className={ulClass}>
-        <li>Service #1: The agent's developer D1 receives 900 OLAS and the component's developer D2 receives 4100 OLAS.</li>
-        <li>Service #2: The agent's developer D3 receives 900 OLAS, while the component developers D4 and D5 receive 2050 OLAS each.</li>
+        <li>Service #1: The agent&apos;s developer D1 receives 900 OLAS and the component&apos;s developer D2 receives 4100 OLAS.</li>
+        <li>Service #2: The agent&apos;s developer D3 receives 900 OLAS, while the component developers D4 and D5 receive 2050 OLAS each.</li>
       </ul>
       <p className={pClass}>
         If service #1 had received a more substantial ETH donation, or if developer D1 had possessed ownership of one or both components of the alternative service, developers D1 and D2 would have received a higher allocation of OLAS and ETH. This illustrates how the incentive mechanism effectively aligned incentives with the usefulness of code contributions within the services in the ecosystem.
