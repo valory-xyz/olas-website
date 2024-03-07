@@ -40,7 +40,6 @@
     "react/destructuring-assignment": "off",
     "react/prop-types": "off",
     "import/extensions": "off",
-    "import/no-cycle": "off",
     "react/function-component-definition": [
       2,
       {

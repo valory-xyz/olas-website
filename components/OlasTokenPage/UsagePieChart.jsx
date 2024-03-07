@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
 import Verify from '../Verify';
-import { TEXT_GRADIENT } from '.';
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
+
+export const TEXT_GRADIENT = 'bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400';
 
 const UsagePieChart = ({ epoch, split, loading }) => (
   <div>

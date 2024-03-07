@@ -10,7 +10,7 @@ import { TokenDetails } from './TokenDetails';
 import OlasUtility from '../HomepageSection/OlasUtility';
 import SectionWrapper from '../Layout/SectionWrapper';
 import contractAbi from '../../data/ABIs/TokenomicsProxy.json';
-import UsagePieChart from './UsagePieChart';
+import UsagePieChart, { TEXT_GRADIENT } from './UsagePieChart';
 import Verify from '../Verify';
 
 // manually register arc element, category scale, linear scale,
@@ -32,8 +32,6 @@ const BACKUP_INFLATION_FOR_YEAR = [
   '20400000',
   '20808000',
 ];
-
-export const TEXT_GRADIENT = 'bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400';
 
 const contractAddress = '0xc096362fa6f4A4B1a9ea68b1043416f3381ce300';
 const providerUrl = 'https://ethereum.publicnode.com';
