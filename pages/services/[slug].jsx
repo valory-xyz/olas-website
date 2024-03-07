@@ -77,7 +77,7 @@ const ServiceDetail = () => {
                 <a
                   href={service.buildUrl}
                   target="_blank"
-                  rel="noopener nor eferrer noreferrer"
+                  rel="noopener noreferrer"
                 >
                   Build your own
                 </a>
