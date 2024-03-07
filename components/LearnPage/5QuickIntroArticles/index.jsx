@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import Link from 'next/link';
 
@@ -56,10 +55,6 @@ const QuickIntroArticles = () => {
       </div>
     </div>
   );
-};
-
-QuickIntroArticles.propTypes = {
-  educationArticles: PropTypes.instanceOf(Array).isRequired,
 };
 
 export default QuickIntroArticles;
