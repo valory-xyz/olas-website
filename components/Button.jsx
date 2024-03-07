@@ -61,6 +61,6 @@ export function Button({
   return href ? (
     <Link href={href} className={fullClassName} rel={isExternal && 'noopener noreferrer'} target={isExternal && '_blank'} {...props} />
   ) : (
-    <button className={fullClassName} {...props} />
+    <button type="button" className={fullClassName} {...props} />
   );
 }
