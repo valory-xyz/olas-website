@@ -45,7 +45,7 @@ const Supply = () => {
   const [inflationForYear, setInflationForYear] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     const fetchData = async () => {
       setLoading(true);
       const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
@@ -62,15 +62,13 @@ const Supply = () => {
       const newInflationForYear = [];
 
       for (let i = 0; i <= 12; i += 1) {
-        try {
-          const result = await contractInstance.methods
-            .getInflationForYear(i)
-            .call();
+        contractInstance.methods.getInflationForYear(i).call().then((result) => {
           // Convert result from wei to eth
           newInflationForYear.push(web3.utils.fromWei(result.toString(), 'ether'));
-        } catch (error) {
-          console.error(`Error in getInflationForYear for year ${i}:`, error);
-        }
+        })
+          .catch((error) => {
+            console.error(`Error in getInflationForYear for year ${i}:`, error);
+          });
       }
 
       setInflationForYear(newInflationForYear);
