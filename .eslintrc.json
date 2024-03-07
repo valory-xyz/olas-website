@@ -42,7 +42,6 @@
     "import/extensions": "off",
     "max-len": "off",
     "import/no-cycle": "off",
-    "import/no-extraneous-dependencies": "off",
     "react/no-unused-prop-types": "off",
     "react/function-component-definition": [
       2,
