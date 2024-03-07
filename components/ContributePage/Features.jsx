@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const features = [
   {
     id: 'f1bec8d4-d16f-4ae5-b8bc-1e3b4fdc7ae7',
@@ -62,6 +64,14 @@ const Feature = ({ feature }) => (
     </div>
   </div>
 );
+
+Feature.propTypes = {
+  feature: PropTypes.shape({
+    description: PropTypes.string,
+    icon: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
+};
 
 const Features = () => (
   <section className="bg-fuchsia-50 text-slate-800 py-12">

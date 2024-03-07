@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
@@ -49,6 +50,21 @@ const Button = React.forwardRef(({
     )
   );
 });
+
 Button.displayName = 'Button';
+
+Button.propTypes = {
+  asChild: PropTypes.bool,
+  className: PropTypes.string,
+  size: PropTypes.string,
+  variant: PropTypes.string,
+};
+
+Button.defaultProps = {
+  asChild: false,
+  className: null,
+  size: null,
+  variant: null,
+};
 
 export { Button, buttonVariants };

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React from 'react';
 import resources from 'data/resources.json';
@@ -37,7 +38,16 @@ const ListItem = React.forwardRef(({
     </NavigationMenuLink>
   </li>
 ));
+
 ListItem.displayName = 'ListItem';
+ListItem.propTypes = {
+  children: PropTypes.element.isRequired,
+  className: PropTypes.string,
+  title: PropTypes.string.isRequired,
+};
+ListItem.defaultProps = {
+  className: null,
+};
 
 // const NormalListItem = ({ className, title, children }) => {
 //   <Link
@@ -139,3 +149,10 @@ export function Menu({ className }) {
     </NavigationMenu>
   );
 }
+
+Menu.propTypes = {
+  className: PropTypes.string,
+};
+Menu.defaultProps = {
+  className: null,
+};

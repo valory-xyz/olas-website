@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
@@ -15,6 +16,11 @@ const FieldRow = ({ fieldName, value }) => (
     <div>{value}</div>
   </div>
 );
+
+FieldRow.propTypes = {
+  fieldName: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+};
 
 const ServiceDetail = () => {
   const router = useRouter();

@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import NetworkApp from './NetworkApp';
 import networkApps from '@/data/networkApps.json';
 import SectionWrapper from '../Layout/SectionWrapper';
 
-const NetworkApps = ({ limit = null }) => (
+const NetworkApps = ({ limit }) => (
   <SectionWrapper id="network-apps" backgroundType="NONE">
     <div>
       <div>
@@ -31,5 +32,8 @@ const NetworkApps = ({ limit = null }) => (
     </div>
   </SectionWrapper>
 );
+
+NetworkApps.propTypes = { limit: PropTypes.number };
+NetworkApps.defaultProps = { limit: null };
 
 export default NetworkApps;

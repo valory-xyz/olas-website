@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 const SectionWrapper = ({
@@ -21,6 +22,18 @@ const SectionWrapper = ({
       {children}
     </section>
   );
+};
+
+SectionWrapper.propTypes = {
+  backgroundType: PropTypes.string,
+  children: PropTypes.element.isRequired,
+  customClasses: PropTypes.string,
+  id: PropTypes.string,
+};
+SectionWrapper.defaultProps = {
+  backgroundType: null,
+  customClasses: null,
+  id: null,
 };
 
 export default SectionWrapper;

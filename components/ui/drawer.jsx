@@ -1,15 +1,20 @@
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from '@/lib/utils';
 
 const Drawer = ({
-  shouldScaleBackground = true,
+  shouldScaleBackground,
   ...props
 }) => (
   <DrawerPrimitive.Root shouldScaleBackground={shouldScaleBackground} {...props} />
 );
 Drawer.displayName = 'Drawer';
+Drawer.propTypes = {
+  shouldScaleBackground: PropTypes.bool,
+};
+Drawer.defaultProps = { shouldScaleBackground: true };
 
 const DrawerTrigger = DrawerPrimitive.Trigger;
 
@@ -24,7 +29,10 @@ const DrawerOverlay = React.forwardRef(({ className, ...props }, ref) => (
     {...props}
   />
 ));
+
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
+DrawerOverlay.propTypes = { className: PropTypes.string };
+DrawerOverlay.defaultProps = { className: true };
 
 const DrawerContent = React.forwardRef(({ className, children, ...props }, ref) => (
   <DrawerPortal>
@@ -43,6 +51,11 @@ const DrawerContent = React.forwardRef(({ className, children, ...props }, ref) 
   </DrawerPortal>
 ));
 DrawerContent.displayName = 'DrawerContent';
+DrawerContent.propTypes = {
+  children: PropTypes.element.isRequired,
+  className: PropTypes.string,
+};
+DrawerContent.defaultProps = { className: true };
 
 const DrawerHeader = ({
   className,
@@ -54,6 +67,8 @@ const DrawerHeader = ({
   />
 );
 DrawerHeader.displayName = 'DrawerHeader';
+DrawerHeader.propTypes = { className: PropTypes.string };
+DrawerHeader.defaultProps = { className: true };
 
 const DrawerFooter = ({
   className,
@@ -62,6 +77,8 @@ const DrawerFooter = ({
   <div className={cn('mt-auto flex flex-col gap-2 p-4', className)} {...props} />
 );
 DrawerFooter.displayName = 'DrawerFooter';
+DrawerFooter.propTypes = { className: PropTypes.string };
+DrawerFooter.defaultProps = { className: true };
 
 const DrawerTitle = React.forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Title
@@ -71,6 +88,8 @@ const DrawerTitle = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
+DrawerTitle.propTypes = { className: PropTypes.string };
+DrawerTitle.defaultProps = { className: true };
 
 const DrawerDescription = React.forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
@@ -80,6 +99,8 @@ const DrawerDescription = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
+DrawerDescription.propTypes = { className: PropTypes.string };
+DrawerDescription.defaultProps = { className: true };
 
 export {
   Drawer,

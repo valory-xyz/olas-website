@@ -1,5 +1,5 @@
+import PropTypes from 'prop-types';
 import * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
 const Card = React.forwardRef(({ className, ...props }, ref) => (
@@ -10,6 +10,8 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 Card.displayName = 'Card';
+Card.propTypes = { className: PropTypes.string };
+Card.defaultProps = { className: null };
 
 const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
   <div
@@ -19,6 +21,8 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 CardHeader.displayName = 'CardHeader';
+CardHeader.propTypes = { className: PropTypes.string };
+CardHeader.defaultProps = { className: null };
 
 const CardTitle = React.forwardRef(({ className, children, ...props }, ref) => (
   <h3
@@ -30,6 +34,11 @@ const CardTitle = React.forwardRef(({ className, children, ...props }, ref) => (
   </h3>
 ));
 CardTitle.displayName = 'CardTitle';
+CardTitle.propTypes = {
+  children: PropTypes.element.isRequired,
+  className: PropTypes.string,
+};
+CardTitle.defaultProps = { className: true };
 
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
   <p
@@ -39,11 +48,15 @@ const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 CardDescription.displayName = 'CardDescription';
+CardDescription.propTypes = { className: PropTypes.string };
+CardDescription.defaultProps = { className: null };
 
 const CardContent = React.forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
 ));
 CardContent.displayName = 'CardContent';
+CardContent.propTypes = { className: PropTypes.string };
+CardContent.defaultProps = { className: null };
 
 const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
   <div
@@ -53,6 +66,8 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 CardFooter.displayName = 'CardFooter';
+CardFooter.propTypes = { className: PropTypes.string };
+CardFooter.defaultProps = { className: null };
 
 export {
   Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent,

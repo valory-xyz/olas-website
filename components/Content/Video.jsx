@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Image from 'next/image';
 
 const Video = ({ video }) => (
@@ -27,5 +28,15 @@ const Video = ({ video }) => (
     </article>
   </a>
 );
+
+Video.propTypes = {
+  video: PropTypes.shape({
+    date: PropTypes.string,
+    drive_link: PropTypes.string,
+    imageFilename: PropTypes.string,
+    platform_link: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
+};
 
 export default Video;

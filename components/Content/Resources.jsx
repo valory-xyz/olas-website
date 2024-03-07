@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Resource from './Resource';
 import resources from '@/data/resources.json';
@@ -42,6 +43,15 @@ const Resources = ({ limit = null, tagFilter = null }) => {
       </div>
     </SectionWrapper>
   );
+};
+
+Resources.propTypes = {
+  limit: PropTypes.number,
+  tagFilter: PropTypes.string,
+};
+Resources.defaultProps = {
+  limit: PropTypes.null,
+  tagFilter: PropTypes.null,
 };
 
 export default Resources;

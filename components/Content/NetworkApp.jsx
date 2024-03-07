@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { TEXT } from '@/styles/globals';
 
@@ -24,5 +25,13 @@ const NetworkApp = ({ networkApp }) => (
     </article>
   </a>
 );
+
+NetworkApp.propTypes = {
+  networkApp: PropTypes.shape({
+    description: PropTypes.string,
+    name: PropTypes.string,
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 export default NetworkApp;

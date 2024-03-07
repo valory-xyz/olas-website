@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'next/link';
 import { Pie } from 'react-chartjs-2';
@@ -90,5 +91,14 @@ const UsagePieChart = ({ epoch, split, loading }) => (
     </div>
   </div>
 );
+
+UsagePieChart.propTypes = {
+  epoch: PropTypes.bigint.isRequired,
+  loading: PropTypes.bool.isRequired,
+  split: PropTypes.shape({
+    bonders: PropTypes.number,
+    developers: PropTypes.number,
+  }).isRequired,
+};
 
 export default UsagePieChart;

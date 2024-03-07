@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Verify = ({ url }) => (
   <a
     href={url}
@@ -8,5 +10,9 @@ const Verify = ({ url }) => (
     Verify ↗
   </a>
 );
+
+Verify.propTypes = {
+  url: PropTypes.string.isRequired,
+};
 
 export default Verify;

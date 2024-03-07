@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 export function Button({
-  href, className, size = 'lg', isExternal = false, type = 'primary', ...props
+  href, className, size, isExternal, type, ...props
 }) {
   const fullClassName = `
     inline-flex
@@ -64,3 +65,20 @@ export function Button({
     <button type="button" className={fullClassName} {...props} />
   );
 }
+
+Button.propTypes = {
+  className: PropTypes.string,
+  href: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]).isRequired,
+  isExternal: PropTypes.bool,
+  size: PropTypes.string,
+  type: PropTypes.string,
+};
+Button.defaultProps = {
+  className: null,
+  isExternal: false,
+  size: 'lg',
+  type: 'primary',
+};

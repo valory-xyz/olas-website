@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -14,5 +15,9 @@ const PageWrapper = ({ children }) => (
     <Footer />
   </>
 );
+
+PageWrapper.propTypes = {
+  children: PropTypes.element.isRequired,
+};
 
 export default PageWrapper;

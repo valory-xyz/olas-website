@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import SectionWrapper from '@/components/Layout/SectionWrapper';
 import SectionHeading from '@/components/SectionHeading';
 
@@ -18,3 +19,9 @@ export const CTASection = ({ heading, ctaUrl, ctaText }) => (
     </div>
   </SectionWrapper>
 );
+
+CTASection.propTypes = {
+  ctaText: PropTypes.string.isRequired,
+  ctaUrl: PropTypes.string.isRequired,
+  heading: PropTypes.string.isRequired,
+};

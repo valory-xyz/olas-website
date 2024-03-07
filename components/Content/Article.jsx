@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +22,7 @@ const Article = ({ article }) => {
             src={imageDomain + url}
             width={width}
             height={height}
-            alt={article.title}
+            alt={article.attributes.title}
             className="rounded-t-lg h-[200px] object-cover"
             onError={() => {
               setImageError(true);
@@ -39,6 +40,19 @@ const Article = ({ article }) => {
       </article>
     </Link>
   );
+};
+
+Article.propTypes = {
+  article: PropTypes.shape({
+    attributes: PropTypes.shape({
+      datePublished: PropTypes.string,
+      headerImage: PropTypes.shape({
+        data: PropTypes.object,
+      }),
+      slug: PropTypes.string,
+      title: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 export default Article;

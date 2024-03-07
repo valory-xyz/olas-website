@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Image from 'next/image';
 import kits from 'data/kits.json';
@@ -43,6 +44,16 @@ const Item = ({ service, category }) => (
   </a>
 );
 
+Item.propTypes = {
+  category: PropTypes.string.isRequired,
+  service: PropTypes.shape({
+    description: PropTypes.string,
+    iconFilename: PropTypes.string,
+    name: PropTypes.string,
+    url: PropTypes.string,
+  }).isRequired,
+};
+
 const KitCard = ({ kit }) => (
   <Link
     className="block rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring"
@@ -67,6 +78,14 @@ const KitCard = ({ kit }) => (
     </div>
   </Link>
 );
+
+KitCard.propTypes = {
+  kit: PropTypes.shape({
+    description: PropTypes.string,
+    id: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
+};
 
 const CoreSubsection = () => (
   <SectionWrapper id="core">

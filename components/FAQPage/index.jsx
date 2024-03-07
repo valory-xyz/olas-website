@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React from 'react';
 
@@ -7,6 +8,11 @@ const Question = ({ text, children }) => (
     <p>{children}</p>
   </div>
 );
+
+Question.propTypes = {
+  children: PropTypes.element.isRequired,
+  text: PropTypes.string.isRequired,
+};
 
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">

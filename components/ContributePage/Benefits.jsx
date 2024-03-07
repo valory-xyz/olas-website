@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const benefits = [
   {
     id: 'f1bec8d4-d16f-4ae5-b8bc-1e3b4fdc7ae7',
@@ -29,6 +31,14 @@ const Benefit = ({ benefit }) => (
     <p className="mt-1 text-md text-purple-300">{benefit.description}</p>
   </div>
 );
+
+Benefit.propTypes = {
+  benefit: PropTypes.shape({
+    description: PropTypes.string,
+    icon: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
+};
 
 const Benefits = () => (
   <section className="bg-purple-950 text-white py-10">

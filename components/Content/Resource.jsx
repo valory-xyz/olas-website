@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Resource = ({ resource }) => (
   <a href={resource.url} target="_blank" rel="noopener noreferrer">
     <article className="p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg">
@@ -13,5 +15,13 @@ const Resource = ({ resource }) => (
     </article>
   </a>
 );
+
+Resource.propTypes = {
+  resource: PropTypes.shape({
+    description: PropTypes.string,
+    title: PropTypes.string,
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 export default Resource;

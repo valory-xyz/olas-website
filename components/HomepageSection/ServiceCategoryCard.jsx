@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Image from 'next/image';
 
 const servicePath = (service) => `/services/${service.slug}`;
@@ -56,6 +57,27 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
       )}
     </div>
   );
+};
+
+ServiceCategoryCard.propTypes = {
+  serviceCategory: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    description: PropTypes.string,
+  }).isRequired,
+  services: PropTypes.arrayOf({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    slug: PropTypes.string,
+    serviceCategory: PropTypes.string,
+    description: PropTypes.string,
+    appUrl: PropTypes.string,
+    marketingUrl: PropTypes.string,
+    buildUrl: PropTypes.string,
+    iconFilename: PropTypes.string,
+    demo: PropTypes.bool,
+    builder: PropTypes.string,
+  }).isRequired,
 };
 
 export default ServiceCategoryCard;

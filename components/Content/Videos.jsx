@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Video from './Video';
 import videos from '@/data/videos.json';
 
-const Videos = ({ limit = null }) => (
+const Videos = ({ limit }) => (
   <section>
     <div>
       <div>
@@ -30,5 +31,8 @@ const Videos = ({ limit = null }) => (
     </div>
   </section>
 );
+
+Videos.propTypes = { limit: PropTypes.number };
+Videos.defaultProps = { limit: null };
 
 export default Videos;

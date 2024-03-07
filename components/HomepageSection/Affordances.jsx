@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Image from 'next/image';
 import affordances from '@/data/affordances.json';
@@ -10,7 +11,7 @@ const Item = ({ affordance, category }) => (
     <div className="border-b">
       <Image
         src={`/images/${category}/${affordance.imageFilename}`}
-        alt={affordance.name}
+        alt={affordance.title}
         width={450}
         height={200}
         className="mx-auto p-2"
@@ -41,6 +42,21 @@ const Item = ({ affordance, category }) => (
     </div>
   </div>
 );
+
+Item.propTypes = {
+  affordance: PropTypes.shape({
+    cta: PropTypes.shape({
+      buttonText: PropTypes.any,
+      external: PropTypes.bool,
+      url: PropTypes.any,
+    }).isRequired,
+    description: PropTypes.string,
+    imageFilename: PropTypes.string,
+    learnMoreUrl: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
+  category: PropTypes.string.isRequired,
+};
 
 const CoreSubsection = () => (
   <section>
