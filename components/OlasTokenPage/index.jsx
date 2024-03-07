@@ -99,7 +99,6 @@ const Supply = () => {
     try {
       fetchData();
     } catch (error) {
-      notifyError('Could not get data');
       console.error('Error fetching data:', error);
     }
   }, []);
