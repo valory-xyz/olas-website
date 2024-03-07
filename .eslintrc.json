@@ -41,7 +41,6 @@
     "react/prop-types": "off",
     "import/extensions": "off",
     "max-len": "off",
-    "no-irregular-whitespace": "off",
     "import/no-cycle": "off",
     "no-plusplus": "off",
     "no-await-in-loop": "off",

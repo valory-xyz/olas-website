@@ -14,7 +14,7 @@ function NetworkRole() {
         height="474"
       />
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-4 lg:w-3/4 mx-auto">
-        Bonding plays an important role for Olas – it capitalizes the protocol. This capital – called protocol-owned liquidity – and in particular its yield, can be used to eventually replace Olas emissions to developers and bonders.
+        Bonding plays an important role for Olas - it capitalizes the protocol. This capital - called protocol-owned liquidity - and in particular its yield, can be used to eventually replace Olas emissions to developers and bonders.
       </div>
     </SectionWrapper>
   );
