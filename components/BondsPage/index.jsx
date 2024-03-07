@@ -12,7 +12,7 @@ import { truncateAddress, TOKEN_DETAILS } from '../OlasTokenPage/TokenDetails';
 
 const BondingDetailsSection = () => (
   <SectionWrapper>
-    <a id="bonding-details" />
+    <div id="bonding-details" />
     <H1 className="text-center mb-12">Details</H1>
     <Card>
       <Table>

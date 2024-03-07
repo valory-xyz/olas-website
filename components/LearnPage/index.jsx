@@ -3,9 +3,9 @@ import Link from 'next/link';
 import WhatIsOlas from './2WhatIsOlas';
 import DecentralizedAndSophisticated from './3DecentralizedAndSophisticated';
 import HowDoOlasWork from './4HowDoOlasWork';
+import QuickIntroArticles from './5QuickIntroArticles';
 import WhyBuildOnOlas from './6WhyBuildOnOlas';
 import WhatCouldYouBuild from './8WhatCouldYouBuild';
-// import Mission from './9Mission';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
 
@@ -19,7 +19,7 @@ export const LEARN_LIST = [
   { name: 'Quick intro articles', id: 'quick-intro-articles' },
   { name: 'Why build on Olas?', id: 'why-build-on-olas' },
   { name: 'What could you build?', id: 'what-could-you-build' },
-  { name: 'What’s our mission?', id: 'mission' },
+  // { name: 'What’s our mission?', id: 'mission' },
 ];
 
 const LearnPage = () => (
@@ -45,7 +45,7 @@ const LearnPage = () => (
       <WhatIsOlas />
       <DecentralizedAndSophisticated />
       <HowDoOlasWork />
-      {/* <QuickIntroArticles /> */}
+      <QuickIntroArticles />
       <WhyBuildOnOlas />
       <WhatCouldYouBuild />
       {/* <Mission /> */}

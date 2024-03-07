@@ -34,7 +34,7 @@ const QuickIntroArticles = () => {
           return (
             <div key={`articles-${id}`}>
               <Link href={`/learn/education-articles/${id}`} legacyBehavior>
-                <a className="column">
+                <div className="column cursor-pointer">
                   <div
                     className="w-full h-64 bg-cover bg-center"
                     style={{
@@ -48,7 +48,7 @@ const QuickIntroArticles = () => {
                     {readTime === 1 ? 'MIN' : 'MINS'}
                     &nbsp; READ
                   </p>
-                </a>
+                </div>
               </Link>
             </div>
           );

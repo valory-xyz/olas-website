@@ -117,7 +117,7 @@ const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}
 
 export const TokenDetails = () => (
   <>
-    <a id="get-olas" />
+    <div id="get-olas" />
     <SectionWrapper
       customClasses="border-b px-8 py-12 lg:p-24 text-black"
       backgroundType="SUBTLE_GRADIENT"

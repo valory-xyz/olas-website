@@ -42,10 +42,8 @@
     "import/extensions": "off",
     "max-len": "off",
     "import/no-cycle": "off",
-    "jsx-a11y/anchor-is-valid": "off",
     "react/no-invalid-html-attribute": "off",
     "no-unsafe-optional-chaining": "off",
-    "jsx-a11y/anchor-has-content": "off",
     "import/no-extraneous-dependencies": "off",
     "react/no-unused-prop-types": "off",
     "react/function-component-definition": [
