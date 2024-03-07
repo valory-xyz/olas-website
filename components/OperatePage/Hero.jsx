@@ -24,7 +24,8 @@ const Hero = () => (
           Operate now
         </a>
         <div className={TEXT}>
-          *rewards are dependent on individual agent implementations as well as operator performance.
+          *rewards are dependent on individual agent implementations
+          as well as operator performance.
         </div>
       </div>
       <div className="lg:mt-0 lg:col-span-6 lg:flex">

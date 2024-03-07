@@ -7,7 +7,8 @@ import {
 } from '../ui/table';
 
 /**
- * Truncates an Ethereum address to show the first five characters, a ..., and the last three characters
+ * Truncates an Ethereum address to show the first five characters, a ...,
+ * and the last three characters
  * @param {string} address - The Ethereum address to truncate
  * @returns {string} The truncated address
  */

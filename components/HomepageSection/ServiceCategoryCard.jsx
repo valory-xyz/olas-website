@@ -3,7 +3,9 @@ import Image from 'next/image';
 const servicePath = (service) => `/services/${service.slug}`;
 
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
-  const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
+  const filteredServices = services.filter(
+    (service) => service.serviceCategory.includes(serviceCategory.name),
+  );
 
   return (
     <div className="rounded mt-2 border p-4">

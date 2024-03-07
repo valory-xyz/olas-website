@@ -13,7 +13,8 @@ import contractAbi from '../../data/ABIs/TokenomicsProxy.json';
 import UsagePieChart from './UsagePieChart';
 import Verify from '../Verify';
 
-// manually register arc element, category scale, linear scale, and bar element – required due to chart.js tree shaking
+// manually register arc element, category scale, linear scale,
+// and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 const BACKUP_INFLATION_FOR_YEAR = [

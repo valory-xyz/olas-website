@@ -42,7 +42,9 @@ ListItem.displayName = 'ListItem';
 // const NormalListItem = ({ className, title, children }) => {
 //   <Link
 //     className={cn(
-//       'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+//       `block select-none space-y-1 rounded-md p-3 leading-none no-underline
+//       outline-none transition-colors hover:bg-accent hover:text-accent-foreground
+//       focus:bg-accent focus:text-accent-foreground`,
 //       className,
 //     )}
 //   >
@@ -64,7 +66,9 @@ export function Menu({ className }) {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>Ecosystem</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>
+            Ecosystem
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {ecosystemItems.map((component) => (
@@ -83,7 +87,9 @@ export function Menu({ className }) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>Resources</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>
+            Resources
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {resources.map((component) => (

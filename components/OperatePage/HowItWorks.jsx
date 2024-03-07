@@ -16,7 +16,10 @@ function HowItWorks() {
               {' '}
               for interesting agents
             </li>
-            <li>Follow instructions to run them. Optionally, stake tokens behind the quality of your operations</li>
+            <li>
+              Follow instructions to run them. Optionally, stake tokens
+              behind the quality of your operations
+            </li>
             <li>Refine strategy and maintain uptime</li>
             <li>Potentially earn rewards and benefit from the operations of the agent</li>
           </ol>

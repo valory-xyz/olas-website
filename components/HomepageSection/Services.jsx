@@ -128,7 +128,8 @@ const KitsSubsection = () => (
           </h2>
 
           <p className={`${TEXT} mb-4`}>
-            Olas builders have created a suite of kits to help you get started building agents and services.
+            Olas builders have created a suite of kits to help you get started
+            building agents and services.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-6 xl:grid-cols-4">
@@ -183,7 +184,8 @@ const BuildersSubsection = () => (
           </h2>
 
           <p className="mt-4 text-xl font-light md:text-3xl lg:text-xl text-gray-600 max-w-[700px]">
-            Olas has a growing ecosystem of talented developer organizations, pushing the autonomous edge every day, building autonomous agents and services.
+            Olas has a growing ecosystem of talented developer organizations, pushing
+            the autonomous edge every day, building autonomous agents and services.
           </p>
         </div>
 
