@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import resources from 'data/resources.json';
 import ecosystemItems from 'data/ecosystemItems.json';
-import { cn } from '@/lib/utils';
+import { cn } from 'lib/utils';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,8 +12,8 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import { DOCS_BASE_URL } from '@/common-util/constants';
+} from 'components/ui/navigation-menu';
+import { DOCS_BASE_URL } from 'common-util/constants';
 
 const triggerStyle = navigationMenuTriggerStyle();
 

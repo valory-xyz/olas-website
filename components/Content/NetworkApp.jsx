@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { TEXT } from '@/styles/globals';
+import { TEXT } from 'styles/globals';
 
 const NetworkApp = ({ networkApp }) => (
   <a href={networkApp.url} target="_blank" rel="noopener noreferrer">

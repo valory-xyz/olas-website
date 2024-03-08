@@ -1,4 +1,4 @@
-// import { DOCS_BASE_URL } from '@/common-util/constants';
+// import { DOCS_BASE_URL } from 'common-util/constants';
 import { Button } from '../ui/button';
 import {
   Drawer,

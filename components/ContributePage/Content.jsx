@@ -1,4 +1,4 @@
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import Articles from '../Content/Articles';
 import Resources from '../Content/Resources';
 

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 function ForDAOs() {
   return (

@@ -1,5 +1,5 @@
-import PageWrapper from '@/components/Layout/PageWrapper';
-import { KitPage } from '@/components/KitPage';
+import PageWrapper from 'components/Layout/PageWrapper';
+import { KitPage } from 'components/KitPage';
 
 const Kit = () => (
   <PageWrapper>

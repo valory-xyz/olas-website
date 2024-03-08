@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import networkApps from 'data/networkApps.json';
 import NetworkApp from './NetworkApp';
-import networkApps from '@/data/networkApps.json';
 import SectionWrapper from '../Layout/SectionWrapper';
 
 const NetworkApps = ({ limit }) => (

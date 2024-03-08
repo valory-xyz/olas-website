@@ -1,6 +1,6 @@
-import PageWrapper from '@/components/Layout/PageWrapper';
-import Meta from '@/components/Meta';
-import Build from '@/components/BuildPage';
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
+import Build from 'components/BuildPage';
 
 const BuildPage = () => (
   <PageWrapper>

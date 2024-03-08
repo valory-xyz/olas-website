@@ -1,7 +1,7 @@
 import React from 'react';
 import { DOCS_BASE_URL } from 'common-util/constants';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import { TITLE } from '@/styles/globals';
+import PageWrapper from 'components/Layout/PageWrapper';
+import { TITLE } from 'styles/globals';
 
 const StackPage = () => (
   <PageWrapper>

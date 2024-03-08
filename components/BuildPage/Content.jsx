@@ -1,4 +1,4 @@
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from '../ui/typography';
 
 const pClass = 'text-xl';

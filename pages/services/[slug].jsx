@@ -2,13 +2,13 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import servicesData from '@/data/services.json';
-import Meta from '@/components/Meta';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
-import { Spinner } from '@/components/Spinner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import servicesData from 'data/services.json';
+import Meta from 'components/Meta';
+import PageWrapper from 'components/Layout/PageWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Spinner } from 'components/Spinner';
+import { Badge } from 'components/ui/badge';
+import { Button } from 'components/ui/button';
 
 const FieldRow = ({ fieldName, value }) => (
   <div className="p-4 flex justify-between">

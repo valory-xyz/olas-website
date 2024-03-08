@@ -38,7 +38,6 @@
     "import/prefer-default-export": "off",
     "react/forbid-prop-types": "off",
     "react/destructuring-assignment": "off",
-    "import/extensions": "off",
     "react/function-component-definition": [
       2,
       {

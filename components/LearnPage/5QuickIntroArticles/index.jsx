@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import Link from 'next/link';
 
 import { useEffect, useState } from 'react';
-import { getEducationArticles } from '@/common-util/api';
+import { getEducationArticles } from 'common-util/api';
 
 const QuickIntroArticles = () => {
   const [educationArticles, setEducationArticles] = useState([]);

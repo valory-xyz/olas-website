@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 import { Button } from '../Button';
 

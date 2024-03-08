@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 
 function Flywheel() {

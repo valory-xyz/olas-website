@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from '../typography';
 
 export const BasicSection = ({

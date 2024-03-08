@@ -1,6 +1,6 @@
-import Contribute from '@/components/ContributePage';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import Meta from '@/components/Meta';
+import Contribute from 'components/ContributePage';
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 
 const ContributePage = () => (
   <PageWrapper>

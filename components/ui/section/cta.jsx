@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
-import SectionHeading from '@/components/SectionHeading';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from 'components/SectionHeading';
 
 export const CTASection = ({ heading, ctaUrl, ctaText }) => (
   <SectionWrapper customClasses="px-8 py-12 lg:p-24 border-y" backgroundType="SUBTLE_GRADIENT">

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,

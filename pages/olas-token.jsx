@@ -1,6 +1,6 @@
-import OlasToken from '@/components/OlasTokenPage';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import Meta from '@/components/Meta';
+import OlasToken from 'components/OlasTokenPage';
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 
 const OlasTokenPage = () => (
   <PageWrapper>

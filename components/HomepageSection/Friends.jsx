@@ -1,5 +1,5 @@
+import friends from 'data/friends.json';
 import Friend from './Friend';
-import friends from '@/data/friends.json';
 import SectionHeading from '../SectionHeading';
 import SectionWrapper from '../Layout/SectionWrapper';
 

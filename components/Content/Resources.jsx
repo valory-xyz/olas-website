@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import resources from 'data/resources.json';
 import Resource from './Resource';
-import resources from '@/data/resources.json';
 import SectionWrapper from '../Layout/SectionWrapper';
 
 const Resources = ({ limit = null, tagFilter = null }) => {

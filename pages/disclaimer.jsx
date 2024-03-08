@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import PageWrapper from '@/components/Layout/PageWrapper';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
-import SectionHeading from '@/components/SectionHeading';
-import Meta from '@/components/Meta';
+import PageWrapper from 'components/Layout/PageWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from 'components/SectionHeading';
+import Meta from 'components/Meta';
 
 const DisclaimerPage = () => (
   <PageWrapper>

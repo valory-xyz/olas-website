@@ -2,11 +2,11 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import { getBlog } from '@/common-util/api';
-import { TEXT, TITLE, markdownComponents } from '@/styles/globals';
-import Meta from '@/components/Meta';
-import { Spinner } from '@/components/Spinner';
+import PageWrapper from 'components/Layout/PageWrapper';
+import { getBlog } from 'common-util/api';
+import { TEXT, TITLE, markdownComponents } from 'styles/globals';
+import Meta from 'components/Meta';
+import { Spinner } from 'components/Spinner';
 
 const BlogItem = () => {
   const router = useRouter();

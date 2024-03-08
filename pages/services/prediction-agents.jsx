@@ -1,19 +1,19 @@
 import Image from 'next/image';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
-import Meta from '@/components/Meta';
-import { Button } from '@/components/ui/button';
+import PageWrapper from 'components/Layout/PageWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import Meta from 'components/Meta';
+import { Button } from 'components/ui/button';
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
-} from '@/components/ui/card';
-import { CTASection } from '@/components/ui/section/cta';
-import { HowToSection } from '@/components/ui/section/how-to';
+} from 'components/ui/card';
+import { CTASection } from 'components/ui/section/cta';
+import { HowToSection } from 'components/ui/section/how-to';
 import {
   Table, TableBody, TableCell, TableRow,
-} from '@/components/ui/table';
+} from 'components/ui/table';
 import {
   ExternalLink, H1, Lead, Upcase,
-} from '@/components/ui/typography';
+} from 'components/ui/typography';
 
 const resources = [
   {

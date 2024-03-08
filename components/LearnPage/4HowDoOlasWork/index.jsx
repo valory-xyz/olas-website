@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { TITLE } from '@/styles/globals';
+import { TITLE } from 'styles/globals';
 
 const DATA = [
   'Services are made up of open-source software agents',

@@ -4,12 +4,12 @@ import Image from 'next/image';
 import kits from 'data/kits.json';
 import { TEXT } from 'styles/globals';
 import Link from 'next/link';
-import services from '@/data/services.json';
-import serviceCategories from '@/data/serviceCategories.json';
-import core from '@/data/core.json';
-import chains from '@/data/chains.json';
-import builders from '@/data/builders.json';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import services from 'data/services.json';
+import serviceCategories from 'data/serviceCategories.json';
+import core from 'data/core.json';
+import chains from 'data/chains.json';
+import builders from 'data/builders.json';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 import ServiceCategoryCard from './ServiceCategoryCard';
 

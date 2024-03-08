@@ -1,6 +1,6 @@
-import Operate from '@/components/OperatePage';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import Meta from '@/components/Meta';
+import Operate from 'components/OperatePage';
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 
 const OperatePage = () => (
   <PageWrapper>

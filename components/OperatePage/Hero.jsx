@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import React from 'react';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { TEXT } from 'styles/globals';
 import SectionHeading from '../SectionHeading';
 import { CTA } from './utils';
-import { TEXT } from '@/styles/globals';
 
 const Hero = () => (
   <SectionWrapper customClasses="py-16 border-b" backgroundType="SUBTLE_GRADIENT">

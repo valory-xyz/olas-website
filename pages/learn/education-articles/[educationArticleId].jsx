@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/router';
-import PageWrapper from '@/components/Layout/PageWrapper';
-import { getEducationArticle } from '@/common-util/api';
+import PageWrapper from 'components/Layout/PageWrapper';
+import { getEducationArticle } from 'common-util/api';
 // import Image from "next/image";
-import Meta from '@/components/Meta';
-import { Spinner } from '@/components/Spinner';
-import { TEXT, TITLE, markdownComponents } from '@/styles/globals';
+import Meta from 'components/Meta';
+import { Spinner } from 'components/Spinner';
+import { TEXT, TITLE, markdownComponents } from 'styles/globals';
 
 const EducationArticle = () => {
   const router = useRouter();
