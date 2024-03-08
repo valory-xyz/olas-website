@@ -1,9 +1,11 @@
 import useSWR from 'swr';
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
-export const fetcher = (...args) => fetch(...args).then(res => console.log('res', res));
+// eslint-disable-next-line no-console
+export const fetcher = (...args) => fetch(...args).then((res) => console.log('res', res));
 
 export const useBlogItems = async () => {
+  // eslint-disable-next-line no-unused-vars
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -15,6 +17,6 @@ export const useBlogItems = async () => {
   return {
     blogItems: data.data,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
   };
 };
