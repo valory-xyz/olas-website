@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+import { cn } from 'lib/utils';
 
 const SectionWrapper = ({
   children, customClasses = 'px-8 py-12 lg:p-24', backgroundType, id = '',
@@ -18,7 +19,7 @@ const SectionWrapper = ({
   }, [backgroundType]);
 
   return (
-    <section className={`${customClasses} ${returnBackgroundType} scroll-mt-[100px]`} id={id}>
+    <section className={cn(customClasses, returnBackgroundType, 'scroll-mt-[100px]')} id={id}>
       {children}
     </section>
   );
@@ -31,9 +32,8 @@ SectionWrapper.propTypes = {
   id: PropTypes.string,
 };
 SectionWrapper.defaultProps = {
-  backgroundType: null,
-  customClasses: null,
-  id: null,
+  backgroundType: undefined,
+  customClasses: 'px-8 py-12 lg:p-24',
+  id: '',
 };
-
 export default SectionWrapper;

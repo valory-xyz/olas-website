@@ -19,7 +19,6 @@ export const LEARN_LIST = [
   { name: 'Quick intro articles', id: 'quick-intro-articles' },
   { name: 'Why build on Olas?', id: 'why-build-on-olas' },
   { name: 'What could you build?', id: 'what-could-you-build' },
-  // { name: 'What’s our mission?', id: 'mission' },
 ];
 
 const LearnPage = () => (
@@ -48,7 +47,6 @@ const LearnPage = () => (
       <QuickIntroArticles />
       <WhyBuildOnOlas />
       <WhatCouldYouBuild />
-      {/* <Mission /> */}
     </div>
   </PageWrapper>
 );
