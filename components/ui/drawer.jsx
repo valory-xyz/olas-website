@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import * as React from 'react';
+import { forwardRef } from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from 'lib/utils';
@@ -22,7 +22,7 @@ const DrawerPortal = DrawerPrimitive.Portal;
 
 const DrawerClose = DrawerPrimitive.Close;
 
-const DrawerOverlay = React.forwardRef(({ className, ...props }, ref) => (
+const DrawerOverlay = forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Overlay
     ref={ref}
     className={cn('fixed inset-0 z-50 bg-black/80', className)}
@@ -34,7 +34,7 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 DrawerOverlay.propTypes = { className: PropTypes.string };
 DrawerOverlay.defaultProps = { className: '' };
 
-const DrawerContent = React.forwardRef(({ className, children, ...props }, ref) => (
+const DrawerContent = forwardRef(({ className, children, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
@@ -80,7 +80,7 @@ DrawerFooter.displayName = 'DrawerFooter';
 DrawerFooter.propTypes = { className: PropTypes.string };
 DrawerFooter.defaultProps = { className: '' };
 
-const DrawerTitle = React.forwardRef(({ className, ...props }, ref) => (
+const DrawerTitle = forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Title
     ref={ref}
     className={cn('text-lg font-semibold leading-none tracking-tight', className)}
@@ -91,7 +91,7 @@ DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 DrawerTitle.propTypes = { className: PropTypes.string };
 DrawerTitle.defaultProps = { className: '' };
 
-const DrawerDescription = React.forwardRef(({ className, ...props }, ref) => (
+const DrawerDescription = forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
     ref={ref}
     className={cn('text-sm text-muted-foreground', className)}
