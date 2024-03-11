@@ -1,1 +1,1 @@
-export const CTA = 'https://bond.olas.network/'
+export const CTA = 'https://bond.olas.network/';

@@ -1,11 +1,11 @@
-import Image from "next/image";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from '../SectionHeading';
 
 function OlasUtility() {
   return (
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 text-center">
-      <div id="olas-token"></div>
+      <div id="olas-token" />
       <SectionHeading color="text-purple-950">Utility</SectionHeading>
       <div className="text-3xl font-light tracking-tight text-gray-600 leading-normal mb-4 lg:w-3/4 mx-auto">
         OLAS provides access to the core functions of the network.

@@ -1,1 +1,1 @@
-export const CTA_LINK = 'https://contribute.olas.network'
+export const CTA_LINK = 'https://contribute.olas.network';

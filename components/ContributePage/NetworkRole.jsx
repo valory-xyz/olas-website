@@ -1,6 +1,6 @@
-import Image from "next/image";
-import SectionWrapper from "@/components/Layout/SectionWrapper";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from '../SectionHeading';
 
 function NetworkRole() {
   return (
@@ -14,7 +14,9 @@ function NetworkRole() {
         height="474"
       />
       <div className="text-2xl font-light text-gray-600 leading-relaxed mb-4 max-w-screen-md mx-auto">
-        Olas Contribute is designed to assist the network by marketing important information to relevant stakeholders. These stakeholders could be Bonders, Supply-side Devs or Demand-side Devs. Contribute may evolve beyond a pure marketing function in the future.
+        Olas Contribute is designed to assist the network by marketing important information
+        to relevant stakeholders. These stakeholders could be Bonders, Supply-side Devs or
+        Demand-side Devs. Contribute may evolve beyond a pure marketing function in the future.
       </div>
     </SectionWrapper>
   );

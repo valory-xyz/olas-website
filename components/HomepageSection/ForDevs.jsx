@@ -1,5 +1,4 @@
-import Image from "next/image";
-import SectionHeading from "../SectionHeading";
+import Image from 'next/image';
 
 function ForDevs() {
   return (
@@ -8,7 +7,7 @@ function ForDevs() {
         <div className="relative z-10 bg-white lg:py-24 py-8 px-4 text-center lg:rounded-2xl shadow-2xl">
           <div>
             <h2 className="text-purple-900 text-5xl mb-8 font-extrabold">
-            Liquidity mining,
+              Liquidity mining,
               <br />
               but for code
             </h2>

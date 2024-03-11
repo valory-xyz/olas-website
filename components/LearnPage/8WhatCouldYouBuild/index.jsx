@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/Button';
+import { Button } from 'components/Button';
 
 const ideaGroups = [
   {
@@ -101,14 +101,14 @@ const WhatCouldYouBuild = () => (
       More ideas
     </div>
 
-    {ideaGroups.map(ideaGroup => {
+    {ideaGroups.map((ideaGroup) => {
       const { id, ideas, title } = ideaGroup;
 
       return (
         <div key={id} className="mt-8">
           <h2 className="text-2xl font-bold group-title">{title}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {ideas.map(idea => (
+            {ideas.map((idea) => (
               <div key={idea.id} className="idea">
                 <h3 className="text-xl font-semibold idea-title">
                   {idea.title}

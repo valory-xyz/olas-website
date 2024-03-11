@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import Image from 'next/image';
-import SectionWrapper from '@/components/Layout/SectionWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from '../typography';
 
 export const BasicSection = ({
@@ -24,3 +25,15 @@ export const BasicSection = ({
     </div>
   </SectionWrapper>
 );
+
+BasicSection.propTypes = {
+  body: PropTypes.element.isRequired,
+  heading: PropTypes.string.isRequired,
+  image: PropTypes.shape({
+    alt: PropTypes.string,
+    height: PropTypes.number,
+    path: PropTypes.string,
+    width: PropTypes.number,
+  }).isRequired,
+  sectionId: PropTypes.string.isRequired,
+};

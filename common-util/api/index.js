@@ -29,7 +29,7 @@ export const getEducationArticles = async () => {
   return data;
 };
 
-export const getEducationArticle = async id => {
+export const getEducationArticle = async (id) => {
   const params = {
     populate: '*',
   };
@@ -61,9 +61,9 @@ export const getBlogs = async () => {
  *
  */
 
-export const isIdUsedToFetchBlog = id => !!(isFinite(Number(id)));
+export const isIdUsedToFetchBlog = (id) => !!(isFinite(Number(id)));
 
-export const getBlog = async id => {
+export const getBlog = async (id) => {
   const params = { populate: '*' };
 
   if ((isIdUsedToFetchBlog(id))) {
@@ -78,7 +78,7 @@ export const getBlog = async id => {
 };
 
 // ----------- FUNNELS -----------
-export const getFunnel = async id => {
+export const getFunnel = async (id) => {
   const params = {
     populate: '*',
   };

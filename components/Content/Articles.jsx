@@ -1,15 +1,16 @@
-import Article from "./Article";
-import Link from "next/link";
+import PropTypes from 'prop-types';
+import Link from 'next/link';
 import qs from 'qs';
 
-import useSWR from "swr";
-import { Spinner } from "../Spinner";
+import useSWR from 'swr';
+import Article from './Article';
+import { Spinner } from '../Spinner';
 
 export const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
-export const fetcher = (...args) => fetch(...args).then(res => res.json());
+export const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
+const Articles = ({ limit, showSeeAll }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -17,17 +18,17 @@ const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
   };
   const stringifyParams = qs.stringify(params);
 
-  const {data, error, isLoading} = useSWR(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, fetcher);
+  const { data, isLoading } = useSWR(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, fetcher);
 
   const blogItems = data?.data ?? [];
 
   if (isLoading) return <Spinner />;
-  
+
   return (
     <section>
       <div>
         <div>
-        <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
+          <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
             Blog
           </h2>
           {showSeeAll && (
@@ -51,6 +52,15 @@ const Articles = ({ limit = 1000, tagFilter = null, showSeeAll = false }) => {
       </div>
     </section>
   );
+};
+
+Articles.propTypes = {
+  limit: PropTypes.number,
+  showSeeAll: PropTypes.bool,
+};
+Articles.defaultProps = {
+  limit: 1000,
+  showSeeAll: false,
 };
 
 export default Articles;
