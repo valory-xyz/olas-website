@@ -41,9 +41,9 @@ HowToSection.propTypes = {
   heading: PropTypes.string.isRequired,
   image: PropTypes.shape({
     alt: PropTypes.string,
-    height: PropTypes.string,
+    height: PropTypes.number,
     path: PropTypes.string,
-    width: PropTypes.string,
+    width: PropTypes.number,
   }).isRequired,
   sectionId: PropTypes.string.isRequired,
 };

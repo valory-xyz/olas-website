@@ -38,7 +38,7 @@ CardTitle.propTypes = {
   children: PropTypes.element.isRequired,
   className: PropTypes.string,
 };
-CardTitle.defaultProps = { className: true };
+CardTitle.defaultProps = { className: '' };
 
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
   <p

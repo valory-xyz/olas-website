@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { cn } from 'lib/utils';
 
 const SectionWrapper = ({
-  children, customClasses = 'px-8 py-12 lg:p-24', backgroundType, id = '',
+  children, customClasses, backgroundType, id,
 }) => {
   const returnBackgroundType = useMemo(() => {
     switch (backgroundType) {

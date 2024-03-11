@@ -50,8 +50,8 @@ Resources.propTypes = {
   tagFilter: PropTypes.string,
 };
 Resources.defaultProps = {
-  limit: PropTypes.null,
-  tagFilter: PropTypes.null,
+  limit: null,
+  tagFilter: null,
 };
 
 export default Resources;

@@ -44,7 +44,7 @@ const Supply = () => {
   const [inflationForYear, setInflationForYear] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));

@@ -32,7 +32,7 @@ const DrawerOverlay = React.forwardRef(({ className, ...props }, ref) => (
 
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 DrawerOverlay.propTypes = { className: PropTypes.string };
-DrawerOverlay.defaultProps = { className: true };
+DrawerOverlay.defaultProps = { className: '' };
 
 const DrawerContent = React.forwardRef(({ className, children, ...props }, ref) => (
   <DrawerPortal>
@@ -55,7 +55,7 @@ DrawerContent.propTypes = {
   children: PropTypes.element.isRequired,
   className: PropTypes.string,
 };
-DrawerContent.defaultProps = { className: true };
+DrawerContent.defaultProps = { className: '' };
 
 const DrawerHeader = ({
   className,
@@ -68,7 +68,7 @@ const DrawerHeader = ({
 );
 DrawerHeader.displayName = 'DrawerHeader';
 DrawerHeader.propTypes = { className: PropTypes.string };
-DrawerHeader.defaultProps = { className: true };
+DrawerHeader.defaultProps = { className: '' };
 
 const DrawerFooter = ({
   className,
@@ -78,7 +78,7 @@ const DrawerFooter = ({
 );
 DrawerFooter.displayName = 'DrawerFooter';
 DrawerFooter.propTypes = { className: PropTypes.string };
-DrawerFooter.defaultProps = { className: true };
+DrawerFooter.defaultProps = { className: '' };
 
 const DrawerTitle = React.forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Title
@@ -89,7 +89,7 @@ const DrawerTitle = React.forwardRef(({ className, ...props }, ref) => (
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 DrawerTitle.propTypes = { className: PropTypes.string };
-DrawerTitle.defaultProps = { className: true };
+DrawerTitle.defaultProps = { className: '' };
 
 const DrawerDescription = React.forwardRef(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
@@ -100,7 +100,7 @@ const DrawerDescription = React.forwardRef(({ className, ...props }, ref) => (
 ));
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 DrawerDescription.propTypes = { className: PropTypes.string };
-DrawerDescription.defaultProps = { className: true };
+DrawerDescription.defaultProps = { className: '' };
 
 export {
   Drawer,
