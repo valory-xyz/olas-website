@@ -54,7 +54,7 @@ export function Menu({ className }) {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>
+          <NavigationMenuTrigger>
             Ecosystem
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -75,7 +75,7 @@ export function Menu({ className }) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={(event) => event.preventDefault()}>
+          <NavigationMenuTrigger>
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
