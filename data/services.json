@@ -32,8 +32,9 @@
     "serviceCategory": "AI",
     "description": "",
     "appUrl": "https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91",
-    "marketingUrl": "https://twitter.com/valoryag/status/1658869890625978373",
+    "marketingUrl": "https://github.com/valory-xyz/mech?tab=readme-ov-file#----autonolas-ai-mechs----------------",
     "buildUrl": "https://www.autonolas.network/product/mechkit",
+    "integrateUrl": "https://github.com/valory-xyz/mech?tab=readme-ov-file#integrating-mechs-into-your-application",
     "iconFilename": "ai-mechs.svg",
     "demo": false,
     "builder": "Valory"
