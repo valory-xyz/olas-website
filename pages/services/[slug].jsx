@@ -77,6 +77,17 @@ const ServiceDetail = () => {
               </a>
             </Button>
             )}
+            {service.integrateUrl && (
+            <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
+              <a
+                href={service.integrateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Integrate Mechs
+              </a>
+            </Button>
+            )}
             {service.buildUrl
               && (
               <Button size="xl" variant="outline" asChild className="w-full lg:w-auto">
