@@ -78,10 +78,9 @@ const Supply = () => {
       // Call epochCounter to get the current epoch
       const newEpoch = await contractInstance.methods.epochCounter().call();
       setEpoch(newEpoch);
-
       // Use the result as the parameter for mapEpochTokenomics
       const result = await contractInstance.methods
-        .mapEpochTokenomics(epoch)
+        .mapEpochTokenomics(newEpoch)
         .call();
       // 6 is the index of the bonders % value
       const bonders = Number(result['6']);
