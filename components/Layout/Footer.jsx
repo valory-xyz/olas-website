@@ -6,7 +6,7 @@ const Footer = () => (
     <div className="mx-auto max-w-screen-xl text-center">
       <Link
         href="/"
-        class="flex justify-center items-center text-2xl font-semibold text-gray-900 "
+        className="flex justify-center items-center text-2xl font-semibold text-gray-900 "
       >
         <Image
           src="/images/olas-logo.svg"
@@ -21,29 +21,29 @@ const Footer = () => (
       </p>
       <ul className="flex flex-wrap justify-center items-center mb-6 text-gray-900 ">
         <li>
-          <Link href="/#ecosystem" class="mr-4 hover:underline md:mr-6 ">
+          <Link href="/#ecosystem" className="mr-4 hover:underline md:mr-6 ">
             Ecosystem
           </Link>
         </li>
         <li>
-          <Link href="/whitepaper" class="mr-4 hover:underline md:mr-6 ">
+          <Link href="/whitepaper" className="mr-4 hover:underline md:mr-6 ">
             Whitepaper
           </Link>
         </li>
         <li>
-          <Link href="/#resources" class="mr-4 hover:underline">
+          <Link href="/#resources" className="mr-4 hover:underline">
             Resources
           </Link>
         </li>
         <li>
-          <Link href="/documents/press-kit-olas.pdf" class="mr-4 hover:underline">
+          <Link href="/documents/press-kit-olas.pdf" className="mr-4 hover:underline">
             Press Kit
           </Link>
         </li>
         <li>
           <Link
             href="https://autonolas.world"
-            class="hover:underline"
+            className="hover:underline"
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -24,6 +24,6 @@ export const markdownComponents = {
   h4: ({ node, ...props }) => <h4 className="text-lg font-medium mb-1" {...props} />,
   h5: ({ node, ...props }) => <h5 className="text-md font-medium" {...props} />,
   h6: ({ node, ...props }) => <h6 className="text-sm font-medium" {...props} />,
-  pre: ({ node, ...props }) => <pre className="p-4 bg-gray-800 text-white rounded-md overflow-auto" {...props} />,
+  pre: ({ node, ...props }) => <pre className="p-4 bg-gray-800 border rounded-md overflow-auto" {...props} />,
   code: ({ node, ...props }) => <code className="text-sm" {...props} />,
 };
