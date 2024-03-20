@@ -15,7 +15,7 @@ export const markdownComponents = {
   // Apply margin to paragraphs to create space between them
   p: ({ node, ...props }) => <p className="mb-4" {...props} />,
   // Apply tailwind classes to style lists
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside ml-4" {...props} />,
   ol: ({ node, ...props }) => <ol className="list-decimal list-inside" {...props} />,
   li: ({ node, ...props }) => <li className="mb-2" {...props} />,
   h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4" {...props} />,
