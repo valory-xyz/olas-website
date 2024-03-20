@@ -35,7 +35,7 @@ const BlogItem = () => {
     <PageWrapper>
       <Meta pageTitle={title} siteImageUrl={imageUrl} />
       <div className="max-w-3xl mx-auto p-4">
-        {!imageError && (
+        {!imageError && imagePath && (
           <Image
             src={imageUrl}
             width={headerImage.data[0].attributes.formats.large.width}
