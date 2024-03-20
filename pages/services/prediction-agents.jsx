@@ -70,7 +70,7 @@ const PredictionAgents = () => (
       sectionId="how-to"
       heading="How it works"
       image={{
-        path: '/images/services/prediction-agents/how-to.png',
+        path: '/images/services/how-to.png',
         width: 400,
         height: 400,
       }}
