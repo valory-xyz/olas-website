@@ -26,4 +26,8 @@ export const markdownComponents = {
   h6: ({ node, ...props }) => <h6 className="text-sm font-medium" {...props} />,
   pre: ({ node, ...props }) => <pre className="p-4 bg-gray-800 border rounded-md overflow-auto" {...props} />,
   code: ({ node, ...props }) => <code className="text-sm" {...props} />,
+  blockquote: ({
+    node, children, className, ...props
+  }) => <blockquote className={`border-l-4 border-gray-800 pl-6 mb-4 italic ${className}`} {...props}>{children}</blockquote>
+  ,
 };
