@@ -124,7 +124,7 @@ const AiMechs = () => (
         steps: [
           'An agent or application sends an on-chain request to use an AI tool to a Mech service, paying a fee in crypto',
           'The Mech service reads the request and identifies the tool to use to process it. It executes the request and retrieves the response.',
-          'Tweak strategy to maximize earnings',
+          'The Mech records the response on-chain, making it available to the agent or application to use.',
         ],
         extra: ['Check out ',
           <ExternalLink href="https://github.com/valory-xyz/mech/tree/main?tab=readme-ov-file#mech-request-response-flow">the repo</ExternalLink>,
