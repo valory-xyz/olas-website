@@ -61,7 +61,7 @@ const AiMechs = () => (
             The marketplace for AI tools
           </H1>
           <Lead className="mb-8">
-            Outsource your agent&apos;s complex tasks and pay for it in crypto.
+            Outsource your agent&apos;s complex tasks and pay for them in crypto.
           </Lead>
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
@@ -76,7 +76,7 @@ const AiMechs = () => (
       </div>
     </SectionWrapper>
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-      <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             What are Mechs?
@@ -97,7 +97,7 @@ const AiMechs = () => (
       </div>
     </SectionWrapper>
     <SectionWrapper>
-      <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             Why do we need mechs?
@@ -133,7 +133,7 @@ const AiMechs = () => (
       }}
     />
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-      <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             Integrate Mechs into your application
@@ -168,14 +168,14 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper>
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-b">
       <H1 className="text-center mb-12">Further resources</H1>
       <div className="grid md:grid-cols-2 gap-4">
         {resources.map((resource, index) => {
           const FooterTag = resource.actions.length > 1 ? CardContent : CardFooter;
           return (
             <div key={index} className="mb-4 md:mb-0">
-              <Card className="max-w-sm mx-auto">
+              <Card className="max-w-sm mx-auto h-full">
                 <CardHeader>
                   <CardTitle>{resource.title}</CardTitle>
                 </CardHeader>
