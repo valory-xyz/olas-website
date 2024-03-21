@@ -15,7 +15,7 @@ export const markdownComponents = {
   // Apply margin to paragraphs to create space between them
   p: ({ node, ...props }) => <p className="mb-4" {...props} />,
   // Apply tailwind classes to style lists
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside ml-4" {...props} />,
   ol: ({ node, ...props }) => <ol className="list-decimal list-inside" {...props} />,
   li: ({ node, ...props }) => <li className="mb-2" {...props} />,
   h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4" {...props} />,
@@ -24,6 +24,10 @@ export const markdownComponents = {
   h4: ({ node, ...props }) => <h4 className="text-lg font-medium mb-1" {...props} />,
   h5: ({ node, ...props }) => <h5 className="text-md font-medium" {...props} />,
   h6: ({ node, ...props }) => <h6 className="text-sm font-medium" {...props} />,
-  pre: ({ node, ...props }) => <pre className="p-4 bg-gray-800 text-white rounded-md overflow-auto" {...props} />,
+  pre: ({ node, ...props }) => <pre className="p-4 bg-gray-800 border rounded-md overflow-auto" {...props} />,
   code: ({ node, ...props }) => <code className="text-sm" {...props} />,
+  blockquote: ({
+    node, children, className, ...props
+  }) => <blockquote className={`border-l-4 border-gray-800 pl-6 mb-4 italic ${className}`} {...props}>{children}</blockquote>
+  ,
 };
