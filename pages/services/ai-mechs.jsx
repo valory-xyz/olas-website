@@ -76,7 +76,7 @@ const AiMechs = () => (
       </div>
     </SectionWrapper>
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             What are Mechs?
@@ -97,7 +97,7 @@ const AiMechs = () => (
       </div>
     </SectionWrapper>
     <SectionWrapper>
-      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             Why do we need mechs?
@@ -133,7 +133,7 @@ const AiMechs = () => (
       }}
     />
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-      <div className="max-w-4xl xl:pr-12 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             Integrate Mechs into your application
