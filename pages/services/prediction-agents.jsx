@@ -8,9 +8,7 @@ import {
 } from 'components/ui/card';
 import { CTASection } from 'components/ui/section/cta';
 import { HowToSection } from 'components/ui/section/how-to';
-import {
-  Table, TableBody, TableCell, TableRow,
-} from 'components/ui/table';
+import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import {
   ExternalLink, H1, Lead, Upcase,
 } from 'components/ui/typography';
@@ -81,6 +79,7 @@ const PredictionAgents = () => (
           </ExternalLink>,
           <span>
             Run the
+            {' '}
             <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">quickstart script</ExternalLink>
             {' '}
             - choose to participate in staking programs, if available
@@ -91,136 +90,32 @@ const PredictionAgents = () => (
     />
     <SectionWrapper>
       <H1 className="text-center mb-12">What Prediction Agents do</H1>
-      <div className="max-w-6xl mx-auto">
-        <Table className="text-lg">
-          <TableBody>
-            <TableRow>
-              <TableCell>1. Agent watches for new prediction markets</TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">🤖</span>
-                <br />
-                Your agent
-              </TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">→</span>
-                <br />
-                Sees new market
-              </TableCell>
-              <TableCell className="text-center">
-                <Image
-                  src="/images/services/prediction-agents/omen.svg"
-                  alt="Omen prediction market"
-                  width={70}
-                  height={70}
-                  className="mx-auto"
-                />
-                Prediction market
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>2. Agent uses AI tools to get probability</TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">🤖</span>
-                <br />
-                Your agent
-              </TableCell>
-              <TableCell className="text-center">
-                <div className="flex justify-between">
-                  <div>
-                    <span className="text-6xl">←</span>
-                    <br />
-                    <span>Probability</span>
-                  </div>
-                  <div>
-                    <span className="text-6xl">→</span>
-                    <br />
-                    <span>$</span>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="text-center">
-                <Image
-                  src="/images/services/prediction-agents/mechs.svg"
-                  alt="Omen prediction market"
-                  width={200}
-                  height={100}
-                  className="mx-auto"
-                />
-                AI Tools Marketplace
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>3. Agent bets on prediction market</TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">🤖</span>
-                <br />
-                Your agent
-              </TableCell>
-              <TableCell className="text-center">
-                $
-                <br />
-                <span className="text-6xl">→</span>
-              </TableCell>
-              <TableCell className="text-center">
-                <Image
-                  src="/images/services/prediction-agents/omen.svg"
-                  alt="Omen prediction market"
-                  width={70}
-                  height={70}
-                  className="mx-auto"
-                />
-                AI Tools Marketplace
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>4. Agent potentially receives winnings</TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">🤖</span>
-                <br />
-                Your agent
-              </TableCell>
-              <TableCell className="text-center">
-                <span className="text-6xl">←</span>
-                <br />
-                ? $ $
-              </TableCell>
-              <TableCell className="text-center">
-                <Image
-                  src="/images/services/prediction-agents/omen.svg"
-                  alt="Omen prediction market"
-                  width={70}
-                  height={70}
-                  className="mx-auto"
-                />
-                AI Tools Marketplace
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+      <PredictionAgentsTable />
     </SectionWrapper>
     <SectionWrapper>
-      <H1 className="text-center mb-12">Further resources</H1>
-      <div className="grid md:grid-cols-2 gap-4">
-        {resources.map((resource, index) => (
-          <div key={index} className="mb-4 md:mb-0">
-            <Card className="max-w-sm mx-auto">
-              <CardHeader>
-                <CardTitle>{resource.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{resource.description}</CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button asChild>
-                  <a href={resource.action.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary-800 transition-colors duration-300">
-                    {resource.action.text}
-                  </a>
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        ))}
+      <div className="max-w-screen-lg mx-auto">
+        <H1 className="text-center mb-12">Further resources</H1>
+        <div className="grid md:grid-cols-2 gap-4">
+          {resources.map((resource, index) => (
+            <div key={index} className="mb-4 md:mb-0">
+              <Card className="max-w-sm mx-auto">
+                <CardHeader>
+                  <CardTitle>{resource.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{resource.description}</CardDescription>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild>
+                    <a href={resource.action.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary-800 transition-colors duration-300">
+                      {resource.action.text}
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
     <CTASection heading="Start predicting the future" ctaUrl="https://operate.olas.network" ctaText="Run an agent now" />

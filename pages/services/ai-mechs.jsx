@@ -6,7 +6,7 @@ import { Button } from 'components/ui/button';
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
 } from 'components/ui/card';
-import { HowToSection } from 'components/ui/section/how-to';
+import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import {
   ExternalLink, H1, Lead, Upcase,
 } from 'components/ui/typography';
@@ -63,6 +63,18 @@ const AiMechs = () => (
           <Lead className="mb-8">
             Outsource your agent&apos;s complex tasks and pay for them in crypto.
           </Lead>
+          <div className="grid md:grid-cols-2 gap-8">
+            <Button size="xl" asChild variant="default">
+              <a href="#resourcesSection">
+                Learn more
+              </a>
+            </Button>
+            <Button size="xl" asChild variant="outline">
+              <a href="#integrateMechsSection">
+                Integrate Mechs
+              </a>
+            </Button>
+          </div>
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
           <Image
@@ -77,7 +89,7 @@ const AiMechs = () => (
     </SectionWrapper>
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-        <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
+        <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H1 className="mb-8">
             What are Mechs?
           </H1>
@@ -90,7 +102,7 @@ const AiMechs = () => (
             for your applications.
           </Lead>
 
-          <ExternalLink href="https://aimechs.autonolas.network/mech?id=0xFf82123dFB52ab75C417195c5fDB87630145ae81&hash=0xf7b5a30348ac45e9cc7311715a359c4549cf6022e27681826f0f087a2de5cf91">
+          <ExternalLink href="https://aimechs.autonolas.network/mech/0x77af31De935740567Cf4fF1986D04B2c964A786a">
             Check out Mechs in action
           </ExternalLink>
         </div>
@@ -98,11 +110,11 @@ const AiMechs = () => (
     </SectionWrapper>
     <SectionWrapper>
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-        <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
+        <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H1 className="mb-8">
             Why do we need mechs?
           </H1>
-          <Lead className="mb-8">
+          <Lead>
             Mechs implement different AI-oriented tools and pay for private API access like
             OpenAI API. Mechs act as a central hub or library where your applications can
             make LLM requests and avoid having to pay for multiple APIs or implementing
@@ -112,28 +124,49 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <HowToSection
-      sectionId="how-to"
-      heading="How it works"
-      image={{
-        path: '/images/services/how-to.png',
-        width: 400,
-        height: 400,
-      }}
-      body={{
-        steps: [
-          'An agent or application sends an on-chain request to use an AI tool to a Mech service, paying a fee in crypto',
-          'The Mech service reads the request and identifies the tool to use to process it. It executes the request and retrieves the response.',
-          'The Mech records the response on-chain, making it available to the agent or application to use.',
-        ],
-        extra: ['Check out ',
-          <ExternalLink href="https://github.com/valory-xyz/mech/tree/main?tab=readme-ov-file#mech-request-response-flow">the repo</ExternalLink>,
-          ' for more details on the architecture']
-        ,
-      }}
-    />
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+        <div className="lg:col-span-6 px-5 lg:p-0">
+          <H1 className="mb-8">How it works</H1>
+          <ol className="text-xl list-decimal mb-6 pl-5 leading-loose">
+            <li>
+              An agent or application sends an on-chain request to use
+              an AI tool to a Mech service, paying a fee in crypto
+            </li>
+            <li>
+              The Mech service reads the request and identifies the tool to
+              use to process it. It executes the request and retrieves the response.
+            </li>
+            <li>
+              The Mech records the response on-chain, making it
+              available to the agent or application to use.
+            </li>
+          </ol>
+          <div className="text-slate-500">
+            Check out
+            {' '}
+            <ExternalLink href="https://github.com/valory-xyz/mech/tree/main?tab=readme-ov-file#mech-request-response-flow">
+              the repo
+            </ExternalLink>
+            {' '}
+            for more details on the architecture
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+    <SectionWrapper>
+      <H1 className="text-center mb-12">Case study: Mechs Predictions</H1>
+      <PredictionAgentsTable />
+      <Lead className="mt-12 text-center">
+        Check out
+        {' '}
+        <ExternalLink href="https://olas.network/services/prediction-agents">this page</ExternalLink>
+        {' '}
+        for more information on Prediction Agents
+      </Lead>
+    </SectionWrapper>
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="integrateMechsSection">
+      <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H1 className="mb-8">
             Integrate Mechs into your application
@@ -166,42 +199,53 @@ const AiMechs = () => (
             &nbsp;for more precise instructions.
           </Lead>
         </div>
+        <div className="lg:mt-0 lg:col-span-6 lg:flex">
+          <Image
+            src="/images/services/ai-mechs/integrate-mechs.png"
+            alt="Integrate Mechs"
+            width={400}
+            height={400}
+            className="mx-auto rounded-lg"
+          />
+        </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-b">
-      <H1 className="text-center mb-12">Further resources</H1>
-      <div className="grid md:grid-cols-2 gap-4">
-        {resources.map((resource, index) => {
-          const FooterTag = resource.actions.length > 1 ? CardContent : CardFooter;
-          return (
-            <div key={index} className="mb-4 md:mb-0">
-              <Card className="max-w-sm mx-auto h-full">
-                <CardHeader>
-                  <CardTitle>{resource.title}</CardTitle>
-                </CardHeader>
-                {resource.description && (
-                <CardContent>
-                  <CardDescription>{resource.description}</CardDescription>
-                </CardContent>
-                )}
-                <FooterTag>
-                  {resource.actions.map((action) => (
-                    <Button asChild>
-                      <a
-                        href={action.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:text-primary-800 transition-colors duration-300"
-                      >
-                        {action.text}
-                      </a>
-                    </Button>
-                  ))}
-                </FooterTag>
-              </Card>
-            </div>
-          );
-        })}
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-b" id="resourcesSection">
+      <div className="max-w-screen-lg mx-auto">
+        <H1 className="text-center mb-12">Further resources</H1>
+        <div className="grid md:grid-cols-2 gap-4">
+          {resources.map((resource, index) => {
+            const FooterTag = resource.actions.length > 1 ? CardContent : CardFooter;
+            return (
+              <div key={index} className="mb-4 md:mb-0">
+                <Card className="max-w-sm mx-auto h-full">
+                  <CardHeader>
+                    <CardTitle>{resource.title}</CardTitle>
+                  </CardHeader>
+                  {resource.description && (
+                  <CardContent>
+                    <CardDescription>{resource.description}</CardDescription>
+                  </CardContent>
+                  )}
+                  <FooterTag className="space-y-4">
+                    {resource.actions.map((action) => (
+                      <Button asChild className="whitespace-normal">
+                        <a
+                          href={action.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary-800 transition-colors duration-300"
+                        >
+                          {action.text}
+                        </a>
+                      </Button>
+                    ))}
+                  </FooterTag>
+                </Card>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </SectionWrapper>
   </PageWrapper>
