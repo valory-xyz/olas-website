@@ -112,6 +112,25 @@ export const TOKEN_DETAILS = [
       },
     },
   },
+  {
+    network: 'Optimism',
+    address: '0xFC2E6e6BCbd49ccf3A5f029c79984372DcBFE527',
+    explorerBaseUrl: 'https://optimistic.etherscan.io/token/',
+    exchange: {
+      name: 'Balancer',
+      url: 'https://app.balancer.fi/#/optimism/pool/0x5bb3e58887264b667f915130fd04bbb56116c27800020000000000000000012a',
+    },
+    bridge: { name: 'Optimism Bridge', url: 'https://app.optimism.io/bridge/deposit' },
+    bond: {
+      lpTokenName: 'OLAS-WETH',
+      bridgedLpTokenAddress: '0x2FD007a534eB7527b535a1DF35aba6bD2a8b660F',
+      lpTokenAddress: '0x5BB3E58887264B667f915130fD04bbB56116C278',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
+    },
+  },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
