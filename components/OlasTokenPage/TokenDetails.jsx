@@ -122,7 +122,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Optimism Bridge', url: 'https://app.optimism.io/bridge/deposit' },
     bond: {
-      lpTokenName: 'OLAS-WETH',
+      lpTokenName: 'WETH-OLAS',
       bridgedLpTokenAddress: '0x2FD007a534eB7527b535a1DF35aba6bD2a8b660F',
       lpTokenAddress: '0x5BB3E58887264B667f915130fD04bbB56116C278',
       lpTokenBridge: {
