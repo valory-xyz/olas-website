@@ -36,5 +36,11 @@
     "name": "Gnosis",
     "url": "https://www.gnosis.io/",
     "iconFilename": "gnosis.svg"
+  },
+  {
+    "id": "9d8f3c98-c53d-45a9-b7b7-20c8d715af19",
+    "name": "Polywrap",
+    "url": "https://www.polywrap.io/",
+    "iconFilename": "polywrap.svg"
   }
 ]
