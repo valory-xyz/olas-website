@@ -212,14 +212,14 @@ const HowItWorks = () => (
     <div className="max-w-screen-lg mx-auto">
       <H1 className="text-center mb-12">How it works</H1>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {howItWorksSteps.map(({ image }, index) => (
           <div key={index} className="flex flex-col items-center">
             <Image
               src={image.path}
               alt={image.alt}
-              width={240}
-              height={240}
+              width={180}
+              height={180}
               className="mx-auto rounded-lg"
             />
           </div>
