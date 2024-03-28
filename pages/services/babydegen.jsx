@@ -20,10 +20,10 @@ const BabyDegenHeader = () => (
   <SectionWrapper>
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <div className="mb-4">
-          <Upcase>BABY DEGEN</Upcase>
-        </div>
-        <H1 className="mb-4">Taste the future of AI agent-powered trading</H1>
+        <Upcase>BABY DEGEN</Upcase>
+        <H1 className="mt-4 mb-4">
+          Taste the future of AI agent-powered trading
+        </H1>
         <Lead className="mb-8">
           Take your first steps on your way to trading bliss.
         </Lead>
@@ -213,11 +213,11 @@ const HowItWorks = () => (
       <H1 className="text-center mb-12">How it works</H1>
 
       <div className="grid grid-cols-3 gap-4">
-        {howItWorksSteps.map((step, index) => (
+        {howItWorksSteps.map(({ image }, index) => (
           <div key={index} className="flex flex-col items-center">
             <Image
-              src={step.image.path}
-              alt={step.image.alt}
+              src={image.path}
+              alt={image.alt}
               width={240}
               height={240}
               className="mx-auto rounded-lg"
@@ -235,11 +235,11 @@ const HowItWorks = () => (
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0">
           <ol className="text-xl list-decimal mb-6 pl-5 text-muted-foreground">
-            {howItWorksSteps.map((step, index) => (
+            {howItWorksSteps.map(({ title, description }, index) => (
               <li key={index} className="mb-4">
-                {step.title}
+                <span className="font-bold">{title}</span>
                 {': '}
-                {step.description}
+                {description}
               </li>
             ))}
           </ol>

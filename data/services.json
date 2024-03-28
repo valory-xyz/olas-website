@@ -139,7 +139,7 @@
     "appUrl": "",
     "marketingUrl": "",
     "buildUrl": "",
-    "iconFilename": "prediction-agents.svg",
+    "iconFilename": "babydegen-icon.svg",
     "demo": false,
     "builder": "Valory"
   }
