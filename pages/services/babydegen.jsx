@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Image from 'next/image';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -50,19 +51,30 @@ const BabyDegenHeader = () => (
   </SectionWrapper>
 );
 
-const babyDegenInfo = "BabyDegen is your very own autonomous trading agent, designed to navigate the fast-paced world of DeFi. BabyDegen trades on your behalf leveraging various AI models and external data sources with speed and skill. It's more than just a tool; it's your companion on your crypto trading journey.";
-const getReadyInfo = "BabyDegen is designed for anyone ready to embrace the future of autonomous trading. Whether you're looking to safeguard your edge in an evolving market or eager to explore trading without the steep learning curve, BabyDegen is your gateway to the next generation of effortless trading. Experience hands-free success with this cutting-edge solution.";
 const WhatIsBabyDegen = () => (
   <SectionWrapper customClasses="border-y">
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-24 mt-24">
         <H1 className="mb-4">What is BabyDegen?</H1>
-        <Lead className="mb-8">{babyDegenInfo}</Lead>
+        <Lead className="mb-8">
+          BabyDegen is your very own autonomous trading agent, designed to
+          navigate the fast-paced world of DeFi. BabyDegen trades on your behalf
+          leveraging various AI models and external data sources with speed and
+          skill. It's more than just a tool; it's your companion on your crypto
+          trading journey.
+        </Lead>
 
         <H1 className="mb-4 mt-12">
           Get ready to participate in AI agent DeFi
         </H1>
-        <Lead className="mb-8">{getReadyInfo}</Lead>
+        <Lead className="mb-8">
+          BabyDegen is designed for anyone ready to embrace the future of
+          autonomous trading. Whether you're looking to safeguard your edge in
+          an evolving market or eager to explore trading without the steep
+          learning curve, BabyDegen is your gateway to the next generation of
+          effortless trading. Experience hands-free success with this
+          cutting-edge solution.
+        </Lead>
       </div>
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
@@ -195,7 +207,6 @@ const howItWorksSteps = [
     },
   },
 ];
-const onceYouveFunded = "Once you've funded your account and activated BabyDegen, there's nothing more you need to do. But if you're curious about what happens behind the scenes, here's a closer look:";
 const HowItWorks = () => (
   <SectionWrapper>
     <div className="max-w-screen-lg mx-auto">
@@ -216,7 +227,9 @@ const HowItWorks = () => (
       </div>
 
       <div className="text-xl list-decimal mb-6 pl-5 text-muted-foreground mt-12 mb-12">
-        {onceYouveFunded}
+        Once you've funded your account and activated BabyDegen, there's nothing
+        more you need to do. But if you're curious about what happens behind the
+        scenes, here's a closer look:
       </div>
 
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
