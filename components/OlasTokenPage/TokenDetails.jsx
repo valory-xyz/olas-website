@@ -131,6 +131,25 @@ export const TOKEN_DETAILS = [
       },
     },
   },
+  {
+    network: 'Base',
+    address: '0x54330d28ca3357F294334BDC454a032e7f353416',
+    explorerBaseUrl: 'https://basescan.org/token/',
+    exchange: {
+      name: 'Balancer',
+      url: 'https://app.balancer.fi/#/base/pool/0x5332584890d6e415a6dc910254d6430b8aab7e69000200000000000000000103',
+    },
+    bridge: { name: 'Base Bridge', url: 'https://etherscan.io/address/0x3154cf16ccdb4c6d922629664174b904d80f2c35' },
+    bond: {
+      lpTokenName: 'OLAS-USDC',
+      bridgedLpTokenAddress: '0x9946d6FD1210D85EC613Ca956F142D911C97a074',
+      lpTokenAddress: '0x5332584890d6e415a6dc910254d6430b8aab7e69',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
+    },
+  },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
