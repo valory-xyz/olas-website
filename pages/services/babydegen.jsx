@@ -11,8 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card';
-import { HowToSection } from 'components/ui/section/how-to';
-import { H1, Lead, Upcase } from 'components/ui/typography';
+import {
+  ExternalLink, H1, Lead, Upcase,
+} from 'components/ui/typography';
 
 const BabyDegenHeader = () => (
   <SectionWrapper>
@@ -25,9 +26,15 @@ const BabyDegenHeader = () => (
         <Lead className="mb-8">
           Take your first steps on your way to trading bliss.
         </Lead>
-        <Button size="xl" disabled>
+        <Button size="xl" disabled className="px-0">
           Coming soon
         </Button>
+        <ExternalLink
+          href="https://operate.olas.network/"
+          className="block text-primary hover:text-primary-800 transition-colors duration-300"
+        >
+          Get started running another agent today
+        </ExternalLink>
       </div>
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
@@ -46,7 +53,7 @@ const BabyDegenHeader = () => (
 const babyDegenInfo = "BabyDegen is your very own autonomous trading agent, designed to navigate the fast-paced world of DeFi. BabyDegen trades on your behalf leveraging various AI models and external data sources with speed and skill. It's more than just a tool; it's your companion on your crypto trading journey.";
 const getReadyInfo = "BabyDegen is designed for anyone ready to embrace the future of autonomous trading. Whether you're looking to safeguard your edge in an evolving market or eager to explore trading without the steep learning curve, BabyDegen is your gateway to the next generation of effortless trading. Experience hands-free success with this cutting-edge solution.";
 const WhatIsBabyDegen = () => (
-  <SectionWrapper customClasses="border-y ">
+  <SectionWrapper customClasses="border-y">
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-24 mt-24">
         <H1 className="mb-4">What is BabyDegen?</H1>
@@ -91,7 +98,7 @@ const resources = [
   },
 ];
 const FurtherResources = () => (
-  <SectionWrapper>
+  <SectionWrapper customClasses="border-y py-24">
     <div className="max-w-screen-lg mx-auto">
       <H1 className="text-center mb-12">Further resources</H1>
       <div className="grid md:grid-cols-2 gap-4">
@@ -131,14 +138,14 @@ const howItWorksSteps = [
       <>
         BabyDegen pulls in market data from
         {' '}
-        <a
+        <ExternalLink
           href="https://www.coingecko.com/"
           target="_blank"
           className="underline underline-offset-4"
           rel="noreferrer"
         >
           CoinGecko
-        </a>
+        </ExternalLink>
         , ensuring it has the latest information at its fingertips.
       </>
     ),
@@ -170,14 +177,14 @@ const howItWorksSteps = [
         BabyDegen decides whether to buy, sell, or hold specific assets. All
         trading activities are carried out on
         {' '}
-        <a
+        <ExternalLink
           href="https://jup.ag/"
           target="_blank"
           className="underline underline-offset-4"
           rel="noreferrer"
         >
           Jupiter Exchange
-        </a>
+        </ExternalLink>
         {' '}
         on Solana.
       </>
@@ -188,20 +195,48 @@ const howItWorksSteps = [
     },
   },
 ];
-
+const onceYouveFunded = "Once you've funded your account and activated BabyDegen, there's nothing more you need to do. But if you're curious about what happens behind the scenes, here's a closer look:";
 const HowItWorks = () => (
   <SectionWrapper>
-    {howItWorksSteps.map((step, index) => (
-      <HowToSection
-        key={index}
-        sectionId={`how-to-${index}`}
-        heading="How it works"
-        body={{
-          steps: [step.description],
-        }}
-        image={{ ...step.image, width: 200, height: 200 }}
-      />
-    ))}
+    <div className="max-w-screen-lg mx-auto">
+      <H1 className="text-center mb-12">How it works</H1>
+
+      <div className="grid grid-cols-3 gap-4">
+        {howItWorksSteps.map((step, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <Image
+              src={step.image.path}
+              alt={step.image.alt}
+              width={240}
+              height={240}
+              className="mx-auto rounded-lg"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="text-xl list-decimal mb-6 pl-5 text-muted-foreground mt-12 mb-12">
+        {onceYouveFunded}
+      </div>
+
+      <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+        <div className="lg:col-span-6 px-5 lg:p-0">
+          <ol className="text-xl list-decimal mb-6 pl-5 text-muted-foreground">
+            {howItWorksSteps.map((step, index) => (
+              <li key={index} className="mb-4">
+                {step.title}
+                {': '}
+                {step.description}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+
+      <div className="text-slate-500">
+        BabyDegen is currently in closed Alpha
+      </div>
+    </div>
   </SectionWrapper>
 );
 

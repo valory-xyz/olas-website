@@ -92,7 +92,7 @@
     "builder": "Ardian Abazi"
   },
   {
-    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e01",
     "name": "Olas Contribute",
     "slug": "olas-contribute",
     "serviceCategory": "DAO Tooling",
@@ -105,7 +105,7 @@
     "builder": "Valory"
   },
   {
-    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e02",
     "name": "Olas Messaging",
     "slug": "olas-messaging",
     "serviceCategory": "Messaging",
@@ -118,7 +118,7 @@
     "builder": "Valory"
   },
   {
-    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e57",
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e03",
     "name": "Prediction Agents",
     "slug": "prediction-agents",
     "serviceCategory": "AI",
@@ -126,6 +126,19 @@
     "appUrl": "",
     "marketingUrl": "https://hackathon.olas.network",
     "buildUrl": "https://hackathon.olas.network",
+    "iconFilename": "prediction-agents.svg",
+    "demo": false,
+    "builder": "Valory"
+  }, 
+  {
+    "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e04",
+    "name": "BabyDegen",
+    "slug": "babydegen",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
     "iconFilename": "prediction-agents.svg",
     "demo": false,
     "builder": "Valory"
