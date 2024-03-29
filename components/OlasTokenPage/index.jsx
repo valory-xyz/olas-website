@@ -58,21 +58,29 @@ const Supply = () => {
       setTimeLaunch(newTimeLaunch);
 
       // Call getInflationForYear method repeatedly for 0 through 12
-      const newInflationForYear = [];
+      const newInflationForYear = Array.from({ length: 12 }, () => null);
+      const promises = [];
 
       for (let i = 0; i <= 12; i += 1) {
-        contractInstance.methods.getInflationForYear(i).call().then((result) => {
-          // Convert result from wei to eth
-          newInflationForYear.push(web3.utils.fromWei(result.toString(), 'ether'));
-        })
-          .catch((error) => {
-            console.error(`Error in getInflationForYear for year ${i}:`, error);
-          });
+        promises.push(
+          contractInstance.methods.getInflationForYear(i).call()
+            .then((result) => {
+              newInflationForYear[i] = web3.utils.fromWei(result.toString(), 'ether');
+              return result;
+            })
+            .catch((error) => {
+              newInflationForYear.push(undefined); // Push undefined if promise fails
+              console.error(`Error in getInflationForYear for year ${i}:`, error);
+            }),
+        );
       }
 
+      await Promise.all(promises);
       setInflationForYear(newInflationForYear);
 
-      const newCurrentYear = await contractInstance.methods.currentYear().call();
+      const newCurrentYear = await contractInstance.methods
+        .currentYear()
+        .call();
       setCurrentYear(newCurrentYear);
 
       // Call epochCounter to get the current epoch
