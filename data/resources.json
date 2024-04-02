@@ -56,14 +56,6 @@
     "tags": ["contribute"]
   },
   {
-    "id": "7e4c07b9-3572-4d6d-9359-2b5499c520b8",
-    "title": "Roadmap",
-    "description": "What Olas is working on",
-    "url": "https://contribute.olas.network/roadmap",
-    "imageFilename": "awesome-autonolas.svg",
-    "tags": ["contribute"]
-  },
-  {
     "id": "f65fb0a7-531a-4c85-93b4-854854ebe61f",
     "title": "Calendar",
     "description": "Browse past and future Olas events",
