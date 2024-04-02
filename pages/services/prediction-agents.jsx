@@ -38,9 +38,9 @@ const resources = [
     },
   },
   {
-    title: 'HF dashboard',
+    title: 'Olas Predict Benchmark',
     description:
-      'Check out the leaderboard to see how your agent is performing.',
+      'Check out the Hugging Face dashboard for the best performing prediction Mech tools.',
     action: {
       url: 'https://huggingface.co/spaces/valory/olas-prediction-leaderboard',
       text: 'See the leaderboard',
@@ -126,7 +126,7 @@ const PredictionAgents = () => (
                   <CardTitle>{resource.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="min-h-[86px]">{resource.description}</CardDescription>
+                  <CardDescription>{resource.description}</CardDescription>
                 </CardContent>
                 <CardFooter>
                   <Button asChild>
