@@ -22,11 +22,5 @@
     "name": "Contribute",
     "description": "Fulfil actions, earn points and grow your reputation in the community",
     "url": "https://contribute.olas.network"
-  },
-  {
-    "id": "5092eb89-2018-4d02-b5ab-6c9807af8ed4",
-    "name": "Operate",
-    "description": "Run agents, stake capital and potentially earn rewards",
-    "url": "https://operate.olas.network"
   }
 ]
