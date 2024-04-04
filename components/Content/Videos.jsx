@@ -1,11 +1,13 @@
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import videos from 'data/videos.json';
 import Video from './Video';
 
 const Videos = ({ limit }) => {
-  const videosSortedByDate = videos.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
+  const videosSortedByDate = useMemo(
+    () => videos.sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [],
   );
 
   return (

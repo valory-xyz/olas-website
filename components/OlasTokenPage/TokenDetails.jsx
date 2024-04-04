@@ -122,6 +122,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Optimism Bridge', url: 'https://app.optimism.io/bridge/deposit' },
     bond: {
+      guideUrl: `${BOND_BASE_URL}weth-olas-via-balancer-on-optimism`,
       lpTokenName: 'WETH-OLAS',
       bridgedLpTokenAddress: '0x2FD007a534eB7527b535a1DF35aba6bD2a8b660F',
       lpTokenAddress: '0x5BB3E58887264B667f915130fD04bbB56116C278',
@@ -141,6 +142,7 @@ export const TOKEN_DETAILS = [
     },
     bridge: { name: 'Base Bridge', url: 'https://etherscan.io/address/0x3154cf16ccdb4c6d922629664174b904d80f2c35' },
     bond: {
+      guideUrl: `${BOND_BASE_URL}olas-usdc-via-balancer-on-base`,
       lpTokenName: 'OLAS-USDC',
       bridgedLpTokenAddress: '0x9946d6FD1210D85EC613Ca956F142D911C97a074',
       lpTokenAddress: '0x5332584890d6e415a6dc910254d6430b8aab7e69',
