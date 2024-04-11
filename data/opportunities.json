@@ -4,98 +4,98 @@
       "agentName": "Basic NIM Agent",
       "agentDescription": "Gaming-related AI agent for the NIM ecosystem that can be used to do things like:\n\n1) Enable controlling of NPCs, making them respond intelligently to player actions and evolve their strategies over time.\n2) Enable the creation of evolving in-game narratives and gameplay, adjusting the game's storyline and character interactions in real-time based on player decisions.\n3) Enable procedural content generation, facilitating the creation of vast, diverse, and ever-changing game worlds.\n4) Chat as an influencer with KOLs and other gamers.",
       "background": "NIM is an AI gaming focused blockchain built on Celestia and Dymension.",
-      "image": "/images/launch-page/nim.png" 
+      "image": "/images/opportunities/nim.png" 
     },
     {
       "project": "Peaq",
       "agentName": "Basic Peaq DePin Agent",
       "agentDescription": "AI Agents that will trade on “energy” in an R&D setting.",
       "background": "Peaq is an L1 blockchain focused on DePin and machine economies.",
-      "image": "/images/launch-page/peaq.png" 
+      "image": "/images/opportunities/peaq.png" 
     },
     {
       "project": "Origin",
       "agentName": "Origin Buyback Agent",
       "agentDescription": "AI agent that makes OGV buybacks more impactful. Instead of bi-weekly buybacks, an AI agent could be used to dynamically buy back OGV based on market conditions.",
       "background": "Origin is a multi-purpose DeFi platform that offers staking, NFTs, stablecoins, and other services.",
-      "image": "/images/launch-page/origin.png" 
+      "image": "/images/opportunities/origin.png" 
     },
     {
       "project": "HV Capital",
       "agentName": "Content Curation Agent for DeSci",
       "agentDescription": "Content curation and influencer marketing agent to identify and categorize influential research and other content.",
       "background": "HV Capital is a fund investing in venture, Web3, and liquid tokens.",
-      "image": "/images/launch-page/hvcapital.png" 
+      "image": "/images/opportunities/hvcapital.png" 
     },
     {
       "project": "Shutter",
       "agentName": "Shutter Agent",
       "agentDescription": "Agent to be used for MEV simulations on the Shutter stack that can do things like:\n\n1) Trade on EVM Dexs like Uniswap\n2) Access a mempool to try to perform front-running\n3) Provide liquidity to DEXs like Uniswap\n4) Mint tokens",
       "background": "Shutter is building an encrypted mempool, aimed at securing transaction ordering processes. Their team is interested in theoretical simulations to analyze the economic implications of this technology, alongside various transaction ordering strategies.",
-      "image": "/images/launch-page/shutter.png" 
+      "image": "/images/opportunities/shutter.png" 
     },
     {
       "project": "Y2K",
       "agentName": "Stablecoin Prediction Agent",
       "agentDescription": "Prediction market agent for stablecoins that can be applied to dynamically weight the Y2K system using information such as recent stablecoin price movements or news.",
       "background": "Y2K is a protocol that allows anyone to speculate and hedge on pegged assets like stablecoins and other risk assets.",
-      "image": "/images/launch-page/y2k.png" 
+      "image": "/images/opportunities/y2k.png" 
     },
     {
       "project": "Polymarket",
       "agentName": "Prediction Market Agent",
       "agentDescription": "Agent that trades on Polymarket prediction markets.",
       "background": "Polymarket is a prediction market protocol on Polygon.",
-      "image": "/images/launch-page/polymarket.png" 
+      "image": "/images/opportunities/polymarket.png" 
     },
     {
       "project": "OriginTrail",
       "agentName": "Knowledge creator agent",
       "agentDescription": "Knowledge assembly agent into OriginTrails Decentralized Knowledge Graph (DKG) that takes specific topics and becomes an upstream learning and memory system for other agents to leverage.",
       "background": "OriginTrail is a protocol that powers the verifiable internet for AI.",
-      "image": "/images/launch-page/origintrail.png" 
+      "image": "/images/opportunities/origintrail.png" 
     },
     {
       "project": "Orderly",
       "agentName": "Perp DEX Trader Agent",
       "agentDescription": "Agent that trades on the Orderly perp DEX.",
       "background": "Orderly is an SDK to enables anyone to launch a perp DEX.",
-      "image": "/images/launch-page/orderly.png" 
+      "image": "/images/opportunities/orderly.png" 
     },
     {
       "project": "Hedgehog",
       "agentName": "Prediction Market Agent",
       "agentDescription": "Agent that trades on Solana prediction markets.",
       "background": "Hedgehog is a prediction market on Solana.",
-      "image": "/images/launch-page/hedgehog.png" 
+      "image": "/images/opportunities/hedgehog.png" 
     },
     {
       "project": "Truflation",
       "agentName": "Trader Agent",
       "agentDescription": "Agent that trades based on Truflation data.",
       "background": "Truflation is a decentralized data provider for RWA and other macro indicators.",
-      "image": "/images/launch-page/truflation.png" 
+      "image": "/images/opportunities/truflation.png" 
     },
     {
       "project": "Mellow Finance",
       "agentName": "Liquidity Management Agent",
       "agentDescription": "Agent that can select the best liquidity strategies available through Mellow.",
       "background": "Mellow uses an intent-based system to actively manage liquidity across a variety of DeFi strategies.",
-      "image": "/images/launch-page/mellow.png" 
+      "image": "/images/opportunities/mellow.png" 
     },
     {
       "project": "Aerodrome / Velodrome",
       "agentName": "Liquidity Management Agent",
       "agentDescription": "Liquidity providing agent that intelligently provides liquidity to the highest performing pools.",
       "background": "Aerodrome / Velodrome is an innovative DEX on Base / Optimism.",
-      "image": "/images/launch-page/aerodrome.png" 
+      "image": "/images/opportunities/aerodrome.png" 
     },
     {
       "project": "UNKJD",
       "agentName": "Gaming Agent",
       "agentDescription": "Gaming simulation agent per predefined behaviors.",
       "background": "UNKJD is a Web3 gaming studio building a connected world of casual, free-to-play games.",
-      "image": "/images/launch-page/unkjd.png" 
+      "image": "/images/opportunities/unkjd.png" 
     }
   ]
   

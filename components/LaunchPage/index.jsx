@@ -1,10 +1,10 @@
 import Hero from './Hero';
-import Opportunities from './Opportunities';
+import CTA from './CTA';
 
 const Launch = () => (
   <>
     <Hero />
-    <Opportunities />
+    <CTA />
   </>
 );
 
