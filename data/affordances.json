@@ -67,7 +67,7 @@
       "url": "https://launch.olas.network/",
       "external": true
     },
-    "learnMoreUrl": null,
+    "learnMoreUrl": "/launch",
     "imageFilename": "olas-launch.svg"
   }
 ]
