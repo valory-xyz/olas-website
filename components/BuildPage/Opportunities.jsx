@@ -6,19 +6,21 @@ import { H1 } from 'components/ui/typography';
 import { Button } from 'components/ui/button';
 import { LAUNCH_CONTACT_URL } from 'common-util/constants';
 
-const OpportunityCard = ({ item }) => (
+const OpportunityCard = ({
+  agentName, agentDescription, project, image, background,
+}) => (
   <div className="grid gap-8 md:grid-cols-3 rounded-xl border border-gray-300 shadow-sm p-6 mb-8">
     <div className="col-span-2 text-start">
-      <h2 className="font-bold text-xl mb-2">{item.agentName}</h2>
+      <h2 className="font-bold text-xl mb-2">{agentName}</h2>
       <p className="text-gray-600 mb-6 whitespace-pre-line">
-        {item.agentDescription}
+        {agentDescription}
       </p>
     </div>
     <div className="gap-2 mb-4">
       <div className="flex mb-4 gap-4">
         <Image
-          alt={item.project}
-          src={item.image}
+          alt={project}
+          src={image}
           width="100"
           height="100"
           style={{ objectFit: 'contain' }}
@@ -27,10 +29,10 @@ const OpportunityCard = ({ item }) => (
           <span className="block mb-1 text-sm text-gray-700 font-medium tracking-wider">
             PROJECT
           </span>
-          <span className="block text-sm font-bold">{item.project}</span>
+          <span className="block text-sm font-bold">{project}</span>
         </div>
       </div>
-      <p className="text-sm mb-4">{item.background}</p>
+      <p className="text-sm mb-4">{background}</p>
       <Button size="default" variant="default" asChild isExternal>
         <a href={LAUNCH_CONTACT_URL} target="_blank" rel="noopener noreferrer">
           Contact Origin
@@ -41,13 +43,11 @@ const OpportunityCard = ({ item }) => (
 );
 
 OpportunityCard.propTypes = {
-  item: PropTypes.shape({
-    project: PropTypes.string.isRequired,
-    agentName: PropTypes.string.isRequired,
-    agentDescription: PropTypes.string.isRequired,
-    background: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
+  project: PropTypes.string.isRequired,
+  agentName: PropTypes.string.isRequired,
+  agentDescription: PropTypes.string.isRequired,
+  background: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
 };
 
 const Opportunities = () => (
@@ -59,7 +59,7 @@ const Opportunities = () => (
         This is a list of &quot;requests for agents&quot;
       </p>
       {opportunities.map((item) => (
-        <OpportunityCard key={item.agentName} item={item} />
+        <OpportunityCard key={item.agentName} {...item} />
       ))}
     </div>
   </SectionWrapper>
