@@ -35,7 +35,7 @@ const OpportunityCard = ({
       <p className="text-sm mb-4">{background}</p>
       <Button size="default" variant="default" asChild isExternal>
         <a href={LAUNCH_CONTACT_URL} target="_blank" rel="noopener noreferrer">
-          Contact Origin
+          Get in touch
         </a>
       </Button>
     </div>
