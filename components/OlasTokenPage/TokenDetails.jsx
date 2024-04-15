@@ -120,6 +120,10 @@ export const TOKEN_DETAILS = [
       url: 'https://portalbridge.com/advanced-tools/#/transfer',
     },
     bond: {
+      guideUrl: `${BOND_BASE_URL}olas-wsol-via-balancer-on-solana`,
+      lpTokenName: 'OLAS-WSOL',
+      bridgedLpTokenAddress: '0x3685b8cc36b8df09ed9e81c1690100306bf23e04',
+      lpTokenAddress: 'CeZ77ti3nPAmcgRkBkUC1JcoAhR8jRti2DHaCcuyUnzR',
       lpTokenBridge: {
         name: 'Wormhole: Portal Token Bridge',
         url: 'https://portalbridge.com/advanced-tools/#/transfer',
