@@ -36,8 +36,13 @@ const Footer = () => (
           </Link>
         </li>
         <li>
-          <Link href="/documents/press-kit-olas.pdf" className="mr-4 hover:underline">
-            Press Kit
+          <Link
+            href="https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md"
+            className="mr-4 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Press Kit ↗
           </Link>
         </li>
         <li>
