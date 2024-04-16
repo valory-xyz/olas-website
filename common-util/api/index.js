@@ -86,3 +86,36 @@ export const getFunnel = async (id) => {
   const data = get(json, 'data') || null;
   return data;
 };
+
+// ---- HOME PAGE ACTIVITIES - DUNE QUERIES ----
+
+const duneApiCall = async (queryId) => {
+  try {
+    const response = await fetch(`https://api.dune.com/api/v1/query/${queryId}/results?limit=1000`, {
+      headers: {
+        'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY,
+      },
+    });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return null;
+};
+
+export const getAgentsTotal = async () => {
+  const json = await duneApiCall('2504013');
+  return get(json, 'result.rows[0].total_services') || null;
+};
+
+export const getAgentsTypesTotal = async () => {
+  const json = await duneApiCall('2503741');
+  return get(json, 'result.rows[0].agents') || null;
+};
+
+export const getTransactionsTotal = async () => {
+  const json = await duneApiCall('3342820');
+  return get(json, 'result.rows[0]._col0') || null;
+};
