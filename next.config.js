@@ -30,6 +30,11 @@ module.exports = {
         destination: '/bond',
         permanent: true,
       },
+      {
+        source: '/brand-and-press-kit',
+        destination: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
+        permanent: false,
+      },
     ];
   },
   async headers() {
