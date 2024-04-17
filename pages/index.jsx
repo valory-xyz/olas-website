@@ -15,6 +15,7 @@ import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
 import Activity from 'components/HomepageSection/Activity';
 import UseCases from 'components/HomepageSection/UseCases';
+import TheTech from 'components/HomepageSection/TheTech';
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
       <Hero />
       <Activity />
       <UseCases />
+      <TheTech />
       {/* <Hero />
       <Affordances />
       <Services />

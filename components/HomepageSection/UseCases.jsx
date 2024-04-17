@@ -26,7 +26,7 @@ const UseCaseCard = ({
         {title}
       </h3>
       <p className="text-lg ld:text-xl">{description}</p>
-      <h4 className="italic mb-2">Examples</h4>
+      <h4 className="italic mb-2">{services.length > 1 ? 'Examples' : 'Example'}</h4>
       {services.map((service) => (
         <div className="flex gap-4 text-start" key={service.title}>
           <Image
@@ -101,12 +101,11 @@ const UseCases = () => (
 
       <div className="md:col-span-6 text-center px-5 md:p-0 md:text-left">
         <h3 className="text-2xl md:text-4xl font-bold mb-4">Boundless applicability</h3>
-        <p className="md:text-xl mb-4">What can you achieve when you own a programmable autonomous workforce?</p>
         <p className="md:text-xl mb-12">
-          The impact of autonomous agent economies will shape
-          new applications and products in Web3 and beyond.
+          The impact of autonomous agent economies is shaping
+          applications and products in Web3 and far beyond.
         </p>
-        <Button variant="default" size="xl" asChild>
+        <Button variant="outline" size="xl" asChild>
           <a href="/explore#use-cases">See more use cases</a>
         </Button>
       </div>

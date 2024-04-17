@@ -115,7 +115,7 @@ const Activity = () => {
           </div>
         ))}
       </div>
-      <Button variant="default" size="xl" asChild className="mb-20">
+      <Button variant="outline" size="xl" asChild className="mb-12">
         <a href="/ecosystem">
           Explore the ecosystem
         </a>
