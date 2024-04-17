@@ -14,6 +14,7 @@ import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
 import Activity from 'components/HomepageSection/Activity';
+import UseCases from 'components/HomepageSection/UseCases';
 
 export default function Home() {
   return (
@@ -21,7 +22,7 @@ export default function Home() {
       <Meta />
       <Hero />
       <Activity />
-
+      <UseCases />
       {/* <Hero />
       <Affordances />
       <Services />
