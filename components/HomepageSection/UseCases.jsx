@@ -9,9 +9,7 @@ import SectionHeading from '../SectionHeading';
 const UseCaseCard = ({
   title, image, description, services, className,
 }) => (
-  <div
-    className={className}
-  >
+  <div className={className}>
     <div className="p-8 grid gap-4 md:grid-rows-[140px_88px_144px_32px] lg:grid-rows-[140px_88px_94px_32px]">
       <div className="flex h-[140px] w-[180px] mx-auto">
         <Image
@@ -22,11 +20,11 @@ const UseCaseCard = ({
           className="object-contain"
         />
       </div>
-      <h3 className="max-w-[200px] mx-auto text-3xl font-bold mb-4">
-        {title}
-      </h3>
+      <h3 className="max-w-[200px] mx-auto text-3xl font-bold mb-4">{title}</h3>
       <p className="text-lg ld:text-xl">{description}</p>
-      <h4 className="italic mb-2">{services.length > 1 ? 'Examples' : 'Example'}</h4>
+      <h4 className="italic mb-2">
+        {services.length > 1 ? 'Examples' : 'Example'}
+      </h4>
       {services.map((service) => (
         <div className="flex gap-4 text-start" key={service.title}>
           <Image
@@ -44,7 +42,9 @@ const UseCaseCard = ({
               >
                 {service.title}
               </Link>
-            ) : <h5 className="font-bold">{service.title}</h5>}
+            ) : (
+              <h5 className="font-bold">{service.title}</h5>
+            )}
             <p>{service.description}</p>
           </div>
         </div>
@@ -100,10 +100,12 @@ const UseCases = () => (
       </div>
 
       <div className="md:col-span-6 text-center px-5 md:p-0 md:text-left">
-        <h3 className="text-2xl md:text-4xl font-bold mb-4">Boundless applicability</h3>
+        <h3 className="text-2xl md:text-4xl font-bold mb-4">
+          Boundless applicability
+        </h3>
         <p className="md:text-xl mb-12">
-          The impact of autonomous agent economies is shaping
-          applications and products in Web3 and far beyond.
+          The impact of autonomous agent economies is shaping applications and
+          products in Web3 and far beyond.
         </p>
         <Button variant="outline" size="xl" asChild>
           <a href="/explore#use-cases">See more use cases</a>

@@ -1,7 +1,5 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
-import useCases from 'data/useCases.json';
 import { Button } from 'components/ui/button';
 import { ExternalLink, Link, Upcase } from 'components/ui/typography';
 import { Card, CardTitle } from 'components/ui/card';
@@ -11,7 +9,8 @@ const innovations = [
   {
     title: 'Olas Protocol',
     image: '/images/olas-protocol.png',
-    description: ' The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
+    description:
+      ' The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
     link: {
       text: 'Learn about roles & incentives',
       href: 'https://docs.autonolas.network/protocol/',
@@ -21,7 +20,8 @@ const innovations = [
   {
     title: 'Olas Stack',
     image: '/images/olas-stack.png',
-    description: 'Open-source framework that enables developers to build autonomous agents that:',
+    description:
+      'Open-source framework that enables developers to build autonomous agents that:',
     descriptionItems: [
       'run off-chain',
       'can be co-owned',
@@ -63,13 +63,11 @@ const TheTech = () => (
             <p className="mb-4">
               {item.description}
               {item.descriptionItems && (
-              <ul className="list-disc pl-5 mb-4">
-                {item.descriptionItems.map((descriptionItem, index) => (
-                  <li key={index}>
-                    {descriptionItem}
-                  </li>
-                ))}
-              </ul>
+                <ul className="list-disc pl-5 mb-4">
+                  {item.descriptionItems.map((descriptionItem, index) => (
+                    <li key={index}>{descriptionItem}</li>
+                  ))}
+                </ul>
               )}
             </p>
             {item.link.isExternal ? (
