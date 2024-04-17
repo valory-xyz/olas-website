@@ -34,19 +34,6 @@ const ACTIVITIES = [
   },
 ];
 
-const formatNumberWithSuffix = (number) => {
-  if (number >= 1e9) {
-    return `${Math.floor(number / 1e9)}B`;
-  }
-  if (number >= 1e6) {
-    return `${Math.floor(number / 1e6)}M`;
-  }
-  if (number >= 1e3) {
-    return `${Math.floor(number / 1e3)}k`;
-  }
-  return Math.floor(number);
-};
-
 const Activity = () => {
   const [data, setData] = useState(ACTIVITIES);
   const ref = useRef(false);
@@ -61,13 +48,13 @@ const Activity = () => {
     const result = {
       agents: agents.value,
       agentsTypes: agentsTypes.value,
-      transactions: transactions.value ? formatNumberWithSuffix(transactions.value) : null,
+      transactions: transactions.value ? transactions.value.toLocaleString() : null,
     };
 
     // const result = {
     //   agents: 429,
     //   agentsTypes: 31,
-    //   transactions: formatNumberWithSuffix(578847),
+    //   transactions: 578847.toLocaleString(),
     // };
 
     const newData = data.map((item) => ({ ...item, value: result[item.id] ?? item.value }));
@@ -110,7 +97,7 @@ const Activity = () => {
         {data.map((item) => (
           <div key={item.id} className="text-gray-900">
             <span className="block text-2xl mb-4">{item.description}</span>
-            <span className="block text-6xl lg:text-8xl font-bold mb-4 ">{item.value ?? '--'}</span>
+            <span className="block text-6xl font-bold mb-4 ">{item.value ?? '--'}</span>
             <span className="block text-2xl font-bold">{item.title}</span>
           </div>
         ))}
