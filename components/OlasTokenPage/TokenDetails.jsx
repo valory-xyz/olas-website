@@ -3,7 +3,12 @@ import React from 'react';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '../ui/table';
 
 /**
@@ -50,7 +55,10 @@ export const TOKEN_DETAILS = [
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
       lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985',
-      lpTokenBridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
+      lpTokenBridge: {
+        name: 'Omnibridge',
+        url: 'https://omni.gnosischain.com/bridge',
+      },
     },
   },
   {
@@ -84,7 +92,10 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/arbitrum/pool/0xaf8912a3c4f55a8584b67df30ee0ddf0e60e01f80002000000000000000004fc',
     },
-    bridge: { name: 'Arbitrum Bridge', url: 'https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum' },
+    bridge: {
+      name: 'Arbitrum Bridge',
+      url: 'https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum',
+    },
     bond: {
       guideUrl: `${BOND_BASE_URL}olas-weth-via-balancer-on-arbitrum`,
       lpTokenName: 'OLAS-WETH',
@@ -104,8 +115,15 @@ export const TOKEN_DETAILS = [
       name: 'Orca',
       url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
     },
-    bridge: { name: 'Wormhole: Portal Token Bridge', url: 'https://portalbridge.com/advanced-tools/#/transfer' },
+    bridge: {
+      name: 'Wormhole: Portal Token Bridge',
+      url: 'https://portalbridge.com/advanced-tools/#/transfer',
+    },
     bond: {
+      guideUrl: `${BOND_BASE_URL}wsol-olas-via-orca-on-solana`,
+      lpTokenName: 'WSOL-OLAS',
+      bridgedLpTokenAddress: '0x3685b8cc36b8df09ed9e81c1690100306bf23e04',
+      lpTokenAddress: 'CeZ77ti3nPAmcgRkBkUC1JcoAhR8jRti2DHaCcuyUnzR',
       lpTokenBridge: {
         name: 'Wormhole: Portal Token Bridge',
         url: 'https://portalbridge.com/advanced-tools/#/transfer',
@@ -120,7 +138,10 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/optimism/pool/0x5bb3e58887264b667f915130fd04bbb56116c27800020000000000000000012a',
     },
-    bridge: { name: 'Optimism Bridge', url: 'https://app.optimism.io/bridge/deposit' },
+    bridge: {
+      name: 'Optimism Bridge',
+      url: 'https://app.optimism.io/bridge/deposit',
+    },
     bond: {
       guideUrl: `${BOND_BASE_URL}weth-olas-via-balancer-on-optimism`,
       lpTokenName: 'WETH-OLAS',
@@ -140,7 +161,10 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/base/pool/0x5332584890d6e415a6dc910254d6430b8aab7e69000200000000000000000103',
     },
-    bridge: { name: 'Base Bridge', url: 'https://etherscan.io/address/0x3154cf16ccdb4c6d922629664174b904d80f2c35' },
+    bridge: {
+      name: 'Base Bridge',
+      url: 'https://etherscan.io/address/0x3154cf16ccdb4c6d922629664174b904d80f2c35',
+    },
     bond: {
       guideUrl: `${BOND_BASE_URL}olas-usdc-via-balancer-on-base`,
       lpTokenName: 'OLAS-USDC',
@@ -176,8 +200,12 @@ export const TokenDetails = () => (
               <TableRow>
                 <TableHead className="text-left border">Network</TableHead>
                 <TableHead className="text-left border">Get OLAS</TableHead>
-                <TableHead className="text-left border">Token Address</TableHead>
-                <TableHead className="text-left border">Bridge from Ethereum to Network</TableHead>
+                <TableHead className="text-left border">
+                  Token Address
+                </TableHead>
+                <TableHead className="text-left border">
+                  Bridge from Ethereum to Network
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
