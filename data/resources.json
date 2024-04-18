@@ -49,14 +49,6 @@
   },
   {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
-    "title": "AKS Activity",
-    "description": "Dune dashboard showing activity on the Autonomous Keeper Services",
-    "url": "https://dune.com/adrian0x/aks",
-    "imageFilename": "awesome-autonolas.svg",
-    "tags": []
-  },
-  {
-    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "DAO Constitution",
     "description": "The DAO's governing rulebook",
     "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
