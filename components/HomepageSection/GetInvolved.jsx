@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/Button';
+import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
