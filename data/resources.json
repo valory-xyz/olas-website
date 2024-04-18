@@ -32,18 +32,26 @@
     "tags": ["bonds"]
   },
   {
-    "id": "d6535223-279c-4c23-8933-a1dce57d7863",
-    "title": "Awesome Autonolas",
-    "description": "Collated guides, tools, and resources",
-    "url": "https://github.com/N0xMare/awesome-autonolas",
-    "imageFilename": "awesome-autonolas.svg",
-    "tags": []
-  },
-  {
     "id": "209bc10a-c797-46cd-a94b-187asfasfasf",
     "title": "Videos & Podcasts",
     "description": "Watch and listen to Olas content",
     "url": "/videos",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "201241241240a-c797-46cd-a94b-1876dca24fce",
+    "title": "Blog",
+    "description": "Read about Olas news and updates",
+    "url": "/blog",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "d6535223-279c-4c23-8933-a1dce57d7863",
+    "title": "Awesome Autonolas",
+    "description": "Collated guides, tools, and resources",
+    "url": "https://github.com/N0xMare/awesome-autonolas",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
   },
