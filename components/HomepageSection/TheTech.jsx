@@ -10,7 +10,7 @@ const innovations = [
     title: 'Olas Protocol',
     image: '/images/olas-protocol.png',
     description:
-      ' The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
+      'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
     link: {
       text: 'Learn about roles & incentives',
       href: 'https://olas.network/protocol',
@@ -38,7 +38,8 @@ const innovations = [
 
 const TheTech = () => (
   <SectionWrapper
-    customClasses="text-center py-24 px-4 border-b bg-gradient-from-br from-[#F5D0FE] to-white"
+    backgroundType="NONE"
+    customClasses="text-center py-24 px-4 border-b bg-gradient-to-tl from-[#F5D0FE] to-white to-80%"
   >
     <Upcase><span>The Tech</span></Upcase>
     <SectionHeading color="text-gray-900">
