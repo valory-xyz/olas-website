@@ -20,7 +20,7 @@
   },
   "plugins": ["react", "jsx-a11y", "import"],
   "rules": {
-    "linebreak-style": ["error", "auto"],
+    "linebreak-style": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "react/no-array-index-key": "off",
