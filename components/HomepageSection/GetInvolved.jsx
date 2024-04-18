@@ -101,7 +101,7 @@ const GetInvolvedCard = ({
 
   if (colSpan === 1) {
     return (
-      <div className={`border rounded-sm p-8 col-span-${colSpan} flex flex-col justify-center gap-10`}>
+      <Card className="border rounded-sm p-8 flex flex-col justify-center gap-10">
         <Image
           src={imageSrc}
           alt={title}
@@ -114,13 +114,13 @@ const GetInvolvedCard = ({
           <Link href={buttonUrl}>{buttonText}</Link>
         </Button>
         )}
-      </div>
+      </Card>
     );
   }
 
   return (
-    <Card className={`border rounded-sm p-8 col-span-${colSpan} flex flex-row gap-10`}>
-      <div className="div flex flex-col justify-center">
+    <Card className="border rounded-sm p-8 col-span-1 md:col-span-2 flex flex-col md:flex-row gap-10">
+      <div className="div flex flex-col justify-center order-2 md:order-1">
         <h3 className="text-2xl font-bold">{title}</h3>
         {description && <p>{description}</p>}
       </div>
@@ -129,6 +129,7 @@ const GetInvolvedCard = ({
         alt={title}
         width={imageSizes.width}
         height={imageSizes.height}
+        className="order-1 md:order-2"
       />
     </Card>
   );
