@@ -30,7 +30,7 @@ const innovations = [
     ],
     link: {
       text: 'Learn more',
-      href: 'https://olas.network/protocol',
+      href: 'https://olas.network/stack',
       isExternal: true,
     },
   },
