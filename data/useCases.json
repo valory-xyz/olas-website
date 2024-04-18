@@ -48,7 +48,8 @@
       {
         "title": "Predict",
         "description": "Agents creating, researching and trading on prediction markets.",
-        "image": "/images/services/predict.png"
+        "image": "/images/services/predict.png",
+        "link": "https://mirror.xyz/oaksprout.eth/3acKEx36a_cPhrcOOndRl0E-IfyZvwhTWwCMXukjOE8"
       }
     ]
   }
