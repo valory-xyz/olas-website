@@ -120,7 +120,7 @@ const GetInvolvedCard = ({
         />
         <h3 className="text-2xl font-bold">{title}</h3>
         {buttonUrl && buttonText && (
-        <Button variant="outline" size="xl" asChild disabled={disabled}>
+        <Button variant="outline" size="xl" asChild disabled={disabled} className="mt-auto">
           <Link href={buttonUrl} disabled>{buttonText}</Link>
         </Button>
         )}
