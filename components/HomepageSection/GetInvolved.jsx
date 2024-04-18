@@ -33,7 +33,7 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-launch.svg',
     title: 'Define use cases, attract agent labor',
     buttonText: 'Launch',
-    buttonUrl: 'https://contribute.olas.network',
+    buttonUrl: 'https://olas.network/launch',
   },
   {
     id: 5,
@@ -54,14 +54,14 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-bonds.svg',
     title: 'Provide capital, get discounted OLAS',
     buttonText: 'Bond',
-    buttonUrl: 'https://build.olas.network',
+    buttonUrl: 'https://bond.olas.network',
   },
   {
     id: 8,
     imageSrc: '/images/homepage/olas-operate.svg',
     title: 'Run agents, get rewards',
     buttonText: 'Operate',
-    buttonUrl: 'https://build.olas.network',
+    buttonUrl: 'https://operate.olas.network',
   },
 ];
 
@@ -120,7 +120,7 @@ const GetInvolvedCard = ({
         />
         <h3 className="text-2xl font-bold">{title}</h3>
         {buttonUrl && buttonText && (
-        <Button variant="outline" size="xl" asChild disabled={disabled}>
+        <Button variant="outline" size="xl" asChild disabled={disabled} className="mt-auto">
           <Link href={buttonUrl} disabled>{buttonText}</Link>
         </Button>
         )}

@@ -107,13 +107,13 @@ export function Menu({ className }) {
                   {component.description}
                 </ListItem>
               ))}
-              <ListItem
+              {/* <ListItem
                 key="see-all-resources"
                 title="See all →"
                 href="/#resources"
               >
                 Browse all resources
-              </ListItem>
+              </ListItem> */}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

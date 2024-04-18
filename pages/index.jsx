@@ -29,7 +29,7 @@ export const getStaticProps = async () => {
         // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
       },
     },
-
+    revalidate: 86400,
   };
 };
 
