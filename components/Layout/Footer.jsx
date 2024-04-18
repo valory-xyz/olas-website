@@ -87,7 +87,7 @@ const Footer = () => (
         </li>
       </ul>
       <div className="text-gray-600">
-        © Autonolas DAO 2023&nbsp;•&nbsp;
+        © Autonolas DAO 2024&nbsp;•&nbsp;
         <Link href="/disclaimer">Disclaimer</Link>
           &nbsp;•&nbsp;
         <a
