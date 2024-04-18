@@ -66,7 +66,7 @@ const GET_INVOLVED_DATA = [
 ];
 
 const GetInvolved = () => (
-  <SectionWrapper id="#get-involved">
+  <SectionWrapper id="get-involved">
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
       {GET_INVOLVED_DATA.map((datum) => {
         const {
