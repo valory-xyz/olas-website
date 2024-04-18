@@ -19,42 +19,49 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-token.svg',
     title: 'Get OLAS, use it across the network',
     buttonText: 'Get OLAS',
+    buttonUrl: '/olas-token#get-olas',
   },
   {
     id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
     title: 'Grow awareness about Olas, earn points',
     buttonText: 'Contribute',
+    buttonUrl: 'https://contribute.olas.network',
   },
   {
     id: 4,
     imageSrc: '/images/homepage/olas-launch.svg',
     title: 'Define use cases, attract agent labor',
     buttonText: 'Launch',
+    buttonUrl: 'https://contribute.olas.network',
   },
   {
     id: 5,
     imageSrc: '/images/homepage/olas-dev-rewards.png',
     title: 'Write agent code, get rewards',
     buttonText: 'Build',
+    buttonUrl: 'https://build.olas.network',
   },
   {
     id: 6,
     imageSrc: '/images/homepage/olas-govern.png',
     title: 'Guide Olas',
     buttonText: 'Govern',
+    disabled: true,
   },
   {
     id: 7,
     imageSrc: '/images/homepage/olas-bonds.svg',
     title: 'Provide capital, get discounted OLAS',
     buttonText: 'Bond',
+    buttonUrl: 'https://build.olas.network',
   },
   {
     id: 8,
     imageSrc: '/images/homepage/olas-operate.svg',
     title: 'Run agents, get rewards',
     buttonText: 'Operate',
+    buttonUrl: 'https://build.olas.network',
   },
 ];
 
@@ -69,6 +76,7 @@ const GetInvolved = () => (
           buttonText,
           buttonUrl,
           colSpan,
+          disabled,
         } = datum;
         return (
           <GetInvolvedCard
@@ -79,6 +87,7 @@ const GetInvolved = () => (
             buttonText={buttonText}
             buttonUrl={buttonUrl}
             colSpan={colSpan}
+            disabled={disabled}
           />
         );
       })}
@@ -92,6 +101,7 @@ const GetInvolvedCard = ({
   description,
   buttonText,
   buttonUrl = '#',
+  disabled = false,
   colSpan = 1,
 }) => {
   const imageSizes = {
@@ -110,8 +120,8 @@ const GetInvolvedCard = ({
         />
         <h3 className="text-2xl font-bold">{title}</h3>
         {buttonUrl && buttonText && (
-        <Button variant="outline" size="xl" asChild>
-          <Link href={buttonUrl}>{buttonText}</Link>
+        <Button variant="outline" size="xl" asChild disabled={disabled}>
+          <Link href={buttonUrl} disabled>{buttonText}</Link>
         </Button>
         )}
       </Card>

@@ -27,8 +27,8 @@ const PropelledBy = () => (
                 <Image
                   src={`/images/builders/${iconFilename}`}
                   alt={name}
-                  width={100}
-                  height={20}
+                  width={150}
+                  height={30}
                 />
               </Link>
             </div>
@@ -49,8 +49,8 @@ const PropelledBy = () => (
                 <Image
                   src={`/images/friends/${imageFilename}`}
                   alt={name}
-                  width={100}
-                  height={20}
+                  width={150}
+                  height={30}
                 />
               </Link>
             </div>

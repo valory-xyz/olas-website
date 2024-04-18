@@ -4,12 +4,12 @@ import SectionHeading from '../SectionHeading';
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="py-16 border-b h-[623px]"
+    customClasses="py-16 border-b min-h-[800px]"
     backgroundType="NONE"
     backgroundImage="/images/homepage/hero.png"
   >
-    <div className="flex max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 justify-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 mb-12">
+    <div className="flex flex-col justify-center items-center max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 ">
+      <div className="text-center px-5 lg:p-0 mb-12">
         <SectionHeading
           size="text-6xl sm:text-7xl lg:text-5xl xl:text-7xl lg:mb-6 font-extrabold"
           color="text-gray-900"

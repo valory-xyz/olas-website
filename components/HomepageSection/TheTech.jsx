@@ -13,7 +13,7 @@ const innovations = [
       ' The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
     link: {
       text: 'Learn about roles & incentives',
-      href: 'https://docs.autonolas.network/protocol/',
+      href: 'https://olas.network/protocol',
       isExternal: true,
     },
   },
@@ -30,7 +30,7 @@ const innovations = [
     ],
     link: {
       text: 'Learn more',
-      href: 'https://docs.autonolas.network/open-autonomy/',
+      href: 'https://olas.network/protocol',
       isExternal: true,
     },
   },
