@@ -67,9 +67,10 @@ UseCaseCard.propTypes = {
 
 const UseCases = () => (
   <SectionWrapper customClasses="text-center py-24 px-4 border-b">
-    <div className="max-w-[440px] mx-auto">
+    <div className="max-w-[637px] mx-auto">
       <SectionHeading color="text-gray-900">
-        See some live use cases
+        Live use cases,
+        creating value today
       </SectionHeading>
     </div>
 
@@ -100,7 +101,7 @@ const UseCases = () => (
 
       <div className="md:col-span-6 text-center px-5 md:p-0 md:text-left">
         <h3 className="text-2xl md:text-4xl font-bold mb-4">
-          Boundless applicability
+          Expanding what&apos;s possible
         </h3>
         <p className="md:text-xl mb-12">
           The impact of autonomous agent economies is shaping applications and
