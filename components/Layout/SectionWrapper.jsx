@@ -19,7 +19,7 @@ const SectionWrapper = ({
   }, [backgroundType]);
 
   return (
-    <section className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`} id={id} style={{ background: `url(${backgroundImage}) center`, backgroundSize: 'cover' }}>
+    <section className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`} id={id} style={backgroundImage ? { background: `url(${backgroundImage}) center`, backgroundSize: 'cover' } : undefined}>
       {children}
     </section>
   );
