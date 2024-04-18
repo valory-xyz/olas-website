@@ -8,16 +8,17 @@ import PropelledBy from 'components/HomepageSection/PropelledBy';
 import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Media from 'components/HomepageSection/Media';
 
-import {getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal} from 'common-util/api';
-import Videos from 'components/Content/Videos';
+import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
+
+import PropTypes from 'prop-types';
 
 export const getStaticProps = async () => {
-  const [transactions, agents, agentsTypes, ] = await Promise.allSettled([
-      getTransactionsTotal(),
-      getAgentsTotal(),
-      getAgentsTypesTotal(),
-      // getBlockchainsTotal(),
-    ]);
+  const [transactions, agents, agentsTypes] = await Promise.allSettled([
+    getTransactionsTotal(),
+    getAgentsTotal(),
+    getAgentsTypesTotal(),
+    // getBlockchainsTotal(),
+  ]);
 
   return {
     props: {
@@ -28,11 +29,11 @@ export const getStaticProps = async () => {
         // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
       },
     },
-  
+
   };
 };
 
-export default function Home({activityMetrics}) {
+export default function Home({ activityMetrics }) {
   return (
     <PageWrapper>
       <Meta />
@@ -42,7 +43,11 @@ export default function Home({activityMetrics}) {
       <TheTech />
       <PropelledBy />
       <GetInvolved />
-      <Media/>
+      <Media />
     </PageWrapper>
   );
 }
+
+Home.propTypes = {
+  activityMetrics: PropTypes.object.isRequired,
+};

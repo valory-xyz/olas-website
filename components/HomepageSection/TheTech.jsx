@@ -61,15 +61,15 @@ const TheTech = () => (
           <div className="col-span-3 text-start">
             <CardTitle className="mb-4 lg:text-3xl"><span>{item.title}</span></CardTitle>
             <p className="mb-4">
-              {item.description}              
+              {item.description}
             </p>
             {item.descriptionItems && item.descriptionItems.length > 0 && (
-                <ul className="list-disc pl-5 mb-4">
-                  {item.descriptionItems.map((descriptionItem) => (
-                    <li key={descriptionItem}>{descriptionItem}</li>
-                  ))}
-                </ul>
-              )}
+            <ul className="list-disc pl-5 mb-4">
+              {item.descriptionItems.map((descriptionItem) => (
+                <li key={descriptionItem}>{descriptionItem}</li>
+              ))}
+            </ul>
+            )}
             {item.link.isExternal ? (
               <ExternalLink href={item.link.href}>
                 {item.link.text}

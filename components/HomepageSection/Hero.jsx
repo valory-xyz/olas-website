@@ -1,12 +1,12 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import SectionHeading from '../SectionHeading';
 import { Button } from 'components/ui/button';
+import SectionHeading from '../SectionHeading';
 
 const Hero = () => (
   <SectionWrapper
     customClasses="py-16 border-b h-[623px]"
     backgroundType="NONE"
-    backgroundImage={"/images/homepage/hero.png"}
+    backgroundImage="/images/homepage/hero.png"
   >
     <div className="flex max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 justify-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 mb-12">

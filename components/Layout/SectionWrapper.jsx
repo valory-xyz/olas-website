@@ -1,11 +1,11 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 const SectionWrapper = ({
-  children, customClasses, backgroundType, id, backgroundImage
+  children, customClasses, backgroundType, id, backgroundImage,
 }) => {
-  
-  const backgroundClasses = useMemo(() => {    
+  const backgroundClasses = useMemo(() => {
     switch (backgroundType) {
       case 'SUBTLE_GRADIENT':
         return 'w-full h-full bg-subtle-gradient bg-white';
@@ -19,7 +19,7 @@ const SectionWrapper = ({
   }, [backgroundType]);
 
   return (
-    <section className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`} id={id} style={{background: `url(${backgroundImage}) center`}}>
+    <section className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`} id={id} style={{ background: `url(${backgroundImage}) center` }}>
       {children}
     </section>
   );

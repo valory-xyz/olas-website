@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import useCases from 'data/useCases.json';
-import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
 
 const UseCaseCard = ({

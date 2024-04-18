@@ -1,42 +1,38 @@
+/* eslint-disable react/prop-types */
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
-import { useEffect, useRef, useState, useMemo } from 'react';
-
-import { Button } from 'components/ui/button';
+import { useMemo } from 'react';
 import SectionHeading from '../SectionHeading';
-import Link from "next/link";
 
 const BLOCKCHAIN_COUNT = 8;
 
-
-
-const Activity = ({ activityMetrics: {agents, agentsTypes, transactions} }) => {
-  const data = useMemo(()=>[
-  {
-    id: 'transactions',
-    topText: 'Olas agents have made',
-    subText: "transactions",
-    value: transactions.value?.toLocaleString(),
-  },
-  {
-    id: 'agents',
-    topText: 'Olas has',
-    subText: "agents deployed",
-    value: agents.value,
-  },
-  {
-    id: 'blockchains',
-    topText: 'Deployed across',
-    subText: "blockchains",
-    value: BLOCKCHAIN_COUNT,
-  },
-  {
-    id: 'agentsTypes',
-    topText: 'Devs have registered',
-    subText: "types of agents",
-    value: agentsTypes.value,
-  },
-], []);
+const Activity = ({ activityMetrics: { agents, agentsTypes, transactions } }) => {
+  const data = useMemo(() => [
+    {
+      id: 'transactions',
+      topText: 'Olas agents have made',
+      subText: 'transactions',
+      value: transactions.value?.toLocaleString(),
+    },
+    {
+      id: 'agents',
+      topText: 'Olas has',
+      subText: 'agents deployed',
+      value: agents.value,
+    },
+    {
+      id: 'blockchains',
+      topText: 'Deployed across',
+      subText: 'blockchains',
+      value: BLOCKCHAIN_COUNT,
+    },
+    {
+      id: 'agentsTypes',
+      topText: 'Devs have registered',
+      subText: 'types of agents',
+      value: agentsTypes.value,
+    },
+  ], []);
 
   return (
     <SectionWrapper customClasses="text-center py-16 px-4 border-b">
@@ -48,7 +44,7 @@ const Activity = ({ activityMetrics: {agents, agentsTypes, transactions} }) => {
           height="300"
           className="mx-auto mb-12"
         />
-        <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl" weight={"font-bold"}>
+        <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl" weight="font-bold">
           Generating an Ocean of Autonomous AI Agents
         </SectionHeading>
         <p className="text-xl md:text-3xl text-gray-900 mb-20 mx-auto">

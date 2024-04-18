@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 
 const SectionHeading = ({
@@ -14,6 +15,8 @@ SectionHeading.propTypes = {
   display: PropTypes.string,
   size: PropTypes.string,
   spacing: PropTypes.string,
+  weight: PropTypes.string,
+  other: PropTypes.string,
 };
 
 SectionHeading.defaultProps = {
