@@ -1,32 +1,53 @@
-import Hero from 'components/HomepageSection/Hero';
-import ForDAOs from 'components/HomepageSection/ForDAOs';
-import ForDevs from 'components/HomepageSection/ForDevs';
-import Flywheel from 'components/HomepageSection/Flywheel';
-import Framework from 'components/HomepageSection/Framework';
-import Services from 'components/HomepageSection/Services';
-import AppShowcase from 'components/HomepageSection/AppShowcase';
-import Content from 'components/HomepageSection/Content';
-import Friends from 'components/HomepageSection/Friends';
-import Contribute from 'components/HomepageSection/Contribute';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import Affordances from 'components/HomepageSection/Affordances';
+import Hero from 'components/HomepageSection/Hero';
+import Activity from 'components/HomepageSection/Activity';
+import UseCases from 'components/HomepageSection/UseCases';
+import TheTech from 'components/HomepageSection/TheTech';
+import PropelledBy from 'components/HomepageSection/PropelledBy';
+import GetInvolved from 'components/HomepageSection/GetInvolved';
+import Media from 'components/HomepageSection/Media';
 
-export default function Home() {
+import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
+
+import PropTypes from 'prop-types';
+
+export const getStaticProps = async () => {
+  const [transactions, agents, agentsTypes] = await Promise.allSettled([
+    getTransactionsTotal(),
+    getAgentsTotal(),
+    getAgentsTypesTotal(),
+    // getBlockchainsTotal(),
+  ]);
+
+  return {
+    props: {
+      activityMetrics: {
+        transactions: transactions.status === 'fulfilled' ? transactions : null,
+        agents: agents.status === 'fulfilled' ? agents : null,
+        agentsTypes: agentsTypes.status === 'fulfilled' ? agentsTypes : null,
+        // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
+      },
+    },
+
+  };
+};
+
+export default function Home({ activityMetrics }) {
   return (
     <PageWrapper>
       <Meta />
       <Hero />
-      <Affordances />
-      <Services />
-      <ForDAOs />
-      <ForDevs />
-      <Flywheel />
-      <Framework />
-      <AppShowcase />
-      <Content />
-      <Friends />
-      <Contribute />
+      <Activity activityMetrics={activityMetrics} />
+      <UseCases />
+      <TheTech />
+      <PropelledBy />
+      <GetInvolved />
+      <Media />
     </PageWrapper>
   );
 }
+
+Home.propTypes = {
+  activityMetrics: PropTypes.object.isRequired,
+};

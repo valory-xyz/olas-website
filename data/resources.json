@@ -40,6 +40,14 @@
     "tags": []
   },
   {
+    "id": "209bc10a-c797-46cd-a94b-187asfasfasf",
+    "title": "Videos & Podcasts",
+    "description": "Watch and listen to Olas content",
+    "url": "/videos",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "AKS Activity",
     "description": "Dune dashboard showing activity on the Autonomous Keeper Services",

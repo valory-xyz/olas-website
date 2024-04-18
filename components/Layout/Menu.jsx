@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React from 'react';
 import resources from 'data/resources.json';
-import ecosystemItems from 'data/ecosystemItems.json';
 import { cn } from 'lib/utils';
 import {
   NavigationMenu,
@@ -13,7 +12,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from 'components/ui/navigation-menu';
-import { DOCS_BASE_URL } from 'common-util/constants';
 
 const triggerStyle = navigationMenuTriggerStyle();
 
@@ -55,7 +53,24 @@ export function Menu({ className }) {
   return (
     <NavigationMenu className={className}>
       <NavigationMenuList>
-        <NavigationMenuItem>
+
+        <NavigationMenuItem className="hidden md:block">
+          <Link href="/learn" legacyBehavior passHref>
+            <NavigationMenuLink className={triggerStyle}>
+              Learn
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        {/* <NavigationMenuItem className="hidden md:block">
+          <Link href="/explore" legacyBehavior passHref>
+            <NavigationMenuLink className={triggerStyle}>
+              Explore
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem> */}
+
+        {/* <NavigationMenuItem>
           <NavigationMenuTrigger>Ecosystem</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
@@ -77,7 +92,7 @@ export function Menu({ className }) {
               </ListItem>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
 
         <NavigationMenuItem>
           <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
@@ -103,21 +118,21 @@ export function Menu({ className }) {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="hidden md:block">
+        {/* <NavigationMenuItem className="hidden md:block">
           <Link href="/videos" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Videos & Podcasts
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
 
-        <NavigationMenuItem className="hidden md:block">
+        {/* <NavigationMenuItem className="hidden md:block">
           <Link href="/blog" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Blog
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
 
         <NavigationMenuItem className="hidden md:block">
           <Link
@@ -131,21 +146,21 @@ export function Menu({ className }) {
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="md:pr-8 hidden md:block">
+        {/* <NavigationMenuItem className="md:pr-8 hidden md:block">
           <Link href={DOCS_BASE_URL} legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Docs ↗
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
 
-        <NavigationMenuItem className="border rounded-lg">
+        {/* <NavigationMenuItem className="border rounded-lg">
           <Link href="/#get-involved" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Get involved
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );

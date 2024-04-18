@@ -3,6 +3,9 @@ module.exports = {
   images: {
     domains: ['cms-backend.autonolas.tech'],
   },
+  experimental: {
+    scrollRestoration: true,
+  },
   async redirects() {
     return [
       {

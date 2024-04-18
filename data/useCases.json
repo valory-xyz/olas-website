@@ -1,0 +1,55 @@
+[
+  {
+    "id": "e5f3a7b4-1639-4ac8-8d2e-9bcdef1a2c3d",
+    "title": "Sovereign Agents",
+    "image": "/images/sovereign-agents.png",
+    "description": "Lightweight agents that anybody can run locally or in the cloud.",
+    "services": [
+      {
+        "title": "BabyDegen",
+        "description": "Trades autonomously in DeFi.",
+        "image": "/images/services/babydegen-icon.svg",
+        "link": "/services/babydegen"
+      },
+      {
+        "title": "Prediction Trader",
+        "description": "Trades on prediction markets.",
+        "image": "/images/services/prediction-trader.png",
+        "link": "/services/prediction-agents"
+      }
+    ]
+  },
+  {
+    "id": "f8c2e1a3-4926-8bc5-1d3a-6abcdef7d2e4",
+    "title": "Decentralized Agents",
+    "image": "/images/decentralized-agents.png",
+    "description": "Highly transparent and robust through consensus, run by multiple separate operators.",
+    "services": [
+      {
+        "title": "Governatooorr",
+        "description": "AI-powered governance delegate.",
+        "image": "/images/services/governatooorr.svg",
+        "link": "/services/governatooorr"
+      },
+      {
+        "title": "Mechs",
+        "description": "Agent-to-agent AI tools marketplace.",
+        "image": "/images/services/ai-mechs.svg",
+        "link": "/services/ai-mechs"
+      }
+    ]
+  },
+  {
+    "id": "a1b2c3d4-5678-90e1-2a3b-c4d5e6f78901",
+    "title": "Agent Economies",
+    "image": "/images/agent-economies.png",
+    "description": "Many specialized agents interacting autonomously.",
+    "services": [
+      {
+        "title": "Predict",
+        "description": "Agents creating, researching and trading on prediction markets.",
+        "image": "/images/services/predict.png"
+      }
+    ]
+  }
+]

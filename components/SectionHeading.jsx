@@ -1,9 +1,10 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 
 const SectionHeading = ({
-  children, size, color, spacing, display,
+  children, size, color, spacing, display, weight, other,
 }) => (
-  <h2 className={`${size} tracking-tight lg:text-heading ${spacing} ${color} ${display}`}>
+  <h2 className={`${size} tracking-tight lg:text-heading ${spacing} ${color} ${display} ${weight} ${other}`}>
     {children}
   </h2>
 );
@@ -14,7 +15,10 @@ SectionHeading.propTypes = {
   display: PropTypes.string,
   size: PropTypes.string,
   spacing: PropTypes.string,
+  weight: PropTypes.string,
+  other: PropTypes.string,
 };
+
 SectionHeading.defaultProps = {
   color: 'text-gray-700',
   display: '',
