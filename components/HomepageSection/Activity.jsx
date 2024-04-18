@@ -1,80 +1,46 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
-import {
-  getAgentsTotal,
-  getAgentsTypesTotal,
-  getTransactionsTotal,
-} from 'common-util/api';
+import { useEffect, useRef, useState, useMemo } from 'react';
+
 import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
+import Link from "next/link";
 
 const BLOCKCHAIN_COUNT = 8;
 
-const ACTIVITIES = [
+
+
+const Activity = ({ activityMetrics: {agents, agentsTypes, transactions} }) => {
+  const data = useMemo(()=>[
   {
     id: 'transactions',
-    title: 'transactions',
-    description: 'Olas agents have made',
-    value: null,
+    topText: 'Olas agents have made',
+    subText: "transactions",
+    value: transactions.value?.toLocaleString(),
   },
   {
     id: 'agents',
-    title: 'agents',
-    description: 'Olas has',
-    value: null,
+    topText: 'Olas has',
+    subText: "agents deployed",
+    value: agents.value,
   },
   {
     id: 'blockchains',
-    title: 'blockchains',
-    description: 'Deployed across',
+    topText: 'Deployed across',
+    subText: "blockchains",
     value: BLOCKCHAIN_COUNT,
   },
   {
     id: 'agentsTypes',
-    title: 'types of agents',
-    description: 'Devs have registered',
-    value: null,
+    topText: 'Devs have registered',
+    subText: "types of agents",
+    value: agentsTypes.value,
   },
-];
-
-const Activity = () => {
-  const [data, setData] = useState(ACTIVITIES);
-  const ref = useRef(false);
-
-  const getData = async () => {
-    const [agents, agentsTypes, transactions] = await Promise.allSettled([
-      getAgentsTotal(),
-      getAgentsTypesTotal(),
-      getTransactionsTotal(),
-    ]);
-
-    const result = {
-      agents: agents.value,
-      agentsTypes: agentsTypes.value,
-      transactions: transactions.value
-        ? transactions.value.toLocaleString()
-        : null,
-    };
-
-    const newData = data.map((item) => ({
-      ...item,
-      value: result[item.id] ?? item.value,
-    }));
-
-    setData(newData);
-  };
-
-  useEffect(() => {
-    if (ref.current) return;
-    ref.current = true;
-
-    getData();
-  }, []);
+], []);
 
   return (
     <SectionWrapper customClasses="text-center py-16 px-4 border-b">
-      <div className="text-7xl lg:text-9xl mb-12 max-w-screen-lg mx-auto mb-12 ">
+      <div className="text-7xl lg:text-9xl mb-12 max-w-screen-lg mx-auto ">
         <Image
           alt="Placeholder"
           src="/images/generating-agents.png"
@@ -82,7 +48,7 @@ const Activity = () => {
           height="300"
           className="mx-auto mb-12"
         />
-        <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl">
+        <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl" weight={"font-bold"}>
           Generating an Ocean of Autonomous AI Agents
         </SectionHeading>
         <p className="text-xl md:text-3xl text-gray-900 mb-20 mx-auto">
@@ -99,17 +65,18 @@ const Activity = () => {
       <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-end mb-20">
         {data.map((item) => (
           <div key={item.id} className="text-gray-900">
-            <span className="block text-2xl mb-4">{item.description}</span>
+            <span className="block text-2xl mb-4">{item.topText}</span>
             <span className="block text-6xl font-bold mb-4 ">
               {item.value ?? '--'}
             </span>
-            <span className="block text-2xl font-bold">{item.title}</span>
+            <span className="block text-2xl font-bold">{item.subText}</span>
           </div>
         ))}
       </div>
-      <Button variant="outline" size="xl" asChild className="mb-12">
-        <a href="/ecosystem">Explore the ecosystem</a>
-      </Button>
+      {/* TODO: uncomment once explore is done */}
+      {/* <Button variant="outline" size="xl" asChild className="mb-12">
+        <Link href="/ecosystem">Explore the ecosystem</Link>
+      </Button> */}
     </SectionWrapper>
   );
 };

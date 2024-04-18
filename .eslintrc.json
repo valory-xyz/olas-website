@@ -12,11 +12,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "airbnb"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "settings": {
     "react": {
       "version": "detect"
@@ -24,6 +20,7 @@
   },
   "plugins": ["react", "jsx-a11y", "import"],
   "rules": {
+    "linebreak-style": ["error", "auto"],
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "react/no-array-index-key": "off",

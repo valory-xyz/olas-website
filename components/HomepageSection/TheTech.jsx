@@ -41,7 +41,7 @@ const TheTech = () => (
     customClasses="text-center py-24 px-4 border-b"
     backgroundType="SUBTLE_GRADIENT"
   >
-    <Upcase>The Tech</Upcase>
+    <Upcase><span>The Tech</span></Upcase>
     <SectionHeading color="text-gray-900">
       Enabled by two core innovations
     </SectionHeading>
@@ -59,17 +59,17 @@ const TheTech = () => (
             className="object-contain col-span-2"
           />
           <div className="col-span-3 text-start">
-            <CardTitle className="mb-4 lg:text-3xl">{item.title}</CardTitle>
+            <CardTitle className="mb-4 lg:text-3xl"><span>{item.title}</span></CardTitle>
             <p className="mb-4">
-              {item.description}
-              {item.descriptionItems && (
+              {item.description}              
+            </p>
+            {item.descriptionItems && item.descriptionItems.length > 0 && (
                 <ul className="list-disc pl-5 mb-4">
-                  {item.descriptionItems.map((descriptionItem, index) => (
-                    <li key={index}>{descriptionItem}</li>
+                  {item.descriptionItems.map((descriptionItem) => (
+                    <li key={descriptionItem}>{descriptionItem}</li>
                   ))}
                 </ul>
               )}
-            </p>
             {item.link.isExternal ? (
               <ExternalLink href={item.link.href}>
                 {item.link.text}
@@ -82,7 +82,7 @@ const TheTech = () => (
       ))}
     </div>
     <Button variant="outline" size="xl" asChild>
-      <a href="/learn">See more use cases</a>
+      <Link href="/learn">See more use cases</Link>
     </Button>
   </SectionWrapper>
 );
