@@ -38,8 +38,7 @@ const innovations = [
 
 const TheTech = () => (
   <SectionWrapper
-    customClasses="text-center py-24 px-4 border-b"
-    backgroundType="SUBTLE_GRADIENT"
+    customClasses="text-center py-24 px-4 border-b bg-gradient-from-br from-[#F5D0FE] to-white"
   >
     <Upcase><span>The Tech</span></Upcase>
     <SectionHeading color="text-gray-900">
