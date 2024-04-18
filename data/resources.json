@@ -48,14 +48,6 @@
     "tags": []
   },
   {
-    "id": "d6535223-279c-4c23-8933-a1dce57d7863",
-    "title": "Awesome Autonolas",
-    "description": "Collated guides, tools, and resources",
-    "url": "https://github.com/N0xMare/awesome-autonolas",
-    "imageFilename": "awesome-autonolas.svg",
-    "tags": []
-  },
-  {
     "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
     "title": "DAO Constitution",
     "description": "The DAO's governing rulebook",
@@ -90,7 +82,7 @@
   {
     "id": "f48a1ee0-d19c-11ee-9e5c-f9b4f0d6e638",
     "title": "OLAS Dune Dashboard",
-    "description": "Dune dashboard showing activity across the Olas ecosystem",
+    "description": "Dune dashboard showing OLAS tokenomics",
     "url": "https://dune.com/adrian0x/olas",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
