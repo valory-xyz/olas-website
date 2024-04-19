@@ -46,8 +46,6 @@ const FAQPage = () => (
     <Question text="Where can I catch up on everything that's happened since the early days?">
       <FAQLink
         href="https://twitter.com/autonolas/status/1676576697863507968?s=20"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         This Twitter summary thread.
@@ -60,8 +58,7 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1126134102400176229"
-        target="_blank"
-        rel="noreferrer"
+        external
       >
         in the order of 10s of thousands of dollars.
       </FAQLink>
@@ -69,8 +66,6 @@ const FAQPage = () => (
     <Question text="When was the LBP?">
       <FAQLink
         href="https://fjordfoundry.com/pools/mainnet/0x4131fD7B699155f69E0192145C36f27852BE7c11"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         In 2023, the OLAS token launched publicly via an LBP which ended on
@@ -92,9 +87,7 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://www.autonolas.network/blog/olas-public-launch"
-        target="_blank"
-        rel="noreferrer"
-        external
+
       >
         &apos;maintain, run and further&apos;
       </FAQLink>
@@ -107,8 +100,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://www.valory.xyz/post/autonomous-services-to-power-next-gen-apps-for-crypto-users-and-daos"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         had a seed round
@@ -120,8 +111,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://twitter.com/autonolas/status/1676576697863507968?s=20"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -135,8 +124,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://dune.com/adrian0x/olas"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -145,8 +132,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://etherscan.io/token/0xb09ccf0dbf0c178806aaee28956c74bd66d21f73"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -155,8 +140,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://etherscan.io/token/0x7e01a500805f8a52fad229b3015ad130a332b7b3"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -166,8 +149,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://snapshot.org/#/autonolas.eth"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -177,8 +158,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://boardroom.io/autonolas"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -188,8 +167,6 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://member.olas.network/"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         here
@@ -200,8 +177,6 @@ const FAQPage = () => (
       The most detail is found in the full whitepaper and whitepaper summary (
       <FAQLink
         href="https://olas.network/whitepaper"
-        target="_blank"
-        rel="noreferrer"
       >
         whitepaper
       </FAQLink>
@@ -217,19 +192,15 @@ const FAQPage = () => (
       {' '}
       <FAQLink
         href="https://boardroom.io/autonolas/proposal/cHJvcG9zYWw6YXV0b25vbGFzOm9uY2hhaW46ODU3ODA1MjQ1MjQyODgwNTE0MTU1MjEyODcyNzMyNTgwNzY1NTY5MTE5Nzc2NTQwODk1MDAzNzA4MzE3NjIyMTY1NjUzNzEwMjIzNDY="
-        target="_blank"
-        rel="noreferrer"
         external
       >
-        ⁠ governance vote on bonding
+        governance vote on bonding
       </FAQLink>
       {' '}
       is here. Here you can find a thread about
       {' '}
       <FAQLink
         href="https://twitter.com/david_enim/status/1677611439236739072?s=46&t=PBYzKHt3WSIq4JxQTUrjWA"
-        target="_blank"
-        rel="noreferrer"
         external
       >
         Protocol-owned Liquidity
