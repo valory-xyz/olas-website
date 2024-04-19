@@ -131,8 +131,8 @@ const FAQPage = () => (
       favourably to many other industry-defining projects like StarkNet, Celestia, Arbitrum, etc.
     </Question>
     <Question text="How do I track the current token distribution?">
-      Current token distribution can be tracked on-chain since inception of OLAS and for
-      convenience on Dune dashboards like this one
+      The current token distribution can be tracked on-chain since the inception of OLAS, and for
+      convenience, on Dune dashboards like this one
       {' '}
       <Link href="https://dune.com/adrian0x/olas">here</Link>
       . The deployer is called this way on Etherscan because Valory
@@ -171,8 +171,8 @@ const FAQPage = () => (
       The deployer has no privileged role in the protocol.
       The protocol is controlled by the DAO (holders of veOLAS).
     </Question>
-    <Question text="Valory made a transaction, why?">
-      Valory stated (
+    <Question text="What if I want to know about specific transactions?">
+      You can use block explorers to find all transactions on-chain. DAO founding member Valory stated (
       <Link href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626">https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626</Link>
       )
       they never comment on individual transactions unless they are related to a security incident or some governance vote.

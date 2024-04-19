@@ -33,14 +33,14 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-launch.svg',
     title: 'Define use cases, \nattract agent labor',
     buttonText: 'Launch',
-    buttonUrl: 'https://launch.olas.network',
+    buttonUrl: '/launch',
   },
   {
     id: 5,
     imageSrc: '/images/homepage/olas-dev-rewards.png',
     title: 'Write agent code, \nget rewards',
     buttonText: 'Build',
-    buttonUrl: 'https://build.olas.network',
+    buttonUrl: '/build',
   },
   {
     id: 6,
@@ -54,14 +54,14 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-bonds.svg',
     title: 'Provide capital, \nget discounted OLAS',
     buttonText: 'Bond',
-    buttonUrl: 'https://bond.olas.network',
+    buttonUrl: '/bond',
   },
   {
     id: 8,
     imageSrc: '/images/homepage/olas-operate.svg',
     title: 'Run agents, \nget rewards',
     buttonText: 'Operate',
-    buttonUrl: 'https://operate.olas.network',
+    buttonUrl: '/operate',
   },
 ];
 
