@@ -17,7 +17,7 @@ const Footer = () => (
         />
       </Link>
       <p className="my-6 text-gray-600 ">
-        The Network for Co-ownable AI
+        The Network for Co-owning AI
       </p>
       <ul className="flex flex-wrap justify-center items-center mb-6 text-gray-900 ">
         <li>
