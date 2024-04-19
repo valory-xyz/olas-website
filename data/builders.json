@@ -12,7 +12,7 @@
     "iconFilename": "nevermined.png"
   },
   {
-    "id": "ce126b05-0ac9-4a1c-9b68-e117eb7ede0e",
+    "id": "jbjbj6b05-0ac9-4a1c-9b68-e117eb7ede0e",
     "name": "Naptha AI",
     "url": "https://www.naptha.ai/",
     "iconFilename": "naptha-ai.png"
@@ -40,5 +40,23 @@
     "name": "Polywrap",
     "url": "https://www.polywrap.io/",
     "iconFilename": "polywrap.svg"
+  },
+  {
+    "id": "hjhohp9-0dec-4ed0-1245-15face91be42",
+    "name": "Virtuals",
+    "url": "https://www.virtuals.io/",
+    "iconFilename": "virtuals.svg"
+  },
+  {
+    "id": "12j4h3c98-c53d-45a9-b7b7-20c8daskfann",
+    "name": "Creator.bid",
+    "url": "https://www.creator.bid/",
+    "iconFilename": "creator-bid.png"
+  },
+  {
+    "id": "c8b2129b-4c7a-4acf-aljdklaksglak-6bda008a2773",
+    "name": "Alterscope",
+    "url": "https://www.alterscope.org/",
+    "iconFilename": "alterscope.webp"
   }
 ]
