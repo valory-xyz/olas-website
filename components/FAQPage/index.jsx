@@ -135,7 +135,7 @@ const FAQPage = () => (
       convenience on Dune dashboards like this one
       {' '}
       <Link href="https://dune.com/adrian0x/olas">here</Link>
-      . The deployer is called this way on Etherscan because Valory
+      . The "Autonolas Deployer" is called this way on Etherscan because Valory
       deployed the Olas (prev. Autonolas) protocol.
       The deployer has no privileged role in the protocol.
       The protocol is controlled by the DAO (holders of veOLAS).
