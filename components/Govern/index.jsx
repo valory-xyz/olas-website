@@ -1,5 +1,3 @@
-import PageWrapper from 'components/Layout/PageWrapper';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
