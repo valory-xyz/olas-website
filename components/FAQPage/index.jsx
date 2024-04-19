@@ -140,7 +140,7 @@ const FAQPage = () => (
       The deployer has no privileged role in the protocol.
       The protocol is controlled by the DAO (holders of veOLAS).
     </Question>
-    <Question text="Why is the deployer called Autonolas Deployer?">
+    <Question text="What token allocation does Valory have?">
       Valory, founding member and co-creator of Olas, has a token allocation
       (see point above and Tokenomics paper
       {' '}
