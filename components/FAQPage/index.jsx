@@ -135,14 +135,15 @@ const FAQPage = () => (
       convenience, on Dune dashboards like this one
       {' '}
       <Link href="https://dune.com/adrian0x/olas">here</Link>
-      . The deployer is called this way on Etherscan because Valory
-      deployed the Olas (prev. Autonolas) protocol.
-      The deployer has no privileged role in the protocol.
-      The protocol is controlled by the DAO (holders of veOLAS).
+      .
     </Question>
     <Question text="What token allocation does Valory have?">
       Valory, founding member and co-creator of Olas, has a token allocation
-      (see point above and Tokenomics paper
+      (see Dune dashboard
+      {' '}
+      <Link href="https://dune.com/adrian0x/olas">here</Link>
+      {' '}
+      and Tokenomics paper
       {' '}
       <Link href="https://www.autonolas.network/whitepaper">https://www.autonolas.network/whitepaper</Link>
       {' '}
