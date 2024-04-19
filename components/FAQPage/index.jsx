@@ -323,7 +323,7 @@ const FAQPage = () => (
         they never comment on individual transactions unless they are related to
         a security incident or some governance vote
       </FAQLink>
-      ).
+      .
     </Question>
   </div>
 );
