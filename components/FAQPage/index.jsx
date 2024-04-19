@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
-import NextLink from 'next/link';
 import React from 'react';
+import { ExternalLink, Link } from 'components/ui/typography';
 
 const Question = ({ text, children }) => (
   <div className="mb-8">
@@ -17,15 +17,7 @@ Question.propTypes = {
 };
 
 const FAQLink = ({ external, ...props }) => (
-  <NextLink
-    className="underline underline-offset-4"
-    target={external ? '_blank' : null}
-    rel={external ? 'norefferer' : null}
-    {...props}
-  >
-    {props.children}
-    {external ? ' ↗' : null}
-  </NextLink>
+  external ? <ExternalLink {...props} /> : <Link {...props} />
 );
 
 const FAQPage = () => (
