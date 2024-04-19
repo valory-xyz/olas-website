@@ -24,7 +24,7 @@ const GET_INVOLVED_DATA = [
   {
     id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
-    title: 'Grow awareness',
+    title: 'Grow awareness, \nget points',
     buttonText: 'Contribute',
     buttonUrl: 'https://contribute.olas.network',
   },
