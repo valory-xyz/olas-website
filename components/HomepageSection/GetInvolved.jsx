@@ -47,7 +47,7 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-govern.png',
     title: 'Guide Olas',
     buttonText: 'Govern',
-    disabled: true,
+    buttonUrl: '/govern',
   },
   {
     id: 7,
@@ -76,7 +76,6 @@ const GetInvolved = () => (
           buttonText,
           buttonUrl,
           colSpan,
-          disabled,
         } = datum;
         return (
           <GetInvolvedCard
@@ -87,7 +86,6 @@ const GetInvolved = () => (
             buttonText={buttonText}
             buttonUrl={buttonUrl}
             colSpan={colSpan}
-            disabled={disabled}
           />
         );
       })}
@@ -100,8 +98,7 @@ const GetInvolvedCard = ({
   title,
   description,
   buttonText,
-  buttonUrl = '#',
-  disabled = false,
+  buttonUrl,
   colSpan = 1,
 }) => {
   const imageSizes = {
@@ -120,8 +117,8 @@ const GetInvolvedCard = ({
         />
         <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>
         {buttonUrl && buttonText && (
-        <Button variant="outline" size="xl" asChild disabled={disabled} className="mt-auto">
-          <Link href={buttonUrl} disabled>{buttonText}</Link>
+        <Button variant="outline" size="xl" asChild className="mt-auto">
+          <Link href={buttonUrl}>{buttonText}</Link>
         </Button>
         )}
       </Card>
@@ -131,7 +128,7 @@ const GetInvolvedCard = ({
   return (
     <Card className="border rounded-sm p-8 col-span-1 md:col-span-2 flex flex-col md:flex-row gap-10">
       <div className="div flex flex-col justify-center order-2 md:order-1">
-        <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>
+        <h3 className="text-2xl font-bold whitespace-pre mb-4">{title}</h3>
         {description && <p>{description}</p>}
       </div>
       <Image
