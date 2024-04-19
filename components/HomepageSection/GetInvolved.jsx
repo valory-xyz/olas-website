@@ -109,13 +109,15 @@ const GetInvolvedCard = ({
   if (colSpan === 1) {
     return (
       <Card className="border rounded-sm p-8 flex flex-col justify-center gap-10">
+        {imageSrc && title && (
         <Image
           src={imageSrc}
           alt={title}
           width={imageSizes.width}
           height={imageSizes.height}
         />
-        <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>
+        )}
+        {title && <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>}
         {buttonUrl && buttonText && (
         <Button variant="outline" size="xl" asChild className="mt-auto">
           <Link href={buttonUrl}>{buttonText}</Link>
@@ -131,6 +133,7 @@ const GetInvolvedCard = ({
         <h3 className="text-2xl font-bold whitespace-pre mb-4">{title}</h3>
         {description && <p>{description}</p>}
       </div>
+      {imageSrc && title && (
       <Image
         src={imageSrc}
         alt={title}
@@ -138,6 +141,7 @@ const GetInvolvedCard = ({
         height={imageSizes.height}
         className="order-1 md:order-2"
       />
+      )}
     </Card>
   );
 };

@@ -19,7 +19,7 @@ const GOVERN_CARDS = [
   },
   {
     slug: 'vote-escrow',
-    title: 'Vote Escrow OLAS',
+    title: 'Get veOLAS',
     url: 'https://member.olas.network/',
   },
 ];
