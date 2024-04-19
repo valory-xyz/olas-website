@@ -24,7 +24,7 @@ module.exports = {
         'dark-hexagons2': "url('/images/dark-hexagons2.png')",
         'dark-hexagons3': "url('/images/dark-hexagons3.png')",
         governatooorr: "url('/images/governatooorr-tiled.png')",
-        'subtle-gradient': 'radial-gradient(at 100% 40%, rgba(125, 211, 252, 30%) 0, transparent 25%), radial-gradient(at right bottom, rgb(245, 208, 254), rgb(255, 255, 255, 100%), rgb(255, 255, 255, 100%), rgba(168, 85, 247, 50%))',
+        'subtle-gradient': 'radial-gradient(at right bottom, rgb(245, 208, 254), rgb(255, 255, 255, 100%), rgb(255, 255, 255, 100%), rgba(168, 85, 247, 50%))',
       },
       backgroundSize: {
         'size-25': '25%',
