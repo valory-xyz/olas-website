@@ -243,6 +243,7 @@ const FAQPage = () => (
       {' '}
       for wallet and amounts). This allocation has never been subject to locking
       or vesting. Valory stated
+      {' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
         external
@@ -278,11 +279,12 @@ const FAQPage = () => (
     <Question text="What if I want to know about specific transactions?">
       You can use block explorers to find all transactions on-chain. DAO
       founding member Valory stated
+      {' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
         external
       >
-        &ldquo; they never comment on individual transactions unless they are related to
+        &ldquo;they never comment on individual transactions unless they are related to
         a security incident or some governance vote&ldquo;
       </FAQLink>
       .
