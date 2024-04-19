@@ -40,8 +40,9 @@ const FAQPage = () => (
         href="https://twitter.com/autonolas/status/1676576697863507968?s=20"
         external
       >
-        This Twitter summary thread.
+        This Twitter summary thread
       </FAQLink>
+      .
     </Question>
     <Question text="When was the DAO founded? When was the TGE?">
       Olas DAO was founded in 2022 with ~50 participants. When the DAO was
@@ -52,8 +53,9 @@ const FAQPage = () => (
         href="https://discord.com/channels/899649805582737479/899649805582737482/1126134102400176229"
         external
       >
-        in the order of 10s of thousands of dollars.
+        in the order of 10s of thousands of dollars
       </FAQLink>
+      .
     </Question>
     <Question text="When was the LBP?">
       <FAQLink
@@ -61,8 +63,9 @@ const FAQPage = () => (
         external
       >
         In 2023, the OLAS token launched publicly via an LBP which ended on
-        12.7.23 at 6pm UTC.
+        12.7.23 at 6pm UTC
       </FAQLink>
+      .
       {' '}
       This LBP is the only one planned and was created by Valory to establish
       initial liquidity in a decentralized manner because
