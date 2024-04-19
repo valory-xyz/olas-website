@@ -131,7 +131,7 @@ const FAQPage = () => (
       favourably to many other industry-defining projects like StarkNet, Celestia, Arbitrum, etc.
     </Question>
     <Question text="How do I track the current token distribution?">
-      Current token distribution can be tracked on-chain since inception of OLAS and for
+      The current token distribution can be tracked on-chain since inception of OLAS and for
       convenience on Dune dashboards like this one
       {' '}
       <Link href="https://dune.com/adrian0x/olas">here</Link>
