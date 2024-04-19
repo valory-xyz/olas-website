@@ -142,7 +142,7 @@ const FAQPage = () => (
     </Question>
     <Question text="What token allocation does Valory have?">
       Valory, founding member and co-creator of Olas, has a token allocation
-      (see point above and Tokenomics paper
+      (see Dune dashboard <Link href="https://dune.com/adrian0x/olas">here</Link> and Tokenomics paper
       {' '}
       <Link href="https://www.autonolas.network/whitepaper">https://www.autonolas.network/whitepaper</Link>
       {' '}
