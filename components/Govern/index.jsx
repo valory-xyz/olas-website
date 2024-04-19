@@ -1,6 +1,6 @@
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
-import { Card, CardTitle } from 'components/ui/card';
+import { Card } from 'components/ui/card';
 import Link from 'next/link';
 import { H1 } from 'components/ui/typography';
 import SectionWrapper from 'components/Layout/SectionWrapper';

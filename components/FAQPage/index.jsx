@@ -140,7 +140,18 @@ const FAQPage = () => (
       The protocol is controlled by the DAO (holders of veOLAS).
     </Question>
     <Question text="Why is the deployer called Autonolas Deployer?">
-      Valory, founding member and co-creator of Olas, has a token allocation (see point above and Tokenomics paper https://www.autonolas.network/whitepaper for wallet and amounts). This allocation has never been subject to locking or vesting. Valory stated (https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538) there are no plans to lock or vest and this is to the sole discretion of Valory, as is the case with any token holder.
+      Valory, founding member and co-creator of Olas, has a token allocation
+      (see point above and Tokenomics paper
+      {' '}
+      <Link href="https://www.autonolas.network/whitepaper">https://www.autonolas.network/whitepaper</Link>
+      {' '}
+      for wallet and amounts).
+      This allocation has never been subject to locking or vesting.
+      Valory stated (
+      <Link href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538">https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538</Link>
+      )
+      there are no plans to lock or vest and this is to the sole discretion of Valory,
+      as is the case with any token holder.
     </Question>
   </div>
 );
