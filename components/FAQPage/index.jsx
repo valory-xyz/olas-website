@@ -292,7 +292,7 @@ const FAQPage = () => (
       {' '}
       for wallet and amounts). This allocation has never been subject to locking
       or vesting. Valory stated &ldquo;
-      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538">
+      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538" external>
         there are no plans to lock or vest, and this is to the sole discretion of
         Valory, as is the case with any token holder
       </FAQLink>
@@ -302,12 +302,12 @@ const FAQPage = () => (
       The definition of circulating supply is set by Coingecko and other
       aggregators - see
       {' '}
-      <FAQLink href="https://www.coingecko.com/en/glossary/circulating-supply">
+      <FAQLink href="https://www.coingecko.com/en/glossary/circulating-supply" external>
         here for definition
       </FAQLink>
       , and
       {' '}
-      <FAQLink href="https://www.coingecko.com/en/coins/autonolas">here for live data.</FAQLink>
+      <FAQLink href="https://www.coingecko.com/en/coins/autonolas" external>here for live data.</FAQLink>
     </Question>
     <Question text="What is the Autonolas Deployer contract?">
       &ldquo;Autonolas Deployer&ldquo; is called this way on Etherscan because
@@ -319,7 +319,7 @@ const FAQPage = () => (
       You can use block explorers to find all transactions on-chain. DAO
       founding member Valory stated
       {' '}
-      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626">
+      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626" external>
         they never comment on individual transactions unless they are related to
         a security incident or some governance vote
       </FAQLink>
