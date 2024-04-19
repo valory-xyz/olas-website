@@ -24,7 +24,7 @@ const GET_INVOLVED_DATA = [
   {
     id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
-    title: 'Grow awareness about \nOlas, earn points',
+    title: 'Grow awareness',
     buttonText: 'Contribute',
     buttonUrl: 'https://contribute.olas.network',
   },
@@ -33,7 +33,7 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-launch.svg',
     title: 'Define use cases, \nattract agent labor',
     buttonText: 'Launch',
-    buttonUrl: 'https://olas.network/launch',
+    buttonUrl: 'https://launch.olas.network',
   },
   {
     id: 5,
