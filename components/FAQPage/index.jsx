@@ -165,6 +165,18 @@ const FAQPage = () => (
       {' '}
       for live data.
     </Question>
+    <Question text="What is the Autonolas Deployer contract?">
+      &ldquo;Autonolas Deployer&ldquo; is called this way on Etherscan because Valory
+      deployed the Olas (prev. Autonolas) protocol.
+      The deployer has no privileged role in the protocol.
+      The protocol is controlled by the DAO (holders of veOLAS).
+    </Question>
+    <Question text="Valory made a transaction, why?">
+      Valory stated (
+      <Link href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626">https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626</Link>
+      )
+      they never comment on individual transactions unless they are related to a security incident or some governance vote.
+    </Question>
   </div>
 );
 
@@ -174,8 +186,8 @@ const FAQPage = () => (
 -
 -
 -
-- "Autonolas Deployer" is called this way on Etherscan because Valory deployed the Olas (prev. Autonolas) protocol. The deployer has no privileged role in the protocol. The protocol is controlled by the DAO (holders of veOLAS).
-- Valory stated (https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626) they never comment on individual transactions unless they are related to a security incident or some governance vote.
+-
+-
  */
 
 export default FAQPage;
