@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React from 'react';
@@ -128,6 +129,54 @@ const FAQPage = () => (
       Treasury use. Many &quot;fair-launch&quot; projects end up with similarly high Gini
       coefficient in early days because early mining/staking is concentrated. Olas compares
       favourably to many other industry-defining projects like StarkNet, Celestia, Arbitrum, etc.
+    </Question>
+    <Question text="How do I track the current token distribution?">
+      The current token distribution can be tracked on-chain since the inception of OLAS, and for
+      convenience, on Dune dashboards like this one
+      {' '}
+      <Link href="https://dune.com/adrian0x/olas">here</Link>
+      .
+    </Question>
+    <Question text="What token allocation does Valory have?">
+      Valory, founding member and co-creator of Olas, has a token allocation
+      (see Dune dashboard
+      {' '}
+      <Link href="https://dune.com/adrian0x/olas">here</Link>
+      {' '}
+      and Tokenomics paper
+      {' '}
+      <Link href="https://www.autonolas.network/whitepaper">https://www.autonolas.network/whitepaper</Link>
+      {' '}
+      for wallet and amounts).
+      This allocation has never been subject to locking or vesting.
+      Valory stated (
+      <Link href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538">https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538</Link>
+      )
+      there are no plans to lock or vest and this is to the sole discretion of Valory,
+      as is the case with any token holder.
+    </Question>
+    <Question text="What is circulating supply and where can I find the circulating supply of OLAS?">
+      The definition of circulating supply is set by Coingecko and other aggregators - see here
+      {' '}
+      <Link href="https://www.coingecko.com/en/glossary/circulating-supply">https://www.coingecko.com/en/glossary/circulating-supply</Link>
+      {' '}
+      for definition, and here
+      {' '}
+      <Link href="https://www.coingecko.com/en/coins/autonolas">https://www.coingecko.com/en/coins/autonolas</Link>
+      {' '}
+      for live data.
+    </Question>
+    <Question text="What is the Autonolas Deployer contract?">
+      &ldquo;Autonolas Deployer&ldquo; is called this way on Etherscan because Valory
+      deployed the Olas (prev. Autonolas) protocol.
+      The deployer has no privileged role in the protocol.
+      The protocol is controlled by the DAO (holders of veOLAS).
+    </Question>
+    <Question text="What if I want to know about specific transactions?">
+      You can use block explorers to find all transactions on-chain. DAO founding member Valory stated (
+      <Link href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626">https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626</Link>
+      )
+      they never comment on individual transactions unless they are related to a security incident or some governance vote.
     </Question>
   </div>
 );
