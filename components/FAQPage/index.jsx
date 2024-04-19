@@ -129,7 +129,30 @@ const FAQPage = () => (
       coefficient in early days because early mining/staking is concentrated. Olas compares
       favourably to many other industry-defining projects like StarkNet, Celestia, Arbitrum, etc.
     </Question>
+    <Question text="How do I track the current token distribution?">
+      Current token distribution can be tracked on-chain since inception of OLAS and for
+      convenience on Dune dashboards like this one
+      {' '}
+      <Link href="https://dune.com/adrian0x/olas">here</Link>
+      . The deployer is called this way on Etherscan because Valory
+      deployed the Olas (prev. Autonolas) protocol.
+      The deployer has no privileged role in the protocol.
+      The protocol is controlled by the DAO (holders of veOLAS).
+    </Question>
+    <Question text="Why is the deployer called Autonolas Deployer?">
+      Valory, founding member and co-creator of Olas, has a token allocation (see point above and Tokenomics paper https://www.autonolas.network/whitepaper for wallet and amounts). This allocation has never been subject to locking or vesting. Valory stated (https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538) there are no plans to lock or vest and this is to the sole discretion of Valory, as is the case with any token holder.
+    </Question>
   </div>
 );
+
+/**
+ * In response to recent discussions, a summary for ease of reference:
+
+-
+-
+- The definition of circulating supply is set by Coingecko and other aggregators - see here https://www.coingecko.com/en/glossary/circulating-supply for definition and here https://www.coingecko.com/en/coins/autonolas for live data.
+- "Autonolas Deployer" is called this way on Etherscan because Valory deployed the Olas (prev. Autonolas) protocol. The deployer has no privileged role in the protocol. The protocol is controlled by the DAO (holders of veOLAS).
+- Valory stated (https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626) they never comment on individual transactions unless they are related to a security incident or some governance vote.
+ */
 
 export default FAQPage;
