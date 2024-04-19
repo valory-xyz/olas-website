@@ -154,6 +154,17 @@ const FAQPage = () => (
       there are no plans to lock or vest and this is to the sole discretion of Valory,
       as is the case with any token holder.
     </Question>
+    <Question text="What is circulating supply and where can I find the circulating supply of OLAS?">
+      The definition of circulating supply is set by Coingecko and other aggregators - see here
+      {' '}
+      <Link href="https://www.coingecko.com/en/glossary/circulating-supply">https://www.coingecko.com/en/glossary/circulating-supply</Link>
+      {' '}
+      for definition, and here
+      {' '}
+      <Link href="https://www.coingecko.com/en/coins/autonolas">https://www.coingecko.com/en/coins/autonolas</Link>
+      {' '}
+      for live data.
+    </Question>
   </div>
 );
 
@@ -162,7 +173,7 @@ const FAQPage = () => (
 
 -
 -
-- The definition of circulating supply is set by Coingecko and other aggregators - see here https://www.coingecko.com/en/glossary/circulating-supply for definition and here https://www.coingecko.com/en/coins/autonolas for live data.
+-
 - "Autonolas Deployer" is called this way on Etherscan because Valory deployed the Olas (prev. Autonolas) protocol. The deployer has no privileged role in the protocol. The protocol is controlled by the DAO (holders of veOLAS).
 - Valory stated (https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626) they never comment on individual transactions unless they are related to a security incident or some governance vote.
  */
