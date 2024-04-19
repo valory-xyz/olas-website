@@ -290,10 +290,12 @@ const FAQPage = () => (
       You can use block explorers to find all transactions on-chain. DAO
       founding member Valory stated
       {' '}
+      &ldquo;
       <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626" external>
         they never comment on individual transactions unless they are related to
         a security incident or some governance vote
       </FAQLink>
+      &ldquo;
       .
     </Question>
   </div>
