@@ -175,10 +175,9 @@ const FAQPage = () => (
         href="https://boardroom.io/autonolas/proposal/cHJvcG9zYWw6YXV0b25vbGFzOm9uY2hhaW46ODU3ODA1MjQ1MjQyODgwNTE0MTU1MjEyODcyNzMyNTgwNzY1NTY5MTE5Nzc2NTQwODk1MDAzNzA4MzE3NjIyMTY1NjUzNzEwMjIzNDY="
         external
       >
-        governance vote on bonding
+        governance vote on bonding is here
       </FAQLink>
-      {' '}
-      is here. Here you can find a thread about
+      . Here you can find a thread about
       {' '}
       <FAQLink
         href="https://twitter.com/david_enim/status/1677611439236739072?s=46&t=PBYzKHt3WSIq4JxQTUrjWA"
@@ -243,15 +242,15 @@ const FAQPage = () => (
       </FAQLink>
       {' '}
       for wallet and amounts). This allocation has never been subject to locking
-      or vesting. Valory stated &ldquo;
+      or vesting. Valory stated
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
         external
       >
-        there are no plans to lock or vest, and this is to the sole discretion
-        of Valory, as is the case with any token holder
+        &ldquo;there are no plans to lock or vest, and this is to the sole discretion
+        of Valory, as is the case with any token holder&ldquo;
       </FAQLink>
-      &ldquo;.
+      .
     </Question>
     <Question text="What is circulating supply and where can I find the circulating supply of OLAS?">
       The definition of circulating supply is set by Coingecko and other
@@ -266,8 +265,9 @@ const FAQPage = () => (
       , and
       {' '}
       <FAQLink href="https://www.coingecko.com/en/coins/autonolas" external>
-        here for live data.
+        here for live data
       </FAQLink>
+      .
     </Question>
     <Question text="What is the Autonolas Deployer contract?">
       &ldquo;Autonolas Deployer&ldquo; is called this way on Etherscan because
@@ -277,15 +277,15 @@ const FAQPage = () => (
     </Question>
     <Question text="What if I want to know about specific transactions?">
       You can use block explorers to find all transactions on-chain. DAO
-      founding member Valory stated &ldquo;
+      founding member Valory stated
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
         external
       >
-        they never comment on individual transactions unless they are related to
-        a security incident or some governance vote
+        &ldquo; they never comment on individual transactions unless they are related to
+        a security incident or some governance vote&ldquo;
       </FAQLink>
-      &ldquo;.
+      .
     </Question>
   </div>
 );
