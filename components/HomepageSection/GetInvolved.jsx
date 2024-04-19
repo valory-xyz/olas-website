@@ -11,34 +11,34 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/get-involved.svg',
     title: 'Get involved',
     description:
-      'Benefit from the Olas protocol, no matter what you bring to the table.',
+      'Benefit from the Olas protocol, \nno matter what you bring to the table.',
     colSpan: 2,
   },
   {
     id: 2,
     imageSrc: '/images/homepage/olas-token.svg',
-    title: 'Get OLAS, use it across the network',
+    title: 'Get OLAS, \nuse it across the network',
     buttonText: 'Get OLAS',
     buttonUrl: '/olas-token#get-olas',
   },
   {
     id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
-    title: 'Grow awareness about Olas, earn points',
+    title: 'Grow awareness about \nOlas, earn points',
     buttonText: 'Contribute',
     buttonUrl: 'https://contribute.olas.network',
   },
   {
     id: 4,
     imageSrc: '/images/homepage/olas-launch.svg',
-    title: 'Define use cases, attract agent labor',
+    title: 'Define use cases, \nattract agent labor',
     buttonText: 'Launch',
     buttonUrl: 'https://olas.network/launch',
   },
   {
     id: 5,
     imageSrc: '/images/homepage/olas-dev-rewards.png',
-    title: 'Write agent code, get rewards',
+    title: 'Write agent code, \nget rewards',
     buttonText: 'Build',
     buttonUrl: 'https://build.olas.network',
   },
@@ -52,14 +52,14 @@ const GET_INVOLVED_DATA = [
   {
     id: 7,
     imageSrc: '/images/homepage/olas-bonds.svg',
-    title: 'Provide capital, get discounted OLAS',
+    title: 'Provide capital, \nget discounted OLAS',
     buttonText: 'Bond',
     buttonUrl: 'https://bond.olas.network',
   },
   {
     id: 8,
     imageSrc: '/images/homepage/olas-operate.svg',
-    title: 'Run agents, get rewards',
+    title: 'Run agents, \nget rewards',
     buttonText: 'Operate',
     buttonUrl: 'https://operate.olas.network',
   },
@@ -118,7 +118,7 @@ const GetInvolvedCard = ({
           width={imageSizes.width}
           height={imageSizes.height}
         />
-        <h3 className="text-2xl font-bold">{title}</h3>
+        <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>
         {buttonUrl && buttonText && (
         <Button variant="outline" size="xl" asChild disabled={disabled} className="mt-auto">
           <Link href={buttonUrl} disabled>{buttonText}</Link>
@@ -131,7 +131,7 @@ const GetInvolvedCard = ({
   return (
     <Card className="border rounded-sm p-8 col-span-1 md:col-span-2 flex flex-col md:flex-row gap-10">
       <div className="div flex flex-col justify-center order-2 md:order-1">
-        <h3 className="text-2xl font-bold">{title}</h3>
+        <h3 className="text-2xl font-bold whitespace-pre">{title}</h3>
         {description && <p>{description}</p>}
       </div>
       <Image
