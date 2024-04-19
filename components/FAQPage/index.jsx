@@ -180,14 +180,4 @@ const FAQPage = () => (
   </div>
 );
 
-/**
- * In response to recent discussions, a summary for ease of reference:
-
--
--
--
--
--
- */
-
 export default FAQPage;
