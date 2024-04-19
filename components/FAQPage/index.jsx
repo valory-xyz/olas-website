@@ -85,10 +85,7 @@ const FAQPage = () => (
       </FAQLink>
       . All funds collected will be strictly used to
       {' '}
-      <FAQLink
-        href="https://www.autonolas.network/blog/olas-public-launch"
-
-      >
+      <FAQLink href="https://www.autonolas.network/blog/olas-public-launch">
         &apos;maintain, run and further&apos;
       </FAQLink>
       {' '}
@@ -122,10 +119,7 @@ const FAQPage = () => (
       Various statistics about OLAS (inc. total supply, circulating supply,
       current holders, unlock schedules and more) are all live
       {' '}
-      <FAQLink
-        href="https://dune.com/adrian0x/olas"
-        external
-      >
+      <FAQLink href="https://dune.com/adrian0x/olas" external>
         here
       </FAQLink>
       , or at the primary source: buOLAS contract
@@ -147,39 +141,26 @@ const FAQPage = () => (
       . veOLAS is the governance token, which anyone can get by locking OLAS to
       participate in governance. Governance proposals can be found on Snapshot
       {' '}
-      <FAQLink
-        href="https://snapshot.org/#/autonolas.eth"
-        external
-      >
+      <FAQLink href="https://snapshot.org/#/autonolas.eth" external>
         here
       </FAQLink>
       {' '}
       and Boardroom
       {' '}
-      <FAQLink
-        href="https://boardroom.io/autonolas"
-        external
-      >
+      <FAQLink href="https://boardroom.io/autonolas" external>
         here
       </FAQLink>
       . buOLAS is a vesting contract for the founding members. You can lock OLAS
       for veOLAS and check unlocks for your wallet
       {' '}
-      <FAQLink
-        href="https://member.olas.network/"
-        external
-      >
+      <FAQLink href="https://member.olas.network/" external>
         here
       </FAQLink>
       .
     </Question>
     <Question text="How does bonding and liquidity work on Olas?">
       The most detail is found in the full whitepaper and whitepaper summary (
-      <FAQLink
-        href="https://olas.network/whitepaper"
-      >
-        whitepaper
-      </FAQLink>
+      <FAQLink href="https://olas.network/whitepaper">whitepaper</FAQLink>
       ), and the contract repository (
       <FAQLink
         href="https://github.com/valory-xyz/autonolas-tokenomics"
@@ -263,9 +244,12 @@ const FAQPage = () => (
       {' '}
       for wallet and amounts). This allocation has never been subject to locking
       or vesting. Valory stated &ldquo;
-      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538" external>
-        there are no plans to lock or vest, and this is to the sole discretion of
-        Valory, as is the case with any token holder
+      <FAQLink
+        href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
+        external
+      >
+        there are no plans to lock or vest, and this is to the sole discretion
+        of Valory, as is the case with any token holder
       </FAQLink>
       &ldquo;.
     </Question>
@@ -273,12 +257,17 @@ const FAQPage = () => (
       The definition of circulating supply is set by Coingecko and other
       aggregators - see
       {' '}
-      <FAQLink href="https://www.coingecko.com/en/glossary/circulating-supply" external>
+      <FAQLink
+        href="https://www.coingecko.com/en/glossary/circulating-supply"
+        external
+      >
         here for definition
       </FAQLink>
       , and
       {' '}
-      <FAQLink href="https://www.coingecko.com/en/coins/autonolas" external>here for live data.</FAQLink>
+      <FAQLink href="https://www.coingecko.com/en/coins/autonolas" external>
+        here for live data.
+      </FAQLink>
     </Question>
     <Question text="What is the Autonolas Deployer contract?">
       &ldquo;Autonolas Deployer&ldquo; is called this way on Etherscan because
@@ -288,15 +277,15 @@ const FAQPage = () => (
     </Question>
     <Question text="What if I want to know about specific transactions?">
       You can use block explorers to find all transactions on-chain. DAO
-      founding member Valory stated
-      {' '}
-      &ldquo;
-      <FAQLink href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626" external>
+      founding member Valory stated &ldquo;
+      <FAQLink
+        href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
+        external
+      >
         they never comment on individual transactions unless they are related to
         a security incident or some governance vote
       </FAQLink>
-      &ldquo;
-      .
+      &ldquo;.
     </Question>
   </div>
 );
