@@ -105,17 +105,20 @@ const duneApiCall = async ({ queryId }) => {
   return null;
 };
 
+const NUMBER_OF_SERVICES_QUERY_ID = '2504013';
 export const getAgentsTotal = async () => {
-  const json = await duneApiCall({ queryId: '2504013' });
+  const json = await duneApiCall({ queryId: NUMBER_OF_SERVICES_QUERY_ID });
   return get(json, 'result.rows[0].total_services') || null;
 };
 
+const NUMBER_OF_AGENTS_QUERY_ID = '2503741';
 export const getAgentsTypesTotal = async () => {
-  const json = await duneApiCall({ queryId: '2503741' });
+  const json = await duneApiCall({ queryId: NUMBER_OF_AGENTS_QUERY_ID });
   return get(json, 'result.rows[0].agents') || null;
 };
 
+const SERVICE_TRANSACTIONS_QUERY_ID = '3342820';
 export const getTransactionsTotal = async () => {
-  const json = await duneApiCall({ queryId: '3342820' });
+  const json = await duneApiCall({ queryId: SERVICE_TRANSACTIONS_QUERY_ID });
   return get(json, 'result.rows[0]._col0') || null;
 };

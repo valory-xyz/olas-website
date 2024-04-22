@@ -16,13 +16,13 @@ const Activity = ({ activityMetrics: { agents, agentsTypes, transactions } }) =>
     },
     {
       id: 'agents',
-      topText: 'Olas has',
-      subText: 'agents deployed',
+      topText: 'Operators have deployed',
+      subText: 'agents',
       value: agents.value,
     },
     {
       id: 'blockchains',
-      topText: 'Deployed across',
+      topText: 'Olas is deployed across',
       subText: 'blockchains',
       value: BLOCKCHAIN_COUNT,
     },
