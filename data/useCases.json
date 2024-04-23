@@ -3,6 +3,7 @@
     "id": "e5f3a7b4-1639-4ac8-8d2e-9bcdef1a2c3d",
     "title": "Sovereign Agents",
     "image": "/images/sovereign-agents.png",
+    "imageWidth": 86,
     "description": "Lightweight agents that anybody can run locally or in the cloud.",
     "services": [
       {
@@ -23,6 +24,7 @@
     "id": "f8c2e1a3-4926-8bc5-1d3a-6abcdef7d2e4",
     "title": "Decentralized Agents",
     "image": "/images/decentralized-agents.png",
+    "imageWidth": 195,
     "description": "Highly transparent and robust through consensus, run by multiple separate operators.",
     "services": [
       {
@@ -56,13 +58,15 @@
     "id": "a1b2c3d4-5678-90e1-2a3b-c4d5e6f78901",
     "title": "Agent Economies",
     "image": "/images/agent-economies.png",
+    "imageWidth": 272,
     "description": "Many specialized agents interacting autonomously.",
     "services": [
       {
         "title": "Predict",
         "description": "Agents creating, researching and trading on prediction markets.",
         "image": "/images/services/predict.png",
-        "link": "https://mirror.xyz/oaksprout.eth/3acKEx36a_cPhrcOOndRl0E-IfyZvwhTWwCMXukjOE8"
+        "link": "https://mirror.xyz/oaksprout.eth/3acKEx36a_cPhrcOOndRl0E-IfyZvwhTWwCMXukjOE8",
+        "isExternal": true
       }
     ]
   }

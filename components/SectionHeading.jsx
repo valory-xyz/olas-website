@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const SectionHeading = ({
   children, size, color, spacing, display, weight, other,
 }) => (
-  <h2 className={`${size} tracking-tight lg:text-heading ${spacing} ${color} ${display} ${weight} ${other}`}>
+  <h2 className={`tracking-tight md:text-heading ${size} ${spacing} ${color} ${display} ${weight} ${other}`}>
     {children}
   </h2>
 );
@@ -24,6 +24,8 @@ SectionHeading.defaultProps = {
   display: '',
   size: 'text-6xl',
   spacing: 'mb-12',
+  weight: 'font-normal md:font-black',
+  other: '',
 };
 
 export default SectionHeading;

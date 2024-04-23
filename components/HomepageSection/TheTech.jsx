@@ -11,7 +11,7 @@ const innovations = [
     image: '/images/olas-protocol.png',
     description:
       'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
-    link: 'https://olas.network/protocol',
+    link: '/protocol',
   },
   {
     title: 'Olas Stack',
@@ -24,7 +24,7 @@ const innovations = [
       'are highly robust and transparent',
       'benefit from modularity',
     ],
-    link: 'https://olas.network/stack',
+    link: '/stack',
   },
 ];
 

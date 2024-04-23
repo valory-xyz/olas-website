@@ -1,4 +1,7 @@
 /* eslint-disable global-require */
+
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -36,7 +39,7 @@ module.exports = {
         repeat: 'repeat',
       },
       fontSize: {
-        heading: ['64px', {
+        heading: ['56px', {
           letterSpacing: '-4%',
           lineHeight: '1.15',
           fontWeight: '900',
@@ -51,6 +54,7 @@ module.exports = {
       fontFamily: {
         body: ['Inter', 'system-ui', 'sans-serif'],
         heading: ['Manrope', 'sans-serif'],
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -91,6 +95,9 @@ module.exports = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      borderWidth: {
+        1.5: '1.5px',
       },
       keyframes: {
         'accordion-down': {

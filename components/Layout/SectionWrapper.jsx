@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 const SectionWrapper = ({
-  children, customClasses, backgroundType, id, backgroundImage,
+  children,
+  customClasses,
+  backgroundType,
+  id,
+  backgroundImage,
 }) => {
   const backgroundClasses = useMemo(() => {
     switch (backgroundType) {
@@ -19,7 +23,18 @@ const SectionWrapper = ({
   }, [backgroundType]);
 
   return (
-    <section className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`} id={id} style={backgroundImage ? { background: `url(${backgroundImage}) center`, backgroundSize: 'cover' } : undefined}>
+    <section
+      className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`}
+      id={id}
+      style={
+        backgroundImage
+          ? {
+            background: `url(${backgroundImage}) center`,
+            backgroundSize: 'cover',
+          }
+          : undefined
+      }
+    >
       {children}
     </section>
   );

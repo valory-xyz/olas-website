@@ -6,55 +6,57 @@ import useCases from 'data/useCases.json';
 import SectionHeading from '../SectionHeading';
 
 const UseCaseCard = ({
-  title, image, description, services, className,
+  title, image, imageWidth, description, services, className,
 }) => (
   <div className={className}>
-    <div className="p-8 grid gap-4 md:grid-rows-[140px_88px_144px_32px] lg:grid-rows-[140px_88px_94px_32px]">
-      <div className="flex h-[140px] w-[180px] mx-auto">
+    <div className="p-4 grid gap-4 md:grid-rows-[194px_88px_144px_70px] lg:grid-rows-[194px_88px_94px_70px]">
+      <div className="flex mx-auto">
         <Image
           alt={title}
           src={image}
-          width={180}
-          height={140}
+          width={imageWidth}
+          height={194}
           className="object-contain"
         />
       </div>
       <h3 className="max-w-[200px] mx-auto text-3xl font-bold mb-4">{title}</h3>
-      <p className="text-lg ld:text-xl">{description}</p>
-      <h4 className="italic mb-2">
-        {services.length > 1 ? 'Examples' : 'Example'}
+      <p className="text-xl text-slate-700">{description}</p>
+      <h4 className="flex items-center justify-center w-[106px] h-[38px] bg-gray-100 border-1.5 border-gray-300 text-slate-700 rounded-full mx-auto mb-8">
+        Examples
       </h4>
-      {services.map((service) => (
-        <div className="flex gap-4 text-start" key={service.title}>
-          <Image
-            alt={service.title}
-            src={service.image}
-            width={70}
-            height={70}
-            className="object-contain"
-          />
-          <div>
-            {service.link ? (
-              <Link
-                href={service.link}
-                {...(service.isExternal
-                  ? {
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                  }
-                  : {}
-                )}
-                className="text-link font-bold underline underline-offset-2"
-              >
+      <div>
+        {services.map((service) => (
+          <Link
+            key={service.title}
+            href={service.link}
+            {...(service.isExternal
+              ? {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              }
+              : {}
+          )}
+            className="flex gap-4 p-3 text-start hover:bg-gray-100 rounded-lg"
+          >
+            <Image
+              alt={service.title}
+              src={service.image}
+              width={70}
+              height={70}
+              className="object-contain"
+            />
+            <div>
+              <h5 className="font-bold">
                 {service.title}
-              </Link>
-            ) : (
-              <h5 className="font-bold">{service.title}</h5>
-            )}
-            <p>{service.description}</p>
-          </div>
-        </div>
-      ))}
+                {' '}
+                {service.isExternal
+                  ? <span className="font-normal text-purple-800"> ↗</span> : ''}
+              </h5>
+              <p className="text-slate-700 mt-1">{service.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   </div>
 );
@@ -62,32 +64,31 @@ const UseCaseCard = ({
 UseCaseCard.propTypes = {
   title: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  imageWidth: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
-  services: PropTypes.arrayOf({
+  services: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
-    link: PropTypes.string,
-  }).isRequired,
+    link: PropTypes.string.isRequired,
+    isExternal: PropTypes.bool,
+  })).isRequired,
   className: PropTypes.string.isRequired,
 };
 
 const UseCases = () => (
   <SectionWrapper customClasses="text-center py-24 px-4 border-b">
-    <div className="max-w-[637px] mx-auto">
-      <SectionHeading color="text-gray-900">
-        Live use cases,
-        creating value today
-      </SectionHeading>
-    </div>
+    <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl">
+      Live use cases, creating value today
+    </SectionHeading>
 
-    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0 border rounded-md border-gray-300 shadow-md mb-16">
+    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0 mb-20">
       {useCases.map((item, index) => (
         <UseCaseCard
           key={item.id}
           className={`${
             index !== useCases.length - 1
-              ? 'border-b md:border-r md:border-b-0 border-gray-300'
+              ? 'border-b-1.5 md:border-r-1.5 md:border-b-0 border-gray-300'
               : ''
           }`}
           {...item}
