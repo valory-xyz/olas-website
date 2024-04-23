@@ -11,11 +11,7 @@ const innovations = [
     image: '/images/olas-protocol.png',
     description:
       'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
-    link: {
-      text: 'Learn about roles & incentives',
-      href: 'https://olas.network/protocol',
-      isExternal: true,
-    },
+    link: 'https://olas.network/protocol',
   },
   {
     title: 'Olas Stack',
@@ -28,11 +24,7 @@ const innovations = [
       'are highly robust and transparent',
       'benefit from modularity',
     ],
-    link: {
-      text: 'Learn more',
-      href: 'https://olas.network/stack',
-      isExternal: true,
-    },
+    link: 'https://olas.network/stack',
   },
 ];
 
@@ -70,19 +62,15 @@ const TheTech = () => (
               ))}
             </ul>
             )}
-            {item.link.isExternal ? (
-              <ExternalLink href={item.link.href}>
-                {item.link.text}
-              </ExternalLink>
-            ) : (
-              <Link href={item.link.href}>{item.link.text}</Link>
-            )}
+            <ExternalLink href={item.link}>
+              Learn more
+            </ExternalLink>
           </div>
         </Card>
       ))}
     </div>
     <Button variant="outline" size="xl" asChild>
-      <Link href="/learn">See more use cases</Link>
+      <Link href="/learn">Learn more</Link>
     </Button>
   </SectionWrapper>
 );

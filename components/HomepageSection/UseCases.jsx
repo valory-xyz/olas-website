@@ -37,6 +37,13 @@ const UseCaseCard = ({
             {service.link ? (
               <Link
                 href={service.link}
+                {...(service.isExternal
+                  ? {
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }
+                  : {}
+                )}
                 className="text-link font-bold underline underline-offset-2"
               >
                 {service.title}
@@ -107,7 +114,7 @@ const UseCases = () => (
           The impact of autonomous agent economies is shaping applications and
           products in Web3 and far beyond.
         </p>
-        {/* TODO: uncommment when /explore available */}
+        {/* TODO: uncomment when /explore available */}
         {/* <Button variant="outline" size="xl" asChild>
           <Link href="/explore#use-cases">See more use cases</Link>
         </Button> */}

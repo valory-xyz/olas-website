@@ -12,6 +12,8 @@ import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'commo
 
 import PropTypes from 'prop-types';
 
+const DAY_IN_SECONDS = 86400;
+
 export const getStaticProps = async () => {
   const [transactions, agents, agentsTypes] = await Promise.allSettled([
     getTransactionsTotal(),
@@ -29,7 +31,7 @@ export const getStaticProps = async () => {
         // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
       },
     },
-    revalidate: 86400,
+    revalidate: DAY_IN_SECONDS,
   };
 };
 
