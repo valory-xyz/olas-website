@@ -10,8 +10,8 @@
     "name": "Balancer",
     "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
     "imageFilename": "balancer-bal-logo.svg",
-    "imageWidth": 70,
-    "imageHeight": 70
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "d7ea8ef8-bc70-4387-b1a8-c99641d88cf6",
@@ -30,8 +30,8 @@
     "name": "Keep3r",
     "url": "https://keep3r.network/",
     "imageFilename": "keep3r.svg",
-    "imageWidth": 70,
-    "imageHeight": 70
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "9b905d9e-33f4-4330-9016-c00367e38498",
@@ -86,8 +86,8 @@
     "name": "Omen",
     "url": "https://aiomen.eth.limo/#/liquidity",
     "imageFilename": "omen.svg",
-    "imageWidth": 70,
-    "imageHeight": 70
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "8b677149-dd61-4582-b305-5dec0c737c85",
