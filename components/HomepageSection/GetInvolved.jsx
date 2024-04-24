@@ -118,16 +118,18 @@ const GetInvolvedCard = ({
       <Link href={href}>
         <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-col justify-center hover:bg-gray-100 min-h-[278px] h-full">
           {imageSrc && title && (
-          <Image
-            src={imageSrc}
-            alt={title}
-            width={imageSizes.width}
-            height={imageSizes.height}
-            className={`self-center object-contain max-h-[${imageSizes.height}px] mb-2`}
-          />
+            <Image
+              src={imageSrc}
+              alt={title}
+              width={imageSizes.width}
+              height={imageSizes.height}
+              className={`self-center object-contain max-h-[${imageSizes.height}px] mb-2`}
+            />
           )}
           {title && <h3 className="text-2xl font-semibold mb-2">{title}</h3>}
-          {ctaText && (<span className="text-purple-600 text-lg mt-auto">{ctaText}</span>)}
+          {ctaText && (
+            <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>
+          )}
         </Card>
       </Link>
     );
@@ -140,13 +142,13 @@ const GetInvolvedCard = ({
         {description && <p className="text-slate-700 text-xl">{description}</p>}
       </div>
       {imageSrc && title && (
-      <Image
-        src={imageSrc}
-        alt={title}
-        width={imageSizes.width}
-        height={imageSizes.height}
-        className="order-1 md:order-2 self-center"
-      />
+        <Image
+          src={imageSrc}
+          alt={title}
+          width={imageSizes.width}
+          height={imageSizes.height}
+          className="order-1 md:order-2 self-center"
+        />
       )}
     </Card>
   );
