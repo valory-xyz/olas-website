@@ -9,7 +9,9 @@
     "id": "d1ec5010-7e08-4780-a929-c08b8ffa4895",
     "name": "Balancer",
     "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
-    "imageFilename": "balancer-bal-logo.svg"
+    "imageFilename": "balancer-bal-logo.svg",
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "d7ea8ef8-bc70-4387-b1a8-c99641d88cf6",
@@ -27,7 +29,9 @@
     "id": "07020348-a690-4991-b382-a5f629859465",
     "name": "Keep3r",
     "url": "https://keep3r.network/",
-    "imageFilename": "keep3r.svg"
+    "imageFilename": "keep3r.svg",
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "9b905d9e-33f4-4330-9016-c00367e38498",
@@ -81,13 +85,17 @@
     "id": "6853c5f6-eb3f-4671-b9b4-94d896cf1688",
     "name": "Omen",
     "url": "https://aiomen.eth.limo/#/liquidity",
-    "imageFilename": "omen.svg"
+    "imageFilename": "omen.svg",
+    "imageWidth": 60,
+    "imageHeight": 60
   },
   {
     "id": "8b677149-dd61-4582-b305-5dec0c737c85",
     "name": "Kleros",
     "url": "https://kleros.io/",
-    "imageFilename": "kleros.png"
+    "imageFilename": "kleros.png",
+    "imageWidth": 90,
+    "imageHeight": 90
   },
   {
     "id": "d0211bbd-2672-486f-af65-8523652b9fd0",

@@ -1,8 +1,9 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 import { Button } from 'components/ui/button';
-import { ExternalLink, Link, Upcase } from 'components/ui/typography';
+import { ExternalLink, Upcase } from 'components/ui/typography';
 import { Card, CardTitle } from 'components/ui/card';
+import Link from 'next/link';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -11,7 +12,7 @@ const innovations = [
     image: '/images/olas-protocol.png',
     description:
       'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
-    link: 'https://olas.network/protocol',
+    link: '/protocol',
   },
   {
     title: 'Olas Stack',
@@ -24,7 +25,7 @@ const innovations = [
       'are highly robust and transparent',
       'benefit from modularity',
     ],
-    link: 'https://olas.network/stack',
+    link: '/stack',
   },
 ];
 
@@ -34,7 +35,7 @@ const TheTech = () => (
     customClasses="text-center py-24 px-4 border-b bg-gradient-to-tl from-[#F5D0FE] to-white to-80%"
   >
     <Upcase><span>The Tech</span></Upcase>
-    <SectionHeading color="text-gray-900">
+    <SectionHeading color="text-gray-900" weight="font-bold">
       Enabled by two core innovations
     </SectionHeading>
     <div className="grid md:grid-cols-2 gap-4 max-w-screen-xl mx-auto mb-16">
@@ -69,7 +70,7 @@ const TheTech = () => (
         </Card>
       ))}
     </div>
-    <Button variant="outline" size="xl" asChild>
+    <Button variant="outline" size="xl" asChild className="mt-auto">
       <Link href="/learn">Learn more</Link>
     </Button>
   </SectionWrapper>
