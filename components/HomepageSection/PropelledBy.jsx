@@ -8,13 +8,13 @@ import friends from '../../data/friends.json';
 const PropelledBy = () => (
   <SectionWrapper>
     <SectionHeading
-      size="max-w-[616px] mb-24"
       color="text-gray-900"
-      other="text-center mx-auto"
+      weight="font-bold"
+      other="max-w-[616px] mb-24 text-center mx-auto"
     >
       Propelled by a growing ecosystem
     </SectionHeading>
-    <section id="builders" className="max-w-screen-xl mx-auto text-center mb-16">
+    <section id="builders" className="max-w-screen-xl mx-auto text-center mb-28">
       <h3 className="text-2xl md:text-4xl font-bold mb-4">Builders</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 ">
         {builders.map((builder) => {
@@ -37,11 +37,11 @@ const PropelledBy = () => (
       </div>
     </section>
     <section id="friends" className="max-w-screen-xl mx-auto text-center">
-      <h3 className="text-2xl md:text-4xl font-bold mb-4">More friends of Olas</h3>
+      <h3 className="text-2xl md:text-4xl font-bold mb-12">More friends of Olas</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
         {friends.map((friend) => {
           const {
-            id, name, url, imageFilename,
+            id, name, url, imageFilename, imageWidth, imageHeight,
           } = friend;
           return (
             <div key={id} className="grayscale flex justify-center items-center">
@@ -49,8 +49,8 @@ const PropelledBy = () => (
                 <Image
                   src={`/images/friends/${imageFilename}`}
                   alt={name}
-                  width={150}
-                  height={30}
+                  width={imageWidth ?? 150}
+                  height={imageHeight ?? 30}
                 />
               </Link>
             </div>

@@ -9,7 +9,7 @@ const UseCaseCard = ({
   title, image, imageWidth, description, services, className,
 }) => (
   <div className={className}>
-    <div className="p-4 grid gap-4 md:grid-rows-[194px_88px_144px_70px] lg:grid-rows-[194px_88px_94px_70px]">
+    <div className="py-12 md:p-4 grid gap-4 md:grid-rows-[194px_88px_144px_70px] lg:grid-rows-[194px_88px_94px_70px]">
       <div className="flex mx-auto">
         <Image
           alt={title}
@@ -78,7 +78,7 @@ UseCaseCard.propTypes = {
 
 const UseCases = () => (
   <SectionWrapper customClasses="text-center py-24 px-4 border-b">
-    <SectionHeading color="text-gray-900" size="text-4xl md:text-6xl">
+    <SectionHeading color="text-gray-900" weight="font-bold">
       Live use cases, creating value today
     </SectionHeading>
 
@@ -96,7 +96,7 @@ const UseCases = () => (
       ))}
     </div>
 
-    <div className="grid max-w-screen-xl md:px-12 mx-auto md:gap-16 md:grid-cols-12 items-center">
+    <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
       <div className="md:col-span-6 md:flex">
         <Image
           alt="Use cases"

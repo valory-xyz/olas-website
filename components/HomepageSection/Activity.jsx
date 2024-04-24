@@ -51,8 +51,7 @@ const Activity = ({
         />
         <SectionHeading
           color="text-gray-900"
-          size="text-4xl md:text-6xl"
-          weight="md:font-bold"
+          weight="font-bold"
         >
           Generating an Ocean of Autonomous AI Agents
         </SectionHeading>

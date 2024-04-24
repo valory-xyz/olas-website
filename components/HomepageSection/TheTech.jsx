@@ -35,7 +35,7 @@ const TheTech = () => (
     customClasses="text-center py-24 px-4 border-b bg-gradient-to-tl from-[#F5D0FE] to-white to-80%"
   >
     <Upcase><span>The Tech</span></Upcase>
-    <SectionHeading color="text-gray-900">
+    <SectionHeading color="text-gray-900" weight="font-bold">
       Enabled by two core innovations
     </SectionHeading>
     <div className="grid md:grid-cols-2 gap-4 max-w-screen-xl mx-auto mb-16">

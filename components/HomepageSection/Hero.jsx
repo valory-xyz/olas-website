@@ -12,7 +12,7 @@ const Hero = () => (
     <div className="max-w-screen-xl lg:px-12 mx-auto text-center">
       <SectionHeading
         other="lg:mb-4"
-        size="md:text-6xl"
+        size="md:text-[4rem]"
         color="text-black"
         weight="font-extrabold"
       >
