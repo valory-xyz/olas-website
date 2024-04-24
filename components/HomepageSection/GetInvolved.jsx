@@ -18,28 +18,28 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-token.svg',
     imageWidth: 277,
     imageHeight: 172,
-    title: 'Get OLAS, use it across the \nnetwork',
+    title: 'Get OLAS, use it across the network',
     ctaText: 'Get OLAS',
     href: '/olas-token#get-olas',
   },
   {
     id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
-    title: 'Grow awareness about \nOlas, earn points',
+    title: 'Grow awareness about Olas, earn points',
     ctaText: 'Contribute',
     href: '/contribute',
   },
   {
     id: 4,
     imageSrc: '/images/homepage/olas-launch.png',
-    title: 'Define use cases, attract \nagent labor',
+    title: 'Define use cases, attract agent labor',
     ctaText: 'Launch',
     href: '/launch',
   },
   {
     id: 5,
     imageSrc: '/images/homepage/olas-build.png',
-    title: 'Write agent code, \nget rewards',
+    title: 'Write agent code, get rewards',
     ctaText: 'Build',
     href: '/build',
   },
@@ -53,7 +53,7 @@ const GET_INVOLVED_DATA = [
   {
     id: 7,
     imageSrc: '/images/homepage/olas-bond.png',
-    title: 'Provide capital, get \ndiscounted OLAS',
+    title: 'Provide capital, get discounted OLAS',
     ctaText: 'Bond',
     href: '/bond',
   },
@@ -116,7 +116,7 @@ const GetInvolvedCard = ({
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
-        <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-col justify-center hover:bg-gray-100 min-h-[278px]">
+        <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-col justify-center hover:bg-gray-100 min-h-[278px] h-full">
           {imageSrc && title && (
           <Image
             src={imageSrc}
@@ -126,7 +126,7 @@ const GetInvolvedCard = ({
             className={`self-center object-contain max-h-[${imageSizes.height}px] mb-2`}
           />
           )}
-          {title && <h3 className="text-2xl font-semibold whitespace-pre mb-2">{title}</h3>}
+          {title && <h3 className="text-2xl font-semibold mb-2">{title}</h3>}
           {ctaText && (<span className="text-purple-600 text-lg mt-auto">{ctaText}</span>)}
         </Card>
       </Link>
@@ -137,7 +137,7 @@ const GetInvolvedCard = ({
     <Card className="border-1.5 border-gray-200 rounded-2xl p-8 col-span-1 md:col-span-2 flex flex-col md:flex-row gap-10 justify-between">
       <div className="div flex flex-col justify-center order-2 md:order-1">
         <h3 className="text-3xl font-bold whitespace-pre mb-6">{title}</h3>
-        {description && <p className="text-slate-700 whitespace-pre text-xl">{description}</p>}
+        {description && <p className="text-slate-700 text-xl">{description}</p>}
       </div>
       {imageSrc && title && (
       <Image
