@@ -1,8 +1,9 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 import { Button } from 'components/ui/button';
-import { ExternalLink, Link, Upcase } from 'components/ui/typography';
+import { ExternalLink, Upcase } from 'components/ui/typography';
 import { Card, CardTitle } from 'components/ui/card';
+import Link from 'next/link';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -69,7 +70,7 @@ const TheTech = () => (
         </Card>
       ))}
     </div>
-    <Button variant="outline" size="xl" asChild>
+    <Button variant="outline" size="xl" asChild className="mt-auto">
       <Link href="/learn">Learn more</Link>
     </Button>
   </SectionWrapper>
