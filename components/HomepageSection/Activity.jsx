@@ -2,6 +2,8 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { Button } from 'components/ui/button';
+import Link from 'next/link';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
@@ -66,7 +68,7 @@ const Activity = ({
           .
         </p>
       </div>
-      <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-4">
+      <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-8">
         {data.map((item, index) => {
           let borderClassName = '';
           if (index !== 0) borderClassName += 'xl:border-l-1.5';
@@ -90,10 +92,9 @@ const Activity = ({
           );
         })}
       </div>
-      {/* TODO: uncomment once explore is done */}
-      {/* <Button variant="outline" size="xl" asChild className="mb-12">
-        <Link href="/ecosystem">Explore the ecosystem</Link>
-      </Button> */}
+      <Button variant="outline" size="xl" asChild className="mb-12">
+        <Link href="/explore">Explore the ecosystem</Link>
+      </Button>
     </SectionWrapper>
   );
 };
