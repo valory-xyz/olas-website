@@ -28,17 +28,15 @@ const LearnPage = () => (
     <SectionWrapper customClasses="px-8 mt-12 mb-20 max-w-screen-xl mx-auto">
       <h1 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Learn</h1>
       <span className="block text-2xl text-center mb-8">Jump To:</span>
-      <div className="bg-gray-100 rounded-lg p-6 mx-auto">
-        <ul>
-          {LEARN_LIST.map((e) => (
-            <li key={e.id} className="mb-4">
-              <Link href={`/learn/#${e.id}`} className="text-2xl text-purple-600 hover:text-purple-800 visited:text-purple-600">
-                {e.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="flex flex-col gap-4 bg-gray-100 rounded-lg p-6 mx-auto">
+        {LEARN_LIST.map((e) => (
+          <li key={e.id}>
+            <Link href={`/learn/#${e.id}`} className="text-2xl text-purple-600 hover:text-purple-800 visited:text-purple-600">
+              {e.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </SectionWrapper>
 
     <div className="container mx-auto px-4">

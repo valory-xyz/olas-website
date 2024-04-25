@@ -21,20 +21,18 @@ const ExplorePage = () => (
         Explore
       </h1>
       <span className="block text-2xl text-center mb-8">Jump To:</span>
-      <div className="bg-gray-100 rounded-lg p-6 mx-auto">
-        <ul>
-          {EXPLORE_LIST.map((item) => (
-            <li key={item.id} className="mb-4">
-              <Link
-                href={`/explore/#${item.id}`}
-                className="text-2xl text-purple-600 hover:text-purple-800 visited:text-purple-600"
-              >
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="flex flex-col gap-4 bg-gray-100 rounded-lg p-6 mx-auto">
+        {EXPLORE_LIST.map((item) => (
+          <li key={item.id}>
+            <Link
+              href={`/explore/#${item.id}`}
+              className="text-2xl text-purple-600 hover:text-purple-800 visited:text-purple-600"
+            >
+              {item.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </SectionWrapper>
 
     <div className="flex flex-col gap-20 mb-20">
