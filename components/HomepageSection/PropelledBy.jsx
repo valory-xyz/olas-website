@@ -1,9 +1,13 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Link } from 'components/ui/typography';
+import Link from 'next/link';
 import Image from 'next/image';
 import SectionHeading from '../SectionHeading';
 import builders from '../../data/builders.json';
 import friends from '../../data/friends.json';
+
+// hide those we don't have enough data to display, e.g. links
+// or because they are not live yet
+const filteredFriends = friends.filter((friend) => !friend.hidden);
 
 const PropelledBy = () => (
   <SectionWrapper>
@@ -23,7 +27,11 @@ const PropelledBy = () => (
           } = builder;
           return (
             <div key={id} className="grayscale flex justify-center items-center">
-              <Link href={url}>
+              <Link
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image
                   src={`/images/builders/${iconFilename}`}
                   alt={name}
@@ -38,14 +46,18 @@ const PropelledBy = () => (
     </section>
     <section id="friends" className="max-w-screen-xl mx-auto text-center">
       <h3 className="text-2xl md:text-4xl font-bold mb-12">More friends of Olas</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
-        {friends.map((friend) => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-14">
+        {filteredFriends.map((friend) => {
           const {
             id, name, url, imageFilename, imageWidth, imageHeight,
           } = friend;
           return (
             <div key={id} className="grayscale flex justify-center items-center">
-              <Link href={url}>
+              <Link
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image
                   src={`/images/friends/${imageFilename}`}
                   alt={name}
