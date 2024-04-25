@@ -21,7 +21,7 @@ const NavigationMenu = forwardRef(({ className, children, ...props }, ref) => (
 ));
 NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 NavigationMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 NavigationMenu.defaultProps = { className: null };
@@ -62,7 +62,7 @@ const NavigationMenuTrigger = forwardRef(({ className, children, ...props }, ref
 ));
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 NavigationMenuTrigger.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 NavigationMenuTrigger.defaultProps = { className: null };

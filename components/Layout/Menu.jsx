@@ -41,7 +41,7 @@ const ListItem = React.forwardRef(
 
 ListItem.displayName = 'ListItem';
 ListItem.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
   title: PropTypes.string.isRequired,
 };

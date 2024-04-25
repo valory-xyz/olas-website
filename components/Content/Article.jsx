@@ -46,9 +46,7 @@ Article.propTypes = {
   article: PropTypes.shape({
     attributes: PropTypes.shape({
       datePublished: PropTypes.string,
-      headerImage: PropTypes.shape({
-        data: PropTypes.object,
-      }),
+      headerImage: PropTypes.object,
       slug: PropTypes.string,
       title: PropTypes.string,
     }),

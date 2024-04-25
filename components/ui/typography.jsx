@@ -8,7 +8,7 @@ export const H1 = ({ children, className }) => (
 );
 
 H1.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 H1.defaultProps = { className: null };
@@ -20,7 +20,7 @@ export const Lead = ({ children, className }) => (
 );
 
 Lead.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 Lead.defaultProps = { className: null };
@@ -30,7 +30,7 @@ export const Upcase = ({ children }) => (
 );
 
 Upcase.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export const ExternalLink = ({ children, className, href }) => (
@@ -46,7 +46,7 @@ export const ExternalLink = ({ children, className, href }) => (
 );
 
 ExternalLink.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   href: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
@@ -62,7 +62,7 @@ export const Link = ({ children, className, href }) => (
 );
 
 Link.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   href: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object,

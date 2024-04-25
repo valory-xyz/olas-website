@@ -43,7 +43,7 @@ const SectionWrapper = ({
 SectionWrapper.propTypes = {
   backgroundType: PropTypes.string,
   backgroundImage: PropTypes.string,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   customClasses: PropTypes.string,
   id: PropTypes.string,
 };

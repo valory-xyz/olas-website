@@ -44,9 +44,7 @@ const Articles = ({ limit, showSeeAll }) => {
         </div>
         <div className="grid gap-8 lg:grid-cols-3">
           {(limit ? blogItems.slice(0, limit) : blogItems).map((blogItem) => (
-            <div key={blogItem.platform_link}>
-              <Article article={blogItem} />
-            </div>
+            <Article article={blogItem} key={blogItem.id} />
           ))}
         </div>
       </div>
