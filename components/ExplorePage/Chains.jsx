@@ -39,7 +39,7 @@ Item.propTypes = {
 };
 
 const Chains = () => (
-  <SectionWrapper id="chains" customClasses="max-w-screen-xl w-full mx-auto">
+  <SectionWrapper id="chains" customClasses="px-8 max-w-screen-xl w-full mx-auto">
     <h3 className="text-4xl font-bold mb-2">
       Chains
     </h3>

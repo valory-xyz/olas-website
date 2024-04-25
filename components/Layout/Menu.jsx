@@ -62,13 +62,13 @@ export function Menu({ className }) {
           </Link>
         </NavigationMenuItem>
 
-        {/* <NavigationMenuItem className="hidden md:block">
+        <NavigationMenuItem className="hidden md:block">
           <Link href="/explore" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Explore
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem> */}
+        </NavigationMenuItem>
 
         {/* <NavigationMenuItem>
           <NavigationMenuTrigger>Ecosystem</NavigationMenuTrigger>

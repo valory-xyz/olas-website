@@ -16,7 +16,7 @@ export const EXPLORE_LIST = [
 const ExplorePage = () => (
   <PageWrapper>
     <Meta pageTitle="Explore" />
-    <SectionWrapper customClasses="mt-12 mb-20 max-w-screen-xl mx-auto">
+    <SectionWrapper customClasses="px-8 mt-12 mb-20 max-w-screen-xl mx-auto">
       <h1 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Explore</h1>
       <span className="block text-2xl text-center mb-8">Jump To:</span>
       <div className="bg-gray-100 rounded-lg p-6 mx-auto">
@@ -32,7 +32,7 @@ const ExplorePage = () => (
       </div>
     </SectionWrapper>
 
-    <div className="flex flex-col gap-20">
+    <div className="flex flex-col gap-20 mb-20">
       <UseCases />
       <Chains />
       <Dashboards />

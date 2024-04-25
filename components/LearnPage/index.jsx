@@ -25,7 +25,7 @@ export const LEARN_LIST = [
 const LearnPage = () => (
   <PageWrapper>
     <Meta pageTitle="Learn" description="Build your understanding of what Olas is and how it works." />
-    <SectionWrapper customClasses="mt-12 mb-20 container">
+    <SectionWrapper customClasses="px-8 mt-12 mb-20 max-w-screen-xl mx-auto">
       <h1 className="text-4xl font-bold tracking-tighter text-center sm:text-5xl md:text-6xl mb-6">Learn</h1>
       <span className="block text-2xl text-center mb-8">Jump To:</span>
       <div className="bg-gray-100 rounded-lg p-6 mx-auto">

@@ -85,7 +85,7 @@ ServiceCategoryCard.propTypes = {
 };
 
 const UseCases = () => (
-  <SectionWrapper id="use-cases" customClasses="max-w-screen-xl w-full mx-auto">
+  <SectionWrapper id="use-cases" customClasses="px-8 max-w-screen-xl w-full mx-auto">
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
       <h3 className="text-4xl font-bold mb-2">
         Use cases
