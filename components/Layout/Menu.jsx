@@ -12,6 +12,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from 'components/ui/navigation-menu';
+import { MoveUpRight } from 'lucide-react';
 
 const triggerStyle = navigationMenuTriggerStyle();
 
@@ -97,7 +98,7 @@ export function Menu({ className }) {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+            <ul className="grid w-[300px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {resources.map((component) => (
                 <ListItem
                   key={component.title}
@@ -141,7 +142,13 @@ export function Menu({ className }) {
             passHref
           >
             <NavigationMenuLink className={triggerStyle}>
-              Roadmap ↗
+              Roadmap
+              {' '}
+              <MoveUpRight
+                size={12}
+                className="ml-1"
+                aria-hidden="true"
+              />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
