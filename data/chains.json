@@ -28,5 +28,23 @@
     "name": "Arbitrum",
     "url": "https://x.com/autonolas/status/1754561779366343164?s=20",
     "iconFilename": "arbitrum.svg"
+  },
+  {
+    "id": "1a2f0a6e-9d2c-4b8b-aa94-7e1c8bc5a9fa",
+    "name": "Celo",
+    "url": "https://twitter.com/CeloDevs/status/1767892677792805127",
+    "iconFilename": "celo.svg"
+  },
+  {
+    "id": "e56fcabb-d40a-4e65-98c3-af209a0bc624",
+    "name": "Optimism",
+    "url": "https://twitter.com/autonolas/status/1770850428021805244",
+    "iconFilename": "optimism.svg"
+  },
+  {
+    "id": "73bcb1d5-3d67-4aa5-bc6c-efcf79de9298",
+    "name": "Base",
+    "url": "https://twitter.com/autonolas/status/1773414606951842099",
+    "iconFilename": "base.svg"
   }
 ]

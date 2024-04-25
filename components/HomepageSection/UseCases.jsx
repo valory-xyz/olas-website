@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import useCases from 'data/useCases.json';
+import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
 
 const UseCaseCard = ({
@@ -115,10 +116,9 @@ const UseCases = () => (
           The impact of autonomous agent economies is shaping applications and
           products in Web3 and far beyond.
         </p>
-        {/* TODO: uncomment when /explore available */}
-        {/* <Button variant="outline" size="xl" asChild>
+        <Button variant="outline" size="xl" asChild>
           <Link href="/explore#use-cases">See more use cases</Link>
-        </Button> */}
+        </Button>
       </div>
     </div>
   </SectionWrapper>
