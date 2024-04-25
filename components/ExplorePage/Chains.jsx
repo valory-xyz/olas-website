@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import chains from 'data/chains.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const Chain = ({ name, url, iconFilename }) => (
-  <Link
+  <a
     className="block rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring"
+    target="_blank"
+    rel="noopener noreferrer"
     href={url}
   >
     <SectionWrapper customClasses="rounded-t-xl border-t-0 border-b">
@@ -24,7 +25,7 @@ const Chain = ({ name, url, iconFilename }) => (
     <div className="p-4 md:p-6 lg:p-4">
       <h2 className="font-bold text-xl text-gray-700">{name}</h2>
     </div>
-  </Link>
+  </a>
 );
 
 Chain.propTypes = {

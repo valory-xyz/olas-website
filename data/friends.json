@@ -3,12 +3,14 @@
     "id": "82e7e063-c42f-4c2a-9d20-9257109131d6",
     "name": "Ceramic",
     "url": "https://blog.ceramic.network/ceramic-and-autonolas-partner-to-revolutionize-ai-tooling-for-daos/",
+    "isExternal": true,
     "imageFilename": "ceramic.png"
   },
   {
     "id": "d1ec5010-7e08-4780-a929-c08b8ffa4895",
     "name": "Balancer",
     "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
+    "isExternal": true,
     "imageFilename": "balancer-bal-logo.svg",
     "imageWidth": 60,
     "imageHeight": 60
@@ -16,19 +18,22 @@
   {
     "id": "d7ea8ef8-bc70-4387-b1a8-c99641d88cf6",
     "name": "Connext",
-    "url": "https://olas.network/blog/introducing-the-autonomous-keeper-service",
+    "url": "/blog/introducing-the-autonomous-keeper-service",
+    "isExternal": false,
     "imageFilename": "connext.png"
   },
   {
     "id": "8eb7ea3f-26bd-4fdb-b95b-ed4c8aa889eb",
     "name": "CoW Protocol",
     "url": "https://forum.cow.fi/t/grant-application-decentralizing-cow-s-watchtower/1681/6",
+    "isExternal": true,
     "imageFilename": "cow-protocol.svg"
   },
   {
     "id": "07020348-a690-4991-b382-a5f629859465",
     "name": "Keep3r",
-    "url": "https://olas.network/blog/introducing-the-autonomous-keeper-service",
+    "url": "/blog/introducing-the-autonomous-keeper-service",
+    "isExternal": false,
     "imageFilename": "keep3r.svg",
     "imageWidth": 60,
     "imageHeight": 60
@@ -37,24 +42,28 @@
     "id": "9b905d9e-33f4-4330-9016-c00367e38498",
     "name": "Orbis",
     "url": "https://www.linkedin.com/posts/charles-levecque-0359a935_its-been-a-little-while-since-i-shared-here-activity-7066360263473557504-Rah7",
+    "isExternal": true,
     "imageFilename": "orbis.svg"
   },
   {
     "id": "26a37bbf-aafe-42fb-8098-9f479302cbac",
     "name": "DeFi Wonderland",
-    "url": "https://olas.network/blog/introducing-the-autonomous-keeper-service",
+    "url": "/blog/introducing-the-autonomous-keeper-service",
+    "isExternal": false,
     "imageFilename": "wonderland.png"
   },
   {
     "id": "2d21690f-0500-4bcc-9caa-40b0ff7e8c72",
     "name": "Origin Trail",
-    "url": "https://x.com/BranaRakic/status/1712474827674808457",
+    "url": "https://twitter.com/BranaRakic/status/1712474827674808457",
+    "isExternal": true,
     "imageFilename": "origin-trail.png"
   },
   {
     "id": "6853c5f6-eb3f-4671-b9b4-94d896cf1688",
     "name": "Omen",
     "url": "https://mirror.xyz/oaksprout.eth/3acKEx36a_cPhrcOOndRl0E-IfyZvwhTWwCMXukjOE8",
+    "isExternal": true,
     "imageFilename": "omen.svg",
     "imageWidth": 60,
     "imageHeight": 60
@@ -63,6 +72,7 @@
     "id": "8b677149-dd61-4582-b305-5dec0c737c85",
     "name": "Kleros",
     "url": "https://hackathon.olas.network/",
+    "isExternal": true,
     "imageFilename": "kleros.png",
     "imageWidth": 90,
     "imageHeight": 90
@@ -71,30 +81,35 @@
     "id": "d0211bbd-2672-486f-af65-8523652b9fd0",
     "name": "Safe",
     "url": "https://safe.mirror.xyz/V965PykKzlE1PCuWxBjsCJR12WscLcnMxuvR9E9bP-Y",
+    "isExternal": true,
     "imageFilename": "safe.svg"
   },
   {
     "id": "30546c11-e354-457a-95ad-91a2b07f71c5",
     "name": "FLock",
     "url": "https://flock.io/",
+    "isExternal": true,
     "imageFilename": "flock.svg"
   },
   {
     "id": "e40f8cb4-7e5b-4b9e-aa47-1e63c7a5f8c9",
     "name": "Celo",
-    "url": "https://x.com/CeloDevs/status/1767892677792805127",
+    "url": "https://twitter.com/CeloDevs/status/1767892677792805127",
+    "isExternal": true,
     "imageFilename": "celo.png"
   },
   {
     "id": "6f344a8d-1b4b-4b46-9bcb-f312b95a80d1",
     "name": "Base",
-    "url": "https://x.com/autonolas/status/1773414606951842099",
+    "url": "https://twitter.com/autonolas/status/1773414606951842099",
+    "isExternal": true,
     "imageFilename": "base.png"
   },
   {
     "id": "2c8b0a57-4c7c-4321-9a0a-9f2c845d25fb",
     "name": "EdgeAGI",
     "url": "https://autonomous-agent.devpost.com/",
+    "isExternal": true,
     "imageFilename": "edgeagi.png",
     "imageWidth": 80,
     "imageHeight": 80
@@ -102,13 +117,15 @@
   {
     "id": "a352b3f3-2c1d-45d6-b2d8-6f3d94cf9b91",
     "name": "NimNetwork",
-    "url": "https://x.com/nim_network/status/1770812805672816797",
+    "url": "https://twitter.com/nim_network/status/1770812805672816797",
+    "isExternal": true,
     "imageFilename": "nim.png"
   },
   {
     "id": "f4a02aaf-7e5f-4828-83e7-0c5e3baf9b48",
     "name": "SnapShotLabs",
-    "url": "https://x.com/valoryag/status/1726947470176092206",
+    "url": "https://twitter.com/valoryag/status/1726947470176092206",
+    "isExternal": true,
     "imageFilename": "snapshotlabs.png",
     "imageWidth": 100,
     "imageHeight": 100
@@ -116,31 +133,36 @@
   {
     "id": "7d8c59fc-9e8a-4ad4-b2dc-780287b86f33",
     "name": "Finoa",
-    "url": "https://x.com/Finoa_io/status/1760212006651744351",
+    "url": "https://twitter.com/Finoa_io/status/1760212006651744351",
+    "isExternal": true,
     "imageFilename": "finoa.png"
   },
   {
     "id": "d2671a79-80a2-4821-93a1-8eb5a3e6228d",
     "name": "Cantina",
-    "url": "https://x.com/cantinaxyz/status/1745483323940467132",
+    "url": "https://twitter.com/cantinaxyz/status/1745483323940467132",
+    "isExternal": true,
     "imageFilename": "cantina.svg"
   },
   {
     "id": "b2a08ae3-6a25-4f56-bdf5-4a28bf5a79e6",
     "name": "Code4Rena",
     "url": "https://code4rena.com/audits/2023-12-olas",
+    "isExternal": true,
     "imageFilename": "code4rena.svg"
   },
   {
     "id": "93dcfb13-9058-4f7a-8b5e-79cb0790d971",
     "name": "Shutter DAO",
     "url": "https://blog.shutter.network/a-proposed-blueprint-for-launching-a-shutter-dao/",
+    "isExternal": true,
     "imageFilename": "shutter.png"
   },
   {
     "id": "a79a8a22-8d90-42ec-b173-39cb6fb579c2",
     "name": "Squads Protocol",
     "url": "",
+    "isExternal": false,
     "imageFilename": "squads.png",
     "hidden": true
   },
@@ -148,18 +170,21 @@
     "id": "c1db73a5-6669-4ccf-9dc2-89f26e3baf8b",
     "name": "WormholeCrypto",
     "url": "https://twitter.com/autonolas/status/1773664354019467297",
+    "isExternal": true,
     "imageFilename": "wormhole.png"
   },
   {
     "id": "4e42d585-f540-4958-9604-429f15639d06",
     "name": "Immunefi",
-    "url": "https://x.com/immunefi/status/1557431564564254721",
+    "url": "https://twitter.com/immunefi/status/1557431564564254721",
+    "isExternal": true,
     "imageFilename": "immunefi.png"
   },
   {
     "id": "4a2d6c53-2a9d-4147-8b8a-8042f5a1dc87",
     "name": "GraphProtocol",
-    "url": "https://x.com/autonolas/status/1710294338435957248",
+    "url": "https://twitter.com/autonolas/status/1710294338435957248",
+    "isExternal": true,
     "imageFilename": "the-graph.png"
   }
 ]
