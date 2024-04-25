@@ -39,7 +39,7 @@ const LearnPage = () => (
       </ul>
     </SectionWrapper>
 
-    <div className="container mx-auto px-4">
+    <div className="flex flex-col gap-12 container mx-auto px-4">
       <WhatIsOlas />
       <DecentralizedAndSophisticated />
       <HowDoOlasWork />
