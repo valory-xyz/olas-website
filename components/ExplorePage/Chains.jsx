@@ -4,7 +4,7 @@ import Image from 'next/image';
 import chains from 'data/chains.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const Item = ({
+const Chain = ({
   name, url, iconFilename,
 }) => (
   <a
@@ -32,7 +32,7 @@ const Item = ({
   </a>
 );
 
-Item.propTypes = {
+Chain.propTypes = {
   name: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   iconFilename: PropTypes.string.isRequired,
@@ -52,7 +52,7 @@ const Chains = () => (
 
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {chains.map((chain) => (
-        <Item {...chain} key={chain.id} />
+        <Chain {...chain} key={chain.id} />
       ))}
     </div>
   </SectionWrapper>
