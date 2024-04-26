@@ -20,6 +20,11 @@ const SOCIAL_LINKS = [
     icon: '/images/footer/coingecko.svg',
     link: 'https://www.coingecko.com/en/coins/autonolas',
   },
+  {
+    title: 'Coinmarketcap',
+    icon: '/images/footer/cmc.svg',
+    link: 'https://coinmarketcap.com/currencies/autonolas/',
+  },
 ];
 
 const LEARN_LINKS = [
@@ -130,7 +135,7 @@ const RESOURCES_LINKS = [
 
 const LinksBlock = ({ title, links, className }) => (
   <div className={cn('flex flex-col gap-3 py-3', className)}>
-    <span className="block font-medium mb-3 col-span-2">{title}</span>
+    <span className="block font-semibold mb-3 col-span-2">{title}</span>
     {links.map((item) => {
       const LinkTag = item.isExternal ? 'a' : Link;
       return (
@@ -222,7 +227,7 @@ const Footer = () => (
     </div>
     <div className="text-center text-slate-500">
       © Autonolas DAO 2024&nbsp;•&nbsp;
-      <Link href="/disclaimer">Disclaimer</Link>
+      <Link href="/disclaimer" className="hover:text-black">Disclaimer</Link>
     </div>
   </footer>
 );
