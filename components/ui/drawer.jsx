@@ -52,7 +52,7 @@ const DrawerContent = forwardRef(({ className, children, ...props }, ref) => (
 ));
 DrawerContent.displayName = 'DrawerContent';
 DrawerContent.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 DrawerContent.defaultProps = { className: '' };

@@ -42,7 +42,7 @@ const Activity = ({
   );
 
   return (
-    <SectionWrapper customClasses="text-center py-16 px-4 border-b">
+    <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="activity">
       <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
         <Image
           alt="Placeholder"

@@ -35,7 +35,7 @@ const CardTitle = forwardRef(({ className, children, ...props }, ref) => (
 ));
 CardTitle.displayName = 'CardTitle';
 CardTitle.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 CardTitle.defaultProps = { className: '' };

@@ -10,7 +10,7 @@ const SectionHeading = ({
 );
 
 SectionHeading.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   color: PropTypes.string,
   display: PropTypes.string,
   size: PropTypes.string,

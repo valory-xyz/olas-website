@@ -1,104 +1,233 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
+import { cn } from 'lib/utils';
+import { MoveUpRight } from 'lucide-react';
+
+const SOCIAL_LINKS = [
+  {
+    title: 'Twitter',
+    icon: '/images/footer/x.svg',
+    link: 'https://twitter.com/autonolas',
+  },
+  {
+    title: 'Discord',
+    icon: '/images/footer/discord.svg',
+    link: 'https://discord.com/invite/z2PT65jKqQ',
+  },
+  {
+    title: 'Coingecko',
+    icon: '/images/footer/coingecko.svg',
+    link: 'https://www.coingecko.com/en/coins/autonolas',
+  },
+  {
+    title: 'Coinmarketcap',
+    icon: '/images/footer/cmc.svg',
+    link: 'https://coinmarketcap.com/currencies/autonolas/',
+  },
+];
+
+const LEARN_LINKS = [
+  {
+    title: 'What is Olas?',
+    link: '/learn#what-is-olas',
+  },
+  {
+    title: 'Olas Protocol',
+    link: '/protocol',
+  },
+  {
+    title: 'Olas Stack',
+    link: '/stack',
+  },
+];
+
+const EXPLORE_LINKS = [
+  {
+    title: 'Use Cases',
+    link: '/explore#use-cases',
+  },
+  {
+    title: 'Chains',
+    link: '/explore#chains',
+  },
+  {
+    title: 'Dashboards',
+    link: '/explore#dashboards',
+  },
+];
+
+const GET_INVOLVED_LINKS = [
+  {
+    title: 'Contribute',
+    link: '/contribute',
+  },
+  {
+    title: 'Launch',
+    link: '/launch',
+  },
+  {
+    title: 'Build',
+    link: '/build',
+  },
+  {
+    title: 'Operate',
+    link: '/operate',
+  },
+  {
+    title: 'Bond',
+    link: '/bond',
+  },
+  {
+    title: 'Govern',
+    link: '/govern',
+  },
+];
+
+const RESOURCES_LINKS = [
+  {
+    title: 'Docs',
+    link: 'https://docs.autonolas.network',
+    isExternal: true,
+  },
+  {
+    title: 'Whitepaper',
+    link: '/whitepaper',
+  },
+  {
+    title: 'Videos & Podcasts',
+    link: '/videos',
+  },
+  {
+    title: 'Blog',
+    link: '/blog',
+  },
+  {
+    title: 'DAO Constitution',
+    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
+    isExternal: true,
+  },
+  {
+    title: 'Calendar',
+    link: 'https://contribute.olas.network/calendar',
+    isExternal: true,
+  },
+  {
+    title: 'Roadmap',
+    link: 'https://contribute.olas.network/roadmap',
+    isExternal: true,
+  },
+  {
+    title: 'FAQ',
+    link: '/faq',
+  },
+  {
+    title: 'Press Kit',
+    link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
+    isExternal: true,
+  },
+  {
+    title: 'Alter Orbis',
+    link: 'https://autonolas.world',
+    isExternal: true,
+  },
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+
+const LinksBlock = ({ title, links, className }) => (
+  <div className={cn('flex flex-col gap-3 py-3', className)}>
+    <span className="block font-semibold mb-3 col-span-2">{title}</span>
+    {links.map((item) => {
+      const LinkTag = item.isExternal ? 'a' : Link;
+      return (
+        <LinkTag
+          href={item.link}
+          key={item.title}
+          className="hover:text-black"
+          {...(item.isExternal
+            ? {
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            }
+            : {})}
+        >
+
+          <span className="whitespace-nowrap">
+            <span className="whitespace-normal">{item.title}</span>
+            &nbsp;
+            {item.isExternal && (<MoveUpRight className="ml-1 inline" size={8} />)}
+          </span>
+
+        </LinkTag>
+      );
+    })}
+  </div>
+);
+
+LinksBlock.propTypes = {
+  title: PropTypes.string.isRequired,
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      link: PropTypes.string.isRequired,
+      isExternal: PropTypes.bool,
+    }),
+  ).isRequired,
+  className: PropTypes.string,
+};
+
+LinksBlock.defaultProps = {
+  className: '',
+};
 
 const Footer = () => (
-  <footer className="p-4 bg-white md:p-8 lg:p-10 ">
-    <div className="mx-auto max-w-screen-xl text-center">
-      <Link
-        href="/"
-        className="flex justify-center items-center text-2xl font-semibold text-gray-900 "
-      >
-        <Image
-          src="/images/olas-logo.svg"
-          alt="Olas logo"
-          width="158"
-          height="88"
-          className="mx-auto"
-        />
-      </Link>
-      <p className="my-6 text-gray-600 ">
-        The Network for Co-owning AI
-      </p>
-      <ul className="flex flex-wrap justify-center items-center mb-6 text-gray-900 ">
-        <li>
-          <Link href="/whitepaper" className="mr-4 hover:underline md:mr-6 ">
-            Whitepaper
+  <footer className="bg-white px-4 lg:px-6 py-16">
+    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-5 lg:grid-cols-7 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
+      <div className="flex justify-between md:justify-start col-span-2 md:col-span-5 lg:col-span-2 md:grid md:grid-cols-2 md:grid-cols-5 lg:block">
+        <div className="md:col-span-4">
+          <Link href="/" className="block mb-3">
+            <Image
+              src="/images/olas-logo.svg"
+              alt="logo"
+              width="120"
+              height="60"
+            />
           </Link>
-        </li>
-        <li>
-          <Link
-            href="https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md"
-            className="mr-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Press Kit ↗
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="https://autonolas.world"
-            className="hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Alter Orbis ↗
-          </Link>
-        </li>
-        <li>
-          <a
-            href="https://twitter.com/autonolas"
-            className="ml-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Twitter ↗
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://discord.com/invite/z2PT65jKqQ"
-            className="ml-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Discord ↗
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.coingecko.com/en/coins/autonolas"
-            className="ml-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Coingecko ↗
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://contribute.olas.network/roadmap"
-            className="ml-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Roadmap ↗
-          </a>
-        </li>
-      </ul>
-      <div className="text-gray-600">
-        © Autonolas DAO 2024&nbsp;•&nbsp;
-        <Link href="/disclaimer">Disclaimer</Link>
-          &nbsp;•&nbsp;
-        <a
-          href="https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u"
-          target="_blank"
-          className="hover:underline"
-          rel="noopener noreferrer"
-        >
-          DAO Constitution
-        </a>
+          <span>The Network for Co-owning AI</span>
+        </div>
+        <div className="flex gap-2 items-center justify-end md:justify-start lg:items-start lg:mt-6">
+          {SOCIAL_LINKS.map((item) => (
+            <a
+              key={item.title}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full hover:bg-slate-100"
+            >
+              <Image
+                src={item.icon}
+                alt={item.title}
+                width="40"
+                height="40"
+                className="hover:filter hover:brightness-0"
+              />
+            </a>
+          ))}
+        </div>
       </div>
+      <LinksBlock title="Learn" links={LEARN_LINKS} />
+      <LinksBlock title="Explore" links={EXPLORE_LINKS} />
+      <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
+      <LinksBlock
+        title="Resources"
+        links={RESOURCES_LINKS}
+        className="md:col-span-2 md:grid md:grid-cols-2"
+      />
+    </div>
+    <div className="text-center text-slate-500">
+      {`© Autonolas DAO ${CURRENT_YEAR} • `}
+      <Link href="/disclaimer" className="hover:text-black">Disclaimer</Link>
     </div>
   </footer>
 );

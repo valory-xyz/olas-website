@@ -12,7 +12,7 @@ const Question = ({ text, children }) => (
 );
 
 Question.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   text: PropTypes.string.isRequired,
 };
 

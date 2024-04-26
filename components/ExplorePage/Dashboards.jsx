@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const resources = [
@@ -28,7 +27,7 @@ const Dashboards = () => (
 
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {resources.map((resource) => (
-        <Link
+        <a
           className="block rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring w-full h-[245px] flex items-center justify-center text-center"
           target="_blank"
           rel="noopener noreferrer"
@@ -38,7 +37,7 @@ const Dashboards = () => (
           <span className="text-2xl font-semibold max-w-[160px]">
             {resource.title}
           </span>
-        </Link>
+        </a>
       ))}
     </div>
   </SectionWrapper>
