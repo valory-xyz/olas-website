@@ -133,6 +133,8 @@ const RESOURCES_LINKS = [
   },
 ];
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const LinksBlock = ({ title, links, className }) => (
   <div className={cn('flex flex-col gap-3 py-3', className)}>
     <span className="block font-semibold mb-3 col-span-2">{title}</span>
@@ -151,14 +153,12 @@ const LinksBlock = ({ title, links, className }) => (
             : {})}
         >
 
-          {item.isExternal
-            ? /* eslint-disable react/jsx-one-expression-per-line */(
-              <span>
-                {item.title}&nbsp;<MoveUpRight className="inline" size={8} />
-              </span>
-            )
-            /* eslint-enable */
-            : item.title}
+          <span className="whitespace-nowrap">
+            <span className="whitespace-normal">{item.title}</span>
+            &nbsp;
+            {item.isExternal && (<MoveUpRight className="ml-1 inline" size={8} />)}
+          </span>
+
         </LinkTag>
       );
     })}
@@ -226,7 +226,7 @@ const Footer = () => (
       />
     </div>
     <div className="text-center text-slate-500">
-      © Autonolas DAO 2024&nbsp;•&nbsp;
+      {`© Autonolas DAO ${CURRENT_YEAR} • `}
       <Link href="/disclaimer" className="hover:text-black">Disclaimer</Link>
     </div>
   </footer>
