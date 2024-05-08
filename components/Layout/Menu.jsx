@@ -54,8 +54,7 @@ export function Menu({ className }) {
   return (
     <NavigationMenu className={className}>
       <NavigationMenuList>
-
-        <NavigationMenuItem className="hidden md:block">
+        <NavigationMenuItem>
           <Link href="/learn" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Learn
@@ -63,37 +62,13 @@ export function Menu({ className }) {
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="hidden md:block">
+        <NavigationMenuItem>
           <Link href="/explore" legacyBehavior passHref>
             <NavigationMenuLink className={triggerStyle}>
               Explore
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-
-        {/* <NavigationMenuItem>
-          <NavigationMenuTrigger>Ecosystem</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {ecosystemItems.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.url}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-              <ListItem
-                key="see-all-ecosystem-items"
-                title="See all →"
-                href="/#ecosystem"
-              >
-                Browse all parts of the ecosystem
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem> */}
 
         <NavigationMenuItem>
           <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
@@ -108,34 +83,11 @@ export function Menu({ className }) {
                   {component.description}
                 </ListItem>
               ))}
-              {/* <ListItem
-                key="see-all-resources"
-                title="See all →"
-                href="/#resources"
-              >
-                Browse all resources
-              </ListItem> */}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* <NavigationMenuItem className="hidden md:block">
-          <Link href="/videos" legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Videos & Podcasts
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem> */}
-
-        {/* <NavigationMenuItem className="hidden md:block">
-          <Link href="/blog" legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Blog
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem> */}
-
-        <NavigationMenuItem className="hidden md:block">
+        <NavigationMenuItem>
           <Link
             href="https://contribute.olas.network/roadmap"
             legacyBehavior
@@ -144,30 +96,10 @@ export function Menu({ className }) {
             <NavigationMenuLink className={triggerStyle}>
               Roadmap
               {' '}
-              <MoveUpRight
-                size={12}
-                className="ml-1"
-                aria-hidden="true"
-              />
+              <MoveUpRight size={12} className="ml-1" aria-hidden="true" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-
-        {/* <NavigationMenuItem className="md:pr-8 hidden md:block">
-          <Link href={DOCS_BASE_URL} legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Docs ↗
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem> */}
-
-        {/* <NavigationMenuItem className="border rounded-lg">
-          <Link href="/#get-involved" legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Get involved
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );
