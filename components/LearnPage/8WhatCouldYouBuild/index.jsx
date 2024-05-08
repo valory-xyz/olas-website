@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from 'components/ui/button';
+// import { Button } from 'components/ui/button';
 
 const ideaGroups = [
   {
@@ -88,10 +88,10 @@ const WhatCouldYouBuild = () => (
 
     <div className="flex justify-center items-center mb-16">
       <Link href="/#kits" passHref>
-        <Button className="mr-4" variant="default" size="lg">Explore Kits</Button>
+        {/* <Button className="mr-4" variant="default" size="lg">Explore Kits</Button> */}
       </Link>
       <Link href="/#services" passHref>
-        <Button variant="default" size="lg">Explore Services</Button>
+        {/* <Button variant="default" size="lg">Explore Services</Button> */}
       </Link>
     </div>
 
