@@ -12,22 +12,34 @@ import { MENU_DATA } from 'common-util/constants';
 const linkClassName = 'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
 const subLinkClassName = 'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
 
+const useToggle = () => {
+  const [state, setState] = useState(false);
+
+  const toggle = () => {
+    setState((prev) => !prev);
+  };
+
+  return [state, toggle];
+};
+
 export const MenuMobile = ({ className }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpened, toggleOpen] = useToggle();
+  const [isSubmenuExpanded, toggleSubmenuExpand] = useToggle();
+
   return (
-    <NavigationMenu.Root className={className}>
+    <NavigationMenu.Root className={className} value={isOpened}>
       <NavigationMenu.List>
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="flex font-medium items-center group">
+          <NavigationMenu.Trigger className="flex font-medium items-center group" onClick={toggleOpen}>
             <span className="group-data-[state=open]:hidden">Menu</span>
             <span className="group-data-[state=closed]:hidden">Close</span>
             {' '}
             <AlignJustify size={20} className="ml-3 mr-2 group-data-[state=open]:hidden" aria-hidden="true" />
             <X size={20} className="ml-3 mr-2 group-data-[state=closed]:hidden" aria-hidden="true" />
           </NavigationMenu.Trigger>
-          <NavigationMenu.Content>
+          <NavigationMenu.Content value={isOpened}>
             <NavigationMenu.Sub
-              value={isExpanded ? 'group' : null}
+              value={isSubmenuExpanded ? 'group' : null}
               className="relative bg-white z-10"
             >
               <NavigationMenu.List className="max-h-[480px] overflow-scroll">
@@ -37,7 +49,7 @@ export const MenuMobile = ({ className }) => {
                     const LinkTag = item.isExternal ? 'a' : Link;
                     return (
                       <NavigationMenu.Item key={index}>
-                        <NavigationMenu.Trigger asChild>
+                        <NavigationMenu.Trigger asChild onClick={toggleOpen}>
                           <LinkTag href={item.link} className={linkClassName}>
                             {item.text}
                             {item.isExternal && <MoveUpRight size={24} aria-hidden="true" />}
@@ -50,7 +62,7 @@ export const MenuMobile = ({ className }) => {
                       <NavigationMenu.Item value="group" key={index}>
                         <NavigationMenu.Trigger
                           className={cn(linkClassName, 'group')}
-                          onClick={() => setIsExpanded((prev) => (!prev))}
+                          onClick={toggleSubmenuExpand}
                         >
                           {item.text}
                           <ChevronDown
@@ -63,7 +75,7 @@ export const MenuMobile = ({ className }) => {
                           <ul>
                             {item.submenu.map((component) => (
                               <li key={component.title}>
-                                <NavigationMenu.Link asChild>
+                                <NavigationMenu.Link asChild onClick={toggleOpen}>
                                   <Link
                                     href={component.url}
                                     className={subLinkClassName}
@@ -88,6 +100,7 @@ export const MenuMobile = ({ className }) => {
                     size="lg"
                     asChild
                     className="w-full"
+                    onClick={toggleOpen}
                   >
                     <Link href="/#get-involved">Get involved</Link>
                   </Button>
