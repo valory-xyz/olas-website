@@ -30,20 +30,28 @@ export const MenuMobile = ({ className }) => {
     <NavigationMenu.Root className={className} value={isOpened}>
       <NavigationMenu.List>
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="flex font-medium items-center group" onClick={toggleOpen}>
-            <span className="group-data-[state=open]:hidden">Menu</span>
-            <span className="group-data-[state=closed]:hidden">Close</span>
-            {' '}
-            <AlignJustify size={20} className="ml-3 mr-2 group-data-[state=open]:hidden" aria-hidden="true" />
-            <X size={20} className="ml-3 mr-2 group-data-[state=closed]:hidden" aria-hidden="true" />
+          <NavigationMenu.Trigger
+            className="flex font-medium items-center group"
+            onClick={toggleOpen}
+          >
+            {isOpened ? 'Close' : 'Menu'}
+            {isOpened ? (
+              <X size={20} className="ml-3 mr-2" aria-hidden="true" />
+            ) : (
+              <AlignJustify
+                size={20}
+                className="ml-3 mr-2"
+                aria-hidden="true"
+              />
+            )}
           </NavigationMenu.Trigger>
+
           <NavigationMenu.Content value={isOpened}>
             <NavigationMenu.Sub
               value={isSubmenuExpanded ? 'group' : null}
               className="relative bg-white z-10"
             >
               <NavigationMenu.List className="max-h-[480px] overflow-scroll">
-
                 {MENU_DATA.map((item, index) => {
                   if (item.link) {
                     const LinkTag = item.isExternal ? 'a' : Link;
@@ -52,12 +60,15 @@ export const MenuMobile = ({ className }) => {
                         <NavigationMenu.Trigger asChild onClick={toggleOpen}>
                           <LinkTag href={item.link} className={linkClassName}>
                             {item.text}
-                            {item.isExternal && <MoveUpRight size={24} aria-hidden="true" />}
+                            {item.isExternal && (
+                              <MoveUpRight size={24} aria-hidden="true" />
+                            )}
                           </LinkTag>
                         </NavigationMenu.Trigger>
                       </NavigationMenu.Item>
                     );
-                  } if (item.submenu) {
+                  }
+                  if (item.submenu) {
                     return (
                       <NavigationMenu.Item value="group" key={index}>
                         <NavigationMenu.Trigger
@@ -75,7 +86,10 @@ export const MenuMobile = ({ className }) => {
                           <ul>
                             {item.submenu.map((component) => (
                               <li key={component.title}>
-                                <NavigationMenu.Link asChild onClick={toggleOpen}>
+                                <NavigationMenu.Link
+                                  asChild
+                                  onClick={toggleOpen}
+                                >
                                   <Link
                                     href={component.url}
                                     className={subLinkClassName}
