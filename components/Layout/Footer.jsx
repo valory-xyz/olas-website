@@ -141,25 +141,27 @@ const LinksBlock = ({ title, links, className }) => (
     {links.map((item) => {
       const LinkTag = item.isExternal ? 'a' : Link;
       return (
-        <LinkTag
-          href={item.link}
-          key={item.title}
-          className="hover:text-black"
-          {...(item.isExternal
-            ? {
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            }
-            : {})}
-        >
+        <span key={item.title} className="contents">
+          <LinkTag
+            href={item.link}
+            key={item.title}
+            className="hover:text-black"
+            {...(item.isExternal
+              ? {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              }
+              : {})}
+          >
 
-          <span className="whitespace-nowrap">
-            <span className="whitespace-normal">{item.title}</span>
+            <span className="whitespace-nowrap">
+              <span className="whitespace-normal">{item.title}</span>
             &nbsp;
-            {item.isExternal && (<MoveUpRight className="ml-1 inline" size={8} />)}
-          </span>
+              {item.isExternal && (<MoveUpRight className="ml-1 inline" size={8} />)}
+            </span>
 
-        </LinkTag>
+          </LinkTag>
+        </span>
       );
     })}
   </div>
@@ -222,7 +224,7 @@ const Footer = () => (
       <LinksBlock
         title="Resources"
         links={RESOURCES_LINKS}
-        className="md:col-span-2 md:grid md:grid-cols-2"
+        className="auto-rows-max md:col-span-2 md:grid md:grid-cols-2"
       />
     </div>
     <div className="text-center text-slate-500">
