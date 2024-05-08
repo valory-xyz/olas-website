@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Link from 'next/link';
-import { AlignJustify, ChevronDown, MoveUpRight } from 'lucide-react';
+import {
+  AlignJustify, ChevronDown, MoveUpRight, X,
+} from 'lucide-react';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import resources from 'data/resources.json';
 import { cn } from 'lib/utils';
 import { Button } from 'components/ui/button';
 
-const linkClassName = 'flex w-full items-center justify-between text-xl border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
+const linkClassName = 'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
 const subLinkClassName = 'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
 
 export const MenuMobile = ({ className }) => {
@@ -16,10 +18,12 @@ export const MenuMobile = ({ className }) => {
     <NavigationMenu.Root className={className}>
       <NavigationMenu.List>
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="flex items-center">
-            Menu
+          <NavigationMenu.Trigger className="flex font-medium items-center group">
+            <span className="group-data-[state=open]:hidden">Menu</span>
+            <span className="group-data-[state=closed]:hidden">Close</span>
             {' '}
-            <AlignJustify size={20} className="ml-3 mr-2" aria-hidden="true" />
+            <AlignJustify size={20} className="ml-3 mr-2 group-data-[state=open]:hidden" aria-hidden="true" />
+            <X size={20} className="ml-3 mr-2 group-data-[state=closed]:hidden" aria-hidden="true" />
           </NavigationMenu.Trigger>
           <NavigationMenu.Content>
             <NavigationMenu.Sub
@@ -76,11 +80,11 @@ export const MenuMobile = ({ className }) => {
 
                 <NavigationMenu.Item>
                   <NavigationMenu.Trigger asChild>
-                    <Link href="/explore" className={linkClassName}>
+                    <a href="https://contribute.olas.network/roadmap" className={linkClassName}>
                       Roadmap
                       {' '}
                       <MoveUpRight size={24} aria-hidden="true" />
-                    </Link>
+                    </a>
                   </NavigationMenu.Trigger>
                 </NavigationMenu.Item>
 
