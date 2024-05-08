@@ -144,7 +144,6 @@ const LinksBlock = ({ title, links, className }) => (
         <span key={item.title} className="contents">
           <LinkTag
             href={item.link}
-            key={item.title}
             className="hover:text-black"
             {...(item.isExternal
               ? {

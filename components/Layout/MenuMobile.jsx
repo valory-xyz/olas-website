@@ -5,9 +5,9 @@ import {
   AlignJustify, ChevronDown, MoveUpRight, X,
 } from 'lucide-react';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import resources from 'data/resources.json';
 import { cn } from 'lib/utils';
 import { Button } from 'components/ui/button';
+import { MENU_DATA } from 'common-util/constants';
 
 const linkClassName = 'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
 const subLinkClassName = 'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
@@ -31,62 +31,56 @@ export const MenuMobile = ({ className }) => {
               className="relative bg-white z-10"
             >
               <NavigationMenu.List className="max-h-[480px] overflow-scroll">
-                <NavigationMenu.Item>
-                  <NavigationMenu.Trigger asChild>
-                    <Link href="/learn" className={linkClassName}>
-                      Learn
-                    </Link>
-                  </NavigationMenu.Trigger>
-                </NavigationMenu.Item>
 
-                <NavigationMenu.Item>
-                  <NavigationMenu.Trigger asChild>
-                    <Link href="/explore" className={linkClassName}>
-                      Explore
-                    </Link>
-                  </NavigationMenu.Trigger>
-                </NavigationMenu.Item>
+                {MENU_DATA.map((item, index) => {
+                  if (item.link) {
+                    const LinkTag = item.isExternal ? 'a' : Link;
+                    return (
+                      <NavigationMenu.Item key={index}>
+                        <NavigationMenu.Trigger asChild>
+                          <LinkTag href={item.link} className={linkClassName}>
+                            {item.text}
+                            {item.isExternal && <MoveUpRight size={24} aria-hidden="true" />}
+                          </LinkTag>
+                        </NavigationMenu.Trigger>
+                      </NavigationMenu.Item>
+                    );
+                  } if (item.submenu) {
+                    return (
+                      <NavigationMenu.Item value="group" key={index}>
+                        <NavigationMenu.Trigger
+                          className={cn(linkClassName, 'group')}
+                          onClick={() => setIsExpanded((prev) => (!prev))}
+                        >
+                          {item.text}
+                          <ChevronDown
+                            className="transition duration-200 group-data-[state=open]:rotate-180"
+                            size={24}
+                            aria-hidden="true"
+                          />
+                        </NavigationMenu.Trigger>
+                        <NavigationMenu.Content>
+                          <ul>
+                            {item.submenu.map((component) => (
+                              <li key={component.title}>
+                                <NavigationMenu.Link asChild>
+                                  <Link
+                                    href={component.url}
+                                    className={subLinkClassName}
+                                  >
+                                    {component.title}
+                                  </Link>
+                                </NavigationMenu.Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenu.Content>
+                      </NavigationMenu.Item>
+                    );
+                  }
 
-                <NavigationMenu.Item value="group">
-                  <NavigationMenu.Trigger
-                    className={cn(linkClassName, 'group')}
-                    onClick={() => setIsExpanded((prev) => (!prev))}
-                  >
-                    Resources
-                    {' '}
-                    <ChevronDown
-                      className="transition duration-200 group-data-[state=open]:rotate-180"
-                      size={24}
-                      aria-hidden="true"
-                    />
-                  </NavigationMenu.Trigger>
-                  <NavigationMenu.Content>
-                    <ul>
-                      {resources.map((component) => (
-                        <li key={component.title}>
-                          <NavigationMenu.Link asChild>
-                            <Link
-                              href={component.url}
-                              className={subLinkClassName}
-                            >
-                              {component.title}
-                            </Link>
-                          </NavigationMenu.Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenu.Content>
-                </NavigationMenu.Item>
-
-                <NavigationMenu.Item>
-                  <NavigationMenu.Trigger asChild>
-                    <a href="https://contribute.olas.network/roadmap" className={linkClassName}>
-                      Roadmap
-                      {' '}
-                      <MoveUpRight size={24} aria-hidden="true" />
-                    </a>
-                  </NavigationMenu.Trigger>
-                </NavigationMenu.Item>
+                  return null;
+                })}
 
                 <NavigationMenu.Item className="p-6 border">
                   <Button

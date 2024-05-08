@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import React from 'react';
-import resources from 'data/resources.json';
 import { cn } from 'lib/utils';
 import {
   NavigationMenu,
@@ -13,6 +12,7 @@ import {
   navigationMenuTriggerStyle,
 } from 'components/ui/navigation-menu';
 import { MoveUpRight } from 'lucide-react';
+import { MENU_DATA } from 'common-util/constants';
 
 const triggerStyle = navigationMenuTriggerStyle();
 
@@ -54,52 +54,43 @@ export function Menu({ className }) {
   return (
     <NavigationMenu className={className}>
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href="/learn" legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Learn
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
+        {MENU_DATA.map((item, index) => {
+          if (item.link) {
+            const LinkTag = item.isExternal ? 'a' : NavigationMenuLink;
+            return (
+              <NavigationMenuItem key={index}>
+                <Link href={item.link} legacyBehavior passHref>
+                  <LinkTag className={triggerStyle}>
+                    {item.text}
+                    {item.isExternal && <MoveUpRight size={12} className="ml-1" aria-hidden="true" />}
+                  </LinkTag>
+                </Link>
+              </NavigationMenuItem>
+            );
+          } if (item.submenu) {
+            return (
+              <NavigationMenuItem key={index}>
+                <NavigationMenuTrigger>{item.text}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[300px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    {item.submenu.map((component) => (
+                      <ListItem
+                        key={component.title}
+                        title={component.title}
+                        href={component.url}
+                      >
+                        {component.description}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            );
+          }
 
-        <NavigationMenuItem>
-          <Link href="/explore" legacyBehavior passHref>
-            <NavigationMenuLink className={triggerStyle}>
-              Explore
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
+          return null;
+        })}
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {resources.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.url}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <Link
-            href="https://contribute.olas.network/roadmap"
-            legacyBehavior
-            passHref
-          >
-            <NavigationMenuLink className={triggerStyle}>
-              Roadmap
-              {' '}
-              <MoveUpRight size={12} className="ml-1" aria-hidden="true" />
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
