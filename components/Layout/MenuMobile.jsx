@@ -11,7 +11,7 @@ const linkClassName = 'flex w-full items-center justify-between text-xl border-t
 const subLinkClassName = 'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
 
 export const MenuMobile = ({ className }) => {
-  const [value, setValue] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <NavigationMenu.Root className={className}>
       <NavigationMenu.List>
@@ -23,8 +23,7 @@ export const MenuMobile = ({ className }) => {
           </NavigationMenu.Trigger>
           <NavigationMenu.Content>
             <NavigationMenu.Sub
-              value={value}
-              onValueChange={setValue}
+              value={isExpanded ? 'group' : null}
               className="relative bg-white z-10"
             >
               <NavigationMenu.List className="max-h-[480px] overflow-scroll">
@@ -44,10 +43,10 @@ export const MenuMobile = ({ className }) => {
                   </NavigationMenu.Trigger>
                 </NavigationMenu.Item>
 
-                <NavigationMenu.Item value="2">
+                <NavigationMenu.Item value="group">
                   <NavigationMenu.Trigger
                     className={cn(linkClassName, 'group')}
-                    onClick={() => setValue(null)}
+                    onClick={() => setIsExpanded((prev) => (!prev))}
                   >
                     Resources
                     {' '}
