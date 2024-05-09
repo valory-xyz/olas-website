@@ -1,14 +1,16 @@
-import Image from 'next/image';
 import React from 'react';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { TEXT } from 'styles/globals';
-import { Button } from 'components/Button';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { DownloadIcon } from 'lucide-react';
+
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/Button';
+import { TEXT } from 'styles/globals';
 import SectionHeading from '../SectionHeading';
 
 const Hero = () => {
   const router = useRouter();
+
   return (
     <SectionWrapper
       customClasses="py-16 border-b"
@@ -41,7 +43,7 @@ const Hero = () => {
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
           <Image
-            src="/images/operate-page/operate-hero.svg"
+            src="/images/operate-page/operate-hero.png"
             alt="hero"
             width={638}
             height={596}

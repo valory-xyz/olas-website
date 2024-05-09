@@ -1,16 +1,16 @@
-// import Content from "./Content";
-import Contribute from './Contribute';
+import { FAQ } from './FAQ';
+import { GettingStartedIsSimple } from './GettingStartedIsSimple';
 import Hero from './Hero';
 import HowItWorks from './HowItWorks';
-// import NetworkRole from "./NetworkRole";
+import { MeetTheOperateApp } from './MeetTheOperateApp';
 
 const Bonds = () => (
   <>
     <Hero />
+    <MeetTheOperateApp />
+    <GettingStartedIsSimple />
     <HowItWorks />
-    {/* <Content /> */}
-    {/* <NetworkRole /> */}
-    <Contribute />
+    <FAQ />
   </>
 );
 
