@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from 'components/Button';
+import { Button } from 'components/ui/button';
 
 const ideaGroups = [
   {
@@ -82,18 +82,16 @@ const WhatCouldYouBuild = () => (
     className="section section-what-could-you-build py-12"
     id="what-could-you-build"
   >
-    <div className="header text-6xl font-bold text-center mb-8">
-      What could&nbsp;
-      <span className="sub-text">you</span>
-      &nbsp;build?
+    <div className="header text-4xl md:text-6xl font-bold text-center mb-8">
+      What could you build?
     </div>
 
     <div className="flex justify-center items-center mb-16">
       <Link href="/#kits" passHref>
-        <Button className="mr-4">Explore Kits</Button>
+        <Button className="mr-4" variant="default" size="lg">Explore Kits</Button>
       </Link>
       <Link href="/#services" passHref>
-        <Button>Explore Services</Button>
+        <Button variant="default" size="lg">Explore Services</Button>
       </Link>
     </div>
 
