@@ -4,6 +4,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { TEXT } from 'styles/globals';
 import { Button } from 'components/Button';
 import { useRouter } from 'next/router';
+import { DownloadIcon } from 'lucide-react';
 import SectionHeading from '../SectionHeading';
 
 const Hero = () => {
@@ -27,10 +28,11 @@ const Hero = () => {
             earn rewards*
           </SectionHeading>
           <Button
-            className="hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 hover:text-white"
+            className="mb-8  hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 hover:text-white"
             onClick={() => router.push('/operate#download')}
           >
-            Download Operate App
+            <DownloadIcon className="mr-2" />
+            Download Operate app
           </Button>
           <div className={TEXT}>
             *rewards are dependent on individual agent implementations as well
