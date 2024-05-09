@@ -1,7 +1,7 @@
 import { FAQ } from './FAQ';
 import { GettingStartedIsSimple } from './GettingStartedIsSimple';
 import Hero from './Hero';
-import HowItWorks from './HowItWorks';
+import { WantMoreControl } from './WantMoreControl';
 import { MeetTheOperateApp } from './MeetTheOperateApp';
 
 const Bonds = () => (
@@ -9,7 +9,7 @@ const Bonds = () => (
     <Hero />
     <MeetTheOperateApp />
     <GettingStartedIsSimple />
-    <HowItWorks />
+    <WantMoreControl />
     <FAQ />
   </>
 );
