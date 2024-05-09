@@ -36,7 +36,7 @@ const eachCardCss = {
 };
 
 export const EasySetupContinuousRewards = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12  mt-24">
+  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
     <SectionHeading>
       <div className="text-center">Easy setup. Continuous rewards</div>
     </SectionHeading>
