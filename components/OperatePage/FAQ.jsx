@@ -1,7 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import { SECTION_BOX_CLASS, SECTION_WRAPPER_CLASS, SUB_HEADER_CLASS } from './utils';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
   {
@@ -104,7 +104,7 @@ export const FAQ = () => (
       backgroundType="CONTAIN"
       backgroundImage="/images/homepage/hero.png"
     >
-      <div className={SECTION_WRAPPER_CLASS}>
+      <div className="max-w-screen-lg px-0 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
         <div className="grid gap-12">
           <h2 className={`${SUB_HEADER_CLASS}`}>
             <div className="text-left lg:text-center">

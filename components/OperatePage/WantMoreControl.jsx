@@ -27,7 +27,7 @@ export function WantMoreControl() {
   return (
     <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
       <div className="grid max-w-screen-xl lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-        <div className="lg:col-span-6 px-5 lg:p-0 mr-12">
+        <div className=" px-0 mr-12 lg:col-span-6 lg:p-0 lg:px-5">
           <h2 className={SUB_HEADER_CLASS}>Want more control?</h2>
 
           <div>

@@ -70,7 +70,7 @@ export const MeetTheOperateApp = () => (
     customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
   >
     <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
-      <div className="mb-6 px-5 lg:col-span-6 lg:p-0 lg:text-left lg:mb-12">
+      <div className="mb-6 px-0 lg:col-span-6 lg:px-5 lg:text-left lg:mb-12">
         <Image
           style={{ marginLeft: -6 }}
           className="mb-2 lg:mb-6 w-16 lg:w-24"
