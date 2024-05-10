@@ -7,7 +7,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/Button';
 import {
   DESCRIPTION_CLASS,
-  SECTION_WRAPPER_CLASS,
+  SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from './utils';
 
@@ -44,10 +44,10 @@ const downloadLinks = [
 export const GettingStartedIsSimple = () => (
   <SectionWrapper
     id="download"
-    customClasses="lg:p-24 px-4 py-12 border border-purple-200"
+    customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className={SECTION_WRAPPER_CLASS}>
+    <div className="max-w-screen-xl px-4 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
       <div className="grid gap-1 col-span-12 lg:gap-12">
         <h2 className={SUB_HEADER_CLASS}>
           <div className="text-left lg:text-center">

@@ -4,7 +4,11 @@ import { kebabCase } from 'lodash';
 import {
   CircleDollarSign, Cog, LockKeyhole, Zap,
 } from 'lucide-react';
-import { DESCRIPTION_CLASS, SUB_HEADER_CLASS } from './utils';
+import {
+  DESCRIPTION_CLASS,
+  SECTION_BOX_CLASS,
+  SUB_HEADER_CLASS,
+} from './utils';
 
 const list = [
   {
@@ -62,8 +66,10 @@ export const EasySetupContinuousRewards = () => (
 );
 
 export const MeetTheOperateApp = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12">
-    <div className="grid max-w-screen-xl items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
+  <SectionWrapper
+    customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
+  >
+    <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
       <div className="mb-6 px-5 lg:col-span-6 lg:p-0 lg:text-left lg:mb-12">
         <Image
           style={{ marginLeft: -6 }}

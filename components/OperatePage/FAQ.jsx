@@ -1,7 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import { SECTION_WRAPPER_CLASS, SUB_HEADER_CLASS } from './utils';
+import { SECTION_BOX_CLASS, SECTION_WRAPPER_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
   {
@@ -72,7 +72,6 @@ const faqList = [
         desc: 'Earn OLAS by staking OLAS and running agents on your computer.',
       },
       {
-        // TODO
         title: 'Where can I get support if I encounter issues?',
         desc: (
           <>
@@ -101,7 +100,7 @@ const faqList = [
 export const FAQ = () => (
   <div>
     <SectionWrapper
-      customClasses="py-8 border bg-no-repeat lg:py-24"
+      customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}
       backgroundType="CONTAIN"
       backgroundImage="/images/homepage/hero.png"
     >

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { TEXT } from 'styles/globals';
 import { Button } from 'components/Button';
-import { CTA, SUB_HEADER_CLASS } from './utils';
+import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const controlList = [
   {
@@ -25,7 +25,7 @@ const controlList = [
 
 export function WantMoreControl() {
   return (
-    <SectionWrapper customClasses="lg:p-24 px-4 py-12">
+    <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
       <div className="grid max-w-screen-xl lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0 mr-12">
           <h2 className={SUB_HEADER_CLASS}>Want more control?</h2>

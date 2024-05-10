@@ -5,6 +5,7 @@ import { DownloadIcon } from 'lucide-react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/Button';
+import { SECTION_BOX_CLASS } from './utils';
 
 const OperateHeroImage = () => (
   <Image
@@ -18,7 +19,7 @@ const OperateHeroImage = () => (
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="py-12 border-b md:py-16"
+    customClasses={`border-b ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
