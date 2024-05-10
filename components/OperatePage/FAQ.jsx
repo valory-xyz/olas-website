@@ -79,7 +79,8 @@ const faqList = [
             There is no official support, but the
             {' '}
             <Link
-              href="https://operate.olas.network/"
+              target="_blank"
+              href="https://discord.com/channels/899649805582737479/1169275451089367131"
               className="text-purple-600"
             >
               Olas community

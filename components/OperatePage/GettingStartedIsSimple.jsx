@@ -57,7 +57,7 @@ const GettingStartedIsSimpleContent = () => (
         ))}
       </div>
 
-      <div className="flex justify-center items-center gap-8 xs:flex-col">
+      <div className="flex justify-center items-center gap-8 md:flex md:flex-col">
         {downloadLinks.map(({
           btnText, href, disabled, icon,
         }, index) => (
