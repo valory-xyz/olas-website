@@ -29,8 +29,11 @@ const SectionWrapper = ({
       style={
         backgroundImage
           ? {
-            background: `url(${backgroundImage}) center`,
-            backgroundSize: 'cover',
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundPosition:
+                backgroundType === 'CONTAIN' ? 'bottom' : 'center',
+            backgroundSize:
+                backgroundType === 'CONTAIN' ? 'contain' : 'cover',
           }
           : undefined
       }

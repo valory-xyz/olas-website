@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { kebabCase } from 'lodash';
 
@@ -37,8 +38,9 @@ const downloadLinks = [
   },
 ];
 
-export const GettingStartedIsSimple = () => (
+const GettingStartedIsSimpleContent = () => (
   <SectionWrapper
+    id="#download"
     customClasses="py-20 border border-purple-200"
     backgroundType="SUBTLE_GRADIENT"
   >
@@ -81,4 +83,10 @@ export const GettingStartedIsSimple = () => (
       </div>
     </div>
   </SectionWrapper>
+);
+
+export const GettingStartedIsSimple = () => (
+  <Link href="#download">
+    <GettingStartedIsSimpleContent />
+  </Link>
 );
