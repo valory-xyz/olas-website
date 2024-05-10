@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { TEXT } from 'styles/globals';
-import SectionHeading from '../SectionHeading';
+import { Button } from 'components/Button';
+import { CTA, SUB_HEADER_CLASS } from './utils';
 
 const controlList = [
   {
@@ -27,14 +28,11 @@ export function WantMoreControl() {
     <SectionWrapper customClasses="lg:p-24 px-4 py-12">
       <div className="grid max-w-screen-xl lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0 mr-12">
-          <SectionHeading spacing="mb-8">Want more control?</SectionHeading>
+          <h2 className={SUB_HEADER_CLASS}>Want more control?</h2>
 
           <div>
             {controlList.map((each, index) => (
-              <div
-                key={index}
-                className="py-4 rounded-lg text-gray-600"
-              >
+              <div key={index} className="py-4 rounded-lg text-gray-600">
                 <div className={`flex items-center mb-1 ${TEXT}`}>
                   <h2 className="font-semibold">{each.title}</h2>
                 </div>
@@ -44,7 +42,8 @@ export function WantMoreControl() {
             ))}
           </div>
         </div>
-        <div className="lg:mt-0 lg:col-span-6 lg:flex">
+
+        <div className="mt-8 lg:col-span-6 lg:flex lg:mt-0">
           <Image
             className="mx-auto border shadow-xl"
             alt="OLAS Utility"
@@ -53,6 +52,12 @@ export function WantMoreControl() {
             height="574"
           />
         </div>
+      </div>
+
+      <div className="flex justify-center mt-8">
+        <Button href={CTA} isHoverCssEnabled={false} type="secondary">
+          Browse agents to run manually
+        </Button>
       </div>
     </SectionWrapper>
   );

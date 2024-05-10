@@ -1,7 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import SectionHeading from '../SectionHeading';
+import { SECTION_WRAPPER_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
   {
@@ -101,20 +101,22 @@ const faqList = [
 export const FAQ = () => (
   <div>
     <SectionWrapper
-      customClasses="py-24 border bg-no-repeat"
+      customClasses="py-8 border bg-no-repeat lg:py-24"
       backgroundType="CONTAIN"
       backgroundImage="/images/homepage/hero.png"
     >
-      <div className="max-w-screen-lg lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
+      <div className={SECTION_WRAPPER_CLASS}>
         <div className="grid gap-12">
-          <SectionHeading size="mb-0">
-            <div className="text-center">Commonly asked questions</div>
-          </SectionHeading>
+          <h2 className={`${SUB_HEADER_CLASS}`}>
+            <div className="text-left lg:text-center">
+              Commonly asked questions
+            </div>
+          </h2>
         </div>
 
         {faqList.map((faq) => (
           <div key={faq.name}>
-            <div className="text-2xl font-bold mt-16 mb-4 text-slate-900">
+            <div className="text-2xl font-bold mt-2 mb-4 text-slate-900">
               {faq.name}
             </div>
 

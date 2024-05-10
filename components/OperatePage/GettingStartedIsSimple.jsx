@@ -5,7 +5,11 @@ import { kebabCase } from 'lodash';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/Button';
-import SectionHeading from '../SectionHeading';
+import {
+  DESCRIPTION_CLASS,
+  SECTION_WRAPPER_CLASS,
+  SUB_HEADER_CLASS,
+} from './utils';
 
 const installSteps = [
   { title: 'Download the App' },
@@ -37,53 +41,57 @@ const downloadLinks = [
   },
 ];
 
-const GettingStartedIsSimpleContent = () => (
+export const GettingStartedIsSimple = () => (
   <SectionWrapper
     id="download"
-    customClasses="py-20 border border-purple-200"
+    customClasses="lg:p-24 px-4 py-12 border border-purple-200"
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className="grid gap-12">
-      <SectionHeading size="mb-0">
-        <div className="text-center">Getting started is simple</div>
-      </SectionHeading>
+    <div className={SECTION_WRAPPER_CLASS}>
+      <div className="grid gap-1 col-span-12 lg:gap-12">
+        <h2 className={SUB_HEADER_CLASS}>
+          <div className="text-left lg:text-center">
+            Getting started is simple
+          </div>
+        </h2>
 
-      <div className="flex flex-col justify-center items-center gap-4 sm:flex sm:flex-row">
-        {installSteps.map(({ title }, index) => (
-          <Fragment key={index}>
-            <div className="ml-2">{title}</div>
-            {index !== downloadLinks.length - 1 && (
-              <ArrowRight size={16} className="rotate-90 md:rotate-0" />
-            )}
-          </Fragment>
-        ))}
-      </div>
+        <div className="flex flex-col justify-center items-center gap-1 mb-8 md:flex lg:flex-row lg:gap-4 lg:mb-0">
+          {installSteps.map(({ title }, index) => (
+            <Fragment key={index}>
+              <div className={DESCRIPTION_CLASS}>{title}</div>
+              {index !== downloadLinks.length - 1 && (
+                <ArrowRight size={16} className="rotate-90 lg:rotate-0" />
+              )}
+            </Fragment>
+          ))}
+        </div>
 
-      <div className="flex flex-col justify-center items-center gap-8 sm:flex sm:flex-row">
-        {downloadLinks.map(({
-          btnText, href, disabled, icon,
-        }, index) => (
-          <Fragment key={kebabCase(btnText)}>
-            <Button
-              href={disabled ? null : href}
-              disabled={disabled}
-              isHoverCssEnabled={false}
-              type={disabled ? 'disabled' : 'primary'}
-            >
-              <div className="flex items-start">
-                {icon}
-                <div className="ml-2">{btnText}</div>
-              </div>
-            </Button>
+        <div className="flex flex-col justify-center items-center gap-6 lg:gap-8 sm:flex sm:flex-row">
+          {downloadLinks.map(({
+            btnText, href, disabled, icon,
+          }, index) => (
+            <Fragment key={kebabCase(btnText)}>
+              <Button
+                href={disabled ? null : href}
+                disabled={disabled}
+                isHoverCssEnabled={false}
+                type={disabled ? 'disabled' : 'primary'}
+              >
+                <div className="flex items-start">
+                  {icon}
+                  <div className="ml-2">{btnText}</div>
+                </div>
+              </Button>
 
-            {index !== downloadLinks.length - 1 && (
-            <div className="font-bold text-lg text-purple-200">|</div>
-            )}
-          </Fragment>
-        ))}
+              {index !== downloadLinks.length - 1 ? (
+                <div className="font-bold text-lg text-purple-200 hidden md:block">
+                  |
+                </div>
+              ) : null}
+            </Fragment>
+          ))}
+        </div>
       </div>
     </div>
   </SectionWrapper>
 );
-
-export const GettingStartedIsSimple = () => <GettingStartedIsSimpleContent />;
