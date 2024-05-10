@@ -5,7 +5,7 @@ const WhyOlas = () => (
   <div className="py-14 text-center" id="what-are-autonomous-services">
     <h2 className="mb-8">WHAT ARE AUTONOMOUS SERVICES?</h2>
     <div
-      className="text-6xl font-bold mb-8"
+      className="text-4xl md:text-6xl font-bold mb-8"
     >
       Decentralized&nbsp;
       <br />

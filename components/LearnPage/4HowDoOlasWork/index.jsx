@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { TITLE } from 'styles/globals';
 
 const DATA = [
   'Services are made up of open-source software agents',
@@ -13,7 +12,7 @@ const DATA = [
 
 const WhatAreWeBuilding = () => (
   <section className="section-4 py-10" id="how-do-autonomous-services-work">
-    <div className={TITLE.SMALL}>
+    <div className="header text-4xl md:text-6xl font-bold text-center mb-8">
       How do autonomous
       <br />
       services work?

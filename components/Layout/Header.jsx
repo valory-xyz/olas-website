@@ -3,12 +3,12 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from 'components/ui/button';
 import { Menu } from './Menu';
-// import { MenuMobileDrawer } from './MenuMobileDrawer';
+import { MenuMobile } from './MenuMobile';
 
 const Header = () => (
   <header className="sticky top-0 z-50 border-b">
-    <nav className="bg-white px-4 lg:px-6 py-2.5 ">
-      <div className="grid grid-cols-2 sm:flex justify-start items-center mx-auto max-w-screen-xl gap-x-2 gap-y-4 sm:gap-10">
+    <nav className="bg-white px-4 lg:px-6 md:py-2.5 ">
+      <div className="flex justify-between md:justify-start items-center mx-auto max-w-screen-xl gap-x-2 gap-y-4 sm:gap-10">
         <Link href="/" className="justify-self-start col-span-2">
           <Image
             src="/images/olas-logo.svg"
@@ -18,9 +18,14 @@ const Header = () => (
             className="mx-auto"
           />
         </Link>
-        <Menu />
-        {/* <MenuMobileDrawer /> */}
-        <Button variant="outline" size="lg" asChild className="ml-auto">
+        <Menu className="hidden md:block" />
+        <MenuMobile className="md:hidden" />
+        <Button
+          variant="outline"
+          size="lg"
+          asChild
+          className="hidden md:inline-flex ml-auto"
+        >
           <Link href="/#get-involved">Get involved</Link>
         </Button>
       </div>
