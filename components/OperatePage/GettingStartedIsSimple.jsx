@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { kebabCase } from 'lodash';
 
@@ -40,7 +39,7 @@ const downloadLinks = [
 
 const GettingStartedIsSimpleContent = () => (
   <SectionWrapper
-    id="#download"
+    id="download"
     customClasses="py-20 border border-purple-200"
     backgroundType="SUBTLE_GRADIENT"
   >
@@ -49,7 +48,7 @@ const GettingStartedIsSimpleContent = () => (
         <div className="text-center">Getting started is simple</div>
       </SectionHeading>
 
-      <div className="flex justify-center items-center gap-8">
+      <div className="flex justify-center items-center gap-8 xs:flex-col">
         {installSteps.map(({ title }, index) => (
           <Fragment key={index}>
             <div className="ml-2">{title}</div>
@@ -58,13 +57,13 @@ const GettingStartedIsSimpleContent = () => (
         ))}
       </div>
 
-      <div className="flex justify-center items-center gap-8">
+      <div className="flex justify-center items-center gap-8 xs:flex-col">
         {downloadLinks.map(({
           btnText, href, disabled, icon,
         }, index) => (
           <Fragment key={kebabCase(btnText)}>
             <Button
-              onClick={disabled ? null : () => window.open(href, '_blank')}
+              href={disabled ? null : href}
               disabled={disabled}
               isHoverCssEnabled={false}
               type={disabled ? 'disabled' : 'primary'}
@@ -85,8 +84,4 @@ const GettingStartedIsSimpleContent = () => (
   </SectionWrapper>
 );
 
-export const GettingStartedIsSimple = () => (
-  <Link href="#download">
-    <GettingStartedIsSimpleContent />
-  </Link>
-);
+export const GettingStartedIsSimple = () => <GettingStartedIsSimpleContent />;

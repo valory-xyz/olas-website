@@ -49,7 +49,13 @@ const disabledStyle = `
 `;
 
 export function Button({
-  href, className, size, isExternal, type, ...props
+  href,
+  className,
+  size,
+  isExternal,
+  isHoverCssEnabled,
+  type,
+  ...props
 }) {
   const fullClassName = `
     inline-flex
@@ -59,7 +65,7 @@ export function Button({
     border
     focus:ring-4
     ${props.disabled && disabledStyle}
-    ${type === 'primary' && getPrimaryStyle(props.isHoverCssEnabled)}
+    ${type === 'primary' && getPrimaryStyle(isHoverCssEnabled)}
     ${type === 'secondary' && secondaryStyle}
     ${size === 'lg' && sizeLgStyle}
     ${size === 'md' && sizeMdStyle}

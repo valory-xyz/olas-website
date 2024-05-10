@@ -1,5 +1,6 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import Link from 'next/link';
 import SectionHeading from '../SectionHeading';
 
 const faqList = [
@@ -11,22 +12,31 @@ const faqList = [
         desc: ' The Olas Operate app allows you to set up and run decentralized agents directly from your computer, earning OLAS tokens by simply keeping your machine on.',
       },
       {
-        // TODO
         title: 'How do I install the Olas Operate app?',
         desc: (
           <>
-            Visit the Olas Operate download page, download the app, and follow
-            the installation guide provided.
+            Visit the
+            {' '}
+            <Link
+              href="https://operate.olas.network/"
+              className="text-purple-600"
+            >
+              Olas Operate download page
+            </Link>
+            {', '}
+            download the app, and follow the installation guide provided.
           </>
         ),
       },
       {
-        // TODO
         title: 'What are the system requirements for the Olas Operate app?',
         desc: (
           <>
-            Minimal system requirements for Mac devices: 800 MB of free RAM
-            (suggested 1 GB) 1.3 GB disk space
+            Minimal system requirements for Mac devices:
+            <ul className="list-disc ml-6">
+              <li>800 MB of free RAM (suggested 1 GB)</li>
+              <li>1.3 GB disk space</li>
+            </ul>
           </>
         ),
       },
@@ -40,9 +50,22 @@ const faqList = [
     name: 'General',
     list: [
       {
-        // TODO
         title: 'Can I run an agent without using the app?',
-        desc: 'Yes, for more technical control and flexibility, you can set up and run agents manually. Visit operate.olas.network to get started.',
+        desc: (
+          <>
+            Yes, for more technical control and flexibility, you can set up and
+            run agents manually. Visit
+            {' '}
+            <Link
+              href="https://operate.olas.network/"
+              className="text-purple-600"
+            >
+              operate.olas.network
+            </Link>
+            {' '}
+            to get started.
+          </>
+        ),
       },
       {
         title: 'How do I earn OLAS tokens?',
@@ -51,7 +74,20 @@ const faqList = [
       {
         // TODO
         title: 'Where can I get support if I encounter issues?',
-        desc: 'There is no official support, but the Olas community can help you if you run into any issues.',
+        desc: (
+          <>
+            There is no official support, but the
+            {' '}
+            <Link
+              href="https://operate.olas.network/"
+              className="text-purple-600"
+            >
+              Olas community
+            </Link>
+            {' '}
+            can help you if you run into any issues.
+          </>
+        ),
       },
       {
         title: 'Can I run multiple agents at the same time?',
@@ -81,11 +117,9 @@ export const FAQ = () => (
               {faq.name}
             </div>
 
-            {faq.list.map((item) => (
-              <div className="py-2">
-                <Accordion key={item.title} label={item.title}>
-                  {item.desc}
-                </Accordion>
+            {faq.list.map((eachFaq, index) => (
+              <div className="py-2" key={index}>
+                <Accordion label={eachFaq.title}>{eachFaq.desc}</Accordion>
               </div>
             ))}
           </div>
