@@ -48,16 +48,18 @@ const GettingStartedIsSimpleContent = () => (
         <div className="text-center">Getting started is simple</div>
       </SectionHeading>
 
-      <div className="flex justify-center items-center gap-8 xs:flex-col">
+      <div className="flex flex-col justify-center items-center gap-4 sm:flex sm:flex-row">
         {installSteps.map(({ title }, index) => (
           <Fragment key={index}>
             <div className="ml-2">{title}</div>
-            {index !== downloadLinks.length - 1 && <ArrowRight size={16} />}
+            {index !== downloadLinks.length - 1 && (
+              <ArrowRight size={16} className="rotate-90 md:rotate-0" />
+            )}
           </Fragment>
         ))}
       </div>
 
-      <div className="flex justify-center items-center gap-8 md:flex md:flex-col">
+      <div className="flex flex-col justify-center items-center gap-8 sm:flex sm:flex-row">
         {downloadLinks.map(({
           btnText, href, disabled, icon,
         }, index) => (

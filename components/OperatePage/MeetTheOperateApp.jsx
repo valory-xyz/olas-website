@@ -41,7 +41,7 @@ export const EasySetupContinuousRewards = () => (
       <div className="text-center">Easy setup. Continuous rewards</div>
     </SectionHeading>
 
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid grid-cols-2 gap-8 sm:grid-cols-1">
       {list.map(({ title, desc, icon }) => (
         <div
           key={kebabCase(title)}
