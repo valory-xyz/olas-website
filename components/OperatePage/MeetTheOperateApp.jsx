@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { kebabCase } from 'lodash';
 import {
   CircleDollarSign, Cog, LockKeyhole, Zap,
 } from 'lucide-react';
@@ -49,7 +48,7 @@ export const EasySetupContinuousRewards = () => (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       {list.map(({ title, desc, icon }) => (
         <div
-          key={kebabCase(title)}
+          key={title}
           className="bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-lg text-gray-600 border lg:p-6"
           style={eachCardCss}
         >
@@ -82,15 +81,15 @@ export const MeetTheOperateApp = () => (
 
         <h2 className={SUB_HEADER_CLASS}>Meet the Operate app</h2>
 
-        <div className={DESCRIPTION_CLASS}>
+        <p className={DESCRIPTION_CLASS}>
           Set up and run an agent with just a few clicks, and start earning OLAS
           tokens by simply keeping your computer on.
-        </div>
+        </p>
 
-        <div className={`${DESCRIPTION_CLASS} mt-6`}>
+        <p className={`${DESCRIPTION_CLASS} mt-6`}>
           Whether you’re a tech enthusiast or a novice in the blockchain space,
           Olas Operate makes participation accessible and rewarding.
-        </div>
+        </p>
       </div>
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">

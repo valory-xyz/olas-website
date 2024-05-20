@@ -15,7 +15,7 @@ export const Accordion = ({ label, children }) => {
         className={`flex items-center justify-between w-full px-6 py-4 font-medium text-gray-900 bg-gray-100 border border-gray-200 text-left lg:text-center hover:bg-gray-100 ${
           accordionOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl '
         }`}
-        aria-expanded="true"
+        aria-expanded={accordionOpen ? 'true' : 'false'}
       >
         <span>{label}</span>
         <div>

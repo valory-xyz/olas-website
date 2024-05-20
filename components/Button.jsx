@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
-const getPrimaryStyle = (isHoverEnabled) => `
+const getPrimaryStyle = (isHoverEnabled, disabled) => `
   bg-purple-900
   text-white
   border-primary
   focus:ring-gray-100
-  ${isHoverEnabled ? 'hover:bg-white hover:text-purple-900' : ''}
+  ${isHoverEnabled && !disabled ? 'hover:bg-white hover:text-purple-900' : ''}
 `;
 
 const secondaryStyle = 'bg-white text-primary border-primary hover:bg-purple-900 hover:text-white focus:ring-gray-100';
@@ -22,7 +22,7 @@ export function Button({
   className,
   size,
   isExternal,
-  isHoverCssEnabled,
+  shouldInvertOnHover,
   type,
   ...props
 }) {
@@ -34,7 +34,7 @@ export function Button({
     border
     focus:ring-4
     ${props.disabled && disabledStyle}
-    ${type === 'primary' && getPrimaryStyle(isHoverCssEnabled)}
+    ${type === 'primary' && getPrimaryStyle(shouldInvertOnHover, props.disabled)}
     ${type === 'secondary' && secondaryStyle}
     ${size === 'lg' && sizeLgStyle}
     ${size === 'md' && sizeMdStyle}
@@ -46,6 +46,7 @@ export function Button({
       className={fullClassName}
       rel={isExternal && 'noopener noreferrer'}
       target={isExternal && '_blank'}
+      disabled={props.disabled}
       {...props}
     />
   ) : (
@@ -60,7 +61,7 @@ Button.propTypes = {
   size: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
-  isHoverCssEnabled: PropTypes.bool,
+  shouldInvertOnHover: PropTypes.bool,
 };
 Button.defaultProps = {
   className: null,
@@ -68,5 +69,5 @@ Button.defaultProps = {
   size: 'lg',
   type: 'primary',
   disabled: false,
-  isHoverCssEnabled: true,
+  shouldInvertOnHover: true,
 };

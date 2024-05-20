@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { kebabCase } from 'lodash';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/Button';
@@ -70,11 +69,11 @@ export const GettingStartedIsSimple = () => (
           {downloadLinks.map(({
             btnText, href, disabled, icon,
           }, index) => (
-            <Fragment key={kebabCase(btnText)}>
+            <Fragment key={btnText}>
               <Button
                 href={disabled ? null : href}
                 disabled={disabled}
-                isHoverCssEnabled={false}
+                shouldInvertOnHover={false}
                 type={disabled ? 'disabled' : 'primary'}
               >
                 <div className="flex items-start">

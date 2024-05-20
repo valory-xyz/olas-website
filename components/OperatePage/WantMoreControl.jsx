@@ -37,7 +37,7 @@ export function WantMoreControl() {
                   <h2 className="font-semibold">{each.title}</h2>
                 </div>
 
-                <p className="">{each.desc}</p>
+                <p>{each.desc}</p>
               </div>
             ))}
           </div>
@@ -55,7 +55,7 @@ export function WantMoreControl() {
       </div>
 
       <div className="flex justify-center mt-8">
-        <Button href={CTA} isHoverCssEnabled={false} type="secondary">
+        <Button href={CTA} shouldInvertOnHover={false} type="secondary">
           Browse agents to run manually
         </Button>
       </div>
