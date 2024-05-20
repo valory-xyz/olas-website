@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/Button';
+import { Button } from 'components/ui/button';
 import {
   DESCRIPTION_CLASS,
   SECTION_BOX_CLASS,
@@ -19,7 +19,6 @@ const installSteps = [
 const iconProps = {
   width: 24,
   height: 24,
-  style: { alignItems: 'flex-start' },
 };
 
 const downloadLinks = [
@@ -70,6 +69,7 @@ export const GettingStartedIsSimple = () => (
             btnText, href, disabled, icon,
           }, index) => (
             <Fragment key={btnText}>
+              {/* TODO: check button CSS */}
               <Button
                 href={disabled ? null : href}
                 disabled={disabled}
