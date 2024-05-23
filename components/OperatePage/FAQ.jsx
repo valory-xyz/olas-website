@@ -5,23 +5,24 @@ import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
   {
-    name: 'Olas Operate',
+    name: 'Olas Pearl',
     list: [
       {
-        title: 'What is the Olas Operate app?',
-        desc: ' The Olas Operate app allows you to set up and run decentralized agents directly from your computer, earning OLAS tokens by simply keeping your machine on.',
+        title: 'What is Pearl?',
+        desc: 'Pearl allows you to set up and run agents directly from your computer and earn OLAS.',
       },
       {
-        title: 'How do I install the Olas Operate app?',
+        title: 'How do I install Pearl?',
         desc: (
           <>
             Visit the
             {' '}
+            {/* TODO: where is the download page */}
             <Link
               href="https://operate.olas.network/"
               className="text-purple-600"
             >
-              Olas Operate download page
+              Pearl download page
             </Link>
             {', '}
             download the app, and follow the installation guide provided.
@@ -29,11 +30,21 @@ const faqList = [
         ),
       },
       {
-        title: 'What are the system requirements for the Olas Operate app?',
+        title: 'What are the system requirements for Pearl?',
         desc: (
           <>
             Minimal system requirements for Mac devices:
             <ul className="list-disc ml-6">
+              <li>
+                Installed&nbsp;
+                <Link
+                  href="https://docs.docker.com/docker-for-mac/install/"
+                  className="text-purple-600"
+                  target="_blank"
+                >
+                  Docker desktop app ↗
+                </Link>
+              </li>
               <li>800 MB of free RAM (suggested 1 GB)</li>
               <li>1.3 GB disk space</li>
             </ul>
@@ -41,8 +52,24 @@ const faqList = [
         ),
       },
       {
-        title: 'Is my data safe when using Olas Operate?',
-        desc: 'The app is built with robust security measures to protect your data and earnings.',
+        title: 'What happens if I forget my password?',
+        desc: (
+          <>
+            Pearl uses Safe smart wallets. Safe smart wallets are designed so
+            that, if you forget your password, you can restore access to your
+            funds using a backup wallet. This backup wallet acts as a second
+            signer on your Safe. To learn more about this third party product
+            and try to regain access, go to&nbsp;
+            <Link
+              href="https://safe.global/"
+              className="text-purple-600"
+              target="_blank"
+            >
+              safe.global
+            </Link>
+            , connect your backup wallet, and then access the Safe.
+          </>
+        ),
       },
     ],
   },
@@ -90,8 +117,22 @@ const faqList = [
         ),
       },
       {
-        title: 'Can I run multiple agents at the same time?',
-        desc: 'Yes, you can run multiple agents simultaneously to increase your earning potential.',
+        title: 'How can I optimize the performance of my agents?',
+        desc: (
+          <>
+            You can optimize agent performance through modifying the agent code.
+            Visit
+            {' '}
+            <Link
+              href="https://operate.olas.network/"
+              className="text-purple-600"
+            >
+              operate.olas.network
+            </Link>
+            {' '}
+            to get started.
+          </>
+        ),
       },
     ],
   },
@@ -107,7 +148,7 @@ export const FAQ = () => (
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS}`}>
           <div className="text-left lg:text-center">
-            Commonly asked questions
+            Frequently asked questions
           </div>
         </h2>
       </div>
