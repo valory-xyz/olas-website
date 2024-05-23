@@ -79,7 +79,7 @@ export const MeetTheOperateApp = () => (
           height={96}
         />
 
-        <h2 className={SUB_HEADER_CLASS}>Meet the Operate app</h2>
+        <h2 className={SUB_HEADER_CLASS}>Meet the Pearl app</h2>
 
         <p className={DESCRIPTION_CLASS}>
           Set up and run an agent with just a few clicks, and start earning OLAS
@@ -95,7 +95,7 @@ export const MeetTheOperateApp = () => (
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
           className="mx-auto"
-          alt="Meet the Operate app"
+          alt="Meet the Pearl app"
           src="/images/operate-page/meet-the-operate-app.png"
           width={580}
           height={574}
