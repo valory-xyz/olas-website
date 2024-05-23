@@ -69,7 +69,7 @@ export const InstallRunAnAgent = () => (
     <div className="max-w-screen-xl px-0 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
       <div className="grid gap-1 col-span-12 lg:gap-12">
         <h2 className={SUB_HEADER_CLASS}>
-          <div className="text-left lg:text-center">
+          <div className="text-left">
             Install. Run an Agent. Earn OLAS. That’s It
           </div>
         </h2>

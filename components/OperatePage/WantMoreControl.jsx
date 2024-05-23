@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import Link from 'next/link';
+
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { TEXT } from 'styles/globals';
-import { Button } from 'components/Button';
+import { Button } from 'components/ui/button';
 import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const controlList = [
@@ -55,8 +57,8 @@ export function WantMoreControl() {
       </div>
 
       <div className="flex justify-center mt-8">
-        <Button href={CTA} shouldInvertOnHover={false} type="secondary">
-          Browse agents to run manually
+        <Button asChild variant="ghostPrimary" size="xl">
+          <Link href={CTA}>Browse agents to run manually</Link>
         </Button>
       </div>
     </SectionWrapper>

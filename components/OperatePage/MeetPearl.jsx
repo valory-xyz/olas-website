@@ -9,6 +9,7 @@ import {
 import {
   DESCRIPTION_CLASS,
   SECTION_BOX_CLASS,
+  SUB_DESCRIPTION_CLASS,
   SUB_HEADER_CLASS,
 } from './utils';
 
@@ -42,6 +43,8 @@ const eachCardCss = {
 
 export const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
+    <p className={`${SUB_DESCRIPTION_CLASS} text-left lg:text-center mb-4`}>DESIGNED TO BE...</p>
+
     <h2 className={SUB_HEADER_CLASS}>
       <div className="text-left lg:text-center">
         Accessible. Strong. Transparent. Yours.
@@ -75,11 +78,11 @@ export const MeetPearl = () => (
       <div className="mb-6 px-0 lg:col-span-6 lg:px-5 lg:text-left lg:mb-12">
         <Image
           style={{ marginLeft: -6 }}
-          className="mb-2 lg:mb-6 w-16 lg:w-24"
+          className="mb-2 lg:mb-6 w-16 lg:w-16"
           alt="Operate Logo"
           src="/images/operate-page/operate-logo.svg"
-          width={96}
-          height={96}
+          width={48}
+          height={48}
         />
 
         <h2 className={SUB_HEADER_CLASS}>Meet Pearl</h2>
