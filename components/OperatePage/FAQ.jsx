@@ -139,11 +139,7 @@ const faqList = [
 ];
 
 export const FAQ = () => (
-  <SectionWrapper
-    customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}
-    backgroundType="CONTAIN"
-    backgroundImage="/images/homepage/hero.png"
-  >
+  <SectionWrapper customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}>
     <div className="max-w-screen-lg px-0 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS}`}>
