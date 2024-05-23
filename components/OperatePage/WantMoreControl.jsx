@@ -7,14 +7,14 @@ import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 const controlList = [
   {
     title: 'Customize, experiment, and optimize your agents',
-    desc: 'With the Olas Operate interface, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules.',
+    desc: 'With the Olas Pearl interface, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules.',
   },
   {
     title: 'Quick setup guides',
     desc: 'Follow easy steps to get started and make adjustments on the fly.',
   },
   {
-    title: 'Full control',
+    title: 'Configurable',
     desc: 'Modify and manage your agent directly, optimizing as you see fit.',
   },
   {
