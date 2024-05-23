@@ -1,17 +1,17 @@
 import { FAQ } from './FAQ';
-import { GettingStartedIsSimple } from './GettingStartedIsSimple';
+import { InstallRunAnAgent } from './InstallRunAnAgent';
 import Hero from './Hero';
 import { WantMoreControl } from './WantMoreControl';
-import { MeetTheOperateApp } from './MeetTheOperateApp';
+import { MeetPearl } from './MeetPearl';
 
-const Bonds = () => (
+const Pearl = () => (
   <>
     <Hero />
-    <MeetTheOperateApp />
-    <GettingStartedIsSimple />
+    <MeetPearl />
+    <InstallRunAnAgent />
     <WantMoreControl />
     <FAQ />
   </>
 );
 
-export default Bonds;
+export default Pearl;

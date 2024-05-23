@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
 import { DownloadIcon } from 'lucide-react';
+import Link from 'next/link';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/Button';
+import { Button } from 'components/ui/button';
 import { SECTION_BOX_CLASS } from './utils';
 
 const OperateHeroImage = () => (
@@ -35,12 +36,11 @@ const Hero = () => (
           <OperateHeroImage />
         </div>
 
-        <Button
-          className="mb-8 w-full md:w-auto hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 hover:text-white"
-          href="/operate#download"
-        >
-          <DownloadIcon className="mr-2" />
-          Download Pearl app
+        <Button variant="default" size="xl" asChild className="mb-12">
+          <Link href="/operate#download">
+            <DownloadIcon className="mr-2" />
+            Download Pearl - Alpha
+          </Link>
         </Button>
 
         <div className="text-lg font-light text-gray-600 lg:text-xl ">

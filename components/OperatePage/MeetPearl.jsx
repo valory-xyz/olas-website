@@ -67,7 +67,7 @@ export const EasySetupContinuousRewards = () => (
   </div>
 );
 
-export const MeetTheOperateApp = () => (
+export const MeetPearl = () => (
   <SectionWrapper
     customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
   >
