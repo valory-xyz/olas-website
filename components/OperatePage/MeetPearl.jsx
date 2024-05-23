@@ -11,6 +11,7 @@ import {
   SECTION_BOX_CLASS,
   SUB_DESCRIPTION_CLASS,
   SUB_HEADER_CLASS,
+  TEXT_CLASS,
 } from './utils';
 
 const list = [
@@ -41,9 +42,11 @@ const eachCardCss = {
     'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
 };
 
-export const EasySetupContinuousRewards = () => (
+const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
-    <p className={`${SUB_DESCRIPTION_CLASS} text-left lg:text-center mb-4`}>DESIGNED TO BE...</p>
+    <p className={`${SUB_DESCRIPTION_CLASS} text-left lg:text-center mb-4`}>
+      DESIGNED TO BE...
+    </p>
 
     <h2 className={SUB_HEADER_CLASS}>
       <div className="text-left lg:text-center">
@@ -70,40 +73,41 @@ export const EasySetupContinuousRewards = () => (
   </div>
 );
 
-export const MeetPearl = () => (
-  <SectionWrapper
-    customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
-  >
-    <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
-      <div className="mb-6 px-0 lg:col-span-6 lg:px-5 lg:text-left lg:mb-12">
-        <Image
-          style={{ marginLeft: -6 }}
-          className="mb-2 lg:mb-6 w-16 lg:w-16"
-          alt="Operate Logo"
-          src="/images/operate-page/operate-logo.svg"
-          width={48}
-          height={48}
-        />
+export const MeetPearlContent = () => (
+  <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
+    <div className="mb-6 px-0 lg:col-span-5 lg:px-5 lg:text-left lg:mb-12">
+      <Image
+        style={{ marginLeft: -6 }}
+        className="mb-2 lg:mb-4 w-16 lg:w-16"
+        alt="Operate Logo"
+        src="/images/operate-page/operate-logo.svg"
+        width={48}
+        height={48}
+      />
 
-        <h2 className={SUB_HEADER_CLASS}>Meet Pearl</h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Meet Pearl</h2>
 
-        <p className={DESCRIPTION_CLASS}>
-          An all-in-one application designed to streamline your entry into the
-          world of autonomous agents and earning OLAS through staking.
-        </p>
-      </div>
-
-      <div className="lg:mt-0 lg:col-span-6 lg:flex">
-        <Image
-          className="mx-auto"
-          alt="Meet Pearl"
-          src="/images/operate-page/meet-the-operate-app.png"
-          width={580}
-          height={574}
-        />
-      </div>
+      <p className={TEXT_CLASS}>
+        An all-in-one application designed to streamline your entry into the
+        world of autonomous agents and earning OLAS through staking.
+      </p>
     </div>
 
+    <div className="lg:mt-0 lg:col-span-7 lg:flex">
+      <Image
+        className="mx-auto"
+        alt="Meet Pearl"
+        src="/images/operate-page/meet-the-operate-app.png"
+        width={580}
+        height={574}
+      />
+    </div>
+  </div>
+);
+
+export const MeetPearl = () => (
+  <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
+    <MeetPearlContent />
     <EasySetupContinuousRewards />
   </SectionWrapper>
 );
