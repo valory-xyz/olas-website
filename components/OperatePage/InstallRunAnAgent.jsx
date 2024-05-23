@@ -5,9 +5,10 @@ import Link from 'next/link';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import {
-  DESCRIPTION_CLASS,
+  FOOT_NOTE_CLASS,
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
+  TEXT_CLASS,
 } from './utils';
 
 const installSteps = [
@@ -18,7 +19,7 @@ const installSteps = [
         {' '}
         <Link
           href="https://docs.docker.com/docker-for-mac/install/"
-          className="text-purple-600"
+          className="text-purple-700"
           target="_blank"
         >
           Docker desktop app ↗
@@ -29,7 +30,7 @@ const installSteps = [
       </>
     ),
   },
-  { title: 'Install Pearl' },
+  { title: 'Install Pearl.' },
   { title: 'Add funds and start your agent.' },
   {
     title:
@@ -66,23 +67,23 @@ export const InstallRunAnAgent = () => (
     customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className="max-w-screen-xl px-0 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
-      <div className="grid gap-1 col-span-12 lg:gap-12">
+    <div className="max-w-screen-xl px-0 py-6 mx-auto lg:grid-cols-12 lg:px-12">
+      <div className="grid gap-1 col-span-12 lg:gap-8">
         <h2 className={SUB_HEADER_CLASS}>
           <div className="text-left">
             Install. Run an Agent. Earn OLAS. That’s It
           </div>
         </h2>
 
-        <ol className="flex flex-col gap-1 mb-8 md:flex lg:gap-4 lg:mb-0 list-decimal">
+        <ol className="flex flex-col gap-1 lg:gap-2 lg:mb-0 list-decimal">
           {installSteps.map(({ title }, index) => (
-            <li key={index} className={`${DESCRIPTION_CLASS} ml-6`}>
+            <li key={index} className={`${TEXT_CLASS} ml-6`}>
               {title}
             </li>
           ))}
         </ol>
 
-        <p className="text-lg font-light text-gray-600 lg:text-xl">
+        <p className={FOOT_NOTE_CLASS}>
           * Docker desktop app is only required during Alpha and Beta testing
         </p>
 
