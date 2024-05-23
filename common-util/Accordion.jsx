@@ -23,6 +23,7 @@ export const Accordion = ({ label, children }) => {
             className={`transform origin-center transition duration-100 ease-out ${
               accordionOpen && '!rotate-180'
             }`}
+            color="#606F85"
           />
         </div>
       </button>
