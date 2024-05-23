@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import {
-  CircleDollarSign, Cog, LockKeyhole, Zap,
+  FileCode2,
+  Handshake,
+  LockKeyhole,
+  PersonStanding,
 } from 'lucide-react';
 import {
   DESCRIPTION_CLASS,
@@ -11,24 +14,24 @@ import {
 
 const list = [
   {
-    title: 'Quick Installation',
-    desc: 'Download and set up the Olas Operate app in minutes. Our user-friendly interface ensures a smooth setup process, letting you deploy your first agent with ease.',
-    icon: <Zap />,
+    title: 'Accessible',
+    desc: 'No prior expertise is required. If you can use a computer, you can start earning OLAS with Pearl. It’s designed to be as simple as possible.',
+    icon: <PersonStanding />,
   },
   {
-    title: 'Run Agents Effortlessly',
-    desc: 'Once set up, your agents operate in the background. No need for continuous monitoring—your computer does the work while you go about your day.',
-    icon: <Cog />,
-  },
-  {
-    title: 'Stake and Earn OLAS',
-    desc: 'With Olas Operate, each minute your agent is active could translates into OLAS.',
-    icon: <CircleDollarSign />,
-  },
-  {
-    title: 'Secure and Trustworthy',
-    desc: 'Built with top-tier security measures to ensure your data and earnings are protected.',
+    title: 'Strong',
+    desc: 'We put your peace of mind first. Pearl provides robust recovery options to protect your funds.',
     icon: <LockKeyhole />,
+  },
+  {
+    title: 'Transparent',
+    desc: 'The Pearl app is completely open-source, allowing everyone to review its code for total transparency.',
+    icon: <FileCode2 />,
+  },
+  {
+    title: 'Yours',
+    desc: 'By staking your own agent and participating in Olas agent economies, you are claiming your ownership of a share of AI.',
+    icon: <Handshake />,
   },
 ];
 
@@ -41,7 +44,7 @@ export const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
     <h2 className={SUB_HEADER_CLASS}>
       <div className="text-left lg:text-center">
-        Easy setup. Continuous rewards
+        Accessible. Strong. Transparent. Yours.
       </div>
     </h2>
 
@@ -54,7 +57,7 @@ export const EasySetupContinuousRewards = () => (
         >
           <div className="flex items-center mb-2 lg:mb-4">
             {icon}
-            <h2 className="text-xl font-semibold ml-1">{title}</h2>
+            <h2 className="text-xl font-semibold ml-3">{title}</h2>
           </div>
 
           <p className={DESCRIPTION_CLASS}>{desc}</p>
@@ -79,23 +82,18 @@ export const MeetTheOperateApp = () => (
           height={96}
         />
 
-        <h2 className={SUB_HEADER_CLASS}>Meet the Pearl app</h2>
+        <h2 className={SUB_HEADER_CLASS}>Meet Pearl</h2>
 
         <p className={DESCRIPTION_CLASS}>
-          Set up and run an agent with just a few clicks, and start earning OLAS
-          tokens by simply keeping your computer on.
-        </p>
-
-        <p className={`${DESCRIPTION_CLASS} mt-6`}>
-          Whether you’re a tech enthusiast or a novice in the blockchain space,
-          Olas Operate makes participation accessible and rewarding.
+          An all-in-one application designed to streamline your entry into the
+          world of autonomous agents and earning OLAS through staking.
         </p>
       </div>
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
           className="mx-auto"
-          alt="Meet the Pearl app"
+          alt="Meet Pearl"
           src="/images/operate-page/meet-the-operate-app.png"
           width={580}
           height={574}
