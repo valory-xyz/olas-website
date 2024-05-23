@@ -44,12 +44,12 @@ const iconProps = {
 
 const downloadLinks = [
   {
-    btnText: 'Download for Apple Silicon',
+    btnText: 'Download for Apple Silicon - Alpha',
     href: 'https://www.apple.com/', // TODO
     icon: <Image src="/images/operate-page/brand-apple.svg" {...iconProps} />,
   },
   {
-    btnText: 'Download for MacOS Intel',
+    btnText: 'Download for MacOS Intel - Alpha',
     href: 'https://www.intel.com/', // TODO
     icon: <Image src="/images/operate-page/brand-apple.svg" {...iconProps} />,
   },
@@ -93,14 +93,15 @@ export const InstallRunAnAgent = () => (
             <Fragment key={btnText}>
               {/* TODO: check button CSS */}
               <Button
-                href={disabled ? null : href}
+                onClick={disabled ? null : () => window.open(href, '_blank')}
                 disabled={disabled}
-                shouldInvertOnHover={false}
-                type={disabled ? 'disabled' : 'primary'}
+                variant={disabled ? 'outline' : 'default'}
+                size="xl"
               >
                 <div className="flex items-start">
                   {icon}
-                  <div className="ml-2">{btnText}</div>
+                  &nbsp;&nbsp;
+                  {btnText}
                 </div>
               </Button>
 
