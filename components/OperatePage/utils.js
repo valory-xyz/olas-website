@@ -8,7 +8,7 @@ export const SUB_DESCRIPTION_CLASS = 'text-md text-gray-600 lg:text-lg';
 
 // NEW
 // TODO: text-xl or text-base
-export const TEXT_LIGHT_CLASS = 'text-lg text-slate-500 ';
+export const TEXT_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
 
 export const TEXT_CLASS = 'text-base ';
 

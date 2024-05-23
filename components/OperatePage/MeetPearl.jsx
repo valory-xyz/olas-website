@@ -7,11 +7,10 @@ import {
   PersonStanding,
 } from 'lucide-react';
 import {
-  DESCRIPTION_CLASS,
   SECTION_BOX_CLASS,
-  SUB_DESCRIPTION_CLASS,
   SUB_HEADER_CLASS,
   TEXT_CLASS,
+  TEXT_LIGHT_CLASS,
 } from './utils';
 
 const list = [
@@ -44,29 +43,29 @@ const eachCardCss = {
 
 const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
-    <p className={`${SUB_DESCRIPTION_CLASS} text-left lg:text-center mb-4`}>
+    <p className={`${TEXT_LIGHT_CLASS} text-left lg:text-center mb-3`}>
       DESIGNED TO BE...
     </p>
 
-    <h2 className={SUB_HEADER_CLASS}>
-      <div className="text-left lg:text-center">
-        Accessible. Strong. Transparent. Yours.
-      </div>
+    <h2
+      className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
+    >
+      Accessible. Strong. Transparent. Yours.
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       {list.map(({ title, desc, icon }) => (
         <div
           key={title}
-          className="bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-lg text-gray-600 border lg:p-6"
+          className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
           style={eachCardCss}
         >
-          <div className="flex items-center mb-2 lg:mb-4">
+          <div className="flex items-center">
             {icon}
-            <h2 className="text-xl font-semibold ml-3">{title}</h2>
+            <h2 className="text-xl font-semibold ml-2">{title}</h2>
           </div>
 
-          <p className={DESCRIPTION_CLASS}>{desc}</p>
+          <p className={TEXT_CLASS}>{desc}</p>
         </div>
       ))}
     </div>
