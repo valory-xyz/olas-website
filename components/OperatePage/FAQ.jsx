@@ -17,11 +17,7 @@ const faqList = [
           <>
             Visit the
             {' '}
-            {/* TODO: where is the download page */}
-            <Link
-              href="https://operate.olas.network/"
-              className="text-purple-600"
-            >
+            <Link href="/operate#download" className="text-purple-600">
               Pearl download page
             </Link>
             {', '}
