@@ -90,7 +90,6 @@ export const InstallRunAnAgent = () => (
             btnText, href, disabled, icon,
           }, index) => (
             <Fragment key={btnText}>
-              {/* TODO: check button CSS */}
               <Button
                 onClick={disabled ? null : () => window.open(href, '_blank')}
                 disabled={disabled}
