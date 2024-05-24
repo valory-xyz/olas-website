@@ -69,10 +69,8 @@ export const InstallRunAnAgent = () => (
   >
     <div className="max-w-screen-xl px-0 py-6 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-1 col-span-12 lg:gap-8">
-        <h2 className={SUB_HEADER_CLASS}>
-          <div className="text-left">
-            Install. Run an Agent. Earn OLAS. That’s It
-          </div>
+        <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
+          Install. Run an Agent. Earn OLAS. That’s It
         </h2>
 
         <ol className="flex flex-col gap-1 lg:gap-2 lg:mb-0 list-decimal">
@@ -98,6 +96,7 @@ export const InstallRunAnAgent = () => (
                 disabled={disabled}
                 variant={disabled ? 'outline' : 'default'}
                 size="xl"
+                className="w-full md:w-auto"
               >
                 <div className="flex items-start">
                   {icon}
