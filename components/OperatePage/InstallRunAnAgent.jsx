@@ -101,9 +101,7 @@ async function getLatestRelease() {
       {
         owner: 'valory-xyz',
         repo: 'olas-operate-app',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
+        headers: { 'X-GitHub-Api-Version': '2022-11-28' },
       },
     );
     return response.data;
@@ -113,7 +111,6 @@ async function getLatestRelease() {
   }
 }
 
-getLatestRelease();
 const DownloadLinks = () => {
   const [links, setLinks] = useState(downloadLinks);
 
