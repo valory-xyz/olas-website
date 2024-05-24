@@ -24,7 +24,7 @@ const Hero = () => (
   >
     <div className="grid max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
       <div className="px-5 md:mb-12 lg:col-span-5 lg:p-0 lg:text-left">
-        <div className={`${TEXT_LIGHT_CLASS} mb-2 text-left`}>OLAS PEARL</div>
+        <div className={`${TEXT_LIGHT_CLASS} mb-2 text-left`}>OLAS OPERATE</div>
 
         <h2
           className="leading-5 font-bold text-3xl sm:text-4xl lg:mb-8 lg:text-4xl xl:text-5xl xl:leading-5"
