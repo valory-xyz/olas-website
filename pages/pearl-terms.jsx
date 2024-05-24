@@ -23,7 +23,7 @@ const PearlTerms = () => (
               The Pearl Application (“Application”) is the desktop application
               available for download on the
               {' '}
-              <Link href="https://olas.network/pearl" className={linkClass}>
+              <Link href="https://olas.network/operate" className={linkClass}>
                 Olas Site
               </Link>
               , therefore is subject to the “
