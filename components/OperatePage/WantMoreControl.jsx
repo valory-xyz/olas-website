@@ -10,7 +10,7 @@ import {
 const controlList = [
   {
     title: 'Customize, experiment, and optimize your agents',
-    desc: 'With the Olas Pearl interface, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules.',
+    desc: 'With the Operate interface, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules.',
   },
   {
     title: 'Quick setup guides',
