@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChevronDown } from 'lucide-react';
 
 const transition = 'transition-all duration-300 ease-in-out';
 
-export const Accordion = ({ label, children }) => {
-  const [accordionOpen, setAccordionOpen] = useState(true);
+export const Accordion = ({ label, defaultOpen = true, children }) => {
+  const [accordionOpen, setAccordionOpen] = useState(false);
+
+  useEffect(() => {
+    setAccordionOpen(defaultOpen);
+  }, [defaultOpen]);
 
   return (
     <div>
@@ -43,5 +47,10 @@ export const Accordion = ({ label, children }) => {
 
 Accordion.propTypes = {
   label: PropTypes.string.isRequired,
+  defaultOpen: PropTypes.bool,
   children: PropTypes.node.isRequired,
+};
+
+Accordion.defaultProps = {
+  defaultOpen: true,
 };
