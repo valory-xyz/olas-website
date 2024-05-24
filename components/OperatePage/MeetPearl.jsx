@@ -111,10 +111,6 @@ export const MeetPearlContent = () => (
         className="block sm:hidden"
         alt="Meet Pearl"
         src="/images/operate-page/meet-the-operate-app-mobile.png"
-        // width={430}
-        // height="100%"
-        // fill
-        // style={{ height: 'auto' }}
         width={640}
         height={302}
       />
