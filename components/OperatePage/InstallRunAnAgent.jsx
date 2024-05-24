@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/core';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
