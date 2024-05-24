@@ -2,9 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { TEXT } from 'styles/globals';
 import { Button } from 'components/ui/button';
-import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
+import {
+  CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS,
+} from './utils';
 
 const controlList = [
   {
@@ -27,19 +28,18 @@ const controlList = [
 
 export function WantMoreControl() {
   return (
-    <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
-      <div className="grid max-w-screen-xl lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-        <div className=" px-0 mr-12 lg:col-span-6 lg:p-0 lg:px-5">
-          <h2 className={SUB_HEADER_CLASS}>Want more control?</h2>
+    <SectionWrapper customClasses={`${SECTION_BOX_CLASS} mx-0 lg:my-8`}>
+      <div className="grid items-center max-w-screen-xl mx-auto px-4 lg:grid-cols-12 lg:pl-8">
+        <div className="px-0 mr-12 lg:col-span-6 lg:p-0 lg:px-5">
+          <h2 className={`${SUB_HEADER_CLASS} mb-0 lg:mb-6`}>
+            Want more control?
+          </h2>
 
           <div>
             {controlList.map((each, index) => (
-              <div key={index} className="py-4 rounded-lg text-gray-600">
-                <div className={`flex items-center mb-1 ${TEXT}`}>
-                  <h2 className="font-semibold">{each.title}</h2>
-                </div>
-
-                <p>{each.desc}</p>
+              <div key={index} className="py-4">
+                <h2 className="text-lg font-semibold mb-1">{each.title}</h2>
+                <p className={TEXT_CLASS}>{each.desc}</p>
               </div>
             ))}
           </div>

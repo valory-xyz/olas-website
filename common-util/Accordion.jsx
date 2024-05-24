@@ -12,12 +12,12 @@ export const Accordion = ({ label, children }) => {
       <button
         type="button"
         onClick={() => setAccordionOpen(!accordionOpen)}
-        className={`flex items-center justify-between w-full px-6 py-4 font-medium text-gray-900 bg-gray-100 border border-gray-200 text-left lg:text-center hover:bg-gray-100 ${
+        className={`flex items-center justify-between w-full px-6 py-4 font-medium bg-gray-100 border border-gray-200 text-left lg:text-center hover:bg-gray-100 ${
           accordionOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl '
         }`}
         aria-expanded={accordionOpen ? 'true' : 'false'}
       >
-        <span>{label}</span>
+        <span className="text-lg">{label}</span>
         <div>
           <ChevronDown
             className={`transform origin-center transition duration-100 ease-out ${
@@ -29,7 +29,7 @@ export const Accordion = ({ label, children }) => {
       </button>
 
       <div
-        className={`grid px-6 bg-white border border-gray-200 overflow-hidden text-slate-600 rounded-xl rounded-t-none ${transition} ${
+        className={`grid px-6 bg-white border border-gray-200 overflow-hidden rounded-xl rounded-t-none ${transition} ${
           accordionOpen
             ? 'grid-rows-[1fr] opacity-100 py-4'
             : 'grid-rows-[0fr] opacity-0'

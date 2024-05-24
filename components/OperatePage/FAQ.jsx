@@ -140,20 +140,19 @@ const faqList = [
 
 export const FAQ = () => (
   <SectionWrapper customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}>
-    <div className="max-w-screen-lg px-0 py-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:px-12">
+    <div className="max-w-screen-lg px-0 py-4 mx-auto lg:py-8 lg:grid-cols-12 lg:px-12">
       <div className="grid gap-12">
-        <h2 className={`${SUB_HEADER_CLASS}`}>
-          <div className="text-left">
-            Frequently asked questions
-          </div>
+        <h2 className={`${SUB_HEADER_CLASS} text-left mb-4 lg:mb-8`}>
+          Frequently asked questions
         </h2>
       </div>
 
-      {faqList.map((faq) => (
-        <div key={faq.name}>
-          <div className="text-2xl font-bold mt-2 mb-4 text-slate-900">
-            {faq.name}
-          </div>
+      {faqList.map((faq, faqIndex) => (
+        <div
+          key={faq.name}
+          className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
+        >
+          <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
 
           {faq.list.map((eachFaq, index) => (
             <div className="py-2" key={index}>

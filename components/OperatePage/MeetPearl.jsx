@@ -42,7 +42,7 @@ const eachCardCss = {
 };
 
 const EasySetupContinuousRewards = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
+  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24 mb-8">
     <p className={`${TEXT_LIGHT_CLASS} text-left lg:text-center mb-3`}>
       DESIGNED TO BE...
     </p>
@@ -73,7 +73,7 @@ const EasySetupContinuousRewards = () => (
 );
 
 export const MeetPearlContent = () => (
-  <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:items-center">
+  <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:grid-cols-12 lg:items-center">
     <div className="mb-6 px-0 lg:col-span-5 lg:px-5 lg:text-left lg:mb-12">
       <Image
         style={{ marginLeft: -6 }}
