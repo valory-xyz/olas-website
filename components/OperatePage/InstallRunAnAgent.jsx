@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Octokit } from 'octokit';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -38,28 +39,133 @@ const installSteps = [
   },
 ];
 
-const iconProps = {
-  width: 24,
-  height: 24,
-};
+const InstallSteps = () => (
+  <ol className="flex flex-col gap-1 lg:gap-2 lg:mb-0 list-decimal">
+    {installSteps.map(({ title }, index) => (
+      <li key={index} className={`${TEXT_CLASS} ml-6`}>
+        {title}
+      </li>
+    ))}
+  </ol>
+);
 
+const iconProps = { width: 24, height: 24 };
 const downloadLinks = [
   {
+    id: 'darwin-arm64',
     btnText: 'Download for Apple Silicon - Alpha',
-    href: 'https://www.apple.com/', // TODO
-    icon: <Image src="/images/operate-page/brand-apple.svg" {...iconProps} />,
+    downloadLink: null,
+    icon: (
+      <Image
+        src="/images/operate-page/brand-apple.svg"
+        alt="Download for Apple Silicon - Alpha"
+        {...iconProps}
+      />
+    ),
   },
   {
+    id: 'darwin-x64',
     btnText: 'Download for MacOS Intel - Alpha',
-    href: 'https://www.intel.com/', // TODO
-    icon: <Image src="/images/operate-page/brand-apple.svg" {...iconProps} />,
+    downloadLink: null,
+    icon: (
+      <Image
+        src="/images/operate-page/brand-apple.svg"
+        alt="Download for MacOS Intel - Alpha"
+        {...iconProps}
+      />
+    ),
   },
   {
+    id: 'windows',
     btnText: 'Windows is coming soon',
-    disabled: true, // TODO
-    icon: <Image src="/images/operate-page/brand-windows.svg" {...iconProps} />,
+    downloadLink: null,
+    icon: (
+      <Image
+        src="/images/operate-page/brand-windows.svg"
+        alt="Windows is coming soon"
+        {...iconProps}
+      />
+    ),
   },
 ];
+
+const octokit = new Octokit({
+  auth: process.env.NEXT_PUBLIC_PEARL_APP_GITHUB_TOKEN,
+});
+
+async function getLatestRelease() {
+  try {
+    const response = await octokit.request(
+      'GET /repos/valory-xyz/olas-operate-app/releases/latest',
+      {
+        owner: 'valory-xyz',
+        repo: 'olas-operate-app',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+getLatestRelease();
+const DownloadLinks = () => {
+  const [links, setLinks] = useState(downloadLinks);
+
+  useEffect(() => {
+    getLatestRelease()
+      .then((data) => {
+        const { assets } = data;
+        const updatedLinks = links.map((link) => {
+          const assetLink = assets.find((asset) => asset.browser_download_url.includes(link.id));
+          return {
+            ...link,
+            downloadLink: assetLink ? assetLink.browser_download_url : null,
+          };
+        });
+        setLinks(updatedLinks);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  return (
+    <div className="flex flex-col flex-wrap justify-center items-center gap-6 sm:flex-row lg:flex-nowrap lg:gap-8">
+      {links.map(({
+        id, btnText, downloadLink, icon,
+      }, index) => (
+        <Fragment key={id}>
+          <Button
+            onClick={
+              downloadLink ? () => window.open(downloadLink, '_blank') : null
+            }
+            disabled={!downloadLink}
+            variant={downloadLink ? 'default' : 'outline'}
+            size="xl"
+            className="w-full md:w-auto"
+          >
+            <div className="flex items-start">
+              {icon}
+              &nbsp;&nbsp;
+              {btnText}
+            </div>
+          </Button>
+
+          {index !== downloadLinks.length - 1 ? (
+            <div className="font-bold text-lg text-purple-200 hidden md:block">
+              |
+            </div>
+          ) : null}
+        </Fragment>
+      ))}
+    </div>
+  );
+};
 
 export const InstallRunAnAgent = () => (
   <SectionWrapper
@@ -72,46 +178,11 @@ export const InstallRunAnAgent = () => (
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
           Install. Run an Agent. Earn OLAS. That’s It
         </h2>
-
-        <ol className="flex flex-col gap-1 lg:gap-2 lg:mb-0 list-decimal">
-          {installSteps.map(({ title }, index) => (
-            <li key={index} className={`${TEXT_CLASS} ml-6`}>
-              {title}
-            </li>
-          ))}
-        </ol>
-
+        <InstallSteps />
         <p className={FOOT_NOTE_CLASS}>
           * Docker desktop app is only required during Alpha and Beta testing
         </p>
-
-        <div className="flex flex-col flex-wrap justify-center items-center gap-6 sm:flex-row lg:flex-nowrap lg:gap-8">
-          {downloadLinks.map(({
-            btnText, href, disabled, icon,
-          }, index) => (
-            <Fragment key={btnText}>
-              <Button
-                onClick={disabled ? null : () => window.open(href, '_blank')}
-                disabled={disabled}
-                variant={disabled ? 'outline' : 'default'}
-                size="xl"
-                className="w-full md:w-auto"
-              >
-                <div className="flex items-start">
-                  {icon}
-                  &nbsp;&nbsp;
-                  {btnText}
-                </div>
-              </Button>
-
-              {index !== downloadLinks.length - 1 ? (
-                <div className="font-bold text-lg text-purple-200 hidden md:block">
-                  |
-                </div>
-              ) : null}
-            </Fragment>
-          ))}
-        </div>
+        <DownloadLinks />
       </div>
     </div>
   </SectionWrapper>
