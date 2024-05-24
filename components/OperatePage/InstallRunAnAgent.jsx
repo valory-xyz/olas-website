@@ -67,7 +67,7 @@ export const InstallRunAnAgent = () => (
     customClasses={`border border-purple-200 ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className="max-w-screen-xl px-0 py-6 mx-auto lg:grid-cols-12 lg:px-12">
+    <div className="max-w-screen-xl px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-1 col-span-12 lg:gap-8">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
           Install. Run an Agent. Earn OLAS. That’s It

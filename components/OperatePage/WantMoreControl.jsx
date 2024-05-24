@@ -28,7 +28,7 @@ const controlList = [
 
 export function WantMoreControl() {
   return (
-    <SectionWrapper customClasses={`${SECTION_BOX_CLASS} mx-0 lg:my-8`}>
+    <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
       <div className="grid items-center max-w-screen-xl mx-auto px-4 lg:grid-cols-12 lg:pl-8">
         <div className="px-0 mr-12 lg:col-span-6 lg:p-0 lg:px-5">
           <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>

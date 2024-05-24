@@ -1,6 +1,6 @@
 export const CTA = 'https://operate.olas.network/';
 
-export const SECTION_BOX_CLASS = 'py-8 px-6 lg:py-12 lg:px-0';
+export const SECTION_BOX_CLASS = 'py-8 px-6 lg:py-24 lg:px-0';
 
 export const DESCRIPTION_CLASS = 'text-lg font-light text-gray-600 lg:text-xl';
 

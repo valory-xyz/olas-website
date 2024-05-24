@@ -42,7 +42,7 @@ const eachCardCss = {
 };
 
 const EasySetupContinuousRewards = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24 mb-8">
+  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
     <p className={`${TEXT_LIGHT_CLASS} text-left lg:text-center mb-3`}>
       DESIGNED TO BE...
     </p>

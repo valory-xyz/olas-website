@@ -140,7 +140,7 @@ const faqList = [
 
 export const FAQ = () => (
   <SectionWrapper customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}>
-    <div className="max-w-screen-lg px-0 py-4 mx-auto lg:py-8 lg:grid-cols-12 lg:px-12">
+    <div className="max-w-screen-lg px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>
           Frequently asked questions

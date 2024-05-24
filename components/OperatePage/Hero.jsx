@@ -27,7 +27,7 @@ const Hero = () => (
         <div className={`${TEXT_LIGHT_CLASS} mb-2 text-left`}>OLAS PEARL</div>
 
         <h2
-          className="leading-5 font-bold text-3xl mb-6 sm:text-4xl lg:mb-8 lg:text-4xl  xl:text-5xl xl:leading-5"
+          className="leading-5 font-bold text-3xl sm:text-4xl lg:mb-8 lg:text-4xl xl:text-5xl xl:leading-5"
           style={{ lineHeight: '120%' }}
         >
           Run agents, stake & earn rewards*
