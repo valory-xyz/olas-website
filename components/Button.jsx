@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
-const getPrimaryStyle = (isHoverEnabled, disabled) => `
+const getPrimaryStyle = (disabled) => `
   bg-purple-900
   text-white
   border-primary
   focus:ring-gray-100
-  ${isHoverEnabled && !disabled ? 'hover:bg-white hover:text-purple-900' : ''}
+  ${disabled ? '' : 'hover:bg-white hover:text-purple-900'}
 `;
 
 const secondaryStyle = 'bg-white text-primary border-primary hover:bg-purple-900 hover:text-white focus:ring-gray-100';
@@ -22,13 +22,7 @@ const disabledStyle = 'text-gray-500 border-gray-300 bg-white cursor-not-allowed
  * @deprecated This component is deprecated and use components/ui/button.jsx instead.
  */
 export function Button({
-  href,
-  className,
-  size,
-  isExternal,
-  shouldInvertOnHover,
-  type,
-  ...props
+  href, className, size, isExternal, type, ...props
 }) {
   const fullClassName = `
     inline-flex
@@ -38,7 +32,7 @@ export function Button({
     border
     focus:ring-4
     ${props.disabled && disabledStyle}
-    ${type === 'primary' && getPrimaryStyle(shouldInvertOnHover, props.disabled)}
+    ${type === 'primary' && getPrimaryStyle(props.disabled)}
     ${type === 'secondary' && secondaryStyle}
     ${size === 'lg' && sizeLgStyle}
     ${size === 'md' && sizeMdStyle}
@@ -65,7 +59,6 @@ Button.propTypes = {
   size: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
-  shouldInvertOnHover: PropTypes.bool,
 };
 Button.defaultProps = {
   className: null,
@@ -73,5 +66,4 @@ Button.defaultProps = {
   size: 'lg',
   type: 'primary',
   disabled: false,
-  shouldInvertOnHover: true,
 };
