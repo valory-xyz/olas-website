@@ -48,8 +48,12 @@ const PearlTerms = () => (
             <li>
               Together, the Valory Terms and the Olas Disclaimer are known as
               the “Conditions”, and where there is doubt between the two texts,
-              the Valory Terms shall control. The information on this page is
-              simply for convenience and shall never override the Conditions.
+              the Valory Terms shall control.
+            </li>
+
+            <li>
+              The information on this page is simply for convenience and shall
+              never override the Conditions.
             </li>
 
             <li>
