@@ -85,7 +85,7 @@ export const InstallRunAnAgent = () => (
           * Docker desktop app is only required during Alpha and Beta testing
         </p>
 
-        <div className="flex flex-col flex-wrap justify-center items-center gap-6 lg:gap-8 sm:flex sm:flex-row">
+        <div className="flex flex-col flex-wrap justify-center items-center gap-6 sm:flex-row lg:flex-nowrap lg:gap-8">
           {downloadLinks.map(({
             btnText, href, disabled, icon,
           }, index) => (
