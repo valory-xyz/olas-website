@@ -73,7 +73,7 @@ const EasySetupContinuousRewards = () => (
 );
 
 export const MeetPearlContent = () => (
-  <div className="max-w-screen-xl grid items-start lg:pl-12 mx-auto lg:grid-cols-12 lg:items-center">
+  <div className="relative h-[540px] max-w-screen-xl grid items-start sm:h-auto lg:pl-12 mx-auto lg:grid-cols-12 lg:items-center">
     <div className="mb-6 px-0 lg:col-span-5 lg:px-5 lg:text-left lg:mb-12">
       <Image
         style={{ marginLeft: -6 }}
@@ -92,13 +92,31 @@ export const MeetPearlContent = () => (
       </p>
     </div>
 
-    <div className="lg:mt-0 lg:col-span-7 lg:flex">
+    <div
+      className="
+        absolute left-[-24px] right-[-24px] bottom-0 block
+        sm:relative
+        lg:mt-0 lg:col-span-7 lg:flex
+      "
+    >
       <Image
-        className="mx-auto"
+        className="mx-auto hidden sm:block"
         alt="Meet Pearl"
         src="/images/operate-page/meet-the-operate-app.png"
         width={580}
         height={574}
+      />
+
+      <Image
+        className="block sm:hidden"
+        alt="Meet Pearl"
+        src="/images/operate-page/meet-the-operate-app-mobile.png"
+        // width={430}
+        // height="100%"
+        // fill
+        // style={{ height: 'auto' }}
+        width={640}
+        height={302}
       />
     </div>
   </div>
