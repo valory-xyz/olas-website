@@ -32,14 +32,15 @@ const faqList = [
             Minimal system requirements for Mac devices:
             <ul className="list-disc ml-6">
               <li>
-                Installed&nbsp;
                 <Link
                   href="https://docs.docker.com/docker-for-mac/install/"
                   className="text-purple-600"
                   target="_blank"
                 >
-                  Docker desktop app ↗
+                  Docker Desktop↗
                 </Link>
+                {' '}
+                running. During Alpha and Beta phases only.
               </li>
               <li>800 MB of free RAM (suggested 1 GB)</li>
               <li>1.3 GB disk space</li>
