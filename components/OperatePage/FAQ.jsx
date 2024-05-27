@@ -18,7 +18,7 @@ const faqList = [
             Visit the
             {' '}
             <Link href="/operate#download" className="text-purple-600">
-              Pearl download page
+              Pearl download section
             </Link>
             {', '}
             download the app, and follow the installation guide provided.

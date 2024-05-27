@@ -17,18 +17,19 @@ const installSteps = [
   {
     title: (
       <>
-        Install the
+        Install
         {' '}
         <Link
           href="https://docs.docker.com/docker-for-mac/install/"
           className="text-purple-700"
           target="_blank"
         >
-          Docker desktop app ↗
+          Docker Desktop ↗
         </Link>
+        .
         {' '}
         Make sure Docker Desktop is running before you run Pearl for the first
-        time.
+        time*
       </>
     ),
   },
