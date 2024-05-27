@@ -54,7 +54,7 @@ const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
     btnText: 'Download for Apple Silicon - Alpha',
-    downloadLink: null,
+    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc26/Pearl-0.1.0-rc26-darwin-arm64.dmg',
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
@@ -66,7 +66,7 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
-    downloadLink: null,
+    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc26/Pearl-0.1.0-rc26-darwin-x64.dmg',
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
