@@ -1,17 +1,17 @@
-// import Content from "./Content";
-import Contribute from './Contribute';
+import { FAQ } from './FAQ';
+import { InstallRunAnAgent } from './InstallRunAnAgent';
 import Hero from './Hero';
-import HowItWorks from './HowItWorks';
-// import NetworkRole from "./NetworkRole";
+import { WantMoreControl } from './WantMoreControl';
+import { MeetPearl } from './MeetPearl';
 
-const Bonds = () => (
+const Pearl = () => (
   <>
     <Hero />
-    <HowItWorks />
-    {/* <Content /> */}
-    {/* <NetworkRole /> */}
-    <Contribute />
+    <MeetPearl />
+    <InstallRunAnAgent />
+    <WantMoreControl />
+    <FAQ />
   </>
 );
 
-export default Bonds;
+export default Pearl;

@@ -1,35 +1,61 @@
-import Image from 'next/image';
 import React from 'react';
+import Image from 'next/image';
+import { DownloadIcon } from 'lucide-react';
+import Link from 'next/link';
+
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { TEXT } from 'styles/globals';
-import SectionHeading from '../SectionHeading';
-import { CTA } from './utils';
+import { Button } from 'components/ui/button';
+import { FOOT_NOTE_CLASS, SECTION_BOX_CLASS, TEXT_LIGHT_CLASS } from './utils';
+
+const OperateHeroImage = () => (
+  <Image
+    src="/images/operate-page/operate-hero.png"
+    alt="hero"
+    width={638}
+    height={596}
+    className="mx-auto xl:w-full"
+  />
+);
 
 const Hero = () => (
-  <SectionWrapper customClasses="py-16 border-b" backgroundType="SUBTLE_GRADIENT">
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">Olas Operate</div>
-        <SectionHeading size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12" color="text-purple-900">
-          Run agents, stake &
-          <br />
-          earn rewards*
-        </SectionHeading>
-        <a
-          href={CTA}
-          className="mb-8 inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4"
-          target="_blank"
-          rel="noopener noreferrer"
+  <SectionWrapper
+    customClasses={`border-b ${SECTION_BOX_CLASS}`}
+    backgroundType="SUBTLE_GRADIENT"
+  >
+    <div className="grid max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
+      <div className="px-0 md:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
+        <div className={`${TEXT_LIGHT_CLASS} mb-2 text-left`}>OLAS OPERATE</div>
+
+        <h2 className="font-bold !leading-[120%] text-3xl sm:text-4xl lg:mb-8 lg:text-4xl xl:text-5xl">
+          Run agents, stake & earn rewards*
+        </h2>
+
+        <div className="md:hidden mb-8">
+          <OperateHeroImage />
+        </div>
+
+        <Button
+          variant="default"
+          size="xl"
+          asChild
+          className="mb-6 w-full md:w-auto"
         >
-          Operate now
-        </a>
-        <div className={TEXT}>
-          *rewards are dependent on individual agent implementations
-          as well as operator performance.
+          <Link href="/operate#download">
+            <DownloadIcon className="mr-2" />
+            Download Pearl - Alpha
+          </Link>
+        </Button>
+
+        <div className={FOOT_NOTE_CLASS}>
+          * rewards are dependent on individual agent implementations as well as
+          operator performance.
         </div>
       </div>
-      <div className="lg:mt-0 lg:col-span-6 lg:flex">
-        <Image src="/images/operate-page/operate-hero.svg" alt="hero" width={638} height={596} className="mx-auto w-3/4 xl:w-full" />
+
+      <div className="hidden sm:block col-span-1" />
+
+      <div className="hidden lg:mt-0 lg:col-span-6 lg:flex md:block">
+        <OperateHeroImage />
       </div>
     </div>
   </SectionWrapper>
