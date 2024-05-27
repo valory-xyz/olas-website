@@ -17,7 +17,7 @@ const PageWrapper = ({ children }) => (
         NEW Olas Pearl: A simple desktop app for running an agent and staking
         OLAS.
         <a
-          href="https://operate.olas.network"
+          href="https://olas.network/operate"
           rel="noopener noreferrer"
           target="_blank"
           className="underline ml-2"
