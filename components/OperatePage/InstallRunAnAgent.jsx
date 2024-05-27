@@ -24,11 +24,9 @@ const installSteps = [
           className="text-purple-700"
           target="_blank"
         >
-          Docker Desktop ↗
+          Docker Desktop↗
         </Link>
-        .
-        {' '}
-        Make sure Docker Desktop is running before you run Pearl for the first
+        . Make sure Docker Desktop is running before you run Pearl for the first
         time*
       </>
     ),
@@ -54,7 +52,7 @@ const InstallSteps = () => (
 const iconProps = { width: 24, height: 24 };
 const downloadLinks = [
   {
-    id: 'darwin-arm64',
+    id: 'darwin-arm64.dmg',
     btnText: 'Download for Apple Silicon - Alpha',
     downloadLink: null,
     icon: (
@@ -66,7 +64,7 @@ const downloadLinks = [
     ),
   },
   {
-    id: 'darwin-x64',
+    id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
     downloadLink: null,
     icon: (
