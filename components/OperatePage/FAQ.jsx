@@ -103,7 +103,7 @@ const faqList = [
             {' '}
             <Link
               target="_blank"
-              href="https://discord.com/channels/899649805582737479/1169275451089367131"
+              href="https://discord.com/channels/899649805582737479/1244588374736502847"
               className="text-purple-600"
             >
               Olas community
