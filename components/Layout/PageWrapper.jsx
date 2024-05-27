@@ -19,7 +19,6 @@ const PageWrapper = ({ children }) => (
         <a
           href="https://olas.network/operate"
           rel="noopener noreferrer"
-          target="_blank"
           className="underline ml-2"
         >
           Learn more
