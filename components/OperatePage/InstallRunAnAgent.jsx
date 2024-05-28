@@ -54,7 +54,7 @@ const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
     btnText: 'Download for Apple Silicon - Alpha',
-    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc26/Pearl-0.1.0-rc26-darwin-arm64.dmg',
+    downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
@@ -66,7 +66,7 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
-    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc26/Pearl-0.1.0-rc26-darwin-x64.dmg',
+    downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
@@ -89,9 +89,7 @@ const downloadLinks = [
   },
 ];
 
-const octokit = new Octokit({
-  auth: process.env.NEXT_PUBLIC_PEARL_APP_GITHUB_TOKEN,
-});
+const octokit = new Octokit({ auth: null });
 
 async function getLatestRelease() {
   try {
@@ -116,7 +114,7 @@ const DownloadLinks = () => {
   useEffect(() => {
     getLatestRelease()
       .then((data) => {
-        const { assets } = data;
+        const assets = data?.assets || [];
         const updatedLinks = links.map((link) => {
           const assetLink = assets.find((asset) => asset.browser_download_url.includes(link.id));
           return {
