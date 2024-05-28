@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
+import Link from 'next/link';
+
 import Header from './Header';
 import Footer from './Footer';
 
@@ -16,13 +18,9 @@ const PageWrapper = ({ children }) => (
         />
         NEW Olas Pearl: A simple desktop app for running an agent and staking
         OLAS.
-        <a
-          href="https://olas.network/operate"
-          rel="noopener noreferrer"
-          className="underline ml-2"
-        >
+        <Link href="/operate" className="underline ml-2">
           Learn more
-        </a>
+        </Link>
       </h2>
     </div>
     <Header />
