@@ -114,7 +114,7 @@ const DownloadLinks = () => {
   useEffect(() => {
     getLatestRelease()
       .then((data) => {
-        const { assets } = data;
+        const assets = data?.assets || [];
         const updatedLinks = links.map((link) => {
           const assetLink = assets.find((asset) => asset.browser_download_url.includes(link.id));
           return {
