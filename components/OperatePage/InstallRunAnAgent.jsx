@@ -24,7 +24,7 @@ const installSteps = [
           className="text-purple-700"
           target="_blank"
         >
-          Docker Desktop↗
+          Docker Desktop 2.6.1↗
         </Link>
         . Make sure Docker Desktop is running before you run Pearl for the first
         time*

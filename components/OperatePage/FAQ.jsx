@@ -37,7 +37,7 @@ const faqList = [
                   className="text-purple-600"
                   target="_blank"
                 >
-                  Docker Desktop 2.6.1↗
+                  Docker Desktop↗
                 </Link>
                 {' '}
                 running. During Alpha and Beta phases only.
