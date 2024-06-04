@@ -20,7 +20,7 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
     title: 'Ease of building agents',
     subList: [
       'Build agents in the Olas framework with Lego-like composability of software components.',
-      'Olas abstracts the complexities of building decentralized apps',
+      'Olas abstracts the complexities of building decentralized apps.',
       'All popular agent frameworks will be composable with Olas, e.g. Langchain or Autogen.',
     ],
   },
@@ -42,7 +42,7 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
   {
     title: 'Account and gas abstraction',
     subList: [
-      'Olas agents have native account abstraction and gas abstraction, e.g. on-chain Safe wallet and service and an off-chain set of keys',
+      'Olas agents have native account abstraction and gas abstraction, e.g. on-chain Safe wallet and service and an off-chain set of keys.',
     ],
   },
   {
