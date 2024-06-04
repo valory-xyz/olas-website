@@ -18,7 +18,20 @@ const list = [
       Example here
     </Link>
   </>,
-  'Involves developing the matching agents on the Olas Stack. Valory offers a matching service with experienced consultants that have been vetted to develop agents on Olas.',
+  <>
+    Involves developing the matching agents on the Olas Stack.
+    {' '}
+    <Link
+      href="https://www.valory.xyz/"
+      className="text-purple-600"
+      target="_blank"
+    >
+      Valory
+    </Link>
+    {' '}
+    offers a matching service with experienced consultants that have been vetted
+    to develop agents on Olas.
+  </>,
   'Operators (end users and professionals) can operate these agents.',
   'Protocol teams hit their goals through the targeted activity of the agents.',
 ];
