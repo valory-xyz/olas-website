@@ -17,6 +17,7 @@ const list = [
     >
       Example here
     </Link>
+    .
   </>,
   <>
     Involves developing the matching agents on the Olas Stack.
@@ -68,6 +69,7 @@ export const CreateAnAutonomousAiAgent = () => (
         <Link href="https://staking.olas.network/" className="text-purple-600">
           here
         </Link>
+        .
       </p>
     </div>
   </SectionWrapper>
