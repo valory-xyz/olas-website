@@ -9,9 +9,13 @@ const CTA_LINK = 'https://launch.olas.network/';
 
 const Hero = () => (
   <SectionWrapper customClasses="py-16" backgroundType="SUBTLE_GRADIENT">
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>OLAS LAUNCH</div>
+    <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto items-center">
+      <div className="lg:col-span-6 lg:p-0 lg:text-left lg:gap-0 md:mb-12 flex-col flex items-start text-center px-5 mb-2 gap-6">
+        <div
+          className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}
+        >
+          OLAS LAUNCH
+        </div>
 
         <h2 className={MAIN_TITLE_CLASS}>
           Get agents running in your ecosystem
