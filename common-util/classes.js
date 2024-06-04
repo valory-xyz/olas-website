@@ -4,7 +4,7 @@ export const TEXT_LARGE_CLASS = 'text-2xl';
 
 export const TEXT_MEDIUM_CLASS = 'text-lg';
 
-export const TEXT_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
+export const TEXT_MEDIUM_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
 
 export const SCREEN_WIDTH_LG = 'max-w-[800px] mx-auto flex flex-col';
 
