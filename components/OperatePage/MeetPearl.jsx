@@ -10,7 +10,7 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
   TEXT_CLASS,
-  TEXT_LIGHT_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
 } from './utils';
 
 const list = [
@@ -43,7 +43,7 @@ const eachCardCss = {
 
 const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
-    <p className={`${TEXT_LIGHT_CLASS} text-left lg:text-center mb-3`}>
+    <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-left lg:text-center mb-3`}>
       DESIGNED TO BE...
     </p>
 
