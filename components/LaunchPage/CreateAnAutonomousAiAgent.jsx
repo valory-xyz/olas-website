@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { P_MEDIUM_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 
 const list = [
   'Involves being specific about the agents’ goals and defining matching KPIs that capture these goals',
@@ -24,13 +24,16 @@ const list = [
 ];
 
 export const CreateAnAutonomousAiAgent = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 ">
+  <SectionWrapper
+    customClasses="lg:p-24 px-4 py-12 "
+    backgroundType="SUBTLE_GRADIENT"
+  >
     <div className="max-w-[800px] mx-auto flex flex-col gap-5">
       <h2 className={`${SUB_HEADER_CLASS} text-left mb-8`}>
         How to create an autonomous AI agent economy on Olas
       </h2>
 
-      <p className="mb-4">
+      <p className={`${P_MEDIUM_CLASS} mb-4`}>
         A simple flow to your own autonomous AI agent economy:
       </p>
 
