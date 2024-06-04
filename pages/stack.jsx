@@ -1,7 +1,11 @@
 import Link from 'next/link';
 
 import { DOCS_BASE_URL } from 'common-util/constants';
-import { P_MEDIUM_CLASS, SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
+import {
+  TEXT_MEDIUM_CLASS,
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
@@ -11,7 +15,7 @@ const StackPage = () => (
       <div className={SCREEN_WIDTH_LG}>
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-8`}>Olas Stack</h2>
 
-        <p className={`${P_MEDIUM_CLASS} mb-4`}>
+        <p className={`${TEXT_MEDIUM_CLASS} mb-4`}>
           <Link
             href={`${DOCS_BASE_URL}/open-autonomy`}
             className="text-purple-600"

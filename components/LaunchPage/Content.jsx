@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 
 import {
-  P_LARGE_CLASS,
+  TEXT_LARGE_CLASS,
   SCREEN_WIDTH_LG,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
@@ -109,7 +109,7 @@ const BenefitsOfCreatingAnAutonomousAiAgent = () => (
 
       {benefits.map(({ mainTitle, list }) => (
         <Fragment key={mainTitle}>
-          <p className={`${P_LARGE_CLASS} font-bold`}>{mainTitle}</p>
+          <p className={`${TEXT_LARGE_CLASS} font-bold`}>{mainTitle}</p>
 
           <ul className="list-outside">
             {list.map(({ title, subList }) => (
