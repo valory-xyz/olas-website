@@ -1,10 +1,11 @@
 import Image from 'next/image';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import { P_MEDIUM_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
+
+import { SUB_HEADER_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
-  'Involves being specific about the agents’ goals and defining matching KPIs that capture these goals',
+  'Involves being specific about the agents’ goals and defining matching KPIs that capture these goals.',
   <>
     Involves developing a simple extension contract that embeds these KPIs in
     code.
@@ -16,10 +17,9 @@ const list = [
     >
       Example here
     </Link>
-    .
   </>,
   'Involves developing the matching agents on the Olas Stack. Valory offers a matching service with experienced consultants that have been vetted to develop agents on Olas.',
-  'Operators (end users and professionals) can operate these agents',
+  'Operators (end users and professionals) can operate these agents.',
   'Protocol teams hit their goals through the targeted activity of the agents.',
 ];
 
@@ -33,12 +33,8 @@ export const CreateAnAutonomousAiAgent = () => (
         How to create an autonomous AI agent economy on Olas
       </h2>
 
-      <p className={`${P_MEDIUM_CLASS} mb-4`}>
-        A simple flow to your own autonomous AI agent economy:
-      </p>
-
       <Image
-        className="mx-auto mb-24"
+        className="mx-auto mb-8"
         alt="OLAS Utility"
         src="/images/launch-page/how-predict-works.svg"
         width="600"
@@ -47,7 +43,9 @@ export const CreateAnAutonomousAiAgent = () => (
 
       <ol className="list-decimal list-inside">
         {list.map((title, index) => (
-          <li key={index}>{title}</li>
+          <li key={index} className="mb-1">
+            {title}
+          </li>
         ))}
       </ol>
 
@@ -57,7 +55,6 @@ export const CreateAnAutonomousAiAgent = () => (
         <Link href="https://staking.olas.network/" className="text-purple-600">
           here
         </Link>
-        .
       </p>
     </div>
   </SectionWrapper>

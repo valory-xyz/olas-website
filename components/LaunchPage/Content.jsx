@@ -1,10 +1,10 @@
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { P_MEDIUM_CLASS } from 'common-util/classes';
 import { Fragment } from 'react';
-import { H1 } from '../ui/typography';
 
-const parentUlClass = 'ml-3 list-disc list-outside [&_ul]:list-[revert]';
-const childUlClass = 'ml-4 list-disc list-inside';
+import { P_LARGE_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+
+const parentUlClass = 'list-outside ';
+const childUlClass = 'ml-4 mt-1 list-disc list-inside';
 
 const benefitsOfDevelopingAndOfTheOlasStack = [
   {
@@ -95,11 +95,11 @@ const benefits = [
 const BenefitsOfCreatingAnAutonomousAiAgent = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
     <div className="max-w-[800px] mx-auto flex flex-col gap-5">
-      <H1 className="mb-12">
+      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>
         Benefits of creating an autonomous AI agent economy on Olas
-      </H1>
+      </h2>
 
-      <p className={P_MEDIUM_CLASS}>
+      <p>
         Olas is the foremost autonomous AI agent project with significant
         production deployments that have generated hundreds of thousands of
         transactions.
@@ -107,15 +107,17 @@ const BenefitsOfCreatingAnAutonomousAiAgent = () => (
 
       {benefits.map(({ mainTitle, list }) => (
         <Fragment key={mainTitle}>
-          <p className={`${P_MEDIUM_CLASS} underline`}>{mainTitle}</p>
+          <p className={`${P_LARGE_CLASS} font-bold`}>{mainTitle}</p>
 
           <ul className={parentUlClass}>
             {list.map(({ title, subList }) => (
-              <li key={title} className="mb-4">
-                <strong>{title}</strong>
+              <li key={title} className="mb-6">
+                <strong className="mb-2">{title}</strong>
                 <ul className={childUlClass}>
                   {subList.map((subTitle) => (
-                    <li key={subTitle}>{subTitle}</li>
+                    <li key={subTitle} className="mb-1">
+                      {subTitle}
+                    </li>
                   ))}
                 </ul>
               </li>

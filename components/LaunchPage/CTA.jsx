@@ -1,26 +1,33 @@
-import React from 'react';
 import Link from 'next/link';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { H1, Lead } from 'components/ui/typography';
-import { Button } from 'components/ui/button';
+
 import { LAUNCH_CONTACT_URL } from 'common-util/constants';
+import { SUB_HEADER_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 
 const CTA = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
     <div className="max-w-4xl mx-auto items-center text-center">
-      <H1 className="mb-8">
+      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
         Looking for developers to build your agent?
-      </H1>
-      <Lead className="mb-8">
-        This site can connect you with agent developers,
-        versed in developing Olas agents and agent economies.
-      </Lead>
+      </h2>
+
+      <p className="mb-8">
+        This site can connect you with agent developers, versed in developing
+        Olas agents and agent economies.
+      </p>
+
       <div className="flex flex-wrap gap-2 justify-center">
         <Button variant="default" size="xl" asChild isExternal>
-          <a href={LAUNCH_CONTACT_URL} target="_blank" rel="noopener noreferrer">
+          <a
+            href={LAUNCH_CONTACT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Start a discussion
           </a>
         </Button>
+
         <Button variant="link" size="xl" asChild>
           <Link
             href="/build#opportunities"
