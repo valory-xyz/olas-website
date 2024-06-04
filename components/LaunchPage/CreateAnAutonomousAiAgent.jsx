@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
@@ -28,7 +28,7 @@ export const CreateAnAutonomousAiAgent = () => (
     customClasses="lg:p-24 px-4 py-12 "
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className="max-w-[800px] mx-auto flex flex-col gap-5">
+    <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_CLASS} text-left mb-8`}>
         How to create an autonomous AI agent economy on Olas
       </h2>

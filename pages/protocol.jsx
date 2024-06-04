@@ -1,14 +1,18 @@
-import React from 'react';
+import Link from 'next/link';
+
 import { DOCS_BASE_URL } from 'common-util/constants';
+import {
+  P_MEDIUM_CLASS,
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { P_MEDIUM_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import Link from 'next/link';
 
 const ProtocolPage = () => (
   <PageWrapper>
     <SectionWrapper customClasses="px-4 py-12 border-b">
-      <div className="max-w-[800px] mx-auto flex flex-col">
+      <div className={SCREEN_WIDTH_LG}>
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-8`}>Olas Protocol</h2>
 
         <p className={`${P_MEDIUM_CLASS} mb-4`}>

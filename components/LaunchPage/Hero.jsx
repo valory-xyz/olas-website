@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { TEXT_LIGHT_CLASS } from 'common-util/classes';
+import { MAIN_TITLE_CLASS, TEXT_LIGHT_CLASS } from 'common-util/classes';
 import { Button } from 'components/ui/button';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const CTA_LINK = 'https://launch.olas.network/';
 
@@ -13,7 +13,7 @@ const Hero = () => (
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
         <div className={`${TEXT_LIGHT_CLASS} mb-2 text-left`}>OLAS LAUNCH</div>
 
-        <h2 className="font-bold !leading-[120%] text-3xl sm:text-4xl lg:mb-8 lg:text-4xl xl:text-5xl">
+        <h2 className={MAIN_TITLE_CLASS}>
           Get agents running in your ecosystem
         </h2>
 

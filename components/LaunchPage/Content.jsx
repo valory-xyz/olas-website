@@ -1,9 +1,12 @@
 import { Fragment } from 'react';
 
-import { P_LARGE_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
+import {
+  P_LARGE_CLASS,
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const parentUlClass = 'list-outside ';
 const childUlClass = 'ml-4 mt-1 list-disc list-inside';
 
 const benefitsOfDevelopingAndOfTheOlasStack = [
@@ -25,7 +28,6 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
     title: 'Ease of running agents',
     subList: [
       'Enjoy the benefits of thousands of people running your agent.',
-      // TODO: check if below points needs to be added in the nested list?
       'Agents can easily be run by your users with a native downloadable application called Pearl which can be white-labeled with your own brand.',
       'Agents are also run by professional Olas node operators en masse.',
     ],
@@ -94,7 +96,7 @@ const benefits = [
 
 const BenefitsOfCreatingAnAutonomousAiAgent = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
-    <div className="max-w-[800px] mx-auto flex flex-col gap-5">
+    <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>
         Benefits of creating an autonomous AI agent economy on Olas
       </h2>
@@ -109,7 +111,7 @@ const BenefitsOfCreatingAnAutonomousAiAgent = () => (
         <Fragment key={mainTitle}>
           <p className={`${P_LARGE_CLASS} font-bold`}>{mainTitle}</p>
 
-          <ul className={parentUlClass}>
+          <ul className="list-outside">
             {list.map(({ title, subList }) => (
               <li key={title} className="mb-6">
                 <strong className="mb-2">{title}</strong>
