@@ -1,11 +1,13 @@
 import Hero from './Hero';
 import CTA from './CTA';
+import { Content } from './Content';
+import { CreateAnAutonomousAiAgent } from './CreateAnAutonomousAiAgent';
 
-const Launch = () => (
+export const Launch = () => (
   <>
     <Hero />
+    <Content />
+    <CreateAnAutonomousAiAgent />
     <CTA />
   </>
 );
-
-export default Launch;
