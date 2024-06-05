@@ -26,6 +26,3 @@ export const DecentralizedAndSophisticated = () => (
     />
   </div>
 );
-
-// @Oak @Roman S "Learn more" leads to /learn page - assuming this button won't be required
-// in /learn page

@@ -18,7 +18,10 @@ const Articles = ({ limit, showSeeAll }) => {
   };
   const stringifyParams = qs.stringify(params);
 
-  const { data, isLoading } = useSWR(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, fetcher);
+  const { data, isLoading } = useSWR(
+    `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
+    fetcher,
+  );
 
   const blogItems = data?.data ?? [];
 
@@ -42,6 +45,7 @@ const Articles = ({ limit, showSeeAll }) => {
             </div>
           )}
         </div>
+
         <div className="grid gap-8 lg:grid-cols-3">
           {(limit ? blogItems.slice(0, limit) : blogItems).map((blogItem) => (
             <Article article={blogItem} key={blogItem.id} />
