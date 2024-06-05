@@ -1,10 +1,10 @@
-import get from 'lodash/get';
-import Link from 'next/link';
-
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import get from 'lodash/get';
+
 import { getEducationArticles } from 'common-util/api';
 
-const QuickIntroArticles = () => {
+export const QuickIntroArticles = () => {
   const [educationArticles, setEducationArticles] = useState([]);
 
   useEffect(() => {
@@ -60,5 +60,3 @@ const QuickIntroArticles = () => {
     </div>
   );
 };
-
-export default QuickIntroArticles;

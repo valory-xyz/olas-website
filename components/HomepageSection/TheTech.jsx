@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -30,7 +31,7 @@ const innovations = [
   },
 ];
 
-export const TheTech = () => (
+export const TheTech = ({ hideLearnMoreButton = false }) => (
   <SectionWrapper
     backgroundType="NONE"
     customClasses="text-center py-24 px-4 border-b bg-gradient-to-tl from-[#F5D0FE] to-white to-80%"
@@ -41,6 +42,7 @@ export const TheTech = () => (
     <SectionHeading color="text-gray-900" weight="font-bold">
       Enabled by two core innovations
     </SectionHeading>
+
     <div className="grid md:grid-cols-2 gap-4 max-w-screen-xl mx-auto mb-16">
       {innovations.map((item) => (
         <Card
@@ -71,8 +73,19 @@ export const TheTech = () => (
         </Card>
       ))}
     </div>
-    <Button variant="outline" size="xl" asChild className="mt-auto">
-      <Link href="/learn">Learn more</Link>
-    </Button>
+
+    {!hideLearnMoreButton && (
+      <Button variant="outline" size="xl" asChild className="mt-auto">
+        <Link href="/learn">Learn more</Link>
+      </Button>
+    )}
   </SectionWrapper>
 );
+
+TheTech.propTypes = {
+  hideLearnMoreButton: PropTypes.bool,
+};
+
+TheTech.defaultProps = {
+  hideLearnMoreButton: false,
+};

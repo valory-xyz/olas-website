@@ -1,16 +1,14 @@
 import Image from 'next/image';
 import React from 'react';
 
-const WhyOlas = () => (
+export const DecentralizedAndSophisticated = () => (
   <div className="py-14 text-center" id="what-are-autonomous-services">
     <h2 className="mb-8">WHAT ARE AUTONOMOUS SERVICES?</h2>
-    <div
-      className="text-4xl md:text-6xl font-bold mb-8"
-    >
+    <div className="text-4xl md:text-6xl font-bold mb-8">
       Decentralized&nbsp;
       <br />
       <span className="sub-text">and</span>
-          &nbsp;
+      &nbsp;
       <span className="ib">Sophisticated</span>
     </div>
 
@@ -19,8 +17,15 @@ const WhyOlas = () => (
       contracts and Web2 apps.
     </h2>
 
-    <Image src="/images/learn/3Decentralized/what-are-autonomous-services.png" alt="What are autonomous services" className="mx-auto" width={575} height={522} />
+    <Image
+      src="/images/learn/3Decentralized/what-are-autonomous-services.png"
+      alt="What are autonomous services"
+      className="mx-auto"
+      width={575}
+      height={522}
+    />
   </div>
 );
 
-export default WhyOlas;
+// @Oak @Roman S "Learn more" leads to /learn page - assuming this button won't be required
+// in /learn page
