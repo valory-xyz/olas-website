@@ -1,5 +1,5 @@
 import { DecentralizedAndSophisticated } from './DecentralizedAndSophisticated';
-import HowDoOlasWork from './4HowDoOlasWork';
+import { HowDoAutonomousServicesWork } from './HowDoAutonomousServicesWork';
 import { QuickIntroArticles } from './QuickIntroArticles';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
@@ -15,7 +15,7 @@ export const LearnPage = () => (
     <TheTech hideLearnMoreButton />
     <div className="flex flex-col gap-12 container mx-auto px-4">
       <DecentralizedAndSophisticated />
-      <HowDoOlasWork />
+      <HowDoAutonomousServicesWork />
     </div>
     <QuickIntroArticles />
   </PageWrapper>

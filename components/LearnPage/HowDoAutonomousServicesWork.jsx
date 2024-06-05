@@ -10,7 +10,7 @@ const DATA = [
   'Services take action on any chain or API',
 ];
 
-const WhatAreWeBuilding = () => (
+export const HowDoAutonomousServicesWork = () => (
   <section className="section-4 py-10" id="how-do-autonomous-services-work">
     <div className="header text-4xl md:text-6xl font-bold text-center mb-8">
       How do autonomous
@@ -41,5 +41,3 @@ const WhatAreWeBuilding = () => (
     </div>
   </section>
 );
-
-export default WhatAreWeBuilding;
