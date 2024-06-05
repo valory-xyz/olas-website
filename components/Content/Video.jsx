@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
+import { CARD_CLASS } from 'common-util/classes';
 
 const Video = ({ video }) => (
   <a
@@ -7,7 +8,7 @@ const Video = ({ video }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <article className="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg max-w-full min-h-[300px] flex flex-col justify-between">
+    <article className={`${CARD_CLASS} max-w-full min-h-[300px] `}>
       {video.imageFilename && (
         <Image
           src={`/images/videos/${video.imageFilename}`}

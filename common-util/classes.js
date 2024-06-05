@@ -16,6 +16,6 @@ export const TEXT_MEDIUM_CLASS = 'text-lg';
 export const TEXT_MEDIUM_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
 
 // card & box
-export const CARD_CLASS = 'bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg flex flex-col justify-between';
+export const CARD_CLASS = 'bg-white rounded-lg shadow-md hover:shadow-lg flex flex-col justify-between';
 
 // misc

@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import { useMemo, useState } from 'react';
+import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { isArray } from 'lodash';
+
 import { CARD_CLASS } from 'common-util/classes';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
@@ -57,7 +58,7 @@ const Article = ({
         )}
 
         <div className="p-6 min-h-[150px]">
-          <h2 className="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2">
+          <h2 className="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
             {title}
           </h2>
 
