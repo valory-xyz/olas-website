@@ -22,7 +22,7 @@ export const LEARN_LIST = [
   { name: 'What could you build?', id: 'what-could-you-build' },
 ];
 
-const LearnPage = () => (
+export const LearnPage = () => (
   <PageWrapper>
     <Meta pageTitle="Learn" description="Build your understanding of what Olas is and how it works." />
     <SectionWrapper customClasses="px-8 mt-12 mb-20 max-w-screen-xl mx-auto">
@@ -49,5 +49,3 @@ const LearnPage = () => (
     </div>
   </PageWrapper>
 );
-
-export default LearnPage;

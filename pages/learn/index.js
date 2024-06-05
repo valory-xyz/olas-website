@@ -1,3 +1,3 @@
-import LearnPage from 'components/LearnPage';
+import { LearnPage } from 'components/LearnPage';
 
 export default LearnPage;
