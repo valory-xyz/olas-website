@@ -18,7 +18,7 @@ export const DecentralizedAndSophisticated = () => (
     </h2>
 
     <Image
-      src="/images/learn/3Decentralized/what-are-autonomous-services.png"
+      src="/images/learn/Decentralized/what-are-autonomous-services.png"
       alt="What are autonomous services"
       className="mx-auto"
       width={575}

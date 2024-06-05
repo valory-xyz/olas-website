@@ -1,4 +1,6 @@
 // header & title
+export const HEADER_LARGE_CLASS = 'font-extrabold text-3xl md:font-bold md:text-5xl lg:text-6xl';
+
 export const SUB_HEADER_CLASS = 'tracking-tight font-extrabold text-3xl md:font-bold lg:text-4xl';
 
 export const MAIN_TITLE_CLASS = 'font-bold !leading-[120%] text-3xl sm:text-4xl lg:mb-8 lg:text-4xl xl:text-5xl';

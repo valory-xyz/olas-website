@@ -22,7 +22,7 @@ export const HowDoAutonomousServicesWork = () => (
       <div className="flex-1">
         <div className="img-container">
           <Image
-            src="/images/learn/4HowDoOlasWork/main.svg"
+            src="/images/learn/HowDoAutonomousServicesWork/main.svg"
             alt="How do autonomous services work?"
             width={500}
             height={500}

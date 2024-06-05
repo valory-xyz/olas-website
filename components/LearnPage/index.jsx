@@ -3,7 +3,10 @@ import { HowDoAutonomousServicesWork } from './HowDoAutonomousServicesWork';
 import { QuickIntroArticles } from './QuickIntroArticles';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
-import { TheTech } from '../HomepageSection/TheTech';
+import { AgentEconomics } from './AgentEconomics';
+import { LearnHeader } from './LearnHeader';
+import { SovereignAgents } from './SovereignAgents';
+import { DecentralizedAgents } from './DecentralizedAgents';
 
 export const LearnPage = () => (
   <PageWrapper>
@@ -12,11 +15,14 @@ export const LearnPage = () => (
       description="Build your understanding of what Olas is and how it works."
     />
 
-    <TheTech hideLearnMoreButton />
-    <div className="flex flex-col gap-12 container mx-auto px-4">
-      <DecentralizedAndSophisticated />
-      <HowDoAutonomousServicesWork />
-    </div>
+    <LearnHeader />
+    <SovereignAgents />
+    <DecentralizedAgents />
+
+    {/* TODO */}
+    <DecentralizedAndSophisticated />
+    <HowDoAutonomousServicesWork />
+    <AgentEconomics />
     <QuickIntroArticles />
   </PageWrapper>
 );
