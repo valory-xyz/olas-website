@@ -16,7 +16,7 @@ export const LearnPage = () => (
     <div className="flex flex-col gap-12 container mx-auto px-4">
       <DecentralizedAndSophisticated />
       <HowDoOlasWork />
-      <QuickIntroArticles />
     </div>
+    <QuickIntroArticles />
   </PageWrapper>
 );

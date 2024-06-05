@@ -3,10 +3,13 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { isArray } from 'lodash';
+import { CARD_CLASS } from 'common-util/classes';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
-const Article = ({ article, showReadTime, showDate }) => {
+const Article = ({
+  article, href, showReadTime, showDate,
+}) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
@@ -18,9 +21,7 @@ const Article = ({ article, showReadTime, showDate }) => {
     return data?.attributes?.formats?.large;
   }, [article]);
 
-  const {
-    title, datePublished, slug, readTime,
-  } = article.attributes;
+  const { title, datePublished, readTime } = article.attributes;
   const { url, width, height } = image || {};
 
   const moreInfo = useMemo(() => {
@@ -38,15 +39,15 @@ const Article = ({ article, showReadTime, showDate }) => {
   }, [article, showReadTime, showDate]);
 
   return (
-    <Link href={`/blog/${slug}`}>
-      <article className="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg flex flex-col justify-between">
+    <Link href={href}>
+      <article className={CARD_CLASS}>
         {!imageError && (url || width || height) ? (
           <Image
             src={imageDomain + url}
             width={width}
             height={height}
             alt={article.attributes.title}
-            className="rounded-t-lg h-[200px] object-cover"
+            className="rounded-t-lg object-cover"
             onError={() => {
               setImageError(true);
             }}
@@ -81,6 +82,7 @@ Article.propTypes = {
       readTime: PropTypes.number,
     }),
   }).isRequired,
+  href: PropTypes.string.isRequired,
   showReadTime: PropTypes.bool,
   showDate: PropTypes.bool,
 };
