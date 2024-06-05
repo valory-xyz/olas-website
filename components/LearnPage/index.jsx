@@ -2,7 +2,6 @@ import WhatIsOlas from './2WhatIsOlas';
 import DecentralizedAndSophisticated from './3DecentralizedAndSophisticated';
 import HowDoOlasWork from './4HowDoOlasWork';
 import QuickIntroArticles from './5QuickIntroArticles';
-import WhyBuildOnOlas from './6WhyBuildOnOlas';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
 
@@ -18,7 +17,6 @@ export const LearnPage = () => (
       <DecentralizedAndSophisticated />
       <HowDoOlasWork />
       <QuickIntroArticles />
-      <WhyBuildOnOlas />
     </div>
   </PageWrapper>
 );
