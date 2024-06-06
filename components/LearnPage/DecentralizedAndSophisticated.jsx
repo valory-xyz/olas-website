@@ -1,28 +1,22 @@
 import Image from 'next/image';
-import React from 'react';
+
+import { SCREEN_WIDTH_LG, SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const DecentralizedAndSophisticated = () => (
-  <div className="py-14 text-center" id="what-are-autonomous-services">
-    <h2 className="mb-8">WHAT ARE AUTONOMOUS SERVICES?</h2>
-    <div className="text-4xl md:text-6xl font-bold mb-8">
-      Decentralized&nbsp;
-      <br />
-      <span className="sub-text">and</span>
-      &nbsp;
-      <span className="ib">Sophisticated</span>
+  <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:p-16">
+    <div className={`${SCREEN_WIDTH_LG} gap-5 justify-center`}>
+      <p className={`${SUB_HEADER_MEDIUM_CLASS} mb-6`}>
+        What makes decentralized agents unique?
+      </p>
+
+      <Image
+        src="/images/learn/Decentralized/what-are-autonomous-services.png"
+        alt="What are autonomous services"
+        className="mx-auto"
+        width={575}
+        height={522}
+      />
     </div>
-
-    <h2 className="mb-8">
-      Software services you can build and own. Build with the best of smart
-      contracts and Web2 apps.
-    </h2>
-
-    <Image
-      src="/images/learn/Decentralized/what-are-autonomous-services.png"
-      alt="What are autonomous services"
-      className="mx-auto"
-      width={575}
-      height={522}
-    />
-  </div>
+  </SectionWrapper>
 );

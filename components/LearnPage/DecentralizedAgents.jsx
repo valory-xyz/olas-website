@@ -1,9 +1,10 @@
-import { SCREEN_WIDTH_LG, TEXT_LARGE_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
+import { SCREEN_WIDTH_LG, SUB_HEADER_LG_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+
 export const DecentralizedAgents = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
+  <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:p-16">
     <div className={`${SCREEN_WIDTH_LG} gap-5 justify-center`}>
       <Image
         className="mb-8"
@@ -12,19 +13,28 @@ export const DecentralizedAgents = () => (
         width="200"
         height="265"
       />
-      <p className={`${TEXT_LARGE_CLASS} font-bold`}>Decentralized Agents</p>
+      <p className={`${SUB_HEADER_LG_CLASS} mb-2`}>Decentralized Agents</p>
 
-      <p>
-        Sovereign Agents are lightweight, easy-to-run agents managed by a single
-        individual or entity. They can operate on a personal computer or in the
-        cloud, offering flexibility in deployment.
-      </p>
+      <div className="flex flex-col gap-4">
+        <p>
+          Decentralized Agents are made up of multiple agent instances, each run
+          by different operators. This setup ensures high transparency and
+          robustness due to open-source code and a consensus mechanism that
+          keeps all agent instances in sync.
+        </p>
 
-      <p>
-        The main advantages of Sovereign Agents include low cost and simplicity,
-        making them ideal for personal tasks or smaller-scale operations without
-        the need for extensive coordination.
-      </p>
+        <p>
+          These agent instances and its operator are well-suited for managing
+          high-value processes and assets, such as governance in DAOs or
+          delivering AI inference on-chain, because they minimize reliance on
+          any single operator.
+        </p>
+
+        <p>
+          In Olas&apos; technical language, decentralized agents are referred to
+          as &quot;autonomous services with multiple agent instances&quot;.
+        </p>
+      </div>
     </div>
   </SectionWrapper>
 );
