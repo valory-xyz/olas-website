@@ -19,7 +19,7 @@ export const QuickIntroArticles = () => {
 
   return (
     <SectionWrapper
-      customClasses="lg:p-24 px-4 py-12"
+      customClasses="lg:p-24 px-4 py-12 border-b"
       backgroundType="SUBTLE_GRADIENT"
     >
       <div className={`${SCREEN_WIDTH_XL} gap-5`}>
