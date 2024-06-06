@@ -7,7 +7,7 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const DATA = [
+const decentralizedAgentsList = [
   'Services are made up of open-source software agents',
   'Each agent instance is operated independently',
   'Services run continuously, and are fault tolerant up to a threshold',
@@ -39,7 +39,7 @@ export const HowDoDecentralizedAgentsWork = () => (
         </div>
 
         <div className="flex-1">
-          {DATA.map((item, index) => (
+          {decentralizedAgentsList.map((item, index) => (
             <div className="my-4 flex" key={`how-olas-${index}`}>
               <div className="sr-no w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-4">
                 {index + 1}

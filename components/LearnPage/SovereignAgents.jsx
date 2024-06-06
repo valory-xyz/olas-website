@@ -14,14 +14,14 @@ export const SovereignAgents = () => (
   >
     <div className={`${SCREEN_WIDTH_LG} gap-6 justify-center`}>
       <h2
-        className={`${SUB_HEADER_CLASS} text-center mb-12 self-center max-w-[540px]`}
+        className={`${SUB_HEADER_CLASS} mb-12 self-center max-w-[540px] md:text-center`}
       >
         What different types of system can be build on Olas?
       </h2>
 
       <Image
         className="mb-8"
-        alt="OLAS Utility"
+        alt="Sovereign Agents"
         src="/images/learn/sovereign-agents.png"
         width={200}
         height={145}

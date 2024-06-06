@@ -12,7 +12,7 @@ export const DecentralizedAndSophisticated = () => (
 
       <Image
         src="/images/learn/decentralized-agents-details.png"
-        alt="What are What makes decentralized agents unique?"
+        alt="What makes decentralized agents unique?"
         width={575}
         height={522}
         className="mx-auto"
