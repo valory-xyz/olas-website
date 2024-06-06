@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const AgentEconomics = () => (
@@ -14,7 +14,9 @@ export const AgentEconomics = () => (
         className="mb-8"
       />
 
-      <h2 className={`${SUB_HEADER_CLASS} text-left mb-2`}>Agent Economies</h2>
+      <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-2`}>
+        Agent Economies
+      </h2>
 
       <div className="flex flex-col gap-4">
         <p>
