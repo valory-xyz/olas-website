@@ -16,7 +16,7 @@ export const DoesOlSupportMultiAgentSystems = () => (
         </p>
 
         <p>
-          Evidently, any Agent Economy is a multi-agent system. Moreover,
+          Evidently, any agent economy is a multi-agent system. Moreover,
           decentralized agents can be a multi-agent system when the individual
           agent instances in the autonomous service take on differentiated
           tasks.

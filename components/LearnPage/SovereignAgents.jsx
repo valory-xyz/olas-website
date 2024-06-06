@@ -36,11 +36,11 @@ export const SovereignAgents = () => (
         </p>
 
         <p>
-          The main advantages of Sovereign Agents include low operating cost and
+          The main advantages of Sovereign agents include low operating cost and
           simplicity, making them ideal for personal tasks or smaller-scale
           operations without the need for extensive coordination. In Olas&apos;
           technical language, sovereign agents are referred to as
-          &quot;autonomous services with a single agent instance&quot;
+          &quot;autonomous services with a single agent instance&quot;.
         </p>
       </div>
     </div>

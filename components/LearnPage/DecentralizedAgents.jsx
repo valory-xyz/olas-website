@@ -17,14 +17,14 @@ export const DecentralizedAgents = () => (
 
       <div className="flex flex-col gap-4">
         <p>
-          Decentralized Agents are made up of multiple agent instances, each run
+          Decentralized agents are made up of multiple agent instances, each run
           by different operators. This setup ensures high transparency and
-          robustness due to open-source code and a consensus mechanism that
+          robustness due to their open-source code and a consensus mechanism that
           keeps all agent instances in sync.
         </p>
 
         <p>
-          These agent instances and its operator are well-suited for managing
+          These agent instances and their operator are well-suited for managing
           high-value processes and assets, such as governance in DAOs or
           delivering AI inference on-chain, because they minimize reliance on
           any single operator.
