@@ -1,12 +1,12 @@
 import Hero from './Hero';
 import CTA from './CTA';
-import { Content } from './Content';
+import { BenefitsOfCreatingAnAutonomousAiAgent } from './BenefitsOfCreatingAnAutonomousAiAgent';
 import { CreateAnAutonomousAiAgent } from './CreateAnAutonomousAiAgent';
 
 export const Launch = () => (
   <>
     <Hero />
-    <Content />
+    <BenefitsOfCreatingAnAutonomousAiAgent />
     <CreateAnAutonomousAiAgent />
     <CTA />
   </>

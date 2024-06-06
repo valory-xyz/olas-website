@@ -2,9 +2,17 @@
 import PropTypes from 'prop-types';
 
 const SectionHeading = ({
-  children, size, color, spacing, display, weight, other,
+  children,
+  size,
+  color,
+  spacing,
+  display,
+  weight,
+  other,
 }) => (
-  <h2 className={`tracking-tight text-heading ${size} ${spacing} ${color} ${display} ${weight} ${other}`}>
+  <h2
+    className={`tracking-tight text-heading ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
+  >
     {children}
   </h2>
 );

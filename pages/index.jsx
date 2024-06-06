@@ -1,16 +1,15 @@
+import PropTypes from 'prop-types';
+
+import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
 import Activity from 'components/HomepageSection/Activity';
 import UseCases from 'components/HomepageSection/UseCases';
-import TheTech from 'components/HomepageSection/TheTech';
+import { TheTech } from 'components/HomepageSection/TheTech';
 import PropelledBy from 'components/HomepageSection/PropelledBy';
 import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Media from 'components/HomepageSection/Media';
-
-import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
-
-import PropTypes from 'prop-types';
 
 const DAY_IN_SECONDS = 86400;
 

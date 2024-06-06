@@ -65,7 +65,7 @@ const benefitsOfRunningAStakingEconomy = [
     title: 'Interdependence of agents',
     subList: [
       'Agent interdependence creates defensibility and fee capture mechanisms.',
-      'Multi-agent systems, i.e. agents being composale and the ability to seamlessly interact with other agents and purchase from other agents.',
+      'Multi-agent systems, i.e. agents being composable and the ability to seamlessly interact with other agents and purchase from other agents.',
       'Agents can then run their own businesses autonomously, e.g. Mechs agents selling information to trader agents.',
     ],
   },
@@ -94,7 +94,7 @@ const benefits = [
   },
 ];
 
-const BenefitsOfCreatingAnAutonomousAiAgent = () => (
+export const BenefitsOfCreatingAnAutonomousAiAgent = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>
@@ -130,5 +130,3 @@ const BenefitsOfCreatingAnAutonomousAiAgent = () => (
     </div>
   </SectionWrapper>
 );
-
-export const Content = () => <BenefitsOfCreatingAnAutonomousAiAgent />;
