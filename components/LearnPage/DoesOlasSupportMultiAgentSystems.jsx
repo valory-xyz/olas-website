@@ -1,5 +1,5 @@
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const DoesOlSupportMultiAgentSystems = () => (
   <SectionWrapper customClasses="px-4 py-8 lg:px-24 lg:py-20">

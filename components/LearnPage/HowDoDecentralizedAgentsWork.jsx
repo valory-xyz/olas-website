@@ -1,10 +1,11 @@
+import Image from 'next/image';
+
 import {
   SCREEN_WIDTH_LG,
   SCREEN_WIDTH_XL,
   SUB_HEADER_MEDIUM_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import Image from 'next/image';
 
 const DATA = [
   'Services are made up of open-source software agents',
@@ -29,8 +30,8 @@ export const HowDoDecentralizedAgentsWork = () => (
         <div className="flex-1">
           <div className="img-container">
             <Image
-              src="/images/learn/HowDoAutonomousServicesWork/main.svg"
-              alt="How do autonomous services work?"
+              src="/images/learn/how-do-decentralized-agents-work.svg"
+              alt="How do decentralized agents work?"
               width={540}
               height={340}
             />

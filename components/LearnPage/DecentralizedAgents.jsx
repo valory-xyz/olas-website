@@ -7,11 +7,11 @@ export const DecentralizedAgents = () => (
   <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:p-16">
     <div className={`${SCREEN_WIDTH_LG} gap-5 justify-center`}>
       <Image
-        className="mb-8"
-        alt="OLAS Utility"
         src="/images/learn/decentralized-agents.png"
-        width="200"
-        height="265"
+        alt="Decentralized Agents"
+        width={200}
+        height={265}
+        className="mb-8"
       />
       <p className={`${SUB_HEADER_LG_CLASS} mb-2`}>Decentralized Agents</p>
 

@@ -11,11 +11,11 @@ export const DecentralizedAndSophisticated = () => (
       </p>
 
       <Image
-        src="/images/learn/Decentralized/what-are-autonomous-services.png"
-        alt="What are autonomous services"
-        className="mx-auto"
+        src="/images/learn/decentralized-agents-details.png"
+        alt="What are What makes decentralized agents unique?"
         width={575}
         height={522}
+        className="mx-auto"
       />
     </div>
   </SectionWrapper>
