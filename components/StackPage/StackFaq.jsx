@@ -11,11 +11,11 @@ const faqList = [
       },
       {
         title: 'How can I get started with Olas Stack?',
-        desc: 'Start by following the installation guide to set up your environment. Use the development tools and SDK provided to create your services, and refer to the deployment guides for integrating them into a decentralised network.',
+        desc: 'Start by following the installation guide to set up your environment. Use the development tools and framework provided to create your services, and refer to the guides for deploying them.',
       },
       {
         title: 'What kind of applications can I build with Olas Stack?',
-        desc: 'Olas Stack supports a wide range of applications, from simple autonomous agents to complex decentralised services. The modular architecture allows for extensive customization and scalability.',
+        desc: 'Olas Stack supports a wide range of applications, from sovereign agents to decentralized agents and even full agent economies. The modular architecture allows for extensive customization and scalability.',
       },
       {
         title: 'Is there support available for developers?',
