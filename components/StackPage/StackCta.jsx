@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { DOCS_BASE_URL } from 'common-util/constants';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -26,15 +24,6 @@ export const StackCta = () => (
           >
             Get Started with Olas Stack
           </a>
-        </Button>
-
-        <Button variant="link" size="xl" asChild>
-          <Link
-            href={`${DOCS_BASE_URL}/open-autonomy`}
-            className="block text-primary hover:text-primary-800 transition-colors duration-300"
-          >
-            Get Started with Olas Stack
-          </Link>
         </Button>
       </div>
     </div>
