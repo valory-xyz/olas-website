@@ -9,8 +9,8 @@ export const DecentralizedAgents = () => (
       <Image
         src="/images/learn/decentralized-agents.png"
         alt="Decentralized Agents"
-        width={200}
-        height={265}
+        width={800}
+        height={300}
         className="mb-8"
       />
       <p className={`${SUB_HEADER_LG_CLASS} mb-2`}>Decentralized Agents</p>
