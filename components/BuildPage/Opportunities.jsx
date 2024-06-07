@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import Image from 'next/image';
+import PropTypes from 'prop-types';
+
 import opportunities from 'data/opportunities.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from 'components/ui/typography';
@@ -54,17 +55,30 @@ OpportunityCard.propTypes = {
   image: PropTypes.string.isRequired,
 };
 
-export const Opportunities = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="opportunities">
-    <div className="max-w-[1024px] mx-auto mb-12">
-      <H1 className="mb-8 text-center">Opportunities</H1>
-      <p className="text-xl text-gray-600 text-center mb-12">
-        Projects are interested in bringing Olas agents to their ecosystem. This
-        is a list of &quot;requests for agents&quot;
-      </p>
-      {opportunities.map((item) => (
-        <OpportunityCard key={`${item.project} ${item.agentName}`} {...item} />
-      ))}
-    </div>
-  </SectionWrapper>
-);
+export const Opportunities = () => {
+  const sortedOpportunities = opportunities.sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  return (
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="opportunities">
+      <div className="max-w-[1024px] mx-auto mb-12">
+        <H1 className="mb-8 text-center">Opportunities</H1>
+        <p className="text-xl text-gray-600 text-center mb-12">
+          Projects are interested in bringing Olas agents to their ecosystem.
+          This is a list of &quot;requests for agents&quot;
+        </p>
+
+        {sortedOpportunities.map((item) => (
+          <OpportunityCard
+            key={`${item.project} ${item.agentName}`}
+            {...item}
+          />
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+};

@@ -1,5 +1,13 @@
 [
   {
+    "project": "Shutter",
+    "agentName": "AI Agent for MEV Simulation on Gnosis Chain",
+    "agentDescription": "1) Simulates MEV Scenarios: Develops and tests various MEV (Maximal Extractable Value) strategies.\n2) Transaction Ordering: Simulates and analyses transaction ordering in blockchain environments.\n3) Performance Evaluation: Provides insights on the performance and efficiency of different MEV tactics.\n4) Collaborative Research: Facilitates collaboration with other developers and researchers in the blockchain space.",
+    "background": "Shutter is building an encrypted mempool, aimed at securing transaction ordering processes. Their team is interested in theoretical simulations to analyze the economic implications of this technology, alongside various transaction ordering strategies.",
+    "image": "/images/opportunities/shutter.png",
+    "date": "07-June-24"
+  },
+  {
     "project": "NIM",
     "agentName": "Basic NIM Agent",
     "agentDescription": "Gaming-related AI agent for the NIM ecosystem that can be used to do things like:\n\n1) Enable controlling of NPCs, making them respond intelligently to player actions and evolve their strategies over time.\n2) Enable the creation of evolving in-game narratives and gameplay, adjusting the game's storyline and character interactions in real-time based on player decisions.\n3) Enable procedural content generation, facilitating the creation of vast, diverse, and ever-changing game worlds.\n4) Chat as an influencer with KOLs and other gamers.",
@@ -96,12 +104,5 @@
     "agentDescription": "Gaming simulation agent per predefined behaviors.",
     "background": "UNKJD is a Web3 gaming studio building a connected world of casual, free-to-play games.",
     "image": "/images/opportunities/unkjd.png"
-  },
-  {
-    "project": "Shutter",
-    "agentName": "AI Agent for MEV Simulation on Gnosis Chain",
-    "agentDescription": "1) Simulates MEV Scenarios: Develops and tests various MEV (Maximal Extractable Value) strategies.\n2) Transaction Ordering: Simulates and analyses transaction ordering in blockchain environments.\n3) Performance Evaluation: Provides insights on the performance and efficiency of different MEV tactics.\n4) Collaborative Research: Facilitates collaboration with other developers and researchers in the blockchain space.",
-    "background": "Shutter is building an encrypted mempool, aimed at securing transaction ordering processes. Their team is interested in theoretical simulations to analyze the economic implications of this technology, alongside various transaction ordering strategies.",
-    "image": "/images/opportunities/shutter.png"
   }
 ]
