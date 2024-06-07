@@ -7,10 +7,7 @@ import { StackFaq } from 'components/StackPage/StackFaq';
 
 const StackPage = () => (
   <PageWrapper>
-    <Meta
-      pageTitle="Stack"
-      description="Build your understanding of what Olas is and how it works."
-    />
+    <Meta pageTitle="Stack" description="Explore Olas Stack Today" />
 
     <StackHeader />
     <StackKeyFeatures />
