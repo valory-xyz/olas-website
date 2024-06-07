@@ -23,8 +23,8 @@ export const SovereignAgents = () => (
         className="mb-8"
         alt="Sovereign Agents"
         src="/images/learn/sovereign-agents.png"
-        width={200}
-        height={145}
+        width={800}
+        height={300}
       />
       <p className={`${SUB_HEADER_LG_CLASS} mb-0`}>Sovereign Agents</p>
 
