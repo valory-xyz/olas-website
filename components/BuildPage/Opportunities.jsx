@@ -7,7 +7,11 @@ import { Button } from 'components/ui/button';
 import { LAUNCH_CONTACT_URL } from 'common-util/constants';
 
 const OpportunityCard = ({
-  agentName, agentDescription, project, image, background,
+  agentName,
+  agentDescription,
+  project,
+  image,
+  background,
 }) => (
   <div className="grid gap-8 md:grid-cols-3 rounded-xl border border-gray-300 shadow-sm p-6 mb-8">
     <div className="col-span-2 text-start">
@@ -55,11 +59,11 @@ export const Opportunities = () => (
     <div className="max-w-[1024px] mx-auto mb-12">
       <H1 className="mb-8 text-center">Opportunities</H1>
       <p className="text-xl text-gray-600 text-center mb-12">
-        Projects are interested in bringing Olas agents to their ecosystem.
-        This is a list of &quot;requests for agents&quot;
+        Projects are interested in bringing Olas agents to their ecosystem. This
+        is a list of &quot;requests for agents&quot;
       </p>
       {opportunities.map((item) => (
-        <OpportunityCard key={item.agentName} {...item} />
+        <OpportunityCard key={`${item.project} ${item.agentName}`} {...item} />
       ))}
     </div>
   </SectionWrapper>
