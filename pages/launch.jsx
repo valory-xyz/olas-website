@@ -10,3 +10,5 @@ const LaunchPage = () => (
 );
 
 export default LaunchPage;
+
+// init
