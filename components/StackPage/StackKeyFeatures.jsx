@@ -40,7 +40,7 @@ const gettingStarted = [
   {
     title: 'Development',
     subList: [
-      'Utilize our comprehensive SDK and development tools to create your autonomous services. Leverage pre-built modules to expedite your development process.',
+      'Utilize our comprehensive framework and development tools to create your autonomous services. Leverage pre-built modules to expedite your development process.',
     ],
   },
   {

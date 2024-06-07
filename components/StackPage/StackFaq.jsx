@@ -21,10 +21,6 @@ const faqList = [
         title: 'Is there support available for developers?',
         desc: 'Yes, Olas Stack offers extensive documentation, including guides, tutorials, and API references. Additionally, a community forum is available for peer support and knowledge sharing.',
       },
-      {
-        title: 'How does Olas Stack ensure security and transparency?',
-        desc: 'Olas Stack incorporates decentralised governance mechanisms, ensuring that all operations are transparent and secure. The framework is designed to resist tampering and ensure the integrity of autonomous services.',
-      },
     ],
   },
 ];
