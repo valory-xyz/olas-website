@@ -1,6 +1,10 @@
 import { Fragment } from 'react';
 
-import { TEXT_LARGE_CLASS, SCREEN_WIDTH_LG } from 'common-util/classes';
+import {
+  TEXT_LARGE_CLASS,
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const onChainRegistries = [
@@ -37,7 +41,6 @@ const governance = [
 ];
 
 const mainList = [
-  { mainTitle: 'Key Components', list: [] },
   { mainTitle: 'On-Chain Registries', list: onChainRegistries },
   { mainTitle: 'Tokenomics', list: tokenomics },
   { mainTitle: 'Governance', list: governance },
@@ -50,10 +53,12 @@ export const ProtocolKeyFeatures = () => (
         Olas Protocol is a comprehensive solution for coordinating, securing,
         and managing software code on public blockchains. It provides a
         mechanism to incentivise developers proportionally to their
-        contributions, supporting the growth of a decentralised ecosystem. Built
-        with the Open Autonomy framework, Olas Protocol is currently deployed on
-        multiple blockchains, with plans for further expansions.
+        contributions, supporting the growth of a decentralised ecosystem. Olas
+        Protocol is currently deployed on multiple blockchains, with plans for
+        further expansions.
       </p>
+
+      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Key Components</h2>
 
       {mainList.map(({ mainTitle, list }) => (
         <Fragment key={mainTitle}>

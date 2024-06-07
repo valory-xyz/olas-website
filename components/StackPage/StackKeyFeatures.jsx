@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  TEXT_LARGE_CLASS,
-  SCREEN_WIDTH_LG,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { TEXT_LARGE_CLASS, SCREEN_WIDTH_LG } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const keyFeatures = [
@@ -69,14 +65,10 @@ const mainList = [
 export const StackKeyFeatures = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>
-        Welcome to Olas Stack: Pioneering Autonomous Solutions
-      </h2>
-
       <p>
         Olas Stack is a comprehensive framework designed to facilitate the
         creation, deployment, and management of autonomous services and agents.
-        Leveraging advanced decentralised technologies, Olas Stack offers a
+        Leveraging advanced decentralized technologies, Olas Stack offers a
         robust infrastructure for developing complex autonomous applications
         with ease and efficiency.
       </p>
