@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  TEXT_LARGE_CLASS,
-  SCREEN_WIDTH_LG,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { TEXT_LARGE_CLASS, SCREEN_WIDTH_LG } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const onChainRegistries = [
@@ -75,16 +71,6 @@ export const ProtocolKeyFeatures = () => (
           </ul>
         </Fragment>
       ))}
-
-      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Why Olas Protocol?</h2>
-
-      <p>
-        Open-source developers often struggle with fair remuneration. Olas
-        Protocol addresses this by minting software packages as NFTs, enabling
-        their composition into agents and services. This model ensures
-        developers are rewarded for their contributions, fostering a
-        sustainable, decentralised ecosystem.
-      </p>
     </div>
   </SectionWrapper>
 );
