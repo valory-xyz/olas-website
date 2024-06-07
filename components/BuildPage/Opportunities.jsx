@@ -50,7 +50,7 @@ OpportunityCard.propTypes = {
   image: PropTypes.string.isRequired,
 };
 
-const Opportunities = () => (
+export const Opportunities = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="opportunities">
     <div className="max-w-[1024px] mx-auto mb-12">
       <H1 className="mb-8 text-center">Opportunities</H1>
@@ -64,5 +64,3 @@ const Opportunities = () => (
     </div>
   </SectionWrapper>
 );
-
-export default Opportunities;
