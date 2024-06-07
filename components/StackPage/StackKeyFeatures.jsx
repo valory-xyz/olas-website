@@ -7,8 +7,6 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const childUlClass = 'ml-4 mt-1 list-disc list-inside';
-
 const keyFeatures = [
   {
     title: 'Modular Architecture',
@@ -63,19 +61,13 @@ const gettingStarted = [
   },
 ];
 
-const benefits = [
-  {
-    mainTitle: 'Key Features',
-    list: keyFeatures,
-  },
-  {
-    mainTitle: 'Getting Started with Olas Stack',
-    list: gettingStarted,
-  },
+const mainList = [
+  { mainTitle: 'Key Features', list: keyFeatures },
+  { mainTitle: 'Getting Started with Olas Stack', list: gettingStarted },
 ];
 
 export const StackKeyFeatures = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
+  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>
         Welcome to Olas Stack: Pioneering Autonomous Solutions
@@ -89,21 +81,17 @@ export const StackKeyFeatures = () => (
         with ease and efficiency.
       </p>
 
-      {benefits.map(({ mainTitle, list }) => (
+      {mainList.map(({ mainTitle, list }) => (
         <Fragment key={mainTitle}>
           <p className={`${TEXT_LARGE_CLASS} font-bold`}>{mainTitle}</p>
 
-          <ul className="list-outside">
+          <ul className="list-disc ml-4">
             {list.map(({ title, subList }) => (
-              <li key={title} className="mb-6">
-                <strong className="mb-2">{title}</strong>
-                <ul className={childUlClass}>
-                  {subList.map((subTitle) => (
-                    <li key={subTitle} className="mb-1">
-                      {subTitle}
-                    </li>
-                  ))}
-                </ul>
+              <li key={title} className="mb-4">
+                <strong className="mb-2">{`${title}: `}</strong>
+                {subList.map((subTitle) => (
+                  <Fragment key={subTitle}>{subTitle}</Fragment>
+                ))}
               </li>
             ))}
           </ul>

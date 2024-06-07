@@ -31,8 +31,9 @@ const faqList = [
 
 export const StackFaq = () => (
   <SectionWrapper
-    customClasses="border bg-no-repeat py-8 px-6 lg:py-24 lg:px-0"
-    id="stack-faq"
+    customClasses="bg-no-repeat py-8 px-6 lg:py-24 lg:px-0"
+    id="faq"
+    backgroundType="SUBTLE_GRADIENT"
   >
     <div className={`${SCREEN_WIDTH_LG}`}>
       <div className="grid gap-12">
