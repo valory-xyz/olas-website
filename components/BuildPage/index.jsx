@@ -1,8 +1,8 @@
 import Content from './Content';
 import CTA from './CTA';
 import Hero from './Hero';
-import BuildWithOlas from './BuildWithOlas';
-import Opportunities from './Opportunities';
+import { BuildWithOlas } from './BuildWithOlas';
+import { Opportunities } from './Opportunities';
 
 const Build = () => (
   <>
