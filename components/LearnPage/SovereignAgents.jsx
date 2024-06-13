@@ -16,7 +16,7 @@ export const SovereignAgents = () => (
       <h2
         className={`${SUB_HEADER_CLASS} mb-12 self-center max-w-[740px] md:text-center`}
       >
-        What different types of system can be built on Olas?
+        What different types of agent systems can be built on Olas?
       </h2>
 
       <Image

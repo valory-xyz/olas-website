@@ -14,16 +14,6 @@ module.exports = {
         permanent: true,
       },
       {
-        source: '/stack',
-        destination: 'https://docs.autonolas.network/open-autonomy',
-        permanent: false,
-      },
-      {
-        source: '/protocol',
-        destination: 'https://docs.autonolas.network/protocol',
-        permanent: false,
-      },
-      {
         source: '/dev-rewards',
         destination: '/build',
         permanent: true,
