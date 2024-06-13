@@ -6,30 +6,41 @@ import {
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import Link from 'next/link';
 
 const onChainRegistries = [
   {
-    title: 'Autonomous Services & Agents',
-    subList: ['Register services and components as NFTs.'],
+    title: 'Software registry',
+    subList: [
+      'Register agent systems and the components they are composed from as NFTs.',
+    ],
   },
   {
-    title: 'Software Composability',
-    subList: ['Combine components into agents and services.'],
+    title: 'Secure & Manage',
+    subList: [
+      'Maintain agent systems, secure them and coordinate their operators.',
+    ],
   },
 ];
 
 const tokenomics = [
   {
-    title: 'OLAS Token',
-    subList: ['Facilitates pairing capital with code.'],
+    title: 'Developer Rewards',
+    subList: [
+      'Permissionless system to reward developers for their code contributions.',
+    ],
   },
   {
-    title: 'Decentralised Services',
-    subList: ['Operated by a DAO and ecosystem actors.'],
+    title: 'Bonding',
+    subList: [
+      'Permissionless system to allow the DAO to acquire protocol-owned liquidity',
+    ],
   },
   {
-    title: 'Incentives',
-    subList: ['Rewarding software composability and utility.'],
+    title: 'Staking',
+    subList: [
+      'Coordinate and reward agents for their active contributions to specific use cases.',
+    ],
   },
 ];
 
@@ -50,12 +61,19 @@ export const ProtocolKeyFeatures = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <p>
-        Olas Protocol is a comprehensive solution for coordinating, securing,
-        and managing software code on public blockchains. It provides a
-        mechanism to incentivise developers proportionally to their
-        contributions, supporting the growth of a decentralised ecosystem. Olas
-        Protocol is currently deployed on multiple blockchains, with plans for
-        further expansions.
+        Olas Protocol is a set of smart contracts for coordinating, securing,
+        and managing
+        {' '}
+        <Link href="/learn" className="text-purple-600">
+          agent systems
+        </Link>
+        {' '}
+        on public blockchains. It provides a mechanism to one , incentivise
+        developers proportionally to their contributions, two, incentivise
+        operators to run agent systems, and three, incentivise bonders to
+        provide liquidity, collectively supporting the growth of a decentralised
+        ecosystem. Olas Protocol is currently deployed on multiple blockchains,
+        with plans for further expansions.
       </p>
 
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Key Components</h2>

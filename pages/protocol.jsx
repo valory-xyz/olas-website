@@ -3,7 +3,7 @@ import Meta from 'components/Meta';
 import { ProtocolHeader } from 'components/ProtocolPage/ProtocolHeader';
 import { ProtocolKeyFeatures } from 'components/ProtocolPage/ProtocolKeyFeatures';
 import { ProtocolCta } from 'components/ProtocolPage/ProtocolCta';
-import { WhyOlasProtocol } from 'components/ProtocolPage/WhyOlasProtocol';
+// import { WhyOlasProtocol } from 'components/ProtocolPage/WhyOlasProtocol';
 
 const ProtocolPage = () => (
   <PageWrapper>
@@ -11,7 +11,7 @@ const ProtocolPage = () => (
 
     <ProtocolHeader />
     <ProtocolKeyFeatures />
-    <WhyOlasProtocol />
+    {/* <WhyOlasProtocol /> */}
     <ProtocolCta />
   </PageWrapper>
 );

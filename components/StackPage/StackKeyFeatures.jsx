@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import Link from 'next/link';
 
 import { TEXT_LARGE_CLASS, SCREEN_WIDTH_LG } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -46,13 +47,16 @@ const gettingStarted = [
   {
     title: 'Deployment',
     subList: [
-      'Deploy your services on a decentralised network, ensuring high availability and resilience. Our deployment guides provide step-by-step instructions for seamless integration.',
-    ],
-  },
-  {
-    title: 'Management',
-    subList: [
-      'Monitor and manage your services using our intuitive dashboard and management tools. Ensure optimal performance and scalability with real-time insights.',
+      <>
+        Deploy your agents on the
+        {' '}
+        <Link href="/protocol" className="text-purple-600">
+          Olas Protocol
+        </Link>
+        {' '}
+        to benefit from its different mechanisms. Our deployment guides provide
+        step-by-step instructions for seamless integration.
+      </>,
     ],
   },
 ];
@@ -67,8 +71,12 @@ export const StackKeyFeatures = () => (
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <p>
         Olas Stack is a comprehensive framework designed to facilitate the
-        creation, deployment, and management of autonomous services and agents.
-        Leveraging advanced decentralized technologies, Olas Stack offers a
+        creation, deployment, and management of
+        {' '}
+        <Link href="/learn" className="text-purple-600">
+          agent systems
+        </Link>
+        . Leveraging advanced decentralized technologies, Olas Stack offers a
         robust infrastructure for developing complex autonomous applications
         with ease and efficiency.
       </p>
