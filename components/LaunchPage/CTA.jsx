@@ -9,7 +9,7 @@ const CTA = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
     <div className="max-w-4xl mx-auto items-center text-center">
       <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
-        Looking for developers to build your agent?
+        Looking to launch an autonomous AI agent or entire agent economy?
       </h2>
 
       <p className="mb-8">

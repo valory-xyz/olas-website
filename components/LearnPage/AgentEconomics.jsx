@@ -9,8 +9,8 @@ export const AgentEconomics = () => (
       <Image
         src="/images/learn/agent-economies.png"
         alt="Agent Economies"
-        width={240}
-        height={265}
+        width={800}
+        height={300}
         className="mb-8"
       />
 

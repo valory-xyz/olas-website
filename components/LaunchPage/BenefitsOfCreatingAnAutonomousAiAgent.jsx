@@ -14,14 +14,15 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
     title: 'Progressive decentralization',
     subList: [
       'Effortlessly move between centralized and decentralized deployment modes.',
+      'Offers autonomy, trustlessness, and more security.',
     ],
   },
   {
     title: 'Ease of building agents',
     subList: [
-      'Build agents in the Olas framework with Lego-like composability of software components.',
+      'Build agents in the Olas framework with Lego-like composability.',
       'Olas abstracts the complexities of building decentralized apps.',
-      'All popular agent frameworks will be composable with Olas, e.g. Langchain or Autogen.',
+      'All popular agent frameworks will be composable with Olas including LangChain and AutoGen.',
     ],
   },
   {
@@ -29,14 +30,14 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
     subList: [
       'Enjoy the benefits of thousands of people running your agent.',
       'Agents can easily be run by your users with a native downloadable application called Pearl which can be white-labeled with your own brand.',
-      'Agents are also run by professional Olas node operators en masse.',
+      'Agents are also run by professional operators en masse.',
     ],
   },
   {
     title: 'Interoperability',
     subList: [
       'Unlike other agents, Olas agents can seamlessly take actions off-chain and on-chain.',
-      'Olas has out-of-the-box multi-agent messaging support for interoperability with other agents.',
+      'Olas has out-of-the-box multi-agent messaging support with other agents.',
     ],
   },
   {
@@ -48,7 +49,7 @@ const benefitsOfDevelopingAndOfTheOlasStack = [
   {
     title: 'Co-ownability',
     subList: [
-      'Agent services are represented in Web3 as tokens or NFTs and can therefore be co-owned by DAOs or single users.',
+      'Agent services are represented in Web3 as tokens or NFTs and can therefore be co-owned by DAOs.',
     ],
   },
 ];
@@ -79,17 +80,17 @@ const benefitsOfRunningAStakingEconomy = [
   },
   {
     title: 'Bring utility to your own token',
-    subList: ['Your own token can be staked to secure your agent networks.'],
+    subList: ['Stake your own token to secure your agent networks.'],
   },
 ];
 
 const benefits = [
   {
-    mainTitle: 'Benefits of developing and of the Olas Stack',
+    mainTitle: 'Benefits of the Olas Stack',
     list: benefitsOfDevelopingAndOfTheOlasStack,
   },
   {
-    mainTitle: 'Benefits of running a staking economy',
+    mainTitle: 'Benefits of running an autonomous AI agent economy',
     list: benefitsOfRunningAStakingEconomy,
   },
 ];

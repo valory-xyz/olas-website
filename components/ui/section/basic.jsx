@@ -31,8 +31,8 @@ BasicSection.propTypes = {
   heading: PropTypes.string.isRequired,
   image: PropTypes.shape({
     alt: PropTypes.string,
-    height: PropTypes.number,
     path: PropTypes.string,
+    height: PropTypes.number,
     width: PropTypes.number,
   }).isRequired,
   sectionId: PropTypes.string.isRequired,
