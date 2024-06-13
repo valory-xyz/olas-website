@@ -4,7 +4,10 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 
 export const StackCta = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
+  <SectionWrapper
+    customClasses="lg:p-24 px-4 py-12 border-y"
+    backgroundType="SUBTLE_GRADIENT"
+  >
     <div className="max-w-4xl mx-auto items-center text-center">
       <h2 className={`${SUB_HEADER_CLASS} mb-6`}>Explore Olas Stack Today</h2>
 

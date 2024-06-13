@@ -3,7 +3,7 @@ import Meta from 'components/Meta';
 import { StackHeader } from 'components/StackPage/StackHeader';
 import { StackCta } from 'components/StackPage/StackCta';
 import { StackKeyFeatures } from 'components/StackPage/StackKeyFeatures';
-import { StackFaq } from 'components/StackPage/StackFaq';
+// import { StackFaq } from 'components/StackPage/StackFaq';
 
 const StackPage = () => (
   <PageWrapper>
@@ -11,7 +11,7 @@ const StackPage = () => (
 
     <StackHeader />
     <StackKeyFeatures />
-    <StackFaq />
+    {/* <StackFaq /> */}
     <StackCta />
   </PageWrapper>
 );
