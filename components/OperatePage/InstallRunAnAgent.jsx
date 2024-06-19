@@ -1,36 +1,13 @@
 /* eslint-disable import/no-unresolved */
 import React, { Fragment, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Octokit } from '@octokit/core';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import {
-  FOOT_NOTE_CLASS,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from './utils';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
 const installSteps = [
-  {
-    title: (
-      <>
-        Install
-        {' '}
-        <Link
-          href="https://docs.docker.com/docker-for-mac/install/"
-          className="text-purple-700"
-          target="_blank"
-        >
-          Docker Desktop↗
-        </Link>
-        . Make sure Docker Desktop is running before you run Pearl for the first
-        time*
-      </>
-    ),
-  },
   { title: 'Install Pearl.' },
   { title: 'Add funds and start your agent.' },
   {
@@ -174,9 +151,6 @@ export const InstallRunAnAgent = () => (
           Install. Run an Agent. Earn OLAS. That’s It
         </h2>
         <InstallSteps />
-        <p className={FOOT_NOTE_CLASS}>
-          * Docker desktop app is only required during Alpha and Beta testing
-        </p>
         <DownloadLinks />
       </div>
     </div>
