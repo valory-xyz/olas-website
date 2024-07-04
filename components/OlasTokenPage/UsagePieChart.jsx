@@ -66,7 +66,7 @@ const UsagePieChart = ({ epoch, split, loading }) => (
           {' '}
           of new tokens go to
           {' '}
-          <Link href="#" className="text-yellow-600 font-bold">
+          <Link href="https://staking.olas.network/" className="text-yellow-600 font-bold">
             Stakers
           </Link>
         </div>
