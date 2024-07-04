@@ -10,7 +10,7 @@ import { TokenDetails } from './TokenDetails';
 // TODO: move here from _HomepageSection
 import OlasUtility from '../_HomepageSection/OlasUtility';
 import SectionWrapper from '../Layout/SectionWrapper';
-import contractAbi from '../../data/ABIs/TokenomicsProxy.json';
+import contractAbi from '../../data/ABIs/Tokenomics.json';
 import UsagePieChart, { TEXT_GRADIENT } from './UsagePieChart';
 import Verify from '../Verify';
 
@@ -88,14 +88,20 @@ const Supply = () => {
       const newEpoch = await contractInstance.methods.epochCounter().call();
       setEpoch(newEpoch);
       // Use the result as the parameter for mapEpochTokenomics
-      const result = await contractInstance.methods
+      const tokenomicsResult = await contractInstance.methods
         .mapEpochTokenomics(newEpoch)
         .call();
       // 6 is the index of the bonders % value
-      const bonders = Number(result['6']);
+      const bonders = Number(tokenomicsResult['6']);
+
+      // staking
+      const stakingResult = await contractInstance.methods.mapEpochStakingPoints(newEpoch).call();
+      const staking = Number(stakingResult['3']);
+
       // subtract bonders % from 100 to get developers %
-      const developers = 100 - bonders;
+      const developers = 100 - (staking + bonders);
       setSplit({
+        staking,
         bonders,
         developers,
       });
