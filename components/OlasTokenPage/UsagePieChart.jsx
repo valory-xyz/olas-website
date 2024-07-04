@@ -25,25 +25,51 @@ const UsagePieChart = ({ epoch, split, loading }) => (
         <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F15" />
       </div>
       <p className="mb-8 text-slate-500">
-        Tokens are distributed to developers and bonders each epoch. Epochs
-        run roughly once a month.
+        Tokens are distributed to developers, stakers and bonders each epoch.
+        Epochs run roughly once a month.
       </p>
     </div>
-    <div>
+    <div className="flex flex-col">
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-4">
         Per Epoch Distribution
       </h2>
-      <div className="text-center mb-4">
-        <span className="text-cyan-500 font-bold">
-          {loading ? '--' : split?.developers}
-          %
-        </span>
-        {' '}
-        of new tokens go to
-        {' '}
-        <Link href="/build" className="text-cyan-500 font-bold">
-          Developers
-        </Link>
+      <div className="flex flex-col gap-2 mx-auto mb-4">
+        <div>
+          <span className="text-cyan-500 font-bold">
+            {loading ? '--' : split?.developers}
+            %
+          </span>
+          {' '}
+          of new tokens go to
+          {' '}
+          <Link href="/build" className="text-cyan-500 font-bold">
+            Developers
+          </Link>
+        </div>
+        <div>
+          <span className="text-purple-600 font-bold">
+            {loading ? '--' : split?.bonders}
+            %
+          </span>
+          {' '}
+          of new tokens go to
+          {' '}
+          <Link href="/bond" className="text-purple-600 font-bold">
+            Bonders
+          </Link>
+        </div>
+        <div>
+          <span className="text-yellow-600 font-bold">
+            {loading ? '--' : split?.staking}
+            %
+          </span>
+          {' '}
+          of new tokens go to
+          {' '}
+          <Link href="#" className="text-yellow-600 font-bold">
+            Stakers
+          </Link>
+        </div>
       </div>
       <div className="mb-4 max-w-[300px] mx-auto">
         {loading ? (
@@ -53,12 +79,12 @@ const UsagePieChart = ({ epoch, split, loading }) => (
         ) : (
           <Pie
             data={{
-              labels: ['Developers', 'Bonders'],
+              labels: ['Developers', 'Bonders', 'Staking'],
               datasets: [
                 {
-                  data: [split.developers, split.bonders] || [0, 0],
-                  backgroundColor: ['#cffafe', '#a855f7'],
-                  hoverBackgroundColor: ['#cffafe', '#a855f7'],
+                  data: [split.developers, split.bonders, split.staking] || [0, 0, 0],
+                  backgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
+                  hoverBackgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                 },
               ],
             }}
@@ -68,18 +94,6 @@ const UsagePieChart = ({ epoch, split, loading }) => (
             }}
           />
         )}
-      </div>
-      <div className="text-center mb-4">
-        <span className="text-purple-600 font-bold">
-          {loading ? '--' : split?.bonders}
-          %
-        </span>
-        {' '}
-        of new tokens go to
-        {' '}
-        <Link href="/bond" className="text-purple-600 font-bold">
-          Bonders
-        </Link>
       </div>
       <div className="text-center mb-4">
         <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F27" />
@@ -98,6 +112,7 @@ UsagePieChart.propTypes = {
   split: PropTypes.shape({
     bonders: PropTypes.number,
     developers: PropTypes.number,
+    staking: PropTypes.number,
   }).isRequired,
 };
 
