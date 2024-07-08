@@ -13,6 +13,7 @@ export const BasicSection = ({
         <H1 className="mb-8">{heading}</H1>
         {body}
       </div>
+
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
           className="mx-auto rounded-lg shadow-sm border"
