@@ -22,32 +22,28 @@ const InfoIcon = () => (
 
 const TokenomicsAlert = () => (
   <div
-    className="bg-blue-100 rounded-md border-1.5 border-[#91CAFF] text-[#002C8C] p-2"
+    className="bg-blue-100 rounded-md border-1.5 border-[#91CAFF] text-[#002C8C] p-2 flex"
     role="alert"
   >
-    <div className="flex">
-      <div className="py-1 mr-2">
-        <InfoIcon />
-      </div>
-      <div>
-        <p className="">
-          You can check available dev rewards for existing/minted agents and
-          components on
-          {' '}
-          <a
-            href="https://tokenomics.olas.network/dev-incentives"
-            // className="text-blue-800 underline"
-            className="text-purple-600"
-          >
-            Tokenomics ↗
-          </a>
-          .
-        </p>
-      </div>
+    <div className="py-1 mr-2">
+      <InfoIcon />
+    </div>
+    <div>
+      <p>
+        You can check available dev rewards for existing/minted agents and
+        components on
+        {' '}
+        <a
+          href="https://tokenomics.olas.network/dev-incentives"
+          className="text-purple-600"
+        >
+          Tokenomics ↗
+        </a>
+        .
+      </p>
     </div>
   </div>
 );
-
 const Content = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>

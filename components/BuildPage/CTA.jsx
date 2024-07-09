@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
 import SectionWrapper from '../Layout/SectionWrapper';
@@ -23,9 +21,7 @@ const CTA = () => (
             asChild
             className="mb-6 w-full md:w-auto"
           >
-            <Link href={CTA_LINK} rel="noopener noreferrer">
-              Get started
-            </Link>
+            <a href={CTA_LINK}>Get started</a>
           </Button>
         </div>
       </div>

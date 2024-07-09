@@ -2,7 +2,6 @@ import Image from 'next/image';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import Link from 'next/link';
 import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
 import { CTA_LINK } from './utils';
 
@@ -29,9 +28,7 @@ const Hero = () => (
             asChild
             className="mb-6 w-full md:w-auto"
           >
-            <Link href={CTA_LINK} target="_blank" rel="noopener noreferrer">
-              Get started
-            </Link>
+            <a href={CTA_LINK}>Get started</a>
           </Button>
 
           <Button
@@ -40,9 +37,9 @@ const Hero = () => (
             asChild
             className="mb-6 w-full md:w-auto"
           >
-            <Link href="https://registry.olas.network/ethereum/components">
+            <a href="https://registry.olas.network/ethereum/components">
               Explore minted agents
-            </Link>
+            </a>
           </Button>
         </div>
       </div>

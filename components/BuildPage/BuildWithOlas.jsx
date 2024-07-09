@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { Button } from 'components/ui/button';
 import { BasicSection } from '../ui/section/basic';
 
@@ -37,13 +35,7 @@ const body = (
         asChild
         className="mb-6 w-full md:w-auto"
       >
-        <Link
-          href={buttonLinks.exploreBuildPath}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Explore Build Paths
-        </Link>
+        <a href={buttonLinks.exploreBuildPath}>Explore Build Paths</a>
       </Button>
 
       <Button
@@ -52,13 +44,13 @@ const body = (
         asChild
         className="mb-6 w-full md:w-auto"
       >
-        <Link
+        <a
           href={buttonLinks.visitTheDocs}
           target="_blank"
           rel="noopener noreferrer"
         >
           Visit the Docs
-        </Link>
+        </a>
       </Button>
     </div>
   </div>
