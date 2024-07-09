@@ -60,7 +60,15 @@ Button.propTypes = {
   asChild: PropTypes.bool,
   className: PropTypes.string,
   size: PropTypes.string,
-  variant: PropTypes.string,
+  variant: [
+    'default',
+    'destructive',
+    'outline',
+    'secondary',
+    'ghost',
+    'ghostPrimary',
+    'link',
+  ],
 };
 
 Button.defaultProps = {

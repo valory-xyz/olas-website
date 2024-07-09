@@ -1,5 +1,5 @@
+import { Button } from 'components/ui/button';
 import { BasicSection } from '../ui/section/basic';
-import { Button } from '../Button';
 
 const sectionId = 'build-with-olas';
 const heading = 'Build with OLAS';
@@ -27,12 +27,30 @@ const body = (
       You can build full services, individual agents or even just AI tools and
       other code components.
     </p>
-    <div className="flex gap-5">
-      <Button href={buttonLinks.exploreBuildPath} isExternal>
-        Explore Build Paths
+
+    <div className="flex gap-6">
+      <Button
+        variant="default"
+        size="xl"
+        asChild
+        className="mb-6 w-full md:w-auto"
+      >
+        <a href={buttonLinks.exploreBuildPath}>Explore Build Paths</a>
       </Button>
-      <Button href={buttonLinks.visitTheDocs} type="secondary" isExternal>
-        Visit the Docs
+
+      <Button
+        variant="ghostPrimary"
+        size="xl"
+        asChild
+        className="mb-6 w-full md:w-auto"
+      >
+        <a
+          href={buttonLinks.visitTheDocs}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit the Docs
+        </a>
       </Button>
     </div>
   </div>

@@ -28,60 +28,30 @@ const SOCIAL_LINKS = [
 ];
 
 const LEARN_LINKS = [
-  {
-    title: 'What is Olas?',
-    link: '/learn#what-is-olas',
-  },
-  {
-    title: 'Olas Protocol',
-    link: '/protocol',
-  },
-  {
-    title: 'Olas Stack',
-    link: '/stack',
-  },
+  { title: 'What is Olas?', link: '/learn#what-is-olas' },
+  { title: 'Olas Protocol', link: '/protocol' },
+  { title: 'Olas Stack', link: '/stack' },
 ];
 
 const EXPLORE_LINKS = [
-  {
-    title: 'Use Cases',
-    link: '/explore#use-cases',
-  },
-  {
-    title: 'Chains',
-    link: '/explore#chains',
-  },
-  {
-    title: 'Dashboards',
-    link: '/explore#dashboards',
-  },
+  { title: 'Use Cases', link: '/explore#use-cases' },
+  { title: 'Chains', link: '/explore#chains' },
+  { title: 'Dashboards', link: '/explore#dashboards' },
 ];
 
 const GET_INVOLVED_LINKS = [
-  {
-    title: 'Contribute',
-    link: '/contribute',
-  },
-  {
-    title: 'Launch',
-    link: '/launch',
-  },
-  {
-    title: 'Build',
-    link: '/build',
-  },
-  {
-    title: 'Operate',
-    link: '/operate',
-  },
-  {
-    title: 'Bond',
-    link: '/bond',
-  },
-  {
-    title: 'Govern',
-    link: '/govern',
-  },
+  { title: 'Contribute', link: '/contribute' },
+  { title: 'Launch', link: '/launch' },
+  { title: 'Build', link: '/build' },
+  { title: 'Operate', link: '/operate' },
+  { title: 'Bond', link: '/bond' },
+  { title: 'Govern', link: '/govern' },
+];
+
+const OTHER_APPS_LINKS = [
+  { title: 'Registry', link: 'https://registry.olas.network/' },
+  { title: 'Tokenomics', link: 'https://tokenomics.olas.network/' },
+  { title: 'Member', link: 'https://member.autonolas.network/' },
 ];
 
 const RESOURCES_LINKS = [
@@ -152,13 +122,13 @@ const LinksBlock = ({ title, links, className }) => (
               }
               : {})}
           >
-
             <span className="whitespace-nowrap">
               <span className="whitespace-normal">{item.title}</span>
-            &nbsp;
-              {item.isExternal && (<MoveUpRight className="ml-1 inline" size={8} />)}
+              &nbsp;
+              {item.isExternal && (
+                <MoveUpRight className="ml-1 inline" size={8} />
+              )}
             </span>
-
           </LinkTag>
         </span>
       );
@@ -220,15 +190,14 @@ const Footer = () => (
       <LinksBlock title="Learn" links={LEARN_LINKS} />
       <LinksBlock title="Explore" links={EXPLORE_LINKS} />
       <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
-      <LinksBlock
-        title="Resources"
-        links={RESOURCES_LINKS}
-        className="auto-rows-max md:col-span-2 md:grid md:grid-cols-2"
-      />
+      <LinksBlock title="Other Apps" links={OTHER_APPS_LINKS} />
+      <LinksBlock title="Resources" links={RESOURCES_LINKS} />
     </div>
     <div className="text-center text-slate-500">
       {`© Autonolas DAO ${CURRENT_YEAR} • `}
-      <Link href="/disclaimer" className="hover:text-black">Disclaimer</Link>
+      <Link href="/disclaimer" className="hover:text-black">
+        Disclaimer
+      </Link>
     </div>
   </footer>
 );

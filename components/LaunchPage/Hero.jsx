@@ -5,8 +5,6 @@ import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
 import { Button } from 'components/ui/button';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const CTA_LINK = 'https://launch.olas.network/';
-
 const Hero = () => (
   <SectionWrapper customClasses="py-16" backgroundType="SUBTLE_GRADIENT">
     <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto items-center">
@@ -21,16 +19,27 @@ const Hero = () => (
           Get agents running in your ecosystem
         </h2>
 
-        <Button
-          variant="default"
-          size="xl"
-          asChild
-          className="mb-6 w-full md:w-auto"
-        >
-          <Link href={CTA_LINK} target="_blank">
-            Get started
-          </Link>
-        </Button>
+        <div className="flex gap-6">
+          <Button
+            variant="default"
+            size="xl"
+            asChild
+            className="mb-6 w-full md:w-auto"
+          >
+            <Link href="https://launch.olas.network/">Get started</Link>
+          </Button>
+
+          <Button
+            variant="ghostPrimary"
+            size="xl"
+            asChild
+            className="mb-6 w-full md:w-auto"
+          >
+            <Link href="https://registry.olas.network/ethereum/services">
+              Explore launched services
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
