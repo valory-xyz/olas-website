@@ -7,8 +7,7 @@ import {
 } from 'chart.js';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
-// TODO: move here from _HomepageSection
-import OlasUtility from '../_HomepageSection/OlasUtility';
+import OlasUtility from './OlasUtility';
 import SectionWrapper from '../Layout/SectionWrapper';
 import contractAbi from '../../data/ABIs/Tokenomics.json';
 import UsagePieChart, { TEXT_GRADIENT } from './UsagePieChart';
