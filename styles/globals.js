@@ -9,6 +9,9 @@ export const TITLE = {
 export const BUTTON = 'inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-purple-900 rounded-lg hover:bg-purple-950 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4';
 export const BADGE = 'rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10';
 
+export const TEXT_GRADIENT =
+  "bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400";
+
 export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node, ...props }) => <a className="text-purple-800 hover:text-blue-800" {...props} />,
