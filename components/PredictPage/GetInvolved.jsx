@@ -25,9 +25,9 @@ const list = [
 ];
 
 const Content = () => (
-  <div className="max-w-screen-lg lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
+  <div className="max-w-screen-lg xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto">
     <h2
-      className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
+      className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
     >
       Get Involved
     </h2>
@@ -38,7 +38,7 @@ const Content = () => (
       }) => (
         <div
           key={title}
-          className="flex flex-col gap-2 p-4 rounded-xl border border-l-4 lg:p-6"
+          className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
         >
           <div className="flex items-center">
             {icon}

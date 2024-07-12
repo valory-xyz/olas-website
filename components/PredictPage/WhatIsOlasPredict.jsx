@@ -110,7 +110,6 @@ const HowItWorks = () => (
 
     <Image
       src="/images/predict-page/how-it-works.png"
-      // width={1200} height={800}
       alt="How it works"
       width={800}
       height={200}
@@ -124,7 +123,7 @@ const AgentRoles = () => (
 
     <Image
       src="/images/predict-page/agent-roles.png"
-      alt="How it works"
+      alt="Agent Roles"
       width={800}
       height={200}
     />
@@ -158,7 +157,7 @@ const TheProcess = () => (
 
     <Image
       src="/images/predict-page/the-process.png"
-      alt="How it works"
+      alt="The Process"
       width={800}
       height={200}
     />
@@ -182,7 +181,7 @@ const eachCardCss = {
 const WhyOlasPredict = () => (
   <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12">
     <h2
-      className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
+      className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}
     >
       Why Olas Predict?
     </h2>

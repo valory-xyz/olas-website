@@ -5,7 +5,7 @@ import { Button } from 'components/ui/button';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const LeftContent = () => (
-  <div className="lg:col-span-5 lg:col-start-2 lg:p-0 lg:text-left lg:gap-0 md:mb-12 flex-col flex lg:items-start text-center item-center px-5 mb-2 gap-6">
+  <div className="lg:col-span-5 lg:col-start-2 lg:p-0 lg:text-left lg:gap-0 lg:items-start md:mb-12 flex-col flex text-center item-center px-5 mb-2 gap-6">
     <div
       className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}
     >
@@ -24,7 +24,7 @@ const LeftContent = () => (
       variant="default"
       size="xl"
       asChild
-      className="mb-6 w-full md:w-auto"
+      className="md:w-auto mb-6 w-full"
     >
       <a href="#get-involved">Get Involved</a>
     </Button>
@@ -35,17 +35,17 @@ const RightContent = () => (
   <div className="lg:mt-0 lg:col-span-6 lg:flex">
     <Image
       src="/images/predict-page/hero.png"
-      alt="hero"
+      alt="Predict Hero"
       width={834}
       height={742}
-      className="mx-auto w-3/4 xl:w-full"
+      className="xl:w-full mx-auto w-3/4"
     />
   </div>
 );
 
 export const PredictHero = () => (
   <SectionWrapper customClasses="py-16" backgroundType="SUBTLE_GRADIENT">
-    <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto items-center">
+    <div className="max-w-screen-xl xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 grid mx-auto items-center">
       <LeftContent />
       <RightContent />
     </div>
