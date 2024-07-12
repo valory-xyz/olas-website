@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
+import Verify from '../Verify';
 import olasAbi from '../../data/ABIs/Olas.json';
 
 // manually register arc element – required due to chart.js tree shaking
@@ -114,7 +115,10 @@ const SupplyPieChart = () => {
             Total Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {loading ? '--' : formatNumber(totalSupply)}
+            {loading ? "--" : formatNumber(totalSupply)}
+          </div>
+          <div className="mb-4">
+            <Verify url="https://etherscan.io/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16" />
           </div>
         </div>
         <div>
@@ -122,7 +126,10 @@ const SupplyPieChart = () => {
             Circulating Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {loading ? '--' : formatNumber(data[data.length - 1])}
+            {loading ? "--" : formatNumber(data[data.length - 1])}
+          </div>
+          <div className="mb-4">
+            <Verify url="https://www.coingecko.com/en/coins/autonolas" />
           </div>
         </div>
       </div>
