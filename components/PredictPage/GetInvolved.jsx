@@ -69,7 +69,7 @@ export const PredictFooter = () => (
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 mx-auto items-center">
-      <h3 className="text-center w-full italic text-purple-900">
+      <h3 className="text-center w-full italic text-purple-900 font-medium">
         Join the revolution in prediction markets with Olas Predict
       </h3>
     </div>
