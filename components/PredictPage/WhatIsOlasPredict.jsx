@@ -1,4 +1,3 @@
-// import { Fragment } from 'react';
 import Image from 'next/image';
 import {
   BicepsFlexed, Expand, HandCoins, Sparkles,
