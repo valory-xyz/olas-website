@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
 import { Button } from 'components/ui/button';
@@ -27,7 +26,7 @@ const LeftContent = () => (
       asChild
       className="mb-6 w-full md:w-auto"
     >
-      <Link href="https://predict.olas.network/">Get Involved</Link>
+      <a href="#get-involved">Get Involved</a>
     </Button>
   </div>
 );
