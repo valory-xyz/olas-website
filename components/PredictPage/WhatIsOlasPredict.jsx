@@ -13,153 +13,56 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-// const childUlClass = 'ml-4 mt-1 list-disc list-inside';
-
-const WhatIs = () => (
-  <div className={`${SCREEN_WIDTH_LG} gap-5 pb-20`}>
-    <h2 className={`${SUB_HEADER_CLASS} mb-2`}>What is Olas Predict?</h2>
-
-    <p>
-      Olas Predict leverages autonomous agents to create a seamless and
-      cost-effective prediction market ecosystem. By utilizing advanced
-      technology and eliminating human participation costs, it has generated
-      significant transaction activity on the Gnosis Chain. Its predictions are
-      currently focused on current events.
-    </p>
-  </div>
-);
-
-const HowItWorks = () => (
-  <div className={`${SCREEN_WIDTH_LG} gap-5 mb-12`}>
-    <h2 className={`${SUB_HEADER_CLASS} mb-2`}>How It Works</h2>
-
-    <p>
-      In simple terms, Predict delivers predictions through the trading activity
-      of agents on prediction markets.
-    </p>
-
-    <Image
-      src="/images/predict-page/how-it-works.png"
-      // width={1200} height={800}
-      alt="How it works"
-      width={800}
-      height={200}
-    />
-  </div>
-);
-
-const AgentRoles = () => {
-  const agentRolesList = [
-    {
-      img: 'market-creators',
-      title: 'Market Creators',
-      desc: (
-        <>
-          Deploy and seed prediction markets using the prediction market
-          protocols, specifically
-          {' '}
-          <a
-            href="https://aiomen.eth.limo/"
-            target="_blank"
-            rel="noreferrer"
-            className="text-purple-600"
-          >
-            Omen↗
-          </a>
-          .
-        </>
-      ),
-    },
-    {
-      img: 'traders',
-      title: 'Traders',
-      desc: 'Strategically place bets on prediction markets.',
-    },
-    {
-      img: 'mechs',
-      title: 'Mechs',
-      desc: 'Provide intelligence and probabilities for market questions.',
-    },
-    {
-      img: 'closers',
-      title: 'Closers',
-      desc: 'Finalize and determine market outcomes.',
-    },
-  ];
-
-  return (
-    <div className={`${SCREEN_WIDTH_LG} gap-4`}>
-      <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Roles</h2>
-
-      <Image
-        src="/images/predict-page/agent-roles.png"
-        // width={1200} height={800}
-        alt="How it works"
-        width={800}
-        height={200}
-      />
-
-      {agentRolesList.map(({ img, title, desc }, index) => (
-        <div
-          key={index}
-          className={`flex gap-2 flex-col py-6 ${
-            index !== agentRolesList.length - 1
-              ? 'border-b-[1px] border-dashed'
-              : ''
-          }`}
+const agentRolesList = [
+  {
+    img: 'market-creators',
+    title: 'Market Creators',
+    desc: (
+      <>
+        Deploy and seed prediction markets using the prediction market
+        protocols, specifically
+        {' '}
+        <a
+          href="https://aiomen.eth.limo/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-purple-600"
         >
-          <Image
-            src={`/images/predict-page/${img}.png`}
-            alt={title}
-            width={60}
-            height={30}
-          />
+          Omen↗
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    img: 'traders',
+    title: 'Traders',
+    desc: 'Strategically place bets on prediction markets.',
+  },
+  {
+    img: 'mechs',
+    title: 'Mechs',
+    desc: 'Provide intelligence and probabilities for market questions.',
+  },
+  {
+    img: 'closers',
+    title: 'Closers',
+    desc: 'Finalize and determine market outcomes.',
+  },
+];
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>{title}</h3>
-          <p>{desc}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
+const processList = [
+  { title: 'Market Creation', desc: 'Creators deploy and fund markets.' },
+  {
+    title: 'Trading',
+    desc: 'Traders identify markets and commission AI predictions from Mechs via on-chain payment.',
+  },
+  { title: 'Research', desc: 'Mechs deliver predictions to Traders.' },
+  { title: 'Bet Placement', desc: 'Traders place informed bets.' },
+  { title: 'Closure', desc: 'Closers finalize market results.' },
+];
 
-const TheProcess = () => {
-  const processList = [
-    { title: 'Market Creation', desc: 'Creators deploy and fund markets.' },
-    {
-      title: 'Trading',
-      desc: 'Traders identify markets and commission AI predictions from Mechs via on-chain payment.',
-    },
-    { title: 'Research', desc: 'Mechs deliver predictions to Traders.' },
-    { title: 'Bet Placement', desc: 'Traders place informed bets.' },
-    { title: 'Closure', desc: 'Closers finalize market results.' },
-  ];
-
-  return (
-    <div className={`${SCREEN_WIDTH_LG} gap-5 mt-16`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>The Process</h2>
-
-      <Image
-        src="/images/predict-page/the-process.png"
-        // width={1200} height={800}
-        alt="How it works"
-        width={800}
-        height={200}
-      />
-
-      <ol className="flex flex-col gap-2 mt-4 list-decimal list-inside">
-        {processList.map(({ title, desc }, index) => (
-          <li key={index} className="mb-1">
-            <span className="font-bold">{`${title}: `}</span>
-            <span>{desc}</span>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-};
-
-const list = [
+const olasPredictList = [
   {
     title: 'Innovation',
     desc: 'Harnesses the power of autonomous agents to streamline prediction markets.',
@@ -182,13 +85,102 @@ const list = [
   },
 ];
 
+const WhatIs = () => (
+  <div className={`${SCREEN_WIDTH_LG} gap-5 lg:pb-20 pb-12`}>
+    <h2 className={`${SUB_HEADER_CLASS} mb-2`}>What is Olas Predict?</h2>
+
+    <p>
+      Olas Predict leverages autonomous agents to create a seamless and
+      cost-effective prediction market ecosystem. By utilizing advanced
+      technology and eliminating human participation costs, it has generated
+      significant transaction activity on the Gnosis Chain. Its predictions are
+      currently focused on current events.
+    </p>
+  </div>
+);
+
+const HowItWorks = () => (
+  <div className={`${SCREEN_WIDTH_LG} lg:gap-5 gap-2 mb-12`}>
+    <h2 className={`${SUB_HEADER_CLASS} mb-2`}>How It Works</h2>
+
+    <p>
+      In simple terms, Predict delivers predictions through the trading activity
+      of agents on prediction markets.
+    </p>
+
+    <Image
+      src="/images/predict-page/how-it-works.png"
+      // width={1200} height={800}
+      alt="How it works"
+      width={800}
+      height={200}
+    />
+  </div>
+);
+
+const AgentRoles = () => (
+  <div className={`${SCREEN_WIDTH_LG} lg:gap-4 gap-2`}>
+    <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Roles</h2>
+
+    <Image
+      src="/images/predict-page/agent-roles.png"
+      alt="How it works"
+      width={800}
+      height={200}
+    />
+
+    {agentRolesList.map(({ img, title, desc }, index) => (
+      <div
+        key={index}
+        className={`flex gap-2 flex-col py-6 ${
+          index !== agentRolesList.length - 1
+            ? 'border-b-[1px] border-dashed'
+            : ''
+        }`}
+      >
+        <Image
+          src={`/images/predict-page/${img}.png`}
+          alt={title}
+          width={60}
+          height={30}
+        />
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>{title}</h3>
+        <p>{desc}</p>
+      </div>
+    ))}
+  </div>
+);
+
+const TheProcess = () => (
+  <div className={`${SCREEN_WIDTH_LG} gap-5 lg:mt-16 mt-8`}>
+    <h2 className={`${SUB_HEADER_CLASS} mb-2`}>The Process</h2>
+
+    <Image
+      src="/images/predict-page/the-process.png"
+      alt="How it works"
+      width={800}
+      height={200}
+    />
+
+    <ol className="flex flex-col gap-2 mt-4 list-decimal list-inside">
+      {processList.map(({ title, desc }, index) => (
+        <li key={index} className="mb-1">
+          <span className="font-bold">{`${title}: `}</span>
+          <span>{desc}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+);
+
 const eachCardCss = {
   background:
     'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
 };
 
 const WhyOlasPredict = () => (
-  <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24">
+  <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12">
     <h2
       className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
     >
@@ -196,7 +188,7 @@ const WhyOlasPredict = () => (
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      {list.map(({ title, desc, icon }) => (
+      {olasPredictList.map(({ title, desc, icon }) => (
         <div
           key={title}
           className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
