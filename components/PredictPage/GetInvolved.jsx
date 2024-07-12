@@ -21,11 +21,6 @@ const list = [
   },
 ];
 
-const eachCardCss = {
-  background:
-    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
-};
-
 const Content = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
     <h2
@@ -40,8 +35,7 @@ const Content = () => (
       }) => (
         <div
           key={title}
-          className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
-          style={eachCardCss}
+          className="flex flex-col gap-3 p-4 rounded-xl border border-l-4 lg:p-6"
         >
           <div className="flex items-center">
             {icon}
@@ -60,8 +54,19 @@ const Content = () => (
   </div>
 );
 
+export const PredictFooter = () => (
+  <SectionWrapper customClasses="py-12 mt-24" backgroundType="SUBTLE_GRADIENT">
+    <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 mx-auto items-center">
+      <h3 className="text-center w-full">
+        Join the revolution in prediction markets with Olas Predict
+      </h3>
+    </div>
+  </SectionWrapper>
+);
+
 export const GetInvolved = () => (
   <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
     <Content />
+    <PredictFooter />
   </SectionWrapper>
 );

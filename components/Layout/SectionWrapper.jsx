@@ -44,7 +44,7 @@ const SectionWrapper = ({
 };
 
 SectionWrapper.propTypes = {
-  backgroundType: PropTypes.string,
+  backgroundType: PropTypes.oneOf(['SUBTLE_GRADIENT', 'GOVERNATOOORR', 'NONE']),
   backgroundImage: PropTypes.string,
   children: PropTypes.node.isRequired,
   customClasses: PropTypes.string,
