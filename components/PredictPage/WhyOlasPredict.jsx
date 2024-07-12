@@ -37,7 +37,7 @@ const eachCardCss = {
 };
 
 const Content = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
+  <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12">
     <h2
       className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
     >

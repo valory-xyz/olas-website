@@ -25,7 +25,7 @@ const list = [
 ];
 
 const Content = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
+  <div className="max-w-screen-lg lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
     <h2
       className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
     >
@@ -38,7 +38,7 @@ const Content = () => (
       }) => (
         <div
           key={title}
-          className="flex flex-col gap-3 p-4 rounded-xl border border-l-4 lg:p-6"
+          className="flex flex-col gap-2 p-4 rounded-xl border border-l-4 lg:p-6"
         >
           <div className="flex items-center">
             {icon}
@@ -79,7 +79,7 @@ export const PredictFooter = () => (
 export const GetInvolved = () => (
   <>
     <SectionWrapper
-      customClasses={`${SECTION_BOX_CLASS} border-t-2`}
+      customClasses={`${SECTION_BOX_CLASS} border`}
       id="get-involved"
     >
       <Content />
