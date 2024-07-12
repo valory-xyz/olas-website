@@ -65,7 +65,7 @@ const Content = () => (
 
 export const PredictFooter = () => (
   <SectionWrapper
-    customClasses="py-12 border border-purple-200"
+    customClasses="py-12 border border-purple-200 border-x-0"
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 mx-auto items-center">
@@ -79,7 +79,7 @@ export const PredictFooter = () => (
 export const GetInvolved = () => (
   <>
     <SectionWrapper
-      customClasses={`${SECTION_BOX_CLASS} border`}
+      customClasses={`${SECTION_BOX_CLASS} border-t-[1px]`}
       id="get-involved"
     >
       <Content />

@@ -137,7 +137,7 @@ const TheProcess = () => {
 
 export const WhatIsOlasPredict = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12 border-y"
+    customClasses="lg:p-24 px-4 py-12 border-y border border-b-0 border-x-0"
     id="what-is-olas-predict"
   >
     <WhatIs />
