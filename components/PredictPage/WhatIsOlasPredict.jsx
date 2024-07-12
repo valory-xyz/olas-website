@@ -141,8 +141,8 @@ export const WhatIsOlasPredict = () => (
     id="what-is-olas-predict"
   >
     <WhatIs />
-    <HowItWorks />
-    <AgentRoles />
-    <TheProcess />
+    {/* <HowItWorks /> */}
+    {/* <AgentRoles /> */}
+    {/* <TheProcess /> */}
   </SectionWrapper>
 );
