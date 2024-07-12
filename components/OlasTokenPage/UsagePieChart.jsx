@@ -3,7 +3,6 @@ import React from 'react';
 import Link from 'next/link';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
-import { TEXT_GRADIENT } from 'styles/globals';
 import Verify from '../Verify';
 
 // manually register arc element – required due to chart.js tree shaking
@@ -16,7 +15,7 @@ const UsagePieChart = ({ epoch, split, loading }) => (
         Current Epoch
       </h2>
       <div className="text-4xl font-extrabold">
-        <span className={TEXT_GRADIENT}>
+        <span className="text-gradient">
           {loading ? '--' : epoch?.toString()}
         </span>
       </div>
@@ -65,23 +64,26 @@ const UsagePieChart = ({ epoch, split, loading }) => (
           {' '}
           of new tokens go to
           {' '}
-          <Link href="https://staking.olas.network/" className="text-yellow-600 font-bold">
+          <Link
+            href="https://staking.olas.network/"
+            className="text-yellow-600 font-bold"
+          >
             Stakers
           </Link>
         </div>
       </div>
       <div className="mb-4 max-w-[300px] mx-auto">
         {loading ? (
-          <div className="text-center">
-            Loading...
-          </div>
+          <div className="text-center">Loading...</div>
         ) : (
           <Pie
             data={{
               labels: ['Developers', 'Bonders', 'Staking'],
               datasets: [
                 {
-                  data: [split.developers, split.bonders, split.staking] || [0, 0, 0],
+                  data: [split.developers, split.bonders, split.staking] || [
+                    0, 0, 0,
+                  ],
                   backgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                   hoverBackgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                 },
@@ -98,8 +100,7 @@ const UsagePieChart = ({ epoch, split, loading }) => (
         <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F27" />
       </div>
       <p className="text-slate-500">
-        DAO members can vote to update how newly minted tokens are
-        distributed.
+        DAO members can vote to update how newly minted tokens are distributed.
       </p>
     </div>
   </div>

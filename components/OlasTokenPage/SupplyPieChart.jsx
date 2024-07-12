@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
-import { TEXT_GRADIENT } from 'styles/globals';
 import olasAbi from '../../data/ABIs/Olas.json';
 
 // manually register arc element – required due to chart.js tree shaking
@@ -114,7 +113,7 @@ const SupplyPieChart = () => {
           <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
             Total Supply
           </h2>
-          <div className={`${TEXT_GRADIENT} text-4xl font-extrabold`}>
+          <div className="text-gradient text-4xl font-extrabold">
             {loading ? '--' : formatNumber(totalSupply)}
           </div>
         </div>
@@ -122,7 +121,7 @@ const SupplyPieChart = () => {
           <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
             Circulating Supply
           </h2>
-          <div className={`${TEXT_GRADIENT} text-4xl font-extrabold`}>
+          <div className="text-gradient text-4xl font-extrabold">
             {loading ? '--' : formatNumber(data[data.length - 1])}
           </div>
         </div>

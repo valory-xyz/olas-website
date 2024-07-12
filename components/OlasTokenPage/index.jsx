@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2';
 import {
   Chart, CategoryScale, LinearScale, BarElement,
 } from 'chart.js';
-import { TEXT_GRADIENT } from 'styles/globals';
+// import { TEXT_GRADIENT } from 'styles/globals';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
 import OlasUtility from './OlasUtility';
@@ -137,7 +137,7 @@ const Supply = () => {
                   Launch Date
                 </h2>
                 <div className="text-4xl font-extrabold">
-                  <span className={TEXT_GRADIENT}>
+                  <span className="text-gradient">
                     {loading
                       ? '--'
                       : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
@@ -150,7 +150,7 @@ const Supply = () => {
                   Current Year
                 </h2>
                 <div className="text-4xl font-extrabold">
-                  <span className={TEXT_GRADIENT}>
+                  <span className="text-gradient">
                     {loading ? '--' : Number(currentYear)}
                   </span>
                 </div>
