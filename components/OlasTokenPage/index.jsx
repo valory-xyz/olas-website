@@ -5,15 +5,15 @@ import { Bar } from 'react-chartjs-2';
 import {
   Chart, CategoryScale, LinearScale, BarElement,
 } from 'chart.js';
+import { TEXT_GRADIENT } from 'styles/globals';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
 import OlasUtility from './OlasUtility';
 import SectionWrapper from '../Layout/SectionWrapper';
 import contractAbi from '../../data/ABIs/Tokenomics.json';
 import UsagePieChart from './UsagePieChart';
-import SupplyPieChart from "./SupplyPieChart";
+import SupplyPieChart from './SupplyPieChart';
 import Verify from '../Verify';
-import { TEXT_GRADIENT } from "styles/globals";
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -139,7 +139,7 @@ const Supply = () => {
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
                     {loading
-                      ? "--"
+                      ? '--'
                       : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
                   </span>
                 </div>
@@ -151,7 +151,7 @@ const Supply = () => {
                 </h2>
                 <div className="text-4xl font-extrabold">
                   <span className={TEXT_GRADIENT}>
-                    {loading ? "--" : Number(currentYear)}
+                    {loading ? '--' : Number(currentYear)}
                   </span>
                 </div>
                 <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F9" />
@@ -159,24 +159,24 @@ const Supply = () => {
             </div>
             <div className="p-4">
               <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-4">
-                Emissions Per Year
+                Max Emissions Per Year
               </h2>
               <div className="mb-4">
                 {loading ? (
-                  "Loading..."
+                  'Loading...'
                 ) : (
                   <Bar
                     data={{
                       labels: inflationForYear.map((_, index) => index),
                       datasets: [
                         {
-                          label: "Inflation",
+                          label: 'Inflation',
                           data: inflationForYear || BACKUP_INFLATION_FOR_YEAR,
                           borderWidth: 0,
                           // #a855f7 is Tailwind's purple-500 – our primary brand color
-                          backgroundColor: "#a855f7",
-                          hoverBackgroundColor: "#a855f7",
-                          hoverBorderColor: "#a855f7",
+                          backgroundColor: '#a855f7',
+                          hoverBackgroundColor: '#a855f7',
+                          hoverBorderColor: '#a855f7',
                         },
                       ],
                     }}
@@ -185,17 +185,17 @@ const Supply = () => {
                         x: {
                           title: {
                             display: true,
-                            text: "Year",
+                            text: 'Year',
                           },
                           gridLines: {
-                            color: "white",
+                            color: 'white',
                           },
                         },
                         y: {
                           // Y-axis configuration
                           title: {
                             display: true,
-                            text: "OLAS Emitted",
+                            text: 'OLAS Emitted',
                           },
                           ticks: {
                             callback(value) {
@@ -238,7 +238,7 @@ const Supply = () => {
 
           <div className="border rounded-lg">
             <div className="p-4 border-b">
-              <h2 className="text-xl mb-2 font-bold">Token Supply</h2>
+              <h2 className="text-xl font-bold">Token Supply</h2>
             </div>
             <SupplyPieChart epoch={epoch} split={split} loading={loading} />
           </div>
@@ -289,9 +289,9 @@ const Supply = () => {
 const OlasToken = () => (
   <>
     <Hero />
-    <TokenDetails />
     <Supply />
     <OlasUtility />
+    <TokenDetails />
   </>
 );
 

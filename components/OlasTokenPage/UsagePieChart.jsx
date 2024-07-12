@@ -3,8 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
+import { TEXT_GRADIENT } from 'styles/globals';
 import Verify from '../Verify';
-import { TEXT_GRADIENT } from "styles/globals";
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
