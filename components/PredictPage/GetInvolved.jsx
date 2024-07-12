@@ -57,7 +57,7 @@ const Content = () => (
 export const PredictFooter = () => (
   <SectionWrapper customClasses="py-12 mt-24" backgroundType="SUBTLE_GRADIENT">
     <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 mx-auto items-center">
-      <h3 className="text-center w-full">
+      <h3 className="text-center w-full italic text-purple-900">
         Join the revolution in prediction markets with Olas Predict
       </h3>
     </div>

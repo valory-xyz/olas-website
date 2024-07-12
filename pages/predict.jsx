@@ -1,19 +1,21 @@
 import Meta from 'components/Meta';
 import PageWrapper from 'components/Layout/PageWrapper';
-import { WhatIsOlasPredict } from 'components/PredictPage/WhatIsOlasPredict';
 import { PredictHero } from 'components/PredictPage/PredictHero';
-import { WhyOlasPredict } from 'components/PredictPage/WhyOlasPredict';
-import { GetInvolved } from 'components/PredictPage/GetInvolved';
+// import { WhatIsOlasPredict } from 'components/PredictPage/WhatIsOlasPredict';
+// import { WhyOlasPredict } from 'components/PredictPage/WhyOlasPredict';
+// import { GetInvolved } from 'components/PredictPage/GetInvolved';
 
 const Predict = () => (
   <PageWrapper>
-    {/* TODO */}
-    <Meta pageTitle="Predict" description="" />
+    <Meta
+      pageTitle="Predict"
+      description="On-demand Agent-powered Predictions"
+    />
 
     <PredictHero />
-    <WhatIsOlasPredict />
-    <WhyOlasPredict />
-    <GetInvolved />
+    {/* <WhatIsOlasPredict /> */}
+    {/* <WhyOlasPredict /> */}
+    {/* <GetInvolved /> */}
   </PageWrapper>
 );
 
