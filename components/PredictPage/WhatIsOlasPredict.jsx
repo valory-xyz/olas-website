@@ -1,8 +1,17 @@
 // import { Fragment } from 'react';
-
-import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
+import {
+  BicepsFlexed, Expand, HandCoins, Sparkles,
+} from 'lucide-react';
+
+import {
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+  SUB_HEADER_MEDIUM_CLASS,
+  TEXT_MEDIUM_CLASS,
+  TEXT_CLASS,
+} from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 // const childUlClass = 'ml-4 mt-1 list-disc list-inside';
 
@@ -21,7 +30,7 @@ const WhatIs = () => (
 );
 
 const HowItWorks = () => (
-  <div className={`${SCREEN_WIDTH_LG} gap-5`}>
+  <div className={`${SCREEN_WIDTH_LG} gap-5 mb-12`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>How It Works</h2>
 
     <p>
@@ -43,11 +52,21 @@ const AgentRoles = () => {
   const agentRolesList = [
     {
       img: 'market-creators',
-      title: 'Creator',
+      title: 'Market Creators',
       desc: (
         <>
           Deploy and seed prediction markets using the prediction market
-          protocols, specifically Omen↗.
+          protocols, specifically
+          {' '}
+          <a
+            href="https://aiomen.eth.limo/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-purple-600"
+          >
+            Omen↗
+          </a>
+          .
         </>
       ),
     },
@@ -69,8 +88,8 @@ const AgentRoles = () => {
   ];
 
   return (
-    <div className={`${SCREEN_WIDTH_LG} gap-5`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Agent Roles</h2>
+    <div className={`${SCREEN_WIDTH_LG} gap-4`}>
+      <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Roles</h2>
 
       <Image
         src="/images/predict-page/agent-roles.png"
@@ -81,18 +100,23 @@ const AgentRoles = () => {
       />
 
       {agentRolesList.map(({ img, title, desc }, index) => (
-        <div key={index} className="flex gap-5 flex-col">
+        <div
+          key={index}
+          className={`flex gap-2 flex-col py-6 ${
+            index !== agentRolesList.length - 1
+              ? 'border-b-[1px] border-dashed'
+              : ''
+          }`}
+        >
           <Image
             src={`/images/predict-page/${img}.png`}
             alt={title}
-            width={100}
-            height={100}
+            width={60}
+            height={30}
           />
 
-          <div>
-            <h3 className="font-bold">{title}</h3>
-            <p>{desc}</p>
-          </div>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>{title}</h3>
+          <p>{desc}</p>
         </div>
       ))}
     </div>
@@ -112,7 +136,7 @@ const TheProcess = () => {
   ];
 
   return (
-    <div className={`${SCREEN_WIDTH_LG} gap-5`}>
+    <div className={`${SCREEN_WIDTH_LG} gap-5 mt-16`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>The Process</h2>
 
       <Image
@@ -123,7 +147,7 @@ const TheProcess = () => {
         height={200}
       />
 
-      <ol className="list-decimal list-inside">
+      <ol className="flex flex-col gap-2 mt-4 list-decimal list-inside">
         {processList.map(({ title, desc }, index) => (
           <li key={index} className="mb-1">
             <span className="font-bold">{`${title}: `}</span>
@@ -135,14 +159,70 @@ const TheProcess = () => {
   );
 };
 
+const list = [
+  {
+    title: 'Innovation',
+    desc: 'Harnesses the power of autonomous agents to streamline prediction markets.',
+    icon: <Sparkles />,
+  },
+  {
+    title: 'Efficiency',
+    desc: 'Deliver predictions at an unprecedented level of efficiency.',
+    icon: <BicepsFlexed />,
+  },
+  {
+    title: 'Profit Potential',
+    desc: 'Operators can run agents to potentially earn staking rewards and engage in autonomous betting.',
+    icon: <HandCoins />,
+  },
+  {
+    title: 'Scalability',
+    desc: 'Demonstrated effectiveness with significant transaction activity on the Gnosis Chain.',
+    icon: <Expand />,
+  },
+];
+
+const eachCardCss = {
+  background:
+    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
+};
+
+const WhyOlasPredict = () => (
+  <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24">
+    <h2
+      className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
+    >
+      Why Olas Predict?
+    </h2>
+
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      {list.map(({ title, desc, icon }) => (
+        <div
+          key={title}
+          className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
+          style={eachCardCss}
+        >
+          <div className="flex items-center">
+            {icon}
+            <h2 className="text-xl font-semibold ml-2">{title}</h2>
+          </div>
+
+          <p className={TEXT_CLASS}>{desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export const WhatIsOlasPredict = () => (
   <SectionWrapper
     customClasses="lg:p-24 px-4 py-12 border-y border border-b-0 border-x-0"
     id="what-is-olas-predict"
   >
     <WhatIs />
-    {/* <HowItWorks /> */}
-    {/* <AgentRoles /> */}
-    {/* <TheProcess /> */}
+    <HowItWorks />
+    <AgentRoles />
+    <TheProcess />
+    <WhyOlasPredict />
   </SectionWrapper>
 );
