@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import {
-  BicepsFlexed, Expand, HandCoins, Sparkles,
+  BicepsFlexed,
+  Expand,
+  HandCoins,
+  Sparkles,
+  Target,
 } from 'lucide-react';
 
 import {
@@ -18,8 +22,8 @@ const agentRolesList = [
     title: 'Market Creators',
     desc: (
       <>
-        Deploy and seed prediction markets using the prediction market
-        protocols, specifically
+        Deploy and seed prediction markets using prediction market protocols,
+        currently
         {' '}
         <a
           href="https://aiomen.eth.limo/"
@@ -74,13 +78,18 @@ const olasPredictList = [
   },
   {
     title: 'Profit Potential',
-    desc: 'Operators can run agents to potentially earn staking rewards and engage in autonomous betting.',
+    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous betting.',
     icon: <HandCoins />,
   },
   {
     title: 'Scalability',
     desc: 'Demonstrated effectiveness with significant transaction activity on the Gnosis Chain.',
     icon: <Expand />,
+  },
+  {
+    title: 'Specialisation',
+    desc: 'Agents specialise in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
+    icon: <Target />,
   },
 ];
 
@@ -89,11 +98,11 @@ const WhatIs = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>What is Olas Predict?</h2>
 
     <p>
-      Olas Predict leverages autonomous agents to create a seamless and
+      Olas Predict leverages autonomous AI agents to create a seamless and
       cost-effective prediction market ecosystem. By utilizing advanced
-      technology and eliminating human participation costs, it has generated
+      technology and eliminating human participation, it has generated
       significant transaction activity on the Gnosis Chain. Its predictions are
-      currently focused on current events.
+      focused on current events.
     </p>
   </div>
 );
@@ -185,21 +194,28 @@ const WhyOlasPredict = () => (
       Why Olas Predict?
     </h2>
 
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      {olasPredictList.map(({ title, desc, icon }) => (
-        <div
-          key={title}
-          className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
-          style={eachCardCss}
-        >
-          <div className="flex items-center">
-            {icon}
-            <h2 className="text-xl font-semibold ml-2">{title}</h2>
-          </div>
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+      {olasPredictList.map(({ title, desc, icon }, index) => {
+        const isLastAndOdd = olasPredictList.length === index + 1
+          && olasPredictList.length % 2 === 1;
 
-          <p className={TEXT_CLASS}>{desc}</p>
-        </div>
-      ))}
+        return (
+          <div
+            key={title}
+            className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${
+              isLastAndOdd ? 'lg:col-start-2 lg:col-span-2' : 'col-span-2'
+            }`}
+            style={eachCardCss}
+          >
+            <div className="flex items-center">
+              {icon}
+              <h2 className="text-xl font-semibold ml-2">{title}</h2>
+            </div>
+
+            <p className={TEXT_CLASS}>{desc}</p>
+          </div>
+        );
+      })}
     </div>
   </div>
 );
