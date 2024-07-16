@@ -87,8 +87,8 @@ const olasPredictList = [
     icon: <Expand />,
   },
   {
-    title: 'Specialisation',
-    desc: 'Agents specialise in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
+    title: 'Specialization',
+    desc: 'Agents Specialize in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
     icon: <Target />,
   },
 ];

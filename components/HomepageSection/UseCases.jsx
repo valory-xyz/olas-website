@@ -7,7 +7,12 @@ import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
 
 const UseCaseCard = ({
-  title, image, imageWidth, description, services, className,
+  title,
+  image,
+  imageWidth,
+  description,
+  services,
+  className,
 }) => (
   <div className={className}>
     <div className="py-12 md:p-4 grid gap-4 md:grid-rows-[194px_88px_144px_70px] lg:grid-rows-[194px_88px_94px_70px]">
@@ -35,8 +40,7 @@ const UseCaseCard = ({
                 target: '_blank',
                 rel: 'noopener noreferrer',
               }
-              : {}
-          )}
+              : {})}
             className="flex gap-4 p-3 text-start hover:bg-gray-100 rounded-lg"
           >
             <Image
@@ -50,8 +54,11 @@ const UseCaseCard = ({
               <h5 className="font-bold">
                 {service.title}
                 {' '}
-                {service.isExternal
-                  ? <span className="font-normal text-purple-800"> ↗</span> : ''}
+                {service.isExternal ? (
+                  <span className="font-normal text-purple-800"> ↗</span>
+                ) : (
+                  ''
+                )}
               </h5>
               <p className="text-slate-700 mt-1">{service.description}</p>
             </div>
@@ -67,13 +74,15 @@ UseCaseCard.propTypes = {
   image: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
-  services: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    link: PropTypes.string.isRequired,
-    isExternal: PropTypes.bool,
-  })).isRequired,
+  services: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      link: PropTypes.string.isRequired,
+      isExternal: PropTypes.bool,
+    }),
+  ).isRequired,
   className: PropTypes.string.isRequired,
 };
 
