@@ -88,7 +88,7 @@ const olasPredictList = [
   },
   {
     title: 'Specialization',
-    desc: 'Agents Specialize in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
+    desc: 'Agents specialize in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
     icon: <Target />,
   },
 ];
