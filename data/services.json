@@ -129,7 +129,7 @@
     "iconFilename": "prediction-agents.svg",
     "demo": false,
     "builder": "Valory"
-  }, 
+  },
   {
     "id": "85e47fa9-dfea-46d3-9fcb-a639f0197e04",
     "name": "BabyDegen",
@@ -140,6 +140,19 @@
     "marketingUrl": "",
     "buildUrl": "",
     "iconFilename": "babydegen-icon.svg",
+    "demo": false,
+    "builder": "Valory"
+  },
+  {
+    "id": "2656269f-cf50-4fa4-b5f9-03550ef0ead2",
+    "name": "Predict",
+    "slug": "predict",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "predict.png",
     "demo": false,
     "builder": "Valory"
   }
