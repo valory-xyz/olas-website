@@ -17,13 +17,19 @@ const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
 const providerUrl = 'https://ethereum.publicnode.com';
 
 const LABELS = [
-  'veOLAS',
-  'DAO Treasury',
-  'buOLAS',
-  'Valory',
-  'Circulating supply',
+  "veOLAS (vote escrow)",
+  "DAO Treasury",
+  "buOLAS",
+  "Valory (core contributor)",
+  "Circulating supply",
 ];
 
+const ADDRESSES = [
+  veOlasAddress,
+  daoAddress,
+  buOlasAddress,
+  valoryAddress
+]
 const COLORS = {
   'bg-purple-500': '#A755F7',
   'bg-pink-500': '#E964C4',
@@ -32,21 +38,39 @@ const COLORS = {
   'bg-cyan-500 ': '#09B4D7',
 };
 
+
 const TAILWIND_COLOR = Object.keys(COLORS);
 const RGB_COLOR = Object.values(COLORS);
 
-const LegendItem = ({ label, color, value }) => (
+function getAddressPrefix(address) {
+    return address.slice(0, 6);
+}
+
+const LegendItem = ({ label, color, address, value }) => (
   <div className="flex gap-2 items-center w-full">
     <div className={`${color} px-3 py-1 rounded-sm`} />
-    <span className="text-gray-600">{label}</span>
-    <span className="ml-auto">{value}</span>
+    <span className="text-gray-500">{label}</span>
+    {address && (
+      <span className="ml-1 font-medium">
+        <a
+          href={`https://etherscan.io/token/${olasAddress}?a=${address}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {getAddressPrefix(address)}
+        </a>
+      </span>
+    )}
+    <span className="flex-auto border-b border-dotted border-gray-300"></span>
+    <span>{value}</span>
   </div>
 );
 
 LegendItem.propTypes = {
   label: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
+  address: PropTypes.string,
+  value: PropTypes.string.isRequired,
 };
 
 function formatNumber(number) {
@@ -73,10 +97,7 @@ const SupplyPieChart = () => {
 
       const promises = [
         olasContract.methods.totalSupply().call(),
-        olasContract.methods.balanceOf(veOlasAddress).call(),
-        olasContract.methods.balanceOf(daoAddress).call(),
-        olasContract.methods.balanceOf(buOlasAddress).call(),
-        olasContract.methods.balanceOf(valoryAddress).call(),
+        ...ADDRESSES.map(address => olasContract.methods.balanceOf(address).call()),
       ];
 
       const result = await Promise.allSettled(promises);
@@ -137,7 +158,7 @@ const SupplyPieChart = () => {
         <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-4">
           Total Supply Distribution
         </h2>
-        <div className="flex flex-wrap gap-8 mb-4">
+        <div className="flex flex-col items-center gap-8">
           <div>
             {loading ? (
               <div className="text-center">Loading...</div>
@@ -157,11 +178,12 @@ const SupplyPieChart = () => {
             )}
           </div>
 
-          <div className="flex flex-col gap-2 mb-4 self-center flex-1 max-w-[300px]">
+          <div className="flex flex-col gap-2 self-center w-full">
             {data.map((item, index) => (
               <LegendItem
                 key={index}
                 label={LABELS[index]}
+                address={ADDRESSES[index]}
                 color={TAILWIND_COLOR[index]}
                 value={formatNumber(item)}
               />
