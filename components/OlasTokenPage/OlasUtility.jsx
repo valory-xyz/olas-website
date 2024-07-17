@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-function OlasUtility() {
+export function OlasUtility() {
   return (
     <SectionWrapper
       customClasses="lg:p-24 px-4 py-12 text-center"
@@ -26,5 +26,3 @@ function OlasUtility() {
     </SectionWrapper>
   );
 }
-
-export default OlasUtility;

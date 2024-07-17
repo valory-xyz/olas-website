@@ -1,45 +1,56 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js';
+import { getOlasContract, olasAddress } from 'common-util/web3';
 import Verify from '../Verify';
-import olasAbi from '../../data/ABIs/Olas.json';
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-const olasAddress = '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0';
+const olasContract = getOlasContract();
+
 const daoAddress = '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE';
 const buOlasAddress = '0xb09CcF0Dbf0C178806Aaee28956c74bd66d21f73';
 const veOlasAddress = '0x7e01A500805f8A52Fad229b3015AD130A332B7b3';
 const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
-const providerUrl = 'https://ethereum.publicnode.com';
 
-const LABELS = [
-  'veOLAS (vote escrow)',
-  'DAO Treasury',
-  'buOLAS',
-  'Valory (core contributor)',
-  'Circulating supply',
+const DATA = [
+  {
+    label: 'veOLAS (vote escrow)',
+    address: veOlasAddress,
+    tailwindColor: 'bg-purple-500',
+    rgbColor: '#A755F7',
+  },
+  {
+    label: 'DAO Treasury',
+    address: daoAddress,
+    tailwindColor: 'bg-pink-500',
+    rgbColor: '#E964C4',
+  },
+  {
+    label: 'buOLAS',
+    address: buOlasAddress,
+    tailwindColor: 'bg-orange-400',
+    rgbColor: '#FFB246',
+  },
+  {
+    label: 'Valory (core contributor)',
+    address: valoryAddress,
+    tailwindColor: 'bg-green-400',
+    rgbColor: '#3FE681',
+  },
+  {
+    label: 'Circulating supply',
+    tailwindColor: 'bg-cyan-500',
+    rgbColor: '#09B4D7',
+  },
 ];
 
-const ADDRESSES = [
-  veOlasAddress,
-  daoAddress,
-  buOlasAddress,
-  valoryAddress,
-];
-const COLORS = {
-  'bg-purple-500': '#A755F7',
-  'bg-pink-500': '#E964C4',
-  'bg-orange-400': '#FFB246',
-  'bg-green-400': '#3FE681',
-  'bg-cyan-500 ': '#09B4D7',
-};
-
-const TAILWIND_COLOR = Object.keys(COLORS);
-const RGB_COLOR = Object.values(COLORS);
+const LABELS = DATA.map((item) => item.label);
+const ADDRESSES = DATA.map((item) => item.address).filter(Boolean);
+const TAILWIND_COLORS = DATA.map((item) => item.tailwindColor);
+const RGB_COLORS = DATA.map((item) => item.rgbColor);
 
 function getAddressPrefix(address) {
   return address.slice(0, 6);
@@ -86,17 +97,13 @@ function formatEthers(value) {
   return Number(etherValue);
 }
 
-const SupplyPieChart = () => {
+export const SupplyPieChart = () => {
   const [data, setData] = useState([]);
   const [totalSupply, setTotalSupply] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-
-      const olasContract = new web3.eth.Contract(olasAbi, olasAddress);
-
       const promises = [
         olasContract.methods.totalSupply().call(),
         ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
@@ -171,8 +178,8 @@ const SupplyPieChart = () => {
                   datasets: [
                     {
                       data,
-                      backgroundColor: RGB_COLOR,
-                      hoverBackgroundColor: RGB_COLOR,
+                      backgroundColor: RGB_COLORS,
+                      hoverBackgroundColor: RGB_COLORS,
                     },
                   ],
                 }}
@@ -186,7 +193,7 @@ const SupplyPieChart = () => {
                 key={index}
                 label={LABELS[index]}
                 address={ADDRESSES[index]}
-                color={TAILWIND_COLOR[index]}
+                color={TAILWIND_COLORS[index]}
                 value={formatNumber(item)}
               />
             ))}
@@ -196,5 +203,3 @@ const SupplyPieChart = () => {
     </>
   );
 };
-
-export default SupplyPieChart;

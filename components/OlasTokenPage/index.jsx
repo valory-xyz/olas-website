@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import {
   Chart, CategoryScale, LinearScale, BarElement,
 } from 'chart.js';
+import { web3, getTokenomicsContract } from 'common-util/web3';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
-import OlasUtility from './OlasUtility';
+import { OlasUtility } from './OlasUtility';
 import SectionWrapper from '../Layout/SectionWrapper';
-import contractAbi from '../../data/ABIs/Tokenomics.json';
-import UsagePieChart from './UsagePieChart';
-import SupplyPieChart from './SupplyPieChart';
-import EmissionScheduleChart from './EmissionScheduleChart';
+import { UsagePieChart } from './UsagePieChart';
+import { SupplyPieChart } from './SupplyPieChart';
+import { EmissionScheduleChart } from './EmissionScheduleChart';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
-const contractAddress = '0xc096362fa6f4A4B1a9ea68b1043416f3381ce300';
-const providerUrl = 'https://ethereum.publicnode.com';
+const tokenomicsContract = getTokenomicsContract();
 
 const Supply = () => {
   const [epoch, setEpoch] = useState(null);
@@ -30,14 +28,10 @@ const Supply = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
-      const contractInstance = new web3.eth.Contract(
-        contractAbi,
-        contractAddress,
-      );
-
-      const newTimeLaunch = await contractInstance.methods.timeLaunch().call();
+      const newTimeLaunch = await tokenomicsContract.methods
+        .timeLaunch()
+        .call();
       setTimeLaunch(newTimeLaunch);
 
       // Call getInflationForYear method repeatedly for 0 through 12
@@ -46,7 +40,7 @@ const Supply = () => {
 
       for (let i = 0; i <= 12; i += 1) {
         promises.push(
-          contractInstance.methods.getInflationForYear(i).call()
+          tokenomicsContract.methods.getInflationForYear(i).call()
             .then((result) => {
               newInflationForYear[i] = web3.utils.fromWei(result.toString(), 'ether');
               return result;
@@ -61,23 +55,23 @@ const Supply = () => {
       await Promise.all(promises);
       setInflationForYear(newInflationForYear);
 
-      const newCurrentYear = await contractInstance.methods
+      const newCurrentYear = await tokenomicsContract.methods
         .currentYear()
         .call();
       setCurrentYear(newCurrentYear);
 
       // Call epochCounter to get the current epoch
-      const newEpoch = await contractInstance.methods.epochCounter().call();
+      const newEpoch = await tokenomicsContract.methods.epochCounter().call();
       setEpoch(newEpoch);
       // Use the result as the parameter for mapEpochTokenomics
-      const tokenomicsResult = await contractInstance.methods
+      const tokenomicsResult = await tokenomicsContract.methods
         .mapEpochTokenomics(newEpoch)
         .call();
       // 6 is the index of the bonders % value
       const bonders = Number(tokenomicsResult['6']);
 
       // staking
-      const stakingResult = await contractInstance.methods.mapEpochStakingPoints(newEpoch).call();
+      const stakingResult = await tokenomicsContract.methods.mapEpochStakingPoints(newEpoch).call();
       const staking = Number(stakingResult['3']);
 
       // subtract bonders % from 100 to get developers %
@@ -116,7 +110,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emission Schedule</h2>
               <p className="text-slate-500">
-                What are the maximum amount of OLAS that can be minted by the
+                What is the maximum amount of OLAS that can be minted by the
                 protocol over time?
               </p>
             </div>

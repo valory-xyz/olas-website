@@ -8,7 +8,7 @@ import Verify from '../Verify';
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-const UsagePieChart = ({ epoch, split, loading }) => (
+export const UsagePieChart = ({ epoch, split, loading }) => (
   <div>
     <div>
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
@@ -119,5 +119,3 @@ UsagePieChart.propTypes = {
 UsagePieChart.defaultProps = {
   epoch: null,
 };
-
-export default UsagePieChart;

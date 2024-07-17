@@ -27,7 +27,7 @@ const BACKUP_INFLATION_FOR_YEAR = [
   '20808000',
 ];
 
-const EmissionScheduleChart = ({
+export const EmissionScheduleChart = ({
   inflationForYear,
   timeLaunch,
   currentYear,
@@ -140,5 +140,3 @@ EmissionScheduleChart.defaultProps = {
   timeLaunch: null,
   currentYear: null,
 };
-
-export default EmissionScheduleChart;
