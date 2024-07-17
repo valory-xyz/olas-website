@@ -17,19 +17,19 @@ const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
 const providerUrl = 'https://ethereum.publicnode.com';
 
 const LABELS = [
-  "veOLAS (vote escrow)",
-  "DAO Treasury",
-  "buOLAS",
-  "Valory (core contributor)",
-  "Circulating supply",
+  'veOLAS (vote escrow)',
+  'DAO Treasury',
+  'buOLAS',
+  'Valory (core contributor)',
+  'Circulating supply',
 ];
 
 const ADDRESSES = [
   veOlasAddress,
   daoAddress,
   buOlasAddress,
-  valoryAddress
-]
+  valoryAddress,
+];
 const COLORS = {
   'bg-purple-500': '#A755F7',
   'bg-pink-500': '#E964C4',
@@ -38,15 +38,16 @@ const COLORS = {
   'bg-cyan-500 ': '#09B4D7',
 };
 
-
 const TAILWIND_COLOR = Object.keys(COLORS);
 const RGB_COLOR = Object.values(COLORS);
 
 function getAddressPrefix(address) {
-    return address.slice(0, 6);
+  return address.slice(0, 6);
 }
 
-const LegendItem = ({ label, color, address, value }) => (
+const LegendItem = ({
+  label, color, address, value,
+}) => (
   <div className="flex gap-2 items-center w-full">
     <div className={`${color} px-3 py-1 rounded-sm`} />
     <span className="text-gray-500">{label}</span>
@@ -61,7 +62,7 @@ const LegendItem = ({ label, color, address, value }) => (
         </a>
       </span>
     )}
-    <span className="flex-auto border-b border-dotted border-gray-300"></span>
+    <span className="flex-auto border-b border-dotted border-gray-300" />
     <span>{value}</span>
   </div>
 );
@@ -72,6 +73,7 @@ LegendItem.propTypes = {
   address: PropTypes.string,
   value: PropTypes.string.isRequired,
 };
+LegendItem.defaultProps = { address: null };
 
 function formatNumber(number) {
   return number.toLocaleString();
@@ -97,7 +99,7 @@ const SupplyPieChart = () => {
 
       const promises = [
         olasContract.methods.totalSupply().call(),
-        ...ADDRESSES.map(address => olasContract.methods.balanceOf(address).call()),
+        ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
       ];
 
       const result = await Promise.allSettled(promises);
@@ -136,7 +138,7 @@ const SupplyPieChart = () => {
             Total Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {loading ? "--" : formatNumber(totalSupply)}
+            {loading ? '--' : formatNumber(totalSupply)}
           </div>
           <div className="mb-4">
             <Verify url="https://etherscan.io/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16" />
@@ -147,7 +149,7 @@ const SupplyPieChart = () => {
             Circulating Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {loading ? "--" : formatNumber(data[data.length - 1])}
+            {loading ? '--' : formatNumber(data[data.length - 1])}
           </div>
           <div className="mb-4">
             <Verify url="https://www.coingecko.com/en/coins/autonolas" />
