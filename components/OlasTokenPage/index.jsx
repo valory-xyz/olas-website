@@ -10,7 +10,7 @@ import SectionWrapper from '../Layout/SectionWrapper';
 import contractAbi from '../../data/ABIs/Tokenomics.json';
 import UsagePieChart from './UsagePieChart';
 import SupplyPieChart from './SupplyPieChart';
-import EmissionsChart from './EmissionsChart';
+import EmissionScheduleChart from './EmissionScheduleChart';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -120,7 +120,7 @@ const Supply = () => {
                 How are OLAS tokens minted by the protocol over time?
               </p>
             </div>
-            <EmissionsChart
+            <EmissionScheduleChart
               inflationForYear={inflationForYear}
               timeLaunch={timeLaunch}
               currentYear={currentYear}
