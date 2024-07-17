@@ -107,13 +107,17 @@ const UsagePieChart = ({ epoch, split, loading }) => (
 );
 
 UsagePieChart.propTypes = {
-  epoch: PropTypes.bigint.isRequired,
+  epoch: PropTypes.bigint,
   loading: PropTypes.bool.isRequired,
   split: PropTypes.shape({
     bonders: PropTypes.number,
     developers: PropTypes.number,
     staking: PropTypes.number,
   }).isRequired,
+};
+
+UsagePieChart.defaultProps = {
+  epoch: null,
 };
 
 export default UsagePieChart;
