@@ -105,7 +105,6 @@ const Supply = () => {
           Supply
         </div>
         <div className="grid lg:grid-cols-2 gap-8 mb-24">
-
           <div className="border rounded-lg">
             <div className="p-4 border-b">
               <h2 className="text-xl font-bold">Token Supply</h2>
@@ -117,7 +116,8 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emission Schedule</h2>
               <p className="text-slate-500">
-                How are OLAS tokens minted by the protocol over time?
+                What are the maximum amount of OLAS that can be minted by the
+                protocol over time?
               </p>
             </div>
             <EmissionScheduleChart
@@ -139,7 +139,6 @@ const Supply = () => {
               <UsagePieChart epoch={epoch} split={split} loading={loading} />
             </div>
           </div>
-
         </div>
 
         {/* Dive into the current distribution details */}
