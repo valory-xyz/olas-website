@@ -72,3 +72,7 @@
     --ring: 212.7 26.8% 83.9%;
   }
 }
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
+}

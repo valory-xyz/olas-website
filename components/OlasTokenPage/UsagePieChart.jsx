@@ -8,16 +8,14 @@ import Verify from '../Verify';
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-export const TEXT_GRADIENT = 'bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400';
-
-const UsagePieChart = ({ epoch, split, loading }) => (
+export const UsagePieChart = ({ epoch, split, loading }) => (
   <div>
     <div>
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
         Current Epoch
       </h2>
       <div className="text-4xl font-extrabold">
-        <span className={TEXT_GRADIENT}>
+        <span className="text-gradient">
           {loading ? '--' : epoch?.toString()}
         </span>
       </div>
@@ -66,23 +64,26 @@ const UsagePieChart = ({ epoch, split, loading }) => (
           {' '}
           of new tokens go to
           {' '}
-          <Link href="https://staking.olas.network/" className="text-yellow-600 font-bold">
+          <Link
+            href="https://staking.olas.network/"
+            className="text-yellow-600 font-bold"
+          >
             Stakers
           </Link>
         </div>
       </div>
       <div className="mb-4 max-w-[300px] mx-auto">
         {loading ? (
-          <div className="text-center">
-            Loading...
-          </div>
+          <div className="text-center">Loading...</div>
         ) : (
           <Pie
             data={{
               labels: ['Developers', 'Bonders', 'Staking'],
               datasets: [
                 {
-                  data: [split.developers, split.bonders, split.staking] || [0, 0, 0],
+                  data: [split.developers, split.bonders, split.staking] || [
+                    0, 0, 0,
+                  ],
                   backgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                   hoverBackgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                 },
@@ -99,15 +100,14 @@ const UsagePieChart = ({ epoch, split, loading }) => (
         <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F27" />
       </div>
       <p className="text-slate-500">
-        DAO members can vote to update how newly minted tokens are
-        distributed.
+        DAO members can vote to update how newly minted tokens are distributed.
       </p>
     </div>
   </div>
 );
 
 UsagePieChart.propTypes = {
-  epoch: PropTypes.bigint.isRequired,
+  epoch: PropTypes.bigint,
   loading: PropTypes.bool.isRequired,
   split: PropTypes.shape({
     bonders: PropTypes.number,
@@ -116,4 +116,6 @@ UsagePieChart.propTypes = {
   }).isRequired,
 };
 
-export default UsagePieChart;
+UsagePieChart.defaultProps = {
+  epoch: null,
+};
