@@ -37,9 +37,9 @@
   },
   {
     "id": "9d8f3c98-c53d-45a9-b7b7-20c8d715af19",
-    "name": "Polywrap",
-    "url": "https://www.polywrap.io/",
-    "iconFilename": "polywrap.svg"
+    "name": "Agentcoin",
+    "url": "https://www.agentcoin.org/",
+    "iconFilename": "agentcoin.png"
   },
   {
     "id": "hjhohp9-0dec-4ed0-1245-15face91be42",
@@ -58,5 +58,11 @@
     "name": "Alterscope",
     "url": "https://twitter.com/nickfitzy/status/1775353313267175695",
     "iconFilename": "alterscope.webp"
-  }
+  },
+   {
+     "id": "d6a7e5af-3e55-4b6c-bc22-fb5fa96cd9e2",
+     "name": "AskJimmy",
+     "url": "https://x.com/autonolas/status/1803805230179701167",
+     "iconFilename": "askjimmy.png"
+   }
 ]
