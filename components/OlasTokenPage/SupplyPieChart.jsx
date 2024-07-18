@@ -17,40 +17,48 @@ const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
 
 const DATA = [
   {
+    id: 'veOlas',
     label: 'veOLAS (vote escrow)',
     address: veOlasAddress,
     tailwindColor: 'bg-purple-500',
     rgbColor: '#A755F7',
   },
   {
+    id: 'dao',
     label: 'DAO Treasury',
     address: daoAddress,
     tailwindColor: 'bg-pink-500',
     rgbColor: '#E964C4',
   },
   {
+    id: 'buOLAS',
     label: 'buOLAS',
     address: buOlasAddress,
     tailwindColor: 'bg-orange-400',
     rgbColor: '#FFB246',
   },
   {
+    id: 'valory',
     label: 'Valory (core contributor)',
     address: valoryAddress,
     tailwindColor: 'bg-green-400',
     rgbColor: '#3FE681',
   },
   {
+    id: 'circulatingSupply',
     label: 'Circulating supply',
     tailwindColor: 'bg-cyan-500',
     rgbColor: '#09B4D7',
   },
 ];
 
+const IDS = DATA.map((item) => item.id);
 const LABELS = DATA.map((item) => item.label);
 const ADDRESSES = DATA.map((item) => item.address).filter(Boolean);
 const TAILWIND_COLORS = DATA.map((item) => item.tailwindColor);
 const RGB_COLORS = DATA.map((item) => item.rgbColor);
+
+const CIRCULATING_SUPPLY_INDEX = DATA.findIndex((item) => item.id === 'circulatingSupply');
 
 function getAddressPrefix(address) {
   return address.slice(0, 6);
@@ -104,42 +112,53 @@ export const SupplyPieChart = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const promises = [
-        olasContract.methods.totalSupply().call(),
-        ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
-      ];
+      try {
+        const promises = [
+          olasContract.methods.totalSupply().call(),
+          ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
+        ];
 
-      const result = await Promise.allSettled(promises);
+        const result = await Promise.allSettled(promises);
 
-      const totalSupplyResult = result[0].value;
-      const distributions = result
-        .slice(1, result.length)
-        .map((item) => item.value || 0);
+        const totalSupplyResult = result[0].value;
+        const distributions = result
+          .slice(1, result.length)
+          .map((item) => item.value || 0);
 
-      const circulatingSupply = totalSupplyResult > 0
-        ? result[0].value
-            - distributions.reduce((sum, item) => sum + item, 0n)
-        : 0;
+        const circulatingSupply = totalSupplyResult > 0
+          ? result[0].value
+               - distributions.reduce((sum, item) => sum + item, 0n)
+          : 0;
 
-      setTotalSupply(formatEthers(totalSupplyResult));
-      setData([
-        ...distributions.map((item) => formatEthers(item)),
-        formatEthers(circulatingSupply),
-      ]);
+        setTotalSupply(formatEthers(totalSupplyResult));
+        setData([
+          ...distributions.map((item, index) => ({
+            id: IDS[index],
+            label: LABELS[index],
+            address: ADDRESSES[index],
+            color: TAILWIND_COLORS[index],
+            value: formatEthers(item),
+          })),
+          {
+            id: IDS[CIRCULATING_SUPPLY_INDEX],
+            label: LABELS[CIRCULATING_SUPPLY_INDEX],
+            color: TAILWIND_COLORS[CIRCULATING_SUPPLY_INDEX],
+            value: formatEthers(circulatingSupply),
+          },
+        ]);
 
-      setLoading(false);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
 
-    try {
-      fetchData();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    fetchData();
   }, []);
 
   return (
     <>
-      <div className="flex flex-wrap gap-8 p-4 border-b">
+      <div className="flex flex-wrap gap-x-8 p-4 border-b">
         <div>
           <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
             Total Supply
@@ -156,7 +175,7 @@ export const SupplyPieChart = () => {
             Circulating Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {loading ? '--' : formatNumber(data[data.length - 1])}
+            {loading ? '--' : formatNumber(data[data.length - 1].value)}
           </div>
           <div className="mb-4">
             <Verify url="https://www.coingecko.com/en/coins/autonolas" />
@@ -177,7 +196,7 @@ export const SupplyPieChart = () => {
                   labels: LABELS,
                   datasets: [
                     {
-                      data,
+                      data: data.map((item) => item.value),
                       backgroundColor: RGB_COLORS,
                       hoverBackgroundColor: RGB_COLORS,
                     },
@@ -188,13 +207,13 @@ export const SupplyPieChart = () => {
           </div>
 
           <div className="flex flex-col gap-2 self-center w-full">
-            {data.map((item, index) => (
+            {data.map((item) => (
               <LegendItem
-                key={index}
-                label={LABELS[index]}
-                address={ADDRESSES[index]}
-                color={TAILWIND_COLORS[index]}
-                value={formatNumber(item)}
+                key={item.id}
+                label={item.label}
+                address={item.address}
+                color={item.color}
+                value={formatNumber(item.value)}
               />
             ))}
           </div>

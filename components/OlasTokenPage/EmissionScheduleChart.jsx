@@ -27,6 +27,22 @@ const BACKUP_INFLATION_FOR_YEAR = [
   '20808000',
 ];
 
+const OlasMintInfo = () => (
+  <>
+    <p className="mb-4">
+      A maximum of 1bn OLAS tokens can be minted in the protocol&apos;s first 10
+      years.
+    </p>
+    <p className="mb-4">
+      After year 10, an additional 2% can be minted each year. This 2% inflation
+      rate can be reduced by the DAO.
+    </p>
+    <div className="mb-4">
+      <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F19" />
+    </div>
+  </>
+);
+
 export const EmissionScheduleChart = ({
   inflationForYear,
   timeLaunch,
@@ -113,17 +129,7 @@ export const EmissionScheduleChart = ({
         )}
       </div>
 
-      <p className="mb-4">
-        A maximum of 1bn OLAS tokens can be minted in the protocol&apos;s
-        first 10 years.
-      </p>
-      <p className="mb-4">
-        After year 10, an additional 2% can be minted each year. This 2%
-        inflation rate can be reduced by the DAO.
-      </p>
-      <div className="mb-4">
-        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F19" />
-      </div>
+      <OlasMintInfo />
     </div>
   </>
 );

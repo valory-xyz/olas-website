@@ -27,69 +27,79 @@ const Supply = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      try {
+        setLoading(true);
 
-      const newTimeLaunch = await tokenomicsContract.methods
-        .timeLaunch()
-        .call();
-      setTimeLaunch(newTimeLaunch);
+        const newTimeLaunch = await tokenomicsContract.methods
+          .timeLaunch()
+          .call();
+        setTimeLaunch(newTimeLaunch);
 
-      // Call getInflationForYear method repeatedly for 0 through 12
-      const newInflationForYear = Array.from({ length: 12 }, () => null);
-      const promises = [];
+        // Call getInflationForYear method repeatedly for 0 through 12
+        const newInflationForYear = Array.from({ length: 12 }, () => null);
+        const promises = [];
 
-      for (let i = 0; i <= 12; i += 1) {
-        promises.push(
-          tokenomicsContract.methods.getInflationForYear(i).call()
-            .then((result) => {
-              newInflationForYear[i] = web3.utils.fromWei(result.toString(), 'ether');
-              return result;
-            })
-            .catch((error) => {
-              newInflationForYear.push(undefined); // Push undefined if promise fails
-              console.error(`Error in getInflationForYear for year ${i}:`, error);
-            }),
-        );
+        for (let i = 0; i <= 12; i += 1) {
+          promises.push(
+            tokenomicsContract.methods
+              .getInflationForYear(i)
+              .call()
+              .then((result) => {
+                newInflationForYear[i] = web3.utils.fromWei(
+                  result.toString(),
+                  'ether',
+                );
+                return result;
+              })
+              .catch((error) => {
+                newInflationForYear.push(undefined); // Push undefined if promise fails
+                console.error(
+                  `Error in getInflationForYear for year ${i}:`,
+                  error,
+                );
+              }),
+          );
+        }
+
+        await Promise.all(promises);
+        setInflationForYear(newInflationForYear);
+
+        const newCurrentYear = await tokenomicsContract.methods
+          .currentYear()
+          .call();
+        setCurrentYear(newCurrentYear);
+
+        // Call epochCounter to get the current epoch
+        const newEpoch = await tokenomicsContract.methods.epochCounter().call();
+        setEpoch(newEpoch);
+        // Use the result as the parameter for mapEpochTokenomics
+        const tokenomicsResult = await tokenomicsContract.methods
+          .mapEpochTokenomics(newEpoch)
+          .call();
+        // 6 is the index of the bonders % value
+        const bonders = Number(tokenomicsResult['6']);
+
+        // staking
+        const stakingResult = await tokenomicsContract.methods
+          .mapEpochStakingPoints(newEpoch)
+          .call();
+        const staking = Number(stakingResult['3']);
+
+        // subtract bonders % from 100 to get developers %
+        const developers = 100 - (staking + bonders);
+        setSplit({
+          staking,
+          bonders,
+          developers,
+        });
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-
-      await Promise.all(promises);
-      setInflationForYear(newInflationForYear);
-
-      const newCurrentYear = await tokenomicsContract.methods
-        .currentYear()
-        .call();
-      setCurrentYear(newCurrentYear);
-
-      // Call epochCounter to get the current epoch
-      const newEpoch = await tokenomicsContract.methods.epochCounter().call();
-      setEpoch(newEpoch);
-      // Use the result as the parameter for mapEpochTokenomics
-      const tokenomicsResult = await tokenomicsContract.methods
-        .mapEpochTokenomics(newEpoch)
-        .call();
-      // 6 is the index of the bonders % value
-      const bonders = Number(tokenomicsResult['6']);
-
-      // staking
-      const stakingResult = await tokenomicsContract.methods.mapEpochStakingPoints(newEpoch).call();
-      const staking = Number(stakingResult['3']);
-
-      // subtract bonders % from 100 to get developers %
-      const developers = 100 - (staking + bonders);
-      setSplit({
-        staking,
-        bonders,
-        developers,
-      });
-
-      setLoading(false);
     };
 
-    try {
-      fetchData();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    fetchData();
   }, []);
 
   return (
