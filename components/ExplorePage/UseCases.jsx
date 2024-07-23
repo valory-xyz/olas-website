@@ -8,29 +8,19 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const servicePath = (service) => service.path || `/services/${service.slug}`;
 
-/**
- * A person object.
- * @typedef {Object} Service
- * @property {string} id - The unique identifier.
- * @property {string} name - The name of the service.
- * @property {string} slug - The slug of the service.
- * @property {string} serviceCategory - The category of the service.
- * @property {string} description - The description of the service.
- * @property {string} appUrl - The URL of the app.
- * @property {string} marketingUrl - The URL of the marketing page.
- * @property {string} buildUrl - The URL of the build page.
- * @property {string} iconFilename - The filename of the icon.
- * @property {boolean} demo - The demo status.
- * @property {string} builder - The builder of the service.
- * @property {string} path - The path of the service.
- */
+const NoServicesYet = () => (
+  <div className="mb-2 flex items-center">
+    <Image
+      src="/images/services/empty.svg"
+      width={75}
+      height={75}
+      alt="No services yet"
+      className="mr-4"
+    />
+    <div className="text-slate-400">No services yet</div>
+  </div>
+);
 
-/**
- *
- * @param {Object} props
- * @param {Object} props.serviceCategory
- * @param {Service[]} props.services
- */
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   /* eslint-disable-next-line max-len */
   const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
@@ -43,7 +33,9 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
         </h2>
       </div>
 
-      {filteredServices.length > 0 ? (
+      {filteredServices.length === 0 ? (
+        <NoServicesYet />
+      ) : (
         filteredServices.map((service) => (
           <div key={service.id} className="mb-2 flex items-center">
             <Link href={servicePath(service)}>
@@ -63,17 +55,6 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
             </Link>
           </div>
         ))
-      ) : (
-        <div className="mb-2 flex items-center">
-          <Image
-            src="/images/services/empty.svg"
-            width={75}
-            height={75}
-            alt="No services yet"
-            className="mr-4"
-          />
-          <div className="text-slate-400">No services yet</div>
-        </div>
       )}
     </div>
   );
