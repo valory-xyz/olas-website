@@ -10,6 +10,7 @@ import SectionWrapper from '../Layout/SectionWrapper';
 import { UsagePieChart } from './UsagePieChart';
 import { SupplyPieChart } from './SupplyPieChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
+import { EmissionsToDevs } from './EmissionsToDevs';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -142,6 +143,15 @@ const Supply = () => {
             <div className="p-4">
               <UsagePieChart epoch={epoch} split={split} loading={loading} />
             </div>
+          </div>
+
+          <div className="flex flex-col border rounded-lg">
+            <div className="p-4 border-b">
+              <h2 className="text-xl mb-2 font-bold">
+                Emissions to Developers
+              </h2>
+            </div>
+            <EmissionsToDevs />
           </div>
         </div>
 
