@@ -8,6 +8,29 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const servicePath = (service) => service.path || `/services/${service.slug}`;
 
+/**
+ * A person object.
+ * @typedef {Object} Service
+ * @property {string} id - The unique identifier.
+ * @property {string} name - The name of the service.
+ * @property {string} slug - The slug of the service.
+ * @property {string} serviceCategory - The category of the service.
+ * @property {string} description - The description of the service.
+ * @property {string} appUrl - The URL of the app.
+ * @property {string} marketingUrl - The URL of the marketing page.
+ * @property {string} buildUrl - The URL of the build page.
+ * @property {string} iconFilename - The filename of the icon.
+ * @property {boolean} demo - The demo status.
+ * @property {string} builder - The builder of the service.
+ * @property {string} path - The path of the service.
+ */
+
+/**
+ *
+ * @param {Object} props
+ * @param {Object} props.serviceCategory
+ * @param {Service[]} props.services
+ */
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   /* eslint-disable-next-line max-len */
   const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
@@ -88,9 +111,9 @@ const UseCases = () => (
     <div className="grid sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
       {serviceCategories.map((serviceCategory) => (
         <ServiceCategoryCard
+          key={serviceCategory.id}
           serviceCategory={serviceCategory}
           services={servicesData}
-          key={serviceCategory.id}
         />
       ))}
     </div>
