@@ -65,7 +65,7 @@
         "title": "Predict",
         "description": "Agents creating, researching and trading on prediction markets.",
         "image": "/images/services/predict.png",
-        "link": "/services/predict",
+        "link": "/agent-economies/predict",
         "isExternal": false
       }
     ]

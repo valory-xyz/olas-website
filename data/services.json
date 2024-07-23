@@ -154,6 +154,7 @@
     "buildUrl": "",
     "iconFilename": "predict.png",
     "demo": false,
-    "builder": "Valory"
+    "builder": "Valory",
+    "path": "/agent-economies/predict"
   }
 ]

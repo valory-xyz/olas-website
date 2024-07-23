@@ -1,17 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
+
 import servicesData from 'data/services.json';
 import serviceCategories from 'data/serviceCategories.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
-const servicePath = (service) => `/services/${service.slug}`;
+const servicePath = (service) => service.path || `/services/${service.slug}`;
+
+const NoServicesYet = () => (
+  <div className="mb-2 flex items-center">
+    <Image
+      src="/images/services/empty.svg"
+      width={75}
+      height={75}
+      alt="No services yet"
+      className="mr-4"
+    />
+    <div className="text-slate-400">No services yet</div>
+  </div>
+);
 
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
-  const filteredServices = services.filter(
-    (service) => service.serviceCategory.includes(serviceCategory.name),
-  );
+  /* eslint-disable-next-line max-len */
+  const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
 
   return (
     <div className="rounded mt-2 border p-4">
@@ -20,7 +32,10 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
           {serviceCategory.name}
         </h2>
       </div>
-      {filteredServices.length > 0 ? (
+
+      {filteredServices.length === 0 ? (
+        <NoServicesYet />
+      ) : (
         filteredServices.map((service) => (
           <div key={service.id} className="mb-2 flex items-center">
             <Link href={servicePath(service)}>
@@ -40,17 +55,6 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
             </Link>
           </div>
         ))
-      ) : (
-        <div className="mb-2 flex items-center">
-          <Image
-            src="/images/services/empty.svg"
-            width={75}
-            height={75}
-            alt="No services yet"
-            className="mr-4"
-          />
-          <div className="text-slate-400">No services yet</div>
-        </div>
       )}
     </div>
   );
@@ -74,6 +78,7 @@ ServiceCategoryCard.propTypes = {
     iconFilename: PropTypes.string,
     demo: PropTypes.bool,
     builder: PropTypes.string,
+    path: PropTypes.string,
   }).isRequired,
 };
 
@@ -87,9 +92,9 @@ const UseCases = () => (
     <div className="grid sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
       {serviceCategories.map((serviceCategory) => (
         <ServiceCategoryCard
+          key={serviceCategory.id}
           serviceCategory={serviceCategory}
           services={servicesData}
-          key={serviceCategory.id}
         />
       ))}
     </div>
