@@ -34,7 +34,7 @@ const OlasMintInfo = () => (
       years.
     </p>
     <p className="mb-4">
-      After year 10, an additional 2% can be minted each year. This 2% inflation
+      After year 9, an additional 2% can be minted each year. This 2% inflation
       rate can be reduced by the DAO.
     </p>
     <div className="mb-4">
