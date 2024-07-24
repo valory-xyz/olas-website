@@ -28,6 +28,11 @@ module.exports = {
         destination: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
         permanent: false,
       },
+      {
+        source: '/services/predict',
+        destination: '/agent-economies/predict',
+        permanent: true,
+      },
     ];
   },
   async headers() {
