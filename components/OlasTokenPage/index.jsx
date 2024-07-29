@@ -3,6 +3,8 @@ import {
   Chart, CategoryScale, LinearScale, BarElement,
 } from 'chart.js';
 import { web3, getTokenomicsContract } from 'common-util/web3';
+import { emissionsQuery } from 'common-util/graphql/queries';
+import { tokenomicsGraphClient } from 'common-util/graphql/client';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
 import { OlasUtility } from './OlasUtility';
@@ -11,6 +13,7 @@ import { UsagePieChart } from './UsagePieChart';
 import { SupplyPieChart } from './SupplyPieChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
 import { EmissionsToDevs } from './EmissionsToDevs';
+import { EmissionsToBonders } from './EmissionsToBonders';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -24,6 +27,7 @@ const Supply = () => {
   const [timeLaunch, setTimeLaunch] = useState(null);
   const [currentYear, setCurrentYear] = useState(null);
   const [inflationForYear, setInflationForYear] = useState([]);
+  const [emissions, setEmissions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -94,6 +98,10 @@ const Supply = () => {
           developers,
         });
 
+        // emissions
+        const emissionsData = await tokenomicsGraphClient.request(emissionsQuery);
+        setEmissions(emissionsData.epoches);
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -151,7 +159,14 @@ const Supply = () => {
                 Emissions to Developers
               </h2>
             </div>
-            <EmissionsToDevs />
+            <EmissionsToDevs emissions={emissions} loading={loading} />
+          </div>
+
+          <div className="flex flex-col border rounded-lg">
+            <div className="p-4 border-b">
+              <h2 className="text-xl mb-2 font-bold">Emissions to Bonders</h2>
+            </div>
+            <EmissionsToBonders emissions={emissions} loading={loading} />
           </div>
         </div>
 

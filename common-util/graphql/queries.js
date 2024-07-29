@@ -7,6 +7,9 @@ export const emissionsQuery = gql`
       counter
       availableDevIncentives
       devIncentivesTotalTopUp
+      effectiveBond
+      totalCreateProductsSupply
+      totalCreateBondsAmountOLAS
     }
   }
 `;
