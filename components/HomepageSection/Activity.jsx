@@ -82,7 +82,7 @@ const Activity = ({
               <span className="block text-xl text-slate-700 mb-4">
                 {item.topText}
               </span>
-              <span className="block text-6xl text-black font-extrabold mb-4">
+              <span className="block text-5xl text-black font-extrabold mb-4">
                 {item.value ?? '--'}
               </span>
               <span className="block text-xl text-slate-700">

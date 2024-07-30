@@ -10,7 +10,7 @@ import {
 const controlList = [
   {
     title: 'Customize, experiment, and optimize your agents',
-    desc: 'With the Operate web app, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules. Run as many agents as you like.',
+    desc: 'With the Quickstarts, listed on the Operate site, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules. Run as many agents as you like.',
   },
   {
     title: 'Quick setup guides',

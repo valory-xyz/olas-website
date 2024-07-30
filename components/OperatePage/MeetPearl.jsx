@@ -21,7 +21,7 @@ const list = [
   },
   {
     title: 'Strong',
-    desc: 'We put your peace of mind first. Pearl provides robust recovery options to protect your funds.',
+    desc: 'Pearl puts your peace of mind first. Pearl provides robust recovery options to protect your funds.',
     icon: <LockKeyhole />,
   },
   {
