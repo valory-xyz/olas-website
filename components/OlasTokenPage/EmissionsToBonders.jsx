@@ -40,7 +40,7 @@ export const EmissionsToBonders = ({ emissions, loading }) => {
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.products.legend}
-          label="OLAS allocated for bonding programmes"
+          label="OLAS allocated for bonding programmes via DAO vote"
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.bonds.legend}

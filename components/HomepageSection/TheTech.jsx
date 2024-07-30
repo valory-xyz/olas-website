@@ -1,10 +1,9 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { ExternalLink, Upcase } from 'components/ui/typography';
+import { Link, Upcase } from 'components/ui/typography';
 import { Card, CardTitle } from 'components/ui/card';
 import SectionHeading from '../SectionHeading';
 
@@ -68,7 +67,7 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
                 ))}
               </ul>
             )}
-            <ExternalLink href={item.link}>Learn more</ExternalLink>
+            <Link href={item.link}>Learn more</Link>
           </div>
         </Card>
       ))}

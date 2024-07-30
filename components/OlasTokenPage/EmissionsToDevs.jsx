@@ -38,7 +38,7 @@ export const EmissionsToDevs = ({ emissions, loading }) => {
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.devRewards.legend}
-          label="Dev rewards emitted"
+          label="Dev rewards claimed"
         />
       </div>
       <div className="flex flex-col flex-auto gap-8">
