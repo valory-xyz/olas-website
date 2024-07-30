@@ -28,13 +28,14 @@ const features = [
     description:
       'Showcase your position in the community with a dedicated page.',
   },
-  {
-    id: 'bf77fa18-0a70-4651-ad97-49563fd620b8',
-    title: 'Community-owned Chatbot',
-    icon: '🤖',
-    description:
-      "veOLAS holders can collaboratively shape the 'memory' of a chatbot for community newcomers to learn from.",
-  },
+  // {
+  //   id: 'bf77fa18-0a70-4651-ad97-49563fd620b8',
+  //   title: 'Community-owned Chatbot',
+  //   icon: '🤖',
+  //   description:
+  //     `veOLAS holders can collaboratively shape the 'memory' of
+  //     a chatbot for community newcomers to learn from.`,
+  // },
   {
     id: 'ed74f1e1-3b5f-4a74-80ea-61182d9764d2',
     title: 'Community-owned Social Posting',
@@ -42,13 +43,14 @@ const features = [
     description:
       'veOLAS hodlers can propose and vote on tweets to be posted by the community Twitter account.',
   },
-  {
-    id: '9a94e834-2b91-4010-b2f9-e9321fbd64d2',
-    title: 'Community Chat',
-    icon: '💬',
-    description:
-      'veOLAS holders have a dedicated space to discuss as a group and message one another via encrypted private chat.',
-  },
+  // {
+  //   id: '9a94e834-2b91-4010-b2f9-e9321fbd64d2',
+  //   title: 'Community Chat',
+  //   icon: '💬',
+  //   description:
+  //     `veOLAS holders have a dedicated space to discuss as a group
+  //     and message one another via encrypted private chat.`,
+  // },
 ];
 
 const Feature = ({ feature }) => (
