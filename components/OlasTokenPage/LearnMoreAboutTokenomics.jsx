@@ -51,7 +51,7 @@ export const LearnMoreAboutTokenomics = () => (
 
           <p className={TEXT_CLASS}>{desc}</p>
           {isExternal ? (
-            <a href={url} target="_blank" className="text-purple-600">
+            <a href={url} target="_blank" rel="noreferrer" className="text-purple-600">
               {urlName}
               <MoveUpRight className="ml-2 inline" size={16} />
             </a>
