@@ -1,5 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
+
+import {
+  CORE_TECHNICAL_DOCUMENT,
+  WHITEPAPER,
+  WHITEPAPER_SUMMARY,
+} from 'common-util/constants';
 import { H1 } from '../ui/typography';
 import SectionWrapper from '../Layout/SectionWrapper';
 
@@ -8,7 +14,7 @@ export const WhitepaperPage = () => (
     <div>
       <H1>Whitepaper</H1>
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 md:gap-8 mt-8">
-        <Link href="/documents/whitepaper/Whitepaper Summary v1.0.pdf">
+        <Link href={WHITEPAPER_SUMMARY}>
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Summary icon"
@@ -21,7 +27,7 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Summary</h3>
           </div>
         </Link>
-        <Link href="/documents/whitepaper/Whitepaper v1.0.pdf">
+        <Link href={WHITEPAPER}>
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Whitepaper icon"
@@ -34,7 +40,7 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Whitepaper</h3>
           </div>
         </Link>
-        <Link href="/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf">
+        <Link href={CORE_TECHNICAL_DOCUMENT}>
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Tokenomics icon"
@@ -57,7 +63,9 @@ export const WhitepaperPage = () => (
               src="/images/whitepaper/poaa-whitepaper.png"
               objectFit="cover"
             />
-            <h3 className="font-bold text-xl mt-4 text-center">Proof of Active Agent (PoAA)/Olas Staking</h3>
+            <h3 className="font-bold text-xl mt-4 text-center">
+              Proof of Active Agent (PoAA)/Olas Staking
+            </h3>
           </div>
         </Link>
       </div>

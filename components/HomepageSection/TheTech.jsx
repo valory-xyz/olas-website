@@ -13,6 +13,12 @@ const innovations = [
     image: '/images/olas-protocol.png',
     description:
       'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
+    descriptionSubText: 'It’s key components are:',
+    descriptionItems: [
+      'On-Chain Registries',
+      'Tokenomics',
+      'Developer Rewards',
+    ],
     link: '/protocol',
   },
   {
@@ -45,7 +51,7 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
     <div className="grid md:grid-cols-2 gap-4 max-w-screen-xl mx-auto mb-16">
       {innovations.map((item) => (
         <Card
-          className="grid grid-cols-5 gap-6 p-6 bg-white items-center"
+          className="grid grid-cols-5 gap-6 p-6 bg-white items-start"
           key={item.title}
         >
           <Image
@@ -53,13 +59,17 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
             src={item.image}
             width={275}
             height={200}
-            className="object-contain col-span-2"
+            className="object-contain col-span-2 mt-4"
           />
           <div className="col-span-3 text-start">
             <CardTitle className="mb-4 lg:text-3xl">
               <span>{item.title}</span>
             </CardTitle>
-            <p className="mb-4">{item.description}</p>
+            <p className="mb-2">{item.description}</p>
+            {item.descriptionSubText && (
+              <p className="mb-2">{item.descriptionSubText}</p>
+            )}
+
             {item.descriptionItems && item.descriptionItems.length > 0 && (
               <ul className="list-disc pl-5 mb-4">
                 {item.descriptionItems.map((descriptionItem) => (

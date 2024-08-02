@@ -9,3 +9,7 @@ export const MENU_DATA = [
   { text: 'Resources', submenu: resources },
   { link: 'https://contribute.olas.network/roadmap', text: 'Roadmap', isExternal: true },
 ];
+
+export const WHITEPAPER = '/documents/whitepaper/Whitepaper v1.0.pdf';
+export const WHITEPAPER_SUMMARY = '/documents/whitepaper/Whitepaper Summary v1.0.pdf';
+export const CORE_TECHNICAL_DOCUMENT = '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';

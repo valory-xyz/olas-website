@@ -14,6 +14,7 @@ import { SupplyPieChart } from './SupplyPieChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
 import { EmissionsToDevs } from './EmissionsToDevs';
 import { EmissionsToBonders } from './EmissionsToBonders';
+import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -99,7 +100,9 @@ const Supply = () => {
         });
 
         // emissions
-        const emissionsData = await tokenomicsGraphClient.request(emissionsQuery);
+        const emissionsData = await tokenomicsGraphClient.request(
+          emissionsQuery,
+        );
         setEmissions(emissionsData.epoches);
 
         setLoading(false);
@@ -218,6 +221,7 @@ const OlasToken = () => (
     <Supply />
     <OlasUtility />
     <TokenDetails />
+    <LearnMoreAboutTokenomics />
   </>
 );
 

@@ -1,5 +1,3 @@
-// TODO: this page will be replaced by new contribute page
-
 import Contribute from 'components/ContributePage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';

@@ -23,7 +23,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
         <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F15" />
       </div>
       <p className="mb-8 text-slate-500">
-        Tokens are distributed to developers, stakers and bonders each epoch.
+        Tokens are distributed to developers, operators and bonders each epoch.
         Epochs run roughly once a month.
       </p>
     </div>
@@ -38,7 +38,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link href="/build" className="text-cyan-500 font-bold">
             Developers
@@ -50,7 +50,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link href="/bond" className="text-purple-600 font-bold">
             Bonders
@@ -62,13 +62,13 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link
             href="https://staking.olas.network/"
             className="text-yellow-600 font-bold"
           >
-            Stakers
+            Operators
           </Link>
         </div>
       </div>
@@ -78,7 +78,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
         ) : (
           <Pie
             data={{
-              labels: ['Developers', 'Bonders', 'Staking'],
+              labels: ['Developers', 'Bonders', 'Operators'],
               datasets: [
                 {
                   data: [split.developers, split.bonders, split.staking] || [
