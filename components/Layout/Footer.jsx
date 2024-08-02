@@ -40,6 +40,7 @@ const EXPLORE_LINKS = [
 ];
 
 const GET_INVOLVED_LINKS = [
+  { title: 'Get OLAS', link: '/olas-token' },
   { title: 'Contribute', link: '/contribute' },
   { title: 'Launch', link: '/launch' },
   { title: 'Build', link: '/build' },
