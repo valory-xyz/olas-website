@@ -78,7 +78,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
         ) : (
           <Pie
             data={{
-              labels: ['Developers', 'Bonders', 'Staking'],
+              labels: ['Developers', 'Bonders', 'Operators'],
               datasets: [
                 {
                   data: [split.developers, split.bonders, split.staking] || [
