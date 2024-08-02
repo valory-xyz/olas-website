@@ -20,7 +20,7 @@ const GET_INVOLVED_DATA = [
     imageHeight: 172,
     title: 'Get OLAS, use it across the network',
     ctaText: 'Get OLAS',
-    href: '/olas-token#get-olas',
+    href: '/olas-token',
   },
   {
     id: 3,
