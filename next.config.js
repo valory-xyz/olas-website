@@ -33,11 +33,6 @@ module.exports = {
         destination: '/agent-economies/predict',
         permanent: true,
       },
-      {
-        source: '/contribute',
-        destination: '/services/contribute',
-        permanent: true,
-      },
     ];
   },
   async headers() {
