@@ -9,7 +9,6 @@ import {
   Filler,
   Tooltip,
 } from 'chart.js';
-
 import {
   getEmissionsChartOptions,
   EMISSIONS_CHART_COLORS,
@@ -19,12 +18,12 @@ import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const EmissionsToDevs = ({ emissions, loading }) => {
-  const devIncentivesPoints = emissions.map(
-    (item) => item.devIncentivesTotalTopUp || 0,
+export const EmissionsToOperators = ({ emissions, loading }) => {
+  const availableStakingIncentivesPoints = emissions.map(
+    (item) => item.availableStakingIncentives || 0,
   );
-  const availableDevIncentivesPoints = emissions.map(
-    (item) => item.availableDevIncentives || 0,
+  const totalStakingIncentivesPoints = emissions.map(
+    (item) => item.totalStakingIncentives || 0,
   );
 
   return (
@@ -32,18 +31,18 @@ export const EmissionsToDevs = ({ emissions, loading }) => {
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
         Actual emissions per epoch
       </h2>
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem
           color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Dev rewards available for claiming"
+          label="Available staking emissions"
         />
         <LegendItem
-          color={EMISSIONS_CHART_COLORS.devRewards.legend}
-          label="Dev rewards claimed"
+          color={EMISSIONS_CHART_COLORS.operators.legend}
+          label="OLAS emitted to staking contracts"
         />
       </div>
       <div className="flex flex-col flex-auto gap-8">
-        <div className="flex-auto">
+        <div className="flex-auto h-72">
           {loading ? (
             <div className="text-center">Loading...</div>
           ) : (
@@ -52,23 +51,25 @@ export const EmissionsToDevs = ({ emissions, loading }) => {
                 labels: emissions.map((item) => item.counter),
                 datasets: [
                   {
-                    label: 'Available incentives',
-                    data: availableDevIncentivesPoints,
+                    label: 'Available emissions',
+                    data: availableStakingIncentivesPoints,
+                    order: 1,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
                     borderColor: EMISSIONS_CHART_COLORS.available.line,
                   },
                   {
-                    label: 'Emitted incentives',
-                    data: devIncentivesPoints,
-                    pointBackgroundColor:
-                      EMISSIONS_CHART_COLORS.devRewards.line,
-                    borderColor: EMISSIONS_CHART_COLORS.devRewards.line,
+                    label: 'Staking incentives',
+                    data: totalStakingIncentivesPoints,
+                    order: 2,
+                    pointBackgroundColor: EMISSIONS_CHART_COLORS.operators.line,
+                    borderColor: EMISSIONS_CHART_COLORS.operators.line,
                   },
                 ],
               }}
               options={getEmissionsChartOptions([
-                ...devIncentivesPoints,
-                ...availableDevIncentivesPoints,
+                ...availableStakingIncentivesPoints,
+                ...availableStakingIncentivesPoints,
+                10 ** 18, // Add this temporarily while we don't have data on staking
               ])}
             />
           )}
@@ -78,7 +79,7 @@ export const EmissionsToDevs = ({ emissions, loading }) => {
   );
 };
 
-EmissionsToDevs.propTypes = {
+EmissionsToOperators.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,
   loading: PropTypes.bool.isRequired,
 };

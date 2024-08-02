@@ -15,6 +15,7 @@ import { EmissionScheduleChart } from './EmissionScheduleChart';
 import { EmissionsToDevs } from './EmissionsToDevs';
 import { EmissionsToBonders } from './EmissionsToBonders';
 import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
+import { EmissionsToOperators } from './EmissionsToOperators';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -103,7 +104,12 @@ const Supply = () => {
         const emissionsData = await tokenomicsGraphClient.request(
           emissionsQuery,
         );
-        setEmissions(emissionsData.epoches);
+        setEmissions(
+          // Filter out the current epoch, because it may contain incorrect data
+          emissionsData.epoches.filter(
+            (epochEmissions) => epochEmissions.counter !== Number(newEpoch),
+          ),
+        );
 
         setLoading(false);
       } catch (error) {
@@ -170,6 +176,13 @@ const Supply = () => {
               <h2 className="text-xl mb-2 font-bold">Emissions to Bonders</h2>
             </div>
             <EmissionsToBonders emissions={emissions} loading={loading} />
+          </div>
+
+          <div className="flex flex-col border rounded-lg">
+            <div className="p-4 border-b">
+              <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
+            </div>
+            <EmissionsToOperators emissions={emissions} loading={loading} />
           </div>
         </div>
 
