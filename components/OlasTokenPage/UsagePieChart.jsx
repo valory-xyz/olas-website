@@ -38,7 +38,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link href="/build" className="text-cyan-500 font-bold">
             Developers
@@ -50,7 +50,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link href="/bond" className="text-purple-600 font-bold">
             Bonders
@@ -62,7 +62,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             %
           </span>
           {' '}
-          of new tokens go to
+          of the new tokens are earmarked for
           {' '}
           <Link
             href="https://staking.olas.network/"
