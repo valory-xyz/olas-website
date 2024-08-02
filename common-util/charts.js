@@ -17,6 +17,10 @@ export const EMISSIONS_CHART_COLORS = {
     legend: "bg-purple-500",
     line: "#A855F7",
   },
+  operators: {
+    legend: "bg-amber-400",
+    line: "#FFB347",
+  },
 };
 
 const MAX_MARGIN = 1.2;

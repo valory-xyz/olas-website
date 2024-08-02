@@ -14,6 +14,7 @@ import {
   EMISSIONS_CHART_COLORS,
 } from 'common-util/charts';
 import { LegendItem } from './LegendItem';
+import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
@@ -36,7 +37,7 @@ export const EmissionsToBonders = ({ emissions, loading }) => {
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem
           color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Available bonding emissions"
+          label="OLAS available for bonding programmes via DAO vote"
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.products.legend}
@@ -93,14 +94,6 @@ export const EmissionsToBonders = ({ emissions, loading }) => {
 };
 
 EmissionsToBonders.propTypes = {
-  emissions: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    counter: PropTypes.number,
-    availableDevIncentives: PropTypes.string,
-    devIncentivesTotalTopUp: PropTypes.string,
-    effectiveBond: PropTypes.string,
-    totalCreateProductsSupply: PropTypes.string,
-    totalCreateBondsAmountOLAS: PropTypes.string,
-  })).isRequired,
+  emissions: PropTypes.arrayOf(emissionType).isRequired,
   loading: PropTypes.bool.isRequired,
 };

@@ -10,6 +10,8 @@ export const emissionsQuery = gql`
       effectiveBond
       totalCreateProductsSupply
       totalCreateBondsAmountOLAS
+      availableStakingIncentives
+      totalStakingIncentives
     }
   }
 `;
