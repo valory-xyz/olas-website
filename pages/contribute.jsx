@@ -1,10 +1,9 @@
-import PageWrapper from 'components/Layout/PageWrapper';
-import Meta from 'components/Meta';
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 import {
   MAIN_TITLE_CLASS,
   TEXT_SMALL_CLASS,
@@ -136,13 +135,21 @@ const HowItWorks = () => (
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>
           How it works
         </h2>
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-6">
           {howItWorksList.map((list, index) => (
             <div
               key={index}
               className="flex w-full rounded-lg border border-purple-200"
             >
-              <p className="flex items-center text-5xl font-bold text-purple-500 p-4 border-x border-l-0 border-purple-200">
+              <p
+                className="flex items-center text-5xl font-bold text-purple-500 p-4 border-x border-l-0 border-purple-200 rounded-l-lg"
+                style={{
+                  background: 'linear-gradient(180deg, #FFF 0%, #FAF0FF 100%)',
+                  // color: 'white',
+                  /* eslint-disable-next-line max-len */
+                  // textShadow: '-1px -1px 0 #a855f7, 1px -1px 0 #a855f7, -1px 1px 0 #a855f7, 1px 1px 0 #a855f7',
+                }}
+              >
                 {index + 1}
               </p>
               <div className="flex flex-col gap-2 p-4 ">
@@ -204,7 +211,7 @@ const GetStarted = () => (
               '_blank',
             )}
           >
-            Get the Coordination Kit
+            Get the CoordinationKit
           </Button>
         </div>
       </div>
