@@ -26,12 +26,10 @@ const HeroImage = () => (
 
 const Hero = () => (
   <SectionWrapper customClasses={`border-b ${SECTION_BOX_CLASS}`}>
-    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top  xl:gap-0 ">
-      <div className="md:mb-12 lg:col-span-6 lg:text-left">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
-          CONTRIBUTE
-        </div>
-        <h2 className={`mb-6 ${MAIN_TITLE_CLASS}`}>
+    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
+      <div className="md:mb-12 lg:col-span-6">
+        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>CONTRIBUTE</div>
+        <h2 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
           Track community impact, transform your network
         </h2>
         <div className="md:hidden mb-8">
@@ -41,12 +39,7 @@ const Hero = () => (
           Leverage autonomous services to track and enhance the influence of
           your community.
         </div>
-        <Button
-          variant="default"
-          size="xl"
-          asChild
-          className="mt-6 w-full md:w-auto"
-        >
+        <Button variant="default" size="xl" className="mt-6 w-full md:w-auto">
           <Link href="/contribute#what-is-olas-contribute-service">
             Learn how
           </Link>
@@ -67,8 +60,8 @@ const WhatIsOlasContributeService = () => (
     customClasses="lg:p-24 px-4 py-12"
     id="what-is-olas-contribute-service"
   >
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
-      <div className="pr-0 lg:col-span-6 lg:pr-20 mb-12">
+    <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
+      <div className="pr-0 mb-12 lg:col-span-6 lg:pr-20">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
           What is the Olas Contribute Service?
         </h2>
@@ -127,11 +120,11 @@ const howItWorksList = [
 ];
 const HowItWorks = () => (
   <SectionWrapper
-    customClasses="lg:px-24 lg:py-0 px-4 py-12"
+    customClasses="px-4 py-12 lg:px-24 lg:py-0"
     id="what-is-olas-contribute-service"
   >
-    <div className="grid max-w-screen-md items-start m-auto">
-      <div className="pr-0 lg:col-span-6 lg:pr-12 mb-12">
+    <div className="max-w-screen-md items-start m-auto">
+      <div className="pr-0 lg:pr-12 mb-12">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>
           How it works
         </h2>
@@ -139,10 +132,10 @@ const HowItWorks = () => (
           {howItWorksList.map((list, index) => (
             <div
               key={index}
-              className="flex w-full rounded-lg border border-purple-200"
+              className="flex rounded-lg border border-purple-200"
             >
               <p
-                className="flex items-center text-5xl font-bold text-purple-500 p-4 border-x border-l-0 border-purple-200 rounded-l-lg"
+                className="flex items-center text-5xl p-4  font-bold text-purple-500 border-x border-l-0 border-purple-200 rounded-l-lg"
                 style={{
                   background: 'linear-gradient(180deg, #FFF 0%, #FAF0FF 100%)',
                   // color: 'white',
@@ -152,7 +145,8 @@ const HowItWorks = () => (
               >
                 {index + 1}
               </p>
-              <div className="flex flex-col gap-2 p-4 ">
+
+              <div className="flex flex-col gap-2 p-4">
                 {list.map((text, kIndex) => (
                   <p key={kIndex} className={TEXT_CLASS}>
                     {text}
@@ -172,8 +166,8 @@ const GetStarted = () => (
     customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
     id="what-is-olas-contribute-service"
   >
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
-      <div className="pr-0 lg:col-span-6 lg:pr-12 mb-12">
+    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
+      <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>
 
         <div className="flex flex-col gap-5">
