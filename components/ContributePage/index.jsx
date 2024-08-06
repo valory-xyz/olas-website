@@ -5,7 +5,7 @@ import NetworkRole from './NetworkRole';
 import Benefits from './Benefits';
 import Features from './Features';
 
-const Bonds = () => (
+const ContributePage = () => (
   <>
     <Hero />
     <Benefits />
@@ -16,4 +16,4 @@ const Bonds = () => (
   </>
 );
 
-export default Bonds;
+export default ContributePage;
