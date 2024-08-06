@@ -29,6 +29,8 @@ export const TEXT_MEDIUM_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
 
 export const TEXT_CLASS = 'text-base';
 
+export const TEXT_SMALL_CLASS = 'text-base text-slate-500 font-light';
+
 // card & box
 export const CARD_CLASS = 'bg-white rounded-lg shadow-md hover:shadow-lg flex flex-col justify-between';
 
