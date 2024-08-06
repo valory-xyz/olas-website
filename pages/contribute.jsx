@@ -48,7 +48,9 @@ const Hero = () => (
           asChild
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/contribute#what-is-olas-contribute-service">Learn how</Link>
+          <Link href="/contribute#what-is-olas-contribute-service">
+            Learn how
+          </Link>
         </Button>
       </div>
 
@@ -62,10 +64,15 @@ const Hero = () => (
 );
 
 const WhatIsOlasContributeService = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="what-is-olas-contribute-service">
+  <SectionWrapper
+    customClasses="lg:p-24 px-4 py-12"
+    id="what-is-olas-contribute-service"
+  >
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
       <div className="pr-0 lg:col-span-6 lg:pr-20 mb-12">
-        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>What is the Olas Contribute Service?</h2>
+        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
+          What is the Olas Contribute Service?
+        </h2>
 
         <div className="flex flex-col gap-5">
           <p className={TEXT_CLASS}>
@@ -90,7 +97,6 @@ const WhatIsOlasContributeService = () => (
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
-          className="mx-auto rounded-lg shadow-sm border"
           alt="OLAS Utility"
           src="/images/contribute-page/leaderboard.png"
           width={615}
@@ -101,9 +107,110 @@ const WhatIsOlasContributeService = () => (
   </SectionWrapper>
 );
 
-const HowItWorks = () => null;
+const howItWorksList = [
+  [
+    'Community members or users start by connecting their wallets and X account on the web app. ',
+  ],
+  [
+    'Upon completion, members are requested to publish an initial post on X that the agents recognize and begin tracking their contributions.',
+  ],
+  [
+    'As members continue to post, they accumulate points based on their tweets quality and relevance, which then influences their position on the community leaderboard.',
+  ],
+  [
+    'All community members can see their and other members’ contributions reflected on the leaderboard. As the members grow their points, they can mint their NFT badges that showcases their level of contributions. ',
+    'As they climb up the ladder, this NFT badge evolves. This not only gamifies the experience but also visually represents their growing influence within the community.',
+  ],
+  [
+    'Besides tracking posts on X, another feature of Contribute is the option to propose posts. Members with a certain amount of tokens can suggest new posts to be published on X, which are then subject to voting.',
+    'Approved posts are subsequently published, further engaging the community and promoting active participation.',
+  ],
+];
+const HowItWorks = () => (
+  <SectionWrapper
+    customClasses="lg:px-24 lg:py-0 px-4 py-12"
+    id="what-is-olas-contribute-service"
+  >
+    <div className="grid max-w-screen-md items-start m-auto">
+      <div className="pr-0 lg:col-span-6 lg:pr-12 mb-12">
+        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>
+          How it works
+        </h2>
+        <div className="flex flex-col items-center gap-8">
+          {howItWorksList.map((list, index) => (
+            <div
+              key={index}
+              className="flex w-full rounded-lg border border-purple-200"
+            >
+              <p className="flex items-center text-5xl font-bold text-purple-500 p-4 border-x border-l-0 border-purple-200">
+                {index + 1}
+              </p>
+              <div className="flex flex-col gap-2 p-4 ">
+                {list.map((text, kIndex) => (
+                  <p key={kIndex} className={TEXT_CLASS}>
+                    {text}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </SectionWrapper>
+);
 
-const GetStarted = () => null;
+const GetStarted = () => (
+  <SectionWrapper
+    customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
+    id="what-is-olas-contribute-service"
+  >
+    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
+      <div className="pr-0 lg:col-span-6 lg:pr-12 mb-12">
+        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>
+
+        <div className="flex flex-col gap-5">
+          <p className={TEXT_CLASS}>
+            You can use this powerful autonomous service to track and enhance
+            the contributions of your community members in your own ecosystem.
+            By leveraging the Coordination Kit, you can deploy a similar system
+            to measure impact of community contributions in your ecosystem.
+          </p>
+          <p className={TEXT_CLASS}>
+            The Coordination Kit includes all the necessary code you need to set
+            up this autonomous service within your ecosystem.
+          </p>
+          <p className={TEXT_CLASS}>
+            Simply fork the existing code, adjust it to align with your
+            parameters, and integrate it.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center lg:col-span-6">
+        <div className="relative h-[294px] w-[316px] ">
+          <Image
+            alt="OLAS Utility"
+            src="/images/contribute-page/cta-background.png"
+            width={316}
+            height={294}
+          />
+          <Button
+            variant="default"
+            size="lg"
+            className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
+            onClick={() => window.open(
+              'https://docs.autonolas.network/product/coordinationkit/',
+              '_blank',
+            )}
+          >
+            Get the Coordination Kit
+          </Button>
+        </div>
+      </div>
+    </div>
+  </SectionWrapper>
+);
 
 const ContributePage = () => (
   <PageWrapper>
