@@ -143,9 +143,6 @@ const HowItWorks = () => (
                 className="flex items-center text-5xl p-4  font-bold text-purple-500 border-x border-l-0 border-purple-200 rounded-l-lg"
                 style={{
                   background: 'linear-gradient(180deg, #FFF 0%, #FAF0FF 100%)',
-                  // color: 'white',
-                  /* eslint-disable-next-line max-len */
-                  // textShadow: '-1px -1px 0 #a855f7, 1px -1px 0 #a855f7, -1px 1px 0 #a855f7, 1px 1px 0 #a855f7',
                 }}
               >
                 {index + 1}
