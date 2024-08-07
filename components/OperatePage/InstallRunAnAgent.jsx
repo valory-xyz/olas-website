@@ -116,7 +116,9 @@ const DownloadLinks = () => {
       }, index) => (
         <Fragment key={id}>
           <Button
-            onClick={() => window.open(downloadLink, '_blank')}
+            onClick={
+              downloadLink ? () => window.open(downloadLink, '_blank') : null
+            }
             disabled={!downloadLink}
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
