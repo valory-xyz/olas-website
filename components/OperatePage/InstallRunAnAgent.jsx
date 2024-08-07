@@ -114,7 +114,8 @@ const DownloadLinks = () => {
         <Fragment key={id}>
           <Button
             onClick={
-              downloadLink ? () => window.open(downloadLink, '_blank') : null
+              downloadLink
+              // ? () => window.open(downloadLink, '_blank') : null
             }
             disabled={!downloadLink}
             variant={downloadLink ? 'default' : 'outline'}
