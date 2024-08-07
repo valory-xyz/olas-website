@@ -39,7 +39,12 @@ const Hero = () => (
           Leverage autonomous services to track and enhance the influence of
           your community.
         </div>
-        <Button variant="default" size="xl" className="mt-6 w-full md:w-auto">
+        <Button
+          asChild
+          variant="default"
+          size="xl"
+          className="mt-6 w-full md:w-auto"
+        >
           <Link href="/contribute#what-is-olas-contribute-service">
             Learn how
           </Link>
@@ -197,15 +202,18 @@ const GetStarted = () => (
             height={294}
           />
           <Button
+            asChild
             variant="default"
             size="lg"
             className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
-            onClick={() => window.open(
-              'https://docs.autonolas.network/product/coordinationkit/',
-              '_blank',
-            )}
           >
-            Get the CoordinationKit
+            <a
+              href="https://docs.autonolas.network/product/coordinationkit/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Get the CoordinationKit
+            </a>
           </Button>
         </div>
       </div>
