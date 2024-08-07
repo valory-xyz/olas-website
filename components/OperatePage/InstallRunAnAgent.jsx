@@ -31,7 +31,7 @@ const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
     btnText: 'Download for Apple Silicon - Alpha',
-    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc105/Pearl-0.1.0-rc105-darwin-x64.dmg',
+    downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
@@ -43,7 +43,7 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
-    downloadLink: 'https://github.com/valory-xyz/olas-operate-app/releases/download/v0.1.0-rc105/Pearl-0.1.0-rc105-darwin-x64.dmg',
+    downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-apple.svg"
@@ -92,8 +92,11 @@ const DownloadLinks = () => {
     getLatestRelease()
       .then((data) => {
         const assets = data?.assets || [];
+        const filteredAssets = assets.filter((asset) => !asset.name.startsWith('dev-'));
         const updatedLinks = links.map((link) => {
-          const assetLink = assets.find((asset) => asset.browser_download_url.includes(link.id));
+          const assetLink = filteredAssets.find(
+            (asset) => asset.browser_download_url.includes(link.id),
+          );
           return {
             ...link,
             downloadLink: assetLink ? assetLink.browser_download_url : null,
