@@ -89,7 +89,7 @@ const list = [
 ];
 const TurnYourIdeas = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12"
+    customClasses={SECTION_BOX_CLASS}
     id="turn-your-ideas-into-films"
   >
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
@@ -109,7 +109,7 @@ const TurnYourIdeas = () => (
         </div>
       </div>
 
-      <div className="lg:mt-0 lg:col-span-6 lg:flex">
+      <div className="mt-4 lg:mt-0 lg:col-span-6 lg:flex">
         <Image
           alt="OLAS Utility"
           src="/images/shorts-page/turn-your-ideas.png"
@@ -122,7 +122,7 @@ const TurnYourIdeas = () => (
 );
 
 const Benefits = () => (
-  <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-4">
+  <div className="max-w-screen-xl px-6 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-4">
     <h2
       className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
     >
@@ -202,7 +202,7 @@ const getStartedList = [
 
 const GetStarted = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
+    customClasses={`${SECTION_BOX_CLASS} border-y border-t-0`}
     id="what-is-olas-contribute-service"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
@@ -210,7 +210,7 @@ const GetStarted = () => (
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>
 
         <div className="flex flex-col gap-5">
-          <ol className="list-decimal">
+          <ol className="list-decimal ml-4">
             {getStartedList.map(({ id, title, description }) => (
               <li key={id} className="mb-1">
                 {title}
