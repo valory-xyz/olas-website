@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   LightbulbIcon,
   FastForwardIcon,
@@ -19,6 +18,7 @@ import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
+import { SHORTS_URL } from 'common-util/constants';
 
 const HeroImage = () => (
   <Image
@@ -50,9 +50,9 @@ const Hero = () => (
           size="xl"
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/shorts#turn-your-ideas-into-films">
+          <a href={SHORTS_URL} rel="noopener noreferrer" target="_blank">
             Start creating now
-          </Link>
+          </a>
         </Button>
       </div>
 
@@ -158,7 +158,7 @@ const getStartedList = [
       <>
         <span className="font-bold">Visit</span>
         <a
-          href="https://shorts.wtf"
+          href={SHORTS_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-600"
@@ -235,11 +235,7 @@ const GetStarted = () => (
             size="lg"
             className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
           >
-            <a
-              href="https://shorts.wtf"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <a href={SHORTS_URL} rel="noopener noreferrer" target="_blank">
               Start creating now
             </a>
           </Button>
