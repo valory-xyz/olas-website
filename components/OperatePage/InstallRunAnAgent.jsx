@@ -92,8 +92,11 @@ const DownloadLinks = () => {
     getLatestRelease()
       .then((data) => {
         const assets = data?.assets || [];
+        const filteredAssets = assets.filter((asset) => !asset.name.startsWith('dev-'));
         const updatedLinks = links.map((link) => {
-          const assetLink = assets.find((asset) => asset.browser_download_url.includes(link.id));
+          const assetLink = filteredAssets.find(
+            (asset) => asset.browser_download_url.includes(link.id),
+          );
           return {
             ...link,
             downloadLink: assetLink ? assetLink.browser_download_url : null,
