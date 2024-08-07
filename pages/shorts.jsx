@@ -184,7 +184,7 @@ const getStartedList = [
     id: '3',
     title: <span className="font-bold">Enter your idea.</span>,
     description:
-      'Type in your film concept or inspiration—no detail needed, just a starting point',
+      'Type in your film concept or inspiration—no detail needed, just a starting point.',
   },
   {
     id: '4',
