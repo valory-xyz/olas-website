@@ -107,7 +107,7 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <div className="flex flex-col flex-wrap justify-center items-center gap-6 sm:flex-row lg:flex-nowrap lg:gap-8">
+    <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
         id, btnText, downloadLink, icon,
       }, index) => (
@@ -119,7 +119,7 @@ const DownloadLinks = () => {
             disabled={!downloadLink}
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
-            className="w-full md:w-auto"
+            className="w-full lg:w-auto lg:px-6"
           >
             <div className="flex items-start">
               {icon}
