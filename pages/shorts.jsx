@@ -5,7 +5,6 @@ import { ShortsPage } from 'components/ShortsPage';
 const Shorts = () => (
   <PageWrapper>
     <Meta pageTitle="Shorts" description="TODO" />
-
     <ShortsPage />
   </PageWrapper>
 );
