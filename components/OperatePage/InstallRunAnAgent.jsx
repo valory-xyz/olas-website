@@ -107,7 +107,7 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <div className="flex flex-col flex-wrap justify-center items-center gap-6 sm:flex-row lg:flex-nowrap lg:gap-8">
+    <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
         id, btnText, downloadLink, icon,
       }, index) => (
@@ -119,7 +119,7 @@ const DownloadLinks = () => {
             disabled={!downloadLink}
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
-            className="w-full md:w-auto"
+            className="w-full lg:w-auto lg:px-6"
           >
             <div className="flex items-start">
               {icon}
@@ -148,7 +148,7 @@ export const InstallRunAnAgent = () => (
     <div className="max-w-screen-xl px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-4 col-span-12 lg:gap-8">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
-          Install. Run an Agent. Earn OLAS. That’s It
+          Install. Run an Agent. Earn OLAS. That’s It.
         </h2>
         <InstallSteps />
         <DownloadLinks />
