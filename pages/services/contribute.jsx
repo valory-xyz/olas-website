@@ -220,7 +220,10 @@ const GetStarted = () => (
 
 const ContributePage = () => (
   <PageWrapper>
-    <Meta pageTitle="Olas Contribute" />
+    <Meta
+      pageTitle="Track Community Impact with Autonomous Services - Olas Contribute"
+      description="Enhance your network's influence with Olas Contribute. Leverage autonomous services to track, analyze, and amplify community contributions. Start now!"
+    />
     <Hero />
     <WhatIsOlasContributeService />
     <HowItWorks />
