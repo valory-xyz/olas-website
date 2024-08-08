@@ -92,14 +92,25 @@ const DownloadLinks = () => {
     getLatestRelease()
       .then((data) => {
         const assets = data?.assets || [];
-        const filteredAssets = assets.filter((asset) => !asset.name.startsWith('dev-'));
+        const prodAssets = assets.filter(
+          (asset) => !asset.name.startsWith('dev-'),
+        );
         const updatedLinks = links.map((link) => {
-          const assetLink = filteredAssets.find(
-            (asset) => asset.browser_download_url.includes(link.id),
-          );
+          /* eslint-disable-next-line max-len */
+          const assetLink = prodAssets.find((asset) => asset.browser_download_url.includes(link.id));
+
+          const getAssetLink = () => {
+            if (!assetLink?.browser_download_url) return null;
+
+            // disable download for intel temporarily
+            if (assetLink.browser_download_url.includes('darwin-x64.dmg')) return null;
+
+            return assetLink.browser_download_url;
+          };
+
           return {
             ...link,
-            downloadLink: assetLink ? assetLink.browser_download_url : null,
+            downloadLink: getAssetLink(),
           };
         });
         setLinks(updatedLinks);
