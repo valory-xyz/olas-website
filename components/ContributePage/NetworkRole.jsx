@@ -9,14 +9,15 @@ function NetworkRole() {
       <Image
         className="mx-auto mb-24"
         alt="Olas Contribute Network Role"
-        src="/images/contribute-page/network-role.svg"
+        src="/images/services/contribute/network-role.svg"
         width="1076"
         height="474"
       />
       <div className="text-2xl font-light text-gray-600 leading-relaxed mb-4 max-w-screen-md mx-auto">
-        Olas Contribute is designed to assist the network by marketing important information
-        to relevant stakeholders. These stakeholders could be Bonders, Supply-side Devs or
-        Demand-side Devs. Contribute may evolve beyond a pure marketing function in the future.
+        Olas Contribute is designed to assist the network by marketing important
+        information to relevant stakeholders. These stakeholders could be
+        Bonders, Supply-side Devs or Demand-side Devs. Contribute may evolve
+        beyond a pure marketing function in the future.
       </div>
     </SectionWrapper>
   );
