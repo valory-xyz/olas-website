@@ -42,7 +42,7 @@ const downloadLinks = [
   },
   {
     id: 'darwin-x64.dmg',
-    btnText: 'Download for MacOS Intel - Alpha',
+    btnText: 'Download for MacOS Intel (Undergoing Maintenance)',
     downloadLink: null,
     icon: (
       <Image
