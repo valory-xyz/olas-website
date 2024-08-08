@@ -5,7 +5,12 @@ import { Octokit } from '@octokit/core';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
+import {
+  FOOT_NOTE_CLASS,
+  SECTION_BOX_CLASS,
+  SUB_HEADER_CLASS,
+  TEXT_CLASS,
+} from './utils';
 
 const installSteps = [
   { title: 'Install Pearl.' },
@@ -43,6 +48,7 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
+    subText: '* Undergoing Maintenance',
     downloadLink: null,
     icon: (
       <Image
@@ -54,7 +60,8 @@ const downloadLinks = [
   },
   {
     id: 'windows',
-    btnText: 'Windows is coming soon',
+    btnText: 'Download for Windows - Alpha',
+    subText: '* Coming soon',
     downloadLink: null,
     icon: (
       <Image
@@ -92,14 +99,25 @@ const DownloadLinks = () => {
     getLatestRelease()
       .then((data) => {
         const assets = data?.assets || [];
-        const filteredAssets = assets.filter((asset) => !asset.name.startsWith('dev-'));
+        const prodAssets = assets.filter(
+          (asset) => !asset.name.startsWith('dev-'),
+        );
         const updatedLinks = links.map((link) => {
-          const assetLink = filteredAssets.find(
-            (asset) => asset.browser_download_url.includes(link.id),
-          );
+          /* eslint-disable-next-line max-len */
+          const assetLink = prodAssets.find((asset) => asset.browser_download_url.includes(link.id));
+
+          const getAssetLink = () => {
+            if (!assetLink?.browser_download_url) return null;
+
+            // disable download for intel temporarily
+            if (assetLink.browser_download_url.includes('darwin-x64.dmg')) return null;
+
+            return assetLink.browser_download_url;
+          };
+
           return {
             ...link,
-            downloadLink: assetLink ? assetLink.browser_download_url : null,
+            downloadLink: getAssetLink(),
           };
         });
         setLinks(updatedLinks);
@@ -112,24 +130,28 @@ const DownloadLinks = () => {
   return (
     <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
-        id, btnText, downloadLink, icon,
+        id, btnText, downloadLink, icon, subText,
       }, index) => (
         <Fragment key={id}>
-          <Button
-            onClick={
-              downloadLink ? () => window.open(downloadLink, '_blank') : null
-            }
-            disabled={!downloadLink}
-            variant={downloadLink ? 'default' : 'outline'}
-            size="xl"
-            className="w-full lg:w-auto lg:px-6"
-          >
-            <div className="flex items-start">
-              {icon}
-              &nbsp;&nbsp;
-              {btnText}
-            </div>
-          </Button>
+          <div className="flex flex-col align-top text-center md:text-left h-[80px]">
+            <Button
+              onClick={
+                downloadLink ? () => window.open(downloadLink, '_blank') : null
+              }
+              disabled={!downloadLink}
+              variant={downloadLink ? 'default' : 'outline'}
+              size="xl"
+              className="w-full lg:w-auto lg:px-6"
+            >
+              <div className="flex items-start">
+                {icon}
+                &nbsp;&nbsp;
+                {btnText}
+              </div>
+            </Button>
+
+            <div className={`${FOOT_NOTE_CLASS}`}>{subText}</div>
+          </div>
 
           {index !== downloadLinks.length - 1 ? (
             <div className="font-bold text-lg text-purple-200 hidden md:block">

@@ -247,7 +247,10 @@ const GetStarted = () => (
 
 const Shorts = () => (
   <PageWrapper>
-    <Meta pageTitle="Shorts" description="TODO" />
+    <Meta
+      pageTitle="Create AI Agent-Generated Short Films in 30 Minutes"
+      description="Turn your ideas into complete short films with Shorts.wtf. Get started now and have a high-quality AI agent-generated video ready in just 30 minutes!"
+    />
     <Hero />
     <TurnYourIdeas />
     <Benefits />
