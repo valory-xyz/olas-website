@@ -5,7 +5,12 @@ import { Octokit } from '@octokit/core';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
+import {
+  FOOT_NOTE_CLASS,
+  SECTION_BOX_CLASS,
+  SUB_HEADER_CLASS,
+  TEXT_CLASS,
+} from './utils';
 
 const installSteps = [
   { title: 'Install Pearl.' },
@@ -42,7 +47,8 @@ const downloadLinks = [
   },
   {
     id: 'darwin-x64.dmg',
-    btnText: 'Download for MacOS Intel (Undergoing Maintenance)',
+    btnText: 'Download for MacOS Intel - Alpha',
+    subText: '* Undergoing Maintenance',
     downloadLink: null,
     icon: (
       <Image
@@ -54,7 +60,8 @@ const downloadLinks = [
   },
   {
     id: 'windows',
-    btnText: 'Windows is coming soon',
+    btnText: 'Download for Windows - Alpha',
+    subText: '* Coming soon',
     downloadLink: null,
     icon: (
       <Image
@@ -123,24 +130,28 @@ const DownloadLinks = () => {
   return (
     <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
-        id, btnText, downloadLink, icon,
+        id, btnText, downloadLink, icon, subText,
       }, index) => (
         <Fragment key={id}>
-          <Button
-            onClick={
-              downloadLink ? () => window.open(downloadLink, '_blank') : null
-            }
-            disabled={!downloadLink}
-            variant={downloadLink ? 'default' : 'outline'}
-            size="xl"
-            className="w-full lg:w-auto lg:px-6"
-          >
-            <div className="flex items-start">
-              {icon}
-              &nbsp;&nbsp;
-              {btnText}
-            </div>
-          </Button>
+          <div className="flex flex-col align-top text-center md:text-left h-[80px]">
+            <Button
+              onClick={
+                downloadLink ? () => window.open(downloadLink, '_blank') : null
+              }
+              disabled={!downloadLink}
+              variant={downloadLink ? 'default' : 'outline'}
+              size="xl"
+              className="w-full lg:w-auto lg:px-6"
+            >
+              <div className="flex items-start">
+                {icon}
+                &nbsp;&nbsp;
+                {btnText}
+              </div>
+            </Button>
+
+            <div className={`${FOOT_NOTE_CLASS}`}>{subText}</div>
+          </div>
 
           {index !== downloadLinks.length - 1 ? (
             <div className="font-bold text-lg text-purple-200 hidden md:block">
