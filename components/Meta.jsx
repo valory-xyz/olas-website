@@ -6,7 +6,7 @@ const SITE_DESCRIPTION = 'The unified network for off-chain services, e.g. autom
 const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 
-const Meta = ({ pageTitle, siteImageUrl }) => {
+const Meta = ({ pageTitle, description, siteImageUrl }) => {
   const title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
 
   return (
@@ -14,17 +14,14 @@ const Meta = ({ pageTitle, siteImageUrl }) => {
       <title>{title}</title>
 
       <meta name="title" content={title} />
-      <meta
-        name="description"
-        content={SITE_DESCRIPTION}
-      />
+      <meta name="description" content={description || SITE_DESCRIPTION} />
 
       <meta property="og:type" content="website" />
       <meta property="og:url" content={SITE_URL} />
       <meta property="og:title" content={title} />
       <meta
         property="og:description"
-        content={SITE_DESCRIPTION}
+        content={description || SITE_DESCRIPTION}
       />
       <meta property="og:image" content={siteImageUrl} />
 
@@ -33,7 +30,7 @@ const Meta = ({ pageTitle, siteImageUrl }) => {
       <meta property="twitter:title" content={title} />
       <meta
         property="twitter:description"
-        content={SITE_DESCRIPTION}
+        content={description || SITE_DESCRIPTION}
       />
       <meta property="twitter:image" content={siteImageUrl} />
     </Head>
@@ -42,10 +39,12 @@ const Meta = ({ pageTitle, siteImageUrl }) => {
 
 Meta.propTypes = {
   pageTitle: PropTypes.string,
+  description: PropTypes.string,
   siteImageUrl: PropTypes.string,
 };
 Meta.defaultProps = {
   pageTitle: null,
+  description: SITE_DESCRIPTION,
   siteImageUrl: SITE_DEFAULT_IMAGE_URL,
 };
 export default Meta;
