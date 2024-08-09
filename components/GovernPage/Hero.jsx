@@ -36,7 +36,7 @@ export const Hero = () => (
 
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
-          src="/images/govern-page/hero.png"
+          src="/images/govern-page/hero.svg"
           alt="hero"
           width={464}
           height={432}
