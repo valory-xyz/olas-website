@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
-const SITE_TITLE = "Olas | Crypto's Ocean of Services";
-const SITE_DESCRIPTION = 'The unified network for off-chain services, e.g. automation, relayers and co-owned AI. Coordinated by OLAS, powered by autonomous agents.';
+const SITE_TITLE = 'Olas | Co-own AI';
+const SITE_DESCRIPTION = 'Olas enables everyone to own a share of AI, specifically autonomous agent economies.';
 const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 
