@@ -104,5 +104,12 @@
     "agentDescription": "Gaming simulation agent per predefined behaviors.",
     "background": "UNKJD is a Web3 gaming studio building a connected world of casual, free-to-play games.",
     "image": "/images/opportunities/unkjd.png"
+  },
+  {
+    "project": "Azuro",
+    "agentName": "Prediction Market Agent",
+    "agentDescription": "AI Agent that bets on various Azuro markets including sports betting and prediction markets.",
+    "background": "Azuro is the leading provider of tooling, oracle & liquidity solutions for sports betting and other prediction market apps.",
+    "image": "/images/opportunities/azuro.png"
   }
 ]
