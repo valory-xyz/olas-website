@@ -1,4 +1,4 @@
-import Govern from 'components/Govern';
+import { Govern } from 'components/GovernPage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
