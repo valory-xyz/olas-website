@@ -12,7 +12,7 @@ import SectionWrapper from '../Layout/SectionWrapper';
 import { UsagePieChart } from './UsagePieChart';
 import { SupplyPieChart } from './SupplyPieChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
-import { EmissionsToDevs } from './EmissionsToDevs';
+import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToBonders } from './EmissionsToBonders';
 import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { EmissionsToOperators } from './EmissionsToOperators';
@@ -164,11 +164,9 @@ const Supply = () => {
 
           <div className="flex flex-col border rounded-lg">
             <div className="p-4 border-b">
-              <h2 className="text-xl mb-2 font-bold">
-                Emissions to Developers
-              </h2>
+              <h2 className="text-xl mb-2 font-bold">Emissions to Builders</h2>
             </div>
-            <EmissionsToDevs emissions={emissions} loading={loading} />
+            <EmissionsToBuilders emissions={emissions} loading={loading} />
           </div>
 
           <div className="flex flex-col border rounded-lg">

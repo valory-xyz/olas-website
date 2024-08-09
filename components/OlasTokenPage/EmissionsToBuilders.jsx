@@ -19,7 +19,7 @@ import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const EmissionsToDevs = ({ emissions, loading }) => {
+export const EmissionsToBuilders = ({ emissions, loading }) => {
   const devIncentivesPoints = emissions.map(
     (item) => item.devIncentivesTotalTopUp || 0,
   );
@@ -78,7 +78,7 @@ export const EmissionsToDevs = ({ emissions, loading }) => {
   );
 };
 
-EmissionsToDevs.propTypes = {
+EmissionsToBuilders.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,
   loading: PropTypes.bool.isRequired,
 };
