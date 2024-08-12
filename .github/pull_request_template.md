@@ -10,4 +10,4 @@
 
 <!-- Please check if the PR fulfills these requirements -->
 
-- [ ] I confirm I have updated the meta title and description for the page
+- [ ] I confirm I have updated the meta title and description for the page, if applicable.
