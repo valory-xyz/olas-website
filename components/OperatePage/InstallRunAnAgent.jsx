@@ -123,7 +123,7 @@ const DownloadLinks = () => {
         id, btnText, downloadLink, icon, subText,
       }) => (
         <Fragment key={id}>
-          <div className="flex flex-col gap-2 align-top text-center md:text-left md:gap-2">
+          <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
             <Button
               onClick={
                 downloadLink ? () => window.open(downloadLink, '_blank') : null
