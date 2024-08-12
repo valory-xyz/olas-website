@@ -9,7 +9,9 @@ const apiCall = async (subURL, params) => {
   const stringifyParams = qs.stringify(params);
 
   try {
-    const response = await fetch(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`);
+    const url = `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
+    console.log(url);
+    const response = await fetch(url);
     const json = await response.json();
     return json;
   } catch (error) {
@@ -75,6 +77,18 @@ export const getBlog = async (id) => {
   const slugParams = { ...params, 'filters[slug][$eq]': id };
   const json = await apiCall('blog-posts', slugParams);
   return get(json, 'data[0]') || null;
+};
+
+// ----------- VIDEOS -----------
+export const getVideos = async () => {
+  const params = {
+    sort: ['date:desc'],
+    populate: '*',
+    'pagination[limit]': 1000,
+  };
+  const json = await apiCall('videos', params);
+  const data = get(json, 'data') || [];
+  return data;
 };
 
 // ----------- FUNNELS -----------

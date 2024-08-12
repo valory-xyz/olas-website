@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import videos from 'data/videos.json';
 import Video from './Video';
 
-export const Videos = ({ limit }) => {
+export const Videos = ({ videos, limit }) => {
   const videosSortedByDate = useMemo(
     () => videos.sort((a, b) => new Date(b.date) - new Date(a.date)),
     [],
   );
+
+  console.log(videos);
 
   return (
     <section>
@@ -45,5 +46,13 @@ export const Videos = ({ limit }) => {
   );
 };
 
-Videos.propTypes = { limit: PropTypes.number };
-Videos.defaultProps = { limit: null };
+Videos.propTypes = {
+  // videos: PropTypes.array(),
+  limit: PropTypes.number,
+};
+Videos.defaultProps = {
+  //  videos: [],
+  limit: null,
+};
+
+export default Videos;
