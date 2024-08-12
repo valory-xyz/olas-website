@@ -26,7 +26,7 @@ const InstallSteps = () => (
   </ol>
 );
 
-const iconProps = { width: 16, height: 16 };
+const iconProps = { width: 24, height: 24 };
 const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
@@ -121,16 +121,16 @@ const DownloadLinks = () => {
     <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
         id, btnText, downloadLink, icon, subText,
-      }, index) => (
+      }) => (
         <Fragment key={id}>
-          <div className="flex flex-col align-top text-center md:text-left h-[80px]">
+          <div className="flex flex-col gap-2 align-top text-center md:text-left md:gap-2">
             <Button
               onClick={
                 downloadLink ? () => window.open(downloadLink, '_blank') : null
               }
               disabled={!downloadLink}
               variant={downloadLink ? 'default' : 'outline'}
-              size="lg"
+              size="xl"
               className="w-full lg:w-auto lg:px-6"
             >
               <div className="flex items-start">
@@ -142,12 +142,6 @@ const DownloadLinks = () => {
 
             <div className="text-xs text-slate-500">{subText}</div>
           </div>
-
-          {index !== downloadLinks.length - 1 ? (
-            <div className="font-bold text-lg text-purple-200 hidden md:block">
-              |
-            </div>
-          ) : null}
         </Fragment>
       ))}
     </div>
