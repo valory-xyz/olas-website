@@ -4,7 +4,7 @@ import Link from 'next/link';
 import videos from 'data/videos.json';
 import Video from './Video';
 
-const Videos = ({ limit }) => {
+export const Videos = ({ limit }) => {
   const videosSortedByDate = useMemo(
     () => videos.sort((a, b) => new Date(b.date) - new Date(a.date)),
     [],
@@ -47,5 +47,3 @@ const Videos = ({ limit }) => {
 
 Videos.propTypes = { limit: PropTypes.number };
 Videos.defaultProps = { limit: null };
-
-export default Videos;

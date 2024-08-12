@@ -1,5 +1,5 @@
+import { Videos } from 'components/Content/Videos';
 import Articles from 'components/Content/Articles';
-import Videos from 'components/Content/Videos';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const Media = () => (
