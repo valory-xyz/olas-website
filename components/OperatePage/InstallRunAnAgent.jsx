@@ -5,12 +5,7 @@ import { Octokit } from '@octokit/core';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import {
-  FOOT_NOTE_CLASS,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from './utils';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
 const installSteps = [
   { title: 'Install Pearl.' },
@@ -31,7 +26,7 @@ const InstallSteps = () => (
   </ol>
 );
 
-const iconProps = { width: 24, height: 24 };
+const iconProps = { width: 16, height: 16 };
 const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
@@ -135,7 +130,7 @@ const DownloadLinks = () => {
               }
               disabled={!downloadLink}
               variant={downloadLink ? 'default' : 'outline'}
-              size="xl"
+              size="lg"
               className="w-full lg:w-auto lg:px-6"
             >
               <div className="flex items-start">
@@ -145,7 +140,7 @@ const DownloadLinks = () => {
               </div>
             </Button>
 
-            <div className={`${FOOT_NOTE_CLASS}`}>{subText}</div>
+            <div className="text-xs text-slate-500">{subText}</div>
           </div>
 
           {index !== downloadLinks.length - 1 ? (

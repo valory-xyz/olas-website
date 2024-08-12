@@ -59,7 +59,7 @@ Button.displayName = 'Button';
 Button.propTypes = {
   asChild: PropTypes.bool,
   className: PropTypes.string,
-  size: PropTypes.string,
+  size: PropTypes.oneOf(['default', 'sm', 'lg', 'xl', 'icon']),
   variant: [
     'default',
     'destructive',
