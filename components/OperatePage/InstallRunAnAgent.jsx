@@ -48,7 +48,6 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
-    subText: '* Undergoing Maintenance',
     downloadLink: null,
     icon: (
       <Image
@@ -108,10 +107,6 @@ const DownloadLinks = () => {
 
           const getAssetLink = () => {
             if (!assetLink?.browser_download_url) return null;
-
-            // disable download for intel temporarily
-            if (assetLink.browser_download_url.includes('darwin-x64.dmg')) return null;
-
             return assetLink.browser_download_url;
           };
 
@@ -128,7 +123,7 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
+    <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
         id, btnText, downloadLink, icon, subText,
       }, index) => (
