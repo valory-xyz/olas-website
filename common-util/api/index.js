@@ -80,11 +80,11 @@ export const getBlog = async (id) => {
 };
 
 // ----------- VIDEOS -----------
-export const getVideos = async () => {
+export const getVideos = async (limit = 1000) => {
   const params = {
     sort: ['date:desc'],
     populate: '*',
-    'pagination[limit]': 1000,
+    'pagination[limit]': limit,
   };
   const json = await apiCall('videos', params);
   const data = get(json, 'data') || [];

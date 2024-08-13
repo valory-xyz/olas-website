@@ -5,7 +5,7 @@
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1fkuW6vCpRo96iXO2WgtB57cIuSq-WoiU/view?usp=drive_link",
     "platform_link": "https://www.youtube.com/watch?v=ucxwaJhBr20",
-    "imageFilename": "Chorus_One_Podcast.png"
+    "filename": "Chorus_One_Podcast.png"
   },
   {
     "date": "22-May-22",
@@ -13,14 +13,14 @@
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1h8dZ2E87On0Lg77Q1q4eIY3o8vSfOpHN/view?usp=drive_link",
     "platform_link": "https://www.youtube.com/watch?v=oNNXlizKnYM",
-    "imageFilename": "The_Crypto_Podcast.png"
+    "filename": "The_Crypto_Podcast.png"
   },
   {
     "date": "15-Jun-22",
     "title": "Initial Releases Screencast",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/18A0-dsfp6IxwZCTwhApa8e1yPLRh3SpG/view",
-    "imageFilename": "Initial_Releases_Live_Stream.png"
+    "filename": "Initial_Releases_Live_Stream.png"
   },
   {
     "date": "26-Jun-22",
@@ -28,49 +28,49 @@
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/12DmbNNrj1cZ2SZ9Ttwg4Gsc_PlU-WnR3/view?usp=drive_link",
     "platform_link": "https://www.youtube.com/watch?v=_m1jH-tCrOk",
-    "imageFilename": "Oaksprout_at_NFT_Berlin.png"
+    "filename": "Oaksprout_at_NFT_Berlin.png"
   },
   {
     "date": "27-Jul-22",
     "title": "El Collectooorr - Introduction Presentation",
     "platform": "YouTube - Autonolas",
     "platform_link": "https://www.youtube.com/watch?v=TFEmhM0XSQQ",
-    "imageFilename": "El_Collectoorr_The_Worlds_First.png"
+    "filename": "El_Collectoorr_The_Worlds_First.png"
   },
   {
     "date": "27-Jul-22",
     "title": "El Collectooorr - Demo",
     "platform": "YouTube - Autonolas",
     "platform_link": "https://www.youtube.com/watch?v=x-wP8r6pyeY",
-    "imageFilename": "El_Collectooorr_Demo.png"
+    "filename": "El_Collectooorr_Demo.png"
   },
   {
     "date": "28-Jul-22",
     "title": "Upgrade your DAO with Autonomous Services: An Intro to Autonolas",
     "platform": "YouTube - Autonolas",
     "platform_link": "https://www.youtube.com/watch?v=sWBy277MPIg",
-    "imageFilename": "Upgrade_Your_DAO.png"
+    "filename": "Upgrade_Your_DAO.png"
   },
   {
     "date": "2-Aug-22",
     "title": "Autonolas Protocol Launch Live Developer Chat and Demos Stream",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/1OOrYLwEpeMRgojNPF1i4NPFYM9LRxLV5/view",
-    "imageFilename": "Protocol_Launch.png"
+    "filename": "Protocol_Launch.png"
   },
   {
     "date": "15-Nov-22",
     "title": "Oaksprout the Tan (Autonolas) with Carlos Noe Saavedra (Fyre) and Luca Mossini (Avantgarde Finance) moderated by Lawrence Chiu (Trading Strategy): The Trends in Modern DAO Treasury Management",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/1rF1kKT9jtyKbfFh4xes17VDHtQMXRw-e/view",
-    "imageFilename": "Trends_in_Modern_DAO_Treasury_Management.png"
+    "filename": "Trends_in_Modern_DAO_Treasury_Management.png"
   },
   {
     "date": "8-Feb-23",
     "title": "David Galindo - Presentation at StarkNet",
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/1o0QaFRz9JkaQ3naPRPReze31o-U_dWle/view",
-    "imageFilename": "Fill_the_Gap_in_your_Web3_stack.png"
+    "filename": "Fill_the_Gap_in_your_Web3_stack.png"
   },
   {
     "date": "4-Mar-23",
@@ -78,7 +78,7 @@
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/1J3wZnzp8OhIF7QaiJI84HNRppriRRvqR/view",
     "platform_link": "https://www.youtube.com/watch?v=bmBnv2g-mR8",
-    "imageFilename": "Co-Owned_AI_and_Why_Daos.png"
+    "filename": "Co-Owned_AI_and_Why_Daos.png"
   },
   {
     "date": "25-Apr-23",
@@ -86,14 +86,14 @@
     "platform": "Google Drive",
     "drive_link": "https://drive.google.com/file/d/160P6eOatZ1_HzMU0J301jpHlZaapEFKh/view",
     "platform_link": "https://www.youtube.com/watch?v=bzSjPTF-6G4",
-    "imageFilename": "Decentralized_Off_Chain_Backends.png"
+    "filename": "Decentralized_Off_Chain_Backends.png"
   },
   {
     "date": "30-May-23",
     "title": "David Minarsch at Crypto x AI Standards: Mini Conference - Full Talk",
     "platform": "YouTube - Valory",
     "platform_link": "https://www.youtube.com/watch?v=4pXC_ZDwMko",
-    "imageFilename": "dm-cryptoxAIstandards.png"
+    "filename": "dm-cryptoxAIstandards.png"
   },
   {
     "date": "7-Jun-23",
@@ -101,48 +101,48 @@
     "platform": "YouTube",
     "drive_link": "https://drive.google.com/file/d/1EEZ6Cv0CPNifG8X1S51-iI68ouzPmYMW/view?usp=drive_link",
     "platform_link": "https://www.youtube.com/watch?v=oznC6JXb7EQ",
-    "imageFilename": "the fett.png"
+    "filename": "the fett.png"
   },
   {
     "date": "7-Sep-23",
     "title": "Proof of Coverage: A chat with David Minarsch",
     "platform": "Spotify",
     "platform_link": "https://podcasters.spotify.com/pod/show/proof-of-coverage/episodes/Episode-8---David-Minarsch--Founder-and-CEO-of-Autonolas-Network-Olas-e291oe9",
-    "imageFilename": "proof_of_coverage.png"
+    "filename": "proof_of_coverage.png"
   },
   {
     "date": "1-Dec-23",
     "title": "In Plain Text: AI Agents with David Minarsch",
     "platform": "Spotify",
     "platform_link": "https://open.spotify.com/episode/6ZyQhtncai4aho8491MFQE",
-    "imageFilename": "plaintext.png"
+    "filename": "plaintext.png"
   },
   {
     "date": "1-May-23",
     "title": "DAO talk: David @valory DT Interview #38",
     "platform": "Spotify",
     "platform_link": "https://open.spotify.com/episode/3OKbcO8Tyzs1EjfGMaou3o?si=4llwPJlYTP-JA4t8pdgkrQ&nd=1",
-    "imageFilename": "dao_talk.png"
+    "filename": "dao_talk.png"
   },
   {
     "date": "13-Sep-23",
     "title": "DappCon: Decentralized Autonomous Agents and Co-owned AI",
     "platform": "YouTube",
     "platform_link": "https://www.youtube.com/watch?v=jtYCkV1LjiU&t=23257s",
-    "imageFilename": "dappcon.png"
+    "filename": "dappcon.png"
   },
   {
     "date": "23-Nov-23",
     "title": "Gnosis AI call",
     "platform": "YouTube",
     "platform_link": "https://www.youtube.com/watch?v=Iw5QLCZiXlQ&t=155s",
-    "imageFilename": "gnosisAI.png"
+    "filename": "gnosisAI.png"
   },
   {
     "date": "27-Jan-24",
     "title": "David Minarsch: Autonolas - Autonomous AI Agents",
     "platform": "Spotify",
     "platform_link": "https://open.spotify.com/episode/11iywoxEydmel2iwojBjIN",
-    "imageFilename": "david-minarsch-on-epicenter.png"
+    "filename": "david-minarsch-on-epicenter.png"
   }
 ]
