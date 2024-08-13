@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-console */
 import qs from 'qs';
 import get from 'lodash/get';
@@ -78,42 +77,6 @@ export const getBlog = async (id) => {
   const slugParams = { ...params, 'filters[slug][$eq]': id };
   const json = await apiCall('blog-posts', slugParams);
   return get(json, 'data[0]') || null;
-};
-
-// ----------- VIDEOS -----------
-export const getVideos = async (limit = 1000) => {
-  try {
-    const params = {
-      sort: ['date:desc'],
-      populate: '*',
-      'pagination[limit]': limit,
-    };
-    const json = await apiCall('videos', params);
-    const videos = get(json, 'data') || [];
-
-    return videos.map((video) => {
-      const id = get(video, 'id');
-      const attributes = get(video, 'attributes');
-      const {
-        title, date, platform_link, drive_link, platform, filename,
-      } = attributes || {};
-      const imageFilename = `${process.env.NEXT_PUBLIC_API_URL}${get(filename, 'data[0].attributes.url') || ''}`;
-
-      return {
-        id,
-        title,
-        date,
-        platform_link,
-        drive_link,
-        platform,
-        imageFilename,
-      };
-    });
-  } catch (error) {
-    console.error(error);
-  }
-
-  return null;
 };
 
 // ----------- FUNNELS -----------

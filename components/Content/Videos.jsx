@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
+import { Spinner } from 'components/Spinner';
 import { VideoPropTypes } from 'common-util/propTypes';
 import { Video } from './Video';
 
-export const Videos = ({ videos, limit }) => (
+export const Videos = ({ isLoading, videos, limit }) => (
   <section>
     <div>
       <div>
@@ -25,8 +26,8 @@ export const Videos = ({ videos, limit }) => (
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        {videos.map((video) => (
-          <div key={video.platform_link}>
+        {isLoading ? <Spinner /> : videos.map((video) => (
+          <div key={video.id}>
             <Video video={video} />
           </div>
         ))}
@@ -36,13 +37,14 @@ export const Videos = ({ videos, limit }) => (
 );
 
 Videos.propTypes = {
+  isLoading: PropTypes.bool,
   videos: PropTypes.arrayOf(VideoPropTypes),
   limit: PropTypes.number,
 };
 
 Videos.defaultProps = {
+  isLoading: true,
   videos: [],
   limit: null,
 };
-
 export default Videos;

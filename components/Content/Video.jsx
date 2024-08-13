@@ -13,7 +13,7 @@ export const Video = ({ video }) => (
     <article className={`${CARD_CLASS} max-w-full min-h-[300px] `}>
       {video.imageFilename && (
         <Image
-          src={`/images/videos/${video.filename}`}
+          src={`/images/videos/${video.imageFilename}`}
           alt={video.title}
           width="750"
           height="200"
