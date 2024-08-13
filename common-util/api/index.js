@@ -10,7 +10,6 @@ const apiCall = async (subURL, params) => {
 
   try {
     const url = `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
-    console.log(url);
     const response = await fetch(url);
     const json = await response.json();
     return json;

@@ -6,15 +6,20 @@ import get from 'lodash/get';
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const useFetch = (subUrl, params) => {
+  const stringifyParams = qs.stringify(params);
+  const url = `${API_URL}/${subUrl}${params ? '?' : ''}${stringifyParams}`;
+  const { data, isLoading } = useSWR(url, fetcher);
+  return { data, isLoading };
+};
+
 export const useFetchVideos = (limit = 1000) => {
   const params = {
     sort: ['date:desc'],
     populate: '*',
     'pagination[limit]': limit,
   };
-  const stringifyParams = qs.stringify(params);
-  const url = `${API_URL}/videos${params ? '?' : ''}${stringifyParams}`;
-  const { data, isLoading } = useSWR(url, fetcher);
+  const { data, isLoading } = useFetch('videos', params);
   const rawVideos = get(data, 'data') || [];
 
   const videos = rawVideos.map((video) => {

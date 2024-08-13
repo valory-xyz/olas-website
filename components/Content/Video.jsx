@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import Image from 'next/image';
 
 import { CARD_CLASS } from 'common-util/classes';
@@ -33,5 +32,5 @@ export const Video = ({ video }) => (
 );
 
 Video.propTypes = {
-  video: PropTypes.shape(VideoPropTypes).isRequired,
+  video: VideoPropTypes.isRequired,
 };
