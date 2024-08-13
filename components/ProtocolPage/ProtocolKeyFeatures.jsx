@@ -68,7 +68,7 @@ export const ProtocolKeyFeatures = () => (
           agent systems
         </Link>
         {' '}
-        on public blockchains. It provides a mechanism to one , incentivise
+        on public blockchains. It provides a mechanism to one, incentivise
         developers proportionally to their contributions, two, incentivise
         operators to run agent systems, and three, incentivise bonders to
         provide liquidity, collectively supporting the growth of a decentralised

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -16,10 +17,10 @@ const PageWrapper = ({ children }) => (
           height="48"
           className="mr-2"
         />
-        NEW Olas Pearl: A simple desktop app for running an agent and staking
-        OLAS.
-        <Link href="/operate" className="underline ml-2">
-          Learn more
+
+        <Link href="/operate" className="hover:underline ml-2">
+          Earn OLAS by running your own autonomous AI agent
+          <ChevronRight className="ml-2 inline" size={20} />
         </Link>
       </h2>
     </div>
