@@ -25,13 +25,16 @@ export const Videos = ({ isLoading, videos, limit }) => (
         )}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {isLoading ? <Spinner /> : videos.map((video) => (
-          <div key={video.id}>
-            <Video video={video} />
-          </div>
-        ))}
-      </div>
+      {isLoading ? <Spinner customClass="h-auto py-20" /> : (
+        <div className="grid gap-8 lg:grid-cols-3 ">
+          {videos.map((video) => (
+            <div key={video.id}>
+              <Video video={video} />
+            </div>
+          ))}
+        </div>
+      )}
+
     </div>
   </section>
 );
