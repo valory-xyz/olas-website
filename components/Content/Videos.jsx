@@ -1,14 +1,32 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { isNaN } from 'lodash';
+
 import videos from 'data/videos.json';
 import Video from './Video';
 
 const Videos = ({ limit }) => {
-  const videosSortedByDate = useMemo(
-    () => videos.sort((a, b) => new Date(b.date) - new Date(a.date)),
-    [],
-  );
+  const videosSortedByDate = useMemo(() => {
+    const sortedVideos = [...videos];
+
+    function isDate(date) {
+      // Check if the input is a valid date string or object
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime());
+    }
+
+    // Separate valid dates and non-dates
+    const validDates = sortedVideos.filter((video) => isDate(new Date(video.date)));
+    const nonDates = sortedVideos.filter(
+      (video) => !isDate(new Date(video.date)),
+    );
+
+    // Sort the valid dates
+    validDates.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    return [...validDates, ...nonDates];
+  }, [videos]);
 
   return (
     <section>
