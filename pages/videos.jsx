@@ -11,3 +11,13 @@ const VideosPage = () => (
 );
 
 export default VideosPage;
+/**
+   {
+    "date": "",
+    "title": "",
+    "platform": "",
+    "drive_link": "",
+    "platform_link": "",
+    "imageFilename": ""
+  },
+ */
