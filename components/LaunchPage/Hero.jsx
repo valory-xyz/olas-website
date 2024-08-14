@@ -16,28 +16,21 @@ const Hero = () => (
         </div>
 
         <h2 className={MAIN_TITLE_CLASS}>
-          Get agents running in your ecosystem
+          Launch your own agent economy with ease
         </h2>
 
-        <div className="flex gap-6">
+        <p className="mb-10">
+          Everything you need to bring AI agent economies to your ecosystem
+        </p>
+
+        <div className="gap-1">
           <Button
             variant="default"
             size="xl"
             asChild
-            className="mb-6 w-full md:w-auto"
+            className="mb-2 w-full md:w-auto"
           >
             <Link href="https://launch.olas.network/">Get started</Link>
-          </Button>
-
-          <Button
-            variant="ghostPrimary"
-            size="xl"
-            asChild
-            className="mb-6 w-full md:w-auto"
-          >
-            <Link href="https://registry.olas.network/ethereum/services">
-              Explore launched services
-            </Link>
           </Button>
         </div>
       </div>
