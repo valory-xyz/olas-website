@@ -11,12 +11,10 @@ const Videos = ({ limit }) => {
     const sortedVideos = [...videos];
 
     function isDate(date) {
-      // Check if the input is a valid date string or object
       const parsedDate = new Date(date);
       return !isNaN(parsedDate.getTime());
     }
 
-    // Separate valid dates and non-dates
     const validDates = sortedVideos.filter((video) => isDate(new Date(video.date)));
     const nonDates = sortedVideos.filter(
       (video) => !isDate(new Date(video.date)),
