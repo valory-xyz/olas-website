@@ -5,7 +5,7 @@
     "platform": "Video",
     "drive_link": "",
     "platform_link": "https://www.youtube.com/watch?v=SF226IbZR8o&list=PLoP4p0r-X94pjWZMuBfXHe5JxRntoo5qF&index=7",
-    "imageFilename": "ag un bru human agent.jpg"
+    "imageFilename": "ag un bru human agent.jpg "
   },
   {
     "date": "10-July-24",
@@ -113,11 +113,75 @@
   },
   {
     "date": "1-March-24",
+    "title": "Progress In The Decentralized AI Stack (Training, Fine-Tuning, Inference) | Agents Unleashed | ETHDenver 2024",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=o2khlH9vX2M&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=9",
+    "imageFilename": "ag un denver 8.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Technologies for AI Agent Use Cases at the Nexus of On- and Off-chain | Agents Unleashed | ETHDenver 2024",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=zS3lMP8zDSY&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=8",
+    "imageFilename": "ag un denver 7.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Compute, Storage Layers: Challenges, Opportunities Specific to AI Agent Use Cases | Agents Unleashed | ETHDenver 2024",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=KXASgTy1Q5M&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=7 ",
+    "imageFilename": "ag un denver 6.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Scaling Protocol Intelligence with Web3 Agents | Agents Unleashed | ETHDenver 2024 |",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=5GdUqTBA35M&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=6",
+    "imageFilename": "ag un denver 5.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Olas Evolutions | Agents Unleashed | ETHDenver 2024 |",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=aXNx25SzLo8&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=5",
+    "imageFilename": "ag un denver 4.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Olas Builders Present | Agents Unleashed | ETHDenver 2024 |",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=vOOytvXQKjI&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=4",
+    "imageFilename": "ag un denver 3.jpg"
+  },
+  {
+    "date": "1-March-24",
     "title": "The Biggest Autonomous (AI) Agent Use Cases: Today and Tomorrow | Agents Unleashed | ETHDenver 2024 |",
     "platform": "Video",
     "drive_link": "",
     "platform_link": "https://www.youtube.com/watch?v=5-Y-V8E7Sbo&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=3",
     "imageFilename": "ag un denver 2.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Can Autonomous (AI) Agents Become Crypto’s Largest User Group? | Agents Unleashed | ETHDenver 2024 |",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=Jotrp9yZIYA&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb&index=2",
+    "imageFilename": "ag un denver 1.jpg"
+  },
+  {
+    "date": "1-March-24",
+    "title": "Agents Unleashed | ETHDenver 2024| Key Note by David Minarsch",
+    "platform": "Video",
+    "drive_link": "",
+    "platform_link": "https://www.youtube.com/watch?v=0_DkEF-r69s&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb",
+    "imageFilename": "ag un denver keynote .jpg"
   },
   {
     "date": "7-Jul-24",
@@ -149,7 +213,7 @@
     "platform": "Video",
     "drive_link": "",
     "platform_link": "https://www.youtube.com/watch?v=59qVKsrkqGo ",
-    "imageFilename": "strapi.png"
+    "imageFilename": ""
   },
   {
     "date": "3-Jun-24",
@@ -236,7 +300,7 @@
     "title": "Fintech Blueprint Podcast | Understanding Autonolas, the $2B Autonomous Agent Network Running on Blockchain, with David Minarsch",
     "platform": "Podcast",
     "drive_link": "",
-    "platform_link": "https://www.youtube.com/watch?v=IYqGAI28iVs",
+    "platform_link": "https://www.youtube.com/watch?v=IYqGAI28iVs", 
     "imageFilename": "blueprint.jpg"
   },
   {
