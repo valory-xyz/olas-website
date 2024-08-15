@@ -13,23 +13,28 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 const steps = [
   {
     title: 'Define your goals and KPIs',
-    description: 'Outline your chain ecosystem goals and key performance indicators (KPIs) to address market needs and define agent success criteria.',
+    description:
+      'Outline your chain ecosystem goals and key performance indicators (KPIs) to address market needs and define agent success criteria.',
   },
   {
     title: 'Design your agent economy',
-    description: 'Develop a technical document outlining the design, interactions, and required instances of agents, and translate these specifics into your staking contract.',
+    description:
+      'Develop a technical document outlining the design, interactions, and required instances of agents, and translate these specifics into your staking contract.',
   },
   {
     title: 'Engage builders',
-    description: 'Partner with builders to develop and test your agents; Valory can help in pairing with suitable developers and overseeing the embedding of KPIs into the staking contracts.',
+    description:
+      'Partner with builders to develop and test your agents; Valory can help in pairing with suitable developers and overseeing the embedding of KPIs into the staking contracts.',
   },
   {
     title: 'Promote and co-market',
-    description: 'Showcase and market your agent economy, engaging the Olas community to maximize outreach and incentivize operator participation.',
+    description:
+      'Showcase and market your agent economy, engaging the Olas community to maximize outreach and incentivize operator participation.',
   },
   {
     title: 'Watch your metrics grow',
-    description: 'Sit back, relax, and celebrate growth as your agents become your daily active users.',
+    description:
+      'Sit back, relax and celebrate growth as your agents become your daily active users.',
   },
 ];
 
@@ -39,7 +44,7 @@ const CTA = () => (
     id="get-started"
   >
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
-      <h2 className={`${SUB_HEADER_CLASS}`}>Create your agent economy</h2>
+      <h2 className={`${SUB_HEADER_CLASS}`}>Create your agent economy today</h2>
 
       {steps.map(({ title, description }) => (
         <Fragment key={title}>
@@ -49,13 +54,8 @@ const CTA = () => (
       ))}
 
       <div className="self-center">
-        <Button
-          variant="default"
-          size="xl"
-          asChild
-          className="mt-10"
-        >
-          <Link href="">Get Started</Link>
+        <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
+          <Link href="https://launch.olas.network/">Get Started</Link>
         </Button>
       </div>
     </div>

@@ -45,7 +45,7 @@ const Hero = () => (
           size="xl"
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/contribute#what-is-olas-contribute-service">
+          <Link href="/services/contribute#what-is-olas-contribute-service">
             Learn how
           </Link>
         </Button>
