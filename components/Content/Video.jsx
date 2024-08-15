@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { CARD_CLASS } from 'common-util/classes';
 
-const Video = ({ video }) => (
+import { CARD_CLASS } from 'common-util/classes';
+import { VideoPropTypes } from 'common-util/propTypes';
+
+export const Video = ({ video }) => (
   <a
     href={video.platform_link || video.drive_link}
     target="_blank"
@@ -31,13 +32,5 @@ const Video = ({ video }) => (
 );
 
 Video.propTypes = {
-  video: PropTypes.shape({
-    date: PropTypes.string,
-    drive_link: PropTypes.string,
-    imageFilename: PropTypes.string,
-    platform_link: PropTypes.string,
-    title: PropTypes.string,
-  }).isRequired,
+  video: VideoPropTypes.isRequired,
 };
-
-export default Video;

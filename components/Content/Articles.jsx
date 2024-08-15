@@ -6,9 +6,9 @@ import useSWR from 'swr';
 import Article from './Article';
 import { Spinner } from '../Spinner';
 
-export const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
-export const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const Articles = ({ limit, showSeeAll }) => {
   const params = {
