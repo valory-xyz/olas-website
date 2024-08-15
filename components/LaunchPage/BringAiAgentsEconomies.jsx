@@ -1,18 +1,21 @@
+import Link from 'next/link';
+import Image from 'next/image';
+
 import {
   SUB_HEADER_CLASS,
   TEXT_CLASS,
   SECTION_BOX_CLASS,
 } from 'common-util/classes';
-import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import Link from 'next/link';
 
 const DESC = "Create and deploy entire AI agent economies within your ecosystem effortlessly. As an Olas Launcher, you'll have the tools and resources to bring autonomous agents into your ecosystem, driving growth in transaction volume and other key metrics.";
 
 export const BringAiAgentsEconomies = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
+  <SectionWrapper customClasses={SECTION_BOX_CLASS}>
     <div className="grid max-w-screen-xl mx-auto lg:px-12 lg:grid-cols-12">
-      <h2 className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-5 lg:pr-6`}>
+      <h2
+        className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-5 lg:pr-6`}
+      >
         Bring AI agents economies to your ecosystem
       </h2>
       <div className="hidden lg:block col-span-1" />

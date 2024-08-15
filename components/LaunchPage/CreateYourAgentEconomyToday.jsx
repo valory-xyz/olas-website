@@ -1,13 +1,12 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment } from 'react';
 import Link from 'next/link';
 
-import { Button } from 'components/ui/button';
 import {
   SECTION_BOX_CLASS,
   SCREEN_WIDTH_LG,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
+import { Button } from 'components/ui/button';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const steps = [
@@ -38,10 +37,10 @@ const steps = [
   },
 ];
 
-const CTA = () => (
+export const CreateYourAgentEconomyToday = () => (
   <SectionWrapper
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
     id="get-started"
+    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
   >
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>Create your agent economy today</h2>
@@ -61,4 +60,3 @@ const CTA = () => (
     </div>
   </SectionWrapper>
 );
-export default CTA;
