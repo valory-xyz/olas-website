@@ -7,24 +7,21 @@ import videos from 'data/videos.json';
 import Video from './Video';
 
 const Videos = ({ limit }) => {
-  const videosSortedByDate = useMemo(() => {
-    const sortedVideos = [...videos];
+  const videosSortedByDate = useMemo(
+    () => [...videos].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
 
-    function isDate(date) {
-      const parsedDate = new Date(date);
-      return !isNaN(parsedDate.getTime());
-    }
+      const isValidDateA = !isNaN(dateA.getTime());
+      const isValidDateB = !isNaN(dateB.getTime());
 
-    const validDates = sortedVideos.filter((video) => isDate(new Date(video.date)));
-    const nonDates = sortedVideos.filter(
-      (video) => !isDate(new Date(video.date)),
-    );
-
-    // Sort the valid dates
-    validDates.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    return [...validDates, ...nonDates];
-  }, [videos]);
+      if (isValidDateA && isValidDateB) return dateB - dateA;
+      if (isValidDateA) return -1;
+      if (isValidDateB) return 1;
+      return 0;
+    }),
+    [videos],
+  );
 
   return (
     <section>
