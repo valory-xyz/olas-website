@@ -19,7 +19,7 @@ const Hero = () => (
           Launch your own agent economy with ease
         </h2>
 
-        <p className="mb-10">
+        <p className="text-slate-500 mb-6">
           Everything you need to bring AI agent economies to your ecosystem
         </p>
 
@@ -30,14 +30,13 @@ const Hero = () => (
             asChild
             className="mb-2 w-full md:w-auto"
           >
-            <Link href="https://launch.olas.network/">Get started</Link>
+            <Link href="https://launch.olas.network/">Launch now</Link>
           </Button>
         </div>
       </div>
-
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
-          src="/images/launch-page/hero.svg"
+          src="/images/launch-page/hero.png"
           alt="hero"
           width={834}
           height={742}

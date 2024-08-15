@@ -1,44 +1,64 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import { Fragment } from 'react';
 import Link from 'next/link';
 
-import { LAUNCH_CONTACT_URL } from 'common-util/constants';
-import { SUB_HEADER_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import {
+  SECTION_BOX_CLASS,
+  SCREEN_WIDTH_LG,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+
+const steps = [
+  {
+    title: 'Define your goals and KPIs',
+    description: 'Outline your chain ecosystem goals and key performance indicators (KPIs) to address market needs and define agent success criteria.',
+  },
+  {
+    title: 'Design your agent economy',
+    description: 'Develop a technical document outlining the design, interactions, and required instances of agents, and translate these specifics into your staking contract.',
+  },
+  {
+    title: 'Engage builders',
+    description: 'Partner with builders to develop and test your agents; Valory can help in pairing with suitable developers and overseeing the embedding of KPIs into the staking contracts.',
+  },
+  {
+    title: 'Promote and co-market',
+    description: 'Showcase and market your agent economy, engaging the Olas community to maximize outreach and incentivize operator participation.',
+  },
+  {
+    title: 'Watch your metrics grow',
+    description: 'Sit back, relax, and celebrate growth as your agents become your daily active users.',
+  },
+];
 
 const CTA = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
-    <div className="max-w-4xl mx-auto items-center text-center">
-      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
-        Looking to launch an autonomous AI agent or entire agent economy?
-      </h2>
+  <SectionWrapper
+    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
+    id="get-started"
+  >
+    <div className={`${SCREEN_WIDTH_LG} gap-2`}>
+      <h2 className={`${SUB_HEADER_CLASS}`}>Create your agent economy</h2>
 
-      <p className="mb-8">
-        This site can connect you with agent developers, versed in developing
-        Olas agents and agent economies.
-      </p>
+      {steps.map(({ title, description }) => (
+        <Fragment key={title}>
+          <h3 className="text-xl font-semibold mt-4">{title}</h3>
+          <p>{description}</p>
+        </Fragment>
+      ))}
 
-      <div className="flex flex-wrap gap-2 justify-center">
-        <Button variant="default" size="xl" asChild isExternal>
-          <a
-            href={LAUNCH_CONTACT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Start a discussion
-          </a>
-        </Button>
-
-        <Button variant="link" size="xl" asChild>
-          <Link
-            href="/build#opportunities"
-            className="block text-primary hover:text-primary-800 transition-colors duration-300"
-          >
-            See existing opportunities
-          </Link>
+      <div className="self-center">
+        <Button
+          variant="default"
+          size="xl"
+          asChild
+          className="mt-10"
+        >
+          <Link href="">Get Started</Link>
         </Button>
       </div>
     </div>
   </SectionWrapper>
 );
-
 export default CTA;
