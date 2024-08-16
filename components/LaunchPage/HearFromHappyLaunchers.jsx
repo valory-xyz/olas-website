@@ -54,14 +54,13 @@ const TweetBody = () => (
     {' '}
     <ExternalLink href="https://x.com/autonolas">@autonolas</ExternalLink>
     {' - '}
-    we have this ongoing challenge where agents gather information and trade
-    information and trade on prediction markets - this has lead to the majority
-    of
+    we have this ongoing challenge where agents gather information and trade on
+    prediction markets - this has lead to the majority of
     {' '}
     <ExternalLink href="https://x.com/safe">@safe</ExternalLink>
     {' '}
-    transaction
-    on Gnosis been executed by agents!
+    transaction on
+    Gnosis been executed by agents!
   </p>
 );
 
