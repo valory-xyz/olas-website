@@ -1,11 +1,13 @@
 import Image from 'next/image';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import {
   FileCode2,
   Handshake,
   LockKeyhole,
   PersonStanding,
 } from 'lucide-react';
+
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { InfoCardList } from 'common-util/InfoCardList';
 import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
@@ -36,11 +38,6 @@ const list = [
   },
 ];
 
-const eachCardCss = {
-  background:
-    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
-};
-
 const EasySetupContinuousRewards = () => (
   <div className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-24">
     <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-left lg:text-center mb-3`}>
@@ -53,22 +50,7 @@ const EasySetupContinuousRewards = () => (
       Accessible. Strong. Transparent. Yours.
     </h2>
 
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      {list.map(({ title, desc, icon }) => (
-        <div
-          key={title}
-          className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
-          style={eachCardCss}
-        >
-          <div className="flex items-center">
-            {icon}
-            <h2 className="text-xl font-semibold ml-2">{title}</h2>
-          </div>
-
-          <p className={TEXT_CLASS}>{desc}</p>
-        </div>
-      ))}
-    </div>
+    <InfoCardList cards={list} />
   </div>
 );
 

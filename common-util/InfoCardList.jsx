@@ -7,7 +7,7 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
 
   return (
     <div className={`grid grid-cols-1 gap-8 md:grid-cols-2 ${wrapperClasses}`}>
-      {cards.map(({ title, desc }, index) => {
+      {cards.map(({ icon, title, desc }, index) => {
         const isLastOdd = cards.length % 2 !== 0 && index === cards.length - 1;
         return (
           <div
@@ -17,7 +17,12 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
             }`}
             style={CARD_CSS}
           >
-            <h3 className="text-xl font-semibold">{title}</h3>
+            <div className="flex items-center">
+              {icon || null}
+              <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>
+                {title}
+              </h3>
+            </div>
             <p className={TEXT_CLASS}>{desc}</p>
           </div>
         );
@@ -30,6 +35,7 @@ InfoCardList.propTypes = {
   wrapperClasses: PropTypes.string,
   cards: PropTypes.arrayOf(
     PropTypes.shape({
+      icon: PropTypes.null,
       title: PropTypes.string,
       desc: PropTypes.string,
     }),
