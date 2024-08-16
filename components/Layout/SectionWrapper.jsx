@@ -8,6 +8,7 @@ const SectionWrapper = ({
   backgroundType,
   id,
   backgroundImage,
+  customStyle,
 }) => {
   const backgroundClasses = useMemo(() => {
     switch (backgroundType) {
@@ -22,21 +23,27 @@ const SectionWrapper = ({
     }
   }, [backgroundType]);
 
+  const sectionStyle = useMemo(() => {
+    if (customStyle) {
+      return customStyle;
+    }
+
+    if (backgroundImage) {
+      return {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundPosition: backgroundType === 'CONTAIN' ? 'bottom' : 'center',
+        backgroundSize: backgroundType === 'CONTAIN' ? 'contain' : 'cover',
+      };
+    }
+
+    return undefined;
+  }, [customStyle]);
+
   return (
     <section
       className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`}
       id={id}
-      style={
-        backgroundImage
-          ? {
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundPosition:
-                backgroundType === 'CONTAIN' ? 'bottom' : 'center',
-            backgroundSize:
-                backgroundType === 'CONTAIN' ? 'contain' : 'cover',
-          }
-          : undefined
-      }
+      style={sectionStyle}
     >
       {children}
     </section>
@@ -49,9 +56,13 @@ SectionWrapper.propTypes = {
   children: PropTypes.node.isRequired,
   customClasses: PropTypes.string,
   id: PropTypes.string,
+  customStyle: PropTypes.object,
 };
+
 SectionWrapper.defaultProps = {
   customClasses: 'px-8 py-12 lg:p-24',
   id: '',
+  customStyle: null,
 };
+
 export default SectionWrapper;

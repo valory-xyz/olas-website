@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import NextLink from 'next/link';
 
 export const H1 = ({ children, className }) => (
-  <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
+  <h1
+    className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
+  >
     {children}
   </h1>
 );
@@ -14,9 +16,7 @@ H1.propTypes = {
 H1.defaultProps = { className: null };
 
 export const Lead = ({ children, className }) => (
-  <p className={`text-xl text-muted-foreground ${className}`}>
-    {children}
-  </p>
+  <p className={`text-xl text-muted-foreground ${className}`}>{children}</p>
 );
 
 Lead.propTypes = {
@@ -26,14 +26,18 @@ Lead.propTypes = {
 Lead.defaultProps = { className: null };
 
 export const Upcase = ({ children }) => (
-  <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">{children}</div>
+  <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">
+    {children}
+  </div>
 );
 
 Upcase.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const ExternalLink = ({ children, className, href }) => (
+export const ExternalLink = ({
+  children, className, href, hideArrow,
+}) => (
   <a
     className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}
@@ -41,16 +45,17 @@ export const ExternalLink = ({ children, className, href }) => (
     rel="noopener noreferrer"
   >
     {children}
-&nbsp;↗
+    {hideArrow ? null : <>&nbsp;↗</>}
   </a>
 );
 
 ExternalLink.propTypes = {
   children: PropTypes.node.isRequired,
   href: PropTypes.string.isRequired,
+  hideArrow: PropTypes.bool,
   className: PropTypes.string,
 };
-ExternalLink.defaultProps = { className: null };
+ExternalLink.defaultProps = { className: null, hideArrow: false };
 
 export const Link = ({ children, className, href }) => (
   <NextLink
@@ -63,10 +68,7 @@ export const Link = ({ children, className, href }) => (
 
 Link.propTypes = {
   children: PropTypes.node.isRequired,
-  href: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]).isRequired,
+  href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   className: PropTypes.string,
 };
 Link.defaultProps = { className: null };

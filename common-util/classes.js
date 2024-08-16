@@ -36,3 +36,9 @@ export const CARD_CLASS = 'bg-white rounded-lg shadow-md hover:shadow-lg flex fl
 
 // misc
 export const SECTION_BOX_CLASS = 'py-8 px-6 lg:py-24 lg:px-0';
+
+// CSS
+export const CARD_CSS = {
+  background:
+    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
+};
