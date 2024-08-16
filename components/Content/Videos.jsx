@@ -1,13 +1,26 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { isNaN } from 'lodash';
+
 import videos from 'data/videos.json';
 import Video from './Video';
 
 const Videos = ({ limit }) => {
   const videosSortedByDate = useMemo(
-    () => videos.sort((a, b) => new Date(b.date) - new Date(a.date)),
-    [],
+    () => [...videos].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+
+      const isValidDateA = !isNaN(dateA.getTime());
+      const isValidDateB = !isNaN(dateB.getTime());
+
+      if (isValidDateA && isValidDateB) return dateB - dateA;
+      if (isValidDateA) return -1;
+      if (isValidDateB) return 1;
+      return 0;
+    }),
+    [videos],
   );
 
   return (
