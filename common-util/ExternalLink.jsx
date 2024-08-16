@@ -5,7 +5,7 @@ export const ExternalLink = ({ href, children, className = '' }) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className={`${className} text-purple-600 cursor-pointer `}
+    className={`${className} text-purple-600`}
   >
     {children}
   </a>
