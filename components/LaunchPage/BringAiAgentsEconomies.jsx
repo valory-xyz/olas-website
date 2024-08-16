@@ -33,10 +33,7 @@ export const BringAiAgentsEconomies = () => (
     </div>
 
     <div className="text-center text-slate-500">
-      <Link
-        href="https://olas.network/agent-economies/predict"
-        className="text-purple-600"
-      >
+      <Link href="/agent-economies/predict" className="text-purple-600">
         Olas Predict
       </Link>
       {' '}
