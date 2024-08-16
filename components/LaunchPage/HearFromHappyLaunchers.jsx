@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { SUB_HEADER_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'common-util/ExternalLink';
+import { ExternalLink } from 'components/ui/typography';
 
 const TweetHeader = () => (
   <div className="flex items-start gap-4 md:items-center">
@@ -27,6 +27,7 @@ const TweetHeader = () => (
       <ExternalLink
         href="https://x.com/koeppelmann"
         className={TEXT_SMALL_CLASS}
+        hideArrow
       >
         @koeppelmann
       </ExternalLink>
@@ -52,15 +53,18 @@ const TweetBody = () => (
   <p>
     Another big user has been AI agents by
     {' '}
-    <ExternalLink href="https://x.com/autonolas">@autonolas</ExternalLink>
+    <ExternalLink href="https://x.com/autonolas" hideArrow>
+      @autonolas
+    </ExternalLink>
     {' - '}
     we have this ongoing challenge where agents gather information and trade on
     prediction markets - this has lead to the majority of
     {' '}
-    <ExternalLink href="https://x.com/safe">@safe</ExternalLink>
+    <ExternalLink href="https://x.com/safe" hideArrow>
+      @safe
+    </ExternalLink>
     {' '}
-    transaction on
-    Gnosis been executed by agents!
+    transaction on Gnosis been executed by agents!
   </p>
 );
 
@@ -78,7 +82,7 @@ const TweetFooter = () => (
       href="https://x.com/koeppelmann/status/1724702884304998626"
       className="!text-black"
     >
-      View post on X ↗
+      View post on X
     </ExternalLink>
   </div>
 );

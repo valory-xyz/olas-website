@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { TEXT_CLASS, CARD_CSS } from './classes';
+import { TEXT_CLASS, CARD_CSS } from 'common-util/classes';
 
 export const InfoCardList = ({ cards, wrapperClasses }) => {
   if (!cards) return null;

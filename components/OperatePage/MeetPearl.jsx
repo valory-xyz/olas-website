@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { InfoCardList } from 'common-util/InfoCardList';
+import { InfoCardList } from 'components/InfoCardList';
 import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,

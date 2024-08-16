@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { InfoCardList } from 'common-util/InfoCardList';
+import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
