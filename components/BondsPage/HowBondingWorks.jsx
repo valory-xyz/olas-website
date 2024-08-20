@@ -47,10 +47,7 @@ const steps = [
 ];
 
 export const HowBondingWorks = () => (
-  <SectionWrapper
-    id="how-bonding-works"
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
-  >
+  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}>
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>How bonding works</h2>
 

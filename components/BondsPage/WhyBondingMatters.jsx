@@ -26,7 +26,7 @@ export const WhyBondingMatters = () => (
     <div className="max-w-screen-lg mx-auto">
       <Image
         src="/images/bonds-page/network-role.svg"
-        alt="Agent Economies"
+        alt="Network Role"
         width={1200}
         height={300}
         className="mt-12 w-full"
