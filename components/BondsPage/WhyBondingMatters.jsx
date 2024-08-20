@@ -1,10 +1,10 @@
-import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
 export const WhyBondingMatters = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-20 bg-gray-100 border-y"
+    customClasses={`${SECTION_BOX_CLASS}`}
     backgroundType="NONE"
     customStyle={{
       background: 'linear-gradient(180deg, #F8F9FC 0%, #E7EAF4 100%)',
