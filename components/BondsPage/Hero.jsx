@@ -26,13 +26,15 @@ export const Hero = () => (
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
-      <div className="px-0 md:mb-12 md:col-span-6 lg:px-5 lg:text-left">
+      <div className="md:mb-12 md:col-span-6 lg:text-left">
         <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
           OLAS BOND
         </div>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto`}>
-          Provide liquidity, get discounted OLAS
+          Provide liquidity,
+          <br />
+          get discounted OLAS
         </h2>
 
         <div className="md:hidden mb-8">

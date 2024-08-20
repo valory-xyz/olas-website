@@ -2,6 +2,7 @@ import { BadgePercent, ChartNoAxesCombined, Maximize2 } from 'lucide-react';
 
 import {
   CARD_CSS,
+  SCREEN_WIDTH_LG,
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
   TEXT_CLASS,
@@ -27,12 +28,9 @@ const list = [
 ];
 
 export const UnlockBenefits = () => (
-  <SectionWrapper
-    customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}
-    id="faq"
-  >
-    <div className="max-w-screen-md px-0 mx-auto lg:grid-cols-12 lg:px-12">
-      <h2 className={`${SUB_HEADER_CLASS} mb-6 lg:mb-10`}>
+  <SectionWrapper customClasses={`bg-no-repeat ${SECTION_BOX_CLASS}`} id="faq">
+    <div className={`${SCREEN_WIDTH_LG} px-0lg:px-12`}>
+      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
         Unlock benefits as an Olas Bonder
       </h2>
 
@@ -44,7 +42,9 @@ export const UnlockBenefits = () => (
         and benefit from the growth of the Olas ecosystem.
       </p>
 
-      <h2 className={`${SUB_HEADER_CLASS} mt-10 mb-6 lg:mt-36 lg:mb-10`}>Why become an Olas Bonder?</h2>
+      <h2 className={`${SUB_HEADER_CLASS} mt-8 mb-6 lg:mt-36`}>
+        Why become an Olas Bonder?
+      </h2>
 
       <div className="grid grid-cols-1 gap-6">
         {list.map(({ icon, title, desc }) => (

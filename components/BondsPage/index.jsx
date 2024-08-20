@@ -1,19 +1,13 @@
 import { Hero } from './Hero';
-
+import { UnlockBenefits } from './UnlockBenefits';
 import { HowBondingWorks } from './HowBondingWorks';
+import { WhyBondingMatters } from './WhyBondingMatters';
 
-// import Content from './Content';
-// import Contribute from './Contribute';
-// import NetworkRole from './NetworkRole';
-
-const Bonds = () => (
+export const Bond = () => (
   <>
     <Hero />
+    <UnlockBenefits />
+    <WhyBondingMatters />
     <HowBondingWorks />
-    {/* <Content /> */}
-    {/* <NetworkRole /> */}
-    {/* <Contribute /> */}
   </>
 );
-
-export default Bonds;
