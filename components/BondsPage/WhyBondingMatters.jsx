@@ -19,7 +19,7 @@ export const WhyBondingMatters = () => (
         Bonding provides crucial capital, called protocol-owned liquidity, that
         helps sustain the Olas protocol. This capital generates returns, which
         can eventually reduce or replace the need for new OLAS emissions,
-        benefiting both developers and bonders
+        benefiting both builders and bonders
       </p>
     </div>
 
