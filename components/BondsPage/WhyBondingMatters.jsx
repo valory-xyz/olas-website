@@ -1,4 +1,8 @@
-import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
+import {
+  SCREEN_WIDTH_LG,
+  SECTION_BOX_CLASS,
+  SUB_HEADER_CLASS,
+} from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
@@ -19,7 +23,7 @@ export const WhyBondingMatters = () => (
         Bonding provides crucial capital, called protocol-owned liquidity, that
         helps sustain the Olas protocol. This capital generates returns, which
         can eventually reduce or replace the need for new OLAS emissions,
-        benefiting both builders and bonders
+        benefiting both Builders and Bonders
       </p>
     </div>
 
