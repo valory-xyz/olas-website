@@ -14,7 +14,7 @@ const steps = [
     title: 'Provide liquidity',
     description: (
       <>
-        As a bonder, you exchange your LP tokens for discounted OLAS to help the
+        As a Bonder, you exchange your LP tokens for discounted OLAS to help the
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
         tokens to your chosen
         {' '}
@@ -32,12 +32,12 @@ const steps = [
   {
     title: 'Receive benefits',
     description:
-      'In return for providing liquidity, Olas bonders receive OLAS tokens at a discounted price.',
+      'In return for providing liquidity, Olas Bonders receive OLAS tokens at a discounted price.',
   },
   {
     title: 'Support the ecosystem',
     description:
-      'The provided liquidity helps grow the Olas network, ensuring sustainable liquidity to enable smooth operation for other network participants, like operators and builders.',
+      'The provided liquidity helps grow the Olas network, ensuring sustainable liquidity to enable smooth operation for other network participants, like Operators and Builders.',
   },
   {
     title: 'Stay informed',
