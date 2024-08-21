@@ -2,7 +2,7 @@ import React from 'react';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import UseCases from './UseCases';
 import Chains from './Chains';
-import Dashboards from './Dashboards';
+import { Dashboards } from './Dashboards';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
 
