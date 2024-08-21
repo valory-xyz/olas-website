@@ -111,5 +111,12 @@
     "agentDescription": "AI Agent that bets on various Azuro markets including sports betting and prediction markets.",
     "background": "Azuro is the leading provider of tooling, oracle & liquidity solutions for sports betting and other prediction market apps.",
     "image": "/images/opportunities/azuro.png"
+  }, 
+  {
+    "project": "IDriss",
+    "agentName": "News verification agent",
+    "agentDescription": "Trading co-pilot agent that produces actionable advice as you scroll through Twitter / X and other websites. This agent will enable the verification and authenticity of news via a browser extension.",
+    "background": "IDriss is a project focused on building open-source tools and consumer apps that make web3 more usable for everyone.",
+    "image": "/images/opportunities/idriss.svg"
   }
 ]
