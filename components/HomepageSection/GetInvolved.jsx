@@ -1,8 +1,9 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 /* eslint-disable react/prop-types */
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
 
 const GET_INVOLVED_DATA = [
   {
@@ -53,7 +54,7 @@ const GET_INVOLVED_DATA = [
   {
     id: 7,
     imageSrc: '/images/homepage/olas-bond.png',
-    title: 'Provide capital, get discounted OLAS',
+    title: 'Provide liquidity, get discounted OLAS',
     ctaText: 'Bond',
     href: '/bond',
   },
