@@ -23,7 +23,7 @@ export const truncateAddress = (address) => (address
 
 const BOND_BASE_URL = 'https://bond.olas.network/paths/';
 
-export const TOKEN_DETAILS = [
+const TOKEN_DETAILS = [
   {
     network: 'Ethereum',
     address: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0',
@@ -49,15 +49,15 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/gnosis-chain/pool/0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067',
     },
-    bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
+    bridge: { name: 'Gnosis Bridge', url: 'https://bridge.gnosischain.com/' },
     bond: {
       guideUrl: `${BOND_BASE_URL}olas-wxdai-via-balancer-on-gnosis-chain`,
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
       lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985',
       lpTokenBridge: {
-        name: 'Omnibridge',
-        url: 'https://omni.gnosischain.com/bridge',
+        name: 'Gnosis Bridge',
+        url: 'https://bridge.gnosischain.com/',
       },
     },
   },
