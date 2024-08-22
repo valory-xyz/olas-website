@@ -113,7 +113,7 @@ export const TOKEN_DETAILS = [
     explorerBaseUrl: 'https://solscan.io/token/',
     exchange: {
       name: 'Orca',
-      url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
+      url: 'https://www.orca.so/pools?tokens=Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM&tokens=So11111111111111111111111111111111111111112',
     },
     bridge: {
       name: 'Wormhole: Portal Token Bridge',
