@@ -15,3 +15,8 @@ export const WHITEPAPER_SUMMARY = '/documents/whitepaper/Whitepaper Summary v1.0
 export const CORE_TECHNICAL_DOCUMENT = '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
 export const SHORTS_URL = 'https://shorts.wtf';
+export const MEMBER_APP_URL = 'https://member.autonolas.network/';
+export const REGISTRY_URL = 'https://registry.olas.network/';
+export const TOKENOMICS_URL = 'https://tokenomics.olas.network';
+export const BONDING_PROGRAMS_URL = 'https://tokenomics.olas.network/bonding-products';
+export const DEV_REWARDS_URL = 'https://tokenomics.olas.network/dev-incentives';

@@ -1,3 +1,4 @@
+import { DEV_REWARDS_URL } from 'common-util/constants';
 import { SCREEN_WIDTH_LG } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from '../ui/typography';
@@ -33,10 +34,7 @@ const TokenomicsAlert = () => (
         You can check available dev rewards for existing/minted agents and
         components on
         {' '}
-        <a
-          href="https://tokenomics.olas.network/dev-incentives"
-          className="text-purple-600"
-        >
+        <a href={DEV_REWARDS_URL} className="text-purple-600">
           Tokenomics ↗
         </a>
         .
