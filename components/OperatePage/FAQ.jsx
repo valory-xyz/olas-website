@@ -1,6 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
@@ -70,7 +71,7 @@ const faqList = [
             run agents manually. Visit
             {' '}
             <Link
-              href="https://operate.olas.network/"
+              href={OPERATE_AGENTS_URL}
               className="text-purple-600"
             >
               operate.olas.network
@@ -110,7 +111,7 @@ const faqList = [
             Visit
             {' '}
             <Link
-              href="https://operate.olas.network/"
+              href={OPERATE_AGENTS_URL}
               className="text-purple-600"
             >
               operate.olas.network

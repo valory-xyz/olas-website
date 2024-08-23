@@ -17,6 +17,7 @@ import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import {
   ExternalLink, H1, Lead, Upcase,
 } from 'components/ui/typography';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 
 const resources = [
   {
@@ -66,7 +67,7 @@ const PredictionAgents = () => (
           </Lead>
           <Button size="xl" asChild>
             <a
-              href="https://operate.olas.network"
+              href={OPERATE_AGENTS_URL}
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -148,7 +149,7 @@ const PredictionAgents = () => (
     </SectionWrapper>
     <CTASection
       heading="Start predicting the future"
-      ctaUrl="https://operate.olas.network"
+      ctaUrl={OPERATE_AGENTS_URL}
       ctaText="Run an agent now"
     />
   </PageWrapper>

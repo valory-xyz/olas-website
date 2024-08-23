@@ -1,4 +1,6 @@
-export const CTA = 'https://operate.olas.network/';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
+
+export const CTA = OPERATE_AGENTS_URL;
 
 export const SECTION_BOX_CLASS = 'py-8 px-6 lg:py-24 lg:px-0';
 

@@ -20,3 +20,4 @@ export const REGISTRY_URL = 'https://registry.olas.network/';
 export const TOKENOMICS_URL = 'https://tokenomics.olas.network';
 export const BONDING_PROGRAMS_URL = 'https://bonds.olas.network/bonding-products';
 export const DEV_REWARDS_URL = 'https://tokenomics.olas.network/dev-incentives';
+export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
