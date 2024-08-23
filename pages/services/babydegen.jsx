@@ -15,6 +15,7 @@ import {
 import {
   ExternalLink, H1, Lead, Upcase,
 } from 'components/ui/typography';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 
 const BabyDegenHeader = () => (
   <SectionWrapper>
@@ -31,7 +32,7 @@ const BabyDegenHeader = () => (
           Coming soon
         </Button>
         <ExternalLink
-          href="https://operate.olas.network/"
+          href={OPERATE_AGENTS_URL}
           className="block text-primary hover:text-primary-800 transition-colors duration-300"
         >
           Get started running another agent today
