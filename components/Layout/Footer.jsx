@@ -1,8 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
+import {
+  MEMBER_APP_URL,
+  REGISTRY_URL,
+  TOKENOMICS_URL,
+} from 'common-util/constants';
+import { cn } from 'lib/utils';
 
 const SOCIAL_LINKS = [
   {
@@ -55,9 +60,9 @@ const GET_INVOLVED_LINKS = [
 ];
 
 const OTHER_APPS_LINKS = [
-  { title: 'Registry', link: 'https://registry.olas.network/' },
-  { title: 'Tokenomics', link: 'https://tokenomics.olas.network/' },
-  { title: 'Member', link: 'https://member.autonolas.network/' },
+  { title: 'Registry', link: REGISTRY_URL },
+  { title: 'Tokenomics', link: TOKENOMICS_URL },
+  { title: 'Member', link: MEMBER_APP_URL },
 ];
 
 const RESOURCES_LINKS = [

@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 
+import { BONDING_PROGRAMS_URL } from 'common-util/constants';
 import {
   SECTION_BOX_CLASS,
   SCREEN_WIDTH_LG,
@@ -18,10 +19,7 @@ const steps = [
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
         tokens to your chosen
         {' '}
-        <a
-          href="https://tokenomics.olas.network/bonding-products"
-          className="text-purple-600"
-        >
+        <a href={BONDING_PROGRAMS_URL} className="text-purple-600">
           bonding program
         </a>
         , exchanging your LP tokens for discounted OLAS, available after the
