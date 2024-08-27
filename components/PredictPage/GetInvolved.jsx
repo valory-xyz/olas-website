@@ -7,21 +7,21 @@ import { LAUNCH_URL } from 'common-util/constants';
 
 const list = [
   {
-    title: 'For builders',
+    title: 'For Builders',
     desc: 'Build Mech tools and improve Trader strategies.',
     urlName: 'View path',
     url: 'https://build.olas.network/paths/prediction-agents-mechs-ai-tool',
     isExternal: true,
   },
   {
-    title: 'For operators',
+    title: 'For Operators',
     desc: 'Run Trader agents using Pearl or manually.',
     urlName: 'Explore paths',
     url: '/operate',
     isExternal: false,
   },
   {
-    title: 'For launchers',
+    title: 'For Launchers',
     desc: 'Launch your own agent economy.',
     urlName: 'Explore',
     url: LAUNCH_URL,
