@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import Image from 'next/image';
 import { useMemo } from 'react';
-import { Button } from 'components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
+
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import { ExternalLink } from 'components/ui/typography';
+import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
@@ -42,7 +45,10 @@ const Activity = ({
   );
 
   return (
-    <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="activity">
+    <SectionWrapper
+      customClasses="text-center py-16 px-4 border-b"
+      id="activity"
+    >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
         <Image
           alt="Placeholder"
@@ -51,10 +57,7 @@ const Activity = ({
           height="300"
           className="mx-auto mb-16"
         />
-        <SectionHeading
-          color="text-gray-900"
-          weight="font-bold"
-        >
+        <SectionHeading color="text-gray-900" weight="font-bold">
           Generating an Ocean of Autonomous AI Agents
         </SectionHeading>
         <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
@@ -64,7 +67,9 @@ const Activity = ({
         <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl text-purple-800 w-fit mx-auto">
           🤖 &nbsp; The first autonomous agents and economies are
           {' '}
-          <span className="italic">active</span>
+          <ExternalLink href={FLIPSIDE_URL}>
+            <span className="italic">active</span>
+          </ExternalLink>
           .
         </p>
       </div>
