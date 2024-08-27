@@ -64,12 +64,10 @@ const Activity = ({
           Olas incentivizes and coordinates different parties to launch
           autonomous agents that form entire AI economies.
         </p>
-        <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl text-purple-800 w-fit mx-auto">
+        <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto">
           🤖 &nbsp; The first autonomous agents and economies are
           {' '}
-          <ExternalLink href={FLIPSIDE_URL}>
-            <span className="italic">active</span>
-          </ExternalLink>
+          <ExternalLink href={FLIPSIDE_URL}>active</ExternalLink>
           .
         </p>
       </div>
