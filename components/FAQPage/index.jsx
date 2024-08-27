@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { FLIPSIDE_URL } from 'common-util/constants';
 import { ExternalLink, Link } from 'components/ui/typography';
 
 const Question = ({ text, children }) => (
@@ -16,9 +18,7 @@ Question.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const FAQLink = ({ external, ...props }) => (
-  external ? <ExternalLink {...props} /> : <Link {...props} />
-);
+const FAQLink = ({ external, ...props }) => (external ? <ExternalLink {...props} /> : <Link {...props} />);
 
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
@@ -65,9 +65,7 @@ const FAQPage = () => (
         In 2023, the OLAS token launched publicly via an LBP which ended on
         12.7.23 at 6pm UTC
       </FAQLink>
-      .
-      {' '}
-      This LBP is the only one planned and was created by Valory to establish
+      . This LBP is the only one planned and was created by Valory to establish
       initial liquidity in a decentralized manner because
       {' '}
       <FAQLink
@@ -215,9 +213,9 @@ const FAQPage = () => (
     </Question>
     <Question text="How do I track the current token distribution?">
       The current token distribution can be tracked on-chain since the inception
-      of OLAS, and for convenience, on Dune dashboards like this one
+      of OLAS, and for convenience, on Flipside dashboards like this one
       {' '}
-      <FAQLink href="https://dune.com/adrian0x/olas" external>
+      <FAQLink href={FLIPSIDE_URL} external>
         here
       </FAQLink>
       .
@@ -226,8 +224,8 @@ const FAQPage = () => (
       Valory, founding member and co-creator of Olas, has a token allocation
       (see
       {' '}
-      <FAQLink href="https://dune.com/adrian0x/olas" external>
-        Dune dashboard
+      <FAQLink href={FLIPSIDE_URL} external>
+        Flipside dashboard
       </FAQLink>
       {' '}
       and
@@ -243,8 +241,8 @@ const FAQPage = () => (
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
         external
       >
-        &ldquo;there are no plans to lock or vest, and this is to the sole discretion
-        of Valory, as is the case with any token holder&ldquo;
+        &ldquo;there are no plans to lock or vest, and this is to the sole
+        discretion of Valory, as is the case with any token holder&ldquo;
       </FAQLink>
       .
     </Question>
@@ -279,8 +277,8 @@ const FAQPage = () => (
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
         external
       >
-        &ldquo;they never comment on individual transactions unless they are related to
-        a security incident or some governance vote&ldquo;
+        &ldquo;they never comment on individual transactions unless they are
+        related to a security incident or some governance vote&ldquo;
       </FAQLink>
       .
     </Question>
