@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { MoveUpRight } from 'lucide-react';
+
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
   TEXT_CLASS,
 } from 'common-util/classes';
+import { LAUNCH_URL } from 'common-util/constants';
 
 const list = [
   {
@@ -22,6 +24,13 @@ const list = [
     url: '/operate',
     isExternal: false,
   },
+  {
+    title: 'For launchers',
+    desc: 'Launch your own agent economy.',
+    urlName: 'Explore',
+    url: LAUNCH_URL,
+    isExternal: false,
+  },
 ];
 
 const Content = () => (
@@ -32,33 +41,39 @@ const Content = () => (
       Get Involved
     </h2>
 
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
       {list.map(({
         title, desc, icon, url, urlName, isExternal,
-      }) => (
-        <div
-          key={title}
-          className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
-        >
-          <div className="flex items-center">
-            {icon}
-            <h2 className="text-xl font-semibold">{title}</h2>
-          </div>
+      }, index) => {
+        const isLastAndOdd = list.length === index + 1 && list.length % 2 === 1;
 
-          <p className={TEXT_CLASS}>{desc}</p>
-          {isExternal ? (
-            <a href={url} className="text-purple-600">
-              {urlName}
-              <MoveUpRight className="ml-2 inline" size={16} />
-            </a>
-          ) : (
-            <Link href={url} className="text-purple-600">
-              {urlName}
-              <MoveUpRight className="ml-2 inline" size={16} />
-            </Link>
-          )}
-        </div>
-      ))}
+        return (
+          <div
+            key={title}
+            className={`lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4 ${
+              isLastAndOdd ? 'lg:col-start-2 lg:col-span-2' : 'col-span-2'
+            }
+            `}
+          >
+            <div className="flex items-center">
+              {icon}
+              <h2 className="text-xl font-semibold">{title}</h2>
+            </div>
+
+            <p className={TEXT_CLASS}>{desc}</p>
+            {isExternal ? (
+              <a href={url} className="text-purple-600">
+                {urlName}
+                <MoveUpRight className="ml-2 inline" size={16} />
+              </a>
+            ) : (
+              <Link href={url} className="text-purple-600">
+                {urlName}
+              </Link>
+            )}
+          </div>
+        );
+      })}
     </div>
   </div>
 );
