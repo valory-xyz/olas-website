@@ -1,3 +1,4 @@
+import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const Dashboards = () => (
@@ -12,7 +13,7 @@ export const Dashboards = () => (
         className="rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring w-full h-[245px] flex items-center justify-center text-center"
         target="_blank"
         rel="noopener noreferrer"
-        href="https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda"
+        href={FLIPSIDE_URL}
       >
         <span className="flex flex-col text-2xl font-semibold">
           <span>Olas: Key Activity Metrics</span>

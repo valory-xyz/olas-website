@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   Chart, CategoryScale, LinearScale, BarElement,
 } from 'chart.js';
+import Image from 'next/image';
+
 import { web3, getTokenomicsContract } from 'common-util/web3';
 import { emissionsQuery } from 'common-util/graphql/queries';
 import { tokenomicsGraphClient } from 'common-util/graphql/client';
+import { FLIPSIDE_URL } from 'common-util/constants';
 import Hero from './Hero';
 import { TokenDetails } from './TokenDetails';
 import { OlasUtility } from './OlasUtility';
@@ -184,41 +187,26 @@ const Supply = () => {
           </div>
         </div>
 
-        {/* Dive into the current distribution details */}
         <div className="text-center">
           <div className="inline-block mx-auto mb-4">
-            <svg
-              width="60"
-              height="60"
-              viewBox="0 0 77 77"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M38.4836 76.9395C59.7328 76.9395 76.9587 59.7159 76.9587 38.4698C76.9587 17.2235 59.7328 0 38.4836 0C17.2344 0 0.00854492 17.2235 0.00854492 38.4698C0.00854492 59.7159 17.2344 76.9395 38.4836 76.9395Z"
-                fill="#F06040"
-              />
-              <path
-                d="M60.9224 7.22589C54.742 2.78685 47.3841 0.279925 39.7788 0.0221C32.1736 -0.235723 24.6626 1.76715 18.1958 5.77743C11.729 9.78772 6.5968 15.6253 3.44814 22.5521C0.299489 29.4786 -0.724171 37.1834 0.506611 44.6918C1.73739 52.2001 5.16734 59.1751 10.3627 64.7343C15.5581 70.2937 22.2854 74.1878 29.6944 75.9241C37.1031 77.6607 44.8606 77.1613 51.9856 74.4896C59.1106 71.8179 65.2833 67.0936 69.7231 60.9142C72.6709 56.8112 74.7816 52.1678 75.9347 47.2492C77.0879 42.3306 77.2608 37.2331 76.4435 32.2475C75.6263 27.2622 73.8351 22.4864 71.1719 18.1933C68.5088 13.9 65.0259 10.1733 60.9224 7.22589Z"
-                fill="#F1603F"
-              />
-              <path
-                d="M6.69849 60.1701C6.69849 60.1701 32.1232 51.8422 76.933 37.2314C76.933 37.2314 79.3874 61.1586 54.5821 73.6391C54.5821 73.6391 42.3499 79.5017 28.9302 75.741C28.9302 75.741 15.5673 73.2187 6.69849 60.1701Z"
-                fill="#2B286C"
-              />
-            </svg>
+            <Image
+              src="/images/olas-token-page/flipside.svg"
+              width={60}
+              height={60}
+              alt="Flipside logo"
+            />
           </div>
 
           <h2 className="text-xl mb-4 font-bold">
             Dive into the current distribution details
           </h2>
           <a
-            href="https://dune.com/adrian0x/olas"
+            href={FLIPSIDE_URL}
             className="text-purple-500"
             rel="noopener noreferrer"
             target="_blank"
           >
-            Visit OLAS Dune dashboard ↗
+            Visit OLAS Flipside dashboard ↗
           </a>
         </div>
       </SectionWrapper>
