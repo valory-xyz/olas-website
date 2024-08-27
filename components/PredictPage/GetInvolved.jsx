@@ -2,11 +2,7 @@ import Link from 'next/link';
 import { MoveUpRight } from 'lucide-react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from 'common-util/classes';
+import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import { LAUNCH_URL } from 'common-util/constants';
 
 const list = [
@@ -34,48 +30,41 @@ const list = [
 ];
 
 const Content = () => (
-  <div className="max-w-screen-lg xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto">
+  <SectionWrapper id="get-involved">
     <h2
       className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
     >
       Get Involved
     </h2>
 
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
       {list.map(({
         title, desc, icon, url, urlName, isExternal,
-      }, index) => {
-        const isLastAndOdd = list.length === index + 1 && list.length % 2 === 1;
-
-        return (
-          <div
-            key={title}
-            className={`lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4 ${
-              isLastAndOdd ? 'lg:col-start-2 lg:col-span-2' : 'col-span-2'
-            }
-            `}
-          >
-            <div className="flex items-center">
-              {icon}
-              <h2 className="text-xl font-semibold">{title}</h2>
-            </div>
-
-            <p className={TEXT_CLASS}>{desc}</p>
-            {isExternal ? (
-              <a href={url} className="text-purple-600">
-                {urlName}
-                <MoveUpRight className="ml-2 inline" size={16} />
-              </a>
-            ) : (
-              <Link href={url} className="text-purple-600">
-                {urlName}
-              </Link>
-            )}
+      }) => (
+        <div
+          key={title}
+          className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
+        >
+          <div className="flex items-center">
+            {icon}
+            <h2 className="text-xl font-semibold">{title}</h2>
           </div>
-        );
-      })}
+
+          <p className={TEXT_CLASS}>{desc}</p>
+          {isExternal ? (
+            <a href={url} className="text-purple-600">
+              {urlName}
+              <MoveUpRight className="ml-2 inline" size={16} />
+            </a>
+          ) : (
+            <Link href={url} className="text-purple-600">
+              {urlName}
+            </Link>
+          )}
+        </div>
+      ))}
     </div>
-  </div>
+  </SectionWrapper>
 );
 
 export const PredictFooter = () => (
@@ -93,12 +82,7 @@ export const PredictFooter = () => (
 
 export const GetInvolved = () => (
   <>
-    <SectionWrapper
-      customClasses={`${SECTION_BOX_CLASS} border-t-[1px]`}
-      id="get-involved"
-    >
-      <Content />
-    </SectionWrapper>
+    <Content />
     <PredictFooter />
   </>
 );
