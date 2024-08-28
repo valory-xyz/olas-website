@@ -22,6 +22,7 @@ const Activity = ({
         subText: 'transactions',
         value: transactions.value?.toLocaleString(),
         source: FLIPSIDE_URL,
+        isExternal: true,
       },
       {
         id: 'agents',
@@ -29,13 +30,15 @@ const Activity = ({
         subText: 'agents',
         value: agents.value,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
+        isExternal: true,
       },
       {
         id: 'blockchains',
         topText: 'Olas is deployed across',
         subText: 'blockchains',
         value: BLOCKCHAIN_COUNT,
-        source: FLIPSIDE_URL,
+        source: '/explore#chains',
+        isExternal: false,
       },
       {
         id: 'agentsTypes',
@@ -43,6 +46,7 @@ const Activity = ({
         subText: 'types of agents',
         value: agentsTypes.value,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
+        isExternal: true,
       },
     ],
     [],
@@ -80,6 +84,18 @@ const Activity = ({
           let borderClassName = '';
           if (index !== 0) borderClassName += 'xl:border-l-1.5';
           if (index % 2 !== 0) borderClassName += ' md:border-l-1.5';
+          const getValue = () => {
+            if (!item.value) return '--';
+            if (item.isExternal) {
+              return (
+                <ExternalLink href={item.source} hideArrow>
+                  {item.value}
+                  <span className="text-2xl">↗</span>
+                </ExternalLink>
+              );
+            }
+            return <Link href={item.source}>{item.value}</Link>;
+          };
 
           return (
             <div
@@ -90,14 +106,7 @@ const Activity = ({
                 {item.topText}
               </span>
               <span className="block text-5xl text-purple-600 font-extrabold mb-4">
-                {item.value ? (
-                  <ExternalLink href={item.source} hideArrow>
-                    {item.value}
-                    <span className="text-2xl">↗</span>
-                  </ExternalLink>
-                ) : (
-                  '--'
-                )}
+                {getValue()}
               </span>
 
               <span className="block text-xl text-slate-700">
