@@ -16,10 +16,9 @@ export const CORE_TECHNICAL_DOCUMENT = '/documents/whitepaper/Autonolas_Tokenomi
 export const FLIPSIDE_URL = 'https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda';
 
 export const SHORTS_URL = 'https://shorts.wtf';
-export const MEMBER_APP_URL = 'https://member.autonolas.network/';
 export const REGISTRY_URL = 'https://registry.olas.network/';
-export const TOKENOMICS_URL = 'https://tokenomics.olas.network';
 export const BONDING_PROGRAMS_URL = 'https://bonds.olas.network/bonding-products';
-export const DEV_REWARDS_URL = 'https://tokenomics.olas.network/dev-incentives';
+export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
 export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
 export const LAUNCH_URL = 'https://launch.olas.network/';
+export const VEOLAS_URL = 'https://govern.olas.network/veolas';
