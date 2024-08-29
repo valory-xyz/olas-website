@@ -6,7 +6,10 @@ import {
   getAgentsTotal,
   getAgentsTypesTotal,
 } from 'common-util/api';
-import { getTotalTransactionsCount, getTotalUnitsCount } from 'common-util/api/flipside';
+import {
+  getTotalTransactionsCount,
+  getTotalUnitsCount,
+} from 'common-util/api/flipside';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
@@ -56,7 +59,7 @@ export default function Home({ activityMetrics }) {
       .catch((error) => console.error(error))
       .finally(() => setIsUnitsLoading(false));
   }, [activityMetrics]);
-  window.console.log({
+  console.log({
     isTransactionLoading,
     transaction,
     isUnitsLoading,
@@ -70,7 +73,7 @@ export default function Home({ activityMetrics }) {
     }),
     [transaction, units],
   );
-  window.console.log(flipsideMetrics);
+  console.log(flipsideMetrics);
 
   return (
     <PageWrapper>
