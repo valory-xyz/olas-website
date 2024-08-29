@@ -1,11 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  getTransactionsTotal,
-  getAgentsTotal,
-  getAgentsTypesTotal,
-} from 'common-util/api';
 import {
   getTotalTransactionsCount,
   getTotalUnitsCount,
@@ -23,18 +17,24 @@ import Media from 'components/HomepageSection/Media';
 const DAY_IN_SECONDS = 86400;
 
 export const getStaticProps = async () => {
-  const [transactions, agents, agentsTypes] = await Promise.allSettled([
-    getTransactionsTotal(),
-    getAgentsTotal(),
-    getAgentsTypesTotal(),
+  const [transactions, unitsCount] = await Promise.allSettled([
+    getTotalTransactionsCount(),
+    getTotalUnitsCount(),
   ]);
 
   return {
     props: {
       activityMetrics: {
-        transactions: transactions.status === 'fulfilled' ? transactions : null,
-        agents: agents.status === 'fulfilled' ? agents : null,
-        agentsTypes: agentsTypes.status === 'fulfilled' ? agentsTypes : null,
+        transactions:
+          transactions.status === 'fulfilled' ? transactions.value : null,
+        agents:
+          unitsCount.status === 'fulfilled'
+            ? unitsCount.value.agentsCount
+            : null,
+        agentsTypes:
+          unitsCount.status === 'fulfilled'
+            ? unitsCount.value.agentTypesCount
+            : null,
       },
     },
     revalidate: DAY_IN_SECONDS,
@@ -42,39 +42,6 @@ export const getStaticProps = async () => {
 };
 
 export default function Home({ activityMetrics }) {
-  const [isTransactionLoading, setIsTransactionLoading] = useState(true);
-  const [transaction, setTransaction] = useState(null);
-
-  const [isUnitsLoading, setIsUnitsLoading] = useState(true);
-  const [units, setUnits] = useState(null);
-
-  useEffect(() => {
-    getTotalTransactionsCount()
-      .then((data) => setTransaction(data))
-      .catch((error) => console.error(error))
-      .finally(() => setIsTransactionLoading(false));
-
-    getTotalUnitsCount()
-      .then((data) => setUnits(data))
-      .catch((error) => console.error(error))
-      .finally(() => setIsUnitsLoading(false));
-  }, [activityMetrics]);
-  console.log({
-    isTransactionLoading,
-    transaction,
-    isUnitsLoading,
-    units,
-  });
-
-  const flipsideMetrics = useMemo(
-    () => ({
-      transactions: transaction,
-      units,
-    }),
-    [transaction, units],
-  );
-  console.log(flipsideMetrics);
-
   return (
     <PageWrapper>
       <Meta />

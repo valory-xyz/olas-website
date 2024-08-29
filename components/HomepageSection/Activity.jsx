@@ -20,7 +20,7 @@ const Activity = ({
         id: 'transactions',
         topText: 'Olas agents have made',
         subText: 'transactions',
-        value: transactions.value?.toLocaleString(),
+        value: transactions?.toLocaleString(),
         source: FLIPSIDE_URL,
         isExternal: true,
       },
@@ -28,7 +28,7 @@ const Activity = ({
         id: 'agents',
         topText: 'Operators have deployed',
         subText: 'agents',
-        value: agents.value,
+        value: agents,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
@@ -44,12 +44,12 @@ const Activity = ({
         id: 'agentsTypes',
         topText: 'Devs have registered',
         subText: 'types of agents',
-        value: agentsTypes.value,
+        value: agentsTypes,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
     ],
-    [agents.value, agentsTypes.value, transactions.value],
+    [agents, agentsTypes, transactions],
   );
 
   return (
