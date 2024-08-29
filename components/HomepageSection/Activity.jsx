@@ -49,7 +49,7 @@ const Activity = ({
         isExternal: true,
       },
     ],
-    [],
+    [agents.value, agentsTypes.value, transactions.value],
   );
 
   return (
