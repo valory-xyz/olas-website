@@ -10,7 +10,6 @@
     "lint:fix": "eslint --fix \"./**/*.{js,jsx}\""
   },
   "dependencies": {
-    "@flipsidecrypto/sdk": "^2.1.0",
     "@fontsource/inter": "^5.0.17",
     "@octokit/core": "^6.1.2",
     "@radix-ui/react-collapsible": "^1.0.3",

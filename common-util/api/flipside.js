@@ -1,10 +1,6 @@
 const flipsideCryptoApiCall = async ({ queryId }) => {
   try {
-    const response = await fetch(`https://flipsidecrypto.xyz/api/v1/queries/${queryId}/data/latest`, {
-      // headers: {
-      //   'X-Dune-API-Key': process.env.NEXT_PUBLIC_FLIPSIDE_API_KEY,
-      // },
-    });
+    const response = await fetch(`https://flipsidecrypto.xyz/api/v1/queries/${queryId}/data/latest`);
     const json = await response.json();
     return json;
   } catch (error) {
