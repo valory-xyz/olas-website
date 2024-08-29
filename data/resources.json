@@ -62,5 +62,13 @@
     "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["build"]
+  },
+  {
+    "id": "d9b2d63d-a3bb-4e8d-9d6b-9b0d2b044d80",
+    "title": "Tokenomics",
+    "description": "Review the token distribution",
+    "url": "/olas-token",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]
