@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { FLIPSIDE_URL } from 'common-util/constants';
+import { FLIPSIDE_URL, VEOLAS_URL } from 'common-util/constants';
 import { ExternalLink, Link } from 'components/ui/typography';
 
 const Question = ({ text, children }) => (
@@ -146,7 +146,7 @@ const FAQPage = () => (
       . buOLAS is a vesting contract for the founding members. You can lock OLAS
       for veOLAS and check unlocks for your wallet
       {' '}
-      <FAQLink href="https://member.olas.network/" external>
+      <FAQLink href={VEOLAS_URL} external>
         here
       </FAQLink>
       .

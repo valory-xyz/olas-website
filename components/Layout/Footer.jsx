@@ -3,9 +3,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { MoveUpRight } from 'lucide-react';
 import {
-  MEMBER_APP_URL,
   REGISTRY_URL,
-  TOKENOMICS_URL,
 } from 'common-util/constants';
 import { cn } from 'lib/utils';
 
@@ -61,8 +59,7 @@ const GET_INVOLVED_LINKS = [
 
 const OTHER_APPS_LINKS = [
   { title: 'Registry', link: REGISTRY_URL },
-  { title: 'Tokenomics', link: TOKENOMICS_URL },
-  { title: 'Member', link: MEMBER_APP_URL },
+  { title: 'Tokenomics', link: '/olas-token' },
 ];
 
 const RESOURCES_LINKS = [
