@@ -55,12 +55,11 @@ const downloadLinks = [
   {
     id: 'windows',
     btnText: 'Download for Windows - Alpha',
-    subText: '* Coming soon',
     downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-windows.svg"
-        alt="Windows is coming soon"
+        alt="Download for Windows - Alpha"
         {...iconProps}
       />
     ),
@@ -157,7 +156,7 @@ export const InstallRunAnAgent = () => (
     <div className="max-w-screen-xl px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-4 col-span-12 lg:gap-8">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
-          Install. Run an Agent. Earn OLAS. That’s It.
+          Install. Run an Agent. Earn OLAS. That&apos;s It.
         </h2>
         <InstallSteps />
         <DownloadLinks />
