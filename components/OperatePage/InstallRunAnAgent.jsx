@@ -53,7 +53,7 @@ const downloadLinks = [
     ),
   },
   {
-    id: 'win32-x64',
+    id: 'win32-x64.exe',
     btnText: 'Download for Windows x64 - Alpha',
     downloadLink: null,
     icon: (
