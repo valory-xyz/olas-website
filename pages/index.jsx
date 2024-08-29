@@ -1,6 +1,12 @@
+import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
+import {
+  getTransactionsTotal,
+  getAgentsTotal,
+  getAgentsTypesTotal,
+} from 'common-util/api';
+import { getTotalTransactionsCount, getTotalUnitsCount } from 'common-util/api/flipside';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
@@ -18,7 +24,6 @@ export const getStaticProps = async () => {
     getTransactionsTotal(),
     getAgentsTotal(),
     getAgentsTypesTotal(),
-    // getBlockchainsTotal(),
   ]);
 
   return {
@@ -27,7 +32,6 @@ export const getStaticProps = async () => {
         transactions: transactions.status === 'fulfilled' ? transactions : null,
         agents: agents.status === 'fulfilled' ? agents : null,
         agentsTypes: agentsTypes.status === 'fulfilled' ? agentsTypes : null,
-        // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
       },
     },
     revalidate: DAY_IN_SECONDS,
@@ -35,6 +39,39 @@ export const getStaticProps = async () => {
 };
 
 export default function Home({ activityMetrics }) {
+  const [isTransactionLoading, setIsTransactionLoading] = useState(true);
+  const [transaction, setTransaction] = useState(null);
+
+  const [isUnitsLoading, setIsUnitsLoading] = useState(true);
+  const [units, setUnits] = useState(null);
+
+  useEffect(() => {
+    getTotalTransactionsCount()
+      .then((data) => setTransaction(data))
+      .catch((error) => console.error(error))
+      .finally(() => setIsTransactionLoading(false));
+
+    getTotalUnitsCount()
+      .then((data) => setUnits(data))
+      .catch((error) => console.error(error))
+      .finally(() => setIsUnitsLoading(false));
+  }, [activityMetrics]);
+  window.console.log({
+    isTransactionLoading,
+    transaction,
+    isUnitsLoading,
+    units,
+  });
+
+  const flipsideMetrics = useMemo(
+    () => ({
+      transactions: transaction,
+      units,
+    }),
+    [transaction, units],
+  );
+  window.console.log(flipsideMetrics);
+
   return (
     <PageWrapper>
       <Meta />
