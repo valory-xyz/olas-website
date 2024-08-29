@@ -53,13 +53,13 @@ const downloadLinks = [
     ),
   },
   {
-    id: 'windows',
-    btnText: 'Download for Windows - Alpha',
+    id: 'win32-x64',
+    btnText: 'Download for Windows x64 - Alpha',
     downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-windows.svg"
-        alt="Download for Windows - Alpha"
+        alt="Download for Windows x64 - Alpha"
         {...iconProps}
       />
     ),
