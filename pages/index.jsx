@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 
-import { getTransactionsTotal, getAgentsTotal, getAgentsTypesTotal } from 'common-util/api';
+import {
+  getTotalTransactionsCount,
+  getTotalUnitsCount,
+} from 'common-util/api/flipside';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
@@ -14,20 +17,24 @@ import Media from 'components/HomepageSection/Media';
 const DAY_IN_SECONDS = 86400;
 
 export const getStaticProps = async () => {
-  const [transactions, agents, agentsTypes] = await Promise.allSettled([
-    getTransactionsTotal(),
-    getAgentsTotal(),
-    getAgentsTypesTotal(),
-    // getBlockchainsTotal(),
+  const [transactions, unitsCount] = await Promise.allSettled([
+    getTotalTransactionsCount(),
+    getTotalUnitsCount(),
   ]);
 
   return {
     props: {
       activityMetrics: {
-        transactions: transactions.status === 'fulfilled' ? transactions : null,
-        agents: agents.status === 'fulfilled' ? agents : null,
-        agentsTypes: agentsTypes.status === 'fulfilled' ? agentsTypes : null,
-        // blockchains: blockchains.status === 'fulfilled' ? blockchains.value : null,
+        transactions:
+          transactions.status === 'fulfilled' ? transactions.value : null,
+        agents:
+          unitsCount.status === 'fulfilled'
+            ? unitsCount.value.agentsCount
+            : null,
+        agentsTypes:
+          unitsCount.status === 'fulfilled'
+            ? unitsCount.value.agentTypesCount
+            : null,
       },
     },
     revalidate: DAY_IN_SECONDS,
