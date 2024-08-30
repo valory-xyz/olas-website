@@ -7,51 +7,32 @@ import builders from 'data/builders.json';
 import friends from 'data/friends.json';
 import SectionHeading from '../SectionHeading';
 
-// hide those we don't have enough data to display, e.g. links
-// or because they are not live yet
-const filteredFriends = friends.filter((friend) => !friend.hidden);
-
 export const Chains = () => (
-  <section id="builders" className="max-w-screen-xl mx-auto text-center mb-28">
-    <SectionWrapper
-      id="chains"
-      customClasses="px-8 max-w-screen-xl w-full mx-auto"
-    >
-      <h3 className="text-2xl md:text-4xl font-bold">Chains</h3>
+  <section
+    id="chains"
+    className="max-w-screen-lg mx-auto text-center mb-28 scroll-m-28"
+  >
+    <h3 className="text-2xl md:text-4xl font-bold">Chains</h3>
+    <p className="text-slate-700 text-xl max-w-[800px] mx-auto py-12">
+      Olas Protocol is available on a growing list of chains. When Olas Protocol
+      is deployed on a chain, it brings the power of Olas to that chain&apos;s
+      ecosystem.
+    </p>
 
-      <p className="text-slate-700 text-xl max-w-[800px] mx-auto py-8">
-        Olas Protocol is available on a growing list of chains. When Olas
-        Protocol is deployed on a chain, it brings the power of Olas to that
-        chain&apos;s ecosystem.
-      </p>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-        {chains.map((chain) => (
-          <a
-            key={chain.id}
-            className="block rounded-xl border border-gray-300 shadow-sm hover:border-gray-300 hover:shadow-lg focus:outline-none focus:ring"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={chain.url}
-          >
-            <SectionWrapper customClasses="rounded-t-xl border-t-0 border-b">
-              <div className="flex">
-                <Image
-                  src={`/images/chains/${chain.iconFilename}`}
-                  alt={chain.name}
-                  width={150}
-                  height={300}
-                  className="mx-auto p-4 my-auto w-full h-[200px] "
-                />
-              </div>
-            </SectionWrapper>
-            <div className="p-4 md:p-6 lg:p-4">
-              <h2 className="font-bold text-xl text-gray-700">{chain.name}</h2>
-            </div>
+    <div className="grid grid-cols-2 gap-10  sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+      {chains.map((chain) => (
+        <div key={chain.id} className="flex justify-center items-center">
+          <a target="_blank" rel="noopener noreferrer" href={chain.url}>
+            <Image
+              src={`/images/chains/${chain.iconFilename}`}
+              alt={chain.name}
+              width={150}
+              height={30}
+            />
           </a>
-        ))}
-      </div>
-    </SectionWrapper>
+        </div>
+      ))}
+    </div>
   </section>
 );
 
@@ -80,6 +61,9 @@ export const Builders = () => (
   </section>
 );
 
+// hide those we don't have enough data to display, e.g. links
+// or because they are not live yet
+const filteredFriends = friends.filter((friend) => !friend.hidden);
 const MoreFriends = () => (
   <section id="friends" className="max-w-screen-xl mx-auto text-center">
     <h3 className="text-2xl md:text-4xl font-bold mb-12">
