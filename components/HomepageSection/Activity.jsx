@@ -1,17 +1,17 @@
-/* eslint-disable react/prop-types */
 import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import PropTypes from 'prop-types';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
+// import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
 import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
 
-const Activity = ({
+export const Activity = ({
   activityMetrics: { agents, agentsTypes, transactions },
 }) => {
   const data = useMemo(
@@ -37,7 +37,7 @@ const Activity = ({
         topText: 'Olas is deployed across',
         subText: 'blockchains',
         value: BLOCKCHAIN_COUNT,
-        source: '/explore#chains',
+        source: '/#chains',
         isExternal: false,
       },
       {
@@ -105,7 +105,7 @@ const Activity = ({
               <span className="block text-xl text-slate-700 mb-4">
                 {item.topText}
               </span>
-              <span className="block text-5xl text-purple-600 font-extrabold mb-4">
+              <span className="block text-5xl font-extrabold mb-4 text-purple-600">
                 {getValue()}
               </span>
 
@@ -116,11 +116,17 @@ const Activity = ({
           );
         })}
       </div>
-      <Button variant="outline" size="xl" asChild className="mb-12">
+      {/* <Button variant="outline" size="xl" asChild className="mb-12">
         <Link href="/explore">Explore the ecosystem</Link>
-      </Button>
+      </Button> */}
     </SectionWrapper>
   );
 };
 
-export default Activity;
+Activity.propTypes = {
+  activityMetrics: PropTypes.shape({
+    transactions: PropTypes.number,
+    agents: PropTypes.number,
+    agentsTypes: PropTypes.number,
+  }).isRequired,
+};
