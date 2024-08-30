@@ -1,7 +1,6 @@
 import React from 'react';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import UseCases from './UseCases';
-import Chains from './Chains';
 import { Dashboards } from './Dashboards';
 import PageWrapper from '../Layout/PageWrapper';
 import Meta from '../Meta';
@@ -17,7 +16,6 @@ const ExplorePage = () => (
 
     <div className="flex flex-col gap-20 mb-20">
       <UseCases />
-      <Chains />
       <Dashboards />
     </div>
   </PageWrapper>

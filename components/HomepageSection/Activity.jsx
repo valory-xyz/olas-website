@@ -37,7 +37,7 @@ export const Activity = ({
         topText: 'Olas is deployed across',
         subText: 'blockchains',
         value: BLOCKCHAIN_COUNT,
-        source: null,
+        source: '/#chains',
         isExternal: false,
       },
       {
@@ -86,7 +86,6 @@ export const Activity = ({
           if (index % 2 !== 0) borderClassName += ' md:border-l-1.5';
           const getValue = () => {
             if (!item.value) return '--';
-            if (!item.source) return item.value;
             if (item.isExternal) {
               return (
                 <ExternalLink href={item.source} hideArrow>
@@ -106,11 +105,7 @@ export const Activity = ({
               <span className="block text-xl text-slate-700 mb-4">
                 {item.topText}
               </span>
-              <span
-                className={`block text-5xl font-extrabold mb-4 ${
-                  item.source ? 'text-purple-600 ' : ''
-                }`}
-              >
+              <span className="block text-5xl font-extrabold mb-4 text-purple-600">
                 {getValue()}
               </span>
 
