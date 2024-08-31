@@ -22,7 +22,7 @@ export const getTotalTransactionsCount = async () => {
 const UNITS_COUNT_ID = '0648695d-0383-4154-afda-e0bb153b1b70';
 export const getTotalUnitsCount = async () => {
   const result = await flipsideCryptoApiCall({ queryId: UNITS_COUNT_ID });
-  const agentTypesCount = get(result, '[0].TOTAL_MINTS') || null;
-  const agentsCount = get(result, '[1].TOTAL_MINTS') || null;
+  const agentTypesCount = get(result, '[1].TOTAL_MINTS') || null;
+  const agentsCount = get(result, '[0].TOTAL_MINTS') || null;
   return { agentTypesCount, agentsCount };
 };
