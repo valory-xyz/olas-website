@@ -27,7 +27,7 @@ const Hero = () => (
       <div className="px-0 md:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
         <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>OLAS OPERATE</div>
 
-        <h2 className={MAIN_TITLE_CLASS}>Run agents, stake & earn rewards*</h2>
+        <h2 className={`${MAIN_TITLE_CLASS} mb-2`}>Run agents, stake & earn rewards*</h2>
 
         <div className="md:hidden mb-8">
           <OperateHeroImage />

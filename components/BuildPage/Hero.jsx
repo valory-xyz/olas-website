@@ -28,7 +28,7 @@ const Hero = () => (
           OLAS BUILD
         </div>
 
-        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto`}>
+        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto mb-6`}>
           Build agents,
           <br />
           get rewarded
