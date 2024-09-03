@@ -12,8 +12,8 @@ const OperateHeroImage = () => (
   <Image
     src="/images/operate-page/operate-hero.png"
     alt="hero"
-    width={638}
-    height={596}
+    width={464}
+    height={432}
     className="mx-auto xl:w-full"
   />
 );
@@ -51,7 +51,7 @@ const Hero = () => (
         </div>
       </div>
 
-      <div className="hidden sm:block col-span-1" />
+      {/* <div className="hidden sm:block col-span-1" /> */}
 
       <div className="hidden lg:mt-0 lg:col-span-6 lg:flex md:block">
         <OperateHeroImage />
