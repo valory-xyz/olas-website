@@ -91,6 +91,41 @@ const WhatIsBabyDegen = () => (
   </SectionWrapper>
 );
 
+const MeetTheOptimusAgent = () => (
+  <SectionWrapper customClasses="border-y border-b-0">
+    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="text-center px-5 my-12 lg:p-0 lg:text-left lg:col-span-7">
+        <H1 className="mb-8 mt-12">
+          Meet the Optimus agent: a step towards BabyDegen
+        </H1>
+        <Lead className="mb-8">
+          The Optimus Agent is an autonomous AI agent that streamlines your DeFi
+          experience by intelligently managing your assets on specific
+          blockchain platforms. Initially focused on select DeFi protocols on
+          Optimism Mainnet and Base, it offers a targeted approach to maximizing
+          returns within these ecosystems.
+        </Lead>
+        <Lead className="mb-8">
+          The Optimus Agent is currently in alpha testing via Quickstart and
+          currently supports key protocols like Balancer and Uniswap. It’s
+          operational on Ethereum, Base, and Optimism. Looking ahead, it will
+          expand to support any protocol that wishes to integrate.
+        </Lead>
+      </div>
+
+      <div className="mb-12 lg:mb-0 lg:mt-0 lg:col-span-5 lg:flex">
+        <Image
+          src="/images/services/babydegen/optimus.png"
+          alt="Get ready to participate in AI agent DeFi"
+          width={400}
+          height={400}
+          className="mx-auto rounded-lg"
+        />
+      </div>
+    </div>
+  </SectionWrapper>
+);
+
 const resources = [
   {
     title: 'Contribute a strategy',
@@ -263,6 +298,7 @@ const BabyDegen = () => (
     <BabyDegenHeader />
     <WhatIsBabyDegen />
     <HowItWorks />
+    <MeetTheOptimusAgent />
     <FurtherResources />
   </PageWrapper>
 );
