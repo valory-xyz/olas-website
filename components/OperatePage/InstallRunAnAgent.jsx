@@ -120,15 +120,21 @@ const DownloadLinks = () => {
     <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
       {links.map(({
         id, btnText, downloadLink, icon, subText,
-      }) => (
+      }) => {
+        // temporary override for rc124 / rc125 release
+        // only windows should point to 125, Mac should point to 124
+        // 125 is not latest release on Github currently
+        const temporaryOverrideDownloadLink = id === 'win32-x64.exe' ? downloadLink.replace('rc124', 'rc125') : downloadLink;
+
+        return (
         <Fragment key={id}>
           <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
             <Button
               onClick={
-                downloadLink ? () => window.open(downloadLink, '_blank') : null
+                temporaryOverrideDownloadLink ? () => window.open(temporaryOverrideDownloadLink, '_blank') : null
               }
-              disabled={!downloadLink}
-              variant={downloadLink ? 'default' : 'outline'}
+              disabled={!temporaryOverrideDownloadLink}
+              variant={temporaryOverrideDownloadLink ? 'default' : 'outline'}
               size="xl"
               className="w-full lg:w-auto lg:px-6"
             >
@@ -142,7 +148,8 @@ const DownloadLinks = () => {
             <div className="text-xs text-slate-500">{subText}</div>
           </div>
         </Fragment>
-      ))}
+      )}
+      )}
     </div>
   );
 };
