@@ -38,12 +38,12 @@ const Hero = () => (
           <HeroImage />
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex flex-wrap justify-stretch gap-6">
           <Button
             variant="default"
             size="xl"
             asChild
-            className="mb-6 w-full md:w-auto"
+            className="grow"
           >
             <a href={CTA_LINK}>Get started</a>
           </Button>
@@ -52,7 +52,7 @@ const Hero = () => (
             variant="ghostPrimary"
             size="xl"
             asChild
-            className="mb-6 w-full md:w-auto"
+            className="grow"
           >
             <a href="https://registry.olas.network/ethereum/components">
               Explore minted agents
@@ -61,7 +61,7 @@ const Hero = () => (
         </div>
       </div>
 
-      <div className="hidden lg:mt-0 md:col-span-6 lg:flex md:block">
+      <div className="hidden flex lg:mt-0 md:col-span-6 lg:flex md:block">
         <HeroImage />
       </div>
 

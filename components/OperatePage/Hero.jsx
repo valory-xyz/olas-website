@@ -51,8 +51,6 @@ const Hero = () => (
         </div>
       </div>
 
-      {/* <div className="hidden sm:block col-span-1" /> */}
-
       <div className="hidden lg:mt-0 lg:col-span-6 lg:flex md:block">
         <OperateHeroImage />
       </div>
