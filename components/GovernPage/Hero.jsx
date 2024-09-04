@@ -44,10 +44,10 @@ export const Hero = () => (
           ecosystem.
         </p>
 
-        <Button 
-          variant="default" 
-          size="xl" 
-          asChild 
+        <Button
+          variant="default"
+          size="xl"
+          asChild
           className="my-6 w-full md:w-auto"
         >
           <Link href="https://govern.olas.network">Start governing now</Link>

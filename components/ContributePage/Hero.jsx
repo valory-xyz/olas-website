@@ -4,10 +4,10 @@ import React from 'react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { 
-  MAIN_TITLE_CLASS, 
+import {
+  MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS
+  TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
 import { CTA_LINK } from './utils';
 
@@ -22,8 +22,8 @@ const HeroImage = () => (
 );
 
 const Hero = () => (
-  <SectionWrapper 
-    customClasses={`border-b ${SECTION_BOX_CLASS}`} 
+  <SectionWrapper
+    customClasses={`border-b ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
@@ -33,7 +33,9 @@ const Hero = () => (
         </div>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left mb-6`}>
-          Advance the network, <br/>
+          Advance the network,
+          {' '}
+          <br />
           gain recognition
         </h2>
 
@@ -42,19 +44,19 @@ const Hero = () => (
         </div>
 
         <Button
-            variant="default"
-            size="xl"
-            asChild
-            className="my-6 w-full md:w-auto"
-          >
-            <Link href={CTA_LINK}>Start Contributing</Link>
+          variant="default"
+          size="xl"
+          asChild
+          className="my-6 w-full md:w-auto"
+        >
+          <Link href={CTA_LINK}>Start Contributing</Link>
         </Button>
       </div>
 
       <div className="hidden lg:mt-0 md:col-span-6 lg:flex md:block">
         <HeroImage />
       </div>
-      
+
     </div>
   </SectionWrapper>
 );

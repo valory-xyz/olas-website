@@ -39,7 +39,7 @@ module.exports = {
         destination: 'https://build.olas.network/dev-incentives',
         permanent: true,
       },
-       {
+      {
         source: '/donate',
         destination: 'https://govern.olas.network/donate',
         permanent: true,
@@ -63,7 +63,7 @@ module.exports = {
         source: '/my-bonds',
         destination: 'https://bond.olas.network/my-bonds',
         permanent: true,
-      }
+      },
     ];
   },
   async headers() {

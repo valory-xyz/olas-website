@@ -10,4 +10,4 @@ const requestConfig = {
 export const tokenomicsGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_GRAPH_ENDPOINT_MAINNET,
   requestConfig,
-)
+);

@@ -16,8 +16,8 @@ const HeroImage = () => (
 );
 
 const Hero = () => (
-  <SectionWrapper 
-    customClasses={`border-b ${SECTION_BOX_CLASS}`} 
+  <SectionWrapper
+    customClasses={`border-b ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
