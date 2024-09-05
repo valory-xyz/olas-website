@@ -16,18 +16,19 @@ import {
   ExternalLink, H1, Lead, Upcase,
 } from 'components/ui/typography';
 import { OPERATE_AGENTS_URL } from 'common-util/constants';
+import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
 
 const BabyDegenHeader = () => (
   <SectionWrapper>
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <Upcase>BABY DEGEN</Upcase>
-        <H1 className="mt-4 mb-4">
+      <div className={"lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12"}>
+        <div className={TEXT_MEDIUM_LIGHT_CLASS}>BABY DEGEN</div>
+        <H1 className={MAIN_TITLE_CLASS}>
           Taste the future of AI agent-powered trading
         </H1>
-        <Lead className="mb-8">
+        <p className={`${TEXT_SMALL_CLASS} mb-8`}>
           Take your first steps on your way to trading bliss.
-        </Lead>
+        </p>
         <Button size="xl" disabled className="px-0">
           Coming soon
         </Button>
