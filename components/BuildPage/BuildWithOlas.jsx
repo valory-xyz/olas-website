@@ -28,12 +28,12 @@ const body = (
       other code components.
     </p>
 
-    <div className="flex gap-6">
+    <div className="flex flex-wrap justify-stretch gap-6">
       <Button
         variant="default"
         size="xl"
         asChild
-        className="mb-6 w-full md:w-auto"
+        className="grow"
       >
         <a href={buttonLinks.exploreBuildPath}>Explore Build Paths</a>
       </Button>
@@ -42,7 +42,7 @@ const body = (
         variant="ghostPrimary"
         size="xl"
         asChild
-        className="mb-6 w-full md:w-auto"
+        className="grow"
       >
         <a
           href={buttonLinks.visitTheDocs}

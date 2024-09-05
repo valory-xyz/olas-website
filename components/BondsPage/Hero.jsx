@@ -31,7 +31,7 @@ export const Hero = () => (
           OLAS BOND
         </div>
 
-        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto`}>
+        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto mb-6`}>
           Provide liquidity,
           <br />
           get discounted OLAS
