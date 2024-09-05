@@ -28,7 +28,6 @@ const body = (
       other code components.
     </p>
 
-    {/* <div className="flex sm:flex-wrap md:flex-wrap justify-center w-full gap-6"> */}
     <div className="flex flex-wrap justify-stretch gap-6">
       <Button
         variant="default"
