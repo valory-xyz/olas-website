@@ -17,14 +17,14 @@ const Resources = ({ limit = null, tagFilter = null }) => {
   return (
     <div>
       <div>
-        <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
+        <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Resources
         </h2>
         {(limit !== null && newResources.length > limit) && (
           <div className="mb-4">
             <Link
               href="/resources"
-              className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
+              className="text-xl lg:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
             >
               See all ▶
             </Link>
