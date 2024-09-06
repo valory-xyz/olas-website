@@ -16,8 +16,6 @@ const SectionWrapper = ({
         return 'w-full h-full bg-subtle-gradient bg-white';
       case 'GOVERNATOOORR':
         return 'w-full h-full bg-governatooorr bg-size-50 bg-repeat';
-      case 'LINEAR_GRADIENT':
-        return 'w-full h-full bg-gradient-to-r from-[#FFF0F1] to-white to-70%';
       case 'NONE':
         return 'w-full h-full';
       default:
@@ -53,7 +51,7 @@ const SectionWrapper = ({
 };
 
 SectionWrapper.propTypes = {
-  backgroundType: PropTypes.oneOf(['SUBTLE_GRADIENT', 'LINEAR_GRADIENT', 'GOVERNATOOORR', 'NONE']),
+  backgroundType: PropTypes.oneOf(['SUBTLE_GRADIENT', 'GOVERNATOOORR', 'NONE']),
   backgroundImage: PropTypes.string,
   children: PropTypes.node.isRequired,
   customClasses: PropTypes.string,

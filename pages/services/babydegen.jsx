@@ -108,11 +108,10 @@ const WhatIsBabyDegen = () => (
 
 const MeetTheOptimusAgent = () => (
   <SectionWrapper
-    customClasses="border-y border-b-0 border-[#FFE0E6]"
-    backgroundType="LINEAR_GRADIENT"
+    customClasses="lg:p-24 border-y border-[#FFE0E6] w-full h-full bg-gradient-to-r from-[#FFF0F1] to-white to-70%"
   >
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="text-center px-5 my-12 lg:p-0 lg:text-left lg:col-span-7">
+    <div className="px-8 py-12 lg:p-0 grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
+      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h1 className={`${SUB_HEADER_CLASS} mb-8 mt-12`}>
           Meet the Optimus agent: a step towards BabyDegen
         </h1>
@@ -131,7 +130,7 @@ const MeetTheOptimusAgent = () => (
         </p>
       </div>
 
-      <div className="mb-12 lg:mb-0 lg:mt-0 lg:col-span-5 lg:flex">
+      <div className="lg:mt-0 lg:col-span-4 lg:col-end-13 lg:flex">
         <Image
           src="/images/services/babydegen/optimus.png"
           alt="Get ready to participate in AI agent DeFi"
