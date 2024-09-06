@@ -4,7 +4,7 @@ import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
-import { ExternalLink, H1, Lead } from 'components/ui/typography';
+import { ExternalLink, H1 } from 'components/ui/typography';
 import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import {
   MAIN_TITLE_CLASS, SUB_HEADER_CLASS, TEXT_CLASS, TEXT_MEDIUM_LIGHT_CLASS, TEXT_SMALL_CLASS,
@@ -107,7 +107,7 @@ const WhatIsBabyDegen = () => (
 );
 
 const MeetTheOptimusAgent = () => (
-  <SectionWrapper 
+  <SectionWrapper
     customClasses="border-y border-b-0 border-[#FFE0E6]"
     backgroundType="LINEAR_GRADIENT"
   >
