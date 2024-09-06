@@ -69,10 +69,10 @@ const BabyDegenHeader = () => (
 
 const WhatIsBabyDegen = () => (
   <SectionWrapper>
-    <div className="grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center my-24">
+    <div className="grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h1 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h1>
-        <p className="mb-8">
+        <p className="mb-20">
           BabyDegen is your very own autonomous trading agent, designed to
           navigate the fast-paced world of DeFi. BabyDegen trades on your behalf
           leveraging various AI models and external data sources with speed and
@@ -107,25 +107,28 @@ const WhatIsBabyDegen = () => (
 );
 
 const MeetTheOptimusAgent = () => (
-  <SectionWrapper customClasses="border-y border-b-0">
+  <SectionWrapper 
+    customClasses="border-y border-b-0 border-[#FFE0E6]"
+    backgroundType="LINEAR_GRADIENT"
+  >
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="text-center px-5 my-12 lg:p-0 lg:text-left lg:col-span-7">
-        <H1 className="mb-8 mt-12">
+        <h1 className={`${SUB_HEADER_CLASS} mb-8 mt-12`}>
           Meet the Optimus agent: a step towards BabyDegen
-        </H1>
-        <Lead className="mb-8">
+        </h1>
+        <p className="mb-8">
           The Optimus Agent is an autonomous AI agent that streamlines your DeFi
           experience by intelligently managing your assets on specific
           blockchain platforms. Initially focused on select DeFi protocols on
           Optimism Mainnet and Base, it offers a targeted approach to maximizing
           returns within these ecosystems.
-        </Lead>
-        <Lead className="mb-8">
+        </p>
+        <p className="mb-8">
           The Optimus Agent is currently in alpha testing via Quickstart and
           currently supports key protocols like Balancer and Uniswap. It’s
           operational on Ethereum, Base, and Optimism. Looking ahead, it will
           expand to support any protocol that wishes to integrate.
-        </Lead>
+        </p>
       </div>
 
       <div className="mb-12 lg:mb-0 lg:mt-0 lg:col-span-5 lg:flex">
@@ -278,7 +281,7 @@ const HowItWorks = () => (
       </div>
 
       <div className="lg:mx-16">
-        <div className="text-xl list-decimal mb-6 mt-12 mb-12">
+        <div className="list-decimal mb-6 mt-12 mb-12">
           Once you've funded your account and activated BabyDegen, there's nothing
           more you need to do. But if you're curious about what happens behind the
           scenes, here's a closer look:
@@ -286,7 +289,7 @@ const HowItWorks = () => (
 
         <div className=" lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
           <div className="lg:col-span-6 lg:p-0">
-            <ol className="text-xl list-decimal mb-6 pl-5">
+            <ol className="list-decimal mb-6 pl-5">
               {howItWorksSteps.map(({ title, description }, index) => (
                 <li key={index} className="mb-4">
                   <span className="font-bold">{title}</span>
