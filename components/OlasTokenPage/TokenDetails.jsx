@@ -176,6 +176,29 @@ const TOKEN_DETAILS = [
       },
     },
   },
+  {
+    network: 'Celo',
+    address: '0xaCFfAe8e57Ec6E394Eb1b41939A8CF7892DbDc51',
+    explorerBaseUrl: 'https://celoscan.io/token/',
+    exchange: {
+      name: 'Ubeswap',
+      url: 'https://app.ubeswap.org/#/swap?inputCurrency=0x471ece3750da237f93b8e339c536989b8978a438&outputCurrency=0xacffae8e57ec6e394eb1b41939a8cf7892dbdc51',
+    },
+    bridge: {
+      name: 'Wormhole: Portal Token Bridge',
+      url: 'https://portalbridge.com/advanced-tools/#/transfer',
+    },
+    bond: {
+      guideUrl: `${BOND_BASE_URL}celo-olas-via-ubeswap-on-celo`,
+      lpTokenName: 'CELO-OLAS',
+      bridgedLpTokenAddress: '0xC085F31E4ca659fF8A17042dDB26f1dcA2fBdAB4',
+      lpTokenAddress: '0x2976Fa805141b467BCBc6334a69AffF4D914d96A',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
+    },
+  },
 ];
 
 const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
