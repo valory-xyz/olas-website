@@ -39,7 +39,7 @@ const HeaderLeftContent = () => (
         className="grow lg:w-auto "
       >
         <a href={OPERATE_AGENTS_URL}>
-          Explore available agents
+          Explore other agents today
         </a>
       </Button>
     </div>
