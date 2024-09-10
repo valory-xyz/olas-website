@@ -141,7 +141,7 @@ const GetInvolvedCard = ({
             src={imageSrc}
             width={imageWidth}
             height={imageHeight}
-            className={`overflow-visible self-center object-cover w-full mb-2`}
+            className="overflow-visible self-center object-cover w-full mb-2"
           />
 
           )}
@@ -164,14 +164,14 @@ const GetInvolvedCard = ({
             alt={title}
             width={imageWidth}
             height={imageHeight}
-            className={`self-center max-sm:mx-auto max-w-[120px] px-4 max-sm:mb-2`}
+            className="self-center max-sm:mx-auto max-w-[120px] px-4 max-sm:mb-2"
           />
           <div className="pl-2 flex flex-col gap-3">
             {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
             {description && <p className="text-[#4D596A]">{description}</p>}
             {ctaText && (
             <span className="text-purple-600 text-lg max-sm:order-first">{ctaText}</span>
-          )}
+            )}
           </div>
         </div>
       </Link>
