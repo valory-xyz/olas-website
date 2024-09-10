@@ -148,7 +148,7 @@ const GetInvolvedCard = ({
           {ctaText && (
             <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>
           )}
-          {title && <h3 className="text-2xl font-semibold">{title}</h3>}
+          {title && <h3 className="text-2xl font-semibold my-3">{title}</h3>}
           {description && <p className="text-[#4D596A]">{description}</p>}
         </Card>
       </Link>
