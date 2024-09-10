@@ -56,7 +56,7 @@ const GET_INVOLVED_DATA = [
     id: 6,
     imageSrc: '/images/homepage/olas-operate.png',
     title: 'Run agents, stake & earn rewards',
-    description: 
+    description:
     'A unique staking mechanism rewards active agents for their useful contributions',
     ctaText: 'Operate',
     href: '/operate',
@@ -72,8 +72,7 @@ const GET_INVOLVED_DATA = [
   },
 ];
 
-
-const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF]'
+const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF]';
 
 const GetInvolved = () => (
   <SectionWrapper id="get-involved">
@@ -83,17 +82,17 @@ const GetInvolved = () => (
       </SectionHeading>
       <p className="text-xl text-[#4D596A] mb-12">Benefit from Olas protocol, no matter what you bring to the table.</p>
     </div>
-    
+
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-    <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
+      <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
         <Image
-          src='images/homepage/get-involved-diagram.svg'
+          src="images/homepage/get-involved-diagram.svg"
           width={920}
           height={595}
           className="mx-auto m-2"
         />
       </Card>
-      
+
       {GET_INVOLVED_DATA.map((datum) => {
         const {
           imageSrc,
@@ -133,7 +132,6 @@ const GetInvolvedCard = ({
   href,
   colSpan = 1,
 }) => {
-
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
@@ -159,24 +157,24 @@ const GetInvolvedCard = ({
   return (
     <Card className={`${CARD_BG} flex sm:flex-wrap col-span-1 md:col-span-2 lg:col-span-3 h-full`}>
       <Link href={href}>
-      
-      <div className="flex m-auto gap-2 float-lef m-2">
-        <Image
-          src={imageSrc}
-          alt={title}
-          width={imageWidth}
-          height={imageHeight}
-          className={`hidden md:block self-center object-contain max-h-[${imageHeight}px] mb-2`}
-        />
-        <div className="justify-center flex-col flex gap-2">
-          {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
-          {description && <p className="text-[#4D596A]">{description}</p>}
-          {ctaText && (
+
+        <div className="flex m-auto gap-2 float-lef m-2">
+          <Image
+            src={imageSrc}
+            alt={title}
+            width={imageWidth}
+            height={imageHeight}
+            className={`hidden md:block self-center object-contain max-h-[${imageHeight}px] mb-2`}
+          />
+          <div className="justify-center flex-col flex gap-2">
+            {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
+            {description && <p className="text-[#4D596A]">{description}</p>}
+            {ctaText && (
             <span className="text-purple-600 text-lg">{ctaText}</span>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-      </Link> 
+      </Link>
     </Card>
   );
 };
