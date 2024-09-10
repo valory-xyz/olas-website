@@ -63,7 +63,7 @@ const GET_INVOLVED_DATA = [
   },
   {
     id: 7,
-    imageSrc: '/images/homepage/olas-token.svg',
+    imageSrc: '/images/homepage/olas-token-illustration.svg',
     title: 'Get OLAS, use it across the network',
     description: 'Olas provides access to the core functions of the network.',
     ctaText: 'Get OLAS',
@@ -72,7 +72,7 @@ const GET_INVOLVED_DATA = [
   },
 ];
 
-const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF]';
+const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF] hover:-translate-y-2 ease-in-out transition duration-150';
 
 const GetInvolved = () => (
   <SectionWrapper id="get-involved">
@@ -141,7 +141,7 @@ const GetInvolvedCard = ({
             src={imageSrc}
             width={imageWidth}
             height={imageHeight}
-            className="mx-auto overflow-visible self-center object-cover max-h-[100px] mb-2 "
+            className={`overflow-visible self-center object-cover w-full mb-2`}
           />
 
           )}
@@ -156,23 +156,22 @@ const GetInvolvedCard = ({
   }
 
   return (
-    <Card className={`${CARD_BG} flex sm:flex-wrap col-span-1 md:col-span-2 lg:col-span-3 h-full`}>
+    <Card className={`${CARD_BG} flex col-span-1 md:col-span-2 lg:col-span-3 h-full`}>
       <Link href={href}>
-
-        <div className="flex m-auto gap-2 float-lef m-2">
+        <div className="justify-center md:grid md:grid-flow-col flex-col">
           <Image
             src={imageSrc}
             alt={title}
             width={imageWidth}
             height={imageHeight}
-            className={`hidden md:block object-cover self-center max-w-[${imageHeight}px]`}
+            className={`self-center max-sm:mx-auto max-w-[120px] px-4 max-sm:mb-2`}
           />
-          <div className="justify-center flex-col flex gap-2">
+          <div className="pl-2 flex flex-col gap-3">
             {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
             {description && <p className="text-[#4D596A]">{description}</p>}
             {ctaText && (
-            <span className="text-purple-600 text-lg">{ctaText}</span>
-            )}
+            <span className="text-purple-600 text-lg max-sm:order-first">{ctaText}</span>
+          )}
           </div>
         </div>
       </Link>
