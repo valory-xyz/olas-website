@@ -12,7 +12,7 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-contribute.png',
     title: 'Grow awareness about Olas',
     description:
-    'Prmote Olas on X and earn points while doing so.',
+    'Promote Olas on X and earn points while doing so.',
     ctaText: 'Contribute',
     href: '/contribute',
   },
@@ -124,7 +124,7 @@ const GetInvolved = () => (
 
 const GetInvolvedCard = ({
   imageSrc,
-  imageWidth = 200,
+  imageWidth = 300,
   imageHeight = 124,
   title,
   description,
@@ -135,19 +135,20 @@ const GetInvolvedCard = ({
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
-        <Card className={`${CARD_BG} flex flex-col justify-center min-h-[278px] h-full`}>
+        <Card className={`${CARD_BG} grid-flow-row justify-center min-h-[278px] h-full`}>
           {imageSrc && title && (
-            <Image
+              <Image
               src={imageSrc}
               width={imageWidth}
               height={imageHeight}
-              className={`self-center object-contain max-h-[${imageHeight}px] mb-2 `}
+              className={`mx-auto overflow-visible self-center object-cover max-h-[100px] mb-2 `}
             />
+            
           )}
           {ctaText && (
             <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>
           )}
-          {title && <h3 className="text-2xl font-semibold mb-2">{title}</h3>}
+          {title && <h3 className="text-2xl font-semibold">{title}</h3>}
           {description && <p className="text-[#4D596A]">{description}</p>}
         </Card>
       </Link>
@@ -164,7 +165,7 @@ const GetInvolvedCard = ({
             alt={title}
             width={imageWidth}
             height={imageHeight}
-            className={`hidden md:block self-center object-contain max-h-[${imageHeight}px] mb-2`}
+            className={`hidden md:block object-cover self-center max-w-[${imageHeight}px]`}
           />
           <div className="justify-center flex-col flex gap-2">
             {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
