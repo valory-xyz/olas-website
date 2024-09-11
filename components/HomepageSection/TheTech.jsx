@@ -10,27 +10,47 @@ import SectionHeading from '../SectionHeading';
 const innovations = [
   {
     title: 'Olas Protocol',
-    image: '/images/olas-protocol.png',
-    description:
-      'The on-chain protocol coordinates, incentivizes and guides different actors towards Olas’ goals.',
-    descriptionSubText: 'It’s key components are:',
+    image: {
+      src: '/images/olas-protocol.png',
+      height: 160,
+      width: 222,
+    },
+    description: (
+      <>
+        The multi-chain protocol coordinates, incentivizes and guides its
+        participants towards Olas’ goals. Anyone can
+        {' '}
+        <Link href="/#get-involved">
+          get involved
+        </Link>
+        {' '}
+        through a role-based system and and be rewarded for their useful
+        contributions.
+      </>
+    ),
+    descriptionSubText: 'Its key components are:',
     descriptionItems: [
-      'On-Chain Registries',
-      'Tokenomics',
-      'Developer Rewards',
+      'Developer Rewards mechanism to incentivise agent code contributions.',
+      'Staking mechanism to incentivise active agent contributions.',
+      'Bonding mechanism to incentivise liquidity provision.',
     ],
     link: '/protocol',
   },
   {
     title: 'Olas Stack',
-    image: '/images/olas-stack.png',
+    image: {
+      src: '/images/olas-stack.png',
+      height: 160,
+      width: 160,
+    },
     description:
       'Open-source framework that enables developers to build autonomous agents that:',
     descriptionItems: [
       'run off-chain',
-      'can be co-owned',
+      'are secured on-chain',
+      'can be co-owned (i.e Decentralized Agents)',
       'are highly robust and transparent',
-      'benefit from modularity',
+      'benefit from modularity.',
     ],
     link: '/stack',
   },
@@ -39,7 +59,7 @@ const innovations = [
 export const TheTech = ({ hideLearnMoreButton = false }) => (
   <SectionWrapper
     backgroundType="NONE"
-    customClasses="text-center py-24 px-4 border-b bg-gradient-to-tl from-[#F5D0FE] to-white to-80%"
+    customClasses="text-center py-24 px-4 border-b bg-[linear-gradient(180deg,_#FFF_0%,_#F9E5FF_100%)]"
   >
     <Upcase>
       <span>THE TECH</span>
@@ -48,21 +68,21 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
       Enabled by two core innovations
     </SectionHeading>
 
-    <div className="grid md:grid-cols-2 gap-4 max-w-screen-xl mx-auto mb-16">
+    <div className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-5xl mx-auto mb-16">
       {innovations.map((item) => (
         <Card
-          className="grid grid-cols-5 gap-6 p-6 bg-white items-start"
+          className="flex flex-col gap-6 p-6 bg-white rounded-2xl border-0"
           key={item.title}
         >
           <Image
             alt={item.title}
-            src={item.image}
-            width={275}
-            height={200}
-            className="object-contain col-span-2 mt-4"
+            src={item.image.src}
+            width={item.image.width}
+            height={item.image.height}
+            className="object-contain self-center"
           />
-          <div className="col-span-3 text-start">
-            <CardTitle className="mb-4 lg:text-3xl">
+          <div className="text-start">
+            <CardTitle className="mb-4">
               <span>{item.title}</span>
             </CardTitle>
             <p className="mb-2">{item.description}</p>
