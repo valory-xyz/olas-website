@@ -132,11 +132,6 @@ const GetInvolvedCard = ({
   href,
   colSpan = 1,
 }) => {
-  const imageSizes = {
-    width: colSpan === 1 ? imageWidth ?? 295 : 317,
-    height: colSpan === 1 ? imageHeight ?? 110 : 276,
-  };
-
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
@@ -145,9 +140,9 @@ const GetInvolvedCard = ({
 
             <Image
               src={imageSrc}
-              width={imageSizes.width}
-              height={imageSizes.height}
-              className={`overflow-visible self-center mb-2`}
+              width={368}
+              height={111}
+              className="overflow-visible self-center object-scale-down max-h-[100px] mb-2"
             />
 
           )}
@@ -171,7 +166,7 @@ const GetInvolvedCard = ({
             alt={title}
             width={imageWidth}
             height={imageHeight}
-            className="self-center max-sm:mx-auto max-w-[120px] px-4 max-sm:mb-2"
+            className="max-sm:mx-auto max-h-[100px] px-4 max-sm:mb-2"
           />
           <div className="pl-2 flex flex-col gap-3">
             {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
