@@ -165,9 +165,9 @@ const GetInvolvedCard = ({
           <Image
             src={imageSrc}
             alt={title}
-            width={imageWidth}
-            height={imageHeight}
-            className="max-sm:mx-auto max-h-[100px] px-4 max-sm:mb-2"
+            width={130}
+            height={130}
+            className="max-sm:mx-auto max-sm:max-h-[110px] md:pr-4 max-sm:mb-2"
           />
           <div className="pl-2 flex flex-col gap-3">
             {title && (<h3 className="text-2xl font-semibold">{title}</h3>)}
