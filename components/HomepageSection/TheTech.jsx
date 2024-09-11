@@ -28,7 +28,7 @@ const innovations = [
         contributions.
       </>
     ),
-    descriptionSubText: 'It’s key components are:',
+    descriptionSubText: 'Its key components are:',
     descriptionItems: [
       'Developer Rewards mechanism to incentivise agent code contributions.',
       'Staking mechanism to incentivise active agent contributions.',
