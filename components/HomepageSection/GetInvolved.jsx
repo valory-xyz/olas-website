@@ -137,7 +137,7 @@ const GetInvolvedCard = ({
       <Link href={href}>
         <Card className={`${CARD_BG} grid-flow-row justify-items-center min-h-[278px] h-full`}>
           {imageSrc && title && (
-            <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-10">
+            <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-3 xl:mb-10">
               <Image
                 src={imageSrc}
                 width={imageWidth}
