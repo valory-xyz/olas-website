@@ -75,7 +75,7 @@ const GET_INVOLVED_DATA = [
 const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF] hover:-translate-y-2 ease-in-out transition duration-150';
 
 const GetInvolved = () => (
-  <SectionWrapper id="get-involved">
+  <SectionWrapper id="get-involved" customClasses="py-12 px-4 md:px-8 lg:p-24">
     <div className="text-center">
       <SectionHeading color="text-gray-900" weight="font-bold" other="mb-6">
         Choose your role & get involved
@@ -84,7 +84,7 @@ const GetInvolved = () => (
     </div>
 
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-      <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
+      <Card className="max-sm:border-none max-sm:shadow-none border-1.5 border-gray-200 rounded-2xl md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
         <Image
           src="images/homepage/get-involved-diagram.svg"
           width={920}
