@@ -30,7 +30,7 @@ const innovations = [
     ),
     descriptionSubText: 'It’s key components are:',
     descriptionItems: [
-      'Dev Rewards mechanism to incentivise agent code contributions.',
+      'Developer Rewards mechanism to incentivise agent code contributions.',
       'Staking mechanism to incentivise active agent contributions.',
       'Bonding mechanism to incentivise liquidity provision.',
     ],
