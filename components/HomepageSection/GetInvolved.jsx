@@ -142,12 +142,13 @@ const GetInvolvedCard = ({
       <Link href={href}>
         <Card className={`${CARD_BG} grid-flow-row justify-center min-h-[278px] h-full`}>
           {imageSrc && title && (
-          <Image
-            src={imageSrc}
-            width={imageSizes.width}
-            height={imageSizes.height}
-            className={`overflow-visible my-3 self-center max-h-[${imageSizes.height}] w-full mb-2`}
-          />
+
+            <Image
+              src={imageSrc}
+              width={imageSizes.width}
+              height={imageSizes.height}
+              className={`overflow-visible self-center mb-2`}
+            />
 
           )}
           {ctaText && (
