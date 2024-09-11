@@ -49,8 +49,8 @@ export default function Home({ activityMetrics }) {
       <Activity activityMetrics={activityMetrics} />
       <UseCases />
       <TheTech />
-      <PropelledBy />
       <GetInvolved />
+      <PropelledBy />
       <Media />
     </PageWrapper>
   );
