@@ -1,5 +1,5 @@
-import get from "lodash/get";
-import { DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID } from "common-util/constants";
+import get from 'lodash/get';
+import { DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID } from 'common-util/constants';
 
 const duneApiCall = async ({ queryId }) => {
   try {
