@@ -6,13 +6,17 @@ import PropTypes from 'prop-types';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 // import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
-import { FLIPSIDE_URL } from 'common-util/constants';
+import { Popover } from 'components/ui/popover';
+import { FLIPSIDE_URL, DUNE_QUERY_URL, DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID } from 'common-util/constants';
+import { Card } from 'components/ui/card';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
 
 export const Activity = ({
-  activityMetrics: { agents, agentsTypes, transactions },
+  activityMetrics: {
+    agents, agentsTypes, transactions, dailyActiveAgents,
+  },
 }) => {
   const data = useMemo(
     () => [
@@ -72,11 +76,29 @@ export const Activity = ({
           Olas incentivizes and coordinates different parties to launch
           autonomous agents that form entire AI economies.
         </p>
-        <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto">
-          🤖 &nbsp; The first autonomous agents and economies are
-          {' '}
-          <ExternalLink href={FLIPSIDE_URL}>active</ExternalLink>
-          .
+        <Card className="flex flex-col gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+          <span>
+            🤖 The first autonomous AI agents are
+            {' '}
+            <span className="font-medium">active</span>
+          </span>
+          {dailyActiveAgents ? (
+            <ExternalLink
+              className="font-extrabold text-6xl"
+              href={`${DUNE_QUERY_URL}/${DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID}`}
+              hideArrow
+            >
+              {dailyActiveAgents}
+              <span className="text-4xl">↗</span>
+            </ExternalLink>
+          ) : <span className="text-purple-600 text-6xl">--</span>}
+          <div className="flex self-center gap-2">
+            Daily Active Agents (DAAs)
+            <Popover>7-day average Daily Active Agents</Popover>
+          </div>
+        </Card>
+        <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
+          Olas agent economies show a growing lifetime traction
         </p>
       </div>
       <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-8">
@@ -128,5 +150,6 @@ Activity.propTypes = {
     transactions: PropTypes.number,
     agents: PropTypes.number,
     agentsTypes: PropTypes.number,
+    dailyActiveAgents: PropTypes.number,
   }).isRequired,
 };
