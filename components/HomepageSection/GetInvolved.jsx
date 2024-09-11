@@ -135,15 +135,16 @@ const GetInvolvedCard = ({
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
-        <Card className={`${CARD_BG} grid-flow-row justify-center min-h-[278px] h-full`}>
+        <Card className={`${CARD_BG} grid-flow-row justify-items-center min-h-[278px] h-full`}>
           {imageSrc && title && (
-
-            <Image
-              src={imageSrc}
-              width={368}
-              height={111}
-              className="overflow-visible self-center object-scale-down max-h-[100px] mb-2"
-            />
+            <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-10">
+              <Image
+                src={imageSrc}
+                width={imageWidth}
+                height={imageHeight}
+                className="top-2 object-cover self-center w-full my-2"
+              />
+            </div>
 
           )}
           {ctaText && (
