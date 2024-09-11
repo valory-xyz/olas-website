@@ -107,7 +107,7 @@ const UseCases = () => (
       ))}
     </div>
 
-    <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
+    {/* <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
       <div className="md:col-span-6 md:flex">
         <Image
           alt="Use cases"
@@ -126,11 +126,11 @@ const UseCases = () => (
           The impact of autonomous agent economies is shaping applications and
           products in Web3 and far beyond.
         </p>
-        {/* <Button variant="outline" size="xl" asChild>
+        <Button variant="outline" size="xl" asChild>
           <Link href="/explore#use-cases">See more use cases</Link>
-        </Button> */}
+        </Button>
       </div>
-    </div>
+    </div> */}
   </SectionWrapper>
 );
 
