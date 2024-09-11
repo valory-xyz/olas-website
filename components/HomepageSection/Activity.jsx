@@ -80,11 +80,11 @@ export const Activity = ({
           .
         </p> */}
         <Card
-          className="border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto bg-purple-100 rounded-2xl"
+          className="border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]"
         >
           <div className="m-4 gap-4">
             🤖 &nbsp; The first autonomous agents and economies are <strong>active.</strong>
-            <div className="text-2xl"><ExternalLink href={FLIPSIDE_URL}>103</ExternalLink></div>
+            <div className="font-bold text-6xl"><ExternalLink href={FLIPSIDE_URL}>103</ExternalLink></div>
               Daily Active Agents (DAAs)
           </div>
         </Card>
