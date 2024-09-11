@@ -57,7 +57,7 @@ const GET_INVOLVED_DATA = [
     imageSrc: '/images/homepage/olas-operate.png',
     title: 'Run agents, stake & earn rewards',
     description:
-    'A unique staking mechanism rewards active agents for their useful contributions',
+    'A unique staking mechanism rewards active agents for their useful contributions.',
     ctaText: 'Operate',
     href: '/operate',
   },
