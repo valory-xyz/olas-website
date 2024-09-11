@@ -8,6 +8,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionHeading from '../SectionHeading';
+import { Card } from 'components/ui/card';
 
 const BLOCKCHAIN_COUNT = 8;
 
@@ -72,11 +73,23 @@ export const Activity = ({
           Olas incentivizes and coordinates different parties to launch
           autonomous agents that form entire AI economies.
         </p>
-        <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto">
+        {/* <p className="py-2 px-5 bg-purple-100 border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto">
           🤖 &nbsp; The first autonomous agents and economies are
           {' '}
           <ExternalLink href={FLIPSIDE_URL}>active</ExternalLink>
           .
+        </p> */}
+        <Card
+          className="border-fuchsia-200 border-1.5 rounded-full text-xl w-fit mx-auto bg-purple-100 rounded-2xl"
+        >
+          <div className="m-4 gap-4">
+            🤖 &nbsp; The first autonomous agents and economies are <strong>active.</strong>
+            <div className="text-2xl"><ExternalLink href={FLIPSIDE_URL}>103</ExternalLink></div>
+              Daily Active Agents (DAAs)
+          </div>
+        </Card>
+        <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
+          Olas agent economies show a growing lifetime traction
         </p>
       </div>
       <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-8">
