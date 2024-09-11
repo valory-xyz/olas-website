@@ -63,7 +63,7 @@ const GET_INVOLVED_DATA = [
   },
   {
     id: 7,
-    imageSrc: '/images/homepage/olas-token-illustration.svg',
+    imageSrc: '/images/homepage/olas-token.svg',
     title: 'Get OLAS, use it across the network',
     description: 'Olas provides access to the core functions of the network.',
     ctaText: 'Get OLAS',
@@ -141,7 +141,7 @@ const GetInvolvedCard = ({
             src={imageSrc}
             width={imageWidth}
             height={imageHeight}
-            className="overflow-visible self-center object-cover w-full mb-2"
+            className="overflow-visible my-3 self-center object-cover w-full mb-2"
           />
 
           )}
@@ -156,8 +156,9 @@ const GetInvolvedCard = ({
   }
 
   return (
-    <Card className={`${CARD_BG} flex col-span-1 md:col-span-2 lg:col-span-3 h-full`}>
-      <Link href={href}>
+    <Link className="col-span-1 md:col-span-2 lg:col-span-3" href={href}>
+      <Card className={`${CARD_BG} h-full flex `}>
+        
         <div className="justify-center md:grid md:grid-flow-col flex-col">
           <Image
             src={imageSrc}
@@ -174,8 +175,9 @@ const GetInvolvedCard = ({
             )}
           </div>
         </div>
-      </Link>
-    </Card>
+        
+      </Card>
+    </Link>
   );
 };
 
