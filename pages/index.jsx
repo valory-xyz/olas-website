@@ -4,6 +4,9 @@ import {
   getTotalTransactionsCount,
   getTotalUnitsCount,
 } from 'common-util/api/flipside';
+import {
+  getDailyActiveAgentsAverage,
+} from 'common-util/api/dune';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Hero from 'components/HomepageSection/Hero';
@@ -17,9 +20,10 @@ import Media from 'components/HomepageSection/Media';
 const DAY_IN_SECONDS = 86400;
 
 export const getStaticProps = async () => {
-  const [transactions, unitsCount] = await Promise.allSettled([
+  const [transactions, unitsCount, dailyActiveAgents] = await Promise.allSettled([
     getTotalTransactionsCount(),
     getTotalUnitsCount(),
+    getDailyActiveAgentsAverage(),
   ]);
 
   return {
@@ -34,6 +38,10 @@ export const getStaticProps = async () => {
         agentsTypes:
           unitsCount.status === 'fulfilled'
             ? unitsCount.value.agentTypesCount
+            : null,
+        dailyActiveAgents:
+          dailyActiveAgents.status === 'fulfilled'
+            ? dailyActiveAgents.value
             : null,
       },
     },
