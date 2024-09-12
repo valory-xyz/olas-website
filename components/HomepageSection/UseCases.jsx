@@ -106,17 +106,17 @@ const UseCases = () => (
         />
       ))}
 
-      
     </div>
 
     <div>
-      <Button 
-          variant="outline" 
-          size="xl" 
-          asChild
-          className="mt-12 max-sm:mt-3 col-start-2 mx-auto">
-          <Link href="/explore#use-cases">See more use cases</Link>
-        </Button>
+      <Button
+        variant="outline"
+        size="xl"
+        asChild
+        className="mt-12 max-sm:mt-3 col-start-2 mx-auto"
+      >
+        <Link href="/explore#use-cases">See more use cases</Link>
+      </Button>
     </div>
 
     {/* <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
@@ -138,7 +138,7 @@ const UseCases = () => (
           The impact of autonomous agent economies is shaping applications and
           products in Web3 and far beyond.
         </p>
-        
+
       </div>
     </div> */}
   </SectionWrapper>
