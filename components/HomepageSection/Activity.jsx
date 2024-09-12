@@ -85,7 +85,7 @@ export const Activity = ({
           {dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={`${DUNE_QUERY_URL}/${DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID}`}
+              href={`${DUNE_QUERY_URL}/${DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID}/6809279`}
               hideArrow
             >
               {dailyActiveAgents}

@@ -88,12 +88,12 @@ UseCaseCard.propTypes = {
 };
 
 const UseCases = () => (
-  <SectionWrapper customClasses="text-center py-24 px-4">
+  <SectionWrapper customClasses="text-center pt-24 md:py-24 px-4">
     <SectionHeading color="text-gray-900" weight="font-bold">
       Live use cases, creating value today
     </SectionHeading>
 
-    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0 mb-20">
+    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0">
       {useCases.map((item, index) => (
         <UseCaseCard
           key={item.id}
