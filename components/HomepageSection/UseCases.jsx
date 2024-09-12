@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import useCases from 'data/useCases.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-// import { Button } from 'components/ui/button';
+import { Button } from 'components/ui/button';
 import SectionHeading from '../SectionHeading';
 
 const UseCaseCard = ({
@@ -93,7 +93,7 @@ const UseCases = () => (
       Live use cases, creating value today
     </SectionHeading>
 
-    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0 mb-20">
+    <div className="max-w-screen-xl mx-auto p-0 grid grid-cols-1 md:grid-cols-3 gap-0">
       {useCases.map((item, index) => (
         <UseCaseCard
           key={item.id}
@@ -105,6 +105,18 @@ const UseCases = () => (
           {...item}
         />
       ))}
+
+      
+    </div>
+
+    <div>
+      <Button 
+          variant="outline" 
+          size="xl" 
+          asChild
+          className="mt-12 max-sm:mt-3 col-start-2 mx-auto">
+          <Link href="/explore#use-cases">See more use cases</Link>
+        </Button>
     </div>
 
     {/* <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
@@ -126,9 +138,7 @@ const UseCases = () => (
           The impact of autonomous agent economies is shaping applications and
           products in Web3 and far beyond.
         </p>
-        <Button variant="outline" size="xl" asChild>
-          <Link href="/explore#use-cases">See more use cases</Link>
-        </Button>
+        
       </div>
     </div> */}
   </SectionWrapper>
