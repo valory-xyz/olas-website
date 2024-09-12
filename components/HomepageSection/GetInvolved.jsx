@@ -86,7 +86,7 @@ const GetInvolved = () => (
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
       <Card className="max-sm:border-none max-sm:shadow-none border-1.5 border-gray-200 rounded-2xl md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
         <Image
-          src="images/homepage/get-involved-diagram.svg"
+          src="/images/homepage/get-involved-diagram.png"
           width={920}
           height={595}
           className="mx-auto m-2"

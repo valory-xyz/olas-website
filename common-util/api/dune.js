@@ -24,12 +24,6 @@ export const getDailyActiveAgentsAverage = async () => {
   const json = await duneApiCall({
     queryId: DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID,
   });
-  const rows = get(json, 'result.rows');
-
-  // calculate last 7-day average
-  const average = Math.floor(
-    rows.slice(0, 7).reduce((sum, row) => sum + row.total_active_services, 0)
-      / 7,
-  );
-  return average;
+  const average = get(json, "result.rows[0].seven_day_trailing_avg");
+  return Math.ceil(average);
 };
