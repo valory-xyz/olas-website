@@ -24,6 +24,6 @@ export const getDailyActiveAgentsAverage = async () => {
   const json = await duneApiCall({
     queryId: DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID,
   });
-  const average = get(json, "result.rows[0].seven_day_trailing_avg");
+  const average = get(json, 'result.rows[0].seven_day_trailing_avg');
   return Math.ceil(average);
 };
