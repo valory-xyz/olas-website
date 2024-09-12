@@ -45,7 +45,7 @@ export const getStaticProps = async () => {
             : null,
       },
     },
-    revalidate: DAY_IN_SECONDS,
+    revalidate: Number(process.env.NEXT_PUBLIC_CACHE_REVALIDATE_IN_SEC) || DAY_IN_SECONDS,
   };
 };
 
