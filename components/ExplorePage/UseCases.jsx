@@ -85,7 +85,7 @@ ServiceCategoryCard.propTypes = {
 const UseCases = () => (
   <SectionWrapper
     id="use-cases"
-    customClasses="px-8 py-12 lg:py-24 max-w-screen-xl w-full mx-auto"
+    customClasses="max-sm:px-6 px-16 py-12 lg:py-24 max-w-screen-xl w-full mx-auto"
   >
     <h3 className="text-4xl font-bold mb-8 text-center">Use cases</h3>
 
