@@ -115,32 +115,9 @@ const UseCases = () => (
         asChild
         className="mt-12 max-sm:mt-3 col-start-2 mx-auto"
       >
-        <Link href="/explore#use-cases">See more use cases</Link>
+        <Link href="/explore">See more use cases</Link>
       </Button>
     </div>
-
-    {/* <div className="grid max-w-screen-xl md:px-12 mx-auto gap-16 md:grid-cols-12 items-center">
-      <div className="md:col-span-6 md:flex">
-        <Image
-          alt="Use cases"
-          src="/images/use-cases.png"
-          width={834}
-          height={742}
-          className="object-contain"
-        />
-      </div>
-
-      <div className="md:col-span-6 text-center px-5 md:p-0 md:text-left">
-        <h3 className="text-2xl md:text-4xl font-bold mb-4">
-          Expanding what&apos;s possible
-        </h3>
-        <p className="md:text-xl mb-12">
-          The impact of autonomous agent economies is shaping applications and
-          products in Web3 and far beyond.
-        </p>
-
-      </div>
-    </div> */}
   </SectionWrapper>
 );
 

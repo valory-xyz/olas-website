@@ -5,7 +5,7 @@ export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
   { link: '/learn', text: 'Learn' },
-  // { link: '/explore', text: 'Explore' },
+  { link: '/explore', text: 'Explore' },
   { text: 'Resources', submenu: resources },
   { link: 'https://contribute.olas.network/roadmap', text: 'Roadmap', isExternal: true },
 ];

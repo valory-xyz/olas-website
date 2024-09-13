@@ -39,11 +39,9 @@ const LEARN_LINKS = [
   { title: 'Olas Stack', link: '/stack' },
 ];
 
-// const EXPLORE_LINKS = [
-//   { title: 'Use Cases', link: '/explore#use-cases' },
-//   { title: 'Chains', link: '/explore#chains' },
-//   { title: 'Dashboards', link: '/explore#dashboards' },
-// ];
+const EXPLORE_LINKS = [
+  { title: 'Use Cases', link: '/explore#use-cases' }
+];
 
 const GET_INVOLVED_LINKS = [
   { title: 'Get OLAS', link: '/olas-token' },
@@ -195,7 +193,7 @@ const Footer = () => (
         </div>
       </div>
       <LinksBlock title="Learn" links={LEARN_LINKS} />
-      {/* <LinksBlock title="Explore" links={EXPLORE_LINKS} /> */}
+      <LinksBlock title="Explore" links={EXPLORE_LINKS} />
       <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
       <LinksBlock title="Other Apps" links={OTHER_APPS_LINKS} />
       <LinksBlock title="Resources" links={RESOURCES_LINKS} />
