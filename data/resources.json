@@ -70,5 +70,13 @@
     "url": "/olas-token",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "e8d5b8d9-1c1f-4f8e-8b2d-b9f14d947a6f",
+    "title": "Use Cases",
+    "description": "Explore diverse applications of autonomous agent economies",  
+    "url": "/explore",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["explore"]
   }
 ]
