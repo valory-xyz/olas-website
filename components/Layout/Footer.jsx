@@ -159,7 +159,7 @@ LinksBlock.defaultProps = {
 
 const Footer = () => (
   <footer className="bg-white px-4 lg:px-6 py-16">
-    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
+    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-5 lg:grid-cols-7 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
       <div className="flex justify-between md:justify-start col-span-2 md:col-span-5 lg:col-span-2 md:grid md:grid-cols-5 lg:block">
         <div className="md:col-span-4">
           <Link href="/" className="block mb-3">
