@@ -40,7 +40,7 @@ const LEARN_LINKS = [
 ];
 
 const EXPLORE_LINKS = [
-  { title: 'Use Cases', link: '/explore#use-cases' }
+  { title: 'Use Cases', link: '/explore#use-cases' },
 ];
 
 const GET_INVOLVED_LINKS = [
