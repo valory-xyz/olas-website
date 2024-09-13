@@ -186,8 +186,8 @@ const Footer = () => (
               <Image
                 src={item.icon}
                 alt={item.title}
-                width="40"
-                height="40"
+                width="44"
+                height="44"
                 className="hover:filter hover:brightness-0"
               />
             </a>
