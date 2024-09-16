@@ -5,7 +5,7 @@ import SectionHeading from '../SectionHeading';
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="py-24 border-b min-h-[800px] flex flex-col items-center"
+    customClasses="py-24 px-4 border-b min-h-[800px] flex flex-col items-center"
     backgroundType="NONE"
     backgroundImage="/images/homepage/hero.png"
   >

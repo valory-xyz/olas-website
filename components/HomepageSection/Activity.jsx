@@ -69,7 +69,11 @@ export const Activity = ({
           height="300"
           className="mx-auto mb-16"
         />
-        <SectionHeading color="text-gray-900" weight="font-bold">
+        <SectionHeading 
+          size="max-sm:text-5xl"
+          color="text-gray-900" 
+          weight="font-bold"
+        >
           Generating an Ocean of Autonomous AI Agents
         </SectionHeading>
         <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
@@ -122,12 +126,12 @@ export const Activity = ({
           return (
             <div
               key={item.id}
-              className={`text-start w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full ${borderClassName}`}
+              className={`text-start w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
             >
               <span className="block text-xl text-slate-700 mb-4">
                 {item.topText}
               </span>
-              <span className="block text-5xl font-extrabold mb-4 text-purple-600">
+              <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
                 {getValue()}
               </span>
 
