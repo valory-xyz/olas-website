@@ -174,7 +174,7 @@ const Footer = () => (
           </Link>
           <span>The Network for Co-owning AI</span>
         </div>
-        <div className="flex w-full gap-2 items-center md:justify-end col-span-2 lg:justify-start lg:items-start lg:mt-6">
+        <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end col-span-2 lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (
             <a
               key={item.title}
