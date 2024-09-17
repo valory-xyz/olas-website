@@ -69,9 +69,9 @@ export const Activity = ({
           height="300"
           className="mx-auto mb-16"
         />
-        <SectionHeading 
+        <SectionHeading
           size="max-sm:text-5xl"
-          color="text-gray-900" 
+          color="text-gray-900"
           weight="font-bold"
         >
           Generating an Ocean of Autonomous AI Agents

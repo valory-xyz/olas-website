@@ -77,10 +77,10 @@ const CARD_BG = 'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t fro
 const GetInvolved = () => (
   <SectionWrapper id="get-involved" customClasses="py-12 px-4 md:px-8 lg:p-24">
     <div className="text-center">
-      <SectionHeading 
+      <SectionHeading
         size="max-sm:text-5xl"
-        color="text-gray-900" 
-        weight="font-bold" 
+        color="text-gray-900"
+        weight="font-bold"
         other="mb-12"
       >
         Choose your role & get involved

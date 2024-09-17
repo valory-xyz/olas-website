@@ -64,9 +64,9 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
     <Upcase>
       <span>THE TECH</span>
     </Upcase>
-    <SectionHeading 
+    <SectionHeading
       size="max-sm:text-5xl"
-      color="text-gray-900" 
+      color="text-gray-900"
       weight="font-bold"
     >
       Enabled by two core innovations

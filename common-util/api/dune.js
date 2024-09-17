@@ -7,9 +7,9 @@ const duneApiCall = async ({ queryId }) => {
       `https://api.dune.com/api/v1/query/${queryId}/results`,
       {
         headers: {
-          "X-Dune-API-Key": process.env.NEXT_PUBLIC_DUNE_API_KEY,
+          'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY,
         },
-      }
+      },
     );
     const json = await response.json();
     return json;
@@ -24,6 +24,6 @@ export const getDailyActiveAgentsAverage = async () => {
   const json = await duneApiCall({
     queryId: DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID,
   });
-  const average = get(json, "result.rows[0].seven_day_trailing_avg");
+  const average = get(json, 'result.rows[0].seven_day_trailing_avg');
   return Math.ceil(average);
 };
