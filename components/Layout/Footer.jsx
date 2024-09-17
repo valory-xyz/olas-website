@@ -159,9 +159,9 @@ LinksBlock.defaultProps = {
 
 const Footer = () => (
   <footer className="bg-white px-4 lg:px-6 py-16">
-    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
-      <div className="flex justify-between md:justify-start col-span-2 md:col-span-5 lg:col-span-2 md:grid md:grid-cols-5 lg:block">
-        <div className="md:col-span-4">
+    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
+      <div className="block md:flex lg:block justify-between md:justify-start col-span-2 md:col-span-4 lg:col-span-2 md:grid md:grid-cols-4">
+        <div className="col-span-2">
           <Link href="/" className="block mb-3">
             <Image
               src="/images/olas-logo.svg"
@@ -172,7 +172,7 @@ const Footer = () => (
           </Link>
           <span>The Network for Co-owning AI</span>
         </div>
-        <div className="flex gap-2 items-center justify-end md:justify-start lg:items-start lg:mt-6">
+        <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end col-span-2 lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (
             <a
               key={item.title}
@@ -184,8 +184,8 @@ const Footer = () => (
               <Image
                 src={item.icon}
                 alt={item.title}
-                width="40"
-                height="40"
+                width="44"
+                height="44"
                 className="hover:filter hover:brightness-0"
               />
             </a>
