@@ -7,7 +7,6 @@ const SectionWrapper = ({
   customClasses,
   backgroundType,
   id,
-  backgroundImage,
   customStyle,
 }) => {
   const backgroundClasses = useMemo(() => {
@@ -23,27 +22,11 @@ const SectionWrapper = ({
     }
   }, [backgroundType]);
 
-  const sectionStyle = useMemo(() => {
-    if (customStyle) {
-      return customStyle;
-    }
-
-    if (backgroundImage) {
-      return {
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundPosition: backgroundType === 'CONTAIN' ? 'bottom' : 'center',
-        backgroundSize: backgroundType === 'CONTAIN' ? 'contain' : 'cover',
-      };
-    }
-
-    return undefined;
-  }, [customStyle]);
-
   return (
     <section
       className={`${customClasses} ${backgroundClasses} scroll-mt-[100px]`}
       id={id}
-      style={sectionStyle}
+      style={customStyle}
     >
       {children}
     </section>

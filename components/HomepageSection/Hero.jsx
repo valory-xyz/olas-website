@@ -5,7 +5,20 @@ import SectionHeading from '../SectionHeading';
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="py-24 px-4 border-b min-h-[500px] h-[calc(100vh-150px)] max-h-[800px] flex flex-col bg-[url('/images/homepage/mobile-hero.png')] md:bg-[url('/images/homepage/hero.png')] bg-cover md:bg-auto xl:bg-cover bg-center"
+    customClasses="
+    py-24 
+    px-4 
+    border-b 
+    min-h-[500px] 
+    h-[calc(100vh-150px)] 
+    max-h-[800px] 
+    flex 
+    flex-col 
+    bg-center
+    bg-cover 
+    bg-[url('/images/homepage/mobile-hero.png')] 
+    md:bg-[url('/images/homepage/hero.png'),linear-gradient(to_top,rgba(243,245,249,0.9),rgba(255,255,255,0.1))]
+    xl:bg-cover "
   >
     <div className="max-w-screen-xl lg:px-12 mx-auto text-center">
       <SectionHeading

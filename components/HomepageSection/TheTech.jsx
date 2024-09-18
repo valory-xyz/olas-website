@@ -46,11 +46,11 @@ const innovations = [
     description:
       'Open-source framework that enables developers to build autonomous agents that:',
     descriptionItems: [
-      'run off-chain.',
-      'are secured on-chain.',
-      'can be co-owned (i.e Decentralized Agents).',
-      'are highly robust and transparent.',
-      'benefit from modularity.',
+      'Run off-chain.',
+      'Are secured on-chain.',
+      'Can be co-owned (i.e Decentralized Agents).',
+      'Are highly robust and transparent.',
+      'Benefit from modularity.',
     ],
     link: '/stack',
   },
