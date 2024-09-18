@@ -15,9 +15,11 @@ const Hero = () => (
     flex 
     flex-col 
     bg-center
-    bg-cover 
-    bg-[url('/images/homepage/mobile-hero.png')] 
+    bg-cover
+    bg-no-repeat
+    bg-[url('/images/homepage/mobile-hero.png'),linear-gradient(to_top,rgba(243,245,249,0.9),rgba(255,255,255,0.1))] 
     md:bg-[url('/images/homepage/hero.png'),linear-gradient(to_top,rgba(243,245,249,0.9),rgba(255,255,255,0.1))]
+    md:bg-auto
     xl:bg-cover "
   >
     <div className="max-w-screen-xl lg:px-12 mx-auto text-center">
