@@ -26,3 +26,10 @@ export const getTotalUnitsCount = async () => {
   const agentsCount = get(result, '[0].TOTAL_MINTS') || null;
   return { agentTypesCount, agentsCount };
 };
+
+const DAILY_ACTIVITY_ID = 'd874c1cb-a38d-4e11-bbe2-bc0c409b22c1';
+export const get7DaysAvgActivity = async () => {
+  const result = await flipsideCryptoApiCall({ queryId: DAILY_ACTIVITY_ID });
+  const average = get(result, "[0]['7-day trailing avg']") || null;
+  return Math.floor(average);
+};

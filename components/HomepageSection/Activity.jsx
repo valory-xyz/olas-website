@@ -1,30 +1,59 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
-
+import useSWR from 'swr';
+import {
+  getTotalTransactionsCount,
+  getTotalUnitsCount,
+  get7DaysAvgActivity,
+} from 'common-util/api/flipside';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-// import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
 import { Popover } from 'components/ui/popover';
-import { FLIPSIDE_URL, DUNE_QUERY_URL, DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID } from 'common-util/constants';
+import { FLIPSIDE_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
 
-export const Activity = ({
-  activityMetrics: {
-    agents, agentsTypes, transactions, dailyActiveAgents,
-  },
-}) => {
+const fetchMetrics = async () => {
+  const [transactions, unitsCount, dailyActiveAgents] = await Promise.allSettled([
+    getTotalTransactionsCount(),
+    getTotalUnitsCount(),
+    get7DaysAvgActivity(),
+  ]);
+
+  return {
+    transactions:
+      transactions.status === 'fulfilled' ? transactions.value : null,
+    agents:
+      unitsCount.status === 'fulfilled'
+        ? unitsCount.value.agentsCount
+        : null,
+    agentsTypes:
+      unitsCount.status === 'fulfilled'
+        ? unitsCount.value.agentTypesCount
+        : null,
+    dailyActiveAgents:
+      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
+  };
+};
+
+const usePersistentSWR = (key, fetcher) => useSWR(key, fetcher, {
+  revalidateIfStale: false,
+  revalidateOnFocus: false,
+});
+
+export const Activity = () => {
+  const { data: metrics } = usePersistentSWR('activityMetrics', fetchMetrics);
+
   const data = useMemo(
     () => [
       {
         id: 'transactions',
         topText: 'Olas agents have made',
         subText: 'transactions',
-        value: transactions?.toLocaleString(),
+        value: metrics?.transactions?.toLocaleString(),
         source: FLIPSIDE_URL,
         isExternal: true,
       },
@@ -32,7 +61,7 @@ export const Activity = ({
         id: 'agents',
         topText: 'Operators have deployed',
         subText: 'agents',
-        value: agents,
+        value: metrics?.agents,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
@@ -48,12 +77,12 @@ export const Activity = ({
         id: 'agentsTypes',
         topText: 'Devs have registered',
         subText: 'types of agents',
-        value: agentsTypes,
+        value: metrics?.agentsTypes,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
     ],
-    [agents, agentsTypes, transactions],
+    [metrics],
   );
 
   return (
@@ -82,13 +111,13 @@ export const Activity = ({
             {' '}
             <span className="font-medium">active</span>
           </span>
-          {dailyActiveAgents ? (
+          {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={`${DUNE_QUERY_URL}/${DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID}/6809279`}
+              href={`${FLIPSIDE_URL}?tabIndex=1`}
               hideArrow
             >
-              {dailyActiveAgents}
+              {metrics.dailyActiveAgents}
               <span className="text-4xl">↗</span>
             </ExternalLink>
           ) : <span className="text-purple-600 text-6xl">--</span>}
@@ -138,18 +167,6 @@ export const Activity = ({
           );
         })}
       </div>
-      {/* <Button variant="outline" size="xl" asChild className="mb-12">
-        <Link href="/explore">Explore the ecosystem</Link>
-      </Button> */}
     </SectionWrapper>
   );
-};
-
-Activity.propTypes = {
-  activityMetrics: PropTypes.shape({
-    transactions: PropTypes.number,
-    agents: PropTypes.number,
-    agentsTypes: PropTypes.number,
-    dailyActiveAgents: PropTypes.number,
-  }).isRequired,
 };
