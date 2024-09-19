@@ -107,11 +107,13 @@ const MoreFriends = () => (
 );
 
 export const PropelledBy = () => (
-  <SectionWrapper id="ecosystem">
+
+  <SectionWrapper customClasses="px-4 md:px-8 py-12 md:py-24" id="ecosystem">
     <SectionHeading
+      size="max-sm:text-5xl"
       color="text-gray-900"
       weight="font-bold"
-      other="max-w-[616px] mb-24 text-center mx-auto"
+      other="max-w-[616px] max-sm:mb-12 mb-24 text-center mx-auto"
     >
       Propelled by a growing ecosystem
     </SectionHeading>
