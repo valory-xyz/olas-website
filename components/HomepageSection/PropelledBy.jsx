@@ -108,7 +108,7 @@ const MoreFriends = () => (
 
 export const PropelledBy = () => (
 
-  <SectionWrapper customClasses="px-4 md:px-8 py-12 md:py-24 id="ecosystem">
+  <SectionWrapper customClasses="px-4 md:px-8 py-12 md:py-24" id="ecosystem">
     <SectionHeading
       size="max-sm:text-5xl"
       color="text-gray-900"
