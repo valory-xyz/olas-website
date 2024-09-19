@@ -88,7 +88,7 @@ UseCaseCard.propTypes = {
 };
 
 const UseCases = () => (
-  <SectionWrapper customClasses="text-center pt-24 md:py-24 px-4">
+  <SectionWrapper customClasses="text-center pt-24 md:py-24 px-4" id="usecases">
     <SectionHeading color="text-gray-900" weight="font-bold">
       Live use cases, creating value today
     </SectionHeading>
