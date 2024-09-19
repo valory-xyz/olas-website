@@ -107,7 +107,7 @@ const MoreFriends = () => (
 );
 
 export const PropelledBy = () => (
-  <SectionWrapper>
+  <SectionWrapper id="ecosystem">
     <SectionHeading
       color="text-gray-900"
       weight="font-bold"
