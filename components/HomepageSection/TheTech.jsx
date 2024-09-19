@@ -60,6 +60,7 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
   <SectionWrapper
     backgroundType="NONE"
     customClasses="text-center py-16 md:py-24 px-4 border-b bg-[linear-gradient(180deg,_#FFF_0%,_#F9E5FF_100%)]"
+    id="tech"
   >
     <Upcase>
       <span>THE TECH</span>

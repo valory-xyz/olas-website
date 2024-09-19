@@ -88,7 +88,7 @@ UseCaseCard.propTypes = {
 };
 
 const UseCases = () => (
-  <SectionWrapper customClasses="text-center md:py-24 py-16 px-4">
+  <SectionWrapper customClasses="text-center md:py-24 py-16 px-4"  id="usecases">
     <SectionHeading
       other="max-sm:mb-0"
       size="max-sm:text-5xl"
