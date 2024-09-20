@@ -17,19 +17,18 @@ import SectionHeading from '../SectionHeading';
 const BLOCKCHAIN_COUNT = 8;
 
 const fetchMetrics = async () => {
-  const [transactions, unitsCount, dailyActiveAgents] = await Promise.allSettled([
-    getTotalTransactionsCount(),
-    getTotalUnitsCount(),
-    get7DaysAvgActivity(),
-  ]);
+  const [transactions, unitsCount, dailyActiveAgents] =
+    await Promise.allSettled([
+      getTotalTransactionsCount(),
+      getTotalUnitsCount(),
+      get7DaysAvgActivity(),
+    ]);
 
   return {
     transactions:
       transactions.status === 'fulfilled' ? transactions.value : null,
     agents:
-      unitsCount.status === 'fulfilled'
-        ? unitsCount.value.agentsCount
-        : null,
+      unitsCount.status === 'fulfilled' ? unitsCount.value.agentsCount : null,
     agentsTypes:
       unitsCount.status === 'fulfilled'
         ? unitsCount.value.agentTypesCount
@@ -39,10 +38,11 @@ const fetchMetrics = async () => {
   };
 };
 
-const usePersistentSWR = (key, fetcher) => useSWR(key, fetcher, {
-  revalidateIfStale: false,
-  revalidateOnFocus: false,
-});
+const usePersistentSWR = (key, fetcher) =>
+  useSWR(key, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
 
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR('activityMetrics', fetchMetrics);
