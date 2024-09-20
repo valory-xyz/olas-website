@@ -12,20 +12,16 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:import/recommended", "airbnb", "plugin:prettier/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb", "plugin:prettier/recommended"],
   "settings": {
     "react": {
       "version": "detect"
-    },
-    "import/resolver": {
-      "node": {
-        "extensions": [".js",".jsx"],
-        "paths": ["node_modules"]
-      }
     }
   },
-  "plugins": ["react", "jsx-a11y", "import"],
+  "plugins": ["react", "jsx-a11y", "prettier"],
   "rules": {
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off", 
     "linebreak-style": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
