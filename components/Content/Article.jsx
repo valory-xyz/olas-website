@@ -8,9 +8,7 @@ import { CARD_CLASS } from 'common-util/classes';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
-const Article = ({
-  article, href, showReadTime, showDate,
-}) => {
+const Article = ({ article, href, showReadTime, showDate }) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {

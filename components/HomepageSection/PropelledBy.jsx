@@ -41,9 +41,7 @@ export const Builders = () => (
     <h3 className="text-2xl md:text-4xl font-bold mb-4">Builders</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 ">
       {builders.map((builder) => {
-        const {
-          id, name, url, iconFilename,
-        } = builder;
+        const { id, name, url, iconFilename } = builder;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <a href={url} target="_blank" rel="noopener noreferrer">
@@ -87,9 +85,9 @@ const MoreFriends = () => (
               href={url}
               {...(isExternal
                 ? {
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                }
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }
                 : {})}
             >
               <Image

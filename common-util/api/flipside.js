@@ -2,7 +2,9 @@ import { get } from 'lodash';
 
 const flipsideCryptoApiCall = async ({ queryId }) => {
   try {
-    const response = await fetch(`https://flipsidecrypto.xyz/api/v1/queries/${queryId}/data/latest`);
+    const response = await fetch(
+      `https://flipsidecrypto.xyz/api/v1/queries/${queryId}/data/latest`,
+    );
     const json = await response.json();
     return json;
   } catch (error) {
@@ -14,8 +16,11 @@ const flipsideCryptoApiCall = async ({ queryId }) => {
 
 const TOTAL_TRANSACTION_QUERY_ID = '590baf05-1225-494a-8698-31f456f1122d';
 export const getTotalTransactionsCount = async () => {
-  const result = await flipsideCryptoApiCall({ queryId: TOTAL_TRANSACTION_QUERY_ID });
-  const totalTransactions = get(result, "[0]['Cumulative transactions']") || null;
+  const result = await flipsideCryptoApiCall({
+    queryId: TOTAL_TRANSACTION_QUERY_ID,
+  });
+  const totalTransactions =
+    get(result, "[0]['Cumulative transactions']") || null;
   return totalTransactions;
 };
 

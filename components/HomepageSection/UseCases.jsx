@@ -38,9 +38,9 @@ const UseCaseCard = ({
             href={service.link}
             {...(service.isExternal
               ? {
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }
               : {})}
             className="flex gap-4 p-3 text-start hover:bg-gray-100 rounded-lg"
           >
@@ -53,8 +53,7 @@ const UseCaseCard = ({
             />
             <div>
               <h5 className="font-bold">
-                {service.title}
-                {' '}
+                {service.title}{' '}
                 {service.isExternal ? (
                   <span className="font-normal text-purple-800"> ↗</span>
                 ) : (
@@ -105,7 +104,6 @@ const UseCases = () => (
           {...item}
         />
       ))}
-
     </div>
 
     <div>

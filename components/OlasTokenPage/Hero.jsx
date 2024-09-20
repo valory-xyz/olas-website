@@ -8,9 +8,7 @@ const Hero = () => (
   <SectionWrapper customClasses="py-16 border-y text-black">
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <div className="mb-6 text-lg tracking-widest uppercase">
-          OLAS Token
-        </div>
+        <div className="mb-6 text-lg tracking-widest uppercase">OLAS Token</div>
         <SectionHeading
           size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12 font-bold"
           color="text-black"

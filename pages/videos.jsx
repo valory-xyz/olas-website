@@ -6,7 +6,9 @@ import Meta from 'components/Meta';
 const VideosPage = () => (
   <PageWrapper>
     <Meta pageTitle="Videos" />
-    <SectionWrapper backgroundType="SUBTLE_GRADIENT"><Videos /></SectionWrapper>
+    <SectionWrapper backgroundType="SUBTLE_GRADIENT">
+      <Videos />
+    </SectionWrapper>
   </PageWrapper>
 );
 

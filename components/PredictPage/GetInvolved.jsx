@@ -38,9 +38,7 @@ const Content = () => (
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {list.map(({
-        title, desc, icon, url, urlName, isExternal,
-      }) => (
+      {list.map(({ title, desc, icon, url, urlName, isExternal }) => (
         <div
           key={title}
           className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"

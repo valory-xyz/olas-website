@@ -3,9 +3,7 @@ import Link from 'next/link';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import {
-  CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS,
-} from './utils';
+import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
 const controlList = [
   {

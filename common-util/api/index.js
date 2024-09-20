@@ -9,7 +9,9 @@ const apiCall = async (subURL, params) => {
   const stringifyParams = qs.stringify(params);
 
   try {
-    const response = await fetch(`${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`);
+    const response = await fetch(
+      `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
+    );
     const json = await response.json();
     return json;
   } catch (error) {
@@ -61,12 +63,12 @@ export const getBlogs = async () => {
  *
  */
 
-export const isIdUsedToFetchBlog = (id) => !!(isFinite(Number(id)));
+export const isIdUsedToFetchBlog = (id) => !!isFinite(Number(id));
 
 export const getBlog = async (id) => {
   const params = { populate: '*' };
 
-  if ((isIdUsedToFetchBlog(id))) {
+  if (isIdUsedToFetchBlog(id)) {
     const json = await apiCall(`blog-posts/${id}`, params);
     return get(json, 'data') || null;
   }

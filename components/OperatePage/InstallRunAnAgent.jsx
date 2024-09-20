@@ -97,7 +97,9 @@ const DownloadLinks = () => {
         );
         const updatedLinks = links.map((link) => {
           /* eslint-disable-next-line max-len */
-          const assetLink = prodAssets.find((asset) => asset.browser_download_url.includes(link.id));
+          const assetLink = prodAssets.find((asset) =>
+            asset.browser_download_url.includes(link.id),
+          );
 
           const getAssetLink = () => {
             if (!assetLink?.browser_download_url) return null;
@@ -118,9 +120,7 @@ const DownloadLinks = () => {
 
   return (
     <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
-      {links.map(({
-        id, btnText, downloadLink, icon, subText,
-      }) => (
+      {links.map(({ id, btnText, downloadLink, icon, subText }) => (
         <Fragment key={id}>
           <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
             <Button

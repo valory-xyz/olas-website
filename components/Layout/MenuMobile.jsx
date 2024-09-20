@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  AlignJustify, ChevronDown, MoveUpRight, X,
-} from 'lucide-react';
+import { AlignJustify, ChevronDown, MoveUpRight, X } from 'lucide-react';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { cn } from 'lib/utils';
 import { Button } from 'components/ui/button';
 import { MENU_DATA } from 'common-util/constants';
 
-const linkClassName = 'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
-const subLinkClassName = 'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
+const linkClassName =
+  'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
+const subLinkClassName =
+  'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
 
 const useToggle = () => {
   const [state, setState] = useState(false);

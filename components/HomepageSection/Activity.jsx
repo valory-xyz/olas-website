@@ -7,16 +7,18 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 // import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
 import { Popover } from 'components/ui/popover';
-import { FLIPSIDE_URL, DUNE_QUERY_URL, DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID } from 'common-util/constants';
+import {
+  FLIPSIDE_URL,
+  DUNE_QUERY_URL,
+  DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID,
+} from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
 
 export const Activity = ({
-  activityMetrics: {
-    agents, agentsTypes, transactions, dailyActiveAgents,
-  },
+  activityMetrics: { agents, agentsTypes, transactions, dailyActiveAgents },
 }) => {
   const data = useMemo(
     () => [
@@ -78,8 +80,7 @@ export const Activity = ({
         </p>
         <Card className="flex flex-col gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <span>
-            🤖 The first autonomous AI agents are
-            {' '}
+            🤖 The first autonomous AI agents are{' '}
             <span className="font-medium">active</span>
           </span>
           {dailyActiveAgents ? (
@@ -91,7 +92,9 @@ export const Activity = ({
               {dailyActiveAgents}
               <span className="text-4xl">↗</span>
             </ExternalLink>
-          ) : <span className="text-purple-600 text-6xl">--</span>}
+          ) : (
+            <span className="text-purple-600 text-6xl">--</span>
+          )}
           <div className="flex self-center gap-2">
             Daily Active Agents (DAAs)
             <Popover>7-day average Daily Active Agents</Popover>

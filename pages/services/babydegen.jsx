@@ -7,7 +7,11 @@ import { Button } from 'components/ui/button';
 import { ExternalLink, H1 } from 'components/ui/typography';
 import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import {
-  MAIN_TITLE_CLASS, SUB_HEADER_CLASS, TEXT_CLASS, TEXT_MEDIUM_LIGHT_CLASS, TEXT_SMALL_CLASS,
+  MAIN_TITLE_CLASS,
+  SUB_HEADER_CLASS,
+  TEXT_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
 import { MoveUpRight } from 'lucide-react';
 
@@ -23,12 +27,7 @@ const HeaderLeftContent = () => (
     </p>
 
     <div className="flex flex-wrap justify-stretch gap-6">
-      <Button
-        variant="secondary"
-        size="xl"
-        disabled
-        className="grow lg:w-auto"
-      >
+      <Button variant="secondary" size="xl" disabled className="grow lg:w-auto">
         Coming soon
       </Button>
 
@@ -38,9 +37,7 @@ const HeaderLeftContent = () => (
         asChild
         className="grow lg:w-auto "
       >
-        <a href={OPERATE_AGENTS_URL}>
-          Explore other agents today
-        </a>
+        <a href={OPERATE_AGENTS_URL}>Explore other agents today</a>
       </Button>
     </div>
   </div>
@@ -107,9 +104,7 @@ const WhatIsBabyDegen = () => (
 );
 
 const MeetTheOptimusAgent = () => (
-  <SectionWrapper
-    customClasses="lg:p-24 border-y border-[#FFE0E6] w-full h-full bg-gradient-to-r from-[#FFF0F1] to-white to-70%"
-  >
+  <SectionWrapper customClasses="lg:p-24 border-y border-[#FFE0E6] w-full h-full bg-gradient-to-r from-[#FFF0F1] to-white to-70%">
     <div className="px-8 py-12 lg:p-0 grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h1 className={`${SUB_HEADER_CLASS} mb-8 mt-12`}>
@@ -187,11 +182,9 @@ const FurtherResources = () => (
             rel="noopener noreferrer"
             className="text-purple-600 flex-end"
           >
-            {resource.action.text}
-            {' '}
+            {resource.action.text}{' '}
             <MoveUpRight className="ml-2 inline" size={16} />
           </a>
-
         </div>
       ))}
     </div>
@@ -203,8 +196,7 @@ const howItWorksSteps = [
     title: 'Data Gathering',
     description: (
       <>
-        BabyDegen pulls in market data from
-        {' '}
+        BabyDegen pulls in market data from{' '}
         <ExternalLink
           href="https://www.coingecko.com/"
           target="_blank"
@@ -241,16 +233,10 @@ const howItWorksSteps = [
       <>
         Based on its accumulated experience and the real-time market data,
         BabyDegen decides whether to buy, sell, or hold specific assets. All
-        trading activities are carried out on
-        {' '}
-        <ExternalLink
-          href="https://jup.ag/"
-          target="_blank"
-          rel="noreferrer"
-        >
+        trading activities are carried out on{' '}
+        <ExternalLink href="https://jup.ag/" target="_blank" rel="noreferrer">
           Jupiter Exchange
-        </ExternalLink>
-        {' '}
+        </ExternalLink>{' '}
         on Solana.
       </>
     ),
@@ -281,9 +267,9 @@ const HowItWorks = () => (
 
       <div className="lg:mx-16">
         <div className="list-decimal mb-6 mt-12 mb-12">
-          Once you've funded your account and activated BabyDegen, there's nothing
-          more you need to do. But if you're curious about what happens behind the
-          scenes, here's a closer look:
+          Once you've funded your account and activated BabyDegen, there's
+          nothing more you need to do. But if you're curious about what happens
+          behind the scenes, here's a closer look:
         </div>
 
         <div className=" lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
@@ -304,7 +290,6 @@ const HowItWorks = () => (
           BabyDegen is currently in closed Alpha
         </div>
       </div>
-
     </div>
   </SectionWrapper>
 );

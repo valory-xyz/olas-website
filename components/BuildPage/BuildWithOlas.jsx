@@ -29,21 +29,11 @@ const body = (
     </p>
 
     <div className="flex flex-wrap justify-stretch gap-6">
-      <Button
-        variant="default"
-        size="xl"
-        asChild
-        className="grow"
-      >
+      <Button variant="default" size="xl" asChild className="grow">
         <a href={buttonLinks.exploreBuildPath}>Explore Build Paths</a>
       </Button>
 
-      <Button
-        variant="ghostPrimary"
-        size="xl"
-        asChild
-        className="grow"
-      >
+      <Button variant="ghostPrimary" size="xl" asChild className="grow">
         <a
           href={buttonLinks.visitTheDocs}
           target="_blank"

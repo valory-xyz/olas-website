@@ -3,10 +3,16 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 
 export const CTASection = ({ heading, ctaUrl, ctaText }) => (
-  <SectionWrapper customClasses="px-8 py-12 lg:p-24 border-y" backgroundType="SUBTLE_GRADIENT">
+  <SectionWrapper
+    customClasses="px-8 py-12 lg:p-24 border-y"
+    backgroundType="SUBTLE_GRADIENT"
+  >
     <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
       <div className="mx-auto max-w-screen-sm text-center">
-        <SectionHeading color="text-purple-950" size="text-4xl md:text-6xl lg:text-4xl">
+        <SectionHeading
+          color="text-purple-950"
+          size="text-4xl md:text-6xl lg:text-4xl"
+        >
           {heading}
         </SectionHeading>
         <a

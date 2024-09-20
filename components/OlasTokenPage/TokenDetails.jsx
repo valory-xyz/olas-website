@@ -17,9 +17,10 @@ import {
  * @param {string} address - The Ethereum address to truncate
  * @returns {string} The truncated address
  */
-export const truncateAddress = (address) => (address
-  ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
-  : '--');
+export const truncateAddress = (address) =>
+  address
+    ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
+    : '--';
 
 const BOND_BASE_URL = 'https://bond.olas.network/paths/';
 
@@ -201,7 +202,8 @@ const TOKEN_DETAILS = [
   },
 ];
 
-const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
+const generateExplorerUrl = (token) =>
+  `${token.explorerBaseUrl}${token.address}`;
 
 export const TokenDetails = () => (
   <>
@@ -244,9 +246,7 @@ export const TokenDetails = () => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {token.exchange.name}
-                          {' '}
-                          ↗
+                          {token.exchange.name} ↗
                         </a>
                       ) : (
                         'TBD'
@@ -259,9 +259,7 @@ export const TokenDetails = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {truncateAddress(token.address)}
-                        {' '}
-                        ↗
+                        {truncateAddress(token.address)} ↗
                       </a>
                     </TableCell>
                     <TableCell className="border">
@@ -271,9 +269,7 @@ export const TokenDetails = () => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {token.bridge.name}
-                          {' '}
-                          ↗
+                          {token.bridge.name} ↗
                         </a>
                       ) : (
                         'n/a'
@@ -292,48 +288,39 @@ export const TokenDetails = () => (
               <div key={index} className="border p-4 rounded">
                 <h3 className="font-bold mb-2">{token.network}</h3>
                 <p>
-                  <strong>Get OLAS:</strong>
-                  {' '}
+                  <strong>Get OLAS:</strong>{' '}
                   {token.exchange ? (
                     <a
                       href={token.exchange.url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {token.exchange.name}
-                      {' '}
-                      ↗
+                      {token.exchange.name} ↗
                     </a>
                   ) : (
                     'TBD'
                   )}
                 </p>
                 <p>
-                  <strong>Token Address:</strong>
-                  {' '}
+                  <strong>Token Address:</strong>{' '}
                   <a
                     href={explorerUrl}
                     title={token.address}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {truncateAddress(token.address)}
-                    {' '}
-                    ↗
+                    {truncateAddress(token.address)} ↗
                   </a>
                 </p>
                 <p>
-                  <strong>Bridge:</strong>
-                  {' '}
+                  <strong>Bridge:</strong>{' '}
                   {token.bridge ? (
                     <a
                       href={token.bridge.url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {token.bridge.name}
-                      {' '}
-                      ↗
+                      {token.bridge.name} ↗
                     </a>
                   ) : (
                     'n/a'

@@ -21,8 +21,7 @@ const PearlTerms = () => (
           <ol className="list-disc">
             <li>
               The Pearl Application (“Application”) is the desktop application
-              available for download on the
-              {' '}
+              available for download on the{' '}
               <Link href="https://olas.network/" className={linkClass}>
                 Olas Site
               </Link>

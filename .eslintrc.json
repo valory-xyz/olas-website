@@ -12,10 +12,16 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:import/recommended", "airbnb", "plugin:prettier/recommended"],
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js",".jsx"],
+        "paths": ["node_modules"]
+      }
     }
   },
   "plugins": ["react", "jsx-a11y", "import"],
@@ -32,6 +38,11 @@
       }
     ],
     "no-console": ["warn", { "allow": ["error"] }],
+    "prettier/prettier": ["error", {
+      "endOfLine": "auto",
+      "semi": true,
+      "singleQuote": true
+    }],
     "import/prefer-default-export": "off",
     "react/forbid-prop-types": "off",
     "react/destructuring-assignment": "off",

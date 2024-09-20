@@ -62,12 +62,10 @@ export const ProtocolKeyFeatures = () => (
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <p>
         Olas Protocol is a set of smart contracts for coordinating, securing,
-        and managing
-        {' '}
+        and managing{' '}
         <Link href="/learn" className="text-purple-600">
           agent systems
-        </Link>
-        {' '}
+        </Link>{' '}
         on public blockchains. It provides a mechanism to one, incentivise
         developers proportionally to their contributions, two, incentivise
         operators to run agent systems, and three, incentivise bonders to

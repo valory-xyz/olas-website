@@ -122,9 +122,9 @@ const LinksBlock = ({ title, links, className }) => (
             className="hover:text-black"
             {...(item.isExternal
               ? {
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }
               : {})}
           >
             <span className="whitespace-nowrap">

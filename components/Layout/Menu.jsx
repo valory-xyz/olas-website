@@ -17,9 +17,7 @@ import { MENU_DATA } from 'common-util/constants';
 const triggerStyle = navigationMenuTriggerStyle();
 
 const ListItem = React.forwardRef(
-  ({
-    className, title, children, ...props
-  }, ref) => (
+  ({ className, title, children, ...props }, ref) => (
     <li>
       <NavigationMenuLink asChild>
         <a
@@ -62,12 +60,19 @@ export function Menu({ className }) {
                 <Link href={item.link} legacyBehavior passHref>
                   <LinkTag className={triggerStyle}>
                     {item.text}
-                    {item.isExternal && <MoveUpRight size={12} className="ml-1" aria-hidden="true" />}
+                    {item.isExternal && (
+                      <MoveUpRight
+                        size={12}
+                        className="ml-1"
+                        aria-hidden="true"
+                      />
+                    )}
                   </LinkTag>
                 </Link>
               </NavigationMenuItem>
             );
-          } if (item.submenu) {
+          }
+          if (item.submenu) {
             return (
               <NavigationMenuItem key={index}>
                 <NavigationMenuTrigger>{item.text}</NavigationMenuTrigger>
@@ -90,7 +95,6 @@ export function Menu({ className }) {
 
           return null;
         })}
-
       </NavigationMenuList>
     </NavigationMenu>
   );
