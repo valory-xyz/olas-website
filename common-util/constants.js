@@ -26,7 +26,8 @@ export const DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID = '4043904';
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
 export const BONDING_PROGRAMS_URL =
-  'https://bonds.olas.network/bonding-products';
+  'https://bond.olas.network/bonding-products';
+
 export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
 export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
 export const LAUNCH_URL = 'https://launch.olas.network/';

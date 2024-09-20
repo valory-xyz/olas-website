@@ -41,11 +41,11 @@ const innovations = [
     description:
       'Open-source framework that enables developers to build autonomous agents that:',
     descriptionItems: [
-      'run off-chain',
-      'are secured on-chain',
-      'can be co-owned (i.e Decentralized Agents)',
-      'are highly robust and transparent',
-      'benefit from modularity.',
+      'Run off-chain.',
+      'Are secured on-chain.',
+      'Can be co-owned (i.e Decentralized Agents).',
+      'Are highly robust and transparent.',
+      'Benefit from modularity.',
     ],
     link: '/stack',
   },
@@ -54,12 +54,17 @@ const innovations = [
 export const TheTech = ({ hideLearnMoreButton = false }) => (
   <SectionWrapper
     backgroundType="NONE"
-    customClasses="text-center py-24 px-4 border-b bg-[linear-gradient(180deg,_#FFF_0%,_#F9E5FF_100%)]"
+    customClasses="text-center py-16 md:py-24 px-4 border-b bg-[linear-gradient(180deg,_#FFF_0%,_#F9E5FF_100%)]"
+    id="tech"
   >
     <Upcase>
       <span>THE TECH</span>
     </Upcase>
-    <SectionHeading color="text-gray-900" weight="font-bold">
+    <SectionHeading
+      size="max-sm:text-5xl"
+      color="text-gray-900"
+      weight="font-bold"
+    >
       Enabled by two core innovations
     </SectionHeading>
 
