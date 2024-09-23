@@ -12,13 +12,13 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb", "plugin:prettier/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb","next/core-web-vitals", "plugin:prettier/recommended"],
   "settings": {
     "react": {
       "version": "detect"
     }
   },
-  "plugins": ["react", "jsx-a11y", "prettier"],
+  "plugins": ["react", "jsx-a11y", "import", "prettier"],
   "rules": {
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off", 
