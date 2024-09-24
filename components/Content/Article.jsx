@@ -35,7 +35,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
     }
 
     return moreInfoArray.join(' • ');
-  }, [article, showReadTime, showDate]);
+  }, [showDate, datePublished, showReadTime, readTime]);
 
   return (
     <Link href={href}>

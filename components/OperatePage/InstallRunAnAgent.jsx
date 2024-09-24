@@ -116,7 +116,7 @@ const DownloadLinks = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [links]);
 
   return (
     <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">

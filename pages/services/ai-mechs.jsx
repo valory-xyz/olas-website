@@ -236,8 +236,12 @@ const AiMechs = () => (
                     </CardContent>
                   )}
                   <FooterTag className="space-y-4">
-                    {resource.actions.map((action) => (
-                      <Button asChild className="whitespace-normal">
+                    {resource.actions.map((action, actionIndex) => (
+                      <Button
+                        asChild
+                        key={actionIndex}
+                        className="whitespace-normal"
+                      >
                         <a
                           href={action.url}
                           target="_blank"

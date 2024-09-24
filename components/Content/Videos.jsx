@@ -21,7 +21,7 @@ const Videos = ({ limit }) => {
         if (isValidDateB) return 1;
         return 0;
       }),
-    [videos],
+    [],
   );
 
   return (

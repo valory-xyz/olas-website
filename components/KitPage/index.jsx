@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import kits from 'data/kits.json';
@@ -41,7 +42,7 @@ export const KitPage = () => {
             </a>
           </div>
           <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
-            <img
+            <Image
               alt={`${kit.title} Illustration`}
               src={`/images/kits/${kit.id}kit.svg`}
               height="300"

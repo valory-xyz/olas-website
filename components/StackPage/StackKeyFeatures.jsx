@@ -47,14 +47,14 @@ const gettingStarted = [
   {
     title: 'Deployment',
     subList: [
-      <>
+      <div key="3ca37789-cee5-4517-bf51-e52bc46c9afa">
         Deploy your agents on the{' '}
         <Link href="/protocol" className="text-purple-600">
           Olas Protocol
         </Link>{' '}
         to benefit from its different mechanisms. Our deployment guides provide
         step-by-step instructions for seamless integration.
-      </>,
+      </div>,
     ],
   },
 ];

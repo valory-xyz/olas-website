@@ -94,6 +94,7 @@ const GetInvolved = () => (
       <Card className="max-sm:border-none max-sm:shadow-none border-1.5 border-gray-200 rounded-2xl md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
         <Image
           src="/images/homepage/get-involved-diagram.png"
+          alt="Get involved diagram"
           width={920}
           height={595}
           className="mx-auto m-2"
@@ -149,6 +150,7 @@ const GetInvolvedCard = ({
             <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-3 xl:mb-10">
               <Image
                 src={imageSrc}
+                alt=""
                 width={imageWidth}
                 height={imageHeight}
                 className="top-2 object-cover self-center w-full my-2"
