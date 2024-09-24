@@ -47,7 +47,7 @@ const gettingStarted = [
   {
     title: 'Deployment',
     subList: [
-      <div key="3ca37789-cee5-4517-bf51-e52bc46c9afa">
+      <div>
         Deploy your agents on the{' '}
         <Link href="/protocol" className="text-purple-600">
           Olas Protocol
@@ -86,8 +86,8 @@ export const StackKeyFeatures = () => (
             {list.map(({ title, subList }) => (
               <li key={title} className="mb-4">
                 <strong className="mb-2">{`${title}: `}</strong>
-                {subList.map((subTitle) => (
-                  <Fragment key={subTitle}>{subTitle}</Fragment>
+                {subList.map((subTitle, index) => (
+                  <Fragment key={index}>{subTitle}</Fragment>
                 ))}
               </li>
             ))}
