@@ -12,7 +12,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["next", "next/core-web-vitals", "plugin:prettier/recommended"],
+  "extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
   "settings": {
     "react": {
       "version": "detect"
