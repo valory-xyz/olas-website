@@ -17,19 +17,18 @@ import SectionHeading from '../SectionHeading';
 const BLOCKCHAIN_COUNT = 8;
 
 const fetchMetrics = async () => {
-  const [transactions, unitsCount, dailyActiveAgents] = await Promise.allSettled([
-    getTotalTransactionsCount(),
-    getTotalUnitsCount(),
-    get7DaysAvgActivity(),
-  ]);
+  const [transactions, unitsCount, dailyActiveAgents] =
+    await Promise.allSettled([
+      getTotalTransactionsCount(),
+      getTotalUnitsCount(),
+      get7DaysAvgActivity(),
+    ]);
 
   return {
     transactions:
       transactions.status === 'fulfilled' ? transactions.value : null,
     agents:
-      unitsCount.status === 'fulfilled'
-        ? unitsCount.value.agentsCount
-        : null,
+      unitsCount.status === 'fulfilled' ? unitsCount.value.agentsCount : null,
     agentsTypes:
       unitsCount.status === 'fulfilled'
         ? unitsCount.value.agentTypesCount
@@ -39,10 +38,11 @@ const fetchMetrics = async () => {
   };
 };
 
-const usePersistentSWR = (key, fetcher) => useSWR(key, fetcher, {
-  revalidateIfStale: false,
-  revalidateOnFocus: false,
-});
+const usePersistentSWR = (key, fetcher) =>
+  useSWR(key, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
 
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR('activityMetrics', fetchMetrics);
@@ -111,8 +111,7 @@ export const Activity = () => {
         </p>
         <Card className="flex flex-col gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <span>
-            🤖 The first autonomous AI agents are
-            {' '}
+            🤖 The first autonomous AI agents are{' '}
             <span className="font-medium">active</span>
           </span>
           {metrics?.dailyActiveAgents ? (
@@ -124,7 +123,9 @@ export const Activity = () => {
               {metrics.dailyActiveAgents}
               <span className="text-4xl">↗</span>
             </ExternalLink>
-          ) : <span className="text-purple-600 text-6xl">--</span>}
+          ) : (
+            <span className="text-purple-600 text-6xl">--</span>
+          )}
           <div className="flex self-center gap-2">
             Daily Active Agents (DAAs)
             <Popover>7-day average Daily Active Agents</Popover>

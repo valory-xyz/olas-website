@@ -33,9 +33,7 @@ const Hero = () => (
         </div>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left mb-6`}>
-          Advance the network,
-          {' '}
-          <br />
+          Advance the network, <br />
           gain recognition
         </h2>
 
@@ -56,7 +54,6 @@ const Hero = () => (
       <div className="hidden lg:mt-0 md:col-span-6 lg:flex md:block">
         <HeroImage />
       </div>
-
     </div>
   </SectionWrapper>
 );

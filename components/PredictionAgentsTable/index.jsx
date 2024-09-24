@@ -1,7 +1,5 @@
 import Image from 'next/image';
-import {
-  Table, TableBody, TableCell, TableRow,
-} from 'components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from 'components/ui/table';
 
 const PredictionAgentsTable = () => (
   <div className="max-w-6xl mx-auto">
@@ -94,8 +92,7 @@ const PredictionAgentsTable = () => (
           </TableCell>
           <TableCell className="text-center">
             <span className="text-6xl">←</span>
-            <br />
-            ? $ $
+            <br />? $ $
           </TableCell>
           <TableCell className="text-center">
             <Image

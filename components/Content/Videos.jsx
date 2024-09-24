@@ -8,19 +8,20 @@ import Video from './Video';
 
 const Videos = ({ limit }) => {
   const videosSortedByDate = useMemo(
-    () => [...videos].sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+    () =>
+      [...videos].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
 
-      const isValidDateA = !isNaN(dateA.getTime());
-      const isValidDateB = !isNaN(dateB.getTime());
+        const isValidDateA = !isNaN(dateA.getTime());
+        const isValidDateB = !isNaN(dateB.getTime());
 
-      if (isValidDateA && isValidDateB) return dateB - dateA;
-      if (isValidDateA) return -1;
-      if (isValidDateB) return 1;
-      return 0;
-    }),
-    [videos],
+        if (isValidDateA && isValidDateB) return dateB - dateA;
+        if (isValidDateA) return -1;
+        if (isValidDateB) return 1;
+        return 0;
+      }),
+    [],
   );
 
   return (

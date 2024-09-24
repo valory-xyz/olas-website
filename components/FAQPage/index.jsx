@@ -18,7 +18,8 @@ Question.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const FAQLink = ({ external, ...props }) => (external ? <ExternalLink {...props} /> : <Link {...props} />);
+const FAQLink = ({ external, ...props }) =>
+  external ? <ExternalLink {...props} /> : <Link {...props} />;
 
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
@@ -30,10 +31,8 @@ const FAQPage = () => (
       these services in a co-owned and decentralized way.
     </Question>
     <Question text="What are the main products/use cases?">
-      The most up-to-date and heavily showcased products can be found in the
-      {' '}
-      <FAQLink href="/#services">Ecosystem section</FAQLink>
-      .
+      The most up-to-date and heavily showcased products can be found in the{' '}
+      <FAQLink href="/#services">Ecosystem section</FAQLink>.
     </Question>
     <Question text="Where can I catch up on everything that's happened since the early days?">
       <FAQLink
@@ -47,8 +46,7 @@ const FAQPage = () => (
     <Question text="When was the DAO founded? When was the TGE?">
       Olas DAO was founded in 2022 with ~50 participants. When the DAO was
       founded all the founding members paid their share of the costs, in total
-      it was
-      {' '}
+      it was{' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1126134102400176229"
         external
@@ -66,8 +64,7 @@ const FAQPage = () => (
         12.7.23 at 6pm UTC
       </FAQLink>
       . This LBP is the only one planned and was created by Valory to establish
-      initial liquidity in a decentralized manner because
-      {' '}
+      initial liquidity in a decentralized manner because{' '}
       <FAQLink
         href="https://twitter.com/autonolas/status/1675892568905900033?s=20"
         target="_blank"
@@ -76,18 +73,15 @@ const FAQPage = () => (
       >
         the DAO members love decentralization
       </FAQLink>
-      . All funds collected will be strictly used to
-      {' '}
+      . All funds collected will be strictly used to{' '}
       <FAQLink href="https://www.autonolas.network/blog/olas-public-launch">
         &apos;maintain, run and further&apos;
-      </FAQLink>
-      {' '}
+      </FAQLink>{' '}
       the decentralized Olas protocol.
     </Question>
     <Question text="What’s this about a seed round?">
       Olas was founded as above and did not have a seed round. Valory, the dev
-      company many of the founding members work from,
-      {' '}
+      company many of the founding members work from,{' '}
       <FAQLink
         href="https://www.valory.xyz/post/autonomous-services-to-power-next-gen-apps-for-crypto-users-and-daos"
         external
@@ -97,8 +91,7 @@ const FAQPage = () => (
       .
     </Question>
     <Question text="What’s next?">
-      Catch up on everything built in the Olas ecosystem so far
-      {' '}
+      Catch up on everything built in the Olas ecosystem so far{' '}
       <FAQLink
         href="https://twitter.com/autonolas/status/1676576697863507968?s=20"
         external
@@ -110,21 +103,18 @@ const FAQPage = () => (
     </Question>
     <Question text="OLAS supply and unlocks">
       Various statistics about OLAS (inc. total supply, circulating supply,
-      current holders, unlock schedules and more) are all live
-      {' '}
+      current holders, unlock schedules and more) are all live{' '}
       <FAQLink href="https://dune.com/adrian0x/olas" external>
         here
       </FAQLink>
-      , or at the primary source: buOLAS contract
-      {' '}
+      , or at the primary source: buOLAS contract{' '}
       <FAQLink
         href="https://etherscan.io/token/0xb09ccf0dbf0c178806aaee28956c74bd66d21f73"
         external
       >
         here
       </FAQLink>
-      , veOLAS contract
-      {' '}
+      , veOLAS contract{' '}
       <FAQLink
         href="https://etherscan.io/token/0x7e01a500805f8a52fad229b3015ad130a332b7b3"
         external
@@ -132,20 +122,16 @@ const FAQPage = () => (
         here
       </FAQLink>
       . veOLAS is the governance token, which anyone can get by locking OLAS to
-      participate in governance. Governance proposals can be found on Snapshot
-      {' '}
+      participate in governance. Governance proposals can be found on Snapshot{' '}
       <FAQLink href="https://snapshot.org/#/autonolas.eth" external>
         here
-      </FAQLink>
-      {' '}
-      and Boardroom
-      {' '}
+      </FAQLink>{' '}
+      and Boardroom{' '}
       <FAQLink href="https://boardroom.io/autonolas" external>
         here
       </FAQLink>
       . buOLAS is a vesting contract for the founding members. You can lock OLAS
-      for veOLAS and check unlocks for your wallet
-      {' '}
+      for veOLAS and check unlocks for your wallet{' '}
       <FAQLink href={VEOLAS_URL} external>
         here
       </FAQLink>
@@ -162,16 +148,14 @@ const FAQPage = () => (
         contract repository
       </FAQLink>
       ), but the community might create further resources to make them more
-      accessible as time progresses. The promised
-      {' '}
+      accessible as time progresses. The promised{' '}
       <FAQLink
         href="https://boardroom.io/autonolas/proposal/cHJvcG9zYWw6YXV0b25vbGFzOm9uY2hhaW46ODU3ODA1MjQ1MjQyODgwNTE0MTU1MjEyODcyNzMyNTgwNzY1NTY5MTE5Nzc2NTQwODk1MDAzNzA4MzE3NjIyMTY1NjUzNzEwMjIzNDY="
         external
       >
         governance vote on bonding is here
       </FAQLink>
-      . Here you can find a thread about
-      {' '}
+      . Here you can find a thread about{' '}
       <FAQLink
         href="https://twitter.com/david_enim/status/1677611439236739072?s=46&t=PBYzKHt3WSIq4JxQTUrjWA"
         external
@@ -213,8 +197,7 @@ const FAQPage = () => (
     </Question>
     <Question text="How do I track the current token distribution?">
       The current token distribution can be tracked on-chain since the inception
-      of OLAS, and for convenience, on Flipside dashboards like this one
-      {' '}
+      of OLAS, and for convenience, on Flipside dashboards like this one{' '}
       <FAQLink href={FLIPSIDE_URL} external>
         here
       </FAQLink>
@@ -222,21 +205,16 @@ const FAQPage = () => (
     </Question>
     <Question text="What token allocation does Valory have?">
       Valory, founding member and co-creator of Olas, has a token allocation
-      (see
-      {' '}
+      (see{' '}
       <FAQLink href={FLIPSIDE_URL} external>
         Flipside dashboard
-      </FAQLink>
-      {' '}
-      and
-      {' '}
+      </FAQLink>{' '}
+      and{' '}
       <FAQLink href="https://www.autonolas.network/whitepaper">
         Tokenomics paper
-      </FAQLink>
-      {' '}
+      </FAQLink>{' '}
       for wallet and amounts). This allocation has never been subject to locking
-      or vesting. Valory stated
-      {' '}
+      or vesting. Valory stated{' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
         external
@@ -248,16 +226,14 @@ const FAQPage = () => (
     </Question>
     <Question text="What is circulating supply and where can I find the circulating supply of OLAS?">
       The definition of circulating supply is set by Coingecko and other
-      aggregators - see
-      {' '}
+      aggregators - see{' '}
       <FAQLink
         href="https://www.coingecko.com/en/glossary/circulating-supply"
         external
       >
         here for definition
       </FAQLink>
-      , and
-      {' '}
+      , and{' '}
       <FAQLink href="https://www.coingecko.com/en/coins/autonolas" external>
         here for live data
       </FAQLink>
@@ -271,8 +247,7 @@ const FAQPage = () => (
     </Question>
     <Question text="What if I want to know about specific transactions?">
       You can use block explorers to find all transactions on-chain. DAO
-      founding member Valory stated
-      {' '}
+      founding member Valory stated{' '}
       <FAQLink
         href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
         external

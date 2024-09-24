@@ -35,9 +35,7 @@ Upcase.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const ExternalLink = ({
-  children, className, href, hideArrow,
-}) => (
+export const ExternalLink = ({ children, className, href, hideArrow }) => (
   <a
     className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}

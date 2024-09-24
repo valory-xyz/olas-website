@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Chart, CategoryScale, LinearScale, BarElement,
-} from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import Image from 'next/image';
 
 import { web3, getTokenomicsContract } from 'common-util/web3';
@@ -104,9 +102,8 @@ const Supply = () => {
         });
 
         // emissions
-        const emissionsData = await tokenomicsGraphClient.request(
-          emissionsQuery,
-        );
+        const emissionsData =
+          await tokenomicsGraphClient.request(emissionsQuery);
         setEmissions(
           // Filter out the current epoch, because it may contain incorrect data
           emissionsData.epoches.filter(

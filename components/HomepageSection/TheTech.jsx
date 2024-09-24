@@ -18,14 +18,9 @@ const innovations = [
     description: (
       <>
         The multi-chain protocol coordinates, incentivizes and guides its
-        participants towards Olas’ goals. Anyone can
-        {' '}
-        <Link href="/#get-involved">
-          get involved
-        </Link>
-        {' '}
-        through a role-based system and and be rewarded for their useful
-        contributions.
+        participants towards Olas’ goals. Anyone can{' '}
+        <Link href="/#get-involved">get involved</Link> through a role-based
+        system and and be rewarded for their useful contributions.
       </>
     ),
     descriptionSubText: 'Its key components are:',

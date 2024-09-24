@@ -43,9 +43,7 @@ export const getEmissionsChartOptions = (points) => ({
         display: true,
         text: 'OLAS Emitted',
       },
-      max:
-        Math.max(...points)
-        * MAX_MARGIN,
+      max: Math.max(...points) * MAX_MARGIN,
       ticks: {
         callback(value) {
           return formatWeiNumber(value);
@@ -64,7 +62,8 @@ export const getEmissionsChartOptions = (points) => ({
       enabled: true,
       callbacks: {
         title: (tooltipItems) => `Epoch ${tooltipItems[0].label}`,
-        label: (tooltipItem) => `${tooltipItem.dataset.label}: ${formatWeiNumber(tooltipItem.raw)}`,
+        label: (tooltipItem) =>
+          `${tooltipItem.dataset.label}: ${formatWeiNumber(tooltipItem.raw)}`,
       },
     },
   },

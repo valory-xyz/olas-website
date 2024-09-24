@@ -8,7 +8,9 @@ const Markdown = ({ className, children }) => (
   <ReactMarkdown
     remarkPlugins={[remarkGfm]}
     rehypePlugins={[rehypeRaw]}
-    urlTransform={(uri) => (uri.startsWith('http') ? uri : `${process.env.NEXT_PUBLIC_API_URL}${uri}`)}
+    urlTransform={(uri) =>
+      uri.startsWith('http') ? uri : `${process.env.NEXT_PUBLIC_API_URL}${uri}`
+    }
     components={markdownComponents}
     className={className}
   >

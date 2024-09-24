@@ -17,8 +17,7 @@ const steps = [
       <>
         As a Bonder, you exchange your LP tokens for discounted OLAS to help the
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
-        tokens to your chosen
-        {' '}
+        tokens to your chosen{' '}
         <a href={BONDING_PROGRAMS_URL} className="text-purple-600">
           bonding program
         </a>

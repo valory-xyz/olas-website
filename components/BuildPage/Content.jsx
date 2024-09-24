@@ -18,8 +18,7 @@ const TokenomicsAlert = () => (
     <div>
       <p>
         You can check available dev rewards for existing/minted agents and
-        components on
-        {' '}
+        components on{' '}
         <a href={DEV_REWARDS_URL} className="text-purple-600">
           Tokenomics ↗
         </a>
@@ -143,9 +142,7 @@ const Content = () => (
         the growth and maintenance of services within the OLAS ecosystem.
       </p>
       <em id="footnote-1">
-        <sup>1</sup>
-        {' '}
-        Note that these ratios are protocol parameters that can be
+        <sup>1</sup> Note that these ratios are protocol parameters that can be
         configured by the Olas DAO via a governance vote.
       </em>
     </div>

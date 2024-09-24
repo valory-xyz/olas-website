@@ -46,21 +46,22 @@ const navigationMenuTriggerStyle = cva(
   'group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-md font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50',
 );
 
-const NavigationMenuTrigger = forwardRef(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Trigger
-    ref={ref}
-    className={cn(navigationMenuTriggerStyle(), 'group', className)}
-    {...props}
-  >
-    {children}
-    {' '}
-    <ChevronDown
-      className="ml-1 transition duration-200 group-data-[state=open]:rotate-180"
-      size={12}
-      aria-hidden="true"
-    />
-  </NavigationMenuPrimitive.Trigger>
-));
+const NavigationMenuTrigger = forwardRef(
+  ({ className, children, ...props }, ref) => (
+    <NavigationMenuPrimitive.Trigger
+      ref={ref}
+      className={cn(navigationMenuTriggerStyle(), 'group', className)}
+      {...props}
+    >
+      {children}{' '}
+      <ChevronDown
+        className="ml-1 transition duration-200 group-data-[state=open]:rotate-180"
+        size={12}
+        aria-hidden="true"
+      />
+    </NavigationMenuPrimitive.Trigger>
+  ),
+);
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 NavigationMenuTrigger.propTypes = {
   children: PropTypes.node.isRequired,
@@ -96,7 +97,8 @@ const NavigationMenuViewport = forwardRef(({ className, ...props }, ref) => (
     />
   </div>
 ));
-NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayName;
+NavigationMenuViewport.displayName =
+  NavigationMenuPrimitive.Viewport.displayName;
 NavigationMenuViewport.propTypes = { className: PropTypes.string };
 NavigationMenuViewport.defaultProps = { className: null };
 
@@ -109,12 +111,11 @@ const NavigationMenuIndicator = forwardRef(({ className, ...props }, ref) => (
     )}
     {...props}
   >
-    <div
-      className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"
-    />
+    <div className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md" />
   </NavigationMenuPrimitive.Indicator>
 ));
-NavigationMenuIndicator.displayName = NavigationMenuPrimitive.Indicator.displayName;
+NavigationMenuIndicator.displayName =
+  NavigationMenuPrimitive.Indicator.displayName;
 NavigationMenuIndicator.propTypes = { className: PropTypes.string };
 NavigationMenuIndicator.defaultProps = { className: null };
 

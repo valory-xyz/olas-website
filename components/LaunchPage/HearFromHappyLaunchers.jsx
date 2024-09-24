@@ -51,19 +51,16 @@ const TweetHeader = () => (
 
 const TweetBody = () => (
   <p>
-    Another big user has been AI agents by
-    {' '}
+    Another big user has been AI agents by{' '}
     <ExternalLink href="https://x.com/autonolas" hideArrow>
       @autonolas
     </ExternalLink>
     {' - '}
     we have this ongoing challenge where agents gather information and trade on
-    prediction markets - this has lead to the majority of
-    {' '}
+    prediction markets - this has lead to the majority of{' '}
     <ExternalLink href="https://x.com/safe" hideArrow>
       @safe
-    </ExternalLink>
-    {' '}
+    </ExternalLink>{' '}
     transaction on Gnosis been executed by agents!
   </p>
 );
@@ -71,11 +68,8 @@ const TweetBody = () => (
 const TweetFooter = () => (
   <div className="flex justify-between items-center">
     <div className="text-sm text-slate-500">
-      10:16 AM · Nov 15, 2023 ·
-      {' '}
-      <span className="text-black font-semibold">7,268</span>
-      {' '}
-      Views
+      10:16 AM · Nov 15, 2023 ·{' '}
+      <span className="text-black font-semibold">7,268</span> Views
     </div>
 
     <ExternalLink

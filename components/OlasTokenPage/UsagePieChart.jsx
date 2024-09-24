@@ -34,36 +34,27 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
       <div className="flex flex-col gap-2 mx-auto mb-4">
         <div>
           <span className="text-cyan-500 font-bold">
-            {loading ? '--' : split?.developers}
-            %
-          </span>
-          {' '}
-          of the new tokens are earmarked for
-          {' '}
+            {loading ? '--' : split?.developers}%
+          </span>{' '}
+          of the new tokens are earmarked for{' '}
           <Link href="/build" className="text-cyan-500 font-bold">
             Builders
           </Link>
         </div>
         <div>
           <span className="text-purple-600 font-bold">
-            {loading ? '--' : split?.bonders}
-            %
-          </span>
-          {' '}
-          of the new tokens are earmarked for
-          {' '}
+            {loading ? '--' : split?.bonders}%
+          </span>{' '}
+          of the new tokens are earmarked for{' '}
           <Link href="/bond" className="text-purple-600 font-bold">
             Bonders
           </Link>
         </div>
         <div>
           <span className="text-yellow-600 font-bold">
-            {loading ? '--' : split?.staking}
-            %
-          </span>
-          {' '}
-          of the new tokens are earmarked for
-          {' '}
+            {loading ? '--' : split?.staking}%
+          </span>{' '}
+          of the new tokens are earmarked for{' '}
           <Link
             href="https://staking.olas.network/"
             className="text-yellow-600 font-bold"

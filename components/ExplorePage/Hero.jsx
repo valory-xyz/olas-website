@@ -14,12 +14,12 @@ const HeaderLeftContent = () => (
   <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12">
     <div className={TEXT_MEDIUM_LIGHT_CLASS}>USE CASES</div>
     <H1 className={`${MAIN_TITLE_CLASS} mb-6`}>
-      {'Expanding what\'s possible'}
+      Expanding what&apos;s possible
     </H1>
 
     <p className={`${TEXT_SMALL_CLASS} mb-8 lg:w-5/6`}>
-      The impact of autonomous agent economies is shaping
-      applications and products in Web3 and far beyond.
+      The impact of autonomous agent economies is shaping applications and
+      products in Web3 and far beyond.
     </p>
 
     <Button
@@ -28,9 +28,7 @@ const HeaderLeftContent = () => (
       asChild
       className=" flex lg:inline-flex lg:w-auto "
     >
-      <a href="#use-cases">
-        Explore use cases
-      </a>
+      <a href="#use-cases">Explore use cases</a>
     </Button>
   </div>
 );

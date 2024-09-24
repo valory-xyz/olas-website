@@ -23,7 +23,9 @@ const NoServicesYet = () => (
 
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   /* eslint-disable-next-line max-len */
-  const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
+  const filteredServices = services.filter((service) =>
+    service.serviceCategory.includes(serviceCategory.name),
+  );
 
   return (
     <div className="rounded mt-2 border p-4">

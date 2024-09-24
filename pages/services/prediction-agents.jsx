@@ -14,9 +14,7 @@ import {
 import { CTASection } from 'components/ui/section/cta';
 import { HowToSection } from 'components/ui/section/how-to';
 import PredictionAgentsTable from 'components/PredictionAgentsTable';
-import {
-  ExternalLink, H1, Lead, Upcase,
-} from 'components/ui/typography';
+import { ExternalLink, H1, Lead, Upcase } from 'components/ui/typography';
 import { OPERATE_AGENTS_URL } from 'common-util/constants';
 
 const resources = [
@@ -96,16 +94,16 @@ const PredictionAgents = () => (
       }}
       body={{
         steps: [
+          // eslint-disable-next-line react/jsx-key
           <ExternalLink href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements">
             Get the requirements in place
           </ExternalLink>,
+          // eslint-disable-next-line react/jsx-key
           <span>
-            Run the
-            {' '}
+            Run the{' '}
             <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">
               quickstart script
-            </ExternalLink>
-            {' '}
+            </ExternalLink>{' '}
             - choose to participate in staking programs, if available
           </span>,
           'Tweak strategy to maximize earnings',

@@ -12,13 +12,12 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
+  "extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
   "settings": {
     "react": {
       "version": "detect"
     }
   },
-  "plugins": ["react", "jsx-a11y", "import"],
   "rules": {
     "linebreak-style": "off",
     "react/react-in-jsx-scope": "off",
@@ -32,6 +31,11 @@
       }
     ],
     "no-console": ["warn", { "allow": ["error"] }],
+    "prettier/prettier": ["error", {
+      "endOfLine": "auto",
+      "semi": true,
+      "singleQuote": true
+    }],
     "import/prefer-default-export": "off",
     "react/forbid-prop-types": "off",
     "react/destructuring-assignment": "off",

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import kits from 'data/kits.json';
@@ -23,15 +24,25 @@ export const KitPage = () => {
           <div className="md:w-1/2">
             <h1 className="text-6xl font-bold mb-6">{kit.title}</h1>
             <p className="text-xl mb-6">{kit.description}</p>
-            <a className={`${BUTTON} mr-4`} href={kit.liveLink.url} target={kit.liveLink.external ? '_blank' : '_self'} rel={kit.liveLink.external ? 'noopener noreferrer' : ''}>
+            <a
+              className={`${BUTTON} mr-4`}
+              href={kit.liveLink.url}
+              target={kit.liveLink.external ? '_blank' : '_self'}
+              rel={kit.liveLink.external ? 'noopener noreferrer' : ''}
+            >
               See live demo
             </a>
-            <a className={BUTTON} href={`${DOCS_BASE_URL}/product/${kit.id}kit`} target={kit.liveLink.external ? '_blank' : '_self'} rel={kit.liveLink.external ? 'noopener noreferrer' : ''}>
+            <a
+              className={BUTTON}
+              href={`${DOCS_BASE_URL}/product/${kit.id}kit`}
+              target={kit.liveLink.external ? '_blank' : '_self'}
+              rel={kit.liveLink.external ? 'noopener noreferrer' : ''}
+            >
               Docs
             </a>
           </div>
           <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
-            <img
+            <Image
               alt={`${kit.title} Illustration`}
               src={`/images/kits/${kit.id}kit.svg`}
               height="300"

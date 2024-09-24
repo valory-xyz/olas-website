@@ -47,16 +47,15 @@ const gettingStarted = [
   {
     title: 'Deployment',
     subList: [
-      <>
-        Deploy your agents on the
-        {' '}
+      // eslint-disable-next-line react/jsx-key
+      <div>
+        Deploy your agents on the{' '}
         <Link href="/protocol" className="text-purple-600">
           Olas Protocol
-        </Link>
-        {' '}
+        </Link>{' '}
         to benefit from its different mechanisms. Our deployment guides provide
         step-by-step instructions for seamless integration.
-      </>,
+      </div>,
     ],
   },
 ];
@@ -71,8 +70,7 @@ export const StackKeyFeatures = () => (
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <p>
         Olas Stack is a comprehensive framework designed to facilitate the
-        creation, deployment, and management of
-        {' '}
+        creation, deployment, and management of{' '}
         <Link href="/learn" className="text-purple-600">
           agent systems
         </Link>
@@ -89,8 +87,8 @@ export const StackKeyFeatures = () => (
             {list.map(({ title, subList }) => (
               <li key={title} className="mb-4">
                 <strong className="mb-2">{`${title}: `}</strong>
-                {subList.map((subTitle) => (
-                  <Fragment key={subTitle}>{subTitle}</Fragment>
+                {subList.map((subTitle, index) => (
+                  <Fragment key={index}>{subTitle}</Fragment>
                 ))}
               </li>
             ))}

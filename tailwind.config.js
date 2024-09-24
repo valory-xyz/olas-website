@@ -28,7 +28,8 @@ module.exports = {
         'dark-hexagons2': "url('/images/dark-hexagons2.png')",
         'dark-hexagons3': "url('/images/dark-hexagons3.png')",
         governatooorr: "url('/images/governatooorr-tiled.png')",
-        'subtle-gradient': 'radial-gradient(at right bottom, rgb(245, 208, 254), rgb(255, 255, 255, 100%), rgb(255, 255, 255, 100%), rgba(168, 85, 247, 50%))',
+        'subtle-gradient':
+          'radial-gradient(at right bottom, rgb(245, 208, 254), rgb(255, 255, 255, 100%), rgb(255, 255, 255, 100%), rgba(168, 85, 247, 50%))',
       },
       backgroundSize: {
         'size-25': '25%',
@@ -40,17 +41,23 @@ module.exports = {
         repeat: 'repeat',
       },
       fontSize: {
-        heading: ['56px', {
-          letterSpacing: '-4%',
-          lineHeight: '1.15',
-          fontWeight: '900',
-        }],
-        paragraph: ['32px', {
-          letterSpacing: '-2%',
-          lineHeight: '1.35',
-          color: '#000000',
-          fontWeight: '300',
-        }],
+        heading: [
+          '56px',
+          {
+            letterSpacing: '-4%',
+            lineHeight: '1.15',
+            fontWeight: '900',
+          },
+        ],
+        paragraph: [
+          '32px',
+          {
+            letterSpacing: '-2%',
+            lineHeight: '1.35',
+            color: '#000000',
+            fontWeight: '300',
+          },
+        ],
       },
       fontFamily: {
         body: ['Inter', 'system-ui', 'sans-serif'],

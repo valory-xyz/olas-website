@@ -5,7 +5,10 @@ import { cn } from 'lib/utils';
 const Card = forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('rounded-lg border text-card-foreground shadow-sm', className)}
+    className={cn(
+      'rounded-lg border text-card-foreground shadow-sm',
+      className,
+    )}
     {...props}
   />
 ));
@@ -27,7 +30,10 @@ CardHeader.defaultProps = { className: null };
 const CardTitle = forwardRef(({ className, children, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn('text-2xl font-semibold leading-none tracking-tight', className)}
+    className={cn(
+      'text-2xl font-semibold leading-none tracking-tight',
+      className,
+    )}
     {...props}
   >
     {children}
@@ -70,5 +76,10 @@ CardFooter.propTypes = { className: PropTypes.string };
 CardFooter.defaultProps = { className: null };
 
 export {
-  Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent,
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
 };

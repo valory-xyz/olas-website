@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 
 const SITE_TITLE = 'Olas | Co-own AI';
-const SITE_DESCRIPTION = 'Olas enables everyone to own a share of AI, specifically autonomous agent economies.';
+const SITE_DESCRIPTION =
+  'Olas enables everyone to own a share of AI, specifically autonomous agent economies.';
 const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 

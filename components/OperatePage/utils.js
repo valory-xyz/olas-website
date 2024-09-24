@@ -8,6 +8,7 @@ export const TEXT_MEDIUM_LIGHT_CLASS = 'text-lg text-slate-500 font-semibold';
 
 export const TEXT_CLASS = 'text-base';
 
-export const SUB_HEADER_CLASS = 'tracking-tight font-extrabold text-3xl md:font-bold lg:text-4xl';
+export const SUB_HEADER_CLASS =
+  'tracking-tight font-extrabold text-3xl md:font-bold lg:text-4xl';
 
 export const FOOT_NOTE_CLASS = 'text-base text-slate-500 font-light';

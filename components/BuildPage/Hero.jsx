@@ -2,7 +2,11 @@ import Image from 'next/image';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { MAIN_TITLE_CLASS, SECTION_BOX_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
+import {
+  MAIN_TITLE_CLASS,
+  SECTION_BOX_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
+} from 'common-util/classes';
 import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
@@ -39,21 +43,11 @@ const Hero = () => (
         </div>
 
         <div className="flex flex-wrap justify-stretch gap-6">
-          <Button
-            variant="default"
-            size="xl"
-            asChild
-            className="grow"
-          >
+          <Button variant="default" size="xl" asChild className="grow">
             <a href={CTA_LINK}>Get started</a>
           </Button>
 
-          <Button
-            variant="ghostPrimary"
-            size="xl"
-            asChild
-            className="grow"
-          >
+          <Button variant="ghostPrimary" size="xl" asChild className="grow">
             <a href="https://registry.olas.network/ethereum/components">
               Explore minted agents
             </a>
@@ -64,7 +58,6 @@ const Hero = () => (
       <div className="hidden flex lg:mt-0 md:col-span-6 lg:flex md:block">
         <HeroImage />
       </div>
-
     </div>
   </SectionWrapper>
 );

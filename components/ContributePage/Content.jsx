@@ -7,7 +7,9 @@ const Content = () => (
   <SectionWrapper backgroundType="SUBTLE_GRADIENT">
     <div id="resources" />
     <div className="max-w-screen-xl mx-auto">
-      <h1 className={`${SUB_HEADER_CLASS} text-4xl font-black text-center lg:text-left lg:text-heading text-gray-800 mb-12`}>
+      <h1
+        className={`${SUB_HEADER_CLASS} text-4xl font-black text-center lg:text-left lg:text-heading text-gray-800 mb-12`}
+      >
         Learn more about Olas Contribute
       </h1>
       <div className="mb-12">
