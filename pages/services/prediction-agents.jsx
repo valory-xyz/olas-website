@@ -94,13 +94,12 @@ const PredictionAgents = () => (
       }}
       body={{
         steps: [
-          <ExternalLink
-            key={'0eaad04d-7661-408a-b43b-db886d650c51'}
-            href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements"
-          >
+          // eslint-disable-next-line react/jsx-key
+          <ExternalLink href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements">
             Get the requirements in place
           </ExternalLink>,
-          <span key={'6a4bd5bd-a19d-463e-963e-476fc5ecf2b5'}>
+          // eslint-disable-next-line react/jsx-key
+          <span>
             Run the{' '}
             <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">
               quickstart script
