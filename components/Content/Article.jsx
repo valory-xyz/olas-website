@@ -39,24 +39,29 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 
   return (
     <Link href={href}>
-      <article className={CARD_CLASS}>
+      <article className={`${CARD_CLASS} h-full`}>
         {!imageError && (url || width || height) ? (
-          <Image
-            src={imageDomain + url}
-            width={width}
-            height={height}
-            alt={article.attributes.title}
-            className="rounded-t-lg object-cover"
-            onError={() => {
-              setImageError(true);
-            }}
-          />
+          <div className="flex h-full">
+            <Image
+              src={imageDomain + url}
+              width={width}
+              height={height}
+              alt={article.attributes.title}
+              className="rounded-t-lg py-auto object-contain"
+              onError={() => {
+                setImageError(true);
+              }}
+            />
+          </div>
         ) : (
-          <div style={{ height: 200 }} className="bg-gray-100 text-gray-500" />
+          <div
+            style={{ height: 200 }}
+            className="bg-gray-100 text-gray-500 xl:min-h-[200px]"
+          />
         )}
 
         <div className="p-6 min-h-[150px]">
-          <h2 className="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
+          <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
             {title}
           </h2>
 

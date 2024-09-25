@@ -41,14 +41,6 @@ module.exports = {
         repeat: 'repeat',
       },
       fontSize: {
-        heading: [
-          '56px',
-          {
-            letterSpacing: '-4%',
-            lineHeight: '1.15',
-            fontWeight: '900',
-          },
-        ],
         paragraph: [
           '32px',
           {
