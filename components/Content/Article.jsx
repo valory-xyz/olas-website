@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+import { isArray } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isArray } from 'lodash';
+import PropTypes from 'prop-types';
+import { useMemo, useState } from 'react';
 
 import { CARD_CLASS } from 'common-util/classes';
 
@@ -39,7 +39,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 
   return (
     <Link href={href}>
-      <article className={`${CARD_CLASS} h-full`}>
+      <article className={`${CARD_CLASS} h-full overflow-hidden`}>
         {!imageError && (url || width || height) ? (
           <div className="flex h-full">
             <Image
