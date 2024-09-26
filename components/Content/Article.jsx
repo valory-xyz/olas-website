@@ -39,7 +39,9 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 
   return (
     <Link href={href}>
-      <article className={`${CARD_CLASS} h-full overflow-hidden`}>
+      <article
+        className={`${CARD_CLASS} h-full overflow-hidden border-t border-[#0000000d]`}
+      >
         {!imageError && (url || width || height) ? (
           <div className="flex h-full">
             <Image
@@ -54,10 +56,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
             />
           </div>
         ) : (
-          <div
-            style={{ height: 200 }}
-            className="bg-gray-100 text-gray-500 xl:min-h-[200px]"
-          />
+          <div className="bg-gray-100 text-gray-500 min-h-[200px]" />
         )}
 
         <div className="p-6 min-h-[150px]">
