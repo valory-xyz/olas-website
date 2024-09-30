@@ -1,7 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
@@ -56,6 +56,14 @@ const faqList = [
             , connect your backup wallet, and then access the Safe.
           </>
         ),
+      },
+      {
+        title: 'When do agents get evicted?',
+        desc: 'If your agent fails to meet activity targets for two consecutive epochs, it will be evicted from the staking contract.',
+      },
+      {
+        title: 'If my agent gets evicted, when can I start staking again?',
+        desc: "The maximum time you need to wait is 24 hours, unless the epoch checkpoint is called late. If you'd already been staked for 3 consecutive epochs prior to being evicted, you can immediately stake again, assuming there are still slots available.",
       },
     ],
   },
