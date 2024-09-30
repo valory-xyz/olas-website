@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
 import Link from 'next/link';
+import { Fragment } from 'react';
 
-import { TEXT_LARGE_CLASS, SCREEN_WIDTH_LG } from 'common-util/classes';
+import { SCREEN_WIDTH_LG, TEXT_LARGE_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const keyFeatures = [
@@ -47,8 +47,7 @@ const gettingStarted = [
   {
     title: 'Deployment',
     subList: [
-      // eslint-disable-next-line react/jsx-key
-      <div>
+      <div key="3">
         Deploy your agents on the{' '}
         <Link href="/protocol" className="text-purple-600">
           Olas Protocol

@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import Link from 'next/link';
 import { isNaN } from 'lodash';
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 
 import videos from 'data/videos.json';
 import Video from './Video';
@@ -44,7 +44,7 @@ const Videos = ({ limit }) => {
           )}
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {(limit
             ? videosSortedByDate.slice(0, limit)
             : videosSortedByDate

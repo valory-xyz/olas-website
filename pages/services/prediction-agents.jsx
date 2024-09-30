@@ -1,7 +1,8 @@
-import Image from 'next/image';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
+import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import { Button } from 'components/ui/button';
 import {
   Card,
@@ -13,9 +14,8 @@ import {
 } from 'components/ui/card';
 import { CTASection } from 'components/ui/section/cta';
 import { HowToSection } from 'components/ui/section/how-to';
-import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import { ExternalLink, H1, Lead, Upcase } from 'components/ui/typography';
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
+import Image from 'next/image';
 
 const resources = [
   {
@@ -94,12 +94,13 @@ const PredictionAgents = () => (
       }}
       body={{
         steps: [
-          // eslint-disable-next-line react/jsx-key
-          <ExternalLink href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements">
+          <ExternalLink
+            key="1"
+            href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements"
+          >
             Get the requirements in place
           </ExternalLink>,
-          // eslint-disable-next-line react/jsx-key
-          <span>
+          <span key="2">
             Run the{' '}
             <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">
               quickstart script

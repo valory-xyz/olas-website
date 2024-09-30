@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/heading-has-content */
 /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable react/jsx-filename-extension */
 export const TEXT = 'text-xl font-light text-gray-600';
 export const TITLE = {
-  BIG: 'text-6xl text-gray-700 tracking-tight lg:text-heading mb-12',
+  BIG: 'text-6xl text-gray-700 tracking-tight lg:text-6xl mb-12',
   SMALL: 'text-5xl font-bold text-gray-800 tracking-tight leading-normal',
 };
 export const BUTTON =
