@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
-import React, { Fragment, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Octokit } from '@octokit/core';
+import Image from 'next/image';
+import { Fragment, useEffect, useState } from 'react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -95,20 +95,14 @@ const DownloadLinks = () => {
         const prodAssets = assets.filter(
           (asset) => !asset.name.startsWith('dev-'),
         );
-        const updatedLinks = links.map((link) => {
-          /* eslint-disable-next-line max-len */
+        const updatedLinks = downloadLinks.map((link) => {
           const assetLink = prodAssets.find((asset) =>
             asset.browser_download_url.includes(link.id),
           );
 
-          const getAssetLink = () => {
-            if (!assetLink?.browser_download_url) return null;
-            return assetLink.browser_download_url;
-          };
-
           return {
             ...link,
-            downloadLink: getAssetLink(),
+            downloadLink: assetLink?.browser_download_url || null,
           };
         });
         setLinks(updatedLinks);
@@ -116,7 +110,7 @@ const DownloadLinks = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [links]);
+  }, []);
 
   return (
     <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
