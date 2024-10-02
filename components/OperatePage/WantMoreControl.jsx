@@ -8,7 +8,7 @@ import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 const controlList = [
   {
     title: 'Customize, experiment, and optimize your agents',
-    desc: 'With the Quickstarts, listed on the Operate site, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules. Run as many agents as you like.',
+    desc: 'With the Quickstart, listed on the Operate site, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules. Run as many agents as you like.',
   },
   {
     title: 'Quick setup guides',
