@@ -1,6 +1,6 @@
-import { CARD_CLASS } from 'common-util/classes';
-import Image from 'next/image';
-import PropTypes from 'prop-types';
+import { CARD_CLASS } from "common-util/classes";
+import Image from "next/image";
+import PropTypes from "prop-types";
 
 const Video = ({ video }) => (
   <a
