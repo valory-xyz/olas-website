@@ -46,7 +46,7 @@ export const ReadyToBuild = () => (
             alt={item.title}
             width={495}
             height={260}
-            className="rounded-lg py-auto object-cover"
+            className="rounded-lg py-auto object-cover w-full"
           />
           <div className="p-6 flex flex-col h-full">
             <CardTitle className="mb-4 text-left">

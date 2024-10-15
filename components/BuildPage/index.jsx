@@ -9,10 +9,6 @@ const Build = () => (
     <WaysToGrow />
     <ReadyToBuild />
     <NewToOlas />
-    {/* <BuildWithOlas /> */}
-    {/* <Opportunities /> */}
-    {/* <Content /> */}
-    {/* <CTA /> */}
   </>
 );
 

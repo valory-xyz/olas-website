@@ -2,6 +2,8 @@ import SectionWrapper from "components/Layout/SectionWrapper";
 import { Card, CardTitle } from "components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import Content from "./Content";
 
 const ways = [
   {
@@ -24,8 +26,14 @@ const ways = [
         </p>
       </>
     ),
-    linkText: "Learn more about Dev Rewards",
-    link: "/dev-rewards", //leads to build page also
+    linkAction: (setDevRewards) => (
+      <a
+        className="text-purple-600 cursor-pointer"
+        onClick={() => setDevRewards(true)}
+      >
+        Learn more about Dev Rewards ↗
+      </a>
+    ),
   },
   {
     title: "Explore opportunities with external projects",
@@ -41,49 +49,82 @@ const ways = [
         Find projects that align with your expertise and interests.
       </>
     ),
-    linkText: "Get matched with an opportunity",
-    link: "/opportunities", //page not yet created
+    link: (
+      <Link
+        href={"https://build.olas.network/opportunities"}
+        className="text-purple-600"
+      >
+        Get matched with an opportunity ↗
+      </Link>
+    ),
   },
 ];
 
-export const WaysToGrow = () => (
-  <SectionWrapper
-    backgroundType="NONE"
-    customClasses="py-16 md:py-24 px-4"
-    id="grow"
-  >
-    <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
-      Two ways to grow and earn as an Olas Builder
-    </h2>
-    <p className="text-gray-600 text-center mb-12">
-      Embark on one or both ways of building to maximize your impact and
-      earnings in the Olas ecosystem.
-    </p>
+export const WaysToGrow = () => {
+  const [devRewards, setDevRewards] = useState(false);
 
-    <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-4 gap-y-4 max-w-5xl mx-auto ">
-      {ways.map((item) => (
-        <Card
-          className="flex flex-col overflow-hidden border-t border-[#0000000d]"
-          key={item.title}
-        >
-          <Image
-            src={item.imageSrc}
-            alt={item.title}
-            width={495}
-            height={260}
-            className="rounded-lg py-auto object-cover"
-          />
-          <div className="p-6">
-            <CardTitle className="mb-6 text-center">
-              <span>{item.title}</span>
-            </CardTitle>
-            <div className="mb-6 text-start">{item.description}</div>
-            <Link href={item.link} className="text-purple-600">
-              {item.linkText} ↗
-            </Link>
-          </div>
-        </Card>
-      ))}
-    </div>
-  </SectionWrapper>
-);
+  return (
+    <SectionWrapper
+      backgroundType="NONE"
+      customClasses="py-16 md:py-24 px-4"
+      id="grow"
+    >
+      <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
+        Two ways to grow and earn as an Olas Builder
+      </h2>
+      <p className="text-gray-600 text-center mb-12">
+        Embark on one or both ways of building to maximize your impact and
+        earnings in the Olas ecosystem.
+      </p>
+
+      <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-4 gap-y-4 max-w-5xl mx-auto ">
+        {ways.map((item) => (
+          <Card
+            className="flex flex-col overflow-hidden border-t border-[#0000000d]"
+            key={item.title}
+          >
+            <Image
+              src={item.imageSrc}
+              alt={item.title}
+              width={495}
+              height={260}
+              className="rounded-lg py-auto object-cover w-full"
+            />
+            <div className="p-6">
+              <CardTitle className="mb-6 text-center">
+                <span>{item.title}</span>
+              </CardTitle>
+              <div className="mb-6 text-start">{item.description}</div>
+
+              {item.linkAction && <div>{item.linkAction(setDevRewards)}</div>}
+              {devRewards && (
+                <>
+                  <div className="fixed w-[100vw] h-[100vw] z-50 left-0 top-0 bg-black opacity-40"></div>
+                  <Card
+                    className="fixed z-50 w-2/3 h-2/3 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto overflow-hidden bg-white"
+                    onClick={() => setDevRewards(false)}
+                  >
+                    <div className="py-10 flex flex-col h-full">
+                      <a
+                        className="absolute top-0 right-5 cursor-pointer p-5"
+                        onClick={() => {
+                          setDevRewards(false);
+                        }}
+                      >
+                        X
+                      </a>
+                      <div className="overflow-auto flex-1">
+                        <Content />
+                      </div>
+                    </div>
+                  </Card>
+                </>
+              )}
+              {item.link && <div>{item.link}</div>}
+            </div>
+          </Card>
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+};
