@@ -1,14 +1,14 @@
-import SectionWrapper from "components/Layout/SectionWrapper";
-import { Card, CardTitle } from "components/ui/card";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import Content from "./Content";
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Card, CardTitle } from 'components/ui/card';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import Content from './Content';
 
 const ways = [
   {
-    title: "Earn Dev Rewards by building on Olas Protocol",
-    imageSrc: "/images/build-page/earn-dev-rewards.jpg",
+    title: 'Earn Dev Rewards by building on Olas Protocol',
+    imageSrc: '/images/build-page/earn-dev-rewards.jpg',
     description: (
       <>
         <p className="mb-4">
@@ -36,8 +36,8 @@ const ways = [
     ),
   },
   {
-    title: "Explore opportunities with external projects",
-    imageSrc: "/images/build-page/explore-opportunities.jpg",
+    title: 'Explore opportunities with external projects',
+    imageSrc: '/images/build-page/explore-opportunities.jpg',
     description: (
       <>
         Collaborate with external projects seeking skilled developers and
@@ -51,7 +51,7 @@ const ways = [
     ),
     link: (
       <Link
-        href={"https://build.olas.network/opportunities"}
+        href={'https://build.olas.network/opportunities'}
         className="text-purple-600"
       >
         Get matched with an opportunity ↗

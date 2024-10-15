@@ -1,11 +1,11 @@
-import { SCREEN_WIDTH_LG } from "common-util/classes";
-import { DEV_REWARDS_URL } from "common-util/constants";
-import SectionWrapper from "components/Layout/SectionWrapper";
-import { InfoIcon } from "components/ui/info-icon";
-import { H1 } from "../ui/typography";
+import { SCREEN_WIDTH_LG } from 'common-util/classes';
+import { DEV_REWARDS_URL } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { InfoIcon } from 'components/ui/info-icon';
+import { H1 } from '../ui/typography';
 
-const pClass = "text-xl";
-const ulClass = "ml-6 list-disc text-xl flex flex-col gap-3";
+const pClass = 'text-xl';
+const ulClass = 'ml-6 list-disc text-xl flex flex-col gap-3';
 
 const TokenomicsAlert = () => (
   <div
@@ -18,7 +18,7 @@ const TokenomicsAlert = () => (
     <div>
       <p>
         You can check available dev rewards for existing/minted agents and
-        components on{" "}
+        components on{' '}
         <a href={DEV_REWARDS_URL} className="text-purple-600">
           Tokenomics ↗
         </a>

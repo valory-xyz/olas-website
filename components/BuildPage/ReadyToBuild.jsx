@@ -1,24 +1,24 @@
-import { TEXT_MEDIUM_LIGHT_CLASS } from "common-util/classes";
-import SectionWrapper from "components/Layout/SectionWrapper";
-import { Card, CardTitle } from "components/ui/card";
-import Image from "next/image";
-import Link from "next/link";
+import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Card, CardTitle } from 'components/ui/card';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const content = [
   {
-    title: "Build paths",
-    imageSrc: "/images/build-page/build-paths.png",
+    title: 'Build paths',
+    imageSrc: '/images/build-page/build-paths.png',
     description:
-      "Follow structured paths to streamline your development process.",
-    linkText: "Get started with Build paths",
-    link: "https://build.olas.network/paths",
+      'Follow structured paths to streamline your development process.',
+    linkText: 'Get started with Build paths',
+    link: 'https://build.olas.network/paths',
   },
   {
-    title: "Comprehensive docs",
-    imageSrc: "/images/build-page/docs.png",
-    description: "Dive deep with our detailed documentation.",
-    linkText: "Review Olas documentation",
-    link: "https://docs.autonolas.network",
+    title: 'Comprehensive docs',
+    imageSrc: '/images/build-page/docs.png',
+    description: 'Dive deep with our detailed documentation.',
+    linkText: 'Review Olas documentation',
+    link: 'https://docs.autonolas.network',
   },
 ];
 

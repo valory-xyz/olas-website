@@ -1,14 +1,14 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 import {
   MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
-} from "common-util/classes";
-import SectionWrapper from "components/Layout/SectionWrapper";
-import { Button } from "components/ui/button";
-import { CTA_LINK } from "./utils";
+} from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
   <Image
