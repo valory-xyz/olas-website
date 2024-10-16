@@ -21,7 +21,10 @@ export const CORE_TECHNICAL_DOCUMENT =
 export const FLIPSIDE_URL =
   'https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda';
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
-export const DAILY_ACTIVE_AGENTS_DUNE_QUERY_ID = '4043904';
+export const PREDICTION_DAA_QUERY_ID = '4165113';
+export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
+export const PREDICTION_ECONOMY_DASHBOARD_URL =
+  'https://dune.com/adrian0x/the-olas-predict-agent-economy';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
