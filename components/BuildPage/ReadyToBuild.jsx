@@ -1,23 +1,23 @@
-import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card, CardTitle } from 'components/ui/card';
-import Image from 'next/image';
+import { TEXT_MEDIUM_LIGHT_CLASS } from "common-util/classes";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Card, CardTitle } from "components/ui/card";
+import Image from "next/image";
 
 const content = [
   {
-    title: 'Build paths',
-    imageSrc: '/images/build-page/build-paths.png',
+    title: "Build paths",
+    imageSrc: "/images/build-page/build-paths.png",
     description:
-      'Follow structured paths to streamline your development process.',
-    linkText: 'Get started with Build paths',
-    link: 'https://build.olas.network/paths',
+      "Follow structured paths to streamline your development process.",
+    linkText: "Get started with Build paths",
+    link: "https://build.olas.network/paths",
   },
   {
-    title: 'Comprehensive docs',
-    imageSrc: '/images/build-page/docs.png',
-    description: 'Dive deep with our detailed documentation.',
-    linkText: 'Review Olas documentation',
-    link: 'https://docs.autonolas.network',
+    title: "Comprehensive docs",
+    imageSrc: "/images/build-page/docs.png",
+    description: "Dive deep with our detailed documentation.",
+    linkText: "Review Olas documentation",
+    link: "https://docs.autonolas.network",
   },
 ];
 
@@ -37,7 +37,7 @@ export const ReadyToBuild = () => (
     <div className="grid md:grid-cols-2 md:gap-x-4 gap-x-10 gap-y-4 max-w-5xl mx-auto ">
       {content.map((item) => (
         <Card
-          className="bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] flex flex-col overflow-hidden border-t border-[#0000000d]"
+          className="bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] flex flex-col overflow-hidden border-t border-gray-200"
           key={item.title}
         >
           <Image

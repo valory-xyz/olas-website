@@ -1,15 +1,15 @@
-import { Cross2Icon } from '@radix-ui/react-icons';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card, CardTitle } from 'components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import Content from './Content';
+import { Cross2Icon } from "@radix-ui/react-icons";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Card, CardTitle } from "components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import Content from "./Content";
 
 const ways = [
   {
-    title: 'Earn Dev Rewards by building on Olas Protocol',
-    imageSrc: '/images/build-page/earn-dev-rewards.jpg',
+    title: "Earn Dev Rewards by building on Olas Protocol",
+    imageSrc: "/images/build-page/earn-dev-rewards.jpg",
     description: (
       <>
         <p className="mb-4">
@@ -27,18 +27,18 @@ const ways = [
         </p>
       </>
     ),
-    showDevRewards: (setDevRewards) => (
+    showDevRewards: (setDevRewardsOpen) => (
       <a
         className="text-purple-600 cursor-pointer"
-        onClick={() => setDevRewards(true)}
+        onClick={() => setDevRewardsOpen(true)}
       >
         Learn more about Dev Rewards
       </a>
     ),
   },
   {
-    title: 'Explore opportunities with external projects',
-    imageSrc: '/images/build-page/explore-opportunities.jpg',
+    title: "Explore opportunities with external projects",
+    imageSrc: "/images/build-page/explore-opportunities.jpg",
     description: (
       <>
         <p>
@@ -54,8 +54,9 @@ const ways = [
     ),
     link: (
       <Link
-        href={'https://build.olas.network/opportunities'}
+        href={"https://build.olas.network/opportunities"}
         className="text-purple-600"
+        target="_blank"
       >
         Get matched with an opportunity ↗
       </Link>
@@ -64,7 +65,7 @@ const ways = [
 ];
 
 export const WaysToGrow = () => {
-  const [devRewards, setDevRewards] = useState(false);
+  const [isDevRewardsOpen, setDevRewardsOpen] = useState(false);
 
   return (
     <SectionWrapper
@@ -83,7 +84,7 @@ export const WaysToGrow = () => {
       <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-5xl mx-auto ">
         {ways.map((item) => (
           <Card
-            className="flex flex-col overflow-hidden border-t rounded-xl border-[#0000000d]"
+            className="flex flex-col overflow-hidden border-t rounded-xl border-white"
             key={item.title}
           >
             <Image
@@ -98,22 +99,21 @@ export const WaysToGrow = () => {
                 <span>{item.title}</span>
               </CardTitle>
               <div className="mb-6 text-start">{item.description}</div>
-
               {item.showDevRewards && (
-                <div>{item.showDevRewards(setDevRewards)}</div>
+                <div>{item.showDevRewards(setDevRewardsOpen)}</div>
               )}
-              {devRewards && (
+              {isDevRewardsOpen && (
                 <>
                   <div className="fixed w-[100vw] h-[100vw] z-50 left-0 top-0 bg-black opacity-40"></div>
                   <Card
                     className="fixed z-50 w-2/3 h-2/3 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto overflow-hidden bg-white"
-                    onClick={() => setDevRewards(false)}
+                    onClick={() => setDevRewardsOpen(false)}
                   >
                     <div className="py-10 flex flex-col h-full">
                       <a
                         className="absolute top-0 right-5 cursor-pointer p-5"
                         onClick={() => {
-                          setDevRewards(false);
+                          setDevRewardsOpen(false);
                         }}
                       >
                         <Cross2Icon />
@@ -125,7 +125,7 @@ export const WaysToGrow = () => {
                   </Card>
                 </>
               )}
-              {item.link && <div>{item.link}</div>}
+              {item.link}
             </div>
           </Card>
         ))}
