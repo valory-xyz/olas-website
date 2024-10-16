@@ -1,24 +1,23 @@
-import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card, CardTitle } from 'components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
+import { TEXT_MEDIUM_LIGHT_CLASS } from "common-util/classes";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Card, CardTitle } from "components/ui/card";
+import Image from "next/image";
 
 const content = [
   {
-    title: 'Build paths',
-    imageSrc: '/images/build-page/build-paths.png',
+    title: "Build paths",
+    imageSrc: "/images/build-page/build-paths.png",
     description:
-      'Follow structured paths to streamline your development process.',
-    linkText: 'Get started with Build paths',
-    link: 'https://build.olas.network/paths',
+      "Follow structured paths to streamline your development process.",
+    linkText: "Get started with Build paths",
+    link: "https://build.olas.network/paths",
   },
   {
-    title: 'Comprehensive docs',
-    imageSrc: '/images/build-page/docs.png',
-    description: 'Dive deep with our detailed documentation.',
-    linkText: 'Review Olas documentation',
-    link: 'https://docs.autonolas.network',
+    title: "Comprehensive docs",
+    imageSrc: "/images/build-page/docs.png",
+    description: "Dive deep with our detailed documentation.",
+    linkText: "Review Olas documentation",
+    link: "https://docs.autonolas.network",
   },
 ];
 
@@ -48,14 +47,14 @@ export const ReadyToBuild = () => (
             height={260}
             className="rounded-lg py-auto object-cover w-full"
           />
-          <div className="p-6 flex flex-col h-full">
+          <div className="p-6 py-8 flex flex-col h-full">
             <CardTitle className="mb-4 text-left">
               <span>{item.title}</span>
             </CardTitle>
             <div className="mb-2 text-start">{item.description}</div>
-            <Link href={item.link} className="mt-auto text-purple-600">
+            <a href={item.link} className="mt-auto text-purple-600">
               {item.linkText} ↗
-            </Link>
+            </a>
           </div>
         </Card>
       ))}

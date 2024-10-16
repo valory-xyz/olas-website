@@ -1,36 +1,37 @@
-import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
-import { Card, CardTitle } from 'components/ui/card';
-import Image from 'next/image';
+import { TEXT_MEDIUM_LIGHT_CLASS } from "common-util/classes";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Button } from "components/ui/button";
+import { Card, CardTitle } from "components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
 
 const programs = [
   {
-    title: 'Olas Dev Academy – Intensive Program',
-    image: '/images/build-page/academy-program.jpg',
+    title: "Olas Dev Academy – Intensive Program",
+    image: "/images/build-page/academy-program.jpg",
     description:
-      'Invite-only 4-week intensive program designed for experienced Python developers who are ready to learn agent creation on the Olas Stack. Full-time commitment required.',
+      "Invite-only 4-week intensive program designed for experienced Python developers who are ready to learn agent creation on the Olas Stack. Full-time commitment required.",
   },
   {
-    title: 'Olas Dev Academy – Self-Paced Study',
-    image: '/images/build-page/academy-study.jpg',
+    title: "Olas Dev Academy – Self-Paced Study",
+    image: "/images/build-page/academy-study.jpg",
     description:
-      'Self-paced course on YouTube that covers everything you need to know about building agents on the Olas Stack. Complete the course at your own speed.',
+      "Self-paced course on YouTube that covers everything you need to know about building agents on the Olas Stack. Complete the course at your own speed.",
   },
   {
-    title: 'Olas Dev Kickstart',
-    image: '/images/build-page/dev-kickstart.jpg',
+    title: "Olas Dev Kickstart",
+    image: "/images/build-page/dev-kickstart.jpg",
     description: (
       <>
-        Get exposure and hands-on experience to Olas Stack by building{' '}
-        <a
+        Get exposure and hands-on experience to Olas Stack by building{" "}
+        <Link
           href="/services/ai-mechs"
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
         >
           Mech tools
-        </a>{' '}
+        </Link>{" "}
         with our Dev Kickstart workshop.
       </>
     ),
@@ -71,7 +72,7 @@ export const NewToOlas = () => (
             image
             className="rounded-lg p-2 object-cover w-full"
           />
-          <div className="p-4">
+          <div className="p-6">
             <CardTitle className="mb-4 md:max-w-[230px]  mx-auto text-center">
               <span>{item.title}</span>
             </CardTitle>
@@ -86,7 +87,7 @@ export const NewToOlas = () => (
           asChild
           className="whitespace-normal max-sm:max-w-auto text-center max-sm:h-auto max-sm:py-2"
         >
-          <a href={'https://www.valory.xyz/academy'}>
+          <a href={"https://www.valory.xyz/academy"}>
             Explore Valory structured program
           </a>
         </Button>

@@ -1,14 +1,15 @@
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card, CardTitle } from 'components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import Content from './Content';
+import { Cross2Icon } from "@radix-ui/react-icons";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Card, CardTitle } from "components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import Content from "./Content";
 
 const ways = [
   {
-    title: 'Earn Dev Rewards by building on Olas Protocol',
-    imageSrc: '/images/build-page/earn-dev-rewards.jpg',
+    title: "Earn Dev Rewards by building on Olas Protocol",
+    imageSrc: "/images/build-page/earn-dev-rewards.jpg",
     description: (
       <>
         <p className="mb-4">
@@ -26,32 +27,34 @@ const ways = [
         </p>
       </>
     ),
-    linkAction: (setDevRewards) => (
+    showDevRewards: (setDevRewards) => (
       <a
         className="text-purple-600 cursor-pointer"
         onClick={() => setDevRewards(true)}
       >
-        Learn more about Dev Rewards ↗
+        Learn more about Dev Rewards
       </a>
     ),
   },
   {
-    title: 'Explore opportunities with external projects',
-    imageSrc: '/images/build-page/explore-opportunities.jpg',
+    title: "Explore opportunities with external projects",
+    imageSrc: "/images/build-page/explore-opportunities.jpg",
     description: (
       <>
-        Collaborate with external projects seeking skilled developers and
-        discover opportunities that align with your expertise, with compensation
-        handled directly by the third-party projects. <br />
+        <p>
+          Collaborate with external projects seeking skilled developers and
+          discover opportunities that align with your expertise, with
+          compensation handled directly by the third-party projects.
+        </p>
         <h3 className="font-semibold mt-4">Browse opportunities</h3>
-        Discover a list of projects that match your skills. <br />
+        <p>Discover a list of projects that match your skills. </p>
         <h3 className="font-semibold mt-4">Get in touch</h3>
-        Find projects that align with your expertise and interests.
+        <p>Find projects that align with your expertise and interests.</p>
       </>
     ),
     link: (
       <Link
-        href={'https://build.olas.network/opportunities'}
+        href={"https://build.olas.network/opportunities"}
         className="text-purple-600"
       >
         Get matched with an opportunity ↗
@@ -77,10 +80,10 @@ export const WaysToGrow = () => {
         earnings in the Olas ecosystem.
       </p>
 
-      <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-4 gap-y-4 max-w-5xl mx-auto ">
+      <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-5xl mx-auto ">
         {ways.map((item) => (
           <Card
-            className="flex flex-col overflow-hidden border-t border-[#0000000d]"
+            className="flex flex-col overflow-hidden border-t rounded-xl border-[#0000000d]"
             key={item.title}
           >
             <Image
@@ -88,15 +91,17 @@ export const WaysToGrow = () => {
               alt={item.title}
               width={495}
               height={260}
-              className="rounded-lg py-auto object-cover w-full"
+              className="rounded-xl py-auto object-cover w-full"
             />
-            <div className="p-6">
-              <CardTitle className="mb-6 text-center">
+            <div className="p-6 py-8">
+              <CardTitle className="mb-6 leading-[140%] text-center">
                 <span>{item.title}</span>
               </CardTitle>
               <div className="mb-6 text-start">{item.description}</div>
 
-              {item.linkAction && <div>{item.linkAction(setDevRewards)}</div>}
+              {item.showDevRewards && (
+                <div>{item.showDevRewards(setDevRewards)}</div>
+              )}
               {devRewards && (
                 <>
                   <div className="fixed w-[100vw] h-[100vw] z-50 left-0 top-0 bg-black opacity-40"></div>
@@ -111,7 +116,7 @@ export const WaysToGrow = () => {
                           setDevRewards(false);
                         }}
                       >
-                        X
+                        <Cross2Icon />
                       </a>
                       <div className="overflow-auto flex-1">
                         <Content />
