@@ -1,12 +1,13 @@
 import Image from 'next/image';
 
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
 import {
   MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
@@ -32,11 +33,16 @@ const Hero = () => (
           OLAS BUILD
         </div>
 
-        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto mb-6`}>
+        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto`}>
           Build agents,
           <br />
           get rewarded
         </h2>
+
+        <div className={`${TEXT_SMALL_CLASS} mb-6`}>
+          Build on the Olas protocol and earn Dev Rewards, or get paid by
+          contributing to external projects.
+        </div>
 
         <div className="md:hidden mb-8">
           <HeroImage />

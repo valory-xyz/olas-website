@@ -1,16 +1,14 @@
-import Content from './Content';
-import CTA from './CTA';
 import Hero from './Hero';
-import { BuildWithOlas } from './BuildWithOlas';
-import { Opportunities } from './Opportunities';
+import { NewToOlas } from './NewToOlas';
+import { ReadyToBuild } from './ReadyToBuild';
+import { WaysToGrow } from './WaysToGrow';
 
 const Build = () => (
   <>
     <Hero />
-    <BuildWithOlas />
-    <Opportunities />
-    <Content />
-    <CTA />
+    <WaysToGrow />
+    <ReadyToBuild />
+    <NewToOlas />
   </>
 );
 

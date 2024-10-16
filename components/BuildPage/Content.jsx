@@ -1,5 +1,5 @@
-import { DEV_REWARDS_URL } from 'common-util/constants';
 import { SCREEN_WIDTH_LG } from 'common-util/classes';
+import { DEV_REWARDS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { InfoIcon } from 'components/ui/info-icon';
 import { H1 } from '../ui/typography';
@@ -28,7 +28,7 @@ const TokenomicsAlert = () => (
   </div>
 );
 const Content = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
+  <SectionWrapper customClasses="lg:p-16 p-8" id="rewards">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <H1 className="mb-12">How do Build Rewards work?</H1>
 
