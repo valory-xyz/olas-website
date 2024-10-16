@@ -52,7 +52,11 @@ export const ReadyToBuild = () => (
               <span>{item.title}</span>
             </CardTitle>
             <div className="mb-2 text-start">{item.description}</div>
-            <a href={item.link} className="mt-auto text-purple-600">
+            <a
+              href={item.link}
+              className="mt-auto text-purple-600"
+              target="_blank"
+            >
               {item.linkText} ↗
             </a>
           </div>
