@@ -156,5 +156,33 @@
     "demo": false,
     "builder": "Valory",
     "path": "/agent-economies/predict"
+  },
+  {
+    "id": "b3c4a7e8-d14f-4d6e-9c1c-55c72d02f3b9",
+    "name": "Optimus",
+    "slug": "optimus",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "optimus.svg",
+    "demo": false,
+    "builder": "Valory",
+    "path": "/agent-economies/optimus"
+  },
+  {
+    "id": "a5e6c2d4-4e77-4b1b-a3c8-e6b0d7e2b213",
+    "name": "Mech",
+    "slug": "mech",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "mech.svg",
+    "demo": false,
+    "builder": "Valory",
+    "path": "/agent-economies/mech"
   }
 ]
