@@ -70,14 +70,14 @@
       {
         "title": "Optimus",
         "description": "Agents intelligently managing DeFi assets.",
-        "image": "/images/services/optimus.svg",
+        "image": "/images/services/optimus.png",
         "link": "/agent-economies/optimus",
         "isExternal": false
       },
       {
         "title": "Mech",
         "description": "Agents providing AI intelligence to other agent economies.",
-        "image": "/images/services/mech.svg",
+        "image": "/images/services/mech.png",
         "link": "/agent-economies/mech",
         "isExternal": false
       }

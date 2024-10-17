@@ -166,7 +166,7 @@
     "appUrl": "",
     "marketingUrl": "",
     "buildUrl": "",
-    "iconFilename": "optimus.svg",
+    "iconFilename": "optimus.png",
     "demo": false,
     "builder": "Valory",
     "path": "/agent-economies/optimus"
@@ -180,7 +180,7 @@
     "appUrl": "",
     "marketingUrl": "",
     "buildUrl": "",
-    "iconFilename": "mech.svg",
+    "iconFilename": "mech.png",
     "demo": false,
     "builder": "Valory",
     "path": "/agent-economies/mech"
