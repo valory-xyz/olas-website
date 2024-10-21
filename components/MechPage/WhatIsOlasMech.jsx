@@ -1,10 +1,10 @@
-import { SUB_HEADER_CLASS, SUB_HEADER_LG_CLASS } from "common-util/classes";
-import SectionWrapper from "components/Layout/SectionWrapper";
-import { Card } from "components/ui/card";
-import Image from "next/image";
+import { SUB_HEADER_CLASS, SUB_HEADER_LG_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Card } from 'components/ui/card';
+import Image from 'next/image';
 
 const CARD_BG =
-  "border-1.5 border-gray-200 rounded-2xl py-6 bg-gradient-to-t from-[#F2F4F7] to-white max-md:px-3";
+  'border-1.5 border-gray-200 rounded-2xl py-6 bg-gradient-to-t from-[#F2F4F7] to-white max-md:px-3';
 
 const WhatIsMech = () => (
   <div>
@@ -24,7 +24,7 @@ const WhatIsMech = () => (
       The Mech economy sells AI services to other agents via the blockchain.
       Building on this concept, Olas Mech agent economy provides AI intelligence
       for other autonomous AI agents or agent economies by listening for
-      on-chain requests and performing the needed actions off-chain in exchange.{" "}
+      on-chain requests and performing the needed actions off-chain in exchange.{' '}
     </p>
     <p className="mb-20">
       This system creates a seamless marketplace for AI capabilities, where
