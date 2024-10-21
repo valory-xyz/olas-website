@@ -11,15 +11,15 @@ const types = [
     id: 'Trader',
     src: '/images/predict-page/traders.png',
     desc: 'Finds the best DeFi opportunities and makes smart investments.',
-    linkText: 'More about Trader agents ',
-    link: '',
+    linkText: 'More about Optimus Trader agent',
+    link: '/services/babydegen',
   },
   {
     id: 'Mech',
     src: '/images/predict-page/mechs.png',
     desc: 'Operating as Olas Mech agent economy, Mechs provide intelligence for Trader agents for managing DeFi assets.',
     linkText: 'More about Olas Mech agent economy ',
-    link: '',
+    link: '/agent-economies/mech',
   },
 ];
 
