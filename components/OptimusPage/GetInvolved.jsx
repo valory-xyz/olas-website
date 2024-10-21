@@ -1,29 +1,29 @@
-import { MoveUpRight } from "lucide-react";
-import Link from "next/link";
+import { MoveUpRight } from 'lucide-react';
+import Link from 'next/link';
 
-import { SUB_HEADER_CLASS, TEXT_CLASS } from "common-util/classes";
-import { OPERATE_AGENTS_URL } from "common-util/constants";
-import SectionWrapper from "components/Layout/SectionWrapper";
+import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
   {
-    title: "For Builders",
-    desc: "Contribute to Trader strategies and have a chance to earn Dev Rewards.",
-    urlName: "Reach out on Discord",
-    url: "https://discord.gg/RHY6eJ35ar",
+    title: 'For Builders',
+    desc: 'Contribute to Trader strategies and have a chance to earn Dev Rewards.',
+    urlName: 'Reach out on Discord',
+    url: 'https://discord.gg/RHY6eJ35ar',
     isExternal: true,
   },
   {
-    title: "For Launchers",
-    desc: "Bring your own AI agent economy to your ecosystem.",
-    urlName: "Learn more",
-    url: "/launch",
+    title: 'For Launchers',
+    desc: 'Bring your own AI agent economy to your ecosystem.',
+    urlName: 'Learn more',
+    url: '/launch',
     isExternal: false,
   },
   {
-    title: "For Operators",
-    desc: "Run Optimus agent using Quickstart.",
-    urlName: "Run Optimus agent",
+    title: 'For Operators',
+    desc: 'Run Optimus agent using Quickstart.',
+    urlName: 'Run Optimus agent',
     url: OPERATE_AGENTS_URL,
     isExternal: true,
   },

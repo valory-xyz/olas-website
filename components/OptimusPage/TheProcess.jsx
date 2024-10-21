@@ -1,9 +1,9 @@
-import { SUB_HEADER_LG_CLASS } from "common-util/classes";
-import { Card } from "components/ui/card";
-import Image from "next/image";
+import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
+import { Card } from 'components/ui/card';
+import Image from 'next/image';
 
 const CARD_BG =
-  "border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#F2F4F7] to-white";
+  'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#F2F4F7] to-white';
 
 export const TheProcess = () => (
   <div>
@@ -29,7 +29,7 @@ export const TheProcess = () => (
         <li className="mb-2">
           <strong>Finds the best opportunities:</strong>
           <p>
-            It looks for liquidity pools on{" "}
+            It looks for liquidity pools on{' '}
             <a
               href="https://merkl.angle.money/"
               className="text-purple-600 underline"
@@ -53,7 +53,7 @@ export const TheProcess = () => (
               Optimus moves your assets to maximize your earnings.
             </li>
             <li className="py-1">
-              {" "}
+              {' '}
               If no opportunities are available, it waits until the next period
               and restarts the cycle.
             </li>

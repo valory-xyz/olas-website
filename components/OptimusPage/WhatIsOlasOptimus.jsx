@@ -1,21 +1,21 @@
-import { SUB_HEADER_CLASS } from "common-util/classes";
-import SectionWrapper from "components/Layout/SectionWrapper";
-import Image from "next/image";
+import { SUB_HEADER_CLASS } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import Image from 'next/image';
 
 const types = [
   {
-    id: "Trader",
-    src: "/images/predict-page/traders.png",
-    desc: "Finds the best DeFi opportunities and makes smart investments.",
-    linkText: "More about Optimus Trader agent",
-    link: "/services/babydegen",
+    id: 'Trader',
+    src: '/images/predict-page/traders.png',
+    desc: 'Finds the best DeFi opportunities and makes smart investments.',
+    linkText: 'More about Optimus Trader agent',
+    link: '/services/babydegen',
   },
   {
-    id: "Mech",
-    src: "/images/predict-page/mechs.png",
-    desc: "Operating as the Olas Mech agent economy, Mechs provide intelligence for Trader agents for managing DeFi assets.",
-    linkText: "More about Olas Mech agent economy ",
-    link: "/agent-economies/mech",
+    id: 'Mech',
+    src: '/images/predict-page/mechs.png',
+    desc: 'Operating as the Olas Mech agent economy, Mechs provide intelligence for Trader agents for managing DeFi assets.',
+    linkText: 'More about Olas Mech agent economy ',
+    link: '/agent-economies/mech',
   },
 ];
 
@@ -41,8 +41,8 @@ const AgentTypes = () => (
     </h2>
     <div className="grid grid-cols-1 gap-4 md:gap-0 my-8">
       {types.map((item, index) => {
-        let borderClassName = "border-b-1.5 pb-6";
-        if (index % 2 !== 0) borderClassName = "md:pt-6";
+        let borderClassName = 'border-b-1.5 pb-6';
+        if (index % 2 !== 0) borderClassName = 'md:pt-6';
 
         return (
           <div
