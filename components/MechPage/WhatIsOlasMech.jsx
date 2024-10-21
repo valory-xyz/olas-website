@@ -21,10 +21,10 @@ const WhatIsMech = () => (
       />
     </Card>
     <p className="mb-3">
-      The Mech economy sells AI services to other agents via the blockchain.
-      Building on this concept, Olas Mech agent economy provides AI intelligence
-      for other autonomous AI agents or agent economies by listening for
-      on-chain requests and performing the needed actions off-chain in exchange.{' '}
+      The Olas Mech economy sells AI services to other agents via the
+      blockchain. Building on this concept, it provides intelligence to other
+      autonomous AI agents and agent economies by listening for on-chain
+      requests and performing the needed actions off-chain.{' '}
     </p>
     <p className="mb-20">
       This system creates a seamless marketplace for AI capabilities, where

@@ -1,4 +1,4 @@
-import { SECTION_BOX_CLASS, SUB_HEADER_LG_CLASS } from 'common-util/classes';
+import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { BicepsFlexed, HandCoins, Sparkles } from 'lucide-react';
@@ -22,7 +22,7 @@ const list = [
 ];
 
 export const WhyOlasMech = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:py-16`}>
+  <SectionWrapper customClasses="lg:pt-16 max-lg:px-6 py-8">
     <div
       className="max-w-screen-xl lg:px-44 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
       id="why-olas-mech"
