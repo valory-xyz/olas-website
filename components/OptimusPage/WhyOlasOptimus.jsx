@@ -1,47 +1,33 @@
-import { SECTION_BOX_CLASS, SUB_HEADER_LG_CLASS } from 'common-util/classes';
-import { InfoCardList } from 'components/InfoCardList';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { BicepsFlexed, HandCoins, Sparkles, Target } from 'lucide-react';
+import { SUB_HEADER_LG_CLASS } from "common-util/classes";
+import { InfoCardList } from "components/InfoCardList";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { BicepsFlexed, HandCoins, Sparkles, Target } from "lucide-react";
 
 const list = [
   {
-    title: 'Innovation',
+    title: "Innovation",
     icon: <Sparkles color="#606F85" />,
-    desc: 'Harnesses the power of autonomous agents to optimize asset management in DeFi.',
+    desc: "Harnesses the power of autonomous agents to optimize DeFi asset management.",
   },
   {
-    title: 'Novel UX',
+    title: "Novel UX",
     icon: <BicepsFlexed color="#606F85" />,
     desc: "Users don't need to understand the underlying DeFi primitives. Their agent takes care of the complexities.",
   },
   {
-    title: 'Profit Potential',
+    title: "Profit Potential",
     icon: <HandCoins color="#606F85" />,
-    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous DeFi asset management.',
+    desc: "Operators run trader agents to earn staking rewards and engage in autonomous DeFi asset management.",
   },
   {
-    title: 'Specialization',
+    title: "Specialization",
     icon: <Target color="#606F85" />,
-    desc: 'Agents specialize in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).',
+    desc: "Agents specialize in roles for optimal performance and operator UX (e.g. Traders require trading capital, Mechs require access to AI models).",
   },
 ];
 
-export const OptimusFooter = () => (
-  <SectionWrapper
-    customClasses="py-12 border border-purple-200 border-x-0"
-    backgroundType="SUBTLE_GRADIENT"
-  >
-    <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 mx-auto items-center">
-      <h3 className="text-center w-full italic text-purple-900 font-medium">
-        Join the revolution in AI Agent-powered DeFi Management with Olas
-        Optimus
-      </h3>
-    </div>
-  </SectionWrapper>
-);
-
-const Content = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:py-16`}>
+export const WhyOlasOptimus = () => (
+  <SectionWrapper customClasses={"py-8 px-6 lg:pt-24"}>
     <div
       className="max-w-screen-xl lg:px-44 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
       id="why-olas-optimus"
@@ -51,14 +37,7 @@ const Content = () => (
       >
         Why Olas Optimus?
       </h2>
-      <InfoCardList wrapperClasses="" cards={list} />
+      <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
-);
-
-export const WhyOlasOptimus = () => (
-  <>
-    <Content />
-    <OptimusFooter />
-  </>
 );
