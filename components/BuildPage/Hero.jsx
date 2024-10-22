@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   MAIN_TITLE_CLASS,
@@ -8,7 +9,6 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
   <Image
@@ -50,7 +50,7 @@ const Hero = () => (
 
         <div className="flex flex-wrap justify-stretch gap-6">
           <Button variant="default" size="xl" asChild className="grow">
-            <a href={CTA_LINK}>Get started</a>
+            <Link href="#grow">Get started</Link>
           </Button>
 
           <Button variant="ghostPrimary" size="xl" asChild className="grow">
