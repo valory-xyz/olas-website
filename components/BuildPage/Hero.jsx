@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 import {
   MAIN_TITLE_CLASS,
@@ -50,7 +49,7 @@ const Hero = () => (
 
         <div className="flex flex-wrap justify-stretch gap-6">
           <Button variant="default" size="xl" asChild className="grow">
-            <Link href="#grow">Get started</Link>
+            <a href="#grow">Get started</a>
           </Button>
 
           <Button variant="ghostPrimary" size="xl" asChild className="grow">

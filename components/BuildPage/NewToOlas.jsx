@@ -88,7 +88,7 @@ export const NewToOlas = () => (
           className="whitespace-normal max-sm:max-w-auto text-center max-sm:h-auto max-sm:py-2"
         >
           <a href={'https://www.valory.xyz/academy'}>
-            Explore Valory structured programs
+            Explore Valory&apos;s structured programs
           </a>
         </Button>
       </div>
