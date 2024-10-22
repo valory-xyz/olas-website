@@ -1,7 +1,7 @@
-import Image from 'next/image';
-
 import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import Image from 'next/image';
 
 const LeftContent = () => (
   <div className="lg:col-span-5 lg:col-start-2 lg:p-0 lg:text-left lg:gap-0 lg:items-start md:mb-12 flex-col flex text-center item-center px-5 mb-2 gap-6">
@@ -16,6 +16,15 @@ const LeftContent = () => (
       <br />
       agent economies
     </h2>
+
+    <Button
+      variant="default"
+      size="xl"
+      asChild
+      className="md:w-auto mb-6 w-full"
+    >
+      <a href="#get-involved">Get involved</a>
+    </Button>
   </div>
 );
 
