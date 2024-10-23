@@ -7,21 +7,14 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [requests] = await Promise.allSettled([getMechRqs()]);
+  const result = await getMechRqs();
 
   return {
-    totalRqs: totalRqs.status === 'fulfilled' ? requests.value.totalRqs : null,
-    predictRqs:
-      predictRqs.status === 'fulfilled' ? requests.value.predictRqs : null,
-    contributeRqs:
-      contributeRqs.status === 'fulfilled'
-        ? requests.value.contributeRqs
-        : null,
-    governatooorRqs:
-      governatooorRqs.status === 'fulfilled'
-        ? requests.value.governatooorRqs
-        : null,
-    otherRqs: otherRqs.status === 'fulfilled' ? requests.value.otherRqs : null,
+    totalRqs: result.totalRqs,
+    predictRqs: result.predictRqs,
+    contributeRqs: result.contributeRqs,
+    governatooorRqs: result.governatooorRqs,
+    otherRqs: result.otherRqs,
   };
 };
 
@@ -98,6 +91,7 @@ export const MechAgentMetrics = () => {
         id: 'other',
         label: (
           <div className="flex flex-col gap-2 mb-3">
+            <div className="w-[35px] h-[35px]"></div>
             <span className="text-base font-semibold text-black">Other</span>
           </div>
         ),
@@ -114,10 +108,10 @@ export const MechAgentMetrics = () => {
       customClasses="text-center py-16 px-4 border-b border-t"
       id="activity"
     >
-      <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
+      <div className="text-7xl lg:text-9xl mb-12 max-w-[650px] mx-auto mb-16">
         <p className="text-xl text-slate-700 mb-8 mx-auto">
           The Olas Mech agent economy is in demand as ever, resulting in more
-          than
+          than{' '}
           <ExternalLink
             className="font-bold"
             href={MECH_ECONOMY_DASHBOARD_URL}
