@@ -9,7 +9,7 @@ const list = [
     title: 'For Builders',
     desc: 'Contribute to Mechs AI tools marketplace for agents and have a chance to earn Dev Rewards.',
     urlName: 'Coming soon',
-    url: '',
+    url: '#',
     isExternal: false,
     isDisabled: true,
   },
