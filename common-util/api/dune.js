@@ -1,4 +1,5 @@
 import {
+  MECH_RQS_QUERY_ID,
   PREDICTION_DAA_QUERY_ID,
   PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
 } from 'common-util/constants';
@@ -43,4 +44,28 @@ export const getPredictionTxs = async () => {
   );
   const totalTxs = traderTxs + mechTxs + marketCreatorTxs;
   return { traderTxs, mechTxs, marketCreatorTxs, totalTxs };
+};
+
+export const getMechRqs = async () => {
+  const json = await duneApiCall({
+    queryId: MECH_RQS_QUERY_ID,
+  });
+  const predictRqs = get(
+    json,
+    'result.rows[0].predict_cumulative_transaction_count',
+  );
+  const contributeRqs = get(
+    json,
+    'result.rows[0].contribute_cumulative_transaction_count',
+  );
+  const governatooorRqs = get(
+    json,
+    'result.rows[0].governatooor_cumulative_transaction_count',
+  );
+  const otherRqs = get(
+    json,
+    'result.rows[0].other_cumulative_transaction_count',
+  );
+  const totalRqs = get(json, 'result.rows[0].total_cumulative_transactions');
+  return { totalRqs, predictRqs, contributeRqs, governatooorRqs, otherRqs };
 };
