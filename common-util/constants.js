@@ -25,7 +25,7 @@ export const PREDICTION_DAA_QUERY_ID = '4165113';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
 export const PREDICTION_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/the-olas-predict-agent-economy';
-export const MECH_RQS_QUERY_ID = '4185253';
+export const MECH_TXS_QUERY_ID = '4185253';
 export const MECH_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/the-mechs-agent-economy';
 

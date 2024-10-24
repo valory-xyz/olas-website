@@ -1,5 +1,5 @@
 import {
-  MECH_RQS_QUERY_ID,
+  MECH_TXS_QUERY_ID,
   PREDICTION_DAA_QUERY_ID,
   PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
 } from 'common-util/constants';
@@ -61,7 +61,7 @@ export const getPredictionTxs = async () => {
 export const getMechTxs = async () => {
   try {
     const json = await duneApiCall({
-      queryId: MECH_RQS_QUERY_ID,
+      queryId: MECH_TXS_QUERY_ID,
     });
     const predictTxs = get(
       json,
