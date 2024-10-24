@@ -12,7 +12,7 @@ const LeftContent = () => (
     </div>
 
     <h2 className={MAIN_TITLE_CLASS}>
-      AI intelligence for
+      AI workflow for
       <br />
       agent economies
     </h2>

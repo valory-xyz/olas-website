@@ -69,7 +69,7 @@ const TheProcess = () => (
 );
 
 export const WhatIsOlasMech = () => (
-  <SectionWrapper customClasses="mx-auto max-w-[750px] max-sm:py-8 max-sm:px-6">
+  <SectionWrapper customClasses="mt-24 mx-auto max-w-[750px] max-sm:py-8 max-sm:px-6">
     <WhatIsMech />
     <TheProcess />
   </SectionWrapper>
