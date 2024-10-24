@@ -21,6 +21,10 @@ export const EMISSIONS_CHART_COLORS = {
     legend: 'bg-amber-400',
     line: '#FFB347',
   },
+  actual: {
+    legend: 'bg-green-400',
+    line: '#3FE681',
+  },
 };
 
 const MAX_MARGIN = 1.2;
