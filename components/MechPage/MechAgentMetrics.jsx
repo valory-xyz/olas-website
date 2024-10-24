@@ -1,4 +1,4 @@
-import { getMechRqs } from 'common-util/api/dune';
+import { getMechTxs } from 'common-util/api/dune';
 import { MECH_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -7,14 +7,14 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const result = await getMechRqs();
+  const result = await getMechTxs();
 
   return {
-    totalRqs: result.totalRqs,
-    predictRqs: result.predictRqs,
-    contributeRqs: result.contributeRqs,
-    governatooorRqs: result.governatooorRqs,
-    otherRqs: result.otherRqs,
+    totalTxs: result.totalTxs,
+    predictTxs: result.predictTxs,
+    contributeTxs: result.contributeTxs,
+    governatooorTxs: result.governatooorTxs,
+    otherTxs: result.otherTxs,
   };
 };
 
@@ -46,7 +46,7 @@ export const MechAgentMetrics = () => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.predictRqs?.toLocaleString(),
+        value: metrics?.predictTxs?.toLocaleString(),
         source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
@@ -65,7 +65,7 @@ export const MechAgentMetrics = () => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.contributeRqs?.toLocaleString(),
+        value: metrics?.contributeTxs?.toLocaleString(),
         source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
@@ -84,7 +84,7 @@ export const MechAgentMetrics = () => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.governatooorRqs?.toLocaleString(),
+        value: metrics?.governatooorTxs?.toLocaleString(),
         source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
@@ -96,7 +96,7 @@ export const MechAgentMetrics = () => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.otherRqs?.toLocaleString(),
+        value: metrics?.otherTxs?.toLocaleString(),
         source: MECH_ECONOMY_DASHBOARD_URL,
       },
     ],
@@ -117,7 +117,7 @@ export const MechAgentMetrics = () => {
             href={MECH_ECONOMY_DASHBOARD_URL}
             hideArrow
           >
-            {metrics?.totalRqs.toLocaleString()}&nbsp;↗
+            {metrics?.totalTxs.toLocaleString()}&nbsp;↗
           </ExternalLink>{' '}
           requests from other AI agent economies.
         </p>

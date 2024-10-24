@@ -1,5 +1,5 @@
 import {
-  MECH_RQS_QUERY_ID,
+  MECH_TXS_QUERY_ID,
   PREDICTION_DAA_QUERY_ID,
   PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
 } from 'common-util/constants';
@@ -58,31 +58,31 @@ export const getPredictionTxs = async () => {
   }
 };
 
-export const getMechRqs = async () => {
+export const getMechTxs = async () => {
   try {
     const json = await duneApiCall({
-      queryId: MECH_RQS_QUERY_ID,
+      queryId: MECH_TXS_QUERY_ID,
     });
-    const predictRqs = get(
+    const predictTxs = get(
       json,
       'result.rows[0].predict_cumulative_transaction_count',
     );
-    const contributeRqs = get(
+    const contributeTxs = get(
       json,
       'result.rows[0].contribute_cumulative_transaction_count',
     );
-    const governatooorRqs = get(
+    const governatooorTxs = get(
       json,
       'result.rows[0].governatoor_cumulative_transaction_count',
     );
-    const otherRqs = get(
+    const otherTxs = get(
       json,
       'result.rows[0].other_cumulative_transaction_count',
     );
-    const totalRqs = get(json, 'result.rows[0].total_cumulative_transactions');
-    return { totalRqs, predictRqs, contributeRqs, governatooorRqs, otherRqs };
+    const totalTxs = get(json, 'result.rows[0].total_cumulative_transactions');
+    return { totalTxs, predictTxs, contributeTxs, governatooorTxs, otherTxs };
   } catch (error) {
-    console.error('Error in getMechRqs: ', error);
+    console.error('Error in getMechTxs: ', error);
     return;
   }
 };
