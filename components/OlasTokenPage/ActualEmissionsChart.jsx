@@ -8,28 +8,34 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getEmissionsChartOptions,
+  getEmissionsChartOptionsFromNumber,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
+import Web3 from 'web3';
 import { LegendItem } from './LegendItem';
 import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const ActualEmissionsChart = ({ emissions, loading }) => {
-  const maxAvailableEmissions = emissions.map(
-    (item) =>
-      parseFloat(item.availableDevIncentives || 0) +
-      parseFloat(item.availableStakingIncentives || 0) +
-      parseFloat(item.effectiveBond || 0),
-  );
-  const actualEmissions = emissions.map(
-    (item) =>
-      parseFloat(item.devIncentivesTotalTopUp || 0) +
-      parseFloat(item.totalStakingIncentives || 0) +
-      parseFloat(item.totalCreateBondsAmountOLAS || 0),
-  );
+  const maxAvailableEmissions = emissions.map((item) => {
+    const total =
+      BigInt(item.availableDevIncentives ?? 0) +
+      BigInt(item.availableStakingIncentives ?? 0) +
+      BigInt(item.effectiveBond ?? 0);
+
+    return Web3.utils.fromWei(total, 'ether');
+  });
+
+  const actualEmissions = emissions.map((item) => {
+    const total =
+      BigInt(item.devIncentivesTotalTopUp ?? 0) +
+      BigInt(item.totalStakingIncentives ?? 0) +
+      BigInt(item.totalCreateBondsAmountOLAS ?? 0);
+
+    return Web3.utils.fromWei(total, 'ether');
+  });
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -71,11 +77,10 @@ export const ActualEmissionsChart = ({ emissions, loading }) => {
                   },
                 ],
               }}
-              options={getEmissionsChartOptions([
+              options={getEmissionsChartOptionsFromNumber(
                 ...maxAvailableEmissions,
-                ...maxAvailableEmissions,
-                10 ** 18, // Add this temporarily while we don't have data on staking
-              ])}
+                ...actualEmissions,
+              )}
             />
           )}
         </div>
