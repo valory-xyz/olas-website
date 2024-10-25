@@ -157,7 +157,7 @@ const Supply = () => {
                 Actual Emissions Schedule
               </h2>
               <p className="text-slate-500">
-                What are the actual amount of OLAS minted by the protocol per
+                What is the actual amount of OLAS minted by the protocol per
                 epoch?
               </p>
             </div>
