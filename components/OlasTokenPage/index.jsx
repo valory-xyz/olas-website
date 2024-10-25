@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-import { web3, getTokenomicsContract } from 'common-util/web3';
-import { emissionsQuery } from 'common-util/graphql/queries';
-import { tokenomicsGraphClient } from 'common-util/graphql/client';
 import { FLIPSIDE_URL } from 'common-util/constants';
-import Hero from './Hero';
-import { TokenDetails } from './TokenDetails';
-import { OlasUtility } from './OlasUtility';
+import { tokenomicsGraphClient } from 'common-util/graphql/client';
+import { emissionsQuery } from 'common-util/graphql/queries';
+import { getTokenomicsContract, web3 } from 'common-util/web3';
 import SectionWrapper from '../Layout/SectionWrapper';
-import { UsagePieChart } from './UsagePieChart';
-import { SupplyPieChart } from './SupplyPieChart';
+import { ActualEmissionsChart } from './ActualEmissionsChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
-import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToBonders } from './EmissionsToBonders';
-import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
+import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToOperators } from './EmissionsToOperators';
+import Hero from './Hero';
+import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
+import { OlasUtility } from './OlasUtility';
+import { SupplyPieChart } from './SupplyPieChart';
+import { TokenDetails } from './TokenDetails';
+import { UsagePieChart } from './UsagePieChart';
 
 // manually register arc element, category scale, linear scale,
 // and bar element – required due to chart.js tree shaking
@@ -152,6 +153,21 @@ const Supply = () => {
 
           <div className="border rounded-lg">
             <div className="p-4 border-b">
+              <h2 className="text-xl mb-2 font-bold">
+                Actual Emissions Schedule
+              </h2>
+              <p className="text-slate-500">
+                What is the actual amount of OLAS minted by the protocol per
+                epoch?
+              </p>
+            </div>
+            <div className="p-4">
+              <ActualEmissionsChart emissions={emissions} loading={loading} />
+            </div>
+          </div>
+
+          <div className="border rounded-lg">
+            <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Current Usage</h2>
               <p className="text-slate-500">
                 What are newly minted tokens used for right now?
@@ -182,29 +198,29 @@ const Supply = () => {
             </div>
             <EmissionsToOperators emissions={emissions} loading={loading} />
           </div>
-        </div>
 
-        <div className="text-center">
-          <div className="inline-block mx-auto mb-4">
-            <Image
-              src="/images/olas-token-page/flipside.svg"
-              width={60}
-              height={60}
-              alt="Flipside logo"
-            />
+          <div className="flex flex-col border rounded-lg place-content-center text-center">
+            <div className="inline-block mx-auto mb-4">
+              <Image
+                src="/images/olas-token-page/flipside.svg"
+                width={60}
+                height={60}
+                alt="Flipside logo"
+              />
+            </div>
+
+            <h2 className="text-xl mb-4 font-bold">
+              Dive into the current distribution details
+            </h2>
+            <a
+              href={FLIPSIDE_URL}
+              className="text-purple-500"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Visit OLAS Flipside dashboard ↗
+            </a>
           </div>
-
-          <h2 className="text-xl mb-4 font-bold">
-            Dive into the current distribution details
-          </h2>
-          <a
-            href={FLIPSIDE_URL}
-            className="text-purple-500"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Visit OLAS Flipside dashboard ↗
-          </a>
         </div>
       </SectionWrapper>
     </div>
