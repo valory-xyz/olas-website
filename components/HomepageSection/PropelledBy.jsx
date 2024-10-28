@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import Image from "next/image";
+import Link from "next/link";
 
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import chains from 'data/chains.json';
-import builders from 'data/builders.json';
-import friends from 'data/friends.json';
-import SectionHeading from '../SectionHeading';
+import SectionWrapper from "components/Layout/SectionWrapper";
+import builders from "data/builders.json";
+import chains from "data/chains.json";
+import friends from "data/friends.json";
+import SectionHeading from "../SectionHeading";
 
 export const Chains = () => (
   <section
@@ -37,19 +37,20 @@ export const Chains = () => (
 );
 
 export const Builders = () => (
-  <section id="builders" className="max-w-screen-xl mx-auto text-center mb-28">
+  <section id="builders" className="max-w-screen-lg mx-auto text-center mb-28">
     <h3 className="text-2xl md:text-4xl font-bold mb-4">Builders</h3>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 ">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
       {builders.map((builder) => {
-        const { id, name, url, iconFilename } = builder;
+        const { id, name, url, iconFilename, imageWidth, imageHeight } =
+          builder;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <a href={url} target="_blank" rel="noopener noreferrer">
               <Image
                 src={`/images/builders/${iconFilename}`}
                 alt={name}
-                width={150}
-                height={30}
+                width={imageWidth ?? 150}
+                height={imageHeight ?? 30}
               />
             </a>
           </div>
@@ -63,11 +64,11 @@ export const Builders = () => (
 // or because they are not live yet
 const filteredFriends = friends.filter((friend) => !friend.hidden);
 const MoreFriends = () => (
-  <section id="friends" className="max-w-screen-xl mx-auto text-center">
+  <section id="friends" className="max-w-screen-lg mx-auto text-center">
     <h3 className="text-2xl md:text-4xl font-bold mb-12">
       More friends of Olas
     </h3>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-14">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-14">
       {filteredFriends.map((friend) => {
         const {
           id,
@@ -78,15 +79,15 @@ const MoreFriends = () => (
           imageWidth,
           imageHeight,
         } = friend;
-        const LinkTag = isExternal ? 'a' : Link;
+        const LinkTag = isExternal ? "a" : Link;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <LinkTag
               href={url}
               {...(isExternal
                 ? {
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
+                    target: "_blank",
+                    rel: "noopener noreferrer",
                   }
                 : {})}
             >
