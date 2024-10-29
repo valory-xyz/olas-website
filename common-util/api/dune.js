@@ -1,8 +1,4 @@
-import {
-  MECH_TXS_QUERY_ID,
-  PREDICTION_DAA_QUERY_ID,
-  PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
-} from 'common-util/constants';
+import { MECH_TXS_QUERY_ID } from 'common-util/constants';
 import get from 'lodash/get';
 
 const duneApiCall = async ({ queryId }) => {
@@ -23,39 +19,6 @@ const duneApiCall = async ({ queryId }) => {
 
   const json = await response.json();
   return json;
-};
-
-export const getPredictionDaa = async () => {
-  try {
-    const json = await duneApiCall({ queryId: PREDICTION_DAA_QUERY_ID });
-    const average = get(json, 'result.rows[0].avg_7d_active_agents_count');
-    return Math.ceil(average);
-  } catch (error) {
-    console.error('Error in getPredictionDaa: ', error);
-    return;
-  }
-};
-
-export const getPredictionTxs = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
-    });
-    const traderTxs = get(
-      json,
-      'result.rows[0].cumulative_trader_transactions',
-    );
-    const mechTxs = get(json, 'result.rows[0].cumulative_mechs_transactions');
-    const marketCreatorTxs = get(
-      json,
-      'result.rows[0].cumulative_market_creator_transactions',
-    );
-    const totalTxs = traderTxs + mechTxs + marketCreatorTxs;
-    return { traderTxs, mechTxs, marketCreatorTxs, totalTxs };
-  } catch (error) {
-    console.error('Error in getPredictionTxs: ', error);
-    return;
-  }
 };
 
 export const getMechTxs = async () => {

@@ -1,4 +1,7 @@
-import { getSevenDayAvgDailyActiveAgents } from 'common-util/api/flipside';
+import {
+  getPredictionTxs,
+  getSevenDayAvgDailyActiveAgents,
+} from 'common-util/api/flipside';
 import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
@@ -9,26 +12,24 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents] = await Promise.allSettled([
+  const [dailyActiveAgents, transactions] = await Promise.allSettled([
     getSevenDayAvgDailyActiveAgents(),
-    // getPredictionTxs(),
+    getPredictionTxs(),
   ]);
-
-  console.log({ dailyActiveAgents });
 
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    // traderTxs:
-    //   transactions.status === "fulfilled" ? transactions.value.traderTxs : null,
-    // mechTxs:
-    //   transactions.status === "fulfilled" ? transactions.value.mechTxs : null,
-    // marketCreatorTxs:
-    //   transactions.status === "fulfilled"
-    //     ? transactions.value.marketCreatorTxs
-    //     : null,
-    // totalTxs:
-    //   transactions.status === "fulfilled" ? transactions.value.totalTxs : null,
+    traderTxs:
+      transactions.status === 'fulfilled' ? transactions.value.traderTxs : null,
+    mechTxs:
+      transactions.status === 'fulfilled' ? transactions.value.mechTxs : null,
+    marketCreatorTxs:
+      transactions.status === 'fulfilled'
+        ? transactions.value.marketCreatorTxs
+        : null,
+    totalTxs:
+      transactions.status === 'fulfilled' ? transactions.value.totalTxs : null,
   };
 };
 
