@@ -38,3 +38,44 @@ export const get7DaysAvgActivity = async () => {
   const average = get(result, "[0]['7-day trailing avg']") || null;
   return Math.floor(average);
 };
+
+const SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID =
+  '276784c3-8481-4b46-9334-6e579b524628';
+export const getSevenDayAvgDailyActiveAgents = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID,
+    });
+    const average = get(result, "[0]['AVG_7D_ACTIVE_AGENTS_COUNT']") || null;
+    return Math.floor(average);
+  } catch (error) {
+    console.error('Error in getSevenDayAvgDailyActiveAgents: ', error);
+    return null;
+  }
+};
+
+const ALL_SERVICES_TRANSACTION_ID = '06d60f1a-aa57-4c84-a8a4-017e16839b01';
+export const getPredictionTxs = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: ALL_SERVICES_TRANSACTION_ID,
+    });
+    const sortedByDate = result.sort(
+      (a, b) => new Date(b['DAY']) - new Date(a['DAY']),
+    );
+    const traderTxs = sortedByDate.find(
+      (row) => row['SERVICE_TYPE'] === 'Trader',
+    )['TOTAL_TRANSACTIONS'];
+    const mechTxs = sortedByDate.find((row) => row['SERVICE_TYPE'] === 'Mech')[
+      'TOTAL_TRANSACTIONS'
+    ];
+    const marketCreatorTxs = sortedByDate.find(
+      (row) => row['SERVICE_TYPE'] === 'Creator',
+    )['TOTAL_TRANSACTIONS'];
+    const totalTxs = traderTxs + mechTxs + marketCreatorTxs;
+    return { traderTxs, mechTxs, marketCreatorTxs, totalTxs };
+  } catch (error) {
+    console.error('Error in getPredictionTxs: ', error);
+    return null;
+  }
+};
