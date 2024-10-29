@@ -1,11 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import SectionWrapper from "components/Layout/SectionWrapper";
-import builders from "data/builders.json";
-import chains from "data/chains.json";
-import friends from "data/friends.json";
-import SectionHeading from "../SectionHeading";
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import builders from 'data/builders.json';
+import chains from 'data/chains.json';
+import friends from 'data/friends.json';
+import SectionHeading from '../SectionHeading';
 
 export const Chains = () => (
   <section
@@ -79,15 +79,15 @@ const MoreFriends = () => (
           imageWidth,
           imageHeight,
         } = friend;
-        const LinkTag = isExternal ? "a" : Link;
+        const LinkTag = isExternal ? 'a' : Link;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <LinkTag
               href={url}
               {...(isExternal
                 ? {
-                    target: "_blank",
-                    rel: "noopener noreferrer",
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
                   }
                 : {})}
             >
