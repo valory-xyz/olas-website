@@ -1,4 +1,4 @@
-import { getPredictionDaa, getPredictionTxs } from 'common-util/api/dune';
+import { getSevenDayAvgDailyActiveAgents } from 'common-util/api/flipside';
 import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
@@ -9,24 +9,26 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, transactions] = await Promise.allSettled([
-    getPredictionDaa(),
-    getPredictionTxs(),
+  const [dailyActiveAgents] = await Promise.allSettled([
+    getSevenDayAvgDailyActiveAgents(),
+    // getPredictionTxs(),
   ]);
+
+  console.log({ dailyActiveAgents });
 
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    traderTxs:
-      transactions.status === 'fulfilled' ? transactions.value.traderTxs : null,
-    mechTxs:
-      transactions.status === 'fulfilled' ? transactions.value.mechTxs : null,
-    marketCreatorTxs:
-      transactions.status === 'fulfilled'
-        ? transactions.value.marketCreatorTxs
-        : null,
-    totalTxs:
-      transactions.status === 'fulfilled' ? transactions.value.totalTxs : null,
+    // traderTxs:
+    //   transactions.status === "fulfilled" ? transactions.value.traderTxs : null,
+    // mechTxs:
+    //   transactions.status === "fulfilled" ? transactions.value.mechTxs : null,
+    // marketCreatorTxs:
+    //   transactions.status === "fulfilled"
+    //     ? transactions.value.marketCreatorTxs
+    //     : null,
+    // totalTxs:
+    //   transactions.status === "fulfilled" ? transactions.value.totalTxs : null,
   };
 };
 
@@ -150,7 +152,7 @@ export const Activity = () => {
             href={PREDICTION_ECONOMY_DASHBOARD_URL}
             hideArrow
           >
-            {metrics?.totalTxs.toLocaleString()}&nbsp;↗
+            {metrics?.totalTxs?.toLocaleString()}&nbsp;↗
           </ExternalLink>{' '}
           transactions in the Olas Predict agent economy on the Gnosis Chain
         </p>

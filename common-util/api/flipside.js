@@ -38,3 +38,13 @@ export const get7DaysAvgActivity = async () => {
   const average = get(result, "[0]['7-day trailing avg']") || null;
   return Math.floor(average);
 };
+
+const SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID =
+  '276784c3-8481-4b46-9334-6e579b524628';
+export const getSevenDayAvgDailyActiveAgents = async () => {
+  const result = await flipsideCryptoApiCall({
+    queryId: SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID,
+  });
+  const average = get(result, "[0]['AVG_7D_ACTIVE_AGENTS_COUNT']") || null;
+  return Math.floor(average);
+};
