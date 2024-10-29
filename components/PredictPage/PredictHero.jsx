@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image from "next/image";
 
-import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import { Button } from 'components/ui/button';
-import SectionWrapper from 'components/Layout/SectionWrapper';
+import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from "common-util/classes";
+import SectionWrapper from "components/Layout/SectionWrapper";
+import { Button } from "components/ui/button";
 
 const LeftContent = () => (
   <div className="lg:col-span-5 lg:col-start-2 lg:p-0 lg:text-left lg:gap-0 lg:items-start md:mb-12 flex-col flex text-center item-center px-5 mb-2 gap-6">
@@ -20,14 +20,30 @@ const LeftContent = () => (
       Predictions
     </h2>
 
-    <Button
+    {/* <Button
       variant="default"
       size="xl"
       asChild
       className="md:w-auto mb-6 w-full"
     >
       <a href="#get-involved">Get Involved</a>
-    </Button>
+    </Button> */}
+    <div className="flex flex-wrap justify-stretch gap-6 mb-6 w-full">
+      <Button variant="default" size="xl" asChild className="md:w-auto grow">
+        <a href="#grow">Get involved</a>
+      </Button>
+
+      <Button
+        variant="ghostPrimary"
+        size="xl"
+        asChild
+        className="grow"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <a href="https://predict.olas.network">Explore Predict UI</a>
+      </Button>
+    </div>
   </div>
 );
 
