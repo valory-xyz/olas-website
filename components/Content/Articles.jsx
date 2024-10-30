@@ -1,16 +1,18 @@
-import PropTypes from 'prop-types';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import qs from 'qs';
 
+import { Card } from 'components/ui/card';
+import { ChevronRight, FolderClosed } from 'lucide-react';
 import useSWR from 'swr';
-import Article from './Article';
 import { Spinner } from '../Spinner';
+import Article from './Article';
 
 export const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 export const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const Articles = ({ limit, showSeeAll }) => {
+const Articles = ({ limit, showSeeAll, displayFolders }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -34,6 +36,28 @@ const Articles = ({ limit, showSeeAll }) => {
           <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
             Blog
           </h2>
+          {displayFolders && (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
+                <Link href="/quarterly-updates">
+                  <Card className="flex p-3 gap-2 justify-between items-center">
+                    <div className="flex">
+                      <div className="p-3 bg-purple-100 rounded-lg">
+                        <FolderClosed color="#B972E8" />
+                      </div>
+                      <span className="font-medium my-auto ml-3">
+                        Quarterly updates
+                      </span>
+                    </div>
+                    <ChevronRight />
+                  </Card>
+                </Link>
+              </div>
+
+              <h3 className="text-2xl font-semibold mb-4">All posts</h3>
+            </>
+          )}
+
           {showSeeAll && (
             <div className="mb-4">
               <Link
