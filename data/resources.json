@@ -41,9 +41,9 @@
   },
   {
     "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    "title": "Quarterly reviews",
+    "title": "Quarterly updates",
     "description": "Summarized quarterly reports",
-    "url": "/reviews",
+    "url": "/quarterly-updates",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
   },
