@@ -47,7 +47,7 @@ const faqList = [
             <p>
               Olas is giving rise to agent economies across major blockchains.
               Check the{' '}
-              <Link href="/" className="text-purple-600">
+              <Link href="/#ecosystem" className="text-purple-600">
                 homepage
               </Link>{' '}
               to see how many hundreds of thousands of transactions have been
@@ -67,7 +67,7 @@ const faqList = [
           <p className="mb-3">
             The most up-to-date and heavily showcased products can be found on
             the{' '}
-            <Link href="/" className="text-purple-600">
+            <Link href="/#usecases" className="text-purple-600">
               homepage
             </Link>
             .
@@ -75,8 +75,20 @@ const faqList = [
         ),
       },
       {
-        title:
-          "Where can I see what's already happened in the Olas ecosystem, and find out what's next?",
+        title: (
+          <p>
+            Where can I see what&apos;s already happened in the Olas ecosystem,
+            and find out{' '}
+            <a
+              href="https://contribute.olas.network/roadmap"
+              className="text-purple-600"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              what&apos;s next?
+            </a>
+          </p>
+        ),
         desc: (
           <>
             <p className="mb-3">
@@ -519,7 +531,7 @@ const FAQPage = () => (
           {eachSet.category}
         </h2>
         {eachSet.list.map((faq, index) => (
-          <div className="py-2" key={index}>
+          <div className="py-2" key={index} id={faq.title}>
             <Question text={faq.title}>{faq.desc}</Question>
           </div>
         ))}
