@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { MoveUpRight } from 'lucide-react';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import {
   CORE_TECHNICAL_DOCUMENT,
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { MoveUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 const list = [
   {
@@ -21,7 +21,7 @@ const list = [
     isExternal: true,
   },
   {
-    title: 'Olas Tokenomics Core Technical Doc',
+    title: 'Tokenomics Whitepaper',
     urlName: 'Learn more',
     url: CORE_TECHNICAL_DOCUMENT,
     isExternal: true,
