@@ -5,7 +5,6 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const audits = [
   {
@@ -17,20 +16,22 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2">
             <li className="text-purple-600">
-              <Link
+              <a
                 href="https://sourcehat.com/audits/ValoryOLAS/"
                 className="text-purple-600"
+                target="_blank"
               >
                 OLAS, 23.06.22
-              </Link>
+              </a>
             </li>
             <li className="text-purple-600">
-              <Link
+              <a
                 href="https://sourcehat.com/audits/AutonolasTokenomics/"
                 className="text-purple-600"
+                target="_blank"
               >
                 Tokenomics, 16.02.23
-              </Link>
+              </a>
             </li>
           </ul>
         ),
@@ -44,35 +45,36 @@ const audits = [
         title: 'Immunefi',
         iconSrc: 'Immunefi.png',
         content: (
-          <>
-            <p>Up to $50k:</p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>
-                <Link
-                  href="https://x.com/autonolas/status/1557431064632647680"
-                  className="text-purple-600"
-                >
-                  Governance & OLAS, 08.22
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://x.com/autonolas/status/1689316293030359040"
-                  className="text-purple-600"
-                >
-                  Tokenomics & Registries, 08.23
-                </Link>
-              </li>
-              <li className="text-purple-600">
-                <Link
-                  href="https://immunefi.com/bug-bounty/autonolas/information/"
-                  className="text-purple-600"
-                >
-                  Staking, 08.24
-                </Link>
-              </li>
-            </ul>
-          </>
+          <ul className="list-disc ml-6 space-y-2">
+            <p className="-ml-6">Up to $50k:</p>
+            <li>
+              <a
+                href="https://x.com/autonolas/status/1557431064632647680"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Governance & OLAS, 08.22
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://x.com/autonolas/status/1689316293030359040"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Tokenomics & Registries, 08.23
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://immunefi.com/bug-bounty/autonolas/information/"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Staking, 08.24
+              </a>
+            </li>
+          </ul>
         ),
       },
       {
@@ -81,13 +83,14 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2">
             <li>
-              <Link
+              <a
                 href="https://x.com/valoryag/status/1769951643330810357"
                 className="text-purple-600"
+                target="_blank"
               >
                 Various contracts on Solana, 03.24
-              </Link>{' '}
-              ($50k).
+              </a>{' '}
+              ($50k)
             </li>
           </ul>
         ),
@@ -98,14 +101,15 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2">
             <li>
-              <Link
+              <a
                 href="https://code4rena.com/audits/2023-12-olas"
                 className="text-purple-600"
+                target="_blank"
               >
                 Governance, Tokenomics & Registries on mainnet & contracts on
                 Solana, 12.23{' '}
-              </Link>{' '}
-              ($90k).
+              </a>{' '}
+              ($90k)
             </li>
           </ul>
         ),
@@ -124,7 +128,7 @@ export const ProtocolAudits = () => (
 
       {audits.map((audit) => (
         <div key={audit.category}>
-          <p className={`${TEXT_LARGE_CLASS} font-bold mt-4`}>
+          <p className={`${TEXT_LARGE_CLASS} font-bold my-4`}>
             {audit.category}
           </p>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
