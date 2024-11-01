@@ -7,7 +7,7 @@ const ArticlesPage = () => (
   <PageWrapper>
     <Meta pageTitle="Blog" />
     <SectionWrapper>
-      <Articles />
+      <Articles displayFolders />
     </SectionWrapper>
   </PageWrapper>
 );
