@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const Question = ({ text, children }) => (
   <div className="mb-8">
     <h2 className="text-xl font-semibold mb-2">{text}</h2>
-    <p>{children}</p>
+    {children}
   </div>
 );
 
@@ -34,9 +34,9 @@ const faqList = [
                 Olas Stack
               </Link>{' '}
               for developing autonomous AI agents, and the{' '}
-              <a href="/procotol" className="text-purple-600">
+              <Link href="/protocol" className="text-purple-600">
                 Olas Protocol
-              </a>{' '}
+              </Link>{' '}
               for incentivizing their creation and co-ownership.
             </p>
             <p className="mb-3">
@@ -76,13 +76,13 @@ const faqList = [
       },
       {
         title:
-          'Where can I see what&apos;s already happened in the Olas ecosystem, and find out what&apos;s next?',
+          "Where can I see what's already happened in the Olas ecosystem, and find out what's next?",
         desc: (
           <>
             <p className="mb-3">
               The{' '}
               <a href="/quarterly-updates" className="text-purple-600">
-                quarterly summaries
+                quarterly updates
               </a>{' '}
               summarize progress during the last quarter and what to look out
               for during the next one.
@@ -94,11 +94,11 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                This ‘Week in Olas’ Twitter summary thread, is updated weekly by
-                Olas agents, autonomously ↗
+                This &apos;Week in Olas&apos; Twitter summary thread, is updated
+                weekly by Olas agents, autonomously
               </Link>
-              , summarizing what’s happened in the Olas ecosystem in the past
-              week.
+              , summarizing what&apos;s happened in the Olas ecosystem in the
+              past week.
             </p>
           </>
         ),
@@ -121,8 +121,9 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              in the order of 10s of thousands of dollars ↗.
+              in the order of 10s of thousands of dollars
             </Link>
+            .
           </p>
         ),
       },
@@ -143,11 +144,11 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              the DAO members love decentralization ↗.
-            </Link>{' '}
-            The Fully Diluted Valuation during the LBP varied between a bottom
+              the DAO members love decentralization
+            </Link>
+            . The Fully Diluted Valuation during the LBP varied between a bottom
             of $12m and a closing of $74.6m FDV, raising a $1.2m total volume
-            from 149 holders
+            from 149 holders{' '}
             <Link href="/blog/lbp-stats" className="text-purple-600">
               (https://olas.network/blog/lbp-stats)
             </Link>
@@ -160,7 +161,7 @@ const faqList = [
         ),
       },
       {
-        title: 'What&apos;s this about a seed round?',
+        title: "What's this about a seed round?",
         desc: (
           <p>
             Olas was founded as above and did not have a seed round. Valory, the
@@ -171,14 +172,14 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              had a seed round ↗
+              had a seed round
             </Link>
             .
           </p>
         ),
       },
       {
-        title: 'What&apos;s the difference between Olas and Autonolas?',
+        title: "What's the difference between Olas and Autonolas?",
         desc: (
           <p>
             At launch, the project was called &apos;Autonolas&apos; which
@@ -228,8 +229,9 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://staking.olas.network ↗.{' '}
+              https://staking.olas.network
             </Link>
+            .
           </p>
         ),
       },
@@ -256,7 +258,7 @@ const faqList = [
               </Link>{' '}
               gave the DAO the ability to direct emissions to useful builders
               and the DAO treasury, controlling how much OLAS is emitted into
-              the market. For more information on voting, see:
+              the market. For more information on voting, see:{' '}
               <Link href="/govern" className="text-purple-600">
                 https://olas.network/govern.
               </Link>
@@ -271,8 +273,9 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here ↗.
+                here
               </Link>
+              .
             </p>
           </>
         ),
@@ -286,8 +289,9 @@ const faqList = [
               Live token distribution data (inc. total supply, circulating
               supply, current holders, unlock schedules, and more) is live{' '}
               <Link href="/olas-token" className="text-purple-600">
-                here.
+                here
               </Link>
+              .
             </p>
             <p className="mb-3">
               You can also see the primary source for the buOLAS contract{' '}
@@ -297,7 +301,7 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here ↗
+                here
               </Link>{' '}
               and the veOLAS contract{' '}
               <Link
@@ -306,9 +310,9 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here ↗.
-              </Link>{' '}
-              veOLAS is the governance token, which anyone can get by locking
+                here
+              </Link>
+              . veOLAS is the governance token, which anyone can get by locking
               OLAS to participate in governance. Governance proposals can be
               found for off-chain votes on Snapshot{' '}
               <Link
@@ -317,8 +321,8 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here ↗
-              </Link>
+                here
+              </Link>{' '}
               and for on-chain votes{' '}
               <Link
                 href="https://snapshot.org/#/autonolas.eth"
@@ -326,9 +330,9 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here ↗.
-              </Link>{' '}
-              buOLAS is a vesting contract for the founding members.
+                here
+              </Link>
+              . buOLAS is a vesting contract for the founding members.
             </p>
             <p>
               You can lock OLAS for veOLAS and check unlocks for your wallet{' '}
@@ -338,8 +342,9 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                here.
+                here
               </Link>
+              .
             </p>
           </>
         ),
@@ -357,13 +362,18 @@ const faqList = [
               {' '}
               47.35% of the fixed token supply (i.e. 1 billion OLAS) of the
               first 10 years is programmed to be distributed to the ecosystem,
-              issued as rewards including developer and bonding rewards in the
-              (code, capital) mechanism. After 10 years the maximum token
-              inflation per annum is capped at 2% and the DAO governance can opt
-              to further reduce it. The aim is to have an s-shaped curve of
-              token emissions to allow for the ecosystem to organically grow
-              over time. The rest of the fixed token supply is distributed as
-              follows:
+              issued as rewards including developer and bonding rewards in the{' '}
+              <Link
+                href="/blog/code-capital-attracting-capital-via-bonding"
+                className="text-purple-600"
+              >
+                (code, capital) mechanism
+              </Link>
+              . After 10 years the maximum token inflation per annum is capped
+              at 2% and the DAO governance can opt to further reduce it. The aim
+              is to have an s-shaped curve of token emissions to allow for the
+              ecosystem to organically grow over time. The rest of the fixed
+              token supply is distributed as follows:
             </p>
             <ul className="list-disc ml-6 mb-3">
               <li className="mb-2">DAO Treasury: 10%</li>
@@ -373,8 +383,9 @@ const faqList = [
             <p>
               See the live statistics here:{' '}
               <Link href="/olas-token" className="text-purple-600">
-                https://olas.network/olas-token.
+                https://olas.network/olas-token
               </Link>
+              .
             </p>
           </>
         ),
@@ -397,8 +408,9 @@ const faqList = [
               rel="noopener noreferrer"
             >
               “there are no plans to lock or vest, and this is to the sole
-              discretion of Valory, as is the case with any token holder“ ↗.{' '}
+              discretion of Valory, as is the case with any token holder“
             </Link>
+            .
           </p>
         ),
       },
@@ -415,7 +427,7 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              see here for definition ↗
+              see here for definition
             </Link>
             , and
             <Link
@@ -425,8 +437,9 @@ const faqList = [
               rel="noopener noreferrer"
             >
               {' '}
-              here for live data ↗.
+              here for live data
             </Link>
+            .
           </p>
         ),
       },
@@ -454,8 +467,9 @@ const faqList = [
               rel="noopener noreferrer"
             >
               “never comment on individual transactions unless they are related
-              to a security incident or some governance vote“ ↗.
+              to a security incident or some governance vote“
             </Link>
+            .
           </p>
         ),
       },
@@ -465,8 +479,9 @@ const faqList = [
           <p>
             Yes, you can learn more about the{' '}
             <Link href="/protocol" className="text-purple-600">
-              various audits here.
+              various audits here
             </Link>
+            .
           </p>
         ),
       },
@@ -481,8 +496,9 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              MEXC ↗.
+              MEXC
             </Link>
+            .
           </p>
         ),
       },
