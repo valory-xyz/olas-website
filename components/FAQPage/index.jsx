@@ -582,7 +582,7 @@ const FAQPage = () => (
           {eachSet.category}
         </h2>
         {eachSet.list.map((faq, index) => (
-          <div className="py-2 scroll-mt-20" key={index} id={faq.id}>
+          <div className="py-2 scroll-mt-20" key={faq.id} id={faq.id}>
             <Question text={faq.title} questionId={faq.id}>
               {faq.desc}
             </Question>
