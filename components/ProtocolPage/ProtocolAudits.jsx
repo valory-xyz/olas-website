@@ -19,24 +19,6 @@ const audits = [
             <ul className="list-disc ml-6 space-y-2">
               <li className="text-purple-600">
                 <a
-                  href="https://sourcehat.com/audits/ValoryOLAS/"
-                  className="text-purple-600"
-                  target="_blank"
-                >
-                  OLAS, 23.06.22
-                </a>
-              </li>
-              <li className="text-purple-600">
-                <a
-                  href="https://sourcehat.com/audits/AutonolasTokenomics/"
-                  className="text-purple-600"
-                  target="_blank"
-                >
-                  Tokenomics, 16.02.23
-                </a>
-              </li>
-              <li className="text-purple-600">
-                <a
                   href="https://sourcehat.com/audits/ValoryAgentRegistries/"
                   className="text-purple-600"
                   target="_blank"
@@ -93,15 +75,30 @@ const audits = [
         iconSrc: 'Immunefi.png',
         content: (
           <ul className="list-disc ml-6 space-y-2">
-            <p className="-ml-6">Up to $50k:</p>
-
             <li>
+              <p>Up to $50k: </p>
+              <a
+                href="https://x.com/autonolas/status/1557431064632647680"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Governance & OLAS (08.22)
+              </a>
+              ,{' '}
+              <a
+                href="https://x.com/autonolas/status/1689316293030359040"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Tokenomics & Registries (08.23)
+              </a>
+              ,{' '}
               <a
                 href="https://immunefi.com/bug-bounty/autonolas/information/"
                 className="text-purple-600"
                 target="_blank"
               >
-                Governance, OLAS, Tokenomics, Registries & Staking, 08.24
+                Staking (08.24)
               </a>
             </li>
           </ul>
