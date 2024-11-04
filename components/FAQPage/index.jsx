@@ -20,6 +20,7 @@ const faqList = [
     category: 'High-level questions',
     list: [
       {
+        id: 'what-is-olas',
         title: 'What is Olas?',
         desc: (
           <>
@@ -62,6 +63,7 @@ const faqList = [
         ),
       },
       {
+        id: 'use-cases',
         title: 'What are the main products/use cases?',
         desc: (
           <p className="mb-3">
@@ -75,20 +77,9 @@ const faqList = [
         ),
       },
       {
-        title: (
-          <p>
-            Where can I see what&apos;s already happened in the Olas ecosystem,
-            and find out{' '}
-            <a
-              href="https://contribute.olas.network/roadmap"
-              className="text-purple-600"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              what&apos;s next?
-            </a>
-          </p>
-        ),
+        id: 'whats-next',
+        title:
+          "Where can I see what's already happened in the Olas ecosystem, and find out what's next?",
         desc: (
           <>
             <p className="mb-3">
@@ -99,7 +90,7 @@ const faqList = [
               summarize progress during the last quarter and what to look out
               for during the next one.
             </p>
-            <p>
+            <p className="mb-3">
               <Link
                 href="https://x.com/autonolas/status/1676576697863507968?s=20"
                 className="text-purple-600"
@@ -112,6 +103,17 @@ const faqList = [
               , summarizing what&apos;s happened in the Olas ecosystem in the
               past week.
             </p>
+            <p>
+              You can also{' '}
+              <a
+                href="https://contribute.olas.network/roadmap"
+                target="_blank"
+                className="text-purple-600"
+              >
+                read the Roadmap
+              </a>
+              .
+            </p>
           </>
         ),
       },
@@ -121,6 +123,7 @@ const faqList = [
     category: 'DAO-related questions',
     list: [
       {
+        id: 'when-was-tge',
         title: 'When was the DAO founded? When was the TGE?',
         desc: (
           <p>
@@ -140,6 +143,7 @@ const faqList = [
         ),
       },
       {
+        id: 'when-was-lbp',
         title: 'When was the first public sale/LBP?',
         desc: (
           <p>
@@ -164,7 +168,7 @@ const faqList = [
             <Link href="/blog/lbp-stats" className="text-purple-600">
               (https://olas.network/blog/lbp-stats)
             </Link>
-            ​​. All funds collected will be strictly used to
+            ​​. All funds collected will be strictly used to{' '}
             <a href="blog/olas-public-launch" className="text-purple-600">
               &apos;maintain, run, and further&apos;
             </a>{' '}
@@ -173,6 +177,7 @@ const faqList = [
         ),
       },
       {
+        id: 'seed-round',
         title: "What's this about a seed round?",
         desc: (
           <p>
@@ -191,6 +196,7 @@ const faqList = [
         ),
       },
       {
+        id: 'difference-between-olas',
         title: "What's the difference between Olas and Autonolas?",
         desc: (
           <p>
@@ -203,6 +209,7 @@ const faqList = [
         ),
       },
       {
+        id: 'symbol-meaning',
         title: 'What does the ☴ symbol mean?',
         desc: (
           <p>
@@ -220,6 +227,7 @@ const faqList = [
     category: 'Token-related questions',
     list: [
       {
+        id: 'bonding-and-liquidity-process',
         title: 'How does Bonding and liquidity work on Olas?',
         desc: (
           <p>
@@ -231,6 +239,7 @@ const faqList = [
         ),
       },
       {
+        id: 'staking-process',
         title: 'How does Staking work on Olas?',
         desc: (
           <p>
@@ -248,6 +257,7 @@ const faqList = [
         ),
       },
       {
+        id: 'voting-process',
         title: 'How does voting work on Olas?',
         desc: (
           <>
@@ -293,6 +303,7 @@ const faqList = [
         ),
       },
       {
+        id: 'current-distribution',
         title:
           'What is the current OLAS distribution / supply / planned unlocks?',
         desc: (
@@ -362,6 +373,7 @@ const faqList = [
         ),
       },
       {
+        id: 'derive-token-allocation',
         title:
           'How did you derive the founding member / DAO / treasury token allocation?',
         desc: (
@@ -403,6 +415,7 @@ const faqList = [
         ),
       },
       {
+        id: 'what-token-allocation',
         title: 'What token allocation does Valory have?',
         desc: (
           <p>
@@ -427,6 +440,7 @@ const faqList = [
         ),
       },
       {
+        id: 'circulating-supply',
         title:
           'What is the circulating supply and where can I find the circulating supply of OLAS?',
         desc: (
@@ -456,6 +470,7 @@ const faqList = [
         ),
       },
       {
+        id: 'autonolas-deployer-contract',
         title: 'What is the Autonolas Deployer contract?',
         desc: (
           <p>
@@ -467,6 +482,7 @@ const faqList = [
         ),
       },
       {
+        id: 'specific-transactions',
         title: 'What if I want to know about specific transactions?',
         desc: (
           <p>
@@ -486,6 +502,7 @@ const faqList = [
         ),
       },
       {
+        id: 'protocol-audit',
         title: 'Has the Olas Protocol been audited?',
         desc: (
           <p>
@@ -498,6 +515,7 @@ const faqList = [
         ),
       },
       {
+        id: 'olas-cexs',
         title: 'Is OLAS listed on any CEXs?',
         desc: (
           <p>
@@ -531,7 +549,7 @@ const FAQPage = () => (
           {eachSet.category}
         </h2>
         {eachSet.list.map((faq, index) => (
-          <div className="py-2" key={index} id={faq.title}>
+          <div className="py-2 scroll-mt-20" key={index} id={faq.id}>
             <Question text={faq.title}>{faq.desc}</Question>
           </div>
         ))}
