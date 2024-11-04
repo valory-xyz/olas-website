@@ -1,25 +1,18 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
-import Link from 'next/link';
+import { LinkIcon } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const Question = ({ text, children }) => (
-  <div className="mb-8">
-    <h2 className="text-xl font-semibold mb-2">{text}</h2>
-    {children}
-  </div>
-);
-
-Question.propTypes = {
-  children: PropTypes.node.isRequired,
-  text: PropTypes.string.isRequired,
-};
+import { Card } from 'components/ui/card';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const faqList = [
   {
     category: 'High-level questions',
     list: [
       {
+        id: 'what-is-olas',
         title: 'What is Olas?',
         desc: (
           <>
@@ -47,7 +40,7 @@ const faqList = [
             <p>
               Olas is giving rise to agent economies across major blockchains.
               Check the{' '}
-              <Link href="/" className="text-purple-600">
+              <Link href="/#ecosystem" className="text-purple-600">
                 homepage
               </Link>{' '}
               to see how many hundreds of thousands of transactions have been
@@ -62,12 +55,13 @@ const faqList = [
         ),
       },
       {
+        id: 'use-cases',
         title: 'What are the main products/use cases?',
         desc: (
           <p className="mb-3">
             The most up-to-date and heavily showcased products can be found on
             the{' '}
-            <Link href="/" className="text-purple-600">
+            <Link href="/#usecases" className="text-purple-600">
               homepage
             </Link>
             .
@@ -75,19 +69,20 @@ const faqList = [
         ),
       },
       {
+        id: 'whats-next',
         title:
           "Where can I see what's already happened in the Olas ecosystem, and find out what's next?",
         desc: (
           <>
             <p className="mb-3">
               The{' '}
-              <a href="/quarterly-updates" className="text-purple-600">
+              <Link href="/quarterly-updates" className="text-purple-600">
                 quarterly updates
-              </a>{' '}
+              </Link>{' '}
               summarize progress during the last quarter and what to look out
               for during the next one.
             </p>
-            <p>
+            <p className="mb-3">
               <Link
                 href="https://x.com/autonolas/status/1676576697863507968?s=20"
                 className="text-purple-600"
@@ -100,6 +95,17 @@ const faqList = [
               , summarizing what&apos;s happened in the Olas ecosystem in the
               past week.
             </p>
+            <p>
+              You can also{' '}
+              <a
+                href="https://contribute.olas.network/roadmap"
+                target="_blank"
+                className="text-purple-600"
+              >
+                read the Roadmap
+              </a>
+              .
+            </p>
           </>
         ),
       },
@@ -109,6 +115,7 @@ const faqList = [
     category: 'DAO-related questions',
     list: [
       {
+        id: 'when-was-tge',
         title: 'When was the DAO founded? When was the TGE?',
         desc: (
           <p>
@@ -128,6 +135,7 @@ const faqList = [
         ),
       },
       {
+        id: 'when-was-lbp',
         title: 'When was the first public sale/LBP?',
         desc: (
           <p>
@@ -152,7 +160,7 @@ const faqList = [
             <Link href="/blog/lbp-stats" className="text-purple-600">
               (https://olas.network/blog/lbp-stats)
             </Link>
-            ​​. All funds collected will be strictly used to
+            ​​. All funds collected will be strictly used to{' '}
             <a href="blog/olas-public-launch" className="text-purple-600">
               &apos;maintain, run, and further&apos;
             </a>{' '}
@@ -161,6 +169,7 @@ const faqList = [
         ),
       },
       {
+        id: 'seed-round',
         title: "What's this about a seed round?",
         desc: (
           <p>
@@ -179,6 +188,7 @@ const faqList = [
         ),
       },
       {
+        id: 'difference-between-olas',
         title: "What's the difference between Olas and Autonolas?",
         desc: (
           <p>
@@ -191,6 +201,7 @@ const faqList = [
         ),
       },
       {
+        id: 'symbol-meaning',
         title: 'What does the ☴ symbol mean?',
         desc: (
           <p>
@@ -208,6 +219,7 @@ const faqList = [
     category: 'Token-related questions',
     list: [
       {
+        id: 'bonding-and-liquidity-process',
         title: 'How does Bonding and liquidity work on Olas?',
         desc: (
           <p>
@@ -219,6 +231,7 @@ const faqList = [
         ),
       },
       {
+        id: 'staking-process',
         title: 'How does Staking work on Olas?',
         desc: (
           <p>
@@ -236,6 +249,7 @@ const faqList = [
         ),
       },
       {
+        id: 'voting-process',
         title: 'How does voting work on Olas?',
         desc: (
           <>
@@ -281,6 +295,7 @@ const faqList = [
         ),
       },
       {
+        id: 'current-distribution',
         title:
           'What is the current OLAS distribution / supply / planned unlocks?',
         desc: (
@@ -350,6 +365,7 @@ const faqList = [
         ),
       },
       {
+        id: 'derive-token-allocation',
         title:
           'How did you derive the founding member / DAO / treasury token allocation?',
         desc: (
@@ -391,6 +407,7 @@ const faqList = [
         ),
       },
       {
+        id: 'what-token-allocation',
         title: 'What token allocation does Valory have?',
         desc: (
           <p>
@@ -415,6 +432,7 @@ const faqList = [
         ),
       },
       {
+        id: 'circulating-supply',
         title:
           'What is the circulating supply and where can I find the circulating supply of OLAS?',
         desc: (
@@ -444,6 +462,7 @@ const faqList = [
         ),
       },
       {
+        id: 'autonolas-deployer-contract',
         title: 'What is the Autonolas Deployer contract?',
         desc: (
           <p>
@@ -455,6 +474,7 @@ const faqList = [
         ),
       },
       {
+        id: 'specific-transactions',
         title: 'What if I want to know about specific transactions?',
         desc: (
           <p>
@@ -474,6 +494,7 @@ const faqList = [
         ),
       },
       {
+        id: 'protocol-audit',
         title: 'Has the Olas Protocol been audited?',
         desc: (
           <p>
@@ -486,6 +507,7 @@ const faqList = [
         ),
       },
       {
+        id: 'olas-cexs',
         title: 'Is OLAS listed on any CEXs?',
         desc: (
           <p>
@@ -506,6 +528,47 @@ const faqList = [
   },
 ];
 
+const Question = ({ text, children, questionId }) => {
+  const [copied, setCopied] = useState(false);
+
+  const getLink = async () => {
+    const { origin, pathname } = window.location;
+    const questionUrl = `${origin}${pathname}#${questionId}`;
+
+    try {
+      await navigator.clipboard.writeText(questionUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Unable to copy to clipboard: ', error);
+    }
+  };
+
+  return (
+    <div className="mb-8 group">
+      <div className="flex flex-row justify-between">
+        <h2 className="text-xl font-semibold mb-2 w-[95%]">{text}</h2>
+        <LinkIcon
+          className="w-4 align-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          onClick={getLink}
+        />
+      </div>
+      {children}
+
+      {copied && (
+        <Card className="fixed bottom-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 z-50 bg-white shadow-lg">
+          Copied to clipboard
+        </Card>
+      )}
+    </div>
+  );
+};
+
+Question.propTypes = {
+  children: PropTypes.node.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
     <h1 className="text-5xl font-extrabold mb-12 mt-8 text-slate-800">FAQ</h1>
@@ -519,8 +582,10 @@ const FAQPage = () => (
           {eachSet.category}
         </h2>
         {eachSet.list.map((faq, index) => (
-          <div className="py-2" key={index}>
-            <Question text={faq.title}>{faq.desc}</Question>
+          <div className="py-2 scroll-mt-20" key={faq.id} id={faq.id}>
+            <Question text={faq.title} questionId={faq.id}>
+              {faq.desc}
+            </Question>
           </div>
         ))}
       </div>
