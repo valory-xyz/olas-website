@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 /* eslint-disable react/prop-types */
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card } from 'components/ui/card';
 import SectionHeading from 'components/SectionHeading';
+import { Card } from 'components/ui/card';
 
 const GET_INVOLVED_DATA = [
   {
@@ -93,7 +93,7 @@ const GetInvolved = () => (
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
       <Card className="max-sm:border-none max-sm:shadow-none border-1.5 border-gray-200 rounded-2xl md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
         <Image
-          src="/images/homepage/get-involved-diagram.png"
+          src="/images/get-involved-diagram.png"
           alt="Get involved diagram"
           width={920}
           height={595}
@@ -115,6 +115,7 @@ const GetInvolved = () => (
         return (
           <GetInvolvedCard
             key={datum.id}
+            id={datum.id}
             imageSrc={imageSrc}
             imageHeight={imageHeight}
             imageWidth={imageWidth}
@@ -131,6 +132,7 @@ const GetInvolved = () => (
 );
 
 const GetInvolvedCard = ({
+  id,
   imageSrc,
   imageWidth = 300,
   imageHeight = 124,
@@ -144,7 +146,8 @@ const GetInvolvedCard = ({
     return (
       <Link href={href}>
         <Card
-          className={`${CARD_BG} grid-flow-row justify-items-center min-h-[278px] h-full`}
+          className={`${CARD_BG} grid-flow-row min-h-[278px] h-full`}
+          id={`get-involved-${id}`}
         >
           {imageSrc && title && (
             <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-3 xl:mb-10">

@@ -24,6 +24,14 @@
     "tags": []
   },
   {
+    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
+    "title": "DAO Constitution",
+    "description": "The DAO's governing rulebook",
+    "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["contribute"]
+  },
+  {
     "id": "201241241240a-c797-46cd-a94b-1876dca24fce",
     "title": "Blog",
     "description": "Read about Olas news and updates",
@@ -32,12 +40,12 @@
     "tags": []
   },
   {
-    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
-    "title": "DAO Constitution",
-    "description": "The DAO's governing rulebook",
-    "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Quarterly updates",
+    "description": "Summarized quarterly reports",
+    "url": "/quarterly-updates",
     "imageFilename": "awesome-autonolas.svg",
-    "tags": ["contribute"]
+    "tags": []
   },
   {
     "id": "f65fb0a7-531a-4c85-93b4-854854ebe61f",
