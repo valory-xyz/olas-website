@@ -14,23 +14,52 @@ const audits = [
         title: 'SourceHat',
         iconSrc: 'SourceHat.png',
         content: (
+          <>
+            <p className="italic">(formerly known as Solidity Finance)</p>
+            <ul className="list-disc ml-6 space-y-2">
+              <li className="text-purple-600">
+                <a
+                  href="https://sourcehat.com/audits/ValoryAgentRegistries/"
+                  className="text-purple-600"
+                  target="_blank"
+                >
+                  Registries, 15.07.22
+                </a>
+              </li>
+              <li className="text-purple-600">
+                <a
+                  href="https://sourcehat.com/audits/AutonolasTokenomics/"
+                  className="text-purple-600"
+                  target="_blank"
+                >
+                  Tokenomics, 16.02.23
+                </a>
+              </li>
+              <li className="text-purple-600">
+                <a
+                  href="https://sourcehat.com/audits/ValoryOLAS/"
+                  className="text-purple-600"
+                  target="_blank"
+                >
+                  Governance & OLAS, 23.06.22
+                </a>
+              </li>
+            </ul>
+          </>
+        ),
+      },
+      {
+        title: 'ApeWorx',
+        iconSrc: 'ApeWorx.jpg',
+        content: (
           <ul className="list-disc ml-6 space-y-2">
             <li className="text-purple-600">
               <a
-                href="https://sourcehat.com/audits/ValoryOLAS/"
+                href="https://github.com/valory-xyz/autonolas-governance/blob/main/audits/Valory%20Review%20Final.pdf"
                 className="text-purple-600"
                 target="_blank"
               >
-                OLAS, 23.06.22
-              </a>
-            </li>
-            <li className="text-purple-600">
-              <a
-                href="https://sourcehat.com/audits/AutonolasTokenomics/"
-                className="text-purple-600"
-                target="_blank"
-              >
-                Tokenomics, 16.02.23
+                Governance, 06.06.22
               </a>
             </li>
           </ul>
@@ -46,32 +75,30 @@ const audits = [
         iconSrc: 'Immunefi.png',
         content: (
           <ul className="list-disc ml-6 space-y-2">
-            <p className="-ml-6">Up to $50k:</p>
             <li>
+              <p>Up to $50k: </p>
               <a
                 href="https://x.com/autonolas/status/1557431064632647680"
                 className="text-purple-600"
                 target="_blank"
               >
-                Governance & OLAS, 08.22
+                Governance & OLAS (08.22)
               </a>
-            </li>
-            <li>
+              ,{' '}
               <a
                 href="https://x.com/autonolas/status/1689316293030359040"
                 className="text-purple-600"
                 target="_blank"
               >
-                Tokenomics & Registries, 08.23
+                Tokenomics & Registries (08.23)
               </a>
-            </li>
-            <li>
+              ,{' '}
               <a
                 href="https://immunefi.com/bug-bounty/autonolas/information/"
                 className="text-purple-600"
                 target="_blank"
               >
-                Staking, 08.24
+                Staking (08.24)
               </a>
             </li>
           </ul>
@@ -108,6 +135,16 @@ const audits = [
               >
                 Governance, Tokenomics & Registries on mainnet & contracts on
                 Solana, 12.23{' '}
+              </a>{' '}
+              ($90k)
+            </li>
+            <li>
+              <a
+                href="https://code4rena.com/audits/2024-05-olas"
+                className="text-purple-600"
+                target="_blank"
+              >
+                Governance, Tokenomics & Registries, 05.24{' '}
               </a>{' '}
               ($90k)
             </li>
