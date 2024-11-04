@@ -1,19 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
-import Link from 'next/link';
+import { LinkIcon } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const Question = ({ text, children }) => (
-  <div className="mb-8">
-    <h2 className="text-xl font-semibold mb-2">{text}</h2>
-    {children}
-  </div>
-);
-
-Question.propTypes = {
-  children: PropTypes.node.isRequired,
-  text: PropTypes.string.isRequired,
-};
+import { Card } from 'components/ui/card';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const faqList = [
   {
@@ -84,9 +76,9 @@ const faqList = [
           <>
             <p className="mb-3">
               The{' '}
-              <a href="/quarterly-updates" className="text-purple-600">
+              <Link href="/quarterly-updates" className="text-purple-600">
                 quarterly updates
-              </a>{' '}
+              </Link>{' '}
               summarize progress during the last quarter and what to look out
               for during the next one.
             </p>
@@ -536,6 +528,47 @@ const faqList = [
   },
 ];
 
+const Question = ({ text, children, questionId }) => {
+  const [copied, setCopied] = useState(false);
+
+  const getLink = async () => {
+    const { origin, pathname } = window.location;
+    const questionUrl = `${origin}${pathname}#${questionId}`;
+
+    try {
+      await navigator.clipboard.writeText(questionUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Unable to copy to clipboard: ', error);
+    }
+  };
+
+  return (
+    <div className="mb-8 group">
+      <div className="flex flex-row justify-between">
+        <h2 className="text-xl font-semibold mb-2 w-[95%]">{text}</h2>
+        <LinkIcon
+          className="w-4 align-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          onClick={getLink}
+        />
+      </div>
+      {children}
+
+      {copied && (
+        <Card className="fixed bottom-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 z-50 bg-white shadow-lg">
+          Copied to clipboard
+        </Card>
+      )}
+    </div>
+  );
+};
+
+Question.propTypes = {
+  children: PropTypes.node.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
     <h1 className="text-5xl font-extrabold mb-12 mt-8 text-slate-800">FAQ</h1>
@@ -550,7 +583,9 @@ const FAQPage = () => (
         </h2>
         {eachSet.list.map((faq, index) => (
           <div className="py-2 scroll-mt-20" key={index} id={faq.id}>
-            <Question text={faq.title}>{faq.desc}</Question>
+            <Question text={faq.title} questionId={faq.id}>
+              {faq.desc}
+            </Question>
           </div>
         ))}
       </div>
