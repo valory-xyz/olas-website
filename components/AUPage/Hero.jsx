@@ -1,4 +1,3 @@
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
@@ -23,7 +22,9 @@ export const Hero = () => (
         </p>
 
         <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
-          <a href={OPERATE_AGENTS_URL}>Don&apos;t miss out</a>
+          <a href="https://olas.network/agents-unleashed#events">
+            Don&apos;t miss out
+          </a>
         </Button>
       </div>
 

@@ -71,17 +71,20 @@ const CardImage = ({ src }) => (
 
 export const CTA = () => (
   <SectionWrapper
+    id="events"
     backgroundType="NONE"
     customStyle={{
       background: 'linear-gradient(180deg, #F8F9FC 100%, #E7EAF4 100%)',
     }}
   >
-    <div className="xl:mx-[300px]">
-      <h2 className={`${SUB_HEADER_CLASS} mt-24 mb-12 text-center`}>
+    <div>
+      <h2
+        className={`${SUB_HEADER_CLASS} mb-12 text-center max-w-[700px] mx-auto`}
+      >
         Catch the next event or catch up on previous talks
       </h2>
 
-      <div className="grid grid-cols-1 gap-6 max-w-[700px] mx-auto">
+      <div className="grid grid-cols-1 gap-6 max-w-[800px] lg:w-[800px] mx-auto">
         {list.map(
           (
             { title, imageSrc, location, date, eventLink, replayLink },
@@ -102,7 +105,7 @@ export const CTA = () => (
             return (
               <Card
                 key={index}
-                className={`${card_classNames} shadow-sm flex flex-row justify-between p-4`}
+                className={`${card_classNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
                 style={card_style}
               >
                 <div className="flex flex-col gap-1 w-full">
@@ -111,15 +114,15 @@ export const CTA = () => (
                   </div>
 
                   <div
-                    className={`flex flex-row gap-4 ${text} max-sm:flex-col align-middle`}
+                    className={`flex flex-row max-sm:gap-2 gap-6 ${text} max-sm:flex-col align-middle`}
                   >
                     {!replayLink && (
-                      <div className="max-sm:mt-2 rounded-xl bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white p-1 max-w-fit">
+                      <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
                         Upcoming
                       </div>
                     )}
 
-                    <span className="flex">
+                    <span className="flex max-sm:mt-2">
                       <MapPin className={`mr-2 w-[20px] ${icons}`} />
                       {location}
                     </span>
@@ -128,8 +131,10 @@ export const CTA = () => (
                       {date}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold max-w-[450px]">{title}</h3>
-                  <div className="flex flex-row gap-6 text-purple-600 mt-auto">
+                  <h3 className="text-2xl font-bold max-w-[500px] my-4">
+                    {title}
+                  </h3>
+                  <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
                     <a href={eventLink}>Event page ↗</a>
                     {replayLink ? (
                       <a href={replayLink}>Watch talk replay ↗</a>
