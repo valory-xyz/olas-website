@@ -86,5 +86,13 @@
     "url": "/explore",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["explore"]
+  },
+  {
+    "id": "f1b19e50-8a2b-4a1b-bf75-4b6b5d3e1e7b",
+    "title": "Agents Unleashed",
+    "description": "View upcoming and past events",  
+    "url": "/agents-unleashed",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": [""]
   }
 ]
