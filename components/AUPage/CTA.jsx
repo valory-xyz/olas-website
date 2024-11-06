@@ -90,23 +90,23 @@ export const CTA = () => (
             { title, imageSrc, location, date, eventLink, replayLink },
             index,
           ) => {
-            let card_classNames = replayLink
+            let cardClassNames = replayLink
               ? 'bg-white border-inherit'
               : 'bg-none border-purple-300';
-            let card_style = replayLink
+            let cardStyle = replayLink
               ? {}
               : {
                   background:
                     'linear-gradient(90deg, rgba(52, 170, 255, 0.1), rgba(255, 51, 231, 0.1))',
                 };
-            let text = replayLink ? 'text-slate-500' : '';
-            let icons = replayLink ? '' : 'text-purple-600';
+            let textClassName = replayLink ? 'text-slate-500' : '';
+            let iconsClassName = replayLink ? '' : 'text-purple-600';
 
             return (
               <Card
                 key={index}
-                className={`${card_classNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
-                style={card_style}
+                className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
+                style={cardStyle}
               >
                 <div className="flex flex-col gap-1 w-full">
                   <div className="md:hidden mx-auto">
@@ -114,7 +114,7 @@ export const CTA = () => (
                   </div>
 
                   <div
-                    className={`flex flex-row max-sm:gap-2 gap-6 ${text} max-sm:flex-col align-middle`}
+                    className={`flex flex-row max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
                   >
                     {!replayLink && (
                       <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
@@ -123,11 +123,13 @@ export const CTA = () => (
                     )}
 
                     <span className="flex max-sm:mt-2">
-                      <MapPin className={`mr-2 w-[20px] ${icons}`} />
+                      <MapPin className={`mr-2 w-[20px] ${iconsClassName}`} />
                       {location}
                     </span>
                     <span className="flex">
-                      <CalendarIcon className={`mr-2 w-[20px] ${icons}`} />
+                      <CalendarIcon
+                        className={`mr-2 w-[20px] ${iconsClassName}`}
+                      />
                       {date}
                     </span>
                   </div>
@@ -135,9 +137,21 @@ export const CTA = () => (
                     {title}
                   </h3>
                   <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
-                    <a href={eventLink}>Event page ↗</a>
+                    <a
+                      href={eventLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Event page ↗
+                    </a>
                     {replayLink ? (
-                      <a href={replayLink}>Watch talk replay ↗</a>
+                      <a
+                        href={replayLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Watch talk replay ↗
+                      </a>
                     ) : (
                       <span className="italic text-slate-500">
                         Talk replay coming soon...

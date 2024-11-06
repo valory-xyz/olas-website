@@ -138,10 +138,15 @@ const smallIcons = [
 const Sponsors = () => (
   <div className="md:mx-auto max-w-[1000px]">
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 md:gap-x-24 gap-y-4 mb-12 lg:mb-20">
-      {largeIcons.map((icon) => {
+      {largeIcons.map((icon, index) => {
         const { id, name, iconFileName } = icon;
         return (
-          <div key={id} className="grayscale flex max-w-[200px] mb-2 mx-auto">
+          <div
+            key={id}
+            className={`grayscale flex max-w-[200px] justify-center items-center ${
+              (index + 1) % 3 === 2 ? 'justify-self-center' : ''
+            } ${(index + 1) % 3 === 0 ? 'justify-self-end' : ''}`}
+          >
             <Image
               src={`/images${iconFileName}`}
               alt={name}
@@ -158,7 +163,7 @@ const Sponsors = () => (
       {mediumIcons.map((icon) => {
         const { id, name, iconFileName } = icon;
         return (
-          <div key={id} className="grayscale flex mx-auto">
+          <div key={id} className="grayscale flex mx-auto ">
             <Image
               src={`/images${iconFileName}`}
               alt={name}

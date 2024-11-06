@@ -21,7 +21,12 @@ export const Hero = () => (
           crypto and AI.
         </p>
 
-        <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
+        <Button
+          variant="default"
+          size="xl"
+          asChild
+          className="grow w-full md:w-fit"
+        >
           <a href="https://olas.network/agents-unleashed#events">
             Don&apos;t miss out
           </a>
