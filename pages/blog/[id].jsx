@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { getBlog } from 'common-util/api';
 import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
-import { getBlog } from 'common-util/api';
-import { TEXT, TITLE } from 'styles/globals';
 import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { TEXT, TITLE } from 'styles/globals';
 
 const BlogItem = () => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const BlogItem = () => {
         )}
         <div className={`${TITLE.SMALL} mb-4`}>{title}</div>
         <div className={`${TEXT} mb-4`}>{datePublished}</div>
-        <Markdown className={TEXT}>{content}</Markdown>
+        <Markdown>{content}</Markdown>
       </div>
     </PageWrapper>
   );

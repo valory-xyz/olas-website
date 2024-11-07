@@ -208,7 +208,7 @@ export const Content = () => (
       />
       <p className="mb-4">
         &apos;Agents Unleashed&apos; showcases the latest developments in AI
-        agents, an emergent area at the intersection of crypto and AI. Its
+        agents, a booming area at the intersection of crypto and AI. Its
         organizers believe that{' '}
         <a
           href={ENCODED_BLOG_POST_URL}
@@ -220,7 +220,9 @@ export const Content = () => (
         . Since AI agents won&apos;t be given bank accounts, crypto (aka the
         world of digital money) is AI agents&apos; natural home. It is
         unsurprising then, that some of the brightest minds in AI and in crypto
-        are working on AI agents.
+        are working on AI agents. Agents Unleashed is the place to learn about
+        AI agents, whether you&apos;re in crypto and curious about AI or in AI,
+        curious about crypto.
       </p>{' '}
       <p>
         The &apos;Agents Unleashed&apos; event series is hosted by Olas and

@@ -1,6 +1,7 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Hero = () => (
   <SectionWrapper
@@ -17,7 +18,7 @@ export const Hero = () => (
         />
 
         <p className={`text-black max-w-[380px]`}>
-          The premier AI Agent event series, showcasing the cutting-edge of this
+          The premier AI Agent event series, showcasing the cutting-edge of
           crypto and AI.
         </p>
 
@@ -27,9 +28,7 @@ export const Hero = () => (
           asChild
           className="grow w-full md:w-fit"
         >
-          <a href="https://olas.network/agents-unleashed#events">
-            Don&apos;t miss out
-          </a>
+          <Link href="/agents-unleashed#events">Don&apos;t miss out</Link>
         </Button>
       </div>
 

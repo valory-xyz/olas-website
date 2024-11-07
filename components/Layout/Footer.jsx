@@ -1,9 +1,9 @@
+import { REGISTRY_URL } from 'common-util/constants';
+import { cn } from 'lib/utils';
+import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { MoveUpRight } from 'lucide-react';
-import { REGISTRY_URL } from 'common-util/constants';
-import { cn } from 'lib/utils';
 
 const SOCIAL_LINKS = [
   {
@@ -66,13 +66,17 @@ const RESOURCES_LINKS = [
     link: '/videos',
   },
   {
+    title: 'DAO Constitution',
+    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
+    isExternal: true,
+  },
+  {
     title: 'Blog',
     link: '/blog',
   },
   {
-    title: 'DAO Constitution',
-    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
-    isExternal: true,
+    title: 'Quarterly Updates',
+    link: '/quarterly-updates',
   },
   {
     title: 'Calendar',
@@ -80,13 +84,13 @@ const RESOURCES_LINKS = [
     isExternal: true,
   },
   {
+    title: 'FAQ',
+    link: '/faq',
+  },
+  {
     title: 'Roadmap',
     link: 'https://contribute.olas.network/roadmap',
     isExternal: true,
-  },
-  {
-    title: 'FAQ',
-    link: '/faq',
   },
   {
     title: 'Press Kit',
@@ -105,6 +109,10 @@ const RESOURCES_LINKS = [
   {
     title: 'Use Cases',
     link: '/explore',
+  },
+  {
+    title: 'Agents Unleashed',
+    link: '/agents-unleashed',
   },
 ];
 
