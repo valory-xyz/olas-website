@@ -19,13 +19,22 @@ export const markdownComponents = {
     <a className="text-purple-800 hover:text-blue-800" {...props} />
   ),
   // Apply margin to paragraphs to create space between them
-  p: ({ node, ...props }) => <p className="mb-4" {...props} />,
+  p: ({ node, ...props }) => (
+    <>
+      <p className="inline" {...props} />
+      <br />
+    </>
+  ),
+  strong: ({ node, ...props }) => <strong {...props}></strong>,
   // Apply tailwind classes to style lists
   ul: ({ node, ...props }) => (
-    <ul className="list-disc list-inside ml-4" {...props} />
+    <>
+      <ul className="list-disc list-inside ml-4 inline-block" {...props} />
+      <br />
+    </>
   ),
   ol: ({ node, ...props }) => (
-    <ol className="list-decimal list-inside" {...props} />
+    <ol className="list-decimal list-inside inline-block" {...props} />
   ),
   li: ({ node, ...props }) => <li className="mb-2" {...props} />,
   h1: ({ node, ...props }) => (
@@ -38,10 +47,14 @@ export const markdownComponents = {
     <h3 className="text-xl font-medium mb-2" {...props} />
   ),
   h4: ({ node, ...props }) => (
-    <h4 className="text-lg font-medium mb-1" {...props} />
+    <h4 className="text-lg font-medium mb-2" {...props} />
   ),
-  h5: ({ node, ...props }) => <h5 className="text-md font-medium" {...props} />,
-  h6: ({ node, ...props }) => <h6 className="text-sm font-medium" {...props} />,
+  h5: ({ node, ...props }) => (
+    <h5 className="text-[17px] font-medium mb-2" {...props} />
+  ),
+  h6: ({ node, ...props }) => (
+    <h6 className="text-sm font-medium mb-2" {...props} />
+  ),
   pre: ({ node, ...props }) => (
     <pre
       className="p-4 bg-gray-800 border rounded-md overflow-auto"
