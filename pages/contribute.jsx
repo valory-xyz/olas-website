@@ -4,7 +4,10 @@ import Meta from 'components/Meta';
 
 const ContributePage = () => (
   <PageWrapper>
-    <Meta pageTitle="Olas Contribute" />
+    <Meta
+      pageTitle="Olas Contribute"
+      description="Advance the network, gain recognition and earn tokens. Start contributing today!"
+    />
     <Contribute />
   </PageWrapper>
 );

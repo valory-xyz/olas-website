@@ -1,11 +1,4 @@
 /* eslint-disable react/no-unescaped-entities */
-import Image from 'next/image';
-import PageWrapper from 'components/Layout/PageWrapper';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import Meta from 'components/Meta';
-import { Button } from 'components/ui/button';
-import { ExternalLink, H1 } from 'components/ui/typography';
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import {
   MAIN_TITLE_CLASS,
   SUB_HEADER_CLASS,
@@ -13,7 +6,14 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
+import PageWrapper from 'components/Layout/PageWrapper';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import Meta from 'components/Meta';
+import { Button } from 'components/ui/button';
+import { ExternalLink, H1 } from 'components/ui/typography';
 import { MoveUpRight } from 'lucide-react';
+import Image from 'next/image';
 
 const HeaderLeftContent = () => (
   <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12">
@@ -298,6 +298,7 @@ const BabyDegen = () => (
   <PageWrapper>
     <Meta
       pageTitle="BabyDegen"
+      description="BabyDegen is your very own autonomous trading agent, designed to navigate the fast-paced world of DeFi."
       siteImageUrl="/images/services/babydegen/babydegen.png"
     />
     <BabyDegenHeader />

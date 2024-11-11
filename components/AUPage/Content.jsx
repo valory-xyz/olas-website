@@ -1,10 +1,12 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
-const ACTUAL_BLOG_POST_URL =
-  'https://www.valory.xyz/post/co-owned-ai#:~:text=Valory%20believes%20AGI%20will%20likely,avoid%20devastating%20outcomes%20for%20societies.';
+const ACTUAL_BLOG_POST_URL = 'https://www.valory.xyz/post/co-owned-ai';
+const fragment =
+  '#:~:text=Valory believes AGI will likely,avoid devastating outcomes for societies.';
+const encodedFragment = encodeURIComponent(fragment);
 
-const ENCODED_BLOG_POST_URL = encodeURIComponent(ACTUAL_BLOG_POST_URL);
+const ENCODED_BLOG_POST_URL = `${ACTUAL_BLOG_POST_URL}${encodedFragment}`;
 
 const largeIcons = [
   {

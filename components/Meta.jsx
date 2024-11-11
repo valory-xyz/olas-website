@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import Head from 'next/head';
+import PropTypes from 'prop-types';
 
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION =

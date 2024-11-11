@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
+import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import { Button } from 'components/ui/button';
 import {
   Card,
@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card';
-import PredictionAgentsTable from 'components/PredictionAgentsTable';
 import { ExternalLink, H1, Lead, Upcase } from 'components/ui/typography';
+import Image from 'next/image';
 
 const resources = [
   {
@@ -63,7 +63,11 @@ const resources = [
 
 const AiMechs = () => (
   <PageWrapper>
-    <Meta pageTitle="Mechs" siteImageUrl="/images/services/ai-mechs.png" />
+    <Meta
+      pageTitle="Mechs"
+      description="The marketplace for AI tools; outsource your agent's complex tasks and pay for them in crypto."
+      siteImageUrl="/images/services/ai-mechs.png"
+    />
     <SectionWrapper>
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
