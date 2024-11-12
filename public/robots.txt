@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://olas.network
+
+# Sitemaps
+Sitemap: https://olas.network/sitemap.xml
+Sitemap: https://olas.network/server-sitemap.xml
