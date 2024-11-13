@@ -14,8 +14,8 @@ const OperatePage = () => {
   return (
     <PageWrapper>
       <Meta
-        pageTitle='Operate'
-        description='Join the Olas ecosystem as an Operator using Pearl. Run agents, stake & earn rewards!'
+        pageTitle="Operate"
+        description="Join the Olas ecosystem as an Operator using Pearl. Run agents, stake & earn rewards!"
         siteImageUrl={image}
       />
       <Operate />
