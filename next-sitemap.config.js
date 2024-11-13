@@ -5,7 +5,7 @@ module.exports = {
   generateRobotsTxt: true,
   sitemapSize: 5000,
 
-  additionalPaths: async (config) => {
+  additionalPaths: () => {
     const servicesPaths = servicesData.map((service) => ({
       loc: `/services/${service.slug}`,
       changefreq: 'weekly',
