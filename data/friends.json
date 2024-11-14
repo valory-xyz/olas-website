@@ -2,8 +2,8 @@
   {
     "id": "82e7e063-c42f-4c2a-9d20-9257109131d6",
     "name": "Ceramic",
-    "url": "/blog.ceramic.network/ceramic-and-autonolas-partner-to-revolutionize-ai-tooling-for-daos/",
-    "isExternal": false,
+    "url": "https://blog.ceramic.network/ceramic-and-autonolas-partner-to-revolutionize-ai-tooling-for-daos/",
+    "isExternal": true,
     "imageFilename": "ceramic.png"
   },
   {
@@ -154,8 +154,8 @@
   {
     "id": "93dcfb13-9058-4f7a-8b5e-79cb0790d971",
     "name": "Shutter DAO",
-    "url": "/blog.shutter.network/a-proposed-blueprint-for-launching-a-shutter-dao/",
-    "isExternal": false,
+    "url": "https://blog.shutter.network/a-proposed-blueprint-for-launching-a-shutter-dao/",
+    "isExternal": true,
     "imageFilename": "shutter.svg"
   },
   {

@@ -16,7 +16,10 @@ const BackButton = () => (
 
 const UpdatesPage = () => (
   <PageWrapper>
-    <Meta pageTitle="Quarterly Reviews" />
+    <Meta
+      pageTitle="Quarterly Updates"
+      description="Stay informed with our latest quarterly updates, featuring key insights, progress reports, and upcoming developments."
+    />
     <SectionWrapper>
       <BackButton />
       <Updates />

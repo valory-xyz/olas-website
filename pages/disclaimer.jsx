@@ -1,12 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import SectionHeading from 'components/SectionHeading';
 import Meta from 'components/Meta';
+import SectionHeading from 'components/SectionHeading';
 
 const DisclaimerPage = () => (
   <PageWrapper>
-    <Meta pageTitle="Disclaimer" />
+    <Meta
+      pageTitle="Disclaimer"
+      description="Visit our disclaimer page to learn more about the legal terms, conditions, and limitations of using our website and services."
+    />
     <SectionWrapper backgroundType="SUBTLE_GRADIENT">
       <article className="max-w-[800px] mx-auto">
         <SectionHeading size="text-4xl lg:text-2xl" color="text-purple-950">

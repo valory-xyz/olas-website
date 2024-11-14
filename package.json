@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"./**/*.{js,jsx}\""
@@ -28,6 +29,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.414.0",
     "next": "13.4.6",
+    "next-sitemap": "^4.2.3",
     "postcss": "8.4.24",
     "prop-types": "^15.8.1",
     "qs": "^6.11.2",

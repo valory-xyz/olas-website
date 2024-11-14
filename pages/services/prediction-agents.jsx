@@ -51,6 +51,7 @@ const PredictionAgents = () => (
   <PageWrapper>
     <Meta
       pageTitle="Prediction Agents"
+      description="Run an agent designed to trade in prediction markets on your behalf. Predict the future, autonomously."
       siteImageUrl="/images/services/prediction-agents.png"
     />
     <SectionWrapper>
