@@ -87,10 +87,10 @@ export const getTotalTokenHolders = async () => {
       queryId: TOTAL_TOKEN_HOLDERS_ID,
     });
     const totalTokenHolders = get(result, "[0]['TOTAL_HOLDERS']") || null;
-    console.log(totalTokenHolders);
-    return(totalTokenHolders);
-  } catch(error) {
+
+    return totalTokenHolders;
+  } catch (error) {
     console.error('Error in getTotalTokenHolders: ', error);
     return null;
   }
-}
+};
