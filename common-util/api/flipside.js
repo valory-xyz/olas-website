@@ -79,3 +79,18 @@ export const getPredictionTxs = async () => {
     return null;
   }
 };
+
+const TOTAL_TOKEN_HOLDERS_ID = 'cdb4c1a1-707b-49f4-9629-cf34e811800c';
+export const getTotalTokenHolders = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: TOTAL_TOKEN_HOLDERS_ID,
+    });
+    const totalTokenHolders = get(result, "[0]['TOTAL_HOLDERS']") || null;
+    console.log(totalTokenHolders);
+    return(totalTokenHolders);
+  } catch(error) {
+    console.error('Error in getTotalTokenHolders: ', error);
+    return null;
+  }
+}
