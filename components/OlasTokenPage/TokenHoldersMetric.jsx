@@ -40,7 +40,12 @@ export const TokenHoldersMetric = () => {
           Olas token is widely supported by the community
         </div>
         {metrics?.totalTokenHolders ? (
-          <ExternalLink className="font-extrabold text-6xl" href="#" hideArrow>
+          <ExternalLink
+            className="font-extrabold text-6xl"
+            href="https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda?tabIndex=3"
+            target="_blank"
+            hideArrow
+          >
             {metrics?.totalTokenHolders?.toString()}
             <span className="text-4xl">↗</span>
           </ExternalLink>
