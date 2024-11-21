@@ -28,6 +28,9 @@ export const PREDICTION_ECONOMY_DASHBOARD_URL =
 export const MECH_TXS_QUERY_ID = '4185253';
 export const MECH_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/the-mechs-agent-economy';
+export const UNIQUE_STAKERS_QUERY_ID = '4031179';
+export const OLAS_ECONOMY_DASHBOARD_URL =
+  'https://dune.com/adrian0x/autonolas-ecosystem-activity';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';

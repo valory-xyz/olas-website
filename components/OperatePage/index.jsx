@@ -1,12 +1,14 @@
 import { FAQ } from './FAQ';
-import { InstallRunAnAgent } from './InstallRunAnAgent';
 import Hero from './Hero';
-import { WantMoreControl } from './WantMoreControl';
+import { InstallRunAnAgent } from './InstallRunAnAgent';
 import { MeetPearl } from './MeetPearl';
+import { OperateMetrics } from './OperateMetrics';
+import { WantMoreControl } from './WantMoreControl';
 
 const Pearl = () => (
   <>
     <Hero />
+    <OperateMetrics />
     <MeetPearl />
     <InstallRunAnAgent />
     <WantMoreControl />
