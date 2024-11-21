@@ -1,9 +1,10 @@
 import { getTotalTokenHolders } from 'common-util/api/flipside';
+import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
+import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
-import useSWR from 'swr';
 
 const fetchMetrics = async () => {
   try {
@@ -14,11 +15,6 @@ const fetchMetrics = async () => {
     return { totalTokenHolders: null };
   }
 };
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
 
 export const TokenHoldersMetric = () => {
   const { data: metrics } = usePersistentSWR(
@@ -42,7 +38,7 @@ export const TokenHoldersMetric = () => {
         {metrics?.totalTokenHolders ? (
           <ExternalLink
             className="font-extrabold text-6xl"
-            href="https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda?tabIndex=3"
+            href={`${FLIPSIDE_URL}?tabIndex=3`}
             target="_blank"
             hideArrow
           >

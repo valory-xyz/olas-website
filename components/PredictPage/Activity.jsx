@@ -7,9 +7,9 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
+import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 const fetchMetrics = async () => {
   const [dailyActiveAgents, transactions] = await Promise.allSettled([
@@ -32,12 +32,6 @@ const fetchMetrics = async () => {
       transactions.status === 'fulfilled' ? transactions.value.totalTxs : null,
   };
 };
-
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
 
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR(

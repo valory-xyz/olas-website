@@ -7,25 +7,25 @@ import {
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
+import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const dailyActiveAgents = await getSevenDayAvgDailyActiveAgents();
-  const totalUniqueStakers = await getTotalUniqueStakers();
+  const [dailyActiveAgents, totalUniqueStakers] = await Promise.allSettled([
+    getSevenDayAvgDailyActiveAgents(),
+    getTotalUniqueStakers(),
+  ]);
 
   return {
-    dailyActiveAgents: dailyActiveAgents || null,
-    totalUniqueStakers: totalUniqueStakers || null,
+    dailyActiveAgents:
+      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
+    totalUniqueStakers:
+      totalUniqueStakers.status === 'fulfilled'
+        ? totalUniqueStakers.value
+        : null,
   };
 };
-
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
 
 export const OperateMetrics = () => {
   const { data: metrics } = usePersistentSWR(
