@@ -21,33 +21,24 @@ const usePersistentSWR = (key, fetcher) =>
   });
 
 export const TokenHoldersMetric = () => {
-  const { data: metrics } = usePersistentSWR(
-    'tokenHoldersMetric',
-    fetchMetrics,
-  );
+  const { data: metrics } = usePersistentSWR('tokenHoldersMetric', fetchMetrics);
 
   return (
-    <SectionWrapper customClasses="border-b-1.5 py-16">
-      <Card className="flex flex-col gap-6 p-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
-        <div className="flex">
-          <Image
-            alt="Predict"
-            src="/images/predict-page/predict.svg"
-            width="35"
-            height="35"
-            className="mr-4"
-          />
-          Text here
+    <SectionWrapper customClasses='border-b-1.5 py-16'>
+      <Card className='flex flex-col gap-6 p-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center'>
+        <div className='flex items-center'>
+          <Image alt='Tokenomics' src='/images/olas-token-logo.png' width='35' height='35' className='mr-4' />
+          Olas token is widely supported by the community
         </div>
         {metrics?.totalTokenHolders ? (
-          <ExternalLink className="font-extrabold text-6xl" href="#" hideArrow>
+          <ExternalLink className='font-extrabold text-6xl' href='#' hideArrow>
             {metrics?.totalTokenHolders?.toString()}
-            <span className="text-4xl">↗</span>
+            <span className='text-4xl'>↗</span>
           </ExternalLink>
         ) : (
-          <span className="text-purple-600 text-6xl">--</span>
+          <span className='text-purple-600 text-6xl'>--</span>
         )}
-        <div className="flex gap-2">Number of OLAS token holders</div>
+        <div className='flex gap-2'>OLAS holders across chains</div>
       </Card>
     </SectionWrapper>
   );
