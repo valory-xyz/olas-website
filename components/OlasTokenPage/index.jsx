@@ -18,6 +18,7 @@ import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { OlasUtility } from './OlasUtility';
 import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
+import { TokenHoldersMetric } from './TokenHoldersMetric';
 import { UsagePieChart } from './UsagePieChart';
 
 // manually register arc element, category scale, linear scale,
@@ -287,6 +288,7 @@ const Supply = () => {
 const OlasToken = () => (
   <>
     <Hero />
+    <TokenHoldersMetric />
     <Supply />
     <OlasUtility />
     <TokenDetails />

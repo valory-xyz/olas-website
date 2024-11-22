@@ -27,7 +27,7 @@
     "import/no-unresolved": [
       2,
       {
-        "ignore": ["common-util", "components", "data", "styles", "lib"]
+        "ignore": ["common-util", "components", "data", "styles", "lib", "hooks"]
       }
     ],
     "no-console": ["warn", { "allow": ["error"] }],

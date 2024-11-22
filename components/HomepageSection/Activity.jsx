@@ -1,17 +1,17 @@
-import { useMemo } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import useSWR from 'swr';
 import {
+  get7DaysAvgActivity,
   getTotalTransactionsCount,
   getTotalUnitsCount,
-  get7DaysAvgActivity,
 } from 'common-util/api/flipside';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
-import { Popover } from 'components/ui/popover';
 import { FLIPSIDE_URL } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
+import { Popover } from 'components/ui/popover';
+import { ExternalLink } from 'components/ui/typography';
+import { usePersistentSWR } from 'hooks';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useMemo } from 'react';
 import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = 8;
@@ -37,12 +37,6 @@ const fetchMetrics = async () => {
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
   };
 };
-
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
 
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR('activityMetrics', fetchMetrics);

@@ -1,4 +1,7 @@
-import { MECH_TXS_QUERY_ID } from 'common-util/constants';
+import {
+  MECH_TXS_QUERY_ID,
+  UNIQUE_STAKERS_QUERY_ID,
+} from 'common-util/constants';
 import get from 'lodash/get';
 
 const duneApiCall = async ({ queryId }) => {
@@ -46,6 +49,17 @@ export const getMechTxs = async () => {
     return { totalTxs, predictTxs, contributeTxs, governatooorTxs, otherTxs };
   } catch (error) {
     console.error('Error in getMechTxs: ', error);
+    return;
+  }
+};
+
+export const getTotalUniqueStakers = async () => {
+  try {
+    const json = await duneApiCall({ queryId: UNIQUE_STAKERS_QUERY_ID });
+    const totalUniqueStakers = get(json, 'result.rows[0].total_stakers');
+    return totalUniqueStakers;
+  } catch (error) {
+    console.error('Error in getTotalUniqueStakers: ', error);
     return;
   }
 };
