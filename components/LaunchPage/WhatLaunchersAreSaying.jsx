@@ -26,7 +26,7 @@ const quotes = [
         protocols across our ecosystem.
       </span>
     ),
-    name: 'James Rose',
+    name: 'James Ross',
     nameUrl: 'https://x.com/JRossTreacher',
     title: 'CEO, Mode',
     launcherIcon: 'mode-avatar.png',
@@ -45,11 +45,8 @@ const quotes = [
 
 export const WhatLaunchersAreSaying = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-20 mt-20 bg-gray-100 border-y"
+    customClasses="lg:p-24 px-4 py-20 mt-20 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
-    customStyle={{
-      background: 'linear-gradient(180deg, #F8F9FC 0%, #E7EAF4 100%)',
-    }}
   >
     <h2 className={`${SUB_HEADER_CLASS} text-center mb-6 lg:mb-14`}>
       What Launchers are saying
@@ -71,9 +68,9 @@ export const WhatLaunchersAreSaying = () => (
             />
           </a>
           <div>
-            <span className="text-purple-600 text-lg">&quot; </span>
+            <span className="text-purple-600">&quot;</span>
             {quote.quote}
-            <span className="text-purple-600 text-lg"> &quot;</span>
+            <span className="text-purple-600">&quot;</span>
           </div>
           <div className="mt-auto flex flex-row justify-between">
             <div className="flex flex-col w-2/3">
