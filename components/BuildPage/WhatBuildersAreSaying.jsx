@@ -80,44 +80,51 @@ export const WhatBuildersAreSaying = () => (
     </h2>
 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-screen-xl mx-auto">
-      {quotes.map((quote, index) => (
-        <Card
-          key={index}
-          className='flex flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-cover bg-[url("/images/card-bg.png")]'
-        >
-          <a href={quote.projectUrl} target="_blank">
-            <Image
-              src={`/images/build-page/${quote.projectImage}`}
-              alt="Build"
-              width={24}
-              height={24}
-              className="mx-auto"
-            />
-          </a>
-          <div>
-            <span className="text-purple-600">&quot;</span>
-            {quote.quote}
-            <span className="text-purple-600">&quot;</span>
-          </div>
-          <div className="mt-auto flex flex-row justify-between">
-            <div className="flex flex-col w-2/3">
-              <a href={quote.nameUrl} target="_blank" className="font-semibold">
-                {quote.name}
-              </a>
-              <p className="text-slate-500 text-sm">{quote.title}</p>
-            </div>
-
-            <div className="aspect-square mt-auto">
+      {quotes.map((quote, index) => {
+        const LinkTag = quote.projectUrl ? 'a' : 'div';
+        return (
+          <Card
+            key={index}
+            className='flex flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-cover bg-[url("/images/card-bg.png")]'
+          >
+            <LinkTag href={quote.projectUrl} target="_blank">
               <Image
-                src={`/images/build-page/${quote.builderIcon}`}
+                src={`/images/build-page/${quote.projectImage}`}
                 alt="Build"
-                width={48}
-                height={48}
+                width={24}
+                height={24}
+                className="mx-auto"
               />
+            </LinkTag>
+            <div>
+              <span className="text-purple-600">&quot;</span>
+              {quote.quote}
+              <span className="text-purple-600">&quot;</span>
             </div>
-          </div>
-        </Card>
-      ))}
+            <div className="mt-auto flex flex-row justify-between">
+              <div className="flex flex-col w-2/3">
+                <a
+                  href={quote.nameUrl}
+                  target="_blank"
+                  className="font-semibold"
+                >
+                  {quote.name}
+                </a>
+                <p className="text-slate-500 text-sm">{quote.title}</p>
+              </div>
+
+              <div className="aspect-square mt-auto">
+                <Image
+                  src={`/images/build-page/${quote.builderIcon}`}
+                  alt="Build"
+                  width={48}
+                  height={48}
+                />
+              </div>
+            </div>
+          </Card>
+        );
+      })}
     </div>
   </SectionWrapper>
 );
