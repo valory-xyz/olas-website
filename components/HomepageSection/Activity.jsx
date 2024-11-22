@@ -8,13 +8,14 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
+import chains from 'data/chains.json';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import SectionHeading from '../SectionHeading';
 
-const BLOCKCHAIN_COUNT = 8;
+const BLOCKCHAIN_COUNT = chains.length;
 
 const fetchMetrics = async () => {
   const [transactions, unitsCount, dailyActiveAgents] =
