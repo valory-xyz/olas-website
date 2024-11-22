@@ -82,12 +82,15 @@ export const WhatBuildersAreSaying = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-screen-xl mx-auto">
       {quotes.map((quote, index) => {
         const LinkTag = quote.projectUrl ? 'a' : 'div';
+        const LinkProps = quote.projectUrl
+          ? { href: quote.projectUrl, target: '_blank' }
+          : {};
         return (
           <Card
             key={index}
             className='flex flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-cover bg-[url("/images/card-bg.png")]'
           >
-            <LinkTag href={quote.projectUrl} target="_blank">
+            <LinkTag {...LinkProps}>
               <Image
                 src={`/images/build-page/${quote.projectImage}`}
                 alt="Build"
