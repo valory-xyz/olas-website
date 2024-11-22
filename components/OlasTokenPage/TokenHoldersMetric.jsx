@@ -42,7 +42,7 @@ export const TokenHoldersMetric = () => {
             target="_blank"
             hideArrow
           >
-            {metrics?.totalTokenHolders?.toString()}
+            {metrics?.totalTokenHolders?.toLocaleString()}
             <span className="text-4xl">↗</span>
           </ExternalLink>
         ) : (
