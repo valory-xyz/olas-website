@@ -33,7 +33,7 @@ export const TokenHoldersMetric = () => {
             height="35"
             className="mr-4"
           />
-          Olas token is widely supported by the community
+          The OLAS Token is widely supported by the community
         </div>
         {metrics?.totalTokenHolders ? (
           <ExternalLink

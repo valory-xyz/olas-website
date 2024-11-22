@@ -46,7 +46,7 @@ export const OperateMetrics = () => {
       {
         id: 'DAA',
         imageSrc: 'DAA.png',
-        labelText: 'Daily active agents (DAAs)',
+        labelText: 'Daily Active Agents (DAAs)',
         subText: '7-day average',
         value: metrics?.dailyActiveAgents?.toLocaleString(),
         source: PREDICTION_ECONOMY_DASHBOARD_URL,
