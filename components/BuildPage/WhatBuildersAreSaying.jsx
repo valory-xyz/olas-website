@@ -8,7 +8,7 @@ const quotes = [
   {
     projectImage: '8baller.png',
     quote:
-      "Olas is under the spotlight, with attention from Vitalik it is clear that not only is the narrative compelling but also the technology is there to back it up. The network numbers only go up everyday a new all time high of daily active agents. This is why I build on Olas, it's the clear leader in AI Agents and will be that way into the foreseeable future.",
+      "Olas is under the spotlight. With attention from Vitalik, it is clear that not only is the narrative compelling but also the technology is there to back it up. The network numbers only go up: everyday is a new all-time high of daily active agents. This is why I build on Olas, it's the clear leader in AI Agents and will be that way into the foreseeable future.",
     name: '8 Baller',
     nameUrl: 'https://x.com/8baller11',
     builderIcon: '8baller.png',
@@ -42,7 +42,7 @@ const quotes = [
     projectImage: 'creator-bid.png',
     projectUrl: 'https://creator.bid/',
     quote:
-      "We're building Creator.bid on the cutting-edge Olas stack to be one the first Olas-powered project en-route to deliver no-code ACA (AI Creator Agents) at scale. The Olas stack has proven to be a fantastic choice for us to run our agents in a decentralized fashion with off-chain consensus at scale.",
+      "We're building Creator.bid on the cutting-edge Olas Stack to be one the first Olas-powered project en-route to deliver no-code ACA (AI Creator Agents) at scale. The Olas Stack has proven to be a fantastic choice for us to run our agents in a decentralized fashion with off-chain consensus at scale.",
     name: 'Philipp Kothe',
     nameUrl: 'https://x.com/philism_',
     title: 'CEO, Creator.bid',
@@ -62,7 +62,7 @@ const quotes = [
     projectImage: 'nevermined.png',
     projectUrl: 'https://nevermined.io/',
     quote:
-      'We are building on Olas to allow AI agents to get paid across the different networks that agents are deployed to. Nevermined will work to bring Olas AI agents to life through R&D and mutual integrations. The Olas stack enables all agents to be interoperable and composable with one another so that our payment mechanism can work seamlessly.',
+      'We are building on Olas to allow AI agents to get paid across the different networks that agents are deployed to. Nevermined will work to bring Olas AI agents to life through R&D and mutual integrations. The Olas Stack enables all agents to be interoperable and composable with one another so that our payment mechanism can work seamlessly.',
     name: 'Don Gossen',
     nameUrl: 'https://x.com/dongossen',
     title: 'CEO, Nevermined',
