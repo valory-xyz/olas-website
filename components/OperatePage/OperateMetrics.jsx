@@ -57,11 +57,12 @@ export const OperateMetrics = () => {
 
   return (
     <SectionWrapper customClasses="mt-16">
-      <Card className="flex flex-row gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
+      <Card className="grid md:grid-cols-2 gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
           let borderClassName = '';
           if (index == 0)
-            borderClassName += 'lg:border-r-1.5 border-purple-200';
+            borderClassName +=
+              'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200';
 
           const getValue = () => {
             if (!item.value) return '--';
@@ -79,13 +80,15 @@ export const OperateMetrics = () => {
               className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
             >
               <div className="flex gap-2 mb-5 justify-center">
-                <Image
-                  alt="Operate"
-                  src={`/images/operate-page/${item.imageSrc}`}
-                  width={35}
-                  height={35}
-                />
-                <span className="text-lg text-black flex items-center">
+                <div className="aspect-square">
+                  <Image
+                    alt="Operate"
+                    src={`/images/operate-page/${item.imageSrc}`}
+                    width={35}
+                    height={35}
+                  />
+                </div>
+                <span className="text-lg text-black flex max-w-fit">
                   {item.labelText}
                 </span>
               </div>
