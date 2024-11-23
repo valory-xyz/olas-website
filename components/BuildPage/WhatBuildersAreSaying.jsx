@@ -52,7 +52,7 @@ const quotes = [
     projectImage: 'alprina.png',
     projectUrl: 'https://alprina.com/',
     quote:
-      "At Alprina, we harness Olas's decentralized infrastructure to develop our AI stock prediction agent, benefiting from its open-source framework and multi-chain protocol for seamless integration and enhanced security.",
+      "As the founder of Alprina, an AI agent designed to predict stock movements, I chose Olas for its robust decentralized infrastructure. Olas's open-source framework and multi-chain protocol offer the flexibility and scalability essential for developing sophisticated agent economies. By leveraging Olas, we seamlessly integrate off-chain AI services with on-chain security, fostering innovation in a co-owned and decentralized environment.",
     name: 'Josh Wagenbach',
     nameUrl: 'https://x.com/joshwagenbach',
     title: 'CEO, Alprina',

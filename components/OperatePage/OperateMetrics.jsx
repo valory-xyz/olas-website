@@ -1,5 +1,5 @@
 import { getTotalUniqueStakers } from 'common-util/api/dune';
-import { getSevenDayAvgDailyActiveAgents } from 'common-util/api/flipside';
+import { get7DaysAvgActivity } from 'common-util/api/flipside';
 import {
   OLAS_ECONOMY_DASHBOARD_URL,
   PREDICTION_ECONOMY_DASHBOARD_URL,
@@ -13,7 +13,7 @@ import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
   const [dailyActiveAgents, totalUniqueStakers] = await Promise.allSettled([
-    getSevenDayAvgDailyActiveAgents(),
+    get7DaysAvgActivity(),
     getTotalUniqueStakers(),
   ]);
 
