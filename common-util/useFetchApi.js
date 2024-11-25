@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import useSWR from 'swr';
-import qs from 'qs';
 import get from 'lodash/get';
+import qs from 'qs';
+import useSWR from 'swr';
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const fetcher = (...args) => fetch(...args).then((res) => res.json());

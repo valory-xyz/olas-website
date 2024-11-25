@@ -14,10 +14,10 @@ export const Video = ({ video }) => (
     >
       {video.imageFilename && (
         <Image
-          src={`/images/videos/${video.imageFilename}`}
+          src={`${video.imageFilename}`}
           alt={video.title}
-          width="750"
-          height="200"
+          width={750}
+          height={200}
           className="rounded-t-lg"
         />
       )}

@@ -5,7 +5,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 
 const VideosPage = () => {
-  const { data: videos, isLoading } = useFetchVideos();
+  const { videos, isLoading } = useFetchVideos();
 
   return (
     <PageWrapper>
