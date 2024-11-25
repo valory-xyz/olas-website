@@ -11,6 +11,8 @@ const list = [
     location: 'Bangkok, DevCon',
     date: "Nov 13 '24",
     eventLink: 'https://lu.ma/tdjehba6',
+    replayLink:
+      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pHCR8ARMw014ykrIEWuCok',
   },
   {
     title: 'Night at the Museum',
