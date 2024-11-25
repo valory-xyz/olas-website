@@ -20,9 +20,12 @@ export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 export const FLIPSIDE_URL =
   'https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda';
+export const FLIPSIDE_BOND_URL =
+  'https://flipsidecrypto.xyz/MLDZMN/olas-bond-a-gateway-to-network-participation-and-growth-GtcsRQ';
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
 export const PREDICTION_DAA_QUERY_ID = '4165113';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
+export const PROTOCOL_EARNED_FEES_ID = '3511561';
 export const PREDICTION_ECONOMY_DASHBOARD_URL =
   'https://flipsidecrypto.xyz/MLDZMN/olas-predict-on-demand-agent-powered-predictions-47WGHl';
 export const MECH_TXS_QUERY_ID = '4185253';
@@ -31,6 +34,7 @@ export const MECH_ECONOMY_DASHBOARD_URL =
 export const UNIQUE_STAKERS_QUERY_ID = '4031179';
 export const OLAS_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/autonolas-ecosystem-activity';
+export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';

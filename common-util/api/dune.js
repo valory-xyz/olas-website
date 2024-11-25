@@ -1,5 +1,6 @@
 import {
   MECH_TXS_QUERY_ID,
+  PROTOCOL_EARNED_FEES_ID,
   UNIQUE_STAKERS_QUERY_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
@@ -61,5 +62,18 @@ export const getTotalUniqueStakers = async () => {
   } catch (error) {
     console.error('Error in getTotalUniqueStakers: ', error);
     return;
+  }
+};
+
+export const getProtocolEarnedFees = async () => {
+  try {
+    const json = await duneApiCall({ queryId: PROTOCOL_EARNED_FEES_ID });
+    const protocolEarnedFees = get(
+      json,
+      'result.rows[0].Cumulative_Protocol_Earned_Fees',
+    );
+    return protocolEarnedFees;
+  } catch (error) {
+    console.error('Error in getProtocolEarnedFees: ', error);
   }
 };
