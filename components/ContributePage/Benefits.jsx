@@ -44,7 +44,7 @@ const Benefits = () => (
   <section className="bg-purple-950 text-white py-10">
     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="text-4xl sm:text-5xl">
+        <h1 className="text-4xl">
           Your shortcut to
           <br />
           making an impact

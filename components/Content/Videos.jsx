@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
-import { Spinner } from 'components/Spinner';
 import { VideoPropTypes } from 'common-util/propTypes';
+import { Spinner } from 'components/Spinner';
 import { Video } from './Video';
 
 export const Videos = ({ isLoading, videos, limit }) => (
   <section>
     <div>
       <div>
-        <h2 className="mb-4 text-3xl md:text-5xl lg:text-4xl tracking-tight font-extrabold text-gray-900 ">
+        <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Videos & Podcasts
         </h2>
 
@@ -25,8 +25,10 @@ export const Videos = ({ isLoading, videos, limit }) => (
         )}
       </div>
 
-      {isLoading ? <Spinner customClass="h-auto py-20" /> : (
-        <div className="grid gap-8 lg:grid-cols-3 ">
+      {isLoading ? (
+        <Spinner customClass="h-auto py-20" />
+      ) : (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {videos.map((video) => (
             <div key={video.id}>
               <Video video={video} />
@@ -34,7 +36,6 @@ export const Videos = ({ isLoading, videos, limit }) => (
           ))}
         </div>
       )}
-
     </div>
   </section>
 );
@@ -50,4 +51,5 @@ Videos.defaultProps = {
   videos: [],
   limit: null,
 };
+
 export default Videos;

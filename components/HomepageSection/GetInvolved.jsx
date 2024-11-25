@@ -1,74 +1,106 @@
-/* eslint-disable react/prop-types */
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card } from 'components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
+
+/* eslint-disable react/prop-types */
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from 'components/SectionHeading';
+import { Card } from 'components/ui/card';
 
 const GET_INVOLVED_DATA = [
   {
     id: 1,
-    imageSrc: '/images/homepage/get-involved.svg',
-    title: 'Get involved',
-    description:
-      'Benefit from the Olas protocol, no \nmatter what you bring to the table.',
-    colSpan: 2,
-  },
-  {
-    id: 2,
-    imageSrc: '/images/homepage/olas-token.svg',
-    imageWidth: 277,
-    imageHeight: 172,
-    title: 'Get OLAS, use it across the network',
-    ctaText: 'Get OLAS',
-    href: '/olas-token',
-  },
-  {
-    id: 3,
     imageSrc: '/images/homepage/olas-contribute.png',
-    title: 'Grow awareness about Olas, earn points',
+    title: 'Grow awareness about Olas',
+    description: 'Promote Olas on X and earn points while doing so.',
     ctaText: 'Contribute',
     href: '/contribute',
   },
   {
-    id: 4,
+    id: 2,
     imageSrc: '/images/homepage/olas-launch.png',
-    title: 'Define use cases, attract agent labor',
+    title: 'Launch your own agent economy, boost DAAs',
+    description:
+      'Everything you need to launch an AI agent economy on your chain/protocol.',
     ctaText: 'Launch',
     href: '/launch',
   },
   {
-    id: 5,
+    id: 3,
     imageSrc: '/images/homepage/olas-build.png',
-    title: 'Write agent code, get rewards',
+    title: 'Build agents, get rewarded',
+    description:
+      'A permissionless developer rewards mechanism incentivises useful code contributions.',
     ctaText: 'Build',
     href: '/build',
   },
   {
-    id: 6,
+    id: 4,
     imageSrc: '/images/homepage/olas-govern.png',
-    title: 'Guide Olas',
+    title: 'Direct the future of Olas',
+    description:
+      'Join the decision-making process that drives growth in the Olas ecosystem.',
     ctaText: 'Govern',
     href: '/govern',
   },
   {
-    id: 7,
+    id: 5,
     imageSrc: '/images/homepage/olas-bond.png',
-    title: 'Provide capital, get discounted OLAS',
+    title: 'Provide liquidity, get discounted OLAS',
+    description:
+      'A bonding mechanism rewards providers of liquidity with discounted OLAS.',
     ctaText: 'Bond',
     href: '/bond',
   },
   {
-    id: 8,
+    id: 6,
     imageSrc: '/images/homepage/olas-operate.png',
-    title: 'Run agents, get rewards',
+    title: 'Run agents, stake & earn rewards',
+    description:
+      'A unique staking mechanism rewards active agents for their useful contributions.',
     ctaText: 'Operate',
     href: '/operate',
   },
+  {
+    id: 7,
+    imageSrc: '/images/homepage/olas-token.svg',
+    title: 'Get OLAS, use it across the network',
+    description: 'Olas provides access to the core functions of the network.',
+    ctaText: 'Get OLAS',
+    href: '/olas-token',
+    colSpan: 3,
+  },
 ];
 
+const CARD_BG =
+  'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF] hover:-translate-y-2 ease-in-out transition duration-150';
+
 const GetInvolved = () => (
-  <SectionWrapper id="get-involved">
+  <SectionWrapper id="get-involved" customClasses="py-12 px-4 md:px-8 lg:p-24">
+    <div className="text-center">
+      <SectionHeading
+        size="max-sm:text-5xl"
+        color="text-gray-900"
+        weight="font-bold"
+        other="mb-12"
+      >
+        Choose your role & get involved
+      </SectionHeading>
+      <p className="text-xl text-[#4D596A] mb-12">
+        Benefit from Olas protocol, no matter what you bring to the table.
+      </p>
+    </div>
+
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <Card className="max-sm:border-none max-sm:shadow-none border-1.5 border-gray-200 rounded-2xl md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
+        <Image
+          src="/images/get-involved-diagram.png"
+          alt="Get involved diagram"
+          width={920}
+          height={595}
+          className="mx-auto m-2"
+        />
+      </Card>
+
       {GET_INVOLVED_DATA.map((datum) => {
         const {
           imageSrc,
@@ -83,6 +115,7 @@ const GetInvolved = () => (
         return (
           <GetInvolvedCard
             key={datum.id}
+            id={datum.id}
             imageSrc={imageSrc}
             imageHeight={imageHeight}
             imageWidth={imageWidth}
@@ -99,58 +132,67 @@ const GetInvolved = () => (
 );
 
 const GetInvolvedCard = ({
+  id,
   imageSrc,
-  imageWidth,
-  imageHeight,
+  imageWidth = 300,
+  imageHeight = 124,
   title,
   description,
   ctaText,
   href,
   colSpan = 1,
 }) => {
-  const imageSizes = {
-    width: colSpan === 1 ? imageWidth ?? 295 : 317,
-    height: colSpan === 1 ? imageHeight ?? 110 : 276,
-  };
-
   if (colSpan === 1 && href) {
     return (
       <Link href={href}>
-        <Card className="border-1.5 border-gray-200 rounded-2xl p-6 flex flex-col justify-center hover:bg-gray-100 min-h-[278px] h-full">
+        <Card
+          className={`${CARD_BG} grid-flow-row min-h-[278px] h-full`}
+          id={`get-involved-${id}`}
+        >
           {imageSrc && title && (
-            <Image
-              src={imageSrc}
-              alt={title}
-              width={imageSizes.width}
-              height={imageSizes.height}
-              className={`self-center object-contain max-h-[${imageSizes.height}px] mb-2`}
-            />
+            <div className="w-full min-h-[85px] md:max-h-[56px] lg:max-h-[96px] md:mb-3 xl:mb-10">
+              <Image
+                src={imageSrc}
+                alt=""
+                width={imageWidth}
+                height={imageHeight}
+                className="top-2 object-cover self-center w-full my-2"
+              />
+            </div>
           )}
-          {title && <h3 className="text-2xl font-semibold mb-2">{title}</h3>}
           {ctaText && (
             <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>
           )}
+          {title && <h3 className="text-2xl font-semibold my-3">{title}</h3>}
+          {description && <p className="text-[#4D596A]">{description}</p>}
         </Card>
       </Link>
     );
   }
 
   return (
-    <Card className="border-1.5 border-gray-200 rounded-2xl p-8 col-span-1 md:col-span-2 flex flex-col md:flex-row gap-10 justify-between">
-      <div className="div flex flex-col justify-center order-2 md:order-1">
-        <h3 className="text-3xl font-bold whitespace-pre mb-6">{title}</h3>
-        {description && <p className="text-slate-700 text-xl">{description}</p>}
-      </div>
-      {imageSrc && title && (
-        <Image
-          src={imageSrc}
-          alt={title}
-          width={imageSizes.width}
-          height={imageSizes.height}
-          className="order-1 md:order-2 self-center"
-        />
-      )}
-    </Card>
+    <Link className="col-span-1 md:col-span-2 lg:col-span-3" href={href}>
+      <Card className={`${CARD_BG} h-full flex `}>
+        <div className="justify-center md:grid md:grid-flow-col flex-col">
+          <Image
+            src={imageSrc}
+            alt={title}
+            width={130}
+            height={130}
+            className="max-sm:mx-auto max-sm:max-h-[110px] md:pr-4 max-sm:mb-2"
+          />
+          <div className="pl-2 flex flex-col gap-3">
+            {title && <h3 className="text-2xl font-semibold">{title}</h3>}
+            {description && <p className="text-[#4D596A]">{description}</p>}
+            {ctaText && (
+              <span className="text-purple-600 text-lg max-sm:order-first">
+                {ctaText}
+              </span>
+            )}
+          </div>
+        </div>
+      </Card>
+    </Link>
   );
 };
 

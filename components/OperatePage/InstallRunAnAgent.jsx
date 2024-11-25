@@ -1,16 +1,11 @@
 /* eslint-disable import/no-unresolved */
-import React, { Fragment, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Octokit } from '@octokit/core';
+import Image from 'next/image';
+import { Fragment, useEffect, useState } from 'react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import {
-  FOOT_NOTE_CLASS,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from './utils';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
 const installSteps = [
   { title: 'Install Pearl.' },
@@ -48,7 +43,6 @@ const downloadLinks = [
   {
     id: 'darwin-x64.dmg',
     btnText: 'Download for MacOS Intel - Alpha',
-    subText: '* Undergoing Maintenance',
     downloadLink: null,
     icon: (
       <Image
@@ -59,14 +53,13 @@ const downloadLinks = [
     ),
   },
   {
-    id: 'windows',
-    btnText: 'Download for Windows - Alpha',
-    subText: '* Coming soon',
+    id: 'win32-x64.exe',
+    btnText: 'Download for Windows x64 - Alpha',
     downloadLink: null,
     icon: (
       <Image
         src="/images/operate-page/brand-windows.svg"
-        alt="Windows is coming soon"
+        alt="Download for Windows x64 - Alpha"
         {...iconProps}
       />
     ),
@@ -102,22 +95,14 @@ const DownloadLinks = () => {
         const prodAssets = assets.filter(
           (asset) => !asset.name.startsWith('dev-'),
         );
-        const updatedLinks = links.map((link) => {
-          /* eslint-disable-next-line max-len */
-          const assetLink = prodAssets.find((asset) => asset.browser_download_url.includes(link.id));
-
-          const getAssetLink = () => {
-            if (!assetLink?.browser_download_url) return null;
-
-            // disable download for intel temporarily
-            if (assetLink.browser_download_url.includes('darwin-x64.dmg')) return null;
-
-            return assetLink.browser_download_url;
-          };
+        const updatedLinks = downloadLinks.map((link) => {
+          const assetLink = prodAssets.find((asset) =>
+            asset.browser_download_url.includes(link.id),
+          );
 
           return {
             ...link,
-            downloadLink: getAssetLink(),
+            downloadLink: assetLink?.browser_download_url || null,
           };
         });
         setLinks(updatedLinks);
@@ -128,12 +113,10 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <div className="flex flex-col flex-wrap justify-center items-center gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
-      {links.map(({
-        id, btnText, downloadLink, icon, subText,
-      }, index) => (
+    <div className="flex flex-col flex-wrap justify-center items-baseline gap-4 sm:flex-row xl:flex-nowrap xl:gap-8">
+      {links.map(({ id, btnText, downloadLink, icon, subText }) => (
         <Fragment key={id}>
-          <div className="flex flex-col align-top text-center md:text-left h-[80px]">
+          <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
             <Button
               onClick={
                 downloadLink ? () => window.open(downloadLink, '_blank') : null
@@ -150,14 +133,8 @@ const DownloadLinks = () => {
               </div>
             </Button>
 
-            <div className={`${FOOT_NOTE_CLASS}`}>{subText}</div>
+            <div className="text-xs text-slate-500">{subText}</div>
           </div>
-
-          {index !== downloadLinks.length - 1 ? (
-            <div className="font-bold text-lg text-purple-200 hidden md:block">
-              |
-            </div>
-          ) : null}
         </Fragment>
       ))}
     </div>
@@ -173,7 +150,7 @@ export const InstallRunAnAgent = () => (
     <div className="max-w-screen-xl px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-4 col-span-12 lg:gap-8">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6`}>
-          Install. Run an Agent. Earn OLAS. That’s It.
+          Install. Run an Agent. Earn OLAS. That&apos;s It.
         </h2>
         <InstallSteps />
         <DownloadLinks />

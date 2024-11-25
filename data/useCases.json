@@ -66,6 +66,20 @@
         "image": "/images/services/predict.png",
         "link": "/agent-economies/predict",
         "isExternal": false
+      },
+      {
+        "title": "Optimus",
+        "description": "Agents intelligently managing DeFi assets.",
+        "image": "/images/services/optimus.svg",
+        "link": "/agent-economies/optimus",
+        "isExternal": false
+      },
+      {
+        "title": "Mech",
+        "description": "Agents providing AI intelligence to other agent economies.",
+        "image": "/images/services/mech.svg",
+        "link": "/agent-economies/mech",
+        "isExternal": false
       }
     ]
   }

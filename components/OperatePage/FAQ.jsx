@@ -1,4 +1,5 @@
 import { Accordion } from 'common-util/Accordion';
+import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
@@ -15,8 +16,7 @@ const faqList = [
         title: 'How do I install Pearl?',
         desc: (
           <>
-            Visit the
-            {' '}
+            Visit the{' '}
             <Link href="/operate#download" className="text-purple-600">
               Pearl download section
             </Link>
@@ -57,6 +57,14 @@ const faqList = [
           </>
         ),
       },
+      {
+        title: 'When do agents get evicted?',
+        desc: 'If your agent fails to meet activity targets for two consecutive epochs, it will be evicted from the staking contract.',
+      },
+      {
+        title: 'If my agent gets evicted, when can I start staking again?',
+        desc: "The maximum time you need to wait is 24 hours, unless the epoch checkpoint is called late. If you'd already been staked for 3 consecutive epochs prior to being evicted, you can immediately stake again, assuming there are still slots available.",
+      },
     ],
   },
   {
@@ -67,15 +75,10 @@ const faqList = [
         desc: (
           <>
             Yes, for more technical control and flexibility, you can set up and
-            run agents manually. Visit
-            {' '}
-            <Link
-              href="https://operate.olas.network/"
-              className="text-purple-600"
-            >
+            run agents manually. Visit{' '}
+            <Link href={OPERATE_AGENTS_URL} className="text-purple-600">
               operate.olas.network
-            </Link>
-            {' '}
+            </Link>{' '}
             to get started with one of the quickstarts.
           </>
         ),
@@ -88,16 +91,14 @@ const faqList = [
         title: 'Where can I get support if I encounter issues?',
         desc: (
           <>
-            There is no official support, but the
-            {' '}
+            There is no official support, but the{' '}
             <Link
               target="_blank"
               href="https://discord.com/channels/899649805582737479/1244588374736502847"
               className="text-purple-600"
             >
               Olas community
-            </Link>
-            {' '}
+            </Link>{' '}
             can help you if you run into any issues.
           </>
         ),
@@ -107,15 +108,10 @@ const faqList = [
         desc: (
           <>
             You can optimize agent performance through modifying the agent code.
-            Visit
-            {' '}
-            <Link
-              href="https://operate.olas.network/"
-              className="text-purple-600"
-            >
+            Visit{' '}
+            <Link href={OPERATE_AGENTS_URL} className="text-purple-600">
               operate.olas.network
-            </Link>
-            {' '}
+            </Link>{' '}
             to get started.
           </>
         ),
@@ -125,7 +121,10 @@ const faqList = [
 ];
 
 export const FAQ = () => (
-  <SectionWrapper customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`} id="faq">
+  <SectionWrapper
+    customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}
+    id="faq"
+  >
     <div className="max-w-screen-lg px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>

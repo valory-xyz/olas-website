@@ -58,15 +58,15 @@ const ADDRESSES = DATA.map((item) => item.address).filter(Boolean);
 const TAILWIND_COLORS = DATA.map((item) => item.tailwindColor);
 const RGB_COLORS = DATA.map((item) => item.rgbColor);
 
-const CIRCULATING_SUPPLY_INDEX = DATA.findIndex((item) => item.id === 'circulatingSupply');
+const CIRCULATING_SUPPLY_INDEX = DATA.findIndex(
+  (item) => item.id === 'circulatingSupply',
+);
 
 function getAddressPrefix(address) {
   return address.slice(0, 6);
 }
 
-const LegendItem = ({
-  label, color, address, value,
-}) => (
+const LegendItem = ({ label, color, address, value }) => (
   <div className="flex gap-2 items-center w-full">
     <div className={`${color} px-3 py-1 rounded-sm`} />
     <span className="text-gray-500">{label}</span>
@@ -115,7 +115,9 @@ export const SupplyPieChart = () => {
       try {
         const promises = [
           olasContract.methods.totalSupply().call(),
-          ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
+          ...ADDRESSES.map((address) =>
+            olasContract.methods.balanceOf(address).call(),
+          ),
         ];
 
         const result = await Promise.allSettled(promises);
@@ -125,10 +127,11 @@ export const SupplyPieChart = () => {
           .slice(1, result.length)
           .map((item) => item.value || 0);
 
-        const circulatingSupply = totalSupplyResult > 0
-          ? result[0].value
-               - distributions.reduce((sum, item) => sum + item, 0n)
-          : 0;
+        const circulatingSupply =
+          totalSupplyResult > 0
+            ? result[0].value -
+              distributions.reduce((sum, item) => sum + item, 0n)
+            : 0;
 
         setTotalSupply(formatEthers(totalSupplyResult));
         setData([

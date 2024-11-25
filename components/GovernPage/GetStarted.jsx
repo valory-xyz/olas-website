@@ -19,8 +19,7 @@ const steps = [
     title: 'Access The Govern App',
     description: (
       <>
-        You can do everything governance related on the
-        {' '}
+        You can do everything governance related on the{' '}
         <a
           href="https://govern.olas.network"
           target="_blank"
@@ -42,8 +41,7 @@ const steps = [
     title: 'Participate in Proposals',
     description: (
       <>
-        Use the Govern App to access proposals on platforms like
-        {' '}
+        Use the Govern App to access proposals on platforms like{' '}
         <a
           href="https://snapshot.org/#/autonolas.eth"
           target="_blank"
@@ -51,10 +49,8 @@ const steps = [
           className="text-purple-600"
         >
           Snapshot ↗
-        </a>
-        {' '}
-        and
-        {' '}
+        </a>{' '}
+        and{' '}
         <a
           href="https://boardroom.io/autonolas/"
           target="_blank"
@@ -86,12 +82,7 @@ export const GetStarted = () => (
       ))}
 
       <div className="self-center">
-        <Button
-          variant="default"
-          size="xl"
-          asChild
-          className="mt-10"
-        >
+        <Button variant="default" size="xl" asChild className="mt-10">
           <Link href="https://govern.olas.network">Start governing now</Link>
         </Button>
       </div>

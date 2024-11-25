@@ -25,9 +25,8 @@ export const useFetchVideos = (limit = 1000) => {
   const videos = rawVideos.map((video) => {
     const id = get(video, 'id');
     const attributes = get(video, 'attributes');
-    const {
-      title, date, platform_link, drive_link, platform, filename,
-    } = attributes || {};
+    const { title, date, platform_link, drive_link, platform, filename } =
+      attributes || {};
     const imageFilename = `${process.env.NEXT_PUBLIC_API_URL}${get(filename, 'data[0].attributes.url') || ''}`;
 
     return {

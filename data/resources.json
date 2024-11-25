@@ -24,6 +24,14 @@
     "tags": []
   },
   {
+    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
+    "title": "DAO Constitution",
+    "description": "The DAO's governing rulebook",
+    "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["contribute"]
+  },
+  {
     "id": "201241241240a-c797-46cd-a94b-1876dca24fce",
     "title": "Blog",
     "description": "Read about Olas news and updates",
@@ -32,12 +40,12 @@
     "tags": []
   },
   {
-    "id": "209bc10a-c797-46cd-a94b-1876dca24fce",
-    "title": "DAO Constitution",
-    "description": "The DAO's governing rulebook",
-    "url": "https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u",
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Quarterly updates",
+    "description": "What happened in the last quarter and what's coming next",
+    "url": "/quarterly-updates",
     "imageFilename": "awesome-autonolas.svg",
-    "tags": ["contribute"]
+    "tags": []
   },
   {
     "id": "f65fb0a7-531a-4c85-93b4-854854ebe61f",
@@ -62,5 +70,29 @@
     "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["build"]
+  },
+  {
+    "id": "d9b2d63d-a3bb-4e8d-9d6b-9b0d2b044d80",
+    "title": "Tokenomics",
+    "description": "Review the token distribution",
+    "url": "/olas-token",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "e8d5b8d9-1c1f-4f8e-8b2d-b9f14d947a6f",
+    "title": "Use Cases",
+    "description": "Explore diverse applications of autonomous agent economies",  
+    "url": "/explore",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["explore"]
+  },
+  {
+    "id": "f1b19e50-8a2b-4a1b-bf75-4b6b5d3e1e7b",
+    "title": "Agents Unleashed",
+    "description": "View upcoming and past events",  
+    "url": "/agents-unleashed",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]

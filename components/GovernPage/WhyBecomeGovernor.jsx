@@ -1,8 +1,5 @@
-import {
-  SUB_HEADER_CLASS,
-  SECTION_BOX_CLASS,
-  TEXT_CLASS,
-} from 'common-util/classes';
+import { SUB_HEADER_CLASS, SECTION_BOX_CLASS } from 'common-util/classes';
+import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
@@ -24,11 +21,6 @@ const list = [
   },
 ];
 
-const eachCardCss = {
-  background:
-    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
-};
-
 export const WhyBecomeGovernor = () => (
   <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-16 lg:pb-12`}>
     <div
@@ -40,20 +32,7 @@ export const WhyBecomeGovernor = () => (
       >
         Why become an Olas Governor?
       </h2>
-
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {list.map(({ title, desc }) => (
-          <div
-            key={title}
-            className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
-            style={eachCardCss}
-          >
-            <h2 className="text-xl font-semibold">{title}</h2>
-
-            <p className={TEXT_CLASS}>{desc}</p>
-          </div>
-        ))}
-      </div>
+      <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
 );

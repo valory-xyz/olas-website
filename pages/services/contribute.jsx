@@ -1,18 +1,17 @@
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import PageWrapper from 'components/Layout/PageWrapper';
-import Meta from 'components/Meta';
 import {
   MAIN_TITLE_CLASS,
-  TEXT_SMALL_CLASS,
   SECTION_BOX_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_CLASS,
   SUB_HEADER_CLASS,
+  TEXT_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
@@ -45,7 +44,7 @@ const Hero = () => (
           size="xl"
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/contribute#what-is-olas-contribute-service">
+          <Link href="/services/contribute#what-is-olas-contribute-service">
             Learn how
           </Link>
         </Button>
@@ -221,7 +220,7 @@ const GetStarted = () => (
 const ContributePage = () => (
   <PageWrapper>
     <Meta
-      pageTitle="Track Community Impact with Autonomous Services - Olas Contribute"
+      pageTitle="Contribute"
       description="Enhance your network's influence with Olas Contribute. Leverage autonomous services to track, analyze, and amplify community contributions. Start now!"
     />
     <Hero />

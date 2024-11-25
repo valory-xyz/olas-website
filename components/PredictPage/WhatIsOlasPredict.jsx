@@ -23,8 +23,7 @@ const agentRolesList = [
     desc: (
       <>
         Deploy and seed prediction markets using prediction market protocols,
-        currently
-        {' '}
+        currently{' '}
         <a
           href="https://aiomen.eth.limo/"
           target="_blank"
@@ -196,8 +195,9 @@ const WhyOlasPredict = () => (
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
       {olasPredictList.map(({ title, desc, icon }, index) => {
-        const isLastAndOdd = olasPredictList.length === index + 1
-          && olasPredictList.length % 2 === 1;
+        const isLastAndOdd =
+          olasPredictList.length === index + 1 &&
+          olasPredictList.length % 2 === 1;
 
         return (
           <div

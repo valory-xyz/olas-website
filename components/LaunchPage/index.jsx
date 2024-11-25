@@ -1,13 +1,15 @@
-import Hero from './Hero';
-import CTA from './CTA';
-import { BenefitsOfCreatingAnAutonomousAiAgent } from './BenefitsOfCreatingAnAutonomousAiAgent';
-import { CreateAnAutonomousAiAgent } from './CreateAnAutonomousAiAgent';
+import { BringAiAgentsEconomies } from './BringAiAgentsEconomies';
+import { CreateYourAgentEconomyToday } from './CreateYourAgentEconomyToday';
+import { Hero } from './Hero';
+import { WhatLaunchersAreSaying } from './WhatLaunchersAreSaying';
+import { WhyBecomeAnOlasLauncher } from './WhyBecomeAnOlasLauncher';
 
 export const Launch = () => (
   <>
     <Hero />
-    <BenefitsOfCreatingAnAutonomousAiAgent />
-    <CreateAnAutonomousAiAgent />
-    <CTA />
+    <BringAiAgentsEconomies />
+    <WhyBecomeAnOlasLauncher />
+    <WhatLaunchersAreSaying />
+    <CreateYourAgentEconomyToday />
   </>
 );

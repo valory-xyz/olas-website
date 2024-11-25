@@ -1,7 +1,7 @@
-import { Videos } from 'components/Content/Videos';
-import Articles from 'components/Content/Articles';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { useFetchVideos } from 'common-util/useFetchApi';
+import Articles from 'components/Content/Articles';
+import { Videos } from 'components/Content/Videos';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const Media = () => {
   const { videos, isLoading } = useFetchVideos(3);
@@ -9,7 +9,7 @@ const Media = () => {
   return (
     <SectionWrapper
       backgroundType="SUBTLE_GRADIENT"
-      customClasses="px-8 py-12 lg:p-24 border-b"
+      customClasses="px-4 md:px-8 py-12 lg:p-24 border-b"
     >
       <div className="max-w-screen-xl mx-auto flex flex-col gap-10">
         <Videos isLoading={isLoading} videos={videos} limit={3} />

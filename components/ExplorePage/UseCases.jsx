@@ -23,7 +23,9 @@ const NoServicesYet = () => (
 
 const ServiceCategoryCard = ({ serviceCategory, services }) => {
   /* eslint-disable-next-line max-len */
-  const filteredServices = services.filter((service) => service.serviceCategory.includes(serviceCategory.name));
+  const filteredServices = services.filter((service) =>
+    service.serviceCategory.includes(serviceCategory.name),
+  );
 
   return (
     <div className="rounded mt-2 border p-4">
@@ -85,9 +87,9 @@ ServiceCategoryCard.propTypes = {
 const UseCases = () => (
   <SectionWrapper
     id="use-cases"
-    customClasses="px-8 max-w-screen-xl w-full mx-auto"
+    customClasses="max-sm:px-6 px-16 py-12 lg:py-24 max-w-screen-xl w-full mx-auto"
   >
-    <h3 className="text-4xl font-bold mb-8">Use cases</h3>
+    <h3 className="text-4xl font-bold mb-8 text-center">Use cases</h3>
 
     <div className="grid sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
       {serviceCategories.map((serviceCategory) => (

@@ -1,8 +1,9 @@
+import { REGISTRY_URL } from 'common-util/constants';
+import { cn } from 'lib/utils';
+import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { cn } from 'lib/utils';
-import { MoveUpRight } from 'lucide-react';
 
 const SOCIAL_LINKS = [
   {
@@ -25,18 +26,17 @@ const SOCIAL_LINKS = [
     icon: '/images/footer/cmc.svg',
     link: 'https://coinmarketcap.com/currencies/autonolas/',
   },
+  {
+    title: 'YouTube',
+    icon: '/images/footer/youtube.svg',
+    link: 'https://www.youtube.com/@autonolas',
+  },
 ];
 
 const LEARN_LINKS = [
   { title: 'What is Olas?', link: '/learn#what-is-olas' },
   { title: 'Olas Protocol', link: '/protocol' },
   { title: 'Olas Stack', link: '/stack' },
-];
-
-const EXPLORE_LINKS = [
-  { title: 'Use Cases', link: '/explore#use-cases' },
-  { title: 'Chains', link: '/explore#chains' },
-  { title: 'Dashboards', link: '/explore#dashboards' },
 ];
 
 const GET_INVOLVED_LINKS = [
@@ -49,11 +49,7 @@ const GET_INVOLVED_LINKS = [
   { title: 'Govern', link: '/govern' },
 ];
 
-const OTHER_APPS_LINKS = [
-  { title: 'Registry', link: 'https://registry.olas.network/' },
-  { title: 'Tokenomics', link: 'https://tokenomics.olas.network/' },
-  { title: 'Member', link: 'https://member.autonolas.network/' },
-];
+const OTHER_APPS_LINKS = [{ title: 'Registry', link: REGISTRY_URL }];
 
 const RESOURCES_LINKS = [
   {
@@ -70,13 +66,17 @@ const RESOURCES_LINKS = [
     link: '/videos',
   },
   {
+    title: 'DAO Constitution',
+    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
+    isExternal: true,
+  },
+  {
     title: 'Blog',
     link: '/blog',
   },
   {
-    title: 'DAO Constitution',
-    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
-    isExternal: true,
+    title: 'Quarterly Updates',
+    link: '/quarterly-updates',
   },
   {
     title: 'Calendar',
@@ -84,13 +84,13 @@ const RESOURCES_LINKS = [
     isExternal: true,
   },
   {
+    title: 'FAQ',
+    link: '/faq',
+  },
+  {
     title: 'Roadmap',
     link: 'https://contribute.olas.network/roadmap',
     isExternal: true,
-  },
-  {
-    title: 'FAQ',
-    link: '/faq',
   },
   {
     title: 'Press Kit',
@@ -101,6 +101,18 @@ const RESOURCES_LINKS = [
     title: 'Alter Orbis',
     link: 'https://autonolas.world',
     isExternal: true,
+  },
+  {
+    title: 'Tokenomics',
+    link: '/olas-token',
+  },
+  {
+    title: 'Use Cases',
+    link: '/explore',
+  },
+  {
+    title: 'Agents Unleashed',
+    link: '/agents-unleashed',
   },
 ];
 
@@ -118,9 +130,9 @@ const LinksBlock = ({ title, links, className }) => (
             className="hover:text-black"
             {...(item.isExternal
               ? {
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }
               : {})}
           >
             <span className="whitespace-nowrap">
@@ -155,9 +167,9 @@ LinksBlock.defaultProps = {
 
 const Footer = () => (
   <footer className="bg-white px-4 lg:px-6 py-16">
-    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-5 lg:grid-cols-7 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
-      <div className="flex justify-between md:justify-start col-span-2 md:col-span-5 lg:col-span-2 md:grid md:grid-cols-2 md:grid-cols-5 lg:block">
-        <div className="md:col-span-4">
+    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
+      <div className="block md:flex lg:block justify-between md:justify-start col-span-2 md:col-span-4 lg:col-span-2 md:grid md:grid-cols-4">
+        <div className="col-span-2">
           <Link href="/" className="block mb-3">
             <Image
               src="/images/olas-logo.svg"
@@ -168,7 +180,7 @@ const Footer = () => (
           </Link>
           <span>The Network for Co-owning AI</span>
         </div>
-        <div className="flex gap-2 items-center justify-end md:justify-start lg:items-start lg:mt-6">
+        <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end col-span-2 lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (
             <a
               key={item.title}
@@ -180,8 +192,8 @@ const Footer = () => (
               <Image
                 src={item.icon}
                 alt={item.title}
-                width="40"
-                height="40"
+                width="44"
+                height="44"
                 className="hover:filter hover:brightness-0"
               />
             </a>
@@ -189,7 +201,6 @@ const Footer = () => (
         </div>
       </div>
       <LinksBlock title="Learn" links={LEARN_LINKS} />
-      <LinksBlock title="Explore" links={EXPLORE_LINKS} />
       <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
       <LinksBlock title="Other Apps" links={OTHER_APPS_LINKS} />
       <LinksBlock title="Resources" links={RESOURCES_LINKS} />

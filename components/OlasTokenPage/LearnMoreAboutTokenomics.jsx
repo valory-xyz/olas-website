@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { MoveUpRight } from 'lucide-react';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import {
   CORE_TECHNICAL_DOCUMENT,
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { MoveUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 const list = [
   {
@@ -21,7 +21,7 @@ const list = [
     isExternal: true,
   },
   {
-    title: 'Olas Tokenomics Core Technical Doc',
+    title: 'Tokenomics Whitepaper',
     urlName: 'Learn more',
     url: CORE_TECHNICAL_DOCUMENT,
     isExternal: true,
@@ -37,9 +37,7 @@ export const LearnMoreAboutTokenomics = () => (
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {list.map(({
-        title, desc, icon, url, urlName, isExternal,
-      }) => (
+      {list.map(({ title, desc, icon, url, urlName, isExternal }) => (
         <div
           key={title}
           className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
@@ -51,7 +49,12 @@ export const LearnMoreAboutTokenomics = () => (
 
           <p className={TEXT_CLASS}>{desc}</p>
           {isExternal ? (
-            <a href={url} target="_blank" rel="noreferrer" className="text-purple-600">
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-purple-600"
+            >
               {urlName}
               <MoveUpRight className="ml-2 inline" size={16} />
             </a>

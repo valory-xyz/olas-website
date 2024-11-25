@@ -1,16 +1,14 @@
-import { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+import { isArray } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isArray } from 'lodash';
+import PropTypes from 'prop-types';
+import { useMemo, useState } from 'react';
 
 import { CARD_CLASS } from 'common-util/classes';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
-const Article = ({
-  article, href, showReadTime, showDate,
-}) => {
+const Article = ({ article, href, showReadTime, showDate }) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
@@ -37,28 +35,32 @@ const Article = ({
     }
 
     return moreInfoArray.join(' • ');
-  }, [article, showReadTime, showDate]);
+  }, [showDate, datePublished, showReadTime, readTime]);
 
   return (
     <Link href={href}>
-      <article className={CARD_CLASS}>
+      <article
+        className={`${CARD_CLASS} h-full overflow-hidden border-t border-[#0000000d]`}
+      >
         {!imageError && (url || width || height) ? (
-          <Image
-            src={imageDomain + url}
-            width={width}
-            height={height}
-            alt={article.attributes.title}
-            className="rounded-t-lg object-cover"
-            onError={() => {
-              setImageError(true);
-            }}
-          />
+          <div className="flex h-full">
+            <Image
+              src={imageDomain + url}
+              width={width}
+              height={height}
+              alt={article.attributes.title}
+              className="rounded-t-lg py-auto object-contain"
+              onError={() => {
+                setImageError(true);
+              }}
+            />
+          </div>
         ) : (
-          <div style={{ height: 200 }} className="bg-gray-100 text-gray-500" />
+          <div className="bg-gray-100 text-gray-500 min-h-[200px]" />
         )}
 
         <div className="p-6 min-h-[150px]">
-          <h2 className="mb-2 text-2xl md:text-4xl lg:text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
+          <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
             {title}
           </h2>
 

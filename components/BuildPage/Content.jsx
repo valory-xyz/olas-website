@@ -1,24 +1,11 @@
 import { SCREEN_WIDTH_LG } from 'common-util/classes';
+import { DEV_REWARDS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { InfoIcon } from 'components/ui/info-icon';
 import { H1 } from '../ui/typography';
 
 const pClass = 'text-xl';
 const ulClass = 'ml-6 list-disc text-xl flex flex-col gap-3';
-
-const InfoIcon = () => (
-  <svg
-    viewBox="64 64 896 896"
-    focusable="false"
-    data-icon="info-circle"
-    width="1em"
-    height="1em"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
-    <path d="M464 336a48 48 0 1096 0 48 48 0 10-96 0zm72 112h-48c-4.4 0-8 3.6-8 8v272c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V456c0-4.4-3.6-8-8-8z" />
-  </svg>
-);
 
 const TokenomicsAlert = () => (
   <div
@@ -31,12 +18,8 @@ const TokenomicsAlert = () => (
     <div>
       <p>
         You can check available dev rewards for existing/minted agents and
-        components on
-        {' '}
-        <a
-          href="https://tokenomics.olas.network/dev-incentives"
-          className="text-purple-600"
-        >
+        components on{' '}
+        <a href={DEV_REWARDS_URL} className="text-purple-600">
           Tokenomics ↗
         </a>
         .
@@ -45,7 +28,7 @@ const TokenomicsAlert = () => (
   </div>
 );
 const Content = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="rewards">
+  <SectionWrapper customClasses="lg:p-16 p-8" id="rewards">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <H1 className="mb-12">How do Build Rewards work?</H1>
 
@@ -159,9 +142,7 @@ const Content = () => (
         the growth and maintenance of services within the OLAS ecosystem.
       </p>
       <em id="footnote-1">
-        <sup>1</sup>
-        {' '}
-        Note that these ratios are protocol parameters that can be
+        <sup>1</sup> Note that these ratios are protocol parameters that can be
         configured by the Olas DAO via a governance vote.
       </em>
     </div>

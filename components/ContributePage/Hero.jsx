@@ -1,41 +1,58 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
+
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import SectionHeading from '../SectionHeading';
+import { Button } from 'components/ui/button';
+import {
+  MAIN_TITLE_CLASS,
+  SECTION_BOX_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
+} from 'common-util/classes';
 import { CTA_LINK } from './utils';
 
+const HeroImage = () => (
+  <Image
+    src="/images/services/contribute/hero.svg"
+    alt="Olas contribute hero"
+    width={464}
+    height={432}
+    className="mx-auto"
+  />
+);
+
 const Hero = () => (
-  <SectionWrapper customClasses="py-16" backgroundType="SUBTLE_GRADIENT">
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <div className="mb-6 text-xl tracking-widest uppercase text-slate-700">
-          Olas Contribute
+  <SectionWrapper
+    customClasses={`border-b ${SECTION_BOX_CLASS}`}
+    backgroundType="SUBTLE_GRADIENT"
+  >
+    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
+      <div className="px-0 md:mb-12 md:col-span-6 lg:px-5 lg:text-left">
+        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
+          OLAS CONTRIBUTE
         </div>
-        <SectionHeading
-          size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12"
-          color="text-purple-900"
-        >
-          Advance the network,
-          <br />
+
+        <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left mb-6`}>
+          Advance the network, <br />
           gain recognition
-        </SectionHeading>
-        <a
-          href={CTA_LINK}
-          className="inline-flex bg-purple-900 text-white items-center justify-center px-6 py-4 text-xl sm:text-3xl lg:text-xl sm:px-8 sm:py-5 text-center border border-primary rounded-lg hover:bg-dark-hexagons1 hover:bg-repeat hover:bg-size-50 focus:ring-4 focus:ring-gray-100  lg:px-6 lg:py-4"
-          target="_blank"
-          rel="noopener noreferrer"
+        </h2>
+
+        <div className="md:hidden">
+          <HeroImage />
+        </div>
+
+        <Button
+          variant="default"
+          size="xl"
+          asChild
+          className="my-6 w-full md:w-auto"
         >
-          Start contributing
-        </a>
+          <Link href={CTA_LINK}>Start Contributing</Link>
+        </Button>
       </div>
-      <div className="lg:mt-0 lg:col-span-6 lg:flex">
-        <Image
-          src="/images/services/contribute/hero.svg"
-          alt="hero"
-          width={834}
-          height={742}
-          className="mx-auto w-3/4 xl:w-full"
-        />
+
+      <div className="hidden lg:mt-0 md:col-span-6 lg:flex md:block">
+        <HeroImage />
       </div>
     </div>
   </SectionWrapper>

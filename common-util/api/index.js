@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import qs from 'qs';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
+import qs from 'qs';
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
@@ -62,12 +62,12 @@ export const getBlogs = async () => {
  *
  */
 
-export const isIdUsedToFetchBlog = (id) => !!(isFinite(Number(id)));
+export const isIdUsedToFetchBlog = (id) => !!isFinite(Number(id));
 
 export const getBlog = async (id) => {
   const params = { populate: '*' };
 
-  if ((isIdUsedToFetchBlog(id))) {
+  if (isIdUsedToFetchBlog(id)) {
     const json = await apiCall(`blog-posts/${id}`, params);
     return get(json, 'data') || null;
   }
@@ -86,40 +86,4 @@ export const getFunnel = async (id) => {
   const json = await apiCall(`funnels/${id}`, params);
   const data = get(json, 'data') || null;
   return data;
-};
-
-// ---- HOME PAGE ACTIVITIES - DUNE QUERIES ----
-
-const duneApiCall = async ({ queryId }) => {
-  try {
-    const response = await fetch(`https://api.dune.com/api/v1/query/${queryId}/results?limit=1000`, {
-      headers: {
-        'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY,
-      },
-    });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error(error);
-  }
-
-  return null;
-};
-
-const NUMBER_OF_SERVICES_QUERY_ID = '2504013';
-export const getAgentsTotal = async () => {
-  const json = await duneApiCall({ queryId: NUMBER_OF_SERVICES_QUERY_ID });
-  return get(json, 'result.rows[0].total_services') || null;
-};
-
-const NUMBER_OF_AGENTS_QUERY_ID = '2503741';
-export const getAgentsTypesTotal = async () => {
-  const json = await duneApiCall({ queryId: NUMBER_OF_AGENTS_QUERY_ID });
-  return get(json, 'result.rows[0].agents') || null;
-};
-
-const SERVICE_TRANSACTIONS_QUERY_ID = '3342820';
-export const getTransactionsTotal = async () => {
-  const json = await duneApiCall({ queryId: SERVICE_TRANSACTIONS_QUERY_ID });
-  return get(json, 'result.rows[0]._col0') || null;
 };

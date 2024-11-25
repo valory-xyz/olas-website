@@ -174,9 +174,7 @@ const getStartedList = [
     id: '2',
     title: (
       <>
-        <span className="font-bold">Connect</span>
-        {' '}
-        your wallet with xDAI.
+        <span className="font-bold">Connect</span> your wallet with xDAI.
       </>
     ),
   },

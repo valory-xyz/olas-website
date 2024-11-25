@@ -2,9 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import dayjs from 'dayjs';
 import { Bar } from 'react-chartjs-2';
-import {
-  Chart, CategoryScale, LinearScale, BarElement,
-} from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import Verify from '../Verify';
 
 // manually register arc element, category scale, linear scale,

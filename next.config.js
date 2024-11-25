@@ -25,12 +25,44 @@ module.exports = {
       },
       {
         source: '/brand-and-press-kit',
-        destination: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
+        destination:
+          'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
         permanent: false,
       },
       {
         source: '/services/predict',
         destination: '/agent-economies/predict',
+        permanent: true,
+      },
+      // old tokenomics app redirects
+      {
+        source: '/dev-incentives',
+        destination: 'https://build.olas.network/dev-incentives',
+        permanent: true,
+      },
+      {
+        source: '/donate',
+        destination: 'https://govern.olas.network/donate',
+        permanent: true,
+      },
+      {
+        source: '/bonding-products',
+        destination: 'https://bond.olas.network/bonding-products',
+        permanent: true,
+      },
+      {
+        source: '/manage-solana-products',
+        destination: 'https://bond.olas.network/manage-solana-liquidity',
+        permanent: true,
+      },
+      {
+        source: '/manage-solana-liquidity',
+        destination: 'https://bond.olas.network/manage-solana-liquidity',
+        permanent: true,
+      },
+      {
+        source: '/my-bonds',
+        destination: 'https://bond.olas.network/my-bonds',
         permanent: true,
       },
     ];

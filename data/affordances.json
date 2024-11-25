@@ -52,7 +52,7 @@
     "description": "Run agents, stake OLAS and potentially earn rewards.",
     "cta": {
       "buttonText": "Operate now",
-      "url": "https://operate.olas.network/",
+      "url": "https://operate.olas.network/agents",
       "external": true
     },
     "learnMoreUrl": "/operate",

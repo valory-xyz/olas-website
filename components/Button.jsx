@@ -9,21 +9,22 @@ const getPrimaryStyle = (disabled) => `
   ${disabled ? '' : 'hover:bg-white hover:text-purple-900'}
 `;
 
-const secondaryStyle = 'bg-white text-primary border-primary hover:bg-purple-900 hover:text-white focus:ring-gray-100';
+const secondaryStyle =
+  'bg-white text-primary border-primary hover:bg-purple-900 hover:text-white focus:ring-gray-100';
 
-const sizeLgStyle = 'px-6 py-4 text-xl sm:text-base sm:px-8 sm:py-5 lg:text-xl lg:px-6 lg:py-4 rounded-lg';
+const sizeLgStyle =
+  'px-6 py-4 text-xl sm:text-base sm:px-8 sm:py-5 lg:text-xl lg:px-6 lg:py-4 rounded-lg';
 
 const sizeMdStyle = 'px-3 py-2 text-lg lg:text-lg lg:px-3 lg:py-2 rounded-md';
 
-const disabledStyle = 'text-gray-500 border-gray-300 bg-white cursor-not-allowed';
+const disabledStyle =
+  'text-gray-500 border-gray-300 bg-white cursor-not-allowed';
 
 /**
  *
  * @deprecated This component is deprecated and use components/ui/button.jsx instead.
  */
-export function Button({
-  href, className, size, isExternal, type, ...props
-}) {
+export function Button({ href, className, size, isExternal, type, ...props }) {
   const fullClassName = `
     inline-flex
     items-center

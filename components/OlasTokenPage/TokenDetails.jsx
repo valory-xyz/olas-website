@@ -17,13 +17,14 @@ import {
  * @param {string} address - The Ethereum address to truncate
  * @returns {string} The truncated address
  */
-export const truncateAddress = (address) => (address
-  ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
-  : '--');
+export const truncateAddress = (address) =>
+  address
+    ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
+    : '--';
 
 const BOND_BASE_URL = 'https://bond.olas.network/paths/';
 
-export const TOKEN_DETAILS = [
+const TOKEN_DETAILS = [
   {
     network: 'Ethereum',
     address: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0',
@@ -49,15 +50,15 @@ export const TOKEN_DETAILS = [
       name: 'Balancer',
       url: 'https://app.balancer.fi/#/gnosis-chain/pool/0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067',
     },
-    bridge: { name: 'Omnibridge', url: 'https://omni.gnosischain.com/bridge' },
+    bridge: { name: 'Gnosis Bridge', url: 'https://bridge.gnosischain.com/' },
     bond: {
       guideUrl: `${BOND_BASE_URL}olas-wxdai-via-balancer-on-gnosis-chain`,
       lpTokenName: 'OLAS-WXDAI',
       bridgedLpTokenAddress: '0x27df632fd0dcf191c418c803801d521cd579f18e',
       lpTokenAddress: '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985',
       lpTokenBridge: {
-        name: 'Omnibridge',
-        url: 'https://omni.gnosischain.com/bridge',
+        name: 'Gnosis Bridge',
+        url: 'https://bridge.gnosischain.com/',
       },
     },
   },
@@ -113,7 +114,7 @@ export const TOKEN_DETAILS = [
     explorerBaseUrl: 'https://solscan.io/token/',
     exchange: {
       name: 'Orca',
-      url: 'https://www.orca.so/liquidity?address=5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3',
+      url: 'https://www.orca.so/pools?tokens=Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM&tokens=So11111111111111111111111111111111111111112',
     },
     bridge: {
       name: 'Wormhole: Portal Token Bridge',
@@ -176,9 +177,33 @@ export const TOKEN_DETAILS = [
       },
     },
   },
+  {
+    network: 'Celo',
+    address: '0xaCFfAe8e57Ec6E394Eb1b41939A8CF7892DbDc51',
+    explorerBaseUrl: 'https://celoscan.io/token/',
+    exchange: {
+      name: 'Ubeswap',
+      url: 'https://app.ubeswap.org/#/swap?inputCurrency=0x471ece3750da237f93b8e339c536989b8978a438&outputCurrency=0xacffae8e57ec6e394eb1b41939a8cf7892dbdc51',
+    },
+    bridge: {
+      name: 'Wormhole: Portal Token Bridge',
+      url: 'https://portalbridge.com/advanced-tools/#/transfer',
+    },
+    bond: {
+      guideUrl: `${BOND_BASE_URL}celo-olas-via-ubeswap-on-celo`,
+      lpTokenName: 'CELO-OLAS',
+      bridgedLpTokenAddress: '0xC085F31E4ca659fF8A17042dDB26f1dcA2fBdAB4',
+      lpTokenAddress: '0x2976Fa805141b467BCBc6334a69AffF4D914d96A',
+      lpTokenBridge: {
+        name: 'Wormhole: Portal Token Bridge',
+        url: 'https://portalbridge.com/advanced-tools/#/transfer',
+      },
+    },
+  },
 ];
 
-const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
+const generateExplorerUrl = (token) =>
+  `${token.explorerBaseUrl}${token.address}`;
 
 export const TokenDetails = () => (
   <>
@@ -221,9 +246,7 @@ export const TokenDetails = () => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {token.exchange.name}
-                          {' '}
-                          ↗
+                          {token.exchange.name} ↗
                         </a>
                       ) : (
                         'TBD'
@@ -236,9 +259,7 @@ export const TokenDetails = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {truncateAddress(token.address)}
-                        {' '}
-                        ↗
+                        {truncateAddress(token.address)} ↗
                       </a>
                     </TableCell>
                     <TableCell className="border">
@@ -248,9 +269,7 @@ export const TokenDetails = () => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {token.bridge.name}
-                          {' '}
-                          ↗
+                          {token.bridge.name} ↗
                         </a>
                       ) : (
                         'n/a'
@@ -269,48 +288,39 @@ export const TokenDetails = () => (
               <div key={index} className="border p-4 rounded">
                 <h3 className="font-bold mb-2">{token.network}</h3>
                 <p>
-                  <strong>Get OLAS:</strong>
-                  {' '}
+                  <strong>Get OLAS:</strong>{' '}
                   {token.exchange ? (
                     <a
                       href={token.exchange.url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {token.exchange.name}
-                      {' '}
-                      ↗
+                      {token.exchange.name} ↗
                     </a>
                   ) : (
                     'TBD'
                   )}
                 </p>
                 <p>
-                  <strong>Token Address:</strong>
-                  {' '}
+                  <strong>Token Address:</strong>{' '}
                   <a
                     href={explorerUrl}
                     title={token.address}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {truncateAddress(token.address)}
-                    {' '}
-                    ↗
+                    {truncateAddress(token.address)} ↗
                   </a>
                 </p>
                 <p>
-                  <strong>Bridge:</strong>
-                  {' '}
+                  <strong>Bridge:</strong>{' '}
                   {token.bridge ? (
                     <a
                       href={token.bridge.url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {token.bridge.name}
-                      {' '}
-                      ↗
+                      {token.bridge.name} ↗
                     </a>
                   ) : (
                     'n/a'

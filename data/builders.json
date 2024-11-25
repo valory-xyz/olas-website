@@ -64,5 +64,31 @@
      "name": "AskJimmy",
      "url": "https://x.com/autonolas/status/1803805230179701167",
      "iconFilename": "askjimmy.png"
-   }
+   },
+   {
+    "id": "a3e1d1a2-9b5c-4e7f-8d4e-04f33d26b62f",
+    "name": "Shutter",
+    "url": "https://x.com/autonolas/status/1846524083070271535",
+    "iconFilename": "shutter.svg"
+  },
+  {
+    "id": "6f59c5b9-5d1a-45c1-b1ea-68d9d8b8d69e",
+    "name": "Keyko",
+    "url": "https://x.com/autonolas/status/1811426625944420501",
+    "iconFilename": "keyko.svg"
+  },
+  {
+    "id": "e4c4c2a6-df27-4b77-b8e7-3f12b5583e6e",
+    "name": "SoluLab",
+    "iconFilename": "solulab.png",
+    "imageWidth": 60,
+    "imageHeight": 60
+  },
+  {
+    "id": "1a7c9c4f-88f4-497f-95c6-65f62c24c5f1",
+    "name": "Isotropic Solutions",
+    "url": "https://x.com/autonolas/status/1846524083070271535",
+    "iconFilename": "isotrp.svg",
+    "imageWidth": 120
+  }
 ]

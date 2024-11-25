@@ -40,9 +40,7 @@ const buttonVariants = cva(
 );
 
 const Button = forwardRef(
-  ({
-    className, variant, size, asChild = false, ...props
-  }, ref) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
@@ -59,7 +57,7 @@ Button.displayName = 'Button';
 Button.propTypes = {
   asChild: PropTypes.bool,
   className: PropTypes.string,
-  size: PropTypes.string,
+  size: PropTypes.oneOf(['default', 'sm', 'lg', 'xl', 'icon']),
   variant: [
     'default',
     'destructive',
