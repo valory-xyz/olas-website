@@ -94,3 +94,45 @@ export const getTotalTokenHolders = async () => {
     return null;
   }
 };
+
+const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID =
+  'a4e0cfab-5e69-4e92-938a-15d559610bac';
+export const getTotalProtocolOwnedLiquidity = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
+    });
+    const totalOwnedLiquidity =
+      get(result, "[0]['TOTAL_OWNED_LIQUIDITY']") || null;
+    return totalOwnedLiquidity;
+  } catch (error) {
+    console.error('Error in getTotalProtocolOwnedLiquidity: ', error);
+  }
+};
+
+const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID =
+  '188ecbaa-82bf-420f-b1f2-a43740ac51f4';
+export const getTotalProtocolRevenue = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
+    });
+    const totalProtocolRevenue = get(result, "[0]['TOTAL_FEE']") || null;
+    return totalProtocolRevenue;
+  } catch (error) {
+    console.error('Error in getTotalProtocolRevenue: ', error);
+  }
+};
+
+const VEOLAS_CIRCULATING_SUPPLY_ID = '3d387d8d-0324-4476-b6b6-96ec2f4c60c1';
+export const getVeOLASCirculatingSupply = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: VEOLAS_CIRCULATING_SUPPLY_ID,
+    });
+    const veOLASCirculatingSupply = get(result, "[0]['CIR_SUPPLY']") || null;
+    return veOLASCirculatingSupply;
+  } catch (error) {
+    console.error('Error in getVeOLASCirculatingSupply: ', error);
+  }
+};

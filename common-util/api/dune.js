@@ -1,6 +1,8 @@
 import {
   MECH_TXS_QUERY_ID,
+  UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
+  VEOLAS_HOLDERS_QUERY_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
 
@@ -60,6 +62,28 @@ export const getTotalUniqueStakers = async () => {
     return totalUniqueStakers;
   } catch (error) {
     console.error('Error in getTotalUniqueStakers: ', error);
+    return;
+  }
+};
+
+export const getTotalUniqueBuilders = async () => {
+  try {
+    const json = await duneApiCall({ queryId: UNIQUE_BUILDERS_QUERY_ID });
+    const TotalUniqueBuilders = get(json, 'result.rows[0].unique_minter_count');
+    return TotalUniqueBuilders;
+  } catch (error) {
+    console.error('Error in getTotalUniqueBuilders: ', error);
+    return;
+  }
+};
+
+export const getVeOlasHolders = async () => {
+  try {
+    const json = await duneApiCall({ queryId: VEOLAS_HOLDERS_QUERY_ID });
+    const veOlasHolders = get(json, 'result.rows[0].unique_depositor_count');
+    return veOlasHolders;
+  } catch (error) {
+    console.error('Error in getVeOlasHolders: ', error);
     return;
   }
 };
