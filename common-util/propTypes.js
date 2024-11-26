@@ -5,6 +5,7 @@ export const VideoPropTypes = PropTypes.shape({
   title: PropTypes.string,
   platform: PropTypes.string,
   drive_link: PropTypes.string,
+  video_url: PropTypes.string,
   platform_link: PropTypes.string,
   filename: PropTypes.string,
 });
