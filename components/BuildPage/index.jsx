@@ -1,3 +1,4 @@
+import { BuildMetrics } from './BuildMetrics';
 import Hero from './Hero';
 import { NewToOlas } from './NewToOlas';
 import { ReadyToBuild } from './ReadyToBuild';
@@ -7,6 +8,7 @@ import { WhatBuildersAreSaying } from './WhatBuildersAreSaying';
 const Build = () => (
   <>
     <Hero />
+    <BuildMetrics />
     <WaysToGrow />
     <WhatBuildersAreSaying />
     <ReadyToBuild />

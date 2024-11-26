@@ -95,17 +95,32 @@ export const getTotalTokenHolders = async () => {
   }
 };
 
-const OLAS_BONDED_ID = '97faaf2c-f0d3-46cb-8c23-5b7ee9fa7b89';
-export const getOlasBonded = async () => {
+const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID =
+  'a4e0cfab-5e69-4e92-938a-15d559610bac';
+export const getTotalProtocolOwnedLiquidity = async () => {
   try {
     const result = await flipsideCryptoApiCall({
-      queryId: OLAS_BONDED_ID,
+      queryId: TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
     });
-    const olasBonded = get(result, "[0]['VOL_OLAS']") || null;
-    return olasBonded;
+    const totalOwnedLiquidity =
+      get(result, "[0]['TOTAL_OWNED_LIQUIDITY']") || null;
+    return totalOwnedLiquidity;
   } catch (error) {
-    console.error('Error in getOlasBonded: ', error);
-    return null;
+    console.error('Error in getTotalProtocolOwnedLiquidity: ', error);
+  }
+};
+
+const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID =
+  '188ecbaa-82bf-420f-b1f2-a43740ac51f4';
+export const getTotalProtocolRevenue = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
+    });
+    const totalProtocolRevenue = get(result, "[0]['TOTAL_FEE']") || null;
+    return totalProtocolRevenue;
+  } catch (error) {
+    console.error('Error in getTotalProtocolRevenue: ', error);
   }
 };
 

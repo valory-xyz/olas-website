@@ -1,9 +1,8 @@
-import { getProtocolEarnedFees } from 'common-util/api/dune';
-import { getOlasBonded } from 'common-util/api/flipside';
 import {
-  FLIPSIDE_BOND_URL,
-  OLAS_PROTOCOL_LIQUIDITY_URL,
-} from 'common-util/constants';
+  getTotalProtocolOwnedLiquidity,
+  getTotalProtocolRevenue,
+} from 'common-util/api/flipside';
+import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -12,16 +11,20 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [olasBonded, protocolEarnedFees] = await Promise.allSettled([
-    getOlasBonded(),
-    getProtocolEarnedFees(),
-  ]);
+  const [protocolOwnedLiquidity, totalProtocolRevenue] =
+    await Promise.allSettled([
+      getTotalProtocolOwnedLiquidity(),
+      getTotalProtocolRevenue(),
+    ]);
 
   return {
-    olasBonded: olasBonded.status === 'fulfilled' ? olasBonded.value : null,
-    protocolEarnedFees:
-      protocolEarnedFees.status === 'fulfilled'
-        ? protocolEarnedFees.value
+    protocolOwnedLiquidity:
+      protocolOwnedLiquidity.status === 'fulfilled'
+        ? protocolOwnedLiquidity.value
+        : null,
+    totalProtocolRevenue:
+      totalProtocolRevenue.status === 'fulfilled'
+        ? totalProtocolRevenue.value
         : null,
   };
 };
@@ -35,19 +38,18 @@ export const BondMetrics = () => {
   const data = useMemo(
     () => [
       {
-        id: 'olas-bonded',
-        imageSrc: 'olas-bonded.png',
-        imageWidth: 56,
-        labelText: 'OLAS bonded',
-        value: metrics?.olasBonded?.toLocaleString(),
-        source: FLIPSIDE_BOND_URL,
+        id: 'liquidity',
+        imageSrc: 'liquidity.png',
+        labelText: 'Total Protocol-owned Liquidity',
+        value: metrics?.protocolOwnedLiquidity,
+        source: `${FLIPSIDE_URL}?tabIndex=2`,
       },
       {
         id: 'fees',
         imageSrc: 'protocol-fees.png',
         labelText: 'Fees from Protocol-owned Liquidity',
-        value: metrics?.protocolEarnedFees?.toLocaleString(),
-        source: OLAS_PROTOCOL_LIQUIDITY_URL,
+        value: metrics?.totalProtocolRevenue,
+        source: `${FLIPSIDE_URL}?tabIndex=2`,
       },
     ],
     [metrics],
@@ -55,9 +57,9 @@ export const BondMetrics = () => {
 
   return (
     <SectionWrapper customClasses="mt-16">
-      <Card className="grid md:grid-cols-2 p-6 mx-auto border border-purple-200 rounded-full text-xl max-w-4xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
+      <Card className="grid md:grid-cols-2 p-2 mx-auto border border-purple-200 rounded-full text-xl max-w-4xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
-          const { id, imageSrc, imageWidth, labelText, value, source } = item;
+          const { id, imageSrc, labelText, value, source } = item;
           let borderClassName = '';
           if (index == 0)
             borderClassName +=
@@ -67,7 +69,7 @@ export const BondMetrics = () => {
             if (!value) return '--';
             return (
               <ExternalLink href={source} hideArrow>
-                {value}
+                {Math.round(value).toLocaleString()}
                 <span className="text-2xl">↗</span>
               </ExternalLink>
             );
@@ -83,14 +85,14 @@ export const BondMetrics = () => {
                   <Image
                     alt="Operate"
                     src={`/images/bonds-page/${imageSrc}`}
-                    width={imageWidth ?? 35}
+                    width={35}
                     height={35}
                   />
                 </div>
                 <span className="text-lg text-black flex">{labelText}</span>
               </div>
               <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
-                {getValue()}
+                ${getValue()}
               </span>
             </div>
           );
