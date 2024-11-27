@@ -9,14 +9,13 @@ import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 
 export const GovernMetrics = () => {
-  const { data: lockedOlasMetrics } = usePersistentSWR(
-    'governLockedOlasMetrics',
-    () => fetchMetrics(getVeOLASCirculatingSupply),
+  const { data: metrics } = usePersistentSWR('governMetrics', () =>
+    fetchMetrics([getVeOLASCirculatingSupply, getVeOlasHolders]),
   );
-  const { data: veOlasHoldersMetrics } = usePersistentSWR(
-    'governVeOlasHoldersMetrics',
-    () => fetchMetrics(getVeOlasHolders),
-  );
+
+  if (!metrics) {
+    return null;
+  }
 
   const governData = [
     {
@@ -27,14 +26,14 @@ export const GovernMetrics = () => {
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
           source: `${FLIPSIDE_URL}?tabIndex=3`,
-          metric: lockedOlasMetrics,
+          metric: Math.round(metrics[0]),
         },
         {
           key: 'veOlasHolders',
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
           source: `${OLAS_ECONOMY_DASHBOARD_URL}#govern-donations-to-useful-services`,
-          metric: veOlasHoldersMetrics,
+          metric: metrics[1],
         },
       ],
     },
@@ -43,7 +42,7 @@ export const GovernMetrics = () => {
   return (
     <SectionWrapper customClasses="mt-16">
       {governData.map((data, index) => (
-        <MetricsCard key={index} data={data} />
+        <MetricsCard key={index} metrics={data} />
       ))}
     </SectionWrapper>
   );

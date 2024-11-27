@@ -8,13 +8,12 @@ import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 
 export const BondMetrics = () => {
-  const { data: liquidityMetrics } = usePersistentSWR(
-    'bondLiquidityMetrics',
-    () => fetchMetrics(getTotalProtocolOwnedLiquidity),
+  const { data: metrics } = usePersistentSWR('bondMetrics', () =>
+    fetchMetrics([getTotalProtocolOwnedLiquidity, getTotalProtocolRevenue]),
   );
-  const { data: feesMetrics } = usePersistentSWR('bondFeesMetrics', () =>
-    fetchMetrics(getTotalProtocolRevenue),
-  );
+  if (!metrics) {
+    return null;
+  }
 
   const bondData = [
     {
@@ -25,7 +24,7 @@ export const BondMetrics = () => {
           imageSrc: 'liquidity.png',
           labelText: 'Total Protocol-owned Liquidity',
           source: `${FLIPSIDE_URL}?tabIndex=2`,
-          metric: liquidityMetrics,
+          metric: Math.round(metrics[0]),
           isMoney: true,
         },
         {
@@ -33,7 +32,7 @@ export const BondMetrics = () => {
           imageSrc: 'protocol-fees.png',
           labelText: 'Fees from Protocol-owned Liquidity',
           source: `${FLIPSIDE_URL}?tabIndex=2`,
-          metric: feesMetrics,
+          metric: Math.round(metrics[1]),
           isMoney: true,
         },
       ],
@@ -43,7 +42,7 @@ export const BondMetrics = () => {
   return (
     <SectionWrapper customClasses="mt-16">
       {bondData.map((data, index) => (
-        <MetricsCard key={index} data={data} />
+        <MetricsCard key={index} metrics={data} />
       ))}
     </SectionWrapper>
   );

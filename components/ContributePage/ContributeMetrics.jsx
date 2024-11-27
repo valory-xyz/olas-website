@@ -29,7 +29,7 @@ export const ContributeMetrics = () => {
   return (
     <SectionWrapper customClasses="border-b-1.5 py-16">
       {contributeData.map((data, index) => (
-        <MetricsCard key={index} data={data} />
+        <MetricsCard key={index} metrics={data} />
       ))}
     </SectionWrapper>
   );
