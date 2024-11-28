@@ -3,6 +3,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const quotes = [
   {
@@ -40,6 +41,8 @@ const quotes = [
     nameUrl: 'https://x.com/koeppelmann',
     title: 'Co-founder, Gnosis',
     launcherIcon: 'gnosis-avatar.png',
+    blogUrl:
+      '/blog/how-gnosis-used-olas-predict-to-build-the-largest-on-chain-prediction-market-economy',
   },
 ];
 
@@ -67,10 +70,15 @@ export const WhatLaunchersAreSaying = () => (
               className="mx-auto"
             />
           </a>
-          <div>
-            <span className="text-purple-600">&quot;</span>
-            {quote.quote}
-            <span className="text-purple-600">&quot;</span>
+          <div className="text-purple-600">
+            &quot;
+            <span className="text-black">{quote.quote}</span>
+            &quot;
+            {quote.blogUrl && (
+              <div className="mt-4 font-semibold">
+                <Link href={quote.blogUrl}>Read more</Link>
+              </div>
+            )}
           </div>
           <div className="mt-auto flex flex-row justify-between">
             <div className="flex flex-col w-2/3">

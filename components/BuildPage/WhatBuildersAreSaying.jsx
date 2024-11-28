@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
+import Link from 'next/link';
 
 const quotes = [
   {
@@ -12,6 +13,8 @@ const quotes = [
     name: '8 Baller',
     nameUrl: 'https://x.com/8baller11',
     builderIcon: '8baller.png',
+    blogUrl:
+      '/blog/how-8-baller-earned-over-1-2-m-olas-in-a-year-by-building-for-the-olas-ecosystem',
   },
   {
     projectImage: 'shutter.png',
@@ -27,6 +30,8 @@ const quotes = [
       </>
     ),
     builderIcon: 'shutter-avatar.png',
+    blogUrl:
+      '/blog/how-peaq-optimized-energy-management-with-ai-agents-built-on-olas',
   },
   {
     projectImage: 'alterscope.png',
@@ -57,6 +62,8 @@ const quotes = [
     nameUrl: 'https://x.com/joshwagenbach',
     title: 'CEO, Alprina',
     builderIcon: 'alprina-avatar.png',
+    blogUrl:
+      '/blog/how-alprina-built-a-multi-agent-ai-system-on-a-startup-budget-with-olas',
   },
   {
     projectImage: 'nevermined.png',
@@ -99,10 +106,15 @@ export const WhatBuildersAreSaying = () => (
                 className="mx-auto"
               />
             </LinkTag>
-            <div>
-              <span className="text-purple-600">&quot;</span>
-              {quote.quote}
-              <span className="text-purple-600">&quot;</span>
+            <div className="text-purple-600">
+              &quot;
+              <span className="text-black">{quote.quote}</span>
+              &quot;
+              {quote.blogUrl && (
+                <div className="mt-4 font-semibold">
+                  <Link href={quote.blogUrl}>Read more</Link>
+                </div>
+              )}
             </div>
             <div className="mt-auto flex flex-row justify-between">
               <div className="flex flex-col w-2/3">
