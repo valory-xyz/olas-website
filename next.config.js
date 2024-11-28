@@ -1,7 +1,11 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['cms-backend.autonolas.tech'],
+    domains: [
+      'cms-backend.staging.autonolas.tech',
+      'cms-backend.autonolas.tech',
+      'localhost',
+    ],
   },
   experimental: {
     scrollRestoration: true,
