@@ -4,7 +4,7 @@ import 'styles/globals.css';
 
 export default function App({ Component, pageProps }) {
   return (
-    <PlausibleProvider domain='olas.network' trackLocalhost={true}>
+    <PlausibleProvider domain="olas.network" trackLocalhost={true}>
       <Component {...pageProps} />
     </PlausibleProvider>
   );
