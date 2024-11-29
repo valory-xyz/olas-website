@@ -1,5 +1,4 @@
 const { withPlausibleProxy } = require('next-plausible');
-// needs to be fixed -- has issues with cms-backend
 
 module.exports = withPlausibleProxy({
   reactStrictMode: true,
