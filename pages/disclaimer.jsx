@@ -4,6 +4,8 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import SectionHeading from 'components/SectionHeading';
 
+const subClassName = 'pl-6 space-y-2';
+
 const DisclaimerPage = () => (
   <PageWrapper>
     <Meta
@@ -13,13 +15,13 @@ const DisclaimerPage = () => (
     <SectionWrapper backgroundType="SUBTLE_GRADIENT">
       <article className="max-w-[800px] mx-auto">
         <SectionHeading size="text-4xl lg:text-2xl" color="text-purple-950">
-          Disclaimer
+          Disclaimer & Privacy Policy
         </SectionHeading>
         <div className="text-xl text-gray-600">
-          <ol className="list-decimal">
+          <ol className="list-decimal space-y-4">
             <li>
-              This Site is owned by the Autonolas DAO and operated by Centrality
-              Labs.
+              This Site is owned by the Autonolas DAO (aka Olas DAO) and
+              operated by Centrality Labs.
             </li>
 
             <li>
@@ -68,7 +70,7 @@ const DisclaimerPage = () => (
 
             <li>
               By accessing this Site, you represent and warrant:
-              <ol className="pl-6 list-decimal">
+              <ol className={`list-[lower-alpha] ${subClassName}`}>
                 <li>
                   that you are of legal age and that you will comply with any
                   laws applicable to you and not engage in any illegal
@@ -90,7 +92,7 @@ const DisclaimerPage = () => (
 
                 <li>
                   that you are responsible for any tax obligations arising out
-                  of the interaction with this site.
+                  of the interaction with this site;
                 </li>
 
                 <li>
@@ -98,14 +100,20 @@ const DisclaimerPage = () => (
                   otherwise available to you in relation to its use, constitutes
                   any legal, tax, financial or other advice. Where in doubt as
                   to the action you should take, please consult your own legal,
-                  financial, tax or other professional advisors.
+                  financial, tax or other professional advisors;
+                </li>
+
+                <li>
+                  that your data may be collected per this Disclaimer and
+                  Privacy Policy, in particular Section 8 regarding ‘Privacy and
+                  Analytics Tools’.
                 </li>
               </ol>
             </li>
             <li>
               In case this Site links to any platform on which OLAS tokens can
               be acquired, the following applies:
-              <ol className="pl-6 list-decimal">
+              <ol className={`list-[lower-alpha] ${subClassName}`}>
                 <li>
                   To comply with local laws and regulations, we prohibit
                   participants from the following countries in the sale:{' '}
@@ -117,9 +125,112 @@ const DisclaimerPage = () => (
                   >
                     OFAC Restricted Countries
                   </a>
-                  , United States of America
+                  , United States of America.
                 </li>
               </ol>
+            </li>
+            <li>
+              Privacy and Analytics Tools
+              <ol className={`list-[lower-alpha] ${subClassName}`}>
+                <li>
+                  Use of Privacy-Focused Analytics Tools <br /> This Site uses
+                  Plausible, a privacy-focused,{' '}
+                  <a
+                    className="text-primary"
+                    href="https://plausible.io/privacy-focused-web-analytics"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    open-source analytics tool
+                  </a>
+                  , to analyze website usage, improve performance, and enhance
+                  user experience. Plausible respects user privacy by processing
+                  only anonymized, aggregated data without using cookies or
+                  tracking technologies across different websites.
+                </li>
+                <li>
+                  Types of Data Collected <br />
+                  Plausible collects anonymized and aggregated data, including:
+                  <ol className={`list-[lower-roman] ${subClassName}`}>
+                    <li>
+                      Browser type, operating system, and device information.
+                    </li>
+                    <li>
+                      Pages visited, time spent on the site, and navigation
+                      paths.
+                    </li>
+                    <li>General geographic location (non-specific).</li>
+                    <li>
+                      Interactions with: outbound links, file downloads, 404
+                      error pages, hashed page paths (e.g. tracking clicks to
+                      specific parts of a page), custom events (e.g. tracking
+                      button clicks), and custom properties (e.g. campaign
+                      tracking).
+                    </li>
+                    <li>
+                      No personally identifiable information (PII) is collected.
+                      You can explore all the data points Plausible does collect
+                      in their{' '}
+                      <a
+                        className="text-primary"
+                        href="https://plausible.io/data-policy"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        data policy
+                      </a>
+                      , nor does it track across devices, across websites and
+                      apps or send or share or sell your data to third parties.
+                    </li>
+                  </ol>
+                </li>
+                <li>
+                  Purpose and Legal Basis for Processing <br />
+                  The data is processed to monitor and improve website
+                  performance and generate aggregated insights for business
+                  purposes. As all data is anonymized, no explicit consent is
+                  required under GDPR.
+                </li>
+                <li>
+                  Data Sharing and Retention Data is processed by Plausible
+                  Analytics in compliance with GDPR and is not shared with third
+                  parties. Plausible reassures users that their data ‘
+                  <a
+                    className="text-primary"
+                    href="https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    never leaves the EU
+                  </a>
+                  '.
+                </li>
+                <li>
+                  User Rights <br />
+                  Users may:
+                  <ol className={`list-[lower-roman] ${subClassName}`}>
+                    <li>Request access to analytics data.</li>
+                    <li>
+                      Inquire about data practices by contacting
+                      <a
+                        className="text-primary"
+                        href="https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {' '}
+                        Centrality Labs
+                      </a>
+                      .
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+            <li>
+              Updates <br />
+              This page was last updated on 29.11.24. Changes will be reflected
+              on this page.
             </li>
           </ol>
         </div>

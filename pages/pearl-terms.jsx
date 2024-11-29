@@ -1,11 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
-import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import SectionHeading from 'components/SectionHeading';
 import Meta from 'components/Meta';
+import SectionHeading from 'components/SectionHeading';
 
 const linkClass = 'text-purple-600 hover:text-purple-800';
 
@@ -30,7 +30,7 @@ const PearlTerms = () => (
                 href="https://olas.network/disclaimer"
                 className={linkClass}
               >
-                Olas Disclaimer
+                Olas Disclaimer & Privacy Policy
               </Link>
               ”.
             </li>
