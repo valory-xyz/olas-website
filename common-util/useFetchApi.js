@@ -38,9 +38,11 @@ export const useFetchVideos = (limit = 1000) => {
     const imageFilename = thumbnailUrl
       ? `${process.env.NEXT_PUBLIC_API_URL}${thumbnailUrl}`
       : '';
-      
+
     const videoUploadedUrl = get(videoUploaded, 'data[0].attributes.url');
-    const video_url = videoUploadedUrl ? `${process.env.NEXT_PUBLIC_API_URL}${videoUploadedUrl}` : '';
+    const video_url = videoUploadedUrl
+      ? `${process.env.NEXT_PUBLIC_API_URL}${videoUploadedUrl}`
+      : '';
 
     return {
       id,
