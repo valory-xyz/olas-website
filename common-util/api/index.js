@@ -3,13 +3,13 @@ import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 const apiCall = async (subURL, params) => {
   const stringifyParams = qs.stringify(params);
 
   try {
-    const url = `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
+    const url = `${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
     const response = await fetch(url);
     const json = await response.json();
     return json;
