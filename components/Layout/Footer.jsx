@@ -208,7 +208,7 @@ const Footer = () => (
     <div className="text-center text-slate-500">
       {`© Autonolas DAO ${CURRENT_YEAR} • `}
       <Link href="/disclaimer" className="hover:text-black">
-        Disclaimer
+        Disclaimer & Privacy Policy
       </Link>
     </div>
   </footer>
