@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 import { LinkIcon } from 'lucide-react';
-import PropTypes from 'prop-types';
 
 import { Card } from 'components/ui/card';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 const faqList = [
@@ -50,6 +50,47 @@ const faqList = [
               </Link>
               , AI agents predict the future, using state-of-the-art AI models,
               and then apply their predictions to on-chain markets.
+            </p>
+          </>
+        ),
+      },
+      {
+        id: 'olas-is-trying-to-solve',
+        title: 'What is the problem Olas is trying to solve?',
+        desc: (
+          <>
+            <p className="mb-3">
+              The best AI is increasingly agentic but centralized.
+            </p>
+            <p className="mb-3">
+              {' '}
+              Everyone [end users, businesses, governments] wants
+              general-purpose autonomous AI agents to do valuable [health,
+              wealth, wellbeing, all industries, all services] things for them.
+            </p>
+            <p className="mb-3">
+              {' '}
+              As it stands, the best AI agents will be provided by centralized
+              labs [OpenAI, Anthropic, DeepMind, etc] and require all users to
+              pay them a continuous tax.{' '}
+            </p>
+            <p className="mb-3">This is the problem that Olas is solving.</p>
+          </>
+        ),
+      },
+      {
+        id: 'olas-solution',
+        title: "What is Olas's solution?",
+        desc: (
+          <>
+            <p className="mb-3">
+              Olas is a path to powerful AI that is user-owned.
+            </p>
+            <p className="mb-3">
+              It is a coordination protocol for autonomous AI agents that
+              bootstraps the best agents and incentivizes them to be
+              open-source! Users can share in the growth of the protocol and own
+              their powerful agents outright.
             </p>
           </>
         ),
