@@ -7,13 +7,9 @@ import Verify from '../Verify';
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-// Remove and update the related classNames
-// once the epoch data is uncommented
-const IS_EPOCH_HIDDEN = true;
-
 export const UsagePieChart = ({ epoch, split, loading }) => (
   <div>
-    {/* <div>
+    <div>
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
         Current Epoch
       </h2>
@@ -29,8 +25,8 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
         Tokens are distributed to builders, operators and bonders each epoch.
         Epochs run roughly once a month.
       </p>
-    </div> */}
-    <div className={`flex flex-col ${IS_EPOCH_HIDDEN && 'gap-8'}`}>
+    </div>
+    <div className="flex flex-col">
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-4">
         Per Epoch Distribution
       </h2>
