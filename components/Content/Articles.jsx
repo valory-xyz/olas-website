@@ -12,6 +12,17 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const folders = [
+  {
+    label: 'Quarterly Updates',
+    link: '/quarterly-updates',
+  },
+  {
+    label: 'Case Studies',
+    link: '/case-studies',
+  },
+];
+
 const Articles = ({ limit, showSeeAll, displayFolders }) => {
   const params = {
     sort: ['datePublished:desc'],
@@ -39,22 +50,23 @@ const Articles = ({ limit, showSeeAll, displayFolders }) => {
           {displayFolders && (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
-                <Link href="/quarterly-updates">
-                  <Card className="flex p-3 gap-2 justify-between items-center">
-                    <div className="flex">
-                      <div className="p-3 bg-purple-100 rounded-lg">
-                        <FolderClosed color="#B972E8" />
+                {folders.map((folder) => (
+                  <Link key={folder.label} href={folder.link}>
+                    <Card className="flex p-3 gap-2 justify-between items-center">
+                      <div className="flex">
+                        <div className="p-3 bg-purple-100 rounded-lg">
+                          <FolderClosed color="#B972E8" />
+                        </div>
+                        <span className="font-medium my-auto ml-3">
+                          {folder.label}
+                        </span>
                       </div>
-                      <span className="font-medium my-auto ml-3">
-                        Quarterly updates
-                      </span>
-                    </div>
-                    <ChevronRight />
-                  </Card>
-                </Link>
+                      <ChevronRight />
+                    </Card>
+                  </Link>
+                ))}
               </div>
-
-              <h3 className="text-2xl font-semibold mb-4">All posts</h3>
+              ;<h3 className="text-2xl font-semibold mb-4">All posts</h3>
             </>
           )}
 
