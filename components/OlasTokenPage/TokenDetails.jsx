@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from '../SectionHeading';
 import {
@@ -200,6 +198,17 @@ const TOKEN_DETAILS = [
       },
     },
   },
+  {
+    network: 'Mode',
+    address: '0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9',
+    explorerBaseUrl: 'https://explorer.mode.network/address/',
+    exchange: null,
+    bridge: {
+      name: 'Mode Bridge',
+      url: 'https://superbridge.app/mode',
+    },
+    bond: null,
+  },
 ];
 
 const generateExplorerUrl = (token) =>
@@ -249,7 +258,7 @@ export const TokenDetails = () => (
                           {token.exchange.name} ↗
                         </a>
                       ) : (
-                        'TBD'
+                        'Coming soon'
                       )}
                     </TableCell>
                     <TableCell className="border break-all">
