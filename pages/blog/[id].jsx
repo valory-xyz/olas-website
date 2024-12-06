@@ -1,4 +1,5 @@
 import { getBlog } from 'common-util/api';
+import { formatDate } from 'common-util/formatDate';
 import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
@@ -28,6 +29,7 @@ const BlogItem = () => {
     body: content,
     headerImage,
   } = blogItem.attributes;
+  const formattedDate = formatDate(datePublished);
   const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
   const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${imagePath}`;
 
@@ -46,7 +48,7 @@ const BlogItem = () => {
           />
         )}
         <div className={`${TITLE.SMALL} mb-4`}>{title}</div>
-        <div className={`${TEXT} mb-4`}>{datePublished}</div>
+        <div className={`${TEXT} mb-4`}>{formattedDate}</div>
         <Markdown>{content}</Markdown>
       </div>
     </PageWrapper>

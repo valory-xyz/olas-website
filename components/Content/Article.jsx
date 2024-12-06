@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useMemo, useState } from 'react';
 
 import { CARD_CLASS } from 'common-util/classes';
+import { formatDate } from 'common-util/formatDate';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,8 +21,13 @@ const Article = ({ article, href, showReadTime, showDate }) => {
     return data?.attributes?.formats?.large;
   }, [article]);
 
-  const { title, datePublished, readTime } = article.attributes;
+  const {
+    title,
+    datePublished: unFormattedDatePublished,
+    readTime,
+  } = article.attributes;
   const { url, width, height } = image || {};
+  const datePublished = formatDate(unFormattedDatePublished);
 
   const moreInfo = useMemo(() => {
     const moreInfoArray = [];

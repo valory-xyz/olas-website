@@ -6,6 +6,7 @@ import { Spinner } from 'components/Spinner';
 import Image from 'next/image';
 
 import { CARD_CLASS } from 'common-util/classes';
+import { formatDate } from 'common-util/formatDate';
 
 const Video = ({ video }) => (
   <a
@@ -13,7 +14,7 @@ const Video = ({ video }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <article
+    <div
       className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
     >
       {video.imageFilename && (
@@ -30,10 +31,12 @@ const Video = ({ video }) => (
           {video.title}
         </h2>
         <div className="text-gray-500 mt-auto">
-          <span className="text-sm md:text-xl lg:text-sm">{video.date}</span>
+          <span className="text-sm md:text-xl lg:text-sm">
+            {formatDate(video.date)}
+          </span>
         </div>
       </div>
-    </article>
+    </div>
   </a>
 );
 
