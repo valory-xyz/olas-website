@@ -1,20 +1,18 @@
-import Benefits from './Benefits';
-import Content from './Content';
-import Contribute from './Contribute';
 import { ContributeMetrics } from './ContributeMetrics';
-import Features from './Features';
+import { GetOlas } from './GetOlas';
+import { GetStarted } from './GetStarted';
 import Hero from './Hero';
-import NetworkRole from './NetworkRole';
+import { WhatContributorsAreSaying } from './WhatContributorsAreSaying';
+import { WhyBecomeAnOlasContributor } from './WhyBecomeAnOlasContributor';
 
 const ContributePage = () => (
   <>
     <Hero />
     <ContributeMetrics />
-    <Benefits />
-    <Features />
-    <Content />
-    <NetworkRole />
-    <Contribute />
+    <GetOlas />
+    <WhyBecomeAnOlasContributor />
+    <WhatContributorsAreSaying />
+    <GetStarted />
   </>
 );
 

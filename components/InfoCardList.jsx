@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { TEXT_CLASS, CARD_CSS } from 'common-util/classes';
+import { CARD_CSS, TEXT_CLASS } from 'common-util/classes';
 
 export const InfoCardList = ({ cards, wrapperClasses }) => {
   if (!cards) return null;
@@ -12,9 +12,7 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
         return (
           <div
             key={title}
-            className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${
-              isLastOdd ? 'md:translate-x-1/2' : ''
-            }`}
+            className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${isLastOdd ? 'md:translate-x-1/2' : ''}`}
             style={CARD_CSS}
           >
             <div className="flex items-center">
