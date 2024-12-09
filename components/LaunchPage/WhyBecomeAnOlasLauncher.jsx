@@ -26,7 +26,7 @@ const list = [
 ];
 
 export const WhyBecomeAnOlasLauncher = () => (
-  <SectionWrapper customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16 lg:pb-1">
+  <SectionWrapper customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16">
     <div className="max-w-screen-xl mx-auto lg:px-12">
       <h2
         className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
