@@ -13,7 +13,7 @@ import { CTA_LINK } from './utils';
 
 const steps = [
   {
-    title: 'Link your X account',
+    title: 'Sign up to the Contribute app',
     description: (
       <>
         Go to the{' '}
@@ -26,7 +26,7 @@ const steps = [
     ),
   },
   {
-    title: 'Sign up to the Contribute App',
+    title: 'Link your X account',
     description:
       'Connect your X profile to the Contribute App in just a few clicks.',
   },
