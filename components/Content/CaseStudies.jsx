@@ -15,7 +15,9 @@ export const CaseStudies = ({ limit }) => {
     populate: '*',
     'pagination[limit]': limit,
     filters: {
-      id: { $gte: 88, $lte: 92 },
+      funnel: {
+        id: { $eq: 9 },
+      },
     },
   };
 
@@ -24,7 +26,7 @@ export const CaseStudies = ({ limit }) => {
     fetcher,
   );
 
-  const blogItems = data?.data ?? [];
+  const caseStudies = data?.data ?? [];
 
   if (isLoading) return <Spinner />;
 
@@ -36,13 +38,15 @@ export const CaseStudies = ({ limit }) => {
         </h2>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {(limit ? blogItems.slice(0, limit) : blogItems).map((blogItem) => (
-            <Article
-              key={blogItem.id}
-              article={blogItem}
-              href={`/blog/${blogItem?.attributes?.slug}`}
-            />
-          ))}
+          {(limit ? caseStudies.slice(0, limit) : caseStudies).map(
+            (blogItem) => (
+              <Article
+                key={blogItem.id}
+                article={blogItem}
+                href={`/blog/${blogItem?.attributes?.slug}`}
+              />
+            ),
+          )}
         </div>
       </div>
     </section>

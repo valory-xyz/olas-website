@@ -66,7 +66,7 @@ const Articles = ({ limit, showSeeAll, displayFolders }) => {
                   </Link>
                 ))}
               </div>
-              ;<h3 className="text-2xl font-semibold mb-4">All posts</h3>
+              <h3 className="text-2xl font-semibold mb-4">All posts</h3>
             </>
           )}
 

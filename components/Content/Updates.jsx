@@ -15,7 +15,9 @@ export const Updates = ({ limit }) => {
     populate: '*',
     'pagination[limit]': limit,
     filters: {
-      id: { $gte: 80, $lte: 86 },
+      funnel: {
+        id: { $eq: 8 },
+      },
     },
   };
 
