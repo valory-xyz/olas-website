@@ -8,6 +8,7 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import { ExternalLink } from 'components/ui/typography';
 import { CTA_LINK } from './utils';
 
 const steps = [
@@ -16,9 +17,9 @@ const steps = [
     description: (
       <>
         Go to the{' '}
-        <a href={CTA_LINK} className="text-purple-600">
-          Contribute App ↗
-        </a>
+        <ExternalLink href={CTA_LINK} className="text-purple-600">
+          Contribute App
+        </ExternalLink>
         . <br />
         Link your crypto wallet to get started with Contribute.
       </>

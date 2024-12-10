@@ -27,7 +27,7 @@ const contributeData = [
 
 export const ContributeMetrics = () => {
   return (
-    <SectionWrapper customClasses="border-b-1.5 py-16">
+    <SectionWrapper customClasses="pt-16 pb-8">
       {contributeData.map((data, index) => (
         <MetricsCard key={index} metrics={data} />
       ))}

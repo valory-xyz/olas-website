@@ -27,6 +27,7 @@ export const GetOlas = () => (
         width={1180}
         height={348}
         className="mx-auto"
+        unoptimized
       />
     </div>
   </SectionWrapper>
