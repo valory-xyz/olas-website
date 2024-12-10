@@ -9,6 +9,8 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const CASE_STUDIES_FUNNEL_ID = 9;
+
 export const CaseStudies = ({ limit }) => {
   const params = {
     sort: ['datePublished:desc'],
@@ -16,7 +18,7 @@ export const CaseStudies = ({ limit }) => {
     'pagination[limit]': limit,
     filters: {
       funnel: {
-        id: { $eq: 9 },
+        id: { $eq: CASE_STUDIES_FUNNEL_ID },
       },
     },
   };
@@ -26,7 +28,7 @@ export const CaseStudies = ({ limit }) => {
     fetcher,
   );
 
-  const caseStudies = data?.data ?? [];
+  const items = data?.data ?? [];
 
   if (isLoading) return <Spinner />;
 
@@ -38,15 +40,13 @@ export const CaseStudies = ({ limit }) => {
         </h2>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {(limit ? caseStudies.slice(0, limit) : caseStudies).map(
-            (blogItem) => (
-              <Article
-                key={blogItem.id}
-                article={blogItem}
-                href={`/blog/${blogItem?.attributes?.slug}`}
-              />
-            ),
-          )}
+          {(limit ? items.slice(0, limit) : items).map((blogItem) => (
+            <Article
+              key={blogItem.id}
+              article={blogItem}
+              href={`/blog/${blogItem?.attributes?.slug}`}
+            />
+          ))}
         </div>
       </div>
     </section>

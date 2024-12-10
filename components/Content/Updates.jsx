@@ -9,6 +9,8 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const QUARTERLY_UPDATES_FUNNEL_ID = 8;
+
 export const Updates = ({ limit }) => {
   const params = {
     sort: ['datePublished:desc'],
@@ -16,7 +18,7 @@ export const Updates = ({ limit }) => {
     'pagination[limit]': limit,
     filters: {
       funnel: {
-        id: { $eq: 8 },
+        id: { $eq: QUARTERLY_UPDATES_FUNNEL_ID },
       },
     },
   };
