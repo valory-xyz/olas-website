@@ -28,7 +28,7 @@ export const CaseStudies = ({ limit }) => {
     fetcher,
   );
 
-  const items = data?.data ?? [];
+  const caseStudies = data?.data ?? [];
 
   if (isLoading) return <Spinner />;
 
@@ -40,11 +40,11 @@ export const CaseStudies = ({ limit }) => {
         </h2>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {(limit ? items.slice(0, limit) : items).map((blogItem) => (
+          {(limit ? caseStudies.slice(0, limit) : caseStudies).map((item) => (
             <Article
-              key={blogItem.id}
-              article={blogItem}
-              href={`/blog/${blogItem?.attributes?.slug}`}
+              key={item.id}
+              article={item}
+              href={`/blog/${item?.attributes?.slug}`}
             />
           ))}
         </div>
