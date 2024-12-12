@@ -18,18 +18,6 @@ import SectionHeading from '../SectionHeading';
 
 const BLOCKCHAIN_COUNT = chains.length;
 
-const chainLogos = [
-  'ethereum',
-  'polygon',
-  'gnosis',
-  'solana',
-  'arbitrum',
-  'celo',
-  'optimism',
-  'base',
-  'mode',
-];
-
 const fetchMetrics = async () => {
   const [transactions, unitsCount, dailyActiveAgents, a2aTransactions] =
     await Promise.allSettled([
@@ -105,16 +93,14 @@ export const Activity = () => {
         isExternal: false,
         btmContent: (
           <div className="mt-16 flex flex-row justify-between w-full">
-            {chainLogos.map((chain) => (
-              <Image
-                key={chain}
-                src={`/images/homepage/${chain}.svg`}
-                alt="Activity"
-                width={20}
-                height={20}
-                className="aspect-square"
-              />
-            ))}
+            <Image
+              key="Chains"
+              src={`/images/homepage/chain-logos.png`}
+              alt="Activity"
+              width={340}
+              height={25}
+              className="w-full"
+            />
           </div>
         ),
       },
