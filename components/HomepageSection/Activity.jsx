@@ -190,7 +190,7 @@ export const Activity = () => {
               return (
                 <Card
                   key={item.id}
-                  className="max-w-[388px] max-sm:mx-auto max-sm:w-[400px] border-white bg-gradient-to-t from-slate-100/40 to-white/50 to-40% shadow-lg text-start px-6 py-4"
+                  className="z-10 max-w-[388px] max-sm:mx-auto max-sm:w-[400px] border-white bg-gradient-to-t from-slate-100/40 to-white/50 to-40% shadow-lg text-start px-6 py-4 rounded-xl"
                 >
                   <span className="block text-4xl font-bold text-purple-600">
                     {getValue()}
