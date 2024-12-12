@@ -9,16 +9,16 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const QUARTERLY_UPDATES_FUNNEL_ID = 8;
+const CASE_STUDIES_FUNNEL_ID = 9;
 
-export const Updates = ({ limit }) => {
+export const CaseStudies = ({ limit }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
     'pagination[limit]': limit,
     filters: {
       funnel: {
-        id: { $eq: QUARTERLY_UPDATES_FUNNEL_ID },
+        id: { $eq: CASE_STUDIES_FUNNEL_ID },
       },
     },
   };
@@ -28,7 +28,7 @@ export const Updates = ({ limit }) => {
     fetcher,
   );
 
-  const blogItems = data?.data ?? [];
+  const caseStudies = data?.data ?? [];
 
   if (isLoading) return <Spinner />;
 
@@ -36,20 +36,15 @@ export const Updates = ({ limit }) => {
     <section>
       <div>
         <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
-          Quarterly updates
+          Case Studies
         </h2>
 
-        <p className="mb-8">
-          Summarizing what happened in the Olas ecosystem in the last quarter
-          and what&apos;s coming next.
-        </p>
-
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {(limit ? blogItems.slice(0, limit) : blogItems).map((blogItem) => (
+          {(limit ? caseStudies.slice(0, limit) : caseStudies).map((item) => (
             <Article
-              key={blogItem.id}
-              article={blogItem}
-              href={`/blog/${blogItem?.attributes?.slug}`}
+              key={item.id}
+              article={item}
+              href={`/blog/${item?.attributes?.slug}`}
             />
           ))}
         </div>
@@ -58,9 +53,9 @@ export const Updates = ({ limit }) => {
   );
 };
 
-Updates.propTypes = {
+CaseStudies.propTypes = {
   limit: PropTypes.number,
 };
-Updates.defaultProps = {
+CaseStudies.defaultProps = {
   limit: 1000,
 };

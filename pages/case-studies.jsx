@@ -1,20 +1,20 @@
 import { BlogBackButton } from 'components/BlogBackButton';
-import { Updates } from 'components/Content/Updates';
+import { CaseStudies } from 'components/Content/CaseStudies';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 
-const UpdatesPage = () => (
+const CaseStudiesPage = () => (
   <PageWrapper>
     <Meta
-      pageTitle="Quarterly Updates"
-      description="Stay informed with our latest quarterly updates, featuring key insights, progress reports, and upcoming developments."
+      pageTitle="Case Studies"
+      description="Read up on the various success stories achieved with Olas!"
     />
     <SectionWrapper>
       <BlogBackButton />
-      <Updates />
+      <CaseStudies />
     </SectionWrapper>
   </PageWrapper>
 );
 
-export default UpdatesPage;
+export default CaseStudiesPage;
