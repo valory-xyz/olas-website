@@ -1,3 +1,4 @@
+import { getA2ATransactions } from 'common-util/api/dune';
 import {
   get7DaysAvgActivity,
   getTotalTransactionsCount,
@@ -18,11 +19,12 @@ import SectionHeading from '../SectionHeading';
 const BLOCKCHAIN_COUNT = chains.length;
 
 const fetchMetrics = async () => {
-  const [transactions, unitsCount, dailyActiveAgents] =
+  const [transactions, unitsCount, dailyActiveAgents, a2aTransactions] =
     await Promise.allSettled([
       getTotalTransactionsCount(),
       getTotalUnitsCount(),
       get7DaysAvgActivity(),
+      getA2ATransactions(),
     ]);
 
   return {
@@ -36,6 +38,8 @@ const fetchMetrics = async () => {
         : null,
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
+    a2aTransactions:
+      a2aTransactions.status === 'fulfilled' ? a2aTransactions.value : null,
   };
 };
 
@@ -46,46 +50,67 @@ export const Activity = () => {
     () => [
       {
         id: 'transactions',
-        topText: 'Olas agents have made',
-        subText: 'transactions',
+        subText: 'transactions made by Olas agents',
         value: metrics?.transactions?.toLocaleString(),
         source: FLIPSIDE_URL,
+        isExternal: true,
+        btmContent: (
+          <div className="text-sm mt-4">
+            <p className="text-slate-500 font-medium">of which</p>
+            {metrics?.a2aTransactions ? (
+              <ExternalLink
+                className="text-2xl font-bold text-purple-600"
+                href="https://dune.com/queries/4414339/7394666"
+              >
+                {metrics.a2aTransactions.toLocaleString()}
+              </ExternalLink>
+            ) : (
+              <span className="text-purple-600 text-2xl">--</span>
+            )}
+            <p>agent-to-agent transactions</p>
+          </div>
+        ),
+      },
+      {
+        id: 'agentsTypes',
+        subText: 'types of agents registered by Builders',
+        value: metrics?.agentsTypes,
+        source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
       {
         id: 'agents',
-        topText: 'Operators have deployed',
-        subText: 'agents',
+        subText: 'agents deployed by Operators',
         value: metrics?.agents,
         source: `${FLIPSIDE_URL}?tabIndex=5`,
         isExternal: true,
       },
       {
         id: 'blockchains',
-        topText: 'Olas is deployed across',
-        subText: 'blockchains',
+        subText: 'blockchains Olas is deployed across',
         value: BLOCKCHAIN_COUNT,
         source: '/#chains',
         isExternal: false,
-      },
-      {
-        id: 'agentsTypes',
-        topText: 'Devs have registered',
-        subText: 'types of agents',
-        value: metrics?.agentsTypes,
-        source: `${FLIPSIDE_URL}?tabIndex=5`,
-        isExternal: true,
+        btmContent: (
+          <div className="mt-16 flex flex-row justify-between w-full">
+            <Image
+              key="Chains"
+              src={`/images/homepage/chain-logos.png`}
+              alt="Activity"
+              width={340}
+              height={25}
+              className="w-full"
+            />
+          </div>
+        ),
       },
     ],
     [metrics],
   );
 
   return (
-    <SectionWrapper
-      customClasses="text-center py-16 px-4 border-b"
-      id="activity"
-    >
-      <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
+    <SectionWrapper customClasses="text-center border-b" id="activity">
+      <div className="text-7xl lg:text-9xl max-w-[750px] mx-auto pt-16 px-4">
         <Image
           alt="Placeholder"
           src="/images/generating-agents.png"
@@ -126,46 +151,43 @@ export const Activity = () => {
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
-          Olas agent economies show a growing lifetime traction
-        </p>
       </div>
-      <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-8">
-        {data.map((item, index) => {
-          let borderClassName = '';
-          if (index !== 0) borderClassName += 'xl:border-l-1.5';
-          if (index % 2 !== 0) borderClassName += ' md:border-l-1.5';
-          const getValue = () => {
-            if (!item.value) return '--';
-            if (item.isExternal) {
+      <div className="w-full bg-gradient-to-t from-gray-100 to-gray-100/0 relative max-sm:h-[850px]">
+        <div className="absolute z-0 bg-[url('/images/homepage/metric-bg.png')] opacity-40 h-full w-full"></div>
+        <div className="py-12">
+          <p className="text-xl md:text-2xl text-slate-700 mb-8 font-semibold mx-auto">
+            Olas agent economies show a growing lifetime traction
+          </p>
+          <div className="flex flex-col max-sm:flex-row flex-wrap gap-6 mx-auto max-w-[800px] max-h-[350px]">
+            {data.map((item) => {
+              const getValue = () => {
+                if (!item.value) return '--';
+                if (item.isExternal) {
+                  return (
+                    <ExternalLink href={item.source} hideArrow>
+                      {item.value}
+                      <span className="text-2xl">↗</span>
+                    </ExternalLink>
+                  );
+                }
+                return <Link href={item.source}>{item.value}</Link>;
+              };
+
               return (
-                <ExternalLink href={item.source} hideArrow>
-                  {item.value}
-                  <span className="text-2xl">↗</span>
-                </ExternalLink>
+                <Card
+                  key={item.id}
+                  className="z-10 max-w-[388px] max-sm:mx-auto max-sm:w-[400px] border-white bg-gradient-to-t from-slate-100/40 to-white/50 to-40% shadow-lg text-start px-6 py-4 rounded-xl"
+                >
+                  <span className="block text-4xl font-bold text-purple-600">
+                    {getValue()}
+                  </span>
+                  <span>{item.subText}</span>
+                  {item.btmContent}
+                </Card>
               );
-            }
-            return <Link href={item.source}>{item.value}</Link>;
-          };
-
-          return (
-            <div
-              key={item.id}
-              className={`text-start w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
-            >
-              <span className="block text-xl text-slate-700 mb-4">
-                {item.topText}
-              </span>
-              <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
-                {getValue()}
-              </span>
-
-              <span className="block text-xl text-slate-700">
-                {item.subText}
-              </span>
-            </div>
-          );
-        })}
+            })}
+          </div>
+        </div>
       </div>
     </SectionWrapper>
   );

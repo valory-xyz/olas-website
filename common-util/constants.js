@@ -32,6 +32,7 @@ export const MECH_ECONOMY_DASHBOARD_URL =
 export const UNIQUE_STAKERS_QUERY_ID = '4031179';
 export const UNIQUE_BUILDERS_QUERY_ID = '4331416';
 export const VEOLAS_HOLDERS_QUERY_ID = '4334906';
+export const A2A_TRANSACTIONS_QUERY_ID = '4414339';
 export const OLAS_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/autonolas-ecosystem-activity';
 export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
