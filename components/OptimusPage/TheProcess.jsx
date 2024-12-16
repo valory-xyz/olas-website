@@ -12,7 +12,7 @@ export const TheProcess = () => (
     </div>
 
     <Card
-      className={`${CARD_BG} max-h-[250px] w-[750px] p-8 max-w mb-8 mx-auto`}
+      className={`${CARD_BG} max-h-[250px] max-w-[750px] p-8 max-w mb-8 mx-auto`}
     >
       <Image
         alt="The process"
