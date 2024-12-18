@@ -104,12 +104,14 @@ export const WaysToGrow = () => {
               )}
               {isDevRewardsOpen && (
                 <>
-                  <div className="fixed w-full h-full z-50 left-0 top-0 bg-black opacity-40"></div>
+                  <div
+                    className="fixed w-full h-full z-50 left-0 top-0 bg-black opacity-40"
+                    onClick={() => {
+                      setDevRewardsOpen(false);
+                    }}
+                  ></div>
 
-                  <Card
-                    className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white"
-                    onClick={() => setDevRewardsOpen(false)}
-                  >
+                  <Card className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white">
                     <button
                       className="absolute top-4 right-4 cursor-pointer z-10"
                       onClick={() => {
