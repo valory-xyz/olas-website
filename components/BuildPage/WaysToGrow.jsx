@@ -104,23 +104,25 @@ export const WaysToGrow = () => {
               )}
               {isDevRewardsOpen && (
                 <>
-                  <div className="fixed w-[100vw] h-[100vw] z-50 left-0 top-0 bg-black opacity-40"></div>
-                  <Card
-                    className="fixed z-50 w-2/3 h-2/3 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto overflow-hidden bg-white"
-                    onClick={() => setDevRewardsOpen(false)}
-                  >
-                    <div className="py-10 flex flex-col h-full">
-                      <a
-                        className="absolute top-0 right-5 cursor-pointer p-5"
-                        onClick={() => {
-                          setDevRewardsOpen(false);
-                        }}
-                      >
-                        <Cross2Icon />
-                      </a>
-                      <div className="overflow-auto flex-1">
-                        <Content />
-                      </div>
+                  <div
+                    className="fixed w-full h-full z-50 left-0 top-0 bg-black opacity-40"
+                    onClick={() => {
+                      setDevRewardsOpen(false);
+                    }}
+                  ></div>
+
+                  <Card className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white">
+                    <button
+                      className="absolute top-4 right-4 cursor-pointer z-10"
+                      onClick={() => {
+                        setDevRewardsOpen(false);
+                      }}
+                    >
+                      <Cross2Icon />
+                    </button>
+
+                    <div className="overflow-auto h-full">
+                      <Content />
                     </div>
                   </Card>
                 </>
