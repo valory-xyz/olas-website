@@ -1,6 +1,7 @@
-import { SUB_HEADER_CLASS, SECTION_BOX_CLASS } from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { ExternalLink } from 'components/ui/typography';
 
 const list = [
   {
@@ -17,7 +18,17 @@ const list = [
   },
   {
     title: 'Shape the road ahead',
-    desc: "Directly steer Olas's development, ensuring a future where every update and growth strategy is community-driven and transparent.",
+    desc: (
+      <>
+        <p className="mb-3">
+          Directly steer Olas&apos;s development, ensuring a future where every
+          update and growth strategy is community-driven and transparent.
+        </p>
+        <ExternalLink href="https://contribute.olas.network/roadmap">
+          View roadmap
+        </ExternalLink>
+      </>
+    ),
   },
 ];
 
