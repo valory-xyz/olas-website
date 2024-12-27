@@ -20,10 +20,10 @@ const list = [
     title: 'Shape the road ahead',
     desc: (
       <>
-        <p className="mb-3">
+        <span className="mb-3 flex">
           Directly steer Olas&apos;s development, ensuring a future where every
           update and growth strategy is community-driven and transparent.
-        </p>
+        </span>
         <ExternalLink href="https://contribute.olas.network/roadmap">
           View roadmap
         </ExternalLink>
