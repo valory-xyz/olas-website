@@ -1,5 +1,6 @@
 import {
   A2A_TRANSACTIONS_QUERY_ID,
+  DAILY_CONTRIBUTORS_QUERY_ID,
   MECH_TXS_QUERY_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
@@ -96,6 +97,17 @@ export const getA2ATransactions = async () => {
     return a2aTransactions;
   } catch (error) {
     console.error('Error in getA2ATransactions: ', error);
+    return;
+  }
+};
+
+export const get7DayAvgDailyActiveContributors = async () => {
+  try {
+    const json = await duneApiCall({ queryId: DAILY_CONTRIBUTORS_QUERY_ID });
+    const dailyActiveContributors = get(json, 'result.rows[0].active_services');
+    return dailyActiveContributors;
+  } catch (error) {
+    console.error('Error in get7DayAvgDailyActiveContributors: ', error);
     return;
   }
 };
