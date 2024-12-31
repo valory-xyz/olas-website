@@ -1,3 +1,4 @@
+import { getTotalOlasContributors } from 'common-util/api';
 import { get7DayAvgDailyActiveContributors } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
@@ -6,8 +7,12 @@ import { CTA_LINK } from './utils';
 
 export const ContributeMetrics = () => {
   const { data: metrics } = usePersistentSWR('contributeMetrics', () =>
-    fetchMetrics([get7DayAvgDailyActiveContributors]),
+    fetchMetrics([getTotalOlasContributors, get7DayAvgDailyActiveContributors]),
   );
+
+  if (!metrics) {
+    return null;
+  }
 
   const contributeData = [
     {
@@ -18,7 +23,7 @@ export const ContributeMetrics = () => {
           imageSrc: 'contributors.png',
           labelText: 'Total Olas Contributors',
           source: CTA_LINK,
-          metric: 408,
+          metric: metrics[0],
         },
         {
           key: 'DailyContribute',
@@ -26,7 +31,7 @@ export const ContributeMetrics = () => {
           imageWidth: 72,
           labelText: 'Daily Active Contributors',
           source: 'https://dune.com/adrian0x/the-contribute-agent-economy',
-          metric: metrics,
+          metric: metrics[1],
         },
       ],
     },
