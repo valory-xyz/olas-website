@@ -96,10 +96,9 @@ export const getTotalOlasContributors = async () => {
     const json = await response.json();
 
     const contributors = json.state.content.users;
-    const totalOlasContributors = Object.values(contributors)
-      .filter((e) => !!e.wallet_address)
-      .filter((e) => e.points !== 0).length;
-    console.log(totalOlasContributors);
+    const totalOlasContributors = Object.values(contributors).filter(
+      (e) => !!e.wallet_address && e.points !== 0,
+    ).length;
     return totalOlasContributors;
   } catch (error) {
     console.error(error);
