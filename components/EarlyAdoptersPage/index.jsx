@@ -123,19 +123,23 @@ const DownloadLink = ({ assetId, assetName, icon, btnText }) => {
     try {
       const response = await fetch(`/api/downloadAsset?assetId=${assetId}`);
 
-      const blob = await response.blob(); // Convert the response to a Blob
-      const downloadUrl = URL.createObjectURL(blob);
+      if (response) {
+        const blob = await response.blob(); // Convert the response to a Blob
+        const downloadUrl = URL.createObjectURL(blob);
 
-      // Create a temporary link to trigger the download
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = assetName;
-      document.body.appendChild(link);
-      link.click();
+        // Create a temporary link to trigger the download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = assetName;
+        document.body.appendChild(link);
+        link.click();
 
-      // Clean up the links
-      link.remove();
-      URL.revokeObjectURL(downloadUrl);
+        // Clean up the links
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      } else {
+        throw new Error('Error loading asset');
+      }
     } finally {
       setIsLoading(false);
     }
