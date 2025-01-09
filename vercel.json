@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/downloadAsset.js": {
+    "pages/api/downloadAsset.js": {
       "maxDuration": 300
     }
   }
