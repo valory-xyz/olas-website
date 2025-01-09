@@ -157,8 +157,8 @@ DownloadLinks.propTypes = {
 };
 
 const DESCRIPTIONS = {
-  agentsfun: 'Get the latest version of Pearl with Agents.fun support',
-  modius: 'Get the latest version of Pearl with Modius support',
+  agentsfun: 'Get the latest version of Pearl featuring Agents.fun',
+  modius: 'Get the latest version of Pearl featuring Modius',
 };
 
 export const EarlyAdoptersPage = ({ agentType }) => (
