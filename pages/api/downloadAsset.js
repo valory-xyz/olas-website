@@ -1,6 +1,9 @@
 import { Octokit } from '@octokit/core';
 import https from 'https';
 
+// Caching for a day
+const CACHE_HEADER = 'public, s-maxage=86400, immutable';
+
 const octokit = new Octokit({
   auth: process.env.NEXT_PUBLIC_GITHUB_AUTH_TOKEN,
 });
@@ -45,12 +48,14 @@ export default async function handler(req, res) {
         }
 
         // Set headers for file download
-        res.setHeader('Cache-Control', 'public, max-age=86400, immutable'); // Caching for a day
         res.setHeader(
           'Content-Disposition',
           `attachment; filename="${response.name}"`,
         );
         res.setHeader('Content-Type', 'application/octet-stream');
+        // Caching for a day
+        res.setHeader('Cache-Control', CACHE_HEADER);
+        res.setHeader('Vercel-CDN-Cache-Control', CACHE_HEADER);
 
         // Stream the GitHub response directly to the client
         githubRes.pipe(res);
