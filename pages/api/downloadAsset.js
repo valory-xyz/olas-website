@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       },
     );
 
-    if (response.status !== 200) {
+    if (!response.url) {
       return res.status(500).json({ error: 'Failed to fetch the file' });
     }
 
