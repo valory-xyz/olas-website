@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/core';
+import { Info } from 'lucide-react';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
@@ -115,11 +116,18 @@ const Spinner = () => (
   </svg>
 );
 
-const DownloadLink = ({ assetId, assetName, icon, btnText }) => {
+const DownloadLink = ({
+  assetId,
+  assetName,
+  icon,
+  btnText,
+  setShowCaption,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDownload = async () => {
     setIsLoading(true);
+    setShowCaption(true);
     try {
       const response = await fetch(`/api/downloadAsset?assetId=${assetId}`);
 
@@ -142,6 +150,7 @@ const DownloadLink = ({ assetId, assetName, icon, btnText }) => {
       }
     } finally {
       setIsLoading(false);
+      setShowCaption(false);
     }
   };
 
@@ -167,6 +176,7 @@ DownloadLink.propTypes = {
   assetName: PropTypes.string,
   icon: PropTypes.string.isRequired,
   btnText: PropTypes.string.isRequired,
+  setShowCaption: PropTypes.func.isRequired,
 };
 
 DownloadLink.defaultProps = {
@@ -175,6 +185,7 @@ DownloadLink.defaultProps = {
 };
 
 const DownloadLinks = ({ agentType }) => {
+  const [showCaption, setShowCaption] = useState(false);
   const [links, setLinks] = useState(downloadLinks);
 
   useEffect(() => {
@@ -202,20 +213,32 @@ const DownloadLinks = ({ agentType }) => {
   }, [agentType]);
 
   return (
-    <div className="flex flex-col flex-wrap justify-center items-baseline gap-2 sm:flex-row xl:flex-nowrap xl:gap-4">
-      {links.map(({ id, btnText, assetId, name, icon, subText }) => (
-        <Fragment key={id}>
-          <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
-            <DownloadLink
-              assetId={assetId}
-              assetName={name}
-              btnText={btnText}
-              icon={icon}
-            />
-            <div className="text-xs text-slate-500">{subText}</div>
-          </div>
-        </Fragment>
-      ))}
+    <div className="flex flex-col gap-4 xl:gap-8 max-w-max mx-auto">
+      <div className="flex flex-col flex-wrap justify-center items-baseline gap-2 sm:flex-row xl:flex-nowrap xl:gap-4">
+        {links.map(({ id, btnText, assetId, name, icon, subText }) => (
+          <Fragment key={id}>
+            <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
+              <DownloadLink
+                assetId={assetId}
+                assetName={name}
+                btnText={btnText}
+                icon={icon}
+                setShowCaption={setShowCaption}
+              />
+            </div>
+          </Fragment>
+        ))}
+      </div>
+
+      {showCaption && (
+        <div class="flex flex-auto items-center justify-start bg-slate-100 p-3 px-4 gap-2 rounded-lg text-slate-500">
+          <Info size={20} />
+          <span>
+            The download may take up to 2 minutes. Please avoid refreshing the
+            page.
+          </span>
+        </div>
+      )}
     </div>
   );
 };
