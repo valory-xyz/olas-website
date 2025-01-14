@@ -5,6 +5,8 @@ import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import academyMetrics from 'data/academyMetrics.json';
+
 const programs = [
   {
     title: 'Olas Dev Academy – Intensive Program',
@@ -37,6 +39,59 @@ const programs = [
     ),
   },
 ];
+
+const academyTotals = academyMetrics.reduce(
+  (acc, val) => {
+    acc.participants += val.participants;
+    acc.graduates += val.graduates;
+    acc.placed += val.placed;
+    acc.hired += val.hired;
+    return acc;
+  },
+  {
+    participants: 0,
+    graduates: 0,
+    placed: 0,
+    hired: 0,
+  },
+);
+
+const AcademyTable = () => {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-[800px] table-fixed mx-auto text-center divide-y divide-gray-300">
+        <tr>
+          <th className="w-1/5">Cohort</th>
+          <th className="w-1/5">Total Participants</th>
+          <th className="w-1/5">Graduates</th>
+          <th className="w-1/5">Placed with Projects</th>
+          <th className="w-1/5">Hired by Valory</th>
+        </tr>
+        {academyMetrics.map((metric, index) => (
+          <tr key={index}>
+            <td className="font-bold">{index + 1}</td>
+            <td>{metric.participants}</td>
+            <td>{metric.graduates}</td>
+            <td>{metric.placed == 0 ? '-' : metric.placed}</td>
+            <td>{metric.hired}</td>
+          </tr>
+        ))}
+        <tr className="font-bold">
+          <td>Total</td>
+          <td>{academyTotals.participants}</td>
+          <td>{academyTotals.graduates}</td>
+          <td>{academyTotals.placed}</td>
+          <td>{academyTotals.hired}</td>
+        </tr>
+      </table>
+
+      <p className="caption-bottom text-xs text-center mt-8">
+        * Official project placements began with Cohort 7, marking a significant
+        milestone in connecting developers with real-world opportunities.
+      </p>
+    </div>
+  );
+};
 
 export const NewToOlas = () => (
   <SectionWrapper
@@ -80,6 +135,20 @@ export const NewToOlas = () => (
           </div>
         </Card>
       ))}
+
+      <div className="md:col-span-3 mt-12 overflow-x-auto">
+        <h2 className="font-extrabold text-4xl lg:mb-6 xl:mb-8 my-6 lg:my-auto text-center">
+          Olas Dev Academy: A Track Record of Success
+        </h2>
+        <p className="text-gray-600 text-center mx-auto mb-12">
+          The Olas Dev Academy exists to equip developers with the skills and
+          tools needed to build autonomous agents using the Olas Stack. Since
+          its inception, the Academy has consistently delivered impactful
+          results. Here&apos;s a snapshot of our accomplishments:
+        </p>
+        <AcademyTable />
+      </div>
+
       <div className="mx-auto md:col-span-3 justify-center mt-8">
         <Button
           variant="default"

@@ -79,3 +79,13 @@
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
 }
+
+td, th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+tr, th {
+  padding-right: 16px;
+  padding-left: 16px;
+}
