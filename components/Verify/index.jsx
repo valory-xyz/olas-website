@@ -1,13 +1,14 @@
+import { ArrowUpRight } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 const Verify = ({ url }) => (
   <a
     href={url}
-    className="text-slate-400 underline underline-offset-4"
+    className="flex items-center gap-1 text-slate-400 border-b border-slate-400 max-w-max"
     rel="noopener noreferrer"
     target="_blank"
   >
-    Verify ↗
+    Verify <ArrowUpRight size={20} />
   </a>
 );
 

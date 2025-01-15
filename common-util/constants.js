@@ -47,3 +47,5 @@ export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
 export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
 export const LAUNCH_URL = 'https://launch.olas.network/';
 export const VEOLAS_URL = 'https://govern.olas.network/veolas';
+
+export const OLAS_API_URL = 'https://api.olas.autonolas.tech';
