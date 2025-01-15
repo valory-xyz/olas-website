@@ -12,7 +12,7 @@ const TokenomicsAlert = () => (
     role="alert"
   >
     <div className="mr-2 mb-auto mt-1">
-      <InfoIcon />
+      <InfoIcon fill="#1677FF" />
     </div>
     <div>
       <p>

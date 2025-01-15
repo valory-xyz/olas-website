@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement } from 'chart.js';
+import { ArcElement, Chart } from 'chart.js';
 import { getOlasContract, olasAddress } from 'common-util/web3';
+import { Popover } from 'components/ui/popover';
+import { ExternalLink } from 'components/ui/typography';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { Pie } from 'react-chartjs-2';
 import Verify from '../Verify';
 
 // manually register arc element – required due to chart.js tree shaking
@@ -11,7 +13,6 @@ Chart.register(ArcElement);
 const olasContract = getOlasContract();
 
 const daoAddress = '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE';
-const buOlasAddress = '0xb09CcF0Dbf0C178806Aaee28956c74bd66d21f73';
 const veOlasAddress = '0x7e01A500805f8A52Fad229b3015AD130A332B7b3';
 const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
 
@@ -29,13 +30,6 @@ const DATA = [
     address: daoAddress,
     tailwindColor: 'bg-pink-500',
     rgbColor: '#E964C4',
-  },
-  {
-    id: 'buOLAS',
-    label: 'buOLAS',
-    address: buOlasAddress,
-    tailwindColor: 'bg-orange-400',
-    rgbColor: '#FFB246',
   },
   {
     id: 'valory',
@@ -94,6 +88,36 @@ LegendItem.propTypes = {
 };
 LegendItem.defaultProps = { address: null };
 
+const TotalSupplyInfo = () => (
+  <div class="flex flex-col gap-2 text-base max-w-md">
+    <span class="font-semibold mb-2">How is the Total Supply calculated?</span>
+    <span class="italic">
+      <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
+      <span className="font-semibold">buOLAS</span> value
+    </span>
+    <ExternalLink href="https://etherscan.io/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16">
+      Verify on-chain value
+    </ExternalLink>
+    <p>
+      <span className="font-semibold">buOLAS</span> is a portion of tokens that
+      have been burned following the{' '}
+      <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
+        Olas DAO proposal
+      </ExternalLink>
+      . Verify:
+    </p>
+    <ExternalLink href="https://etherscan.io/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog">
+      Revoke buOLAS execution 1
+    </ExternalLink>
+    <ExternalLink href="https://etherscan.io/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog">
+      Revoke buOLAS execution 2
+    </ExternalLink>
+    <ExternalLink href="https://etherscan.io/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog">
+      Revoke buOLAS execution 3
+    </ExternalLink>
+  </div>
+);
+
 function formatNumber(number) {
   return number.toLocaleString();
 }
@@ -114,26 +138,26 @@ export const SupplyPieChart = () => {
     const fetchData = async () => {
       try {
         const promises = [
-          olasContract.methods.totalSupply().call(),
+          fetch('/api/olas/total_supply'),
           ...ADDRESSES.map((address) =>
             olasContract.methods.balanceOf(address).call(),
           ),
         ];
 
         const result = await Promise.allSettled(promises);
+        const totalSupplyResult = await result[0].value.json();
 
-        const totalSupplyResult = result[0].value;
+        const totalSupply = BigInt(totalSupplyResult.data.totalSupply);
         const distributions = result
           .slice(1, result.length)
           .map((item) => item.value || 0);
 
         const circulatingSupply =
-          totalSupplyResult > 0
-            ? result[0].value -
-              distributions.reduce((sum, item) => sum + item, 0n)
+          totalSupply > 0
+            ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
             : 0;
 
-        setTotalSupply(formatEthers(totalSupplyResult));
+        setTotalSupply(formatEthers(totalSupply));
         setData([
           ...distributions.map((item, index) => ({
             id: IDS[index],
@@ -170,7 +194,14 @@ export const SupplyPieChart = () => {
             {loading ? '--' : formatNumber(totalSupply)}
           </div>
           <div className="mb-4">
-            <Verify url="https://etherscan.io/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16" />
+            <Popover
+              text="Verify"
+              align="start"
+              side="bottom"
+              className="flex items-center gap-1 text-slate-400 border-b border-slate-400"
+            >
+              <TotalSupplyInfo />
+            </Popover>
           </div>
         </div>
         <div>

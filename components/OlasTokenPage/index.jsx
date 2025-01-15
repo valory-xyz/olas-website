@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { FLIPSIDE_URL } from 'common-util/constants';
+import { FLIPSIDE_URL, OLAS_API_URL } from 'common-util/constants';
 import { tokenomicsGraphClient } from 'common-util/graphql/client';
 import { emissionsQuery } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
@@ -258,7 +258,7 @@ const Supply = () => {
                 <span>Convenience API endpoints:</span>
                 <span>
                   <Link
-                    href="https://api.olas.autonolas.tech/total_supply"
+                    href={`${OLAS_API_URL}/total_supply`}
                     className="text-purple-600"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -268,7 +268,7 @@ const Supply = () => {
                 </span>
                 <span>
                   <Link
-                    href="https://api.olas.autonolas.tech/circulating_supply"
+                    href={`${OLAS_API_URL}/circulating_supply`}
                     className="text-purple-600"
                     target="_blank"
                     rel="noopener noreferrer"
