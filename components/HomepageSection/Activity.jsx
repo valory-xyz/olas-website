@@ -129,7 +129,7 @@ export const Activity = () => {
           Olas incentivizes and coordinates different parties to launch
           autonomous agents that form entire AI economies.
         </p>
-        <Card className="flex flex-col gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+        <Card className="flex flex-col items-center gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <span>
             🤖 The first autonomous AI agents are{' '}
             <span className="font-medium">active</span>
