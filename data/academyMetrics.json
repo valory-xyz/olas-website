@@ -1,0 +1,68 @@
+[
+    {
+        "participants": 3,
+        "graduates": 2,
+        "placed": 0,
+        "hired": 1
+    },
+    {
+        "participants": 6,
+        "graduates": 2,
+        "placed": 0,
+        "hired": 1
+    },
+    {
+        "participants": 4,
+        "graduates": 1,
+        "placed": 0,
+        "hired": 0
+    },
+    {
+        "participants": 5,
+        "graduates": 1,
+        "placed": 0,
+        "hired": 0
+    },
+    {
+        "participants": 5,
+        "graduates": 1,
+        "placed": 0,
+        "hired": 0
+    },
+    {
+        "participants": 6,
+        "graduates": 2,
+        "placed": 0,
+        "hired": 0
+    },
+    {
+        "participants": 4,
+        "graduates": 2,
+        "placed": 4,
+        "hired": 1
+    },
+    {
+        "participants": 8,
+        "graduates": 4,
+        "placed": 6,
+        "hired": 0
+    },
+    {
+        "participants": 11,
+        "graduates": 6,
+        "placed": 4,
+        "hired": 0
+    },
+    {
+        "participants": 4,
+        "graduates": 3,
+        "placed": 3,
+        "hired": 1
+    },
+    {
+        "participants": 7,
+        "graduates": 6,
+        "placed": 4,
+        "hired": 0
+    }
+]
