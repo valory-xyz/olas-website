@@ -5,14 +5,14 @@ import { BicepsFlexed, HandCoins, Sparkles } from 'lucide-react';
 
 const list = [
   {
-    title: 'Specialisation',
+    title: 'Specialization',
     icon: <Sparkles color="#606F85" />,
     desc: 'Thanks to Mechs, agents in use cases like Predict or Optimus do not need to run open-source models or maintain API keys to closed source models.',
   },
   {
     title: 'Scale',
     icon: <BicepsFlexed color="#606F85" />,
-    desc: 'Thanks to Mech marketplace, Mechs can scale horizontally, with new Mechs being added by the Olas community to serve a diverse set of use cases',
+    desc: 'Thanks to Mech marketplace, Mechs can scale horizontally, with new Mechs being added by the Olas community to serve a diverse set of use cases.',
   },
   {
     title: 'Fee capture',
