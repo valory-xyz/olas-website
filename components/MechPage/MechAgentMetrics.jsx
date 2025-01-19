@@ -110,8 +110,7 @@ export const MechAgentMetrics = () => {
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[650px] mx-auto mb-16">
         <p className="text-xl text-slate-700 mb-8 mx-auto">
-          The Olas Mech agent economy is in demand as ever, resulting in more
-          than{' '}
+          The Olas Mech agent economy is thriving, powering over{' '}
           <ExternalLink
             className="font-bold"
             href={MECH_ECONOMY_DASHBOARD_URL}
@@ -119,7 +118,7 @@ export const MechAgentMetrics = () => {
           >
             {metrics?.totalTxs.toLocaleString()}&nbsp;↗
           </ExternalLink>{' '}
-          requests from other AI agent economies.
+          requests autonomously driven by agents in Olas.
         </p>
       </div>
       <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 w-max items-end mb-8">

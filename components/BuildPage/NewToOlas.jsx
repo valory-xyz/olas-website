@@ -144,7 +144,7 @@ export const NewToOlas = () => (
           The Olas Dev Academy exists to equip developers with the skills and
           tools needed to build autonomous agents using the Olas Stack. Since
           its inception, the Academy has consistently delivered impactful
-          results. Here&apos;s a snapshot of our accomplishments:
+          results. Here&apos;s a snapshot of what&apos;s been accomplished:
         </p>
         <AcademyTable />
       </div>

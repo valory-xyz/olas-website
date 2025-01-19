@@ -12,9 +12,9 @@ const LeftContent = () => (
     </div>
 
     <h2 className={MAIN_TITLE_CLASS}>
-      AI workflow for
+      AI Workflow for
       <br />
-      agent economies
+      Agent Economies
     </h2>
 
     <Button
