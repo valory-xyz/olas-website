@@ -1,14 +1,15 @@
-import { Fragment } from 'react';
 import Link from 'next/link';
+import { Fragment } from 'react';
 
-import { BONDING_PROGRAMS_URL } from 'common-util/constants';
 import {
-  SECTION_BOX_CLASS,
   SCREEN_WIDTH_LG,
+  SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
-import { Button } from 'components/ui/button';
+import { BONDING_PROGRAMS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import { ExternalLink } from 'components/ui/typography';
 
 const steps = [
   {
@@ -38,8 +39,19 @@ const steps = [
   },
   {
     title: 'Stay informed',
-    description:
-      'Follow Olas channels and engage with the Olas community to discover resources and say on top of new updates.',
+    description: (
+      <>
+        Follow Olas{' '}
+        <ExternalLink href="https://twitter.com/autonolas">
+          channels
+        </ExternalLink>{' '}
+        and{' '}
+        <ExternalLink href="https://discord.com/invite/z2PT65jKqQ">
+          engage with the Olas community
+        </ExternalLink>{' '}
+        to discover resources and say on top of new updates.
+      </>
+    ),
   },
 ];
 
@@ -51,7 +63,7 @@ export const HowBondingWorks = () => (
       {steps.map(({ title, description }) => (
         <Fragment key={title}>
           <h3 className="text-xl font-semibold mt-4">{title}</h3>
-          <p>{description}</p>
+          <div>{description}</div>
         </Fragment>
       ))}
 

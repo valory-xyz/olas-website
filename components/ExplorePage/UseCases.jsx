@@ -2,9 +2,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
-import servicesData from 'data/services.json';
-import serviceCategories from 'data/serviceCategories.json';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import serviceCategories from 'data/serviceCategories.json';
+import servicesData from 'data/services.json';
 
 const servicePath = (service) => service.path || `/services/${service.slug}`;
 
@@ -89,7 +89,7 @@ const UseCases = () => (
     id="use-cases"
     customClasses="max-sm:px-6 px-16 py-12 lg:py-24 max-w-screen-xl w-full mx-auto"
   >
-    <h3 className="text-4xl font-bold mb-8 text-center">Use cases</h3>
+    <h3 className="text-4xl font-bold mb-8 text-center">Use Cases</h3>
 
     <div className="grid sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
       {serviceCategories.map((serviceCategory) => (
