@@ -2,7 +2,7 @@
   "functions": {
     "pages/api/downloadAsset.js": {
       "maxDuration": 300,
-      "memory": 1769
+      "memory": 3009
     }
   }
 }
