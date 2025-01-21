@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
 import {
   MAIN_TITLE_CLASS,
+  SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
+  SUB_HEADER_LG_CLASS,
   TEXT_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -18,28 +18,14 @@ import Image from 'next/image';
 const HeaderLeftContent = () => (
   <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12">
     <div className={TEXT_MEDIUM_LIGHT_CLASS}>BABY DEGEN</div>
-    <H1 className={`${MAIN_TITLE_CLASS} mb-6 lg:w-5/6`}>
-      Taste the future of AI agent-powered trading
+    <H1 className={`${MAIN_TITLE_CLASS} mb-6 lg:w-5s/6`}>
+      Step into DeFAI: <br />
+      AI agent powered trading
     </H1>
 
-    <p className={`${TEXT_SMALL_CLASS} mb-8`}>
-      Take your first steps on your way to trading bliss.
-    </p>
-
-    <div className="flex flex-wrap justify-stretch gap-6">
-      <Button variant="secondary" size="xl" disabled className="grow lg:w-auto">
-        Coming soon
-      </Button>
-
-      <Button
-        variant="ghostPrimary"
-        size="xl"
-        asChild
-        className="grow lg:w-auto "
-      >
-        <a href={OPERATE_AGENTS_URL}>Explore other agents today</a>
-      </Button>
-    </div>
+    <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
+      <a href="#meet-the-babydegens">Explore Babydegens</a>
+    </Button>
   </div>
 );
 
@@ -56,7 +42,7 @@ const HeaderRightContent = () => (
 );
 
 const BabyDegenHeader = () => (
-  <SectionWrapper customClasses="border-y">
+  <SectionWrapper customClasses="border-y" backgroundType="SUBTLE_GRADIENT">
     <div className="max-w-screen-xl xl:gap-0 lg:gap-8 lg:grid-cols-12 lg:px-16 grid mx-auto my-24 items-center">
       <HeaderLeftContent />
       <HeaderRightContent />
@@ -65,7 +51,7 @@ const BabyDegenHeader = () => (
 );
 
 const WhatIsBabyDegen = () => (
-  <SectionWrapper>
+  <SectionWrapper customClasses="lg:p-24 py-12 border-b-1.5">
     <div className="grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h1 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h1>
@@ -103,38 +89,161 @@ const WhatIsBabyDegen = () => (
   </SectionWrapper>
 );
 
-const MeetTheOptimusAgent = () => (
-  <SectionWrapper customClasses="lg:p-24 border-y border-[#FFE0E6] w-full h-full bg-gradient-to-r from-[#FFF0F1] to-white to-70%">
-    <div className="px-8 py-12 lg:p-0 grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
-        <h1 className={`${SUB_HEADER_CLASS} mb-8 mt-12`}>
-          Meet the Optimus agent: a step towards BabyDegen
-        </h1>
-        <p className="mb-8">
-          The Optimus Agent is an autonomous AI agent that streamlines your DeFi
-          experience by intelligently managing your assets on specific
-          blockchain platforms. Initially focused on select DeFi protocols on
-          Optimism Mainnet and Base, it offers a targeted approach to maximizing
-          returns within these ecosystems.
-        </p>
-        <p className="mb-8">
-          The Optimus Agent is currently in alpha testing via Quickstart and
-          currently supports key protocols like Balancer and Uniswap. It’s
-          operational on Ethereum, Base, and Optimism. Looking ahead, it will
-          expand to support any protocol that wishes to integrate.
-        </p>
-      </div>
+const taggedItem = (item, imgSrc) => (
+  <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline">
+    <Image
+      src={`/images/services/babydegen/${imgSrc}.png`}
+      alt={item}
+      width={24}
+      height={24}
+      className="inline p-1"
+    />
+    {item}
+  </div>
+);
 
-      <div className="lg:mt-0 lg:col-span-4 lg:col-end-13 lg:flex">
-        <Image
-          src="/images/services/babydegen/optimus.png"
-          alt="Get ready to participate in AI agent DeFi"
-          width={400}
-          height={400}
-          className="mx-auto rounded-lg"
-        />
+const modiusKeyFeatures = [
+  'Personalized portfolio management.',
+  'Expanding strategy library.',
+  <>Blockchain network: {taggedItem('Mode', 'mode')}</>,
+  <>
+    Financial assets: {taggedItem('USDC', 'USDC')}
+    {taggedItem('ETH', 'eth')}
+  </>,
+  <>
+    Supported DEXs: {taggedItem('Balancer', 'balancer')}
+    {taggedItem('USDC', 'uniswap')}
+  </>,
+  'Active 24/7 when the agent is running.',
+  'Fully autonomous and owned locally by you.',
+];
+
+const ModiusAgent = () => (
+  <div className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto">
+    <Image
+      src="/images/services/babydegen/modius.png"
+      alt="modius agent"
+      width={250}
+      height={300}
+      className="mb-auto"
+    />
+    <div className="flex flex-col gap-4">
+      <div className={TEXT_MEDIUM_LIGHT_CLASS}>MODIUS AGENT</div>
+      <h2 className={SUB_HEADER_LG_CLASS}>
+        Your Personal AI Portfolio Manager
+      </h2>
+      <p>
+        Modius is a personal DeFAI agent that autonomously manages your
+        portfolio with cutting-edge strategies. It gathers market data, selects
+        optimal trading algorithms, and executes trades seamlessly on Mode
+        mainnet — delivering intelligent, hands-free asset management.
+      </p>
+      <div className="text-xl font-semibold">Key features</div>
+      <div>
+        <ul className="list-disc">
+          {modiusKeyFeatures.map((feature) => (
+            <li key={feature} className="mb-3 ml-6">
+              {feature}
+            </li>
+          ))}
+        </ul>
       </div>
+      <p className="text-slate-500">
+        Modius is currently available on Quickstart.
+      </p>
+      <Button variant="default" size="xl" className="w-fit">
+        <a href="https://github.com/valory-xyz/optimus-quickstart">
+          Run Modius via Quickstart
+        </a>
+      </Button>
     </div>
+  </div>
+);
+
+const optimusKeyFeatures = [
+  'Personalized portfolio management.',
+  'Expanding strategy library.',
+  <>
+    Blockchain networks: {taggedItem('Optimism', 'optimism')}
+    {taggedItem('Base', 'base')}
+  </>,
+  <>
+    Financial assets: {taggedItem('USDC', 'USDC')}
+    {taggedItem('ETH', 'eth')}
+  </>,
+  <>
+    Supported DEXs: {taggedItem('Balancer', 'balancer')}
+    {taggedItem('USDC', 'uniswap')}
+  </>,
+  'Active 24/7 when the agent is running.',
+  'Fully autonomous and owned locally by you.',
+];
+
+const OptimusAgent = () => (
+  <div className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto">
+    <Image
+      src="/images/services/babydegen/optimus.png"
+      alt="optimus agent"
+      width={250}
+      height={300}
+      className="mb-auto"
+    />
+    <div className="flex flex-col gap-4">
+      <div className={TEXT_MEDIUM_LIGHT_CLASS}>OPTIMUS AGENT</div>
+      <h2 className={SUB_HEADER_LG_CLASS}>
+        Your Personal AI Portfolio Manager
+      </h2>
+      <p>
+        The Optimus Agent is an autonomous AI agent that streamlines your DeFi
+        experience by intelligently managing your assets on specific blockchain
+        platforms. Initially focused on select DeFi protocols on Optimism
+        Mainnet and Base, it offers a targeted approach to maximizing returns
+        within these ecosystems. Looking ahead, it will expand to support any
+        protocol that wishes to integrate.
+      </p>
+      <div className="text-xl font-semibold">Key features</div>
+      <div>
+        <ul className="list-disc">
+          {optimusKeyFeatures.map((feature) => (
+            <li key={feature} className="mb-3 ml-6">
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="text-slate-500">
+        Optimus is currently available on Quickstart.
+      </p>
+      <Button variant="default" size="xl" className="w-fit">
+        <a href="https://github.com/valory-xyz/optimus-quickstart">
+          Run Optimus via Quickstart
+        </a>
+      </Button>
+    </div>
+  </div>
+);
+
+const MeetTheBabyDegens = () => (
+  <SectionWrapper
+    id="meet-the-babydegens"
+    customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
+  >
+    <div className="text-center">
+      <H1>
+        Meet the{' '}
+        <Image
+          src="/images/services/babydegen/babydegen-icon.png"
+          alt="Meet the BabyDegens"
+          width={70}
+          height={80}
+          className="inline mt-4"
+        />{' '}
+        BabyDegens
+      </H1>
+    </div>
+    <ModiusAgent />
+    <hr />
+    <OptimusAgent />
   </SectionWrapper>
 );
 
@@ -303,8 +412,8 @@ const BabyDegen = () => (
     />
     <BabyDegenHeader />
     <WhatIsBabyDegen />
+    <MeetTheBabyDegens />
     <HowItWorks />
-    <MeetTheOptimusAgent />
     <FurtherResources />
   </PageWrapper>
 );
