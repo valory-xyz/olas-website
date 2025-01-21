@@ -89,10 +89,10 @@ const WhatIsBabyDegen = () => (
   </SectionWrapper>
 );
 
-const taggedItem = (item) => (
+const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
     <Image
-      src={`/images/services/babydegen/${item}.png`}
+      src={`/images/services/babydegen/${item.toLowerCase()}.png`}
       alt={item}
       width={30}
       height={30}
@@ -105,13 +105,16 @@ const taggedItem = (item) => (
 const modiusKeyFeatures = [
   'Personalized portfolio management.',
   'Expanding strategy library.',
-  <>Blockchain network: {taggedItem('Mode')}</>,
   <>
-    Financial assets: {taggedItem('USDC')}
-    {taggedItem('ETH')}
+    Blockchain network: <TaggedItem item="Mode" />
   </>,
   <>
-    Supported protocols: {taggedItem('Balancer')} {taggedItem('Sturdy')}
+    Financial assets: <TaggedItem item="USDC" />
+    <TaggedItem item="ETH" />
+  </>,
+  <>
+    Supported protocols: <TaggedItem item="Balancer" />
+    <TaggedItem item="Sturdy" />
   </>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
@@ -121,16 +124,17 @@ const optimusKeyFeatures = [
   'Personalized portfolio management.',
   'Expanding strategy library.',
   <>
-    Blockchain networks: {taggedItem('Mode')} {taggedItem('Optimism')}
-    {taggedItem('Base')}
+    Blockchain networks: <TaggedItem item="Mode" />
+    <TaggedItem item="Optimism" /> <TaggedItem item="Base" />
   </>,
   <>
-    Financial assets: {taggedItem('USDC')}
-    {taggedItem('ETH')}
+    Financial assets: <TaggedItem item="USDC" />
+    <TaggedItem item="ETH" />
   </>,
   <>
-    Supported protocols: {taggedItem('Balancer')} {taggedItem('Sturdy')}
-    {taggedItem('Uniswap')}
+    Supported protocols: <TaggedItem item="Balancer" />
+    <TaggedItem item="Sturdy" />
+    <TaggedItem item="Uniswap" />
   </>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
