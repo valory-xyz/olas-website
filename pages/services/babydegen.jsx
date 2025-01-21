@@ -89,14 +89,14 @@ const WhatIsBabyDegen = () => (
   </SectionWrapper>
 );
 
-const taggedItem = (item, imgSrc) => (
-  <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline">
+const taggedItem = (item) => (
+  <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
     <Image
-      src={`/images/services/babydegen/${imgSrc}.png`}
+      src={`/images/services/babydegen/${item}.png`}
       alt={item}
-      width={24}
-      height={24}
-      className="inline p-1"
+      width={30}
+      height={30}
+      className="inline p-1 pb-2"
     />
     {item}
   </div>
@@ -105,18 +105,42 @@ const taggedItem = (item, imgSrc) => (
 const modiusKeyFeatures = [
   'Personalized portfolio management.',
   'Expanding strategy library.',
-  <>Blockchain network: {taggedItem('Mode', 'mode')}</>,
+  <>Blockchain network: {taggedItem('Mode')}</>,
   <>
-    Financial assets: {taggedItem('USDC', 'USDC')}
-    {taggedItem('ETH', 'eth')}
+    Financial assets: {taggedItem('USDC')}
+    {taggedItem('ETH')}
   </>,
-  <>Supported DEXs: {taggedItem('USDC', 'uniswap')}</>,
+  <>
+    Supported protocols: {taggedItem('Balancer')} {taggedItem('Sturdy')}
+  </>,
+  'Active 24/7 when the agent is running.',
+  'Fully autonomous and owned locally by you.',
+];
+
+const optimusKeyFeatures = [
+  'Personalized portfolio management.',
+  'Expanding strategy library.',
+  <>
+    Blockchain networks: {taggedItem('Mode')} {taggedItem('Optimism')}
+    {taggedItem('Base')}
+  </>,
+  <>
+    Financial assets: {taggedItem('USDC')}
+    {taggedItem('ETH')}
+  </>,
+  <>
+    Supported protocols: {taggedItem('Balancer')} {taggedItem('Sturdy')}
+    {taggedItem('Uniswap')}
+  </>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
 ];
 
 const ModiusAgent = () => (
-  <div className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto">
+  <div
+    id="modius-agent"
+    className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto"
+  >
     <Image
       src="/images/services/babydegen/modius.png"
       alt="modius agent"
@@ -139,7 +163,7 @@ const ModiusAgent = () => (
       <div>
         <ul className="list-disc">
           {modiusKeyFeatures.map((feature) => (
-            <li key={feature} className="mb-3 ml-6">
+            <li key={feature} className="mb-4 ml-6">
               {feature}
             </li>
           ))}
@@ -157,27 +181,11 @@ const ModiusAgent = () => (
   </div>
 );
 
-const optimusKeyFeatures = [
-  'Personalized portfolio management.',
-  'Expanding strategy library.',
-  <>
-    Blockchain networks: {taggedItem('Optimism', 'optimism')}
-    {taggedItem('Base', 'base')}
-  </>,
-  <>
-    Financial assets: {taggedItem('USDC', 'USDC')}
-    {taggedItem('ETH', 'eth')}
-  </>,
-  <>
-    Supported DEXs: {taggedItem('Balancer', 'balancer')}
-    {taggedItem('USDC', 'uniswap')}
-  </>,
-  'Active 24/7 when the agent is running.',
-  'Fully autonomous and owned locally by you.',
-];
-
 const OptimusAgent = () => (
-  <div className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto">
+  <div
+    id="optimus-agent"
+    className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto"
+  >
     <Image
       src="/images/services/babydegen/optimus.png"
       alt="optimus agent"
@@ -193,7 +201,7 @@ const OptimusAgent = () => (
       <p>
         The Optimus Agent is an autonomous AI agent that streamlines your DeFi
         experience by intelligently managing your assets on specific blockchain
-        platforms. Initially focused on select DeFi protocols on Optimism
+        platforms. Initially focused on select DeFi protocols on Mode, Optimism
         Mainnet and Base, it offers a targeted approach to maximizing returns
         within these ecosystems. Looking ahead, it will expand to support any
         protocol that wishes to integrate.
@@ -202,7 +210,7 @@ const OptimusAgent = () => (
       <div>
         <ul className="list-disc">
           {optimusKeyFeatures.map((feature) => (
-            <li key={feature} className="mb-3 ml-6">
+            <li key={feature} className="mb-4 ml-6">
               {feature}
             </li>
           ))}

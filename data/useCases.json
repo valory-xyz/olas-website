@@ -17,6 +17,18 @@
         "description": "Trades on prediction markets.",
         "image": "/images/services/prediction-trader.png",
         "link": "/services/prediction-agents"
+      },
+      {
+        "title": "Modius agent",
+        "description": "Manages your portfolio with cutting-edge strategies on Mode network.",
+        "image": "/images/services/modius-agent.png",
+        "link": "/services/babydegen#modius-agent"
+      },
+      {
+        "title": "Optimus agent",
+        "description": "Intelligently manages your DeFi assets across the Superchain.",
+        "image": "/images/services/optimus-agent.png",
+        "link": "/services/babydegen#optimus-agent"
       }
     ]
   },
