@@ -82,23 +82,23 @@ const audits = [
                 className="text-purple-600"
                 target="_blank"
               >
-                Governance & OLAS (08.22)
+                Governance & OLAS, 08.22
               </a>
-              ,{' '}
+              ;{' '}
               <a
                 href="https://x.com/autonolas/status/1689316293030359040"
                 className="text-purple-600"
                 target="_blank"
               >
-                Tokenomics & Registries (08.23)
+                Tokenomics & Registries, 08.23
               </a>
-              ,{' '}
+              ;{' '}
               <a
                 href="https://immunefi.com/bug-bounty/autonolas/information/"
                 className="text-purple-600"
                 target="_blank"
               >
-                Staking (08.24)
+                Staking, 08.24
               </a>
             </li>
           </ul>
