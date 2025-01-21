@@ -110,10 +110,7 @@ const modiusKeyFeatures = [
     Financial assets: {taggedItem('USDC', 'USDC')}
     {taggedItem('ETH', 'eth')}
   </>,
-  <>
-    Supported DEXs: {taggedItem('Balancer', 'balancer')}
-    {taggedItem('USDC', 'uniswap')}
-  </>,
+  <>Supported DEXs: {taggedItem('USDC', 'uniswap')}</>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
 ];
@@ -152,7 +149,7 @@ const ModiusAgent = () => (
         Modius is currently available on Quickstart.
       </p>
       <Button variant="default" size="xl" className="w-fit">
-        <a href="https://github.com/valory-xyz/optimus-quickstart">
+        <a href="https://github.com/valory-xyz/modius-quickstart">
           Run Modius via Quickstart
         </a>
       </Button>
