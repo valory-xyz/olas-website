@@ -3,11 +3,10 @@ import {
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
-
-const { default: SectionWrapper } = require('components/Layout/SectionWrapper');
-const { Button } = require('components/ui/button');
-const { H1 } = require('components/ui/typography');
-const { default: Image } = require('next/image');
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import { H1 } from 'components/ui/typography';
+import Image from 'next/image';
 
 const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
