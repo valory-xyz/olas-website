@@ -25,7 +25,7 @@ export const QuickIntroArticles = () => {
       <div className={`${SCREEN_WIDTH_XL} gap-5`}>
         <div className="section rounded-lg" id="quick-intro-articles">
           <h2 className={`${SUB_HEADER_CLASS} text-center`}>
-            Quick intro articles
+            Quick Intro Articles
           </h2>
 
           <div className="grid gap-6 md:grid-cols-3 md:gap-8 mt-8">

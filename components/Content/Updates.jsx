@@ -36,7 +36,7 @@ export const Updates = ({ limit }) => {
     <section>
       <div>
         <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
-          Quarterly updates
+          Quarterly Updates
         </h2>
 
         <p className="mb-8">
