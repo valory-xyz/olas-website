@@ -6,6 +6,13 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'Builders Night',
+    imageSrc: 'AU-ETHDenver.png',
+    location: 'Denver, ETHDenver',
+    date: "Mar 1 '25",
+    eventLink: 'https://lu.ma/7ulasmk8',
+  },
+  {
     title: 'Agents Unleashed Bangkok + The Humans Unleashed Party',
     imageSrc: 'AU-bangkok.png',
     location: 'Bangkok, DevCon',
