@@ -4,7 +4,10 @@ import Meta from 'components/Meta';
 
 const AcademyPage = () => (
   <PageWrapper>
-    <Meta />
+    <Meta
+      pageTitle="Academy"
+      description="Learn more about our Dev Academy program and become an Olas agent Builder!"
+    />
     <Academy />
   </PageWrapper>
 );
