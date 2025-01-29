@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
+import PropTypes from 'prop-types';
+import { forwardRef } from 'react';
 
 import { cn } from 'lib/utils';
 
@@ -23,6 +23,8 @@ const buttonVariants = cva(
         ghostPrimary:
           'hover:bg-purple-100 hover:text-purple-800 dark:hover:bg-purple-800 dark:hover:text-purple-50 border border-purple-600 text-purple-600',
         link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50',
+        valory:
+          'border hover:bg-valory-green hover:text-black hover:border-valory-green',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -66,6 +68,7 @@ Button.propTypes = {
     'ghost',
     'ghostPrimary',
     'link',
+    'valory',
   ],
 };
 

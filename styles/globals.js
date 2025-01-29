@@ -19,12 +19,7 @@ export const markdownComponents = {
     <a className="text-purple-800 hover:text-blue-800" {...props} />
   ),
   // Apply margin to paragraphs to create space between them
-  p: ({ node, ...props }) => (
-    <>
-      <p className="inline" {...props} />
-      <br />
-    </>
-  ),
+  p: ({ node, ...props }) => <p {...props} />,
   strong: ({ node, ...props }) => <strong {...props}></strong>,
   // Apply tailwind classes to style lists
   ul: ({ node, ...props }) => (
