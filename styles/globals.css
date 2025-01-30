@@ -89,3 +89,11 @@ tr, th {
   padding-right: 16px;
   padding-left: 16px;
 }
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/neue-machina.woff2')format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
