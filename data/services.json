@@ -186,7 +186,7 @@
     "path": "/agent-economies/mech"
   },
   {
-    "id": "",
+    "id": "f68b5b98-bd9f-4fc7-908f-8978b7c5d8ea",
     "name": "Optimus Agent",
     "slug": "optimus-agent",
     "serviceCategory": "AI",
@@ -200,7 +200,7 @@
     "path": "/services/babydegen#optimus-agent"
   },
   {
-    "id": "",
+    "id": "d9f7ac4f-e5c1-44b0-95d4-89d74cd31cfe",
     "name": "Modius Agent",
     "slug": "modius-agent",
     "serviceCategory": "AI",
@@ -214,7 +214,7 @@
     "path": "/services/babydegen#modius-agent"
   },
   {
-    "id": "",
+    "id": "ac1cbd30-5290-48e2-91d6-9c8c7e6c1b22",
     "name": "Agents.fun Agent",
     "slug": "agentsfun",
     "serviceCategory": "AI",
