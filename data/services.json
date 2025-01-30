@@ -184,5 +184,47 @@
     "demo": false,
     "builder": "Valory",
     "path": "/agent-economies/mech"
+  },
+  {
+    "id": "",
+    "name": "Optimus Agent",
+    "slug": "optimus-agent",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "optimus-agent.png",
+    "demo": false,
+    "builder": "Valory",
+    "path": "/services/babydegen#optimus-agent"
+  },
+  {
+    "id": "",
+    "name": "Modius Agent",
+    "slug": "modius-agent",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "modius-agent.png",
+    "demo": false,
+    "builder": "Valory",
+    "path": "/services/babydegen#modius-agent"
+  },
+  {
+    "id": "",
+    "name": "Agents.fun Agent",
+    "slug": "agentsfun",
+    "serviceCategory": "AI",
+    "description": "",
+    "appUrl": "",
+    "marketingUrl": "",
+    "buildUrl": "",
+    "iconFilename": "agentsfun.png",
+    "demo": false,
+    "builder": "Valory",
+    "path": "/services/agentsfun"
   }
 ]

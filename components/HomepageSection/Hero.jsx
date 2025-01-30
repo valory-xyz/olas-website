@@ -36,7 +36,7 @@ const Hero = () => (
         agent economies.
       </p>
       <Button variant="default" size="xl" asChild>
-        <Link href="#get-involved">Get involved</Link>
+        <Link href="#get-involved">Get Involved</Link>
       </Button>
     </div>
   </SectionWrapper>
