@@ -124,7 +124,7 @@ const DownloadLinks = () => {
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
             asChild
-            className="mb-6 h-[56px] max-w-[165px] text-left"
+            className="mb-6 h-[56px] max-w-[165px] text-left cursor-pointer"
           >
             <div className="flex flex-row">
               {icon}
