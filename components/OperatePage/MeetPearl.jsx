@@ -56,7 +56,7 @@ const agents = [
 
 const AgentsList = () => (
   <>
-    <div className="grid grid-cols-2 mx-auto max-w-6xl gap-4">
+    <div className="max-md:grid-cols-1 grid grid-cols-2 mx-auto max-w-6xl gap-4">
       {agents.map((item, index) => (
         <Card
           key={index}
@@ -73,12 +73,12 @@ const AgentsList = () => (
             className="aspect-square w-[80px] h-[80px]"
           />
           <div className="flex flex-col gap-2 w-full">
-            <div className="justify-between flex flex-row">
+            <div className="justify-between flex flex-row max-sm:flex-col">
               <div className="text-xl font-semibold">
                 {item.title ? (
                   item.title
                 ) : (
-                  <div className="bg-slate-500 w-[160px] h-3 rounded-full mt-2" />
+                  <div className="bg-slate-500 w-[160px] h-3 rounded-full mt-2 max-sm:w-[100px]" />
                 )}
               </div>
               {item.isComingSoon && (
@@ -91,7 +91,7 @@ const AgentsList = () => (
               ) : (
                 <>
                   <div className="bg-slate-200 w-full h-3 rounded-full mt-4" />
-                  <div className="bg-slate-200 w-[233px] h-3 rounded-full mt-3" />
+                  <div className="bg-slate-200 max-w-[233px] h-3 rounded-full mt-3 max-sm:w-[100px]" />
                 </>
               )}
             </div>
@@ -122,14 +122,14 @@ const ReadyToRun = () => (
       Ready to run your agent?
     </h3>
     <Button variant="default" size="xl" asChild className="w-auto">
-      <Link href="/operate#get-started">Try Pearl now</Link>
+      <Link href="#download">Try Pearl now</Link>
     </Button>
   </div>
 );
 
 export const MeetPearlContent = () => (
-  <div className="h-[540px] max-w-6xl items-start sm:h-auto mb-20 lg:pl-12 mx-auto lg:items-center flex flex-row justify-between">
-    <div className="mb-6 px-0 max-w-[460px] lg:px-5 lg:text-left lg:mb-12">
+  <div className="h-[540px] max-w-6xl sm:h-auto mb-20 lg:pl-12 mx-auto lg:items-center flex flex-col lg:flex-row justify-between">
+    <div className="mb-6 px-0 lg:max-w-[460px] lg:px-5 lg:text-left lg:mb-12">
       <Image
         style={{ marginLeft: -6 }}
         className="mb-2 lg:mb-4 w-16 lg:w-16"
@@ -152,7 +152,7 @@ export const MeetPearlContent = () => (
       </p>
     </div>
     <Image
-      className="mx-auto max-sm:overflow-hidden block mt-8"
+      className="mx-auto max-sm:overflow-hidden block md:mt-8"
       alt="Meet Pearl"
       src="/images/operate-page/meet-the-operate-app.png"
       width={580}

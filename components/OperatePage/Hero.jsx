@@ -46,7 +46,7 @@ const Hero = () => (
           asChild
           className="mb-6 w-full md:w-auto"
         >
-          <Link href="#get-started">Try Pearl now</Link>
+          <Link href="#download">Try Pearl now</Link>
         </Button>
       </div>
 

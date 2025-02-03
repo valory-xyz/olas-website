@@ -52,7 +52,11 @@ export function WantMoreControl() {
           />
         </div>
 
-        <Button variant="ghostPrimary" size="xl" className="w-fit mt-4">
+        <Button
+          variant="ghostPrimary"
+          size="xl"
+          className="w-fit mt-8 max-lg:mx-auto lg:mt-4 ml-4"
+        >
           <Link href={CTA} target="_blank" rel="noopener noreferrer">
             Browse agents and start now
           </Link>

@@ -113,7 +113,7 @@ const DownloadLinks = () => {
           Click “Run Agent” and start earning potential rewards.
         </p>
       </div>
-      <div className="flex flex-row gap-4 mt-8">
+      <div className="flex flex-row max-md:flex-col md:gap-4 mt-8">
         {links.map(({ id, btnText, downloadLink, icon }) => (
           <Button
             key={id}
@@ -141,7 +141,7 @@ const DownloadLinks = () => {
 };
 
 export const InstallRunAnAgent = () => (
-  <div id="get-started" className="mb-12">
+  <div id="download" className="mb-12">
     <DownloadLinks />
   </div>
 );
