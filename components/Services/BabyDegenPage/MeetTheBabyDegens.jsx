@@ -94,14 +94,17 @@ const ModiusAgent = () => (
           ))}
         </ul>
       </div>
-      <Button variant="default" size="xl" className="w-fit">
-        <a href="https://github.com/valory-xyz/modius-quickstart">
-          Run via Quickstart
-        </a>
-      </Button>
-      <Button variant="default" size="xl" className="w-fit">
-        <Link href="/operate#download">Run via Pearl</Link>
-      </Button>
+
+      <div className="flex gap-4">
+        <Button variant="default" size="xl" className="w-fit">
+          <Link href="/operate#download">Run via Pearl</Link>
+        </Button>
+        <Button variant="outline" size="xl" className="w-fit">
+          <a href="https://github.com/valory-xyz/modius-quickstart">
+            Run via Quickstart
+          </a>
+        </Button>
+      </div>
     </div>
   </div>
 );
