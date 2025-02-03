@@ -26,7 +26,12 @@ export const CTA = () => (
         </div>
       </div>
       <Button variant="default" size="xl" asChild>
-        <Link href={ACCELERATOR_APPLY_URL} className="mt-16">
+        <Link
+          href={ACCELERATOR_APPLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-16"
+        >
           Apply now - limited spots!
         </Link>
       </Button>

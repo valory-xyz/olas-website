@@ -28,7 +28,13 @@ export const Hero = () => (
 
       <div className="mx-auto w-fit mt-12">
         <Button variant="default" size="xl" asChild>
-          <Link href={ACCELERATOR_APPLY_URL}>Apply now</Link>
+          <Link
+            href={ACCELERATOR_APPLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Apply now
+          </Link>
         </Button>
       </div>
     </SectionWrapper>
