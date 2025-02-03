@@ -50,4 +50,4 @@ export const VEOLAS_URL = 'https://govern.olas.network/veolas';
 
 export const OLAS_API_URL = 'https://api.olas.autonolas.tech';
 export const ACCELERATOR_APPLY_URL =
-  'https://github.com/valory-xyz/olas-website/pull/205';
+  'https://docs.google.com/forms/d/e/1FAIpQLSed_jc5XNlnib0m9yG2IRo8_PKFNPwp0DFTdbph4LpR9E9uhg/viewform';
