@@ -1,14 +1,16 @@
+import { CTA } from './CTA';
 import { EvaluationCriteria } from './EvaluationCriteria';
-import { ExpectedOutcomes } from './ExpectedOutcomes';
 import { Hero } from './Hero';
-import { ProgramStructure } from './ProgramStructure';
+import { HowDoesAcceleratorWork } from './HowDoesAcceleratorWork';
+import { HowToApply } from './HowToApply';
 
 const Accelerator = () => (
   <>
     <Hero />
-    <ProgramStructure />
+    <HowDoesAcceleratorWork />
+    <HowToApply />
     <EvaluationCriteria />
-    <ExpectedOutcomes />
+    <CTA />
   </>
 );
 
