@@ -215,7 +215,7 @@ const DownloadLinks = ({ agentType }) => {
   return (
     <div className="flex flex-col gap-4 xl:gap-8 max-w-max mx-auto">
       <div className="flex flex-col flex-wrap justify-center items-baseline gap-2 sm:flex-row xl:flex-nowrap xl:gap-4">
-        {links.map(({ id, btnText, assetId, name, icon, subText }) => (
+        {links.map(({ id, btnText, assetId, name, icon }) => (
           <Fragment key={id}>
             <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
               <DownloadLink
@@ -250,6 +250,13 @@ DownloadLinks.propTypes = {
 const DESCRIPTIONS = {
   agentsfun: 'Get an early alpha version of Pearl with Agents.fun support',
   modius: 'Get an early alpha version of Pearl with Modius support',
+  all: 'Get the early beta version of Pearl with Agents.fun and Modius support',
+};
+
+const IMAGE_SIZES = {
+  agentsfun: { width: 260, height: 158 },
+  modius: { width: 260, height: 158 },
+  all: { width: 360, height: 166 },
 };
 
 export const EarlyAdoptersPage = ({ agentType }) => (
@@ -258,8 +265,8 @@ export const EarlyAdoptersPage = ({ agentType }) => (
       <Image
         src={`/images/early-adopters-page/${agentType}.png`}
         alt={`Pearl ${agentType}`}
-        width={260}
-        height={158}
+        width={IMAGE_SIZES[agentType].width}
+        height={IMAGE_SIZES[agentType].height}
         className="mb-12"
       />
       <span className={TEXT_MEDIUM_LIGHT_CLASS}>PEARL FOR EARLY ADOPTERS</span>
