@@ -39,7 +39,7 @@ const criteria = [
 ];
 
 export const EvaluationCriteria = () => (
-  <SectionWrapper customClasses="py-12 border-b-1.5">
+  <SectionWrapper customClasses="max-sm:mx-4 py-12 border-b-1.5">
     <div className="max-w-[720px] mx-auto">
       <div className="flex flex-col gap-2 mb-12">
         <h1 className={`${SUB_HEADER_CLASS} font-semibold my-8`}>
@@ -67,7 +67,7 @@ export const EvaluationCriteria = () => (
         {criteria.map((item, index) => (
           <div key={index}>
             <div className="font-semibold text-xl">{item.title}</div>
-            <p>{item.desc}</p>
+            <div>{item.desc}</div>
           </div>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import Link from 'next/link';
@@ -8,7 +9,7 @@ const list = [
     title: 'Apply with your agent idea',
     description: (
       <>
-        <ExternalLink href="https://docs.google.com/forms/d/1nXIHsfudZzOv7oUGcJ2nvSbgVwziR2g9Mvfhik9t1IA/edit">
+        <ExternalLink href={ACCELERATOR_APPLY_URL}>
           Submit a proposal
         </ExternalLink>{' '}
         detailing your AI agent&apos;s concept, integration with Pearl, and user
@@ -53,7 +54,7 @@ const list = [
 ];
 
 export const HowDoesAcceleratorWork = () => (
-  <SectionWrapper customClasses="py-12 mb-12">
+  <SectionWrapper customClasses="py-12 mb-12 max-sm:mx-4">
     <div className="max-w-[720px] mx-auto flex flex-col gap-4">
       <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-4 mt-12`}>
         Only 10 teams will secure funding — is it yours?
@@ -63,10 +64,7 @@ export const HowDoesAcceleratorWork = () => (
         to developers building AI Agents for Pearl — The Agent App Store. The
         top 10 teams will receive milestone-based funding to develop, launch,
         and scale their agents. Spots are limited —{' '}
-        <ExternalLink href="https://docs.google.com/forms/d/1nXIHsfudZzOv7oUGcJ2nvSbgVwziR2g9Mvfhik9t1IA/edit">
-          apply today
-        </ExternalLink>
-        !
+        <ExternalLink href={ACCELERATOR_APPLY_URL}>apply today</ExternalLink>!
       </p>
       <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
         How does the Olas Accelerator work?

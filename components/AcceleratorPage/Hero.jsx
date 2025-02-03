@@ -3,6 +3,7 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
@@ -27,9 +28,7 @@ export const Hero = () => (
 
       <div className="mx-auto w-fit mt-12">
         <Button variant="default" size="xl" asChild>
-          <Link href="https://docs.google.com/forms/d/1nXIHsfudZzOv7oUGcJ2nvSbgVwziR2g9Mvfhik9t1IA/edit">
-            Apply now
-          </Link>
+          <Link href={ACCELERATOR_APPLY_URL}>Apply now</Link>
         </Button>
       </div>
     </SectionWrapper>
