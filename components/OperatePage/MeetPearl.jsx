@@ -85,7 +85,7 @@ const AgentsList = () => (
                 <p className="text-slate-500 text-sm">Coming soon</p>
               )}
             </div>
-            <p>
+            <div>
               {item.description ? (
                 item.description
               ) : (
@@ -94,7 +94,7 @@ const AgentsList = () => (
                   <div className="bg-slate-200 w-[233px] h-3 rounded-full mt-3" />
                 </>
               )}
-            </p>
+            </div>
 
             {item.link && (
               <div className="mt-auto">
