@@ -3,24 +3,23 @@ import Link from 'next/link';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
+import { CTA, SECTION_BOX_CLASS, TEXT_CLASS } from './utils';
 
 const controlList = [
   {
-    title: 'Customize, experiment, and optimize your agents',
-    desc: 'With the Quickstart, listed on the Operate site, you’re in charge. Select an agent, tweak settings, and tailor operations to your specifications. It’s your setup, your rules. Run as many agents as you like.',
+    desc: 'For technically advanced users, Quickstart offers complete flexibility to configure, customize and optimize agents using the command line interface (CLI).',
   },
   {
-    title: 'Quick setup guides',
-    desc: 'Follow easy steps to get started and make adjustments on the fly.',
+    title: 'Customize on your own',
+    desc: 'Tailor your agents to fit your exact needs, from settings to operations.',
   },
   {
     title: 'Configurable',
-    desc: 'Modify and manage your agent directly, optimizing as you see fit.',
+    desc: 'Directly manage your agent setup and configurations.',
   },
   {
-    title: 'Start now',
-    desc: 'Dive into a more hands-on experience and shape your digital journey.',
+    title: 'Enjoy ∞ agents',
+    desc: 'Run as many agents as you like.',
   },
 ];
 
@@ -29,8 +28,8 @@ export function WantMoreControl() {
     <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
       <div className="grid items-center max-w-screen-xl mx-auto lg:grid-cols-12 lg:pl-8">
         <div className="px-0 mr-12 lg:col-span-6 lg:p-0 lg:px-5">
-          <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
-            Want more control?
+          <h2 className="tracking-tight text-3xl lg:text-4xl text-left mb-8 font-semibold lg:text-center">
+            Take full control with Quickstart
           </h2>
 
           <div>
@@ -52,11 +51,15 @@ export function WantMoreControl() {
             height="574"
           />
         </div>
-      </div>
 
-      <div className="flex justify-center mt-8">
-        <Button asChild variant="ghostPrimary" size="xl">
-          <Link href={CTA}>Browse agents to run manually</Link>
+        <Button
+          variant="ghostPrimary"
+          size="xl"
+          className="w-fit mt-8 max-lg:mx-auto lg:mt-4 ml-4"
+        >
+          <Link href={CTA} target="_blank" rel="noopener noreferrer">
+            Browse agents and start now
+          </Link>
         </Button>
       </div>
     </SectionWrapper>
