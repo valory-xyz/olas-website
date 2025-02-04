@@ -1,3 +1,6 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 import {
   SECTION_BOX_CLASS,
   SUB_HEADER_LG_CLASS,
@@ -6,7 +9,6 @@ import {
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { H1 } from 'components/ui/typography';
-import Image from 'next/image';
 
 const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
@@ -85,21 +87,24 @@ const ModiusAgent = () => (
       <div className="text-xl font-semibold">Key features</div>
       <div>
         <ul className="list-disc">
-          {modiusKeyFeatures.map((feature) => (
-            <li key={feature} className="mb-4 ml-6">
+          {modiusKeyFeatures.map((feature, index) => (
+            <li key={index} className="mb-4 ml-6">
               {feature}
             </li>
           ))}
         </ul>
       </div>
-      <p className="text-slate-500">
-        Modius is currently available on Quickstart.
-      </p>
-      <Button variant="default" size="xl" className="w-fit">
-        <a href="https://github.com/valory-xyz/modius-quickstart">
-          Run Modius via Quickstart
-        </a>
-      </Button>
+
+      <div className="flex gap-4">
+        <Button variant="default" size="xl" className="w-fit">
+          <Link href="/operate#download">Run via Pearl</Link>
+        </Button>
+        <Button variant="outline" size="xl" className="w-fit">
+          <a href="https://github.com/valory-xyz/modius-quickstart">
+            Run via Quickstart
+          </a>
+        </Button>
+      </div>
     </div>
   </div>
 );
@@ -132,8 +137,8 @@ const OptimusAgent = () => (
       <div className="text-xl font-semibold">Key features</div>
       <div>
         <ul className="list-disc">
-          {optimusKeyFeatures.map((feature) => (
-            <li key={feature} className="mb-4 ml-6">
+          {optimusKeyFeatures.map((feature, index) => (
+            <li key={index} className="mb-4 ml-6">
               {feature}
             </li>
           ))}
@@ -144,7 +149,7 @@ const OptimusAgent = () => (
       </p>
       <Button variant="default" size="xl" className="w-fit">
         <a href="https://github.com/valory-xyz/optimus-quickstart">
-          Run Optimus via Quickstart
+          Run via Quickstart
         </a>
       </Button>
     </div>

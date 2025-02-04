@@ -154,6 +154,7 @@ const funAgents = [
     description:
       'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas.',
     imgSrc: 'agentsfun-base.png',
+    link: '/operate#download',
   },
   {
     title: 'Agent Celo',
@@ -184,9 +185,15 @@ const PickYourAgent = () => (
           <div className="flex flex-col gap-4">
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
-            <Button className="w-fit bg-slate-100 text-gray-400 p-3 mt-auto">
-              Coming soon
-            </Button>
+            {agent.link ? (
+              <Button variant="default" size="lg" className="w-fit">
+                <Link href={agent.link}>Run via Pearl</Link>
+              </Button>
+            ) : (
+              <Button className="w-fit bg-slate-100 text-gray-400 p-3 mt-auto">
+                Coming soon
+              </Button>
+            )}
           </div>
         </Card>
       ))}
