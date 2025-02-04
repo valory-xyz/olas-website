@@ -17,7 +17,7 @@ export const Hero = () => (
           OLAS ACCELERATOR
         </div>
         <h1 className={`${MAIN_TITLE_CLASS} text-center`}>
-          $1 million prize pool <br />
+          $1 million grant <br />
           to build AI agents
         </h1>
 
