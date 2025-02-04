@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import PropTypes from 'prop-types';
 
-import Header from './Header';
 import Footer from './Footer';
+import Header from './Header';
 
 const PageWrapper = ({ children }) => (
   <>
@@ -18,8 +18,11 @@ const PageWrapper = ({ children }) => (
           className="mr-2"
         />
 
-        <Link href="/operate" className="hover:underline ml-2">
-          Earn OLAS by running your own autonomous AI agent
+        <Link
+          href="/blog/olas-announces-the-agent-app-store-after-core-contributor-raises-13-8m-led-by-1kx"
+          className="hover:underline ml-2"
+        >
+          Pearl Agent App Store Live Now!
           <ChevronRight className="ml-2 inline" size={20} />
         </Link>
       </h2>
