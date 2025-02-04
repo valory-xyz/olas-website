@@ -13,8 +13,7 @@ const agents = [
     description: 'Forecasts outcomes and places bets in prediction markets.',
     link: '/services/prediction-agents',
     imgSrc: 'prediction-agent.png',
-    bgColour: 'purple-50',
-    lineColour: 'purple-200',
+    bgColour: 'purple',
   },
   {
     title: 'Modius agent',
@@ -22,7 +21,7 @@ const agents = [
       'Invests crypto assets on your behalf and grows your portfolio on Mode chain.',
     link: '/services/babydegen#modius-agent',
     imgSrc: 'modius.png',
-    bgColour: 'lime-100',
+    bgColour: 'lime',
   },
   {
     title: 'Agents.fun agent - Base',
@@ -37,8 +36,7 @@ const agents = [
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
     link: '/services/babydegen#optimus-agent',
     imgSrc: 'optimus.png',
-    bgColour: 'rose-50',
-    lineColour: 'rose-200',
+    bgColour: 'rose',
     isComingSoon: true,
   },
   {
@@ -57,58 +55,66 @@ const agents = [
 const AgentsList = () => (
   <>
     <div className="max-md:grid-cols-1 grid grid-cols-2 mx-auto max-w-6xl gap-4">
-      {agents.map((item, index) => (
-        <Card
-          key={index}
-          className={`flex flex-row gap-4 border p-4 bg-gradient-to-t from-white shadow-none
-          to-${item.bgColour ? item.bgColour : 'slate-100'}
-          border-${item.lineColour ? item.lineColour : 'slate-200'} 
-          `}
-        >
-          <Image
-            src={`/images/operate-page/${item.imgSrc}`}
-            alt={`Agent - ${item.title ? item.title : 'Coming soon'}`}
-            width={80}
-            height={80}
-            className="aspect-square w-[80px] h-[80px]"
-          />
-          <div className="flex flex-col gap-2 w-full">
-            <div className="justify-between flex flex-row max-sm:flex-col">
-              <div className="text-xl font-semibold">
-                {item.title ? (
-                  item.title
-                ) : (
-                  <div className="bg-slate-500 w-[160px] h-3 rounded-full mt-2 max-sm:w-[100px]" />
+      {agents.map((item, index) => {
+        let cardClass = 'border-slate-200 to-slate-100';
+        if (item.bgColour === 'purple') {
+          cardClass = 'card-purple';
+        } else if (item.bgColour === 'lime') {
+          cardClass = 'card-lime';
+        } else if (item.bgColour === 'rose') {
+          cardClass = 'card-rose';
+        }
+
+        return (
+          <Card
+            key={index}
+            className={`flex flex-row gap-4 border p-4 bg-gradient-to-t from-white shadow-none ${cardClass}`}
+          >
+            <Image
+              src={`/images/operate-page/${item.imgSrc}`}
+              alt={`Agent - ${item.title ? item.title : 'Coming soon'}`}
+              width={80}
+              height={80}
+              className="aspect-square w-[80px] h-[80px]"
+            />
+            <div className="flex flex-col gap-2 w-full">
+              <div className="justify-between flex flex-row max-sm:flex-col">
+                <div className="text-xl font-semibold">
+                  {item.title ? (
+                    item.title
+                  ) : (
+                    <div className="bg-slate-500 w-[160px] h-3 rounded-full mt-2 max-sm:w-[100px]" />
+                  )}
+                </div>
+                {item.isComingSoon && (
+                  <p className="text-slate-500 text-sm">Coming soon</p>
                 )}
               </div>
-              {item.isComingSoon && (
-                <p className="text-slate-500 text-sm">Coming soon</p>
-              )}
-            </div>
-            <div>
-              {item.description ? (
-                item.description
-              ) : (
-                <>
-                  <div className="bg-slate-200 w-full h-3 rounded-full mt-4" />
-                  <div className="bg-slate-200 max-w-[233px] h-3 rounded-full mt-3 max-sm:w-[100px]" />
-                </>
-              )}
-            </div>
-
-            {item.link && (
-              <div className="mt-auto">
-                <Link
-                  href={item.link}
-                  className="flex gap-1 place-items-center text-purple-600"
-                >
-                  Learn more <ChevronRight size={20} />
-                </Link>
+              <div>
+                {item.description ? (
+                  item.description
+                ) : (
+                  <>
+                    <div className="bg-slate-200 w-full h-3 rounded-full mt-4" />
+                    <div className="bg-slate-200 max-w-[233px] h-3 rounded-full mt-3 max-sm:w-[100px]" />
+                  </>
+                )}
               </div>
-            )}
-          </div>
-        </Card>
-      ))}
+
+              {item.link && (
+                <div className="mt-auto">
+                  <Link
+                    href={item.link}
+                    className="flex gap-1 place-items-center text-purple-600"
+                  >
+                    Learn more <ChevronRight size={20} />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </Card>
+        );
+      })}
     </div>
     <div className="border w-fit rounded-full px-4 py-1 mt-12 mx-auto">
       More 🤖 agents coming
