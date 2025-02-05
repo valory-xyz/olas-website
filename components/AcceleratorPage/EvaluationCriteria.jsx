@@ -19,7 +19,9 @@ const criteria = [
               Users can run your AI Agent locally on their devices.
             </li>
             <li className="mb-2">Agents act on the user&apos;s behalf.</li>
-            <li className="mb-2">Many users can use the same agent.</li>
+            <li className="mb-2">
+              Many users can use an instance of the same agent code.
+            </li>
           </ol>
         </li>
         <li className="mb-2">
@@ -75,7 +77,7 @@ export const EvaluationCriteria = () => (
         </h1>
         {criteria.map((item, index) => (
           <div key={index}>
-            <div className="font-semibold text-xl">{item.title}</div>
+            <div className="font-semibold text-xl mb-1">{item.title}</div>
             <div>{item.desc}</div>
           </div>
         ))}

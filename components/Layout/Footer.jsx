@@ -218,7 +218,7 @@ const Footer = () => (
       <div className="grid grid-cols-2 md:flex md:flex-row max-sm:gap-y-8 justify-between w-full flex-wrap">
         <LinksBlock title="Learn" links={LEARN_LINKS} />
         <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
-        <LinksBlock title="Other Apps" links={OTHER_APPS_LINKS} />
+        <LinksBlock title="Other" links={OTHER_APPS_LINKS} />
         <LinksBlock
           title="Resources"
           links={RESOURCES_LINKS}

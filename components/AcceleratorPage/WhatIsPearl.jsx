@@ -64,36 +64,40 @@ const DisplaySteps = () => (
   </div>
 );
 
+const Pearl = () => (
+  <div className="max-w-[964px] mx-auto max-sm:flex-col flex justify-between">
+    <div className="flex flex-col gap-4 max-w-[470px]">
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-2`}>
+        What is Pearl
+      </h2>
+      <p>
+        Pearl is the “App Store” for AI Agents, allowing anyone to run an AI
+        Agent on their laptop. These AI Agents operate autonomously, completing
+        tasks and earning potential rewards.
+      </p>
+      <p>
+        You can build and launch an agent on Pearl — so others can run it and
+        benefit from it.
+      </p>
+
+      <Link href="/operate" className="text-purple-600">
+        Explore AI Agents available on Pearl
+      </Link>
+    </div>
+    <Image
+      src="/images/accelerator/agents.png"
+      alt="AI Agents"
+      width={364}
+      height={232}
+      className="object-contain mt-8"
+    />
+  </div>
+);
+
 export const WhatIsPearl = () => (
   <SectionWrapper>
     <Only10Teams />
     <DisplaySteps />
-    <div className="max-w-[964px] mx-auto max-sm:flex-col flex justify-between">
-      <div className="flex flex-col gap-4 max-w-[470px]">
-        <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-2`}>
-          What is Pearl
-        </h2>
-        <p>
-          Pearl is the “App Store” for AI Agents, allowing anyone to run an AI
-          Agent on their laptop. These AI Agents operate autonomously,
-          completing tasks and earning potential rewards.
-        </p>
-        <p>
-          You can build and launch an agent on Pearl — so others can run it and
-          benefit from it.
-        </p>
-
-        <Link href="/operate" className="text-purple-600">
-          Explore AI Agents available on Pearl
-        </Link>
-      </div>
-      <Image
-        src="/images/accelerator/agents.png"
-        alt="AI Agents"
-        width={364}
-        height={232}
-        className="object-contain mt-8"
-      />
-    </div>
+    <Pearl />
   </SectionWrapper>
 );
