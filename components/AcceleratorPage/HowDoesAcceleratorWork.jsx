@@ -55,42 +55,32 @@ const list = [
 
 export const HowDoesAcceleratorWork = () => (
   <SectionWrapper customClasses="py-12 mb-12 max-sm:mx-4">
-    <div className="max-w-[720px] mx-auto flex flex-col gap-4">
-      <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-4 mt-12`}>
-        Only 10 teams will secure funding — is it yours?
-      </h1>
-      <p className="mb-24">
-        The Olas Accelerator is awarding $1M (USDC) in grants + OLAS Dev Rewards
-        to developers building AI Agents for Pearl — The Agent App Store. The
-        top 10 teams will receive milestone-based funding to develop, launch,
-        and scale their agents. Spots are limited —{' '}
-        <ExternalLink href={ACCELERATOR_APPLY_URL}>apply today</ExternalLink>!
-      </p>
+    <div className="max-w-[720px] mx-auto">
       <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
         How does the Olas Accelerator work?
       </h1>
-    </div>
-    <div className="grid grid-cols-1 max-w-[720px] rounded-xl border-1.5 mx-auto">
-      {list.map((item, index) => {
-        let borderClass = '';
-        index == 0 ? (borderClass = '') : (borderClass = 'border-t-1.5');
-        return (
-          <div
-            key={index}
-            className={`flex gap-2 border-purple-200 lg:gap-4 overflow-hidden ${borderClass}`}
-          >
-            <div className="border-r-1.5 border-purple-200 w-[80px] h-full max-sm:min-h-[120px] max-sm:min-w-[80px] aspect-square flex justify-center text-center bg-gradient-to-t from-[#FAF0FF]">
-              <span className="text-[56px] font-bold text-purple-400 my-auto">
-                {index + 1}
-              </span>
+      <div className="grid grid-cols-1 rounded-xl border-1.5">
+        {list.map((item, index) => {
+          let borderClass = '';
+          index == 0 ? (borderClass = '') : (borderClass = 'border-t-1.5');
+          return (
+            <div
+              key={index}
+              className={`flex gap-2 border-purple-200 lg:gap-4 overflow-hidden ${borderClass}`}
+            >
+              <div className="border-r-1.5 border-purple-200 w-[80px] h-full max-sm:min-h-[120px] max-sm:min-w-[80px] aspect-square flex justify-center text-center bg-gradient-to-t from-[#FAF0FF]">
+                <span className="text-[56px] font-bold text-purple-400 my-auto">
+                  {index + 1}
+                </span>
+              </div>
+              <div className="my-auto mr-4 py-4">
+                <div className="text-xl font-semibold mb-2">{item.title}</div>
+                <p className="text-base">{item.description}</p>
+              </div>
             </div>
-            <div className="my-auto mr-4 py-4">
-              <div className="text-xl font-semibold mb-2">{item.title}</div>
-              <p className="text-base">{item.description}</p>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   </SectionWrapper>
 );

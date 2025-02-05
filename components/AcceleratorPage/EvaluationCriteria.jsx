@@ -7,11 +7,20 @@ const criteria = [
     desc: 'Does the agent introduce a novel and valuable use case for Pearl users?',
   },
   {
-    title: 'Innovation and creativity',
+    title: 'Technical Execution',
     desc: (
       <ol className="list-decimal ml-6">
         <li className="mb-2">
-          How well is the agent integrated into the Pearl App?
+          <p className="mb-2">
+            How well is the agent integrated into the Pearl App?
+          </p>
+          <ol className="list-[lower-alpha] ml-6">
+            <li className="mb-2">
+              Users can run your AI Agent locally on their devices.
+            </li>
+            <li className="mb-2">Agents act on the user&apos;s behalf.</li>
+            <li className="mb-2">Many users can use the same agent.</li>
+          </ol>
         </li>
         <li className="mb-2">
           Does it meet performance and reliability standards?
