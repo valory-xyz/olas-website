@@ -94,5 +94,13 @@
     "url": "/agents-unleashed",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "a7b5c74d-9b72-42d7-986d-dabf2f45f8ae",
+    "title": "Accelerator",
+    "description": "Build AI agents for Pearl: the agent app store & get paid.",  
+    "url": "/accelerator",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["operate"]
   }
 ]
