@@ -35,7 +35,7 @@ const steps = [
 ];
 
 const Only10Teams = () => (
-  <div className="max-w-[720px] mx-auto flex flex-col gap-4 mb-20">
+  <div className="max-w-[720px] mx-auto flex flex-col gap-4 mb-12 md:mb-20">
     <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-4 mt-12`}>
       Only 10 teams will secure funding — is it yours?
     </h1>
@@ -50,9 +50,12 @@ const Only10Teams = () => (
 );
 
 const DisplaySteps = () => (
-  <div className="flex flex-row mx-auto px-8 max-w-5xl justify-between mb-20">
+  <div className="flex flex-col md:flex-row mx-auto xl:px-8 max-w-5xl justify-between max-md:gap-y-4 mb-12 md:mb-20">
     {steps.map((item, index) => (
-      <Card key={index} className="w-[305px] p-5 flex flex-col gap-4">
+      <Card
+        key={index}
+        className="md:w-[305px] p-5 flex flex-col mx-auto gap-4"
+      >
         <Image src={item.icon} alt={item.title} width={64} height={64} />
         <p className="text-xl font-semibold">{item.title}</p>
         <div className="inline">{item.description}</div>
@@ -65,7 +68,7 @@ export const WhatIsPearl = () => (
   <SectionWrapper>
     <Only10Teams />
     <DisplaySteps />
-    <div className="max-w-[964px] mx-auto flex justify-between">
+    <div className="max-w-[964px] mx-auto max-sm:flex-col flex justify-between">
       <div className="flex flex-col gap-4 max-w-[470px]">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-2`}>
           What is Pearl
@@ -89,7 +92,7 @@ export const WhatIsPearl = () => (
         alt="AI Agents"
         width={364}
         height={232}
-        className="object-none"
+        className="object-contain mt-8"
       />
     </div>
   </SectionWrapper>
