@@ -36,7 +36,7 @@ export const HowToApply = () => (
             with a proposal, including:
           </div>
           <div>
-            <div className="font-semibold text-xl mb-2">
+            <div className="font-semibold text-xl mb-1">
               Purpose & functionality
             </div>
             <p>
@@ -44,14 +44,14 @@ export const HowToApply = () => (
             </p>
           </div>
           <div>
-            <div className="font-semibold text-xl mb-2">Technical plan</div>
+            <div className="font-semibold text-xl mb-1">Technical plan</div>
             <p>
               A technical implementation plan, highlighting an integration with
               Pearl.
             </p>
           </div>
           <div>
-            <div className="font-semibold text-xl mb-2">Adoption plan</div>
+            <div className="font-semibold text-xl mb-1">Adoption plan</div>
             <p>An adoption strategy to achieve the 100 DAA user milestone.</p>
           </div>
         </div>
@@ -64,7 +64,7 @@ export const HowToApply = () => (
           <div key={index} className="flex flex-row gap-2">
             <SquareCheck size={28} className="text-purple-700" />
             <div className="flex flex-col mb-8">
-              <div className="font-semibold text-xl">{item.title}</div>
+              <div className="font-semibold text-xl mb-1">{item.title}</div>
               <p>{item.description}</p>
             </div>
           </div>
