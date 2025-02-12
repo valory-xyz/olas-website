@@ -202,7 +202,10 @@ const TOKEN_DETAILS = [
     network: 'Mode',
     address: '0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9',
     explorerBaseUrl: 'https://explorer.mode.network/address/',
-    exchange: null,
+    exchange: {
+      name: 'Balancer',
+      url: 'https://balancer.fi/pools/mode/v2/0xd1dbea51c7f23f61d020e2602d0d157d132faafc00020000000000000000000e',
+    },
     bridge: {
       name: 'Mode Bridge',
       url: 'https://superbridge.app/mode',
