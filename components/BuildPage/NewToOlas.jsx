@@ -1,5 +1,4 @@
 import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import { AcademyTable } from 'components/AcademyTable';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
@@ -81,19 +80,6 @@ export const NewToOlas = () => (
           </div>
         </Card>
       ))}
-
-      <div className="md:col-span-3 mt-12 overflow-x-auto">
-        <h2 className="font-extrabold text-4xl lg:mb-6 xl:mb-8 my-6 lg:my-auto text-center">
-          Olas Dev Academy: A Track Record of Success
-        </h2>
-        <p className="text-gray-600 text-center mx-auto mb-12">
-          The Olas Dev Academy exists to equip developers with the skills and
-          tools needed to build autonomous agents using the Olas Stack. Since
-          its inception, the Academy has consistently delivered impactful
-          results. Here&apos;s a snapshot of what&apos;s been accomplished:
-        </p>
-        <AcademyTable />
-      </div>
 
       <div className="mx-auto md:col-span-3 justify-center mt-8">
         <Button
