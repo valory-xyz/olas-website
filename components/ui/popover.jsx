@@ -1,9 +1,9 @@
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { InfoIcon } from 'components/ui/info-icon';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { InfoIcon } from 'components/ui/info-icon';
-import * as Tooltip from '@radix-ui/react-tooltip';
 
-export const Popover = ({ children }) => {
+export const Popover = ({ children, text, align, side, className }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = (e) => {
@@ -14,12 +14,16 @@ export const Popover = ({ children }) => {
   return (
     <Tooltip.Provider>
       <Tooltip.Root delayDuration={0} open={open} onOpenChange={setOpen}>
-        <Tooltip.Trigger onClick={handleOpen} className="text-gray-500">
+        <Tooltip.Trigger
+          onClick={handleOpen}
+          className={`text-gray-500 ${className}`}
+        >
+          {text}
           <InfoIcon />
         </Tooltip.Trigger>
         <Tooltip.Content
-          side="top"
-          align="center"
+          side={side}
+          align={align}
           className="p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1"
         >
           <p>{children}</p>
@@ -30,5 +34,16 @@ export const Popover = ({ children }) => {
 };
 
 Popover.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  text: PropTypes.string,
+  className: PropTypes.string,
+  align: PropTypes.string,
+  side: PropTypes.string,
+};
+
+Popover.defaultProps = {
+  text: undefined,
+  className: '',
+  align: 'center',
+  side: 'top',
 };

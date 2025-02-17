@@ -1,4 +1,5 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 const ACTUAL_BLOG_POST_URL = 'https://www.valory.xyz/post/co-owned-ai';
@@ -226,14 +227,16 @@ export const Content = () => (
         AI agents, whether you&apos;re in crypto and curious about AI or in AI,
         curious about crypto.
       </p>{' '}
-      <p>
+      <div>
         The &apos;Agents Unleashed&apos; event series is hosted by Olas and
-        coordinated by Valory. Both organizations were established in 2021,
-        dedicated to leveraging AI agents to enable co-owned AI. They started
-        Agents Unleashed as a way to bring together those working on agents to
-        share best practices, innovations and common language, ultimately
-        unleashing AI agents for the betterment of humanity.
-      </p>
+        coordinated by{' '}
+        <ExternalLink href="https://www.valory.xyz/">Valory</ExternalLink>. Both
+        organizations were established in 2021, dedicated to leveraging AI
+        agents to enable co-owned AI. They started Agents Unleashed as a way to
+        bring together those working on agents to share best practices,
+        innovations and common language, ultimately unleashing AI agents for the
+        betterment of humanity.
+      </div>
     </div>
   </SectionWrapper>
 );

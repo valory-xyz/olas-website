@@ -4,7 +4,7 @@ export const DOCS_BASE_URL = 'https://docs.autonolas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
-  { link: '/learn', text: 'Learn' },
+  { link: '/learn', text: 'What is Olas?' },
   { text: 'Resources', submenu: resources },
   {
     link: 'https://contribute.olas.network/roadmap',
@@ -32,9 +32,11 @@ export const MECH_ECONOMY_DASHBOARD_URL =
 export const UNIQUE_STAKERS_QUERY_ID = '4031179';
 export const UNIQUE_BUILDERS_QUERY_ID = '4331416';
 export const VEOLAS_HOLDERS_QUERY_ID = '4334906';
+export const A2A_TRANSACTIONS_QUERY_ID = '4414339';
 export const OLAS_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/autonolas-ecosystem-activity';
 export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
+export const DAILY_CONTRIBUTORS_QUERY_ID = '4349554';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
@@ -45,3 +47,7 @@ export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
 export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
 export const LAUNCH_URL = 'https://launch.olas.network/';
 export const VEOLAS_URL = 'https://govern.olas.network/veolas';
+
+export const OLAS_API_URL = 'https://api.olas.autonolas.tech';
+export const ACCELERATOR_APPLY_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSed_jc5XNlnib0m9yG2IRo8_PKFNPwp0DFTdbph4LpR9E9uhg/viewform';

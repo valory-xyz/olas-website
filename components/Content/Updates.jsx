@@ -9,13 +9,17 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+const QUARTERLY_UPDATES_FUNNEL_ID = 8;
+
 export const Updates = ({ limit }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
     'pagination[limit]': limit,
     filters: {
-      id: { $gte: 80, $lte: 86 },
+      funnel: {
+        id: { $eq: QUARTERLY_UPDATES_FUNNEL_ID },
+      },
     },
   };
 
@@ -32,7 +36,7 @@ export const Updates = ({ limit }) => {
     <section>
       <div>
         <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
-          Quarterly updates
+          Quarterly Updates
         </h2>
 
         <p className="mb-8">

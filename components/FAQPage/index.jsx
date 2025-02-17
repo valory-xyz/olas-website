@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 import { LinkIcon } from 'lucide-react';
-import PropTypes from 'prop-types';
 
 import { Card } from 'components/ui/card';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 const faqList = [
@@ -55,6 +55,47 @@ const faqList = [
         ),
       },
       {
+        id: 'olas-is-trying-to-solve',
+        title: 'What is the problem Olas is trying to solve?',
+        desc: (
+          <>
+            <p className="mb-3">
+              The best AI is increasingly agentic but centralized.
+            </p>
+            <p className="mb-3">
+              {' '}
+              Everyone (end users, businesses, governments) wants general
+              purpose autonomous AI agents to do valuable (health, wealth,
+              wellbeing, all industries, all services) things for them.
+            </p>
+            <p className="mb-3">
+              {' '}
+              As it stands, the best AI agents will be provided by centralized
+              labs (e.g., OpenAI, Anthropic, DeepMind, etc.) and require all
+              users to pay them a continuous tax.{' '}
+            </p>
+            <p className="mb-3">This is the problem that Olas is solving.</p>
+          </>
+        ),
+      },
+      {
+        id: 'olas-solution',
+        title: "What is Olas' solution?",
+        desc: (
+          <>
+            <p className="mb-3">
+              Olas is a path to powerful AI that is user-owned.
+            </p>
+            <p className="mb-3">
+              It is a coordination protocol for autonomous AI agents that
+              bootstraps the best agents and incentivizes them to be
+              open-source! Users can share in the growth of the protocol and own
+              their powerful agents outright.
+            </p>
+          </>
+        ),
+      },
+      {
         id: 'use-cases',
         title: 'What are the main products/use cases?',
         desc: (
@@ -77,10 +118,10 @@ const faqList = [
             <p className="mb-3">
               The{' '}
               <Link href="/quarterly-updates" className="text-purple-600">
-                quarterly updates
+                Quarterly Updates
               </Link>{' '}
-              summarize progress during the last quarter and what to look out
-              for during the next one.
+              page summarize progress during the last quarter and what to look
+              out for during the next one.
             </p>
             <p className="mb-3">
               <Link
@@ -89,8 +130,8 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                This &apos;Week in Olas&apos; Twitter summary thread, is updated
-                weekly by Olas agents, autonomously
+                The &apos;Week in Olas&apos; Twitter summary thread is updated
+                weekly by autonomous Olas agents
               </Link>
               , summarizing what&apos;s happened in the Olas ecosystem in the
               past week.
@@ -128,7 +169,7 @@ const faqList = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              in the order of 10s of thousands of dollars
+              in the order of tens of thousands of dollars
             </Link>
             .
           </p>
@@ -155,10 +196,9 @@ const faqList = [
               the DAO members love decentralization
             </Link>
             . The Fully Diluted Valuation during the LBP varied between a bottom
-            of $12m and a closing of $74.6m FDV, raising a $1.2m total volume
-            from 149 holders{' '}
+            of $12m and a closing of $74.6m FDV,{' '}
             <Link href="/blog/lbp-stats" className="text-purple-600">
-              (https://olas.network/blog/lbp-stats)
+              raising a $1.2m total volume from 149 holders
             </Link>
             ​​. All funds collected will be strictly used to{' '}
             <a href="blog/olas-public-launch" className="text-purple-600">
@@ -192,11 +232,11 @@ const faqList = [
         title: "What's the difference between Olas and Autonolas?",
         desc: (
           <p>
-            At launch, the project was called &apos;Autonolas&apos; which
-            combined &apos;autonomy&apos; and &apos;olas&apos;. &apos;Olas&apos;
-            means &apos;waves&apos; in Spanish. Now, the project often goes by
-            the nickname &apos;Olas&apos;, becoming known as &apos;crypto&apos;s
-            ocean of agents&apos; 🌊.
+            Upon its inception, the project was named &apos;Autonolas&apos;, a
+            combination of the words &apos;autonomy&apos; and &apos;olas&apos;;
+            the latter meaning &apos;waves&apos; in Spanish. Today, the project
+            is commonly referred to as &apos;Olas&apos;, and has earned the
+            moniker &apos;crypto&apos;s ocean of agents&apos;.
           </p>
         ),
       },

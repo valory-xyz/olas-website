@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
 import {
   MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
@@ -33,9 +33,13 @@ const Hero = () => (
         </div>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left mb-6`}>
-          Advance the network, <br />
-          gain recognition
+          Post about Olas, <br />
+          earn rewards
         </h2>
+
+        <div className={TEXT_SMALL_CLASS}>
+          Spread the word about Olas and earn OLAS for your contributions.
+        </div>
 
         <div className="md:hidden">
           <HeroImage />

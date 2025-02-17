@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
 
 import {
-  TEXT_LARGE_CLASS,
   SCREEN_WIDTH_LG,
   SUB_HEADER_CLASS,
+  TEXT_LARGE_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
@@ -60,19 +60,19 @@ const mainList = [
 export const ProtocolKeyFeatures = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
-      <p>
-        Olas Protocol is a set of smart contracts for coordinating, securing,
-        and managing{' '}
+      <div>
+        The Olas Protocol provides a framework for coordinating and managing{' '}
         <Link href="/learn" className="text-purple-600">
-          agent systems
-        </Link>{' '}
-        on public blockchains. It provides a mechanism to one, incentivise
-        developers proportionally to their contributions, two, incentivise
-        operators to run agent systems, and three, incentivise bonders to
-        provide liquidity, collectively supporting the growth of a decentralised
-        ecosystem. Olas Protocol is currently deployed on multiple blockchains,
-        with plans for further expansions.
-      </p>
+          autonomous agent systems
+        </Link>
+        . Each part of the Protocol is designed to ensure scalability and
+        security. It provides a mechanism to: one, incentivize developers
+        proportionally to their contributions, two, incentivize operators to run
+        agent systems, and three, incentivize bonders to provide liquidity,
+        collectively supporting the growth of a decentralised ecosystem. Olas
+        Protocol is currently deployed on multiple blockchains, with plans for
+        further expansions.
+      </div>
 
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Key Components</h2>
 

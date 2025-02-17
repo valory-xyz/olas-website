@@ -112,7 +112,7 @@ export const Activity = () => {
       id="activity"
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
-        <Card className="flex flex-col gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+        <Card className="flex flex-col items-center gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <div className="flex items-center">
             <Image
               alt="Predict"

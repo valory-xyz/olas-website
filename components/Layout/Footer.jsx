@@ -49,44 +49,8 @@ const GET_INVOLVED_LINKS = [
   { title: 'Govern', link: '/govern' },
 ];
 
-const OTHER_APPS_LINKS = [{ title: 'Registry', link: REGISTRY_URL }];
-
-const RESOURCES_LINKS = [
-  {
-    title: 'Docs',
-    link: 'https://docs.autonolas.network',
-    isExternal: true,
-  },
-  {
-    title: 'Whitepaper',
-    link: '/whitepaper',
-  },
-  {
-    title: 'Videos & Podcasts',
-    link: '/videos',
-  },
-  {
-    title: 'DAO Constitution',
-    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
-    isExternal: true,
-  },
-  {
-    title: 'Blog',
-    link: '/blog',
-  },
-  {
-    title: 'Quarterly Updates',
-    link: '/quarterly-updates',
-  },
-  {
-    title: 'Calendar',
-    link: 'https://contribute.olas.network/calendar',
-    isExternal: true,
-  },
-  {
-    title: 'FAQ',
-    link: '/faq',
-  },
+const OTHER_APPS_LINKS = [
+  { title: 'Registry', link: REGISTRY_URL, isExternal: true },
   {
     title: 'Roadmap',
     link: 'https://contribute.olas.network/roadmap',
@@ -97,18 +61,65 @@ const RESOURCES_LINKS = [
     link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
     isExternal: true,
   },
+];
+
+const RESOURCES_LINKS = [
   {
-    title: 'Alter Orbis',
-    link: 'https://autonolas.world',
+    title: 'Docs',
+    link: 'https://docs.autonolas.network',
     isExternal: true,
+  },
+  {
+    title: 'Videos & Podcasts',
+    link: '/videos',
+  },
+  {
+    title: 'Blog',
+    link: '/blog',
+  },
+  {
+    title: 'Calendar',
+    link: 'https://contribute.olas.network/calendar',
+    isExternal: true,
+  },
+  {
+    title: 'Olas Dev Academy Videos',
+    link: 'https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl',
+    isExternal: true,
+  },
+  {
+    title: 'Use Cases',
+    link: '/explore',
+  },
+  {
+    title: 'Olas Accelerator',
+    link: '/accelerator',
+  },
+  {
+    title: 'Whitepaper',
+    link: '/whitepaper',
+  },
+  {
+    title: 'DAO Constitution',
+    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
+    isExternal: true,
+  },
+  {
+    title: 'Quarterly Updates',
+    link: '/quarterly-updates',
+  },
+  {
+    title: 'FAQ',
+    link: '/faq',
   },
   {
     title: 'Tokenomics',
     link: '/olas-token',
   },
   {
-    title: 'Use Cases',
-    link: '/explore',
+    title: 'Alter Orbis',
+    link: 'https://autonolas.world',
+    isExternal: true,
   },
   {
     title: 'Agents Unleashed',
@@ -119,33 +130,35 @@ const RESOURCES_LINKS = [
 const CURRENT_YEAR = new Date().getFullYear();
 
 const LinksBlock = ({ title, links, className }) => (
-  <div className={cn('flex flex-col gap-3 py-3', className)}>
-    <span className="block font-semibold mb-3 col-span-2">{title}</span>
-    {links.map((item) => {
-      const LinkTag = item.isExternal ? 'a' : Link;
-      return (
-        <span key={item.title} className="contents">
-          <LinkTag
-            href={item.link}
-            className="hover:text-black"
-            {...(item.isExternal
-              ? {
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                }
-              : {})}
-          >
-            <span className="whitespace-nowrap">
-              <span className="whitespace-normal">{item.title}</span>
-              &nbsp;
-              {item.isExternal && (
-                <MoveUpRight className="ml-1 inline" size={8} />
-              )}
-            </span>
-          </LinkTag>
-        </span>
-      );
-    })}
+  <div>
+    <span className="block font-semibold">{title}</span>
+    <div className={cn('flex flex-col gap-3 py-3', className)}>
+      {links.map((item) => {
+        const LinkTag = item.isExternal ? 'a' : Link;
+        return (
+          <span key={item.title} className="contents">
+            <LinkTag
+              href={item.link}
+              className="hover:text-black"
+              {...(item.isExternal
+                ? {
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }
+                : {})}
+            >
+              <span className="whitespace-nowrap">
+                <span className="whitespace-normal">{item.title}</span>
+                &nbsp;
+                {item.isExternal && (
+                  <MoveUpRight className="ml-1 inline" size={8} />
+                )}
+              </span>
+            </LinkTag>
+          </span>
+        );
+      })}
+    </div>
   </div>
 );
 
@@ -167,9 +180,9 @@ LinksBlock.defaultProps = {
 
 const Footer = () => (
   <footer className="bg-white px-4 lg:px-6 py-16">
-    <div className="mx-auto max-w-screen-xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-8 border-b-1.5 pb-12 mb-6 text-slate-700">
-      <div className="block md:flex lg:block justify-between md:justify-start col-span-2 md:col-span-4 lg:col-span-2 md:grid md:grid-cols-4">
-        <div className="col-span-2">
+    <div className="mx-auto max-w-screen-xl flex max-lg:flex-col gap-8 xl:gap-12 border-b-1.5 pb-12 mb-6 text-slate-700">
+      <div className="block md:flex lg:block justify-between md:justify-start">
+        <div className="">
           <Link href="/" className="block mb-3">
             <Image
               src="/images/olas-logo.svg"
@@ -178,9 +191,11 @@ const Footer = () => (
               height="60"
             />
           </Link>
-          <span>The Network for Co-owning AI</span>
+          <span className="whitespace-nowrap">
+            The Network for Co-owning AI
+          </span>
         </div>
-        <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end col-span-2 lg:justify-start lg:items-start lg:mt-6">
+        <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (
             <a
               key={item.title}
@@ -192,23 +207,29 @@ const Footer = () => (
               <Image
                 src={item.icon}
                 alt={item.title}
-                width="44"
-                height="44"
+                width="40"
+                height="40"
                 className="hover:filter hover:brightness-0"
               />
             </a>
           ))}
         </div>
       </div>
-      <LinksBlock title="Learn" links={LEARN_LINKS} />
-      <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
-      <LinksBlock title="Other Apps" links={OTHER_APPS_LINKS} />
-      <LinksBlock title="Resources" links={RESOURCES_LINKS} />
+      <div className="grid grid-cols-2 md:flex md:flex-row max-sm:gap-y-8 justify-between w-full flex-wrap">
+        <LinksBlock title="Learn" links={LEARN_LINKS} />
+        <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
+        <LinksBlock title="Other" links={OTHER_APPS_LINKS} />
+        <LinksBlock
+          title="Resources"
+          links={RESOURCES_LINKS}
+          className="lg:max-h-[300px] flex-wrap"
+        />
+      </div>
     </div>
     <div className="text-center text-slate-500">
       {`© Autonolas DAO ${CURRENT_YEAR} • `}
       <Link href="/disclaimer" className="hover:text-black">
-        Disclaimer
+        Disclaimer & Privacy Policy
       </Link>
     </div>
   </footer>

@@ -79,3 +79,33 @@
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
 }
+
+.card-purple {
+  @apply bg-gradient-to-t from-white to-purple-50 border-purple-200;
+}
+
+.card-lime {
+  @apply bg-gradient-to-t from-white to-lime-100 border-slate-200;
+}
+
+.card-rose {
+  @apply bg-gradient-to-t from-white to-rose-50 border-rose-200;
+}
+
+td, th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+tr, th {
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/neue-machina.woff2')format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

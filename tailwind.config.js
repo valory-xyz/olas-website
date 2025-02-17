@@ -55,6 +55,7 @@ module.exports = {
         body: ['Inter', 'system-ui', 'sans-serif'],
         heading: ['Manrope', 'sans-serif'],
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        machina: ["'Neue Machina'", 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -90,6 +91,7 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        'valory-green': '#00f422',
       },
       borderRadius: {
         lg: 'var(--radius)',

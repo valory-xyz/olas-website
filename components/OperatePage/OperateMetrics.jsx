@@ -1,5 +1,6 @@
 import { getTotalUniqueStakers } from 'common-util/api/dune';
 import { get7DaysAvgActivity } from 'common-util/api/flipside';
+import { SUB_HEADER_CLASS } from 'common-util/classes';
 import {
   OLAS_ECONOMY_DASHBOARD_URL,
   PREDICTION_ECONOMY_DASHBOARD_URL,
@@ -47,7 +48,7 @@ export const OperateMetrics = () => {
         id: 'DAA',
         imageSrc: 'DAA.png',
         labelText: 'Daily Active Agents (DAAs)',
-        subText: '7-day average',
+        subText: 'Agents running daily, averaged over 7 days',
         value: metrics?.dailyActiveAgents?.toLocaleString(),
         source: PREDICTION_ECONOMY_DASHBOARD_URL,
       },
@@ -57,6 +58,9 @@ export const OperateMetrics = () => {
 
   return (
     <SectionWrapper customClasses="mt-16">
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center mb-12`}>
+        Join hundreds already using Pearl
+      </h2>
       <Card className="grid md:grid-cols-2 gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
           let borderClassName = '';
@@ -77,7 +81,7 @@ export const OperateMetrics = () => {
           return (
             <div
               key={item.id}
-              className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
+              className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full w-full ${borderClassName}`}
             >
               <div className="flex gap-2 mb-5 justify-center">
                 <div className="aspect-square">

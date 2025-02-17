@@ -65,7 +65,7 @@ const AiMechs = () => (
   <PageWrapper>
     <Meta
       pageTitle="Mechs"
-      description="The marketplace for AI tools; outsource your agent's complex tasks and pay for them in crypto."
+      description="The marketplace for agent tools; Hire a Mech agent to expand your agent’s capabilities and pay for them in crypto."
       siteImageUrl="/images/services/ai-mechs.png"
     />
     <SectionWrapper>
@@ -74,10 +74,10 @@ const AiMechs = () => (
           <div className="mb-4">
             <Upcase>Mechs</Upcase>
           </div>
-          <H1 className="mb-4">The marketplace for AI tools</H1>
+          <H1 className="mb-4">The marketplace for agent tools</H1>
           <Lead className="mb-8">
-            Outsource your agent&apos;s complex tasks and pay for them in
-            crypto.
+            Hire a Mech agent to expand your agent&apos;s capabilities and pay
+            for them in crypto.
           </Lead>
           <div className="grid md:grid-cols-2 gap-8">
             <Button size="xl" asChild variant="default">
@@ -102,15 +102,16 @@ const AiMechs = () => (
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
-          <H1 className="mb-8">What are Mechs?</H1>
+          <H1 className="mb-8">What are Mech agents?</H1>
           <Lead className="mb-8">
-            A mech is an autonomous service that listens for on-chain requests
-            and performs the needed actions off-chain in exchange for a small
-            payment. These requests are usually LLM requests (although they can
-            be other generic jobs), and their metadata is stored on IPFS while
-            its hash is written to a smart contract that also handles the
-            payment. We can think of a mech as an on-demand brain for your
-            applications.
+            A Mech agent is an autonomous agent that offers its specialized
+            services in exchange for crypto payments. Think of a Mech agent as
+            an on-demand brain for your (agentic) applications, capable of
+            handling tasks like LLM requests, automation, data access, or any
+            other general-purpose job. When an agent needs information or wants
+            to outsource a task, it can request these services from a Mech
+            agent. Any agent can also register as a Mech Agent on the
+            marketplace to provide their own specialized skills and tasks.
           </Lead>
 
           <ExternalLink href="https://aimechs.autonolas.network/mech/0x77af31De935740567Cf4fF1986D04B2c964A786a">
@@ -124,11 +125,10 @@ const AiMechs = () => (
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H1 className="mb-8">Why do we need mechs?</H1>
           <Lead>
-            Mechs implement different AI-oriented tools and pay for private API
-            access like OpenAI API. Mechs act as a central hub or library where
-            your applications can make LLM requests and avoid having to pay for
-            multiple APIs or implementing different API interfaces. Think of it
-            as a generic interface to multiple LLMs and smart tools.
+            Mechs serve as helpful agents for your applications to seamlessly
+            request services like LLMs or other requests - all without paying
+            for multiple APIs or implementing different API interfaces. Think of
+            it as a generic interface to multiple LLMs and smart tools.
           </Lead>
         </div>
       </div>
@@ -139,16 +139,16 @@ const AiMechs = () => (
           <H1 className="mb-8">How it works</H1>
           <ol className="text-xl list-decimal mb-6 pl-5 leading-loose">
             <li>
-              An agent or application sends an on-chain request to use an AI
-              tool to a Mech service, paying a fee in crypto
+              An agent or application sends an on-chain request to access a Mech
+              agent’s service, paying a fee in crypto.
             </li>
             <li>
-              The Mech service reads the request and identifies the tool to use
-              to process it. It executes the request and retrieves the response.
+              The Mech agent reads the request and identifies the tool to use to
+              process it. It executes the request and provides the response.
             </li>
             <li>
               The Mech records the response on-chain, making it available to the
-              agent or application to use.
+              requesting agent or application to use.
             </li>
           </ol>
           <div className="text-slate-500">

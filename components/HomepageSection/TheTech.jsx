@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { Link, Upcase } from 'components/ui/typography';
 import { Card, CardTitle } from 'components/ui/card';
+import { ExternalLink, Link, Upcase } from 'components/ui/typography';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -26,7 +26,12 @@ const innovations = [
     descriptionSubText: 'Its key components are:',
     descriptionItems: [
       'Developer Rewards mechanism to incentivise agent code contributions.',
-      'Staking mechanism to incentivise active agent contributions.',
+      <>
+        <ExternalLink href="https://staking.olas.network/" hideArrow>
+          Staking mechanism
+        </ExternalLink>{' '}
+        to incentivise active agent contributions.
+      </>,
       'Bonding mechanism to incentivise liquidity provision.',
     ],
     link: '/protocol',

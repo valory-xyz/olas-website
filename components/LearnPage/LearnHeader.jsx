@@ -7,7 +7,7 @@ export const LearnHeader = () => (
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className={`${HEADER_LARGE_CLASS}`}>
-      <h2 className="text-center">Learn</h2>
+      <h2 className="text-center">What is Olas?</h2>
     </div>
   </SectionWrapper>
 );

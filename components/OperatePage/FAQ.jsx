@@ -1,8 +1,8 @@
 import { Accordion } from 'common-util/Accordion';
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { ExternalLink } from 'components/ui/typography';
 import Link from 'next/link';
-import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
+import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
 const faqList = [
   {
@@ -10,60 +10,31 @@ const faqList = [
     list: [
       {
         title: 'What is Pearl?',
-        desc: 'Pearl allows you to set up and run agents directly from your computer and earn OLAS.',
+        desc: 'Pearl is a desktop app that lets you set up and run autonomous AI agents directly from your computer, enabling you to get the benefits of your agents and earn potential OLAS rewards through staking.',
       },
       {
         title: 'How do I install Pearl?',
-        desc: (
-          <>
-            Visit the{' '}
-            <Link href="/operate#download" className="text-purple-600">
-              Pearl download section
-            </Link>
-            {', '}
-            download the app, and follow the installation guide provided.
-          </>
-        ),
+        desc: 'Simply download Pearl here and follow the step-by-step installation guide to get started.',
       },
       {
         title: 'What are the system requirements for Pearl?',
         desc: (
-          <>
-            Minimal system requirements for Mac devices:
-            <ul className="list-disc ml-6">
-              <li>800 MB of free RAM (suggested 1 GB)</li>
-              <li>1.3 GB disk space</li>
-            </ul>
-          </>
+          <ul className="list-disc ml-6">
+            <li>Minimum 800 MB of free RAM (1 GB recommended)</li>
+            <li>1.3 GB disk space.</li>
+          </ul>
         ),
       },
       {
         title: 'What happens if I forget my password?',
         desc: (
           <>
-            Pearl uses Safe smart wallets. Safe smart wallets are designed so
-            that, if you forget your password, you can restore access to your
-            funds using a backup wallet. This backup wallet acts as a second
-            signer on your Safe. To learn more about this third party product
-            and try to regain access, go to&nbsp;
-            <Link
-              href="https://safe.global/"
-              className="text-purple-600"
-              target="_blank"
-            >
-              safe.global
-            </Link>
-            , connect your backup wallet, and then access the Safe.
+            Pearl uses Safe smart wallets. If you forget your password, you can
+            restore access using your backup wallet. Visit{' '}
+            <ExternalLink href="https://safe.global/">Safe</ExternalLink> to
+            connect your backup wallet and recover your funds.
           </>
         ),
-      },
-      {
-        title: 'When do agents get evicted?',
-        desc: 'If your agent fails to meet activity targets for two consecutive epochs, it will be evicted from the staking contract.',
-      },
-      {
-        title: 'If my agent gets evicted, when can I start staking again?',
-        desc: "The maximum time you need to wait is 24 hours, unless the epoch checkpoint is called late. If you'd already been staked for 3 consecutive epochs prior to being evicted, you can immediately stake again, assuming there are still slots available.",
       },
     ],
   },
@@ -71,48 +42,51 @@ const faqList = [
     name: 'General',
     list: [
       {
-        title: 'Can I run an agent without using the app?',
+        title: 'Can I run an agent without using the Pearl app?',
         desc: (
           <>
-            Yes, for more technical control and flexibility, you can set up and
-            run agents manually. Visit{' '}
-            <Link href={OPERATE_AGENTS_URL} className="text-purple-600">
-              operate.olas.network
-            </Link>{' '}
-            to get started with one of the quickstarts.
+            Yes, using the CLI. For more technical control, you can set up and
+            run agents manually using Quickstart. Click{' '}
+            <ExternalLink href={CTA}>here</ExternalLink> to get started.
           </>
         ),
       },
       {
         title: 'How do I earn OLAS tokens?',
-        desc: 'Earn OLAS by staking OLAS and running agents on your computer.',
+        desc: 'Earn OLAS by running agents and staking tokens through Pearl or Quickstart.',
+      },
+      {
+        title: 'When do agents get evicted?',
+        desc: 'Agents are evicted if they fail to meet activity targets for two consecutive epochs.',
+      },
+      {
+        title: 'How soon can I stake again after eviction?',
+        desc: "You can stake again after a maximum wait of 24 hours, or immediately if you've staked for three consecutive epochs and slots are available.",
       },
       {
         title: 'Where can I get support if I encounter issues?',
         desc: (
           <>
-            There is no official support, but the{' '}
+            Join the community{' '}
             <Link
               target="_blank"
               href="https://discord.com/channels/899649805582737479/1244588374736502847"
               className="text-purple-600"
             >
-              Olas community
+              Discord
             </Link>{' '}
-            can help you if you run into any issues.
+            for help.
           </>
         ),
       },
       {
-        title: 'How can I optimize the performance of my agents?',
+        title: "How can I optimize my agent's performance?",
         desc: (
           <>
-            You can optimize agent performance through modifying the agent code.
-            Visit{' '}
-            <Link href={OPERATE_AGENTS_URL} className="text-purple-600">
-              operate.olas.network
-            </Link>{' '}
-            to get started.
+            Modify your agent&apos;s code for better results.{' '}
+            <ExternalLink href={CTA}>Click here</ExternalLink> for Quickstart
+            guides and technical resources. You can optimize agent performance
+            through modifying the agent code.
           </>
         ),
       },
@@ -125,7 +99,7 @@ export const FAQ = () => (
     customClasses={`border bg-no-repeat ${SECTION_BOX_CLASS}`}
     id="faq"
   >
-    <div className="max-w-screen-lg px-0 mx-auto lg:grid-cols-12 lg:px-12">
+    <div className="max-w-3xl px-0 mx-auto lg:grid-cols-12 lg:px-12">
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>
           Frequently asked questions

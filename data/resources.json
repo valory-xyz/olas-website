@@ -41,7 +41,7 @@
   },
   {
     "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    "title": "Quarterly updates",
+    "title": "Quarterly Updates",
     "description": "What happened in the last quarter and what's coming next",
     "url": "/quarterly-updates",
     "imageFilename": "awesome-autonolas.svg",
@@ -65,7 +65,7 @@
   },
   {
     "id": "36e2bab3-1ba7-48a5-9537-afa8516f72e1",
-    "title": "Dev Academy Videos",
+    "title": "Olas Dev Academy Videos",
     "description": "The what, why and how of becoming an Olas developer",
     "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
     "imageFilename": "awesome-autonolas.svg",
@@ -94,5 +94,13 @@
     "url": "/agents-unleashed",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "a7b5c74d-9b72-42d7-986d-dabf2f45f8ae",
+    "title": "Accelerator",
+    "description": "Build AI agents for Pearl: The Agent App Store & get paid.",  
+    "url": "/accelerator",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": ["operate"]
   }
 ]

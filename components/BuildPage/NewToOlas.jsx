@@ -80,6 +80,7 @@ export const NewToOlas = () => (
           </div>
         </Card>
       ))}
+
       <div className="mx-auto md:col-span-3 justify-center mt-8">
         <Button
           variant="default"

@@ -12,9 +12,9 @@ const keyFeatures = [
     ],
   },
   {
-    title: 'Decentralised Governance',
+    title: 'Decentralized Governance',
     subList: [
-      'Empower your applications with decentralised governance mechanisms, ensuring transparency and security in operations.',
+      'Empower your applications with decentralized governance mechanisms, ensuring transparency and security in operations.',
     ],
   },
   {
@@ -68,10 +68,10 @@ export const StackKeyFeatures = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <p>
-        Olas Stack is a comprehensive framework designed to facilitate the
+        The Olas Stack is a comprehensive framework built to optimize the
         creation, deployment, and management of{' '}
         <Link href="/learn" className="text-purple-600">
-          agent systems
+          autonomous agent systems
         </Link>
         . Leveraging advanced decentralized technologies, Olas Stack offers a
         robust infrastructure for developing complex autonomous applications

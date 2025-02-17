@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import { ArcElement, Chart } from 'chart.js';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement } from 'chart.js';
 import Verify from '../Verify';
 
 // manually register arc element – required due to chart.js tree shaking

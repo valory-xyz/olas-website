@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
+import { ArrowUpRight } from 'lucide-react';
 import NextLink from 'next/link';
+import PropTypes from 'prop-types';
 
 export const H1 = ({ children, className }) => (
   <h1
@@ -37,13 +38,13 @@ Upcase.propTypes = {
 
 export const ExternalLink = ({ children, className, href, hideArrow }) => (
   <a
-    className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
+    className={`inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}
     target="_blank"
     rel="noopener noreferrer"
   >
     {children}
-    {hideArrow ? null : <>&nbsp;↗</>}
+    {hideArrow ? null : <ArrowUpRight size={16} />}
   </a>
 );
 

@@ -3,7 +3,8 @@ import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const CERAMIC_URL = `https://ceramic-valory.hirenodes.io/api/v0/streams/${process.env.NEXT_PUBLIC_STREAM_ID}?sync=0`;
 
 const apiCall = async (subURL, params) => {
   const stringifyParams = qs.stringify(params);
@@ -86,4 +87,20 @@ export const getFunnel = async (id) => {
   const json = await apiCall(`funnels/${id}`, params);
   const data = get(json, 'data') || null;
   return data;
+};
+
+// ----------- CONTRIBUTORS -----------
+export const getTotalOlasContributors = async () => {
+  try {
+    const response = await fetch(CERAMIC_URL);
+    const json = await response.json();
+
+    const contributors = json.state.content.users;
+    const totalOlasContributors = Object.values(contributors).filter(
+      (e) => !!e.wallet_address && e.points !== 0,
+    ).length;
+    return totalOlasContributors;
+  } catch (error) {
+    console.error(error);
+  }
 };
