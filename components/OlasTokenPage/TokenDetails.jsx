@@ -162,7 +162,7 @@ const TOKEN_DETAILS = [
     },
     bridge: {
       name: 'Base Bridge',
-      url: 'https://etherscan.io/address/0x3154cf16ccdb4c6d922629664174b904d80f2c35',
+      url: 'https://superbridge.app/base',
     },
     bond: {
       guideUrl: `${BOND_BASE_URL}olas-usdc-via-balancer-on-base`,
