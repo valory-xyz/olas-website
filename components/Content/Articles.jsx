@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { Spinner } from '../Spinner';
 import Article from './Article';
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -32,7 +32,7 @@ const Articles = ({ limit, showSeeAll, displayFolders }) => {
   const stringifyParams = qs.stringify(params);
 
   const { data, isLoading } = useSWR(
-    `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
+    `${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
     fetcher,
   );
 

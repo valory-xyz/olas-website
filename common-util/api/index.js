@@ -10,7 +10,7 @@ const apiCall = async (subURL, params) => {
   const stringifyParams = qs.stringify(params);
 
   try {
-    const url = `${URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
+    const url = `${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`;
     const response = await fetch(url);
     const json = await response.json();
     return json;
