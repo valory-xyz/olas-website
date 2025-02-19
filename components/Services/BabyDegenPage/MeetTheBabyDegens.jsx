@@ -1,14 +1,14 @@
-import Image from 'next/image';
-import Link from 'next/link';
-
 import {
   SECTION_BOX_CLASS,
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
+import { QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { H1 } from 'components/ui/typography';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
@@ -100,9 +100,7 @@ const ModiusAgent = () => (
           <Link href="/operate#download">Run via Pearl</Link>
         </Button>
         <Button variant="outline" size="xl" className="w-fit">
-          <a href="https://github.com/valory-xyz/modius-quickstart">
-            Run via Quickstart
-          </a>
+          <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>
       </div>
     </div>
@@ -148,9 +146,7 @@ const OptimusAgent = () => (
         Optimus is currently available on Quickstart.
       </p>
       <Button variant="default" size="xl" className="w-fit">
-        <a href="https://github.com/valory-xyz/optimus-quickstart">
-          Run via Quickstart
-        </a>
+        <a href={QUICKSTART_URL}>Run via Quickstart</a>
       </Button>
     </div>
   </div>
