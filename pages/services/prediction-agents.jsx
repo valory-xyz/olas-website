@@ -1,4 +1,4 @@
-import { OPERATE_AGENTS_URL } from 'common-util/constants';
+import { OPERATE_AGENTS_URL, QUICKSTART_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -97,15 +97,13 @@ const PredictionAgents = () => (
         steps: [
           <ExternalLink
             key="1"
-            href="https://github.com/valory-xyz/trader-quickstart?tab=readme-ov-file#system-requirements"
+            href={`${QUICKSTART_URL}?tab=readme-ov-file#system-requirements`}
           >
             Get the requirements in place
           </ExternalLink>,
           <span key="2">
             Run the{' '}
-            <ExternalLink href="https://github.com/valory-xyz/trader-quickstart">
-              quickstart script
-            </ExternalLink>{' '}
+            <ExternalLink href={QUICKSTART_URL}>quickstart script</ExternalLink>{' '}
             - choose to participate in staking programs, if available
           </span>,
           'Tweak strategy to maximize earnings',
