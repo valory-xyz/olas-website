@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const CERAMIC_URL = `https://ceramic-valory.hirenodes.io/api/v0/streams/${process.env.NEXT_PUBLIC_STREAM_ID}?sync=0`;
 
 const apiCall = async (subURL, params) => {
