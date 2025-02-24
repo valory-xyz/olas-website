@@ -1,12 +1,13 @@
+import { Activity } from 'components/HomepageSection/Activity';
+import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
+import GetInvolved from 'components/HomepageSection/GetInvolved';
+import Hero from 'components/HomepageSection/Hero';
+import Media from 'components/HomepageSection/Media';
+import { PropelledBy } from 'components/HomepageSection/PropelledBy';
+import { TheTech } from 'components/HomepageSection/TheTech';
+import UseCases from 'components/HomepageSection/UseCases';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import Hero from 'components/HomepageSection/Hero';
-import { Activity } from 'components/HomepageSection/Activity';
-import UseCases from 'components/HomepageSection/UseCases';
-import { TheTech } from 'components/HomepageSection/TheTech';
-import { PropelledBy } from 'components/HomepageSection/PropelledBy';
-import GetInvolved from 'components/HomepageSection/GetInvolved';
-import Media from 'components/HomepageSection/Media';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Hero />
       <Activity />
       <UseCases />
+      <AgentsWorkingTogether />
       <TheTech />
       <GetInvolved />
       <PropelledBy />

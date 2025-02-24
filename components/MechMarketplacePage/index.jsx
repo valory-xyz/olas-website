@@ -3,14 +3,14 @@ import { CTA } from './CTA';
 import { Hero } from './Hero';
 import { MechAgentsInAction } from './MechAgentsInAction';
 import { PutYourAgentToWork } from './PutYourAgentToWork';
-import { WhyMechMarketplace } from './WhyMechMarketplace';
+import { WhyUseMechMarketplace } from './WhyUseMechMarketplace';
 
 const MechMarketplace = () => (
   <>
     <Hero />
+    <WhyUseMechMarketplace />
     <AIAgentsForHire />
     <PutYourAgentToWork />
-    <WhyMechMarketplace />
     <MechAgentsInAction />
     <CTA />
   </>
