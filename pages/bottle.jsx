@@ -1,13 +1,15 @@
-import { MAIN_TITLE_CLASS } from 'common-util/classes';
+import Bottle from 'components/BottlePage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const Bottle = () => (
+const BottlePage = () => (
   <PageWrapper>
-    <Meta pageTitle="Bottle" description="Bottle" />
-    <h2 className={`${MAIN_TITLE_CLASS} p-48 text-center`}>Coming soon...</h2>
-    <hr />
+    <Meta
+      pageTitle="Olas Bottle"
+      description="Find out about the latest Olas events at ETH Denver!"
+    />
+    <Bottle />
   </PageWrapper>
 );
 
-export default Bottle;
+export default BottlePage;
