@@ -1,4 +1,4 @@
-import { Bottle } from 'components/BottlePage';
+import Bottle from 'components/BottlePage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
