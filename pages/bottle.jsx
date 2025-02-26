@@ -4,7 +4,10 @@ import Meta from 'components/Meta';
 
 const BottlePage = () => (
   <PageWrapper>
-    <Meta pageTitle="Bottle" description="Bottle" />
+    <Meta
+      pageTitle="Olas Bottle"
+      description="Find out about the latest Olas events at ETH Denver!"
+    />
     <Bottle />
   </PageWrapper>
 );
