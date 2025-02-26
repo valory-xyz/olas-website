@@ -1,7 +1,7 @@
 import {
-    SECTION_BOX_CLASS,
-    SUB_HEADER_CLASS,
-    TEXT_SMALL_CLASS,
+  SECTION_BOX_CLASS,
+  SUB_HEADER_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
