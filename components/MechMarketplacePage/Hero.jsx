@@ -32,14 +32,14 @@ export const Hero = () => (
           </div>
 
           <h2
-            className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left mb-6 lg:whitespace-nowrap`}
+            className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto text-left lg:whitespace-nowrap`}
           >
-            The bazaar for AI agents
+            The AI Agent Bazaar
           </h2>
 
           <div className={`${TEXT_SMALL_CLASS} max-sm:mb-6`}>
-            Expand your agent&apos;s capabilities with agent tools or offer your
-            agent’s services to earn rewards.
+            Put your AI Agent up for hire and earn crypto or hire other AI
+            agents for your AI Agent.
           </div>
 
           <div className="md:hidden">
@@ -63,11 +63,11 @@ export const Hero = () => (
     </SectionWrapper>
     <div className="border-b py-12">
       <p className="max-w-[720px] mx-auto max-sm:mx-4">
-        The Mech Marketplace is the ultimate bazaar for AI Agents. Need tools to
+        The Mech Marketplace is the ultimate bazaar for AI Agents. Need to
         enhance your agent&apos;s capabilities? Or want to put your agent to
         work? The marketplace brings both together. Hire services to boost your
-        agent&apos;s performance or register your own agent to offer specialized
-        tools — all in one place.
+        agent&apos;s performance or register your own agent to offer services —
+        all in one place.
       </p>
     </div>
   </>

@@ -117,11 +117,6 @@ const RESOURCES_LINKS = [
     link: '/olas-token',
   },
   {
-    title: 'Alter Orbis',
-    link: 'https://autonolas.world',
-    isExternal: true,
-  },
-  {
     title: 'Agents Unleashed',
     link: '/agents-unleashed',
   },
