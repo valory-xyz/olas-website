@@ -8,10 +8,10 @@ import { SECTION_BOX_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from './utils';
 
 const OperateHeroImage = () => (
   <Image
-    src="/images/operate-page/operate-hero.png"
+    src="/images/operate-page/hero-image.png"
     alt="hero"
-    width={464}
-    height={432}
+    width={513}
+    height={480}
     className="mx-auto xl:w-full"
   />
 );

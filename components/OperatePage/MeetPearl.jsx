@@ -28,7 +28,7 @@ const agents = [
     description:
       'Creates customized AI influencer personas that post on X and perform tasks on Base chain.',
     link: '/services/agentsfun',
-    imgSrc: 'agentsfun.png',
+    imgSrc: 'agentsfun-base.png',
   },
   {
     title: 'Optimus agent',
@@ -44,7 +44,7 @@ const agents = [
     description:
       'Creates customized AI influencer personas that post on X and perform tasks on Celo chain.',
     link: '/services/agentsfun',
-    imgSrc: 'agentsfun.png',
+    imgSrc: 'agentsfun-celo.png',
     isComingSoon: true,
   },
   {
@@ -124,7 +124,7 @@ const AgentsList = () => (
 
 const ReadyToRun = () => (
   <div className="place-items-center flex flex-col gap-8 bg-slate-100 max-w-6xl mx-auto mt-20 rounded-xl py-12">
-    <h3 className="text-3xl tracking-tight font-semibold">
+    <h3 className="text-3xl tracking-tight font-semibold text-center max-sm:mx-4">
       Ready to run your agent?
     </h3>
     <Button variant="default" size="xl" asChild className="w-auto">
@@ -160,7 +160,7 @@ export const MeetPearlContent = () => (
     <Image
       className="mx-auto max-sm:overflow-hidden block md:mt-8"
       alt="Meet Pearl"
-      src="/images/operate-page/meet-the-operate-app.png"
+      src="/images/operate-page/discover-pearl.png"
       width={580}
       height={574}
     />
