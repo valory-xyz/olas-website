@@ -19,7 +19,7 @@ const list = [
     date: "Nov 13 '24",
     eventLink: 'https://lu.ma/tdjehba6',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pHCR8ARMw014ykrIEWuCok',
+      'https://www.youtube.com/watch?v=65P2B8xmyac&list=PLoP4p0r-X94pHCR8ARMw014ykrIEWuCok',
   },
   {
     title: 'Night at the Museum',
@@ -28,7 +28,7 @@ const list = [
     date: "Sep 20 '24",
     eventLink: 'https://lu.ma/nrupygoy',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pSt15zMdj4kT0uJgvWaaxe',
+      'https://www.youtube.com/watch?v=xrPngzB67sE&list=PLoP4p0r-X94pSt15zMdj4kT0uJgvWaaxe',
   },
   {
     title: 'Supercharging AI Agent Economies',
@@ -37,7 +37,7 @@ const list = [
     date: "Jul 10 '24",
     eventLink: 'https://lu.ma/osid96jj',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pjWZMuBfXHe5JxRntoo5qF',
+      'https://www.youtube.com/watch?v=yDbPSDgGpsM&list=PLoP4p0r-X94pjWZMuBfXHe5JxRntoo5qF',
   },
   {
     title: 'San Francisco Taco Tuesday',
@@ -46,7 +46,7 @@ const list = [
     date: "Jun 4 '24",
     eventLink: 'https://lu.ma/9m98xeqx',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94rjJfnE00eA_wskInUO2HBj',
+      'https://www.youtube.com/watch?v=BoIoXMpOpEY&list=PLoP4p0r-X94rjJfnE00eA_wskInUO2HBj',
   },
   {
     title: 'Olas Product Launch Party',
@@ -55,7 +55,7 @@ const list = [
     date: "May 21 '24",
     eventLink: 'https://lu.ma/ezds98r7',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94o19y92OSZlv5nbk4fO1QVV',
+      'https://www.youtube.com/watch?v=s7Nh86mo7AU&list=PLoP4p0r-X94o19y92OSZlv5nbk4fO1QVV',
   },
   {
     title: 'Supercharging the Decentralized AI Stack',
@@ -64,7 +64,7 @@ const list = [
     date: "Mar 1 '24",
     eventLink: 'https://tokenproof.xyz/event/agentsunleashed',
     replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb',
+      'https://www.youtube.com/watch?v=0_DkEF-r69s&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb',
   },
 ];
 
