@@ -11,6 +11,8 @@ const list = [
     location: 'Denver, ETHDenver',
     date: "Mar 1 '25",
     eventLink: 'https://lu.ma/7ulasmk8',
+    replayLink:
+      'https://www.youtube.com/playlist?list=PLoP4p0r-X94q7eRSr-tr79asIfBIqMRtN',
   },
   {
     title: 'Agents Unleashed Bangkok + The Humans Unleashed Party',
