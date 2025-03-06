@@ -6,7 +6,7 @@ const GovernPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Govern"
-      description="Join the decision-making process that drives growth in the Olas ecosystem; direct the future of Olas. Become an Olas Governor!"
+      description="Join Olas’ decision-making process. Shape the future of AI agents and the crypto ecosystem. Become an Olas Governor and drive growth."
     />
     <Govern />
   </PageWrapper>

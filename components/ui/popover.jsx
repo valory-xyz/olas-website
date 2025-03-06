@@ -17,6 +17,7 @@ export const Popover = ({ children, text, align, side, className }) => {
         <Tooltip.Trigger
           onClick={handleOpen}
           className={`text-gray-500 ${className}`}
+          aria-label="Open information tooltip"
         >
           {text}
           <InfoIcon />

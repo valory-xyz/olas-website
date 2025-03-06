@@ -1,14 +1,12 @@
-import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import servicesData from 'data/services.json';
-import Meta from 'components/Meta';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import servicesData from 'data/services.json';
+import Image from 'next/image';
+import PropTypes from 'prop-types';
 
 const FieldRow = ({ fieldName, value }) => (
   <div className="p-4 flex justify-between">
@@ -22,18 +20,7 @@ FieldRow.propTypes = {
   value: PropTypes.string.isRequired,
 };
 
-const ServiceDetail = () => {
-  const router = useRouter();
-  const { slug } = router.query;
-  const [service, setService] = useState(null);
-
-  useEffect(() => {
-    if (slug) {
-      const matchedService = servicesData.find((item) => item.slug === slug);
-      setService(matchedService);
-    }
-  }, [slug]);
-
+const ServiceDetail = ({ service }) => {
   if (!service) return <Spinner />;
 
   // if (slug === 'prediction-agents') return <PredictionAgentsPage />
@@ -149,3 +136,18 @@ const ServiceDetail = () => {
 };
 
 export default ServiceDetail;
+
+export async function getServerSideProps({ params }) {
+  const { slug } = params;
+  const matchedService = servicesData.find((item) => item.slug === slug);
+  if (!matchedService) {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      service: matchedService,
+    },
+  };
+}

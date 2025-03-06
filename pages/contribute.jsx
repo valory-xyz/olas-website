@@ -6,7 +6,7 @@ const ContributePage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Contribute"
-      description="Advance the network, gain recognition and earn tokens. Start contributing today!"
+      description="Enhance your network’s impact with Olas Contribute. Track and amplify contributions in crypto and AI with autonomous AI services."
     />
     <Contribute />
   </PageWrapper>

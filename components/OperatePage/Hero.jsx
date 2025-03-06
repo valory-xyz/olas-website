@@ -23,9 +23,9 @@ const Hero = () => (
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
       <div className="px-0 md:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
           OLAS PEARL
-        </div>
+        </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} lg:whitespace-nowrap mb-2`}>
           The agent app-store

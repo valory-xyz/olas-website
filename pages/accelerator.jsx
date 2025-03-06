@@ -6,7 +6,7 @@ const AcceleratorPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Olas Accelerator"
-      description="Build AI agents for Pearl: The Agent App Store & get paid."
+      description="Build AI agents for Pearl, the Agent App Store, and earn rewards. Create AI agents and get paid in the growing AI and crypto space."
     />
     <Accelerator />
   </PageWrapper>

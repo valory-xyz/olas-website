@@ -56,3 +56,11 @@ const BlogItem = () => {
 };
 
 export default BlogItem;
+
+export async function getServerSideProps({ params }) {
+  return {
+    props: {
+      id: params.id,
+    },
+  };
+}

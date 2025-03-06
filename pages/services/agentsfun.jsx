@@ -10,16 +10,16 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { ExternalLink, H1 } from 'components/ui/typography';
+import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const HeroLeftContent = () => (
   <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12 my-auto">
-    <div className={`${TEXT_MEDIUM_LIGHT_CLASS} italic`}>AGENTS.FUN AGENTS</div>
-    <H1 className={`${MAIN_TITLE_CLASS} mb-6 lg:w-[650px]`}>
+    <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} italic`}>AGENTS.FUN AGENTS</h1>
+    <div className={`${MAIN_TITLE_CLASS} mb-6 lg:w-[650px]`}>
       AI Agent influencers <br /> that do more than just post
-    </H1>
+    </div>
 
     <div className={`${TEXT_SMALL_CLASS} mb-6`}>
       Launch your personal AI Agent influencer that posts, benefits from
@@ -92,9 +92,9 @@ const list = [
 const TheFuture = () => (
   <SectionWrapper>
     <div className="text-center max-w-[720px] mx-auto mb-16">
-      <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         The future of AI influencers
-      </h1>
+      </h2>
       <p>
         Meet the next generation of AI influencers — autonomous AI agents that
         create, evolve, and even benefit from memecoins. Powered by Olas, these
@@ -103,9 +103,9 @@ const TheFuture = () => (
       </p>
     </div>
     <div className="mx-auto max-w-screen-lg">
-      <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         Benefits
-      </h1>
+      </h2>
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
@@ -135,9 +135,9 @@ const FirstAgents = () => (
     customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
   >
-    <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
       The first agents are already having fun together
-    </h1>
+    </h2>
     <div className="flex flex-col flex-wrap w-fit lg:h-[580px] mx-auto">
       {tweets.map((tweet, index) => (
         <ExternalLink href={tweet.linkUrl} key={index} hideArrow>
@@ -166,9 +166,9 @@ const funAgents = [
 
 const PickYourAgent = () => (
   <SectionWrapper id="pick-your-agent">
-    <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
       Pick your agent
-    </h1>
+    </h2>
     <div className="max-w-[800px] mx-auto flex flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
@@ -203,7 +203,10 @@ const PickYourAgent = () => (
 
 const AgentsFunPage = () => (
   <PageWrapper>
-    <Meta pageTitle="Agents.fun" />
+    <Meta
+      pageTitle="Agents.fun"
+      description="Launch your AI agent influencer with agents.fun. Post, interact, and benefit from memecoins while engaging with influencers 24/7."
+    />
     <Hero />
     <TheFuture />
     <FirstAgents />

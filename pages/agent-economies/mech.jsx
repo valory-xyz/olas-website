@@ -8,7 +8,10 @@ import Meta from 'components/Meta';
 
 const Mech = () => (
   <PageWrapper>
-    <Meta pageTitle="Mech" description="AI services for agent economies" />
+    <Meta
+      pageTitle="Mech"
+      description="Access powerful AI services for agent-based economies with Mech. Explore innovative solutions for creating, managing, and optimizing AI agents in the evolving world of crypto and AI technologies."
+    />
 
     <MechHero />
     <MechAgentMetrics />

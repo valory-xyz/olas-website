@@ -66,9 +66,9 @@ const Article = ({ article, href, showReadTime, showDate }) => {
         )}
 
         <div className="p-6 min-h-[150px]">
-          <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
+          <h1 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal line-clamp-2 min-h-[70px]">
             {title}
-          </h2>
+          </h1>
 
           {moreInfo && (
             <span className="text-sm md:text-2xl lg:text-sm text-gray-600">

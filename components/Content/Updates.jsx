@@ -35,9 +35,9 @@ export const Updates = ({ limit }) => {
   return (
     <section>
       <div>
-        <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+        <h1 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Quarterly Updates
-        </h2>
+        </h1>
 
         <p className="mb-8">
           Summarizing what happened in the Olas ecosystem in the last quarter

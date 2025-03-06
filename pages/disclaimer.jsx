@@ -2,7 +2,6 @@
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
-import SectionHeading from 'components/SectionHeading';
 
 const subClassName = 'pl-6 space-y-2';
 
@@ -14,9 +13,9 @@ const DisclaimerPage = () => (
     />
     <SectionWrapper backgroundType="SUBTLE_GRADIENT">
       <article className="max-w-[800px] mx-auto">
-        <SectionHeading size="text-4xl lg:text-2xl" color="text-purple-950">
+        <h1 className="tracking-tight text-4xl md:text-6xl lg:text-2xl text-purple-950 font-bold md:font-black mb-12">
           Disclaimer & Privacy Policy
-        </SectionHeading>
+        </h1>
         <div className="text-xl text-gray-600">
           <ol className="list-decimal space-y-4">
             <li>

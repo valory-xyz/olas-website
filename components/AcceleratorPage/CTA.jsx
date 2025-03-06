@@ -8,9 +8,9 @@ import Link from 'next/link';
 export const CTA = () => (
   <SectionWrapper backgroundType="SUBTLE_GRADIENT">
     <div className="text-center">
-      <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
         Ready to Build the Next Big AI Agent?
-      </h1>
+      </h2>
       <div className="flex flex-col md:flex-row md:divide-x max-sm:text-left max-sm:gap-2 w-fit mx-auto">
         <div className="flex flex-row place-items-center md:px-4">
           <Hexagon className="text-purple-600 mr-4" size={16} strokeWidth={4} />

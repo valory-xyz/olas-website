@@ -6,7 +6,7 @@ const ExplorePage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Explore"
-      description="Discover the diverse applications and potential of autonomous agent economies in transforming industries and driving innovation."
+      description="Dive into the world of autonomous agent economies! Discover how AI agents are transforming industries, driving innovation, and reshaping the future of decentralized systems in the crypto and AI space."
     />
     <Explore />
   </PageWrapper>

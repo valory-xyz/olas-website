@@ -6,7 +6,7 @@ import {
 import { QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { H1 } from 'components/ui/typography';
+import { H2 } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -158,7 +158,7 @@ export const MeetTheBabyDegens = () => (
     customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
   >
     <div className="text-center">
-      <H1>
+      <H2>
         Meet the{' '}
         <Image
           src="/images/services/babydegen/babydegen-icon.png"
@@ -168,7 +168,7 @@ export const MeetTheBabyDegens = () => (
           className="inline mt-4"
         />{' '}
         BabyDegens
-      </H1>
+      </H2>
     </div>
     <ModiusAgent />
     <hr />

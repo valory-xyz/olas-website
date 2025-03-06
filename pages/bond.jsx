@@ -6,7 +6,7 @@ const BondPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Bond"
-      description="Join the Olas ecosystem as a Bonder and get discounted OLAS. Provide liquidity, grow the network, and get more OLAS. Start bonding today!"
+      description="Join the Olas ecosystem as a Bonder to get discounted OLAS tokens. Provide liquidity, grow the crypto network, and earn rewards in the world of AI and blockchain. Start bonding and benefiting today!"
     />
     <Bond />
   </PageWrapper>

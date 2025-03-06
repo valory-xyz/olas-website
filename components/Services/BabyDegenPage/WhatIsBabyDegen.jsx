@@ -6,7 +6,7 @@ export const WhatIsBabyDegen = () => (
   <SectionWrapper customClasses="lg:p-24 py-12 border-b-1.5">
     <div className="grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
-        <h1 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h1>
+        <h2 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h2>
         <p className="mb-20">
           BabyDegen is your very own autonomous trading agent, designed to
           navigate the fast-paced world of DeFi. BabyDegen trades on your behalf
@@ -15,9 +15,9 @@ export const WhatIsBabyDegen = () => (
           your crypto trading journey.
         </p>
 
-        <h1 className={`${SUB_HEADER_CLASS} mb-8`}>
+        <h2 className={`${SUB_HEADER_CLASS} mb-8`}>
           Get ready to participate in AI agent DeFi
-        </h1>
+        </h2>
         <p className="mb-8">
           BabyDegen is designed for anyone ready to embrace the future of
           autonomous trading. Whether you&apos;re looking to safeguard your edge
