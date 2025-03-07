@@ -10,6 +10,14 @@ export const H1 = ({ children, className }) => (
   </h1>
 );
 
+export const H2 = ({ children, className }) => (
+  <h2
+    className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
+  >
+    {children}
+  </h2>
+);
+
 H1.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,

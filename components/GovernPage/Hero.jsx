@@ -7,8 +7,8 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
-import { Button } from 'components/ui/button';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
   <Image
@@ -27,9 +27,9 @@ export const Hero = () => (
   >
     <div className="grid max-w-screen-xl xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 mx-auto items-center">
       <div className="px-0 md:mb-12 md:col-span-6 lg:px-5 lg:text-left">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2`}>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2`}>
           OLAS GOVERN
-        </div>
+        </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto mb-6`}>
           Direct the future of Olas

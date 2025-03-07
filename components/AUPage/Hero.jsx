@@ -17,10 +17,10 @@ export const Hero = () => (
           height={120}
         />
 
-        <p className={`text-black max-w-[380px]`}>
+        <h1 className={`text-black max-w-[380px]`}>
           The premier AI Agent event series, showcasing the cutting-edge of
           crypto and AI.
-        </p>
+        </h1>
 
         <Button
           variant="default"

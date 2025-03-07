@@ -53,9 +53,9 @@ export const EvaluationCriteria = () => (
   <SectionWrapper customClasses="max-sm:mx-4 py-12 border-b-1.5">
     <div className="max-w-[720px] mx-auto">
       <div className="flex flex-col gap-2 mb-12">
-        <h1 className={`${SUB_HEADER_CLASS} font-semibold my-8`}>
+        <h2 className={`${SUB_HEADER_CLASS} font-semibold my-8`}>
           What support is provided?
-        </h1>
+        </h2>
         Selected teams will enter a 6-12 week self-paced development phase to
         build their MVPs. <br />
         <div className="flex flex-row gap-2">
@@ -72,9 +72,9 @@ export const EvaluationCriteria = () => (
         </div>
       </div>
       <div className="flex flex-col gap-8">
-        <h1 className={`${SUB_HEADER_CLASS} font-semibold mt-8`}>
+        <h2 className={`${SUB_HEADER_CLASS} font-semibold mt-8`}>
           Evaluation Criteria
-        </h1>
+        </h2>
         {criteria.map((item, index) => (
           <div key={index}>
             <div className="font-semibold text-xl mb-1">{item.title}</div>

@@ -24,9 +24,9 @@ export const HowToApply = () => (
   <div className="max-w-[720px] mx-auto max-sm:mx-4">
     <Card className="rounded-3xl border outline outline-8 outline-slate-100">
       <div className="px-6 md:px-12 border-b-1.5 border-dotted">
-        <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-8 mt-12`}>
+        <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-8 mt-12`}>
           How to apply to the Olas Accelerator
-        </h1>
+        </h2>
         <h2 className="text-3xl font-semibold mb-6">Submit your proposal</h2>
         <div className="flex flex-col gap-4 mb-8">
           <div>

@@ -6,7 +6,7 @@ const AUPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Agents Unleashed"
-      description="The premier AI Agent event series, showcasing the cutting-edge of crypto and AI."
+      description="Join Olas as a Bonder, get discounted OLAS tokens, provide liquidity, grow the network, and earn rewards in AI and crypto."
     />
     <AU />
   </PageWrapper>

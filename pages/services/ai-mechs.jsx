@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card';
-import { ExternalLink, H1, Lead, Upcase } from 'components/ui/typography';
+import { ExternalLink, H1, H2, Lead, Upcase } from 'components/ui/typography';
 import Image from 'next/image';
 
 const resources = [
@@ -102,7 +102,7 @@ const AiMechs = () => (
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
-          <H1 className="mb-8">What are Mech agents?</H1>
+          <H2 className="mb-8">What are Mech agents?</H2>
           <Lead className="mb-8">
             A Mech agent is an autonomous agent that offers its specialized
             services in exchange for crypto payments. Think of a Mech agent as
@@ -123,7 +123,7 @@ const AiMechs = () => (
     <SectionWrapper>
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
-          <H1 className="mb-8">Why do we need mechs?</H1>
+          <H2 className="mb-8">Why do we need mechs?</H2>
           <Lead>
             Mechs serve as helpful agents for your applications to seamlessly
             request services like LLMs or other requests - all without paying
@@ -136,7 +136,7 @@ const AiMechs = () => (
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0">
-          <H1 className="mb-8">How it works</H1>
+          <H2 className="mb-8">How it works</H2>
           <ol className="text-xl list-decimal mb-6 pl-5 leading-loose">
             <li>
               An agent or application sends an on-chain request to access a Mech
@@ -162,7 +162,7 @@ const AiMechs = () => (
       </div>
     </SectionWrapper>
     <SectionWrapper>
-      <H1 className="text-center mb-12">Case study: Mechs Predictions</H1>
+      <H2 className="text-center mb-12">Case study: Mechs Predictions</H2>
       <PredictionAgentsTable />
       <Lead className="mt-12 text-center">
         Check out{' '}
@@ -178,7 +178,7 @@ const AiMechs = () => (
     >
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-          <H1 className="mb-8">Integrate Mechs into your application</H1>
+          <H2 className="mb-8">Integrate Mechs into your application</H2>
           <h2 className="text-2xl font-semibold leading-none tracking-tight mb-4">
             For generic apps and scripts
           </h2>
@@ -223,7 +223,7 @@ const AiMechs = () => (
       id="resourcesSection"
     >
       <div className="max-w-screen-lg mx-auto">
-        <H1 className="text-center mb-12">Further resources</H1>
+        <H2 className="text-center mb-12">Further resources</H2>
         <div className="grid md:grid-cols-2 gap-4">
           {resources.map((resource, index) => {
             const FooterTag =

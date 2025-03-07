@@ -48,9 +48,9 @@ export const Videos = ({ isLoading, videos, limit }) => (
   <section>
     <div>
       <div>
-        <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+        <h1 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Videos & Podcasts
-        </h2>
+        </h1>
 
         {limit !== null && (
           <div className="mb-4">

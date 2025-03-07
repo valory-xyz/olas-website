@@ -15,6 +15,7 @@ export const BuildMetrics = () => {
       displayMetrics: [
         {
           key: 'build',
+          role: 'build',
           imageSrc: 'builders.png',
           labelText: 'Total Olas Builders',
           subText: 'Developing on the Olas Stack',

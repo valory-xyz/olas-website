@@ -36,9 +36,9 @@ const steps = [
 
 const Only10Teams = () => (
   <div className="max-w-[720px] mx-auto flex flex-col gap-4 mb-12 md:mb-20">
-    <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-4 mt-12`}>
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-4 mt-12`}>
       Only 10 teams will secure funding — is it yours?
-    </h1>
+    </h2>
     <p>
       The Olas Accelerator is awarding $1M (USDC) in grants + OLAS Dev Rewards
       to developers building AI Agents for Pearl — The Agent App Store. The top

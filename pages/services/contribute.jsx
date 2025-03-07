@@ -27,7 +27,7 @@ const Hero = () => (
   <SectionWrapper customClasses={`border-b ${SECTION_BOX_CLASS}`}>
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
       <div className="md:mb-12 lg:col-span-6">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>CONTRIBUTE</div>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>CONTRIBUTE</h1>
         <h2 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
           Track community impact, transform your network
         </h2>
@@ -221,7 +221,7 @@ const ContributePage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Contribute"
-      description="Enhance your network's influence with Olas Contribute. Leverage autonomous services to track, analyze, and amplify community contributions. Start now!"
+      description="Enhance your network's impact with Olas Contribute. Use autonomous AI services to track, analyze, and amplify contributions in the crypto and AI space. Start contributing today and make a difference!"
     />
     <Hero />
     <WhatIsOlasContributeService />

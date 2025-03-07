@@ -63,7 +63,7 @@ const howItWorksSteps = [
 export const HowItWorks = () => (
   <SectionWrapper>
     <div className="max-w-screen-lg mx-auto lg:px-50">
-      <h1 className={`${SUB_HEADER_CLASS} mb-12 text-center`}>How it works</h1>
+      <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center`}>How it works</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {howItWorksSteps.map(({ image }, index) => (

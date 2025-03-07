@@ -9,7 +9,10 @@ import { WhyOlasOptimus } from 'components/OptimusPage/WhyOlasOptimus';
 
 const Optimus = () => (
   <PageWrapper>
-    <Meta pageTitle="Optimus" description="AI agent-powered DeFi management" />
+    <Meta
+      pageTitle="Optimus"
+      description="Discover Optimus, AI-powered solutions for DeFi management. Leverage AI agents to optimize decentralized finance strategies."
+    />
 
     <OptimusHero />
     <OptimusAgentMetrics />

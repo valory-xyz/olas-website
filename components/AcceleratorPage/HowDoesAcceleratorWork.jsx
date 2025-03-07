@@ -56,9 +56,9 @@ const list = [
 export const HowDoesAcceleratorWork = () => (
   <SectionWrapper customClasses="py-12 mb-12 max-sm:mx-4">
     <div className="max-w-[720px] mx-auto">
-      <h1 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12`}>
         How does the Olas Accelerator work?
-      </h1>
+      </h2>
       <div className="grid grid-cols-1 rounded-xl border-1.5">
         {list.map((item, index) => {
           let borderClass = '';

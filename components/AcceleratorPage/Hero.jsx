@@ -13,13 +13,11 @@ export const Hero = () => (
   <>
     <SectionWrapper backgroundType="SUBTLE_GRADIENT">
       <div className="flex flex-col mx-auto text-center max-w-[620px]">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>
-          OLAS ACCELERATOR
-        </div>
-        <h1 className={`${MAIN_TITLE_CLASS} text-center`}>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>OLAS ACCELERATOR</h1>
+        <h2 className={`${MAIN_TITLE_CLASS} text-center`}>
           $1 million grant <br />
           to build AI agents
-        </h1>
+        </h2>
 
         <div className={TEXT_SMALL_CLASS}>
           Build AI agents for Pearl: The Agent App Store & get paid.

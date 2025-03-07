@@ -1,7 +1,6 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
-import SectionHeading from '../SectionHeading';
 
 const Hero = () => (
   <SectionWrapper
@@ -23,18 +22,13 @@ const Hero = () => (
     xl:bg-cover "
   >
     <div className="max-w-screen-xl lg:px-12 mx-auto text-center">
-      <SectionHeading
-        other="lg:mb-4"
-        size="max-sm:text-6xl md:text-[4rem]"
-        color="text-black"
-        weight="font-extrabold"
-      >
+      <h1 className="tracking-tight text-4xl md:text-6xl max-sm:text-6xl md:text-[4rem] mb-12 text-black  font-extrabold lg:mb-4">
         Co-own AI
-      </SectionHeading>
-      <p className="mb-10 text-xl leading-8 text-gray-900 max-w-[552px]">
+      </h1>
+      <div className="mb-10 text-xl leading-8 text-gray-900 max-w-[552px]">
         Olas enables everyone to own a share of AI, specifically autonomous
         agent economies.
-      </p>
+      </div>
       <Button variant="default" size="xl" asChild>
         <Link href="#get-involved">Get Involved</Link>
       </Button>
