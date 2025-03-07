@@ -6,7 +6,7 @@ const LaunchPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Launch"
-      description="Create and deploy AI agent economies in your ecosystem. Manage agents and AI services with Olas Launcher."
+      description="Create and deploy AI agent economies in your ecosystem. Manage agents and AI services with Olas Launch."
     />
     <Launch />
   </PageWrapper>
