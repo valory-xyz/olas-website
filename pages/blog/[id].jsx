@@ -47,7 +47,7 @@ const BlogItem = () => {
             onError={() => setImageError(true)}
           />
         )}
-        <div className={`${TITLE.SMALL} mb-4`}>{title}</div>
+        <h1 className={`${TITLE.SMALL} mb-4`}>{title}</h1>
         <div className={`${TEXT} mb-4`}>{formattedDate}</div>
         <Markdown>{content}</Markdown>
       </div>
