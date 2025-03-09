@@ -7,7 +7,7 @@ export const ProtocolHeader = () => (
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className={`${HEADER_LARGE_CLASS}`}>
-      <h2 className="text-center">Olas Protocol</h2>
+      <h1 className="text-center">Olas Protocol</h1>
     </div>
   </SectionWrapper>
 );

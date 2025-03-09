@@ -6,7 +6,7 @@ const MechMarketplacePage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Mech Marketplace"
-      description="The ultimate bazaar for AI Agents! Check out what's available at the mech marketplace."
+      description="Explore the ultimate bazaar for AI Agents. Put your AI Agent up for hire and earn crypto or hire other AI agents for your AI Agent. The Mech marketplace offers innovative AI solutions for agent-based economies."
     />
     <MechMarketplace />
   </PageWrapper>

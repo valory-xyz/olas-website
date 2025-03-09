@@ -7,7 +7,7 @@ export const StackHeader = () => (
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className={`${HEADER_LARGE_CLASS}`}>
-      <h2 className="text-center">Olas Stack</h2>
+      <h1 className="text-center">Olas Stack</h1>
     </div>
   </SectionWrapper>
 );

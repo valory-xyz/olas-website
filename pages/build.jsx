@@ -6,7 +6,7 @@ const BuildPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Build"
-      description="Build on the Olas protocol and earn Dev Rewards, or get paid by contributing to external projects. Build agents, get rewarded. Become an Olas Builder today!"
+      description="Build on Olas protocol, earn Dev Rewards, create AI agents, or contribute to crypto projects. Become an Olas Builder and get paid."
     />
     <Build />
   </PageWrapper>

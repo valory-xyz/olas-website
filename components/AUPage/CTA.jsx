@@ -62,7 +62,7 @@ const list = [
     imageSrc: 'ai-stack.png',
     location: 'Denver, ETHDenver',
     date: "Mar 1 '24",
-    eventLink: 'https://tokenproof.xyz/event/agentsunleashed',
+    eventLink: 'https://x.com/autonolas/status/1754535517566431633',
     replayLink:
       'https://www.youtube.com/watch?v=0_DkEF-r69s&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb',
   },

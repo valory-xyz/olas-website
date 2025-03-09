@@ -6,11 +6,9 @@ import { Button } from 'components/ui/button';
 
 const LeftContent = () => (
   <div className="lg:col-span-5 lg:col-start-2 lg:p-0 lg:text-left lg:gap-0 lg:items-start md:mb-12 flex-col flex text-center item-center px-5 mb-2 gap-6">
-    <div
-      className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}
-    >
+    <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}>
       OLAS PREDICT
-    </div>
+    </h1>
 
     <h2 className={MAIN_TITLE_CLASS}>
       On-demand

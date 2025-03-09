@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Button } from 'components/ui/button';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import {
-  TEXT_SMALL_CLASS,
   MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
+  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
   <Image
@@ -27,9 +27,9 @@ export const Hero = () => (
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
       <div className="px-0 md:mb-12 md:col-span-6 lg:px-5 lg:text-left">
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
           OLAS LAUNCH
-        </div>
+        </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} md:my-6 lg:my-auto mb-6`}>
           Launch your own agent economy with ease

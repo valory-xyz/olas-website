@@ -14,7 +14,7 @@ import {
 } from 'components/ui/card';
 import { CTASection } from 'components/ui/section/cta';
 import { HowToSection } from 'components/ui/section/how-to';
-import { ExternalLink, H1, Lead, Upcase } from 'components/ui/typography';
+import { ExternalLink, H1, H2, Lead, Upcase } from 'components/ui/typography';
 import Image from 'next/image';
 
 const resources = [
@@ -92,6 +92,7 @@ const PredictionAgents = () => (
         path: '/images/services/how-to.png',
         width: 400,
         height: 400,
+        alt: 'How prediction agents work',
       }}
       body={{
         steps: [
@@ -111,12 +112,12 @@ const PredictionAgents = () => (
       }}
     />
     <SectionWrapper>
-      <H1 className="text-center mb-12">What Prediction Agents do</H1>
+      <H2 className="text-center mb-12">What Prediction Agents do</H2>
       <PredictionAgentsTable />
     </SectionWrapper>
     <SectionWrapper>
       <div className="max-w-screen-lg mx-auto">
-        <H1 className="text-center mb-12">Further resources</H1>
+        <H2 className="text-center mb-12">Further resources</H2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {resources.map((resource, index) => (
             <div key={index} className="mb-4 md:mb-0">
