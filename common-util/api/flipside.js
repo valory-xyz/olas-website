@@ -39,6 +39,19 @@ export const get7DaysAvgActivity = async () => {
   return Math.floor(average);
 };
 
+const A2A_TRANSACTIONS_ID = '7e9a5b20-b6e6-47d7-8420-2410542085d5';
+export const getA2ATransactions = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: A2A_TRANSACTIONS_ID,
+    });
+    const a2aTxs = get(result, "[1]['CUMULATIVE_TOTAL']") || null;
+    return a2aTxs;
+  } catch (error) {
+    console.error('Error in getA2ATransactions: ', error);
+  }
+};
+
 const SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID =
   '276784c3-8481-4b46-9334-6e579b524628';
 export const getSevenDayAvgDailyActiveAgents = async () => {
