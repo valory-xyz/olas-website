@@ -1,6 +1,6 @@
-import { getA2ATransactions } from 'common-util/api/dune';
 import {
   get7DaysAvgActivity,
+  getA2ATransactions,
   getTotalTransactionsCount,
   getTotalUnitsCount,
 } from 'common-util/api/flipside';
@@ -60,7 +60,7 @@ export const Activity = () => {
             {metrics?.a2aTransactions ? (
               <ExternalLink
                 className="text-2xl font-bold text-purple-600"
-                href="https://dune.com/queries/4414339/7394666"
+                href="https://flipsidecrypto.xyz/flipsideteam/q/PVARr5q0B7HD/mech-requests/visualizations/v2/34079b3c-8115-428b-9902-5a0afca3149e"
               >
                 {metrics.a2aTransactions.toLocaleString()}
               </ExternalLink>

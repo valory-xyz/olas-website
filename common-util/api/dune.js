@@ -1,5 +1,4 @@
 import {
-  A2A_TRANSACTIONS_QUERY_ID,
   DAILY_CONTRIBUTORS_QUERY_ID,
   MECH_TXS_QUERY_ID,
   UNIQUE_BUILDERS_QUERY_ID,
@@ -86,17 +85,6 @@ export const getVeOlasHolders = async () => {
     return veOlasHolders;
   } catch (error) {
     console.error('Error in getVeOlasHolders: ', error);
-    return;
-  }
-};
-
-export const getA2ATransactions = async () => {
-  try {
-    const json = await duneApiCall({ queryId: A2A_TRANSACTIONS_QUERY_ID });
-    const a2aTransactions = get(json, 'result.rows[0].total_requests');
-    return a2aTransactions;
-  } catch (error) {
-    console.error('Error in getA2ATransactions: ', error);
     return;
   }
 };
