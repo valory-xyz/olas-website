@@ -4,13 +4,9 @@ export const DOCS_BASE_URL = 'https://docs.autonolas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
-  { link: '/learn', text: 'What is Olas?' },
-  { text: 'Resources', submenu: resources },
-  {
-    link: 'https://contribute.olas.network/roadmap',
-    text: 'Roadmap',
-    isExternal: true,
-  },
+  { link: '/blog', text: 'Blog' },
+  { link: '/faq', text: 'FAQ' },
+  { text: 'More resources', submenu: resources },
 ];
 
 export const WHITEPAPER = '/documents/whitepaper/Whitepaper v1.0.pdf';

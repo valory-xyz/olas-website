@@ -1,11 +1,11 @@
+import * as NavigationMenu from '@radix-ui/react-navigation-menu';
+import { MENU_DATA } from 'common-util/constants';
+import { Button } from 'components/ui/button';
+import { cn } from 'lib/utils';
+import { AlignJustify, ChevronDown, MoveUpRight, X } from 'lucide-react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import Link from 'next/link';
-import { AlignJustify, ChevronDown, MoveUpRight, X } from 'lucide-react';
-import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { cn } from 'lib/utils';
-import { Button } from 'components/ui/button';
-import { MENU_DATA } from 'common-util/constants';
 
 const linkClassName =
   'flex w-full items-center justify-between text-xl font-medium border-t px-6 py-4 text-black focus:bg-accent focus:outline-none';
@@ -110,13 +110,13 @@ export const MenuMobile = ({ className }) => {
 
                 <NavigationMenu.Item className="p-6 border">
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="lg"
                     asChild
                     className="w-full"
                     onClick={toggleOpen}
                   >
-                    <Link href="/#get-involved">Get involved</Link>
+                    <Link href="/operate">Own your agent</Link>
                   </Button>
                 </NavigationMenu.Item>
               </NavigationMenu.List>

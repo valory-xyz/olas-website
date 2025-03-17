@@ -1,7 +1,6 @@
+import { Button } from 'components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import { Button } from 'components/ui/button';
 import { Menu } from './Menu';
 import { MenuMobile } from './MenuMobile';
 
@@ -21,12 +20,12 @@ const Header = () => (
         <Menu className="hidden md:block" />
         <MenuMobile className="md:hidden" />
         <Button
-          variant="outline"
+          variant="default"
           size="lg"
           asChild
           className="hidden md:inline-flex ml-auto"
         >
-          <Link href="/#get-involved">Get involved</Link>
+          <Link href="/operate">Own your agent</Link>
         </Button>
       </div>
     </nav>
