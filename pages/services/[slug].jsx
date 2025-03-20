@@ -23,8 +23,6 @@ FieldRow.propTypes = {
 const ServiceDetail = ({ service }) => {
   if (!service) return <Spinner />;
 
-  // if (slug === 'prediction-agents') return <PredictionAgentsPage />
-
   return (
     <PageWrapper>
       <Meta
