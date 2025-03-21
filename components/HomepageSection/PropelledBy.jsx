@@ -19,12 +19,14 @@ const FeaturedIn = () => (
         const { id, name, iconFilename, imageWidth, imageHeight } = item;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
-            <Image
-              src={`/images/featured-in/${iconFilename}`}
-              alt={name}
-              width={imageWidth ?? 216}
-              height={imageHeight ?? 30}
-            />
+            <a target="_blank" rel="noopener noreferrer" href={item.url}>
+              <Image
+                src={`/images/featured-in/${iconFilename}`}
+                alt={name}
+                width={imageWidth ?? 216}
+                height={imageHeight ?? 30}
+              />
+            </a>
           </div>
         );
       })}

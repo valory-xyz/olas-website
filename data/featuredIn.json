@@ -2,46 +2,55 @@
     {
         "id": "f92a7e8d-64b3-4a7e-b5b2-6c3509f810f5",
         "name": "Forbes",
-        "iconFilename": "forbes.svg"
+        "iconFilename": "forbes.svg",
+        "url": "https://www.forbes.com/sites/digital-assets/2025/02/06/three-ai-agents-built-on-blockchain-to-transform-crypto-defi-gaming/"
       },
       {
         "id": "f7458c6d-b312-4a5b-9d7c-f4c3b7dfbdf4",
         "name": "CoinDesk",
-        "iconFilename": "coindesk.svg"
+        "iconFilename": "coindesk.svg",
+        "url": "https://www.coindesk.com/markets/2025/02/27/olas-mech-marketplace-enables-ai-agents-to-hire-each-other-for-help"
       },
       {
         "id": "c380eb0d-e929-4e1f-b92a-9ad0d3747d2d",
         "name": "Hackernoon",
-        "iconFilename": "hackernoon.svg"
+        "iconFilename": "hackernoon.svg",
+        "url": "https://hackernoon.com/the-mech-marketplace-where-ai-agents-trade-skills-in-a-digital-bazaar"
       },
       {
         "id": "6c5ac42d-b380-4a1f-b4a7-9317688dbba3",
         "name": "Binance",
-        "iconFilename": "binance.svg"
+        "iconFilename": "binance.svg",
+        "url": "https://www.binance.com/en-ZA/square/post/20867113327681"
       },
       {
         "id": "edcbcc87-c054-426b-a571-18b5b09c0783",
         "name": "The Block",
-        "iconFilename": "the-block.svg"
+        "iconFilename": "the-block.svg",
+        "url": "https://www.theblock.co/post/338713/olas-raises-13-8-million-to-launch-pearl-an-app-store-for-autonomous-ai-agents-in-crypto"
       },
       {
         "id": "d387a23a-f8b6-40d9-a018-fc40f28d0cfd",
         "name": "CoinMarketCap",
-        "iconFilename": "coinmarketcap.svg"
+        "iconFilename": "coinmarketcap.svg",
+        "url": "https://coinmarketcap.com/community/articles/671fc1adce35f104e9babdfa/"
       },
       {
         "id": "3cf4932b-61d5-4ec4-8c33-e2261e5b1d78",
         "name": "Markets Insider",
-        "iconFilename": "markets-insider.svg"
+        "iconFilename": "markets-insider.svg",
+        "url": "https://markets.businessinsider.com/news/stocks/olas-introduces-proof-of-active-agent-poaa-staking-to-spawn-autonomous-ai-agent-economies-1033289519"
       },
       {
         "id": "9f2c37c4-2e24-409e-99a6-226b5baffcdc",
         "name": "CoinTelegraph",
-        "iconFilename": "cointelegraph.svg"
+        "iconFilename": "cointelegraph.svg",
+        "url": "https://cointelegraph.com/magazine/baby-degen-ai-agent-can-trade-crypto-for-you-24-7-but-theres-a-catch/"
       },
       {
         "id": "2a80f704-7fa8-4701-b4d5-3be1568e0c0f",
         "name": "Messari",
-        "iconFilename": "messari.svg"
+        "iconFilename": "messari.svg",
+        "url": "https://messari.io/report/unlocking-the-potential-of-ai-agents-in-crypto"
       }
 ]

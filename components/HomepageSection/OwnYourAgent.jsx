@@ -21,8 +21,8 @@ export const OwnYourAgent = () => (
       </SectionHeading>
       <p className="text-xl text-slate-600 mb-12">
         Pearl is the ultimate collection of AI agents. Choose from a variety of
-        AI agents to benefit from their capabilities while staking OLAS and earn
-        potential rewards.
+        AI agents to benefit from their capabilities while earning potential
+        rewards from OLAS staking.
       </p>
     </div>
 
