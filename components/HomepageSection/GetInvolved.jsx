@@ -76,14 +76,14 @@ const CARD_BG =
 
 const GetInvolved = () => (
   <SectionWrapper id="get-involved" customClasses="py-12 px-4 md:px-8 lg:p-24">
-    <div className="text-center">
+    <div className="text-center max-w-[640px] mx-auto">
       <SectionHeading
         size="max-sm:text-5xl"
         color="text-gray-900"
         weight="font-bold"
         other="mb-12"
       >
-        Choose your role & get involved
+        Choose Your Role & Get Involved In Growing Olas
       </SectionHeading>
       <p className="text-xl text-[#4D596A] mb-12">
         Benefit from Olas protocol, no matter what you bring to the table.

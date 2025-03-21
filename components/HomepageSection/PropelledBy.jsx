@@ -4,13 +4,38 @@ import Link from 'next/link';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import builders from 'data/builders.json';
 import chains from 'data/chains.json';
+import featuredIn from 'data/featuredIn.json';
 import friends from 'data/friends.json';
 import SectionHeading from '../SectionHeading';
 
-export const Chains = () => (
+const FeaturedIn = () => (
+  <section
+    id="featured-in"
+    className="max-w-screen-lg mx-auto text-center pb-16 mb-12 border-b-1.5"
+  >
+    <h3 className="text-2xl md:text-4xl font-bold mb-12">Featured In</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
+      {featuredIn.map((item) => {
+        const { id, name, iconFilename, imageWidth, imageHeight } = item;
+        return (
+          <div key={id} className="grayscale flex justify-center items-center">
+            <Image
+              src={`/images/featured-in/${iconFilename}`}
+              alt={name}
+              width={imageWidth ?? 216}
+              height={imageHeight ?? 30}
+            />
+          </div>
+        );
+      })}
+    </div>
+  </section>
+);
+
+const Chains = () => (
   <section
     id="chains"
-    className="max-w-screen-lg mx-auto text-center mb-28 scroll-m-28"
+    className="max-w-screen-lg mx-auto text-center pb-16 mb-12 border-b-1.5 scroll-m-28"
   >
     <h3 className="text-2xl md:text-4xl font-bold">Chains</h3>
     <p className="text-slate-700 text-xl max-w-[800px] mx-auto py-12">
@@ -36,8 +61,11 @@ export const Chains = () => (
   </section>
 );
 
-export const Builders = () => (
-  <section id="builders" className="max-w-screen-lg mx-auto text-center mb-28">
+const Builders = () => (
+  <section
+    id="builders"
+    className="max-w-screen-lg mx-auto text-center pb-16 mb-12 border-b-1.5"
+  >
     <h3 className="text-2xl md:text-4xl font-bold mb-4">Builders</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
       {builders.map((builder) => {
@@ -115,6 +143,7 @@ export const PropelledBy = () => (
     >
       Propelled by a growing ecosystem
     </SectionHeading>
+    <FeaturedIn />
     <Chains />
     <Builders />
     <MoreFriends />

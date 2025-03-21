@@ -1,0 +1,47 @@
+[
+    {
+        "id": "f92a7e8d-64b3-4a7e-b5b2-6c3509f810f5",
+        "name": "Forbes",
+        "iconFilename": "forbes.svg"
+      },
+      {
+        "id": "f7458c6d-b312-4a5b-9d7c-f4c3b7dfbdf4",
+        "name": "CoinDesk",
+        "iconFilename": "coindesk.svg"
+      },
+      {
+        "id": "c380eb0d-e929-4e1f-b92a-9ad0d3747d2d",
+        "name": "Hackernoon",
+        "iconFilename": "hackernoon.svg"
+      },
+      {
+        "id": "6c5ac42d-b380-4a1f-b4a7-9317688dbba3",
+        "name": "Binance",
+        "iconFilename": "binance.svg"
+      },
+      {
+        "id": "edcbcc87-c054-426b-a571-18b5b09c0783",
+        "name": "The Block",
+        "iconFilename": "the-block.svg"
+      },
+      {
+        "id": "d387a23a-f8b6-40d9-a018-fc40f28d0cfd",
+        "name": "CoinMarketCap",
+        "iconFilename": "coinmarketcap.svg"
+      },
+      {
+        "id": "3cf4932b-61d5-4ec4-8c33-e2261e5b1d78",
+        "name": "Markets Insider",
+        "iconFilename": "markets-insider.svg"
+      },
+      {
+        "id": "9f2c37c4-2e24-409e-99a6-226b5baffcdc",
+        "name": "CoinTelegraph",
+        "iconFilename": "cointelegraph.svg"
+      },
+      {
+        "id": "2a80f704-7fa8-4701-b4d5-3be1568e0c0f",
+        "name": "Messari",
+        "iconFilename": "messari.svg"
+      }
+]

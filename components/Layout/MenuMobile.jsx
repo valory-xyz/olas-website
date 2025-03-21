@@ -116,7 +116,7 @@ export const MenuMobile = ({ className }) => {
                     className="w-full"
                     onClick={toggleOpen}
                   >
-                    <Link href="/operate">Own your agent</Link>
+                    <Link href="/operate">Own Your Agent</Link>
                   </Button>
                 </NavigationMenu.Item>
               </NavigationMenu.List>

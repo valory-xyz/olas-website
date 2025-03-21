@@ -25,13 +25,27 @@ const Hero = () => (
       <h1 className="tracking-tight text-4xl md:text-6xl max-sm:text-6xl md:text-[4rem] mb-12 text-black  font-extrabold lg:mb-4">
         Co-own AI
       </h1>
-      <div className="mb-10 text-xl leading-8 text-gray-900 max-w-[552px]">
-        Olas enables everyone to own a share of AI, specifically autonomous
-        agent economies.
+      <div className="mb-10 text-xl leading-8 text-gray-900">
+        Olas enables everyone to own and monetize their AI agents.
       </div>
-      <Button variant="default" size="xl" asChild>
-        <Link href="#get-involved">Get Involved</Link>
-      </Button>
+      <div className="flex gap-8">
+        <Button
+          variant="default"
+          size="xl"
+          asChild
+          className="hidden md:inline-flex ml-auto"
+        >
+          <Link href="/operate">Own Your Agent</Link>
+        </Button>
+        <Button
+          variant="outline"
+          size="xl"
+          asChild
+          className="hidden md:inline-flex ml-auto"
+        >
+          <Link href="#get-involved">Other Ways To Get Involved</Link>
+        </Button>
+      </div>
     </div>
   </SectionWrapper>
 );

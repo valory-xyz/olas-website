@@ -11,7 +11,7 @@ const SectionHeading = ({
   other,
 }) => (
   <h2
-    className={`tracking-tight text-4xl md:text-6xl ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
+    className={`text-4xl md:text-[40px] ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
   >
     {children}
   </h2>
