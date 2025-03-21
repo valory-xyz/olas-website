@@ -16,16 +16,18 @@ const criteria = [
           </p>
           <ol className="list-[lower-alpha] ml-6">
             <li className="mb-2">
-              Users can run your AI Agent locally on their devices.
+              Users run your AI Agent locally on their devices.
             </li>
-            <li className="mb-2">Agents act on the user&apos;s behalf.</li>
+            <li className="mb-2">
+              Agents will act autonomously on the user&apos;s behalf.
+            </li>
             <li className="mb-2">
               Many users can use an instance of the same agent code.
             </li>
           </ol>
         </li>
         <li className="mb-2">
-          Does it meet performance and reliability standards?
+          Does it meet high performance and reliability standards?
         </li>
       </ol>
     ),
@@ -40,12 +42,47 @@ const criteria = [
         <li className="mb-2">
           Does it contribute to the growth of Pearl&apos;s user base?
         </li>
+        <li className="mb-2">
+          Why would Pearl users want to operate your agent? What does it do for
+          them?
+        </li>
+        <li className="mb-2">
+          Pearl is a consumer application to make it easy to run agents. Is your
+          use case applicable for consumers?
+        </li>
       </ol>
     ),
   },
   {
     title: 'Ecosystem alignment',
-    desc: 'Does the agent enhance the functionality and appeal of the Pearl App?',
+    desc: (
+      <ol className="list-decimal ml-6">
+        <li className="mb-2">
+          Does the agent enhance the functionality and appeal of the Pearl App?
+        </li>
+        <li className="mb-2">
+          How does your agent use case benefit from having multiple operators?
+        </li>
+      </ol>
+    ),
+  },
+  {
+    title: 'Other Factors',
+    desc: (
+      <ol className="list-decimal ml-6">
+        <li className="mb-2">
+          You must have a legal entity to receive the grant money.
+        </li>
+        <li className="mb-2">
+          You must be willing to co-marketing your agent and provide regular
+          updates to the Olas community.
+        </li>
+        <li>
+          You must have a team and adequate external funding in addition to what
+          you receive from the Olas Accelerator.
+        </li>
+      </ol>
+    ),
   },
 ];
 
