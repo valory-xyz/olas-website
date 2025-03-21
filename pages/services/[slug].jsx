@@ -9,7 +9,7 @@ import Image from 'next/image';
 import PropTypes from 'prop-types';
 
 const FieldRow = ({ fieldName, value }) => (
-  <div className="p-4 flex justify-between">
+  <div className="p-4 flex justify-between gap-8 text-right">
     <div>{fieldName}</div>
     <div>{value}</div>
   </div>
@@ -23,12 +23,11 @@ FieldRow.propTypes = {
 const ServiceDetail = ({ service }) => {
   if (!service) return <Spinner />;
 
-  // if (slug === 'prediction-agents') return <PredictionAgentsPage />
-
   return (
     <PageWrapper>
       <Meta
         pageTitle={service.name}
+        description={service.description}
         siteImageUrl={`/images/services/${service.iconFilename}`}
       />
       <SectionWrapper>
