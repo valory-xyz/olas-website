@@ -44,9 +44,9 @@ const Articles = ({ limit, showSeeAll, displayFolders }) => {
     <section>
       <div>
         <div>
-          <h1 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+          <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
             Blog
-          </h1>
+          </h2>
           {displayFolders && (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
