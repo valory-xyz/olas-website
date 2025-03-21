@@ -18,10 +18,7 @@ const PageWrapper = ({ children }) => (
           className="mr-2"
         />
 
-        <Link
-          href="/blog/olas-announces-the-agent-app-store-after-core-contributor-raises-13-8m-led-by-1kx"
-          className="hover:underline ml-2"
-        >
+        <Link href="/#own-your-agent" className="hover:underline ml-2">
           Pearl Agent App Store Live Now!
           <ChevronRight className="ml-2 inline" size={20} />
         </Link>
