@@ -9,7 +9,7 @@ import Content from './Content';
 const ways = [
   {
     title: 'Earn Dev Rewards by building on Olas Protocol',
-    imageSrc: '/images/build-page/earn-dev-rewards.jpg',
+    imageSrc: '/images/build-page/earn-dev-rewards.png',
     description: (
       <>
         <p className="mb-4">
@@ -38,7 +38,7 @@ const ways = [
   },
   {
     title: 'Explore opportunities with external projects',
-    imageSrc: '/images/build-page/explore-opportunities.jpg',
+    imageSrc: '/images/build-page/explore-opportunities.png',
     description: (
       <>
         <p>
@@ -55,10 +55,39 @@ const ways = [
     link: (
       <Link
         href={'https://build.olas.network/opportunities'}
-        className="text-purple-600"
+        className="text-purple-600 mt-auto"
         target="_blank"
       >
         Get matched with an opportunity ↗
+      </Link>
+    ),
+  },
+  {
+    title: 'Join the Olas Accelerator Program',
+    imageSrc: '/images/build-page/accelerator-program.png',
+    description: (
+      <>
+        <p>
+          Apply for the $1million grants program to build AI Agents for Pearl:
+          The =&quot;Agent App Store&quot;.
+        </p>
+        <h3 className="font-semibold mt-4">Get funded</h3>
+        <p>Up to $100K in grants to build, launch, and scale your AI agent.</p>
+        <h3 className="font-semibold mt-4">Earn rewards</h3>
+        <p>
+          Have a chance to receive ongoing OLAS Dev Rewards for your registered
+          agents.
+        </p>
+        <h3 className="font-semibold mt-4">Access support</h3>
+        <p>
+          Leverage technical resources, developer workshops, and marketing
+          support to succeed.
+        </p>
+      </>
+    ),
+    link: (
+      <Link href="/accelerator" className="text-purple-600 mt-auto">
+        Learn more & apply ↗
       </Link>
     ),
   },
@@ -81,10 +110,10 @@ export const WaysToGrow = () => {
         earnings in the Olas ecosystem.
       </p>
 
-      <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-5xl mx-auto ">
+      <div className="grid md:grid-cols-3 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto ">
         {ways.map((item) => (
           <Card
-            className="flex flex-col overflow-hidden border-t rounded-xl border-white"
+            className="flex flex-col overflow-hidden border rounded-xl"
             key={item.title}
           >
             <Image
@@ -94,13 +123,15 @@ export const WaysToGrow = () => {
               height={260}
               className="rounded-xl py-auto object-cover w-full"
             />
-            <div className="p-6 py-8">
-              <CardTitle className="mb-6 leading-[140%] text-center">
+            <div className="p-6 py-8 flex flex-col h-full">
+              <CardTitle className="mb-6 leading-[140%] text-xl text-center">
                 <span>{item.title}</span>
               </CardTitle>
               <div className="mb-6 text-start">{item.description}</div>
               {item.showDevRewards && (
-                <div>{item.showDevRewards(setDevRewardsOpen)}</div>
+                <div className="mt-auto">
+                  {item.showDevRewards(setDevRewardsOpen)}
+                </div>
               )}
               {isDevRewardsOpen && (
                 <>

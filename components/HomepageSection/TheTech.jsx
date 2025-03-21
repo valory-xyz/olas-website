@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { ExternalLink, Link, Upcase } from 'components/ui/typography';
+import { ExternalLink, Link } from 'components/ui/typography';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -62,15 +62,12 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
     customClasses="text-center py-16 md:py-24 px-4 border-b bg-[linear-gradient(180deg,_#FFF_0%,_#F9E5FF_100%)]"
     id="tech"
   >
-    <Upcase>
-      <span>THE TECH</span>
-    </Upcase>
     <SectionHeading
       size="max-sm:text-5xl"
       color="text-gray-900"
       weight="font-bold"
     >
-      Enabled by two core innovations
+      Underpinned By Two Core Innovations
     </SectionHeading>
 
     <div className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-5xl mx-auto mb-16">

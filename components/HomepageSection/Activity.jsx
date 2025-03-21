@@ -110,7 +110,7 @@ export const Activity = () => {
 
   return (
     <SectionWrapper customClasses="text-center border-b" id="activity">
-      <div className="text-7xl lg:text-9xl max-w-[750px] mx-auto pt-16 px-4">
+      <div className="text-7xl lg:text-9xl max-w-[900px] mx-auto pt-16 px-4">
         <Image
           alt="Placeholder"
           src="/images/generating-agents.png"
@@ -123,11 +123,20 @@ export const Activity = () => {
           color="text-gray-900"
           weight="font-bold"
         >
-          Generating an Ocean of Autonomous AI Agents
+          Generating Autonomous AI Agent Economies
         </SectionHeading>
-        <p className="text-xl md:text-2xl text-slate-700 mb-8 mx-auto">
-          Olas incentivizes and coordinates different parties to launch
-          autonomous agents that form entire AI economies.
+        <p className="text-lg md:text-xl text-slate-600 mb-8 mx-auto">
+          Olas incentivizes the creation of open-source autonomous AI agents,
+          enabling users to own agents for their benefit and businesses to
+          monetize agent-to-agent services.{' '}
+          <Link
+            href="https://staking.olas.network/"
+            className="text-purple-600"
+          >
+            Olas Staking
+          </Link>{' '}
+          rewards agents for contributions and coordinates expanding agent
+          economies.
         </p>
         <Card className="flex flex-col items-center gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <span>

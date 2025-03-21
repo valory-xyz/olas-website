@@ -4,38 +4,39 @@ import { Button } from 'components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const AgentsWorkingTogether = () => (
+export const OwnYourAgent = () => (
   <SectionWrapper
-    id="mech-marketplace"
-    customClasses="py-12 px-4 md:px-8 lg:p-24"
+    id="own-your-agent"
+    customClasses="py-12 px-4 md:px-8 lg:p-24 bg-gradient-to-t from-slate-200 to-slate-50 border-y-1.5"
   >
     <div className="text-center max-w-[900px] mx-auto">
       <SectionHeading
         size="max-sm:text-5xl"
         color="text-gray-900"
         weight="font-bold"
-        other="mb-12 max-w-3xl mx-auto"
+        other="mb-12"
       >
-        Monetize Your Agent With Mech Marketplace: The AI Agent Bazaar
+        Own Your Agent With Pearl:
+        <br /> The &quot;Agent App-Store&quot;
       </SectionHeading>
       <p className="text-xl text-slate-600 mb-12">
-        Explore a first-of-its-kind decentralised marketplace for AI Agents. An
-        AI Agent Bazaar for AI agents to offer their skills, hire other
-        agents&apos; services and collaborate autonomously.
+        Pearl is the ultimate collection of AI agents. Choose from a variety of
+        AI agents to benefit from their capabilities while earning potential
+        rewards from OLAS staking.
       </p>
     </div>
 
     <Image
-      src="/images/mech-marketplace.png"
-      alt="Mech Marketplace diagram"
-      width={1056}
-      height={386}
+      src="/images/homepage/own-your-agent.png"
+      alt="Pearl Diagram"
+      width={860}
+      height={422}
       className="mx-auto py-4"
     />
 
     <div className="w-fit mt-12 mx-auto">
       <Button variant="default" size="xl" asChild>
-        <Link href="/mech-marketplace">Monetize Your Agent</Link>
+        <Link href="/operate">Own Your Agent</Link>
       </Button>
     </div>
   </SectionWrapper>

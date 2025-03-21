@@ -3,6 +3,7 @@ import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingT
 import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
+import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
 import { PropelledBy } from 'components/HomepageSection/PropelledBy';
 import { TheTech } from 'components/HomepageSection/TheTech';
 import UseCases from 'components/HomepageSection/UseCases';
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <Activity />
       <UseCases />
+      <OwnYourAgent />
       <AgentsWorkingTogether />
       <TheTech />
       <GetInvolved />

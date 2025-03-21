@@ -34,7 +34,7 @@ export const GetInvolved = () => (
     <h2
       className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6`}
     >
-      Get involved
+      Get Involved
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
