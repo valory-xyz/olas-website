@@ -250,13 +250,13 @@ DownloadLinks.propTypes = {
 const DESCRIPTIONS = {
   agentsfun: 'Get an early alpha version of Pearl with Agents.fun support',
   modius: 'Get an early alpha version of Pearl with Modius support',
-  all: 'Get the early beta version of Pearl with Agents.fun and Modius support',
+  ea: 'Get the early beta version of Pearl with Agents.fun and Modius support',
 };
 
 const IMAGE_SIZES = {
   agentsfun: { width: 260, height: 158 },
   modius: { width: 260, height: 158 },
-  all: { width: 360, height: 166 },
+  ea: { width: 360, height: 166 },
 };
 
 export const EarlyAdoptersPage = ({ agentType }) => (

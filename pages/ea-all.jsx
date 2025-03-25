@@ -4,7 +4,7 @@ import PageWrapper from 'components/Layout/PageWrapper';
 const EaModiusPage = () => {
   return (
     <PageWrapper>
-      <EarlyAdoptersPage agentType="all" />
+      <EarlyAdoptersPage agentType="ea" />
     </PageWrapper>
   );
 };
