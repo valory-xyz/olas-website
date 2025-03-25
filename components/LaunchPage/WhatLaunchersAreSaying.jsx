@@ -44,6 +44,33 @@ const quotes = [
     blogUrl:
       '/blog/how-gnosis-used-olas-predict-to-build-the-largest-on-chain-prediction-market-economy',
   },
+  {
+    projectImage: 'olas.png',
+    projectUrl: 'https://olas.network/agent-economies/mech',
+    quote:
+      'Olas Mechs were crafted as a way for AI agents to seamlessly request services from other agents via a single generic interface. This allows agents to offer any type of service and get paid. One example benefit is that it allows agents to access LLMs or various APIs without the pain of managing dozens of API keys. We’ve now turned this product into a full marketplace for AI agents: the AI Agent Bazaar.',
+    name: 'David Minarsch',
+    nameUrl: 'https://x.com/david_enim',
+    title: 'CEO, Valory',
+    launcherIcon: 'dm-avatar.png',
+  },
+  {
+    projectImage: 'contribute.png',
+    projectUrl: 'https://olas.network/services/agentsfun',
+    quote:
+      'Launch your own AI influencer agent that can autonomously market a business or concept for you. We chose to build this on Olas due to the ability to enable people to easily own and operate their own agents via Pearl - the agent app store. Pearl not only allows us to bootstrap users via Olas staking, but also provides a way for people to take ownership of their AI influencers and earn a steady revenue stream.',
+    name: 'Anonymous Olas Contributor',
+    launcherIcon: 'contribute-avatar.png',
+  },
+  {
+    projectImage: 'optimism.png',
+    projectUrl: 'https://www.optimism.io/',
+    quote:
+      "Thrilled to have Optimus, the first AI agent-powered DeFi management across Superchain, enabling users to seamlessly optimize yield regardless of what chain OP chain they're using.",
+    name: 'Josh Wadinski',
+    title: 'Optimism',
+    launcherIcon: 'anon-avatar.png',
+  },
 ];
 
 export const WhatLaunchersAreSaying = () => (
@@ -55,7 +82,7 @@ export const WhatLaunchersAreSaying = () => (
       What Launchers are saying
     </h2>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[800px] mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto">
       {quotes.map((quote, index) => (
         <Card
           key={index}
@@ -81,7 +108,7 @@ export const WhatLaunchersAreSaying = () => (
             )}
           </div>
           <div className="mt-auto flex flex-row justify-between">
-            <div className="flex flex-col w-2/3">
+            <div className="flex flex-col w-2/3 max-w-[200px]">
               <a href={quote.nameUrl} target="_blank" className="font-semibold">
                 {quote.name}
               </a>
