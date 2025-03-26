@@ -60,7 +60,7 @@ const quotes = [
     quote:
       'Launch your own AI influencer agent that can autonomously market a business or concept for you. We chose to build this on Olas due to the ability to enable people to easily own and operate their own agents via Pearl - the agent app store. Pearl not only allows us to bootstrap users via Olas staking, but also provides a way for people to take ownership of their AI influencers and earn a steady revenue stream.',
     name: 'Anonymous Olas Contributor',
-    launcherIcon: 'contribute-avatar.png',
+    launcherIcon: 'anon-avatar.png',
   },
   {
     projectImage: 'optimism.png',
