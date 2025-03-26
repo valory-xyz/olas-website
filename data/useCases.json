@@ -52,6 +52,12 @@
         "link": "/services/governatooorr"
       },
       {
+        "title": "Mech agent",
+        "description": "Agent-to-agent AI tools marketplace.",
+        "image": "/images/services/ai-mechs.svg",
+        "link": "/services/ai-mechs"
+      },
+      {
         "title": "Olas Contribute",
         "description": "Agent-powered DAO Tooling",
         "image": "/images/services/contribute.svg",
