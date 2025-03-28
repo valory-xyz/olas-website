@@ -45,13 +45,6 @@ const list = [
       'Agent Integration via Olas SDK',
     ],
   },
-  {
-    title: 'Prediction Agent Hackathon',
-    imageSrc: 'prediction-agent.png',
-    location: ' TBD',
-    date: 'TBD',
-    projectTags: ['TBD'],
-  },
 ];
 
 const CardImage = ({ src }) => (
