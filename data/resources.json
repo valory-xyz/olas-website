@@ -54,5 +54,13 @@
     "url": "/videos",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "title": "Hackathons",
+    "description": "Engineering-led events to shape decentralized AI infrastructure",
+    "url": "/hackathons",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]
