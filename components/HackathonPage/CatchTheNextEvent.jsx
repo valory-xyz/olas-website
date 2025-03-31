@@ -11,7 +11,9 @@ const list = [
     imageSrc: 'imperial-college.png',
     location: 'London, UK + Remote',
     date: 'March - April 2025',
-    registerLink: 'https://lu.ma/7ulasmk8',
+    link: 'https://lu.ma/aeumfimb',
+    type: 'button',
+    status: 'Ongoing',
     prizePool: '15,000 USD',
     projectTags: [
       'Mech Marketplace - Demand Side',
@@ -25,8 +27,9 @@ const list = [
     imageSrc: 'ethdenver.png',
     location: 'Denver, USA',
     date: 'February 2025',
-    resultsLink:
-      'https://www.youtube.com/watch?v=65P2B8xmyac&list=PLoP4p0r-X94pHCR8ARMw014ykrIEWuCok',
+    link: 'https://ethdenver2025.devfolio.co/overview',
+    type: 'external-link',
+    status: 'Completed',
     prizePool: '25,000 USD',
     projectTags: [
       'Mech Marketplace - Demand Side',
@@ -39,6 +42,7 @@ const list = [
     imageSrc: 'safe.png',
     location: 'Remote',
     date: 'February 2025',
+    status: 'Completed',
     projectTags: [
       'Mech Marketplace - Demand Side',
       'Mech Marketplace - Supply Side',
@@ -55,6 +59,57 @@ const CardImage = ({ src }) => (
     height={160}
     className="rounded-lg"
   />
+);
+
+const EventDetails = ({ location, date }) => (
+  <div className="flex flex-col md:flex-row gap-2 md:gap-8">
+    <span className="flex">
+      <MapPin className={`mr-2 w-[20px] text-purple-700`} />
+      {location}
+    </span>
+    <span className="flex">
+      <CalendarIcon className={`mr-2 w-[20px] text-purple-700`} />
+      {date}
+    </span>
+  </div>
+);
+
+const ProjectTypes = ({ projectTags }) => (
+  <div className="flex flex-col gap-2">
+    <span className="text-slate-500 font-medium">Project types</span>
+    <div className="flex gap-1 w-full flex-wrap">
+      {projectTags.map((tag) => (
+        <div
+          key={tag}
+          className="flex border border-slate-200 bg-slate-100 rounded-md md:whitespace-nowrap px-2 w-fit cursor-default"
+        >
+          {tag}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const EventLink = ({ link, type }) => (
+  <div className="p-6 border-t-1.5 flex justify-center w-full">
+    {type == 'button' && (
+      <Button variant="default" size="lg" asChild>
+        <a href={link} target="_blank" rel="noopenner noreferrer">
+          Register Now
+        </a>
+      </Button>
+    )}
+    {type == 'external-link' && (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-purple-700"
+      >
+        Hackathon results ↗
+      </a>
+    )}
+  </div>
 );
 
 export const CatchTheNextEvent = () => (
@@ -78,13 +133,19 @@ export const CatchTheNextEvent = () => (
               imageSrc,
               location,
               date,
-              registerLink,
-              resultsLink,
+              link,
+              type,
+              status,
               prizePool,
               projectTags,
             },
             index,
           ) => {
+            const statusClass =
+              status == 'Completed'
+                ? 'border-slate-200 bg-slate-100'
+                : 'bg-purple-50 border-fuchsia-200 text-purple-700';
+
             return (
               <Card
                 key={index}
@@ -97,30 +158,14 @@ export const CatchTheNextEvent = () => (
                     </div>
                     <div className="flex flex-row md:justify-between mb-2">
                       <div className="flex flex-col gap-4 align-middle max-w-[400px]">
-                        {registerLink && (
-                          <div className="max-sm:mt-2 rounded-md bg-purple-50 border border-fuchsia-200 text-purple-700 py-1 px-2 max-w-fit max-sm:mx-auto">
-                            Ongoing
-                          </div>
-                        )}
-                        {!registerLink && (
-                          <div className="max-sm:mt-2 rounded-md border border-slate-200 bg-slate-100 py-1 px-2 max-w-fit max-sm:mx-auto">
-                            Completed
-                          </div>
-                        )}
-                        <div className="flex flex-col md:flex-row gap-2 md:gap-8">
-                          <span className="flex">
-                            <MapPin
-                              className={`mr-2 w-[20px] text-purple-700`}
-                            />
-                            {location}
-                          </span>
-                          <span className="flex">
-                            <CalendarIcon
-                              className={`mr-2 w-[20px] text-purple-700`}
-                            />
-                            {date}
-                          </span>
+                        <div
+                          className={`max-sm:mt-2 rounded-md border py-1 px-2 max-w-fit max-sm:mx-auto ${statusClass}`}
+                        >
+                          {status}
                         </div>
+
+                        <EventDetails location={location} date={date} />
+
                         <h3 className="text-2xl font-bold max-w-[500px]">
                           {title}
                         </h3>
@@ -140,49 +185,9 @@ export const CatchTheNextEvent = () => (
                       </div>
                     </div>
                   </div>
-                  {projectTags && (
-                    <div className="flex flex-col gap-2">
-                      <span className="text-slate-500 font-medium">
-                        Project types
-                      </span>
-                      <div className="flex gap-1 w-full flex-wrap">
-                        {projectTags.map((tag) => (
-                          <div
-                            key={tag}
-                            className="flex border border-slate-200 bg-slate-100 rounded-md md:whitespace-nowrap px-2 w-fit cursor-default"
-                          >
-                            {tag}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  {projectTags && <ProjectTypes projectTags={projectTags} />}
                 </div>
-                {(registerLink || resultsLink) && (
-                  <div className="p-6 border-t-1.5 flex justify-center w-full">
-                    {registerLink && (
-                      <Button variant="default" size="lg" asChild>
-                        <a
-                          href={registerLink}
-                          target="_blank"
-                          rel="noopenner noreferrer"
-                        >
-                          Register Now
-                        </a>
-                      </Button>
-                    )}
-                    {resultsLink && (
-                      <a
-                        href={resultsLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-purple-700"
-                      >
-                        Hackathon results ↗
-                      </a>
-                    )}
-                  </div>
-                )}
+                {link && <EventLink link={link} type={type} />}
               </Card>
             );
           },
