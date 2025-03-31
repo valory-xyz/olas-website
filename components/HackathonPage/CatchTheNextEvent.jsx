@@ -49,6 +49,17 @@ const list = [
       'Agent Integration via Olas SDK',
     ],
   },
+  {
+    title: 'Prediction Agent Hackathon: Coding Clarevoyance',
+    imageSrc: 'prediction-agent.png',
+    location: 'Remote',
+    date: 'October 2023',
+    status: 'Completed',
+    projectTags: [
+      'Build an Agent Using the Olas Stack',
+      'Modify an Agent Using the Olas Stack',
+    ],
+  },
 ];
 
 const CardImage = ({ src }) => (
