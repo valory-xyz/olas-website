@@ -103,7 +103,7 @@ export const WaysToGrow = () => {
       id="grow"
     >
       <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
-        Two ways to grow and earn as an Olas Builder
+        Three ways to grow and earn as an Olas Builder
       </h2>
       <p className="text-gray-600 text-center mb-12">
         Embark on one or both ways of building to maximize your impact and

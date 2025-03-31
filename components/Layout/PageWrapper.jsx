@@ -8,7 +8,7 @@ import Header from './Header';
 
 const PageWrapper = ({ children }) => (
   <>
-    <div className="bg-purple-900 text-white p-2 flex justify-center items-center">
+    <div className="bg-purple-700 text-white p-2 flex justify-center items-center">
       <h2 className="flex items-center text-xl">
         <Image
           src="/images/operate-page/operate-app-icon.png"
@@ -19,7 +19,7 @@ const PageWrapper = ({ children }) => (
         />
 
         <Link href="/#own-your-agent" className="hover:underline ml-2">
-          Pearl Agent App Store Live Now!
+          Live Now: Pearl, the &quot;Agent App Store&quot;
           <ChevronRight className="ml-2 inline" size={20} />
         </Link>
       </h2>
