@@ -49,6 +49,17 @@ const list = [
       'Agent Integration via Olas SDK',
     ],
   },
+  {
+    title: 'Prediction Agent Hackathon: Coding Clarevoyance',
+    imageSrc: 'prediction-agent.png',
+    location: 'Remote',
+    date: 'October 2023',
+    status: 'Completed',
+    projectTags: [
+      'Build an Agent Using the Olas Stack',
+      'Modify an Agent Using the Olas Stack',
+    ],
+  },
 ];
 
 const CardImage = ({ src }) => (
@@ -75,13 +86,13 @@ const EventDetails = ({ location, date }) => (
 );
 
 const ProjectTypes = ({ projectTags }) => (
-  <div className="flex flex-col gap-2">
+  <div className="flex flex-col gap-2 cursor-default">
     <span className="text-slate-500 font-medium">Project types</span>
     <div className="flex gap-1 w-full flex-wrap">
       {projectTags.map((tag) => (
         <div
           key={tag}
-          className="flex border border-slate-200 bg-slate-100 rounded-md md:whitespace-nowrap px-2 w-fit cursor-default"
+          className="flex border border-slate-200 bg-slate-100 rounded-md md:whitespace-nowrap px-2 w-fit hover:bg-slate-200 duration-150"
         >
           {tag}
         </div>
@@ -152,7 +163,7 @@ export const CatchTheNextEvent = () => (
                 className="bg-white border-inherit shadow-sm flex flex-col justify-between rounded-xl"
               >
                 <div className="p-6">
-                  <div className="flex flex-col gap-1 w-full">
+                  <div className="flex flex-col gap-1 w-full cursor-default">
                     <div className="md:hidden mx-auto">
                       <CardImage src={imageSrc} />
                     </div>
@@ -170,7 +181,7 @@ export const CatchTheNextEvent = () => (
                           {title}
                         </h3>
                         {prizePool && (
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-1 ">
                             <span className="text-slate-500 font-medium">
                               Prize Pool
                             </span>
