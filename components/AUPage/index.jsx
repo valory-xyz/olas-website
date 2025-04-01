@@ -1,9 +1,11 @@
 import Image from 'next/image';
 
+import Podcasts from 'components/Content/Podcasts';
 import { Content } from './Content';
 import { CTA } from './CTA';
 import { Hero } from './Hero';
 import { WhatToExpect } from './WhatToExpect';
+import { useFetchVideos } from 'common-util/useFetchApi';
 
 const data = [
   {
@@ -62,5 +64,6 @@ export const AU = () => (
       className="w-full"
     />
     <CTA />
+    <Podcasts />
   </>
 );
