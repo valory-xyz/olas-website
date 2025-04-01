@@ -12,7 +12,7 @@ const steps = [
       'Select from Mech Demand, Mech Supply, Olas SDK, or Stack-based builds.',
   },
   {
-    title: 'Join an Event',
+    title: 'Register for a Hackathon',
     description: 'Pick an upcoming hackathon and register.',
   },
   {
@@ -27,7 +27,7 @@ const steps = [
   {
     title: 'Contribute Long-Term',
     description:
-      'Hackathon agents can evolve into production services, incentivized through Olas staking or PoAA rewards',
+      'Hackathon agents can evolve into production services, incentivized through Olas staking or PoAA rewards.',
   },
 ];
 
@@ -48,13 +48,7 @@ export const HowItWorks = () => (
           <Link href="#events">Get Involved</Link>
         </Button>
         <Button variant="outline" size="lg" asChild className="mt-4 md:mt-10">
-          <Link
-            href="https://docs.olas.network/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn to Build
-          </Link>
+          <Link href="/build">Learn to Build</Link>
         </Button>
       </div>
     </div>

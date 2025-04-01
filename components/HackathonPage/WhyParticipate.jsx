@@ -28,7 +28,7 @@ export const WhyParticipate = () => (
   >
     <div className="max-w-screen-xl mx-auto lg:px-12">
       <h2 className={`${SUB_HEADER_CLASS} text-left mb-8 text-center lg:mb-14`}>
-        Why Participate?
+        Why Hack with Olas?
       </h2>
       <InfoCardList cards={list} />
     </div>

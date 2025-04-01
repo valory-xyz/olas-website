@@ -8,6 +8,7 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import Link from 'next/link';
 
 const HeroImage = () => (
   <Image
@@ -33,11 +34,12 @@ const Hero = () => (
         </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} max-w-[640px] md:my-6 lg:my-auto`}>
-          Build the Future of Autonomous AI Agents in Web3
+          Hack with Olas: Build the future of AI Agents at Top Hackathons
         </h2>
 
         <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-          Join engineering-led events to shape decentralized AI infrastructure.
+          Explore all the hackathons around the world where Olas is
+          participating.Find events, build Agents, collect rewards.
         </div>
 
         <div className="md:hidden mb-8">
@@ -50,13 +52,7 @@ const Hero = () => (
           </Button>
 
           <Button variant="ghostPrimary" size="xl" asChild className="grow">
-            <a
-              href="https://docs.olas.network/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn to Build
-            </a>
+            <Link href="/build">Learn to Build</Link>
           </Button>
         </div>
       </div>
