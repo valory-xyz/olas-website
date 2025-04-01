@@ -133,7 +133,7 @@ export const CatchTheNextEvent = () => (
   >
     <div>
       <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center mx-auto`}>
-        Catch the Next Event
+        Catch the Next Hackathon
       </h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-[640px] lg:w-[640px] mx-auto">
