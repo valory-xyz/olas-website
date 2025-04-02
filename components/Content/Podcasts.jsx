@@ -120,5 +120,3 @@ Podcasts.defaultProps = {
   podcasts: [],
   limit: null,
 };
-
-export default Podcasts;

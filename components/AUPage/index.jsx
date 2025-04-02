@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import Podcasts from 'components/Content/Podcasts';
+import { Podcasts } from 'components/Content/Podcasts';
 import { Content } from './Content';
 import { CTA } from './CTA';
 import { Hero } from './Hero';
