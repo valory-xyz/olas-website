@@ -13,6 +13,7 @@ import { formatDate } from 'common-util/formatDate';
 import { useFetchVideos } from 'common-util/useFetchApi';
 import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
+import { AudioLines } from 'lucide-react';
 
 const LIMIT = 3;
 
@@ -73,14 +74,13 @@ export const Podcasts = () => {
         <div className="flex flex-col gap-6">
           <h2 className={SUB_HEADER_CLASS}>Watch the Latest Podcasts</h2>
 
-          <p className="text-lg text-slate-600">Section description.</p>
-
-          {LIMIT !== null && (
-            <div className="mb-4">
-              <ExternalLink href="/" className="text-lg">
-                See all
-              </ExternalLink>
-            </div>
+          {LIMIT !== null && podcasts.length > 0 && (
+            <ExternalLink
+              href="https://youtube.com/playlist?list=PLoP4p0r-X94r1FA7yoOwRqvOjiYGSNQoj&feature=shared"
+              className="text-lg"
+            >
+              See all
+            </ExternalLink>
           )}
         </div>
 
@@ -88,6 +88,12 @@ export const Podcasts = () => {
           <Spinner customClass="h-auto py-20" />
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {podcasts.length === 0 && (
+              <div className="mt-8 rounded-lg col-span-full place-items-center text-center border py-16 text-slate-500">
+                <AudioLines className="mb-2" size={40} /> Agents Unleashed
+                podcasts coming soon.
+              </div>
+            )}
             {podcasts.map((podcast) => (
               <div key={podcast.id}>
                 <Podcast podcast={podcast} />
