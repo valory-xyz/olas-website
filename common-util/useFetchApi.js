@@ -13,23 +13,19 @@ const useFetch = (subUrl, params) => {
   return { data, isLoading };
 };
 
-export const useFetchVideos = (limit = 1000, isPodcast = false) => {
-  const params = isPodcast
-    ? {
-        sort: ['date:desc'],
-        populate: '*',
-        'pagination[limit]': limit,
-        filters: {
+export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
+  const params = {
+    sort: ['date:desc'],
+    populate: '*',
+    'pagination[limit]': limit,
+    filters: isPodcast
+      ? {
           title: {
             $contains: 'Ep.',
           },
-        },
-      }
-    : {
-        sort: ['date:desc'],
-        populate: '*',
-        'pagination[limit]': limit,
-      };
+        }
+      : undefined,
+  };
   const { data, isLoading } = useFetch('videos', params);
   const rawVideos = get(data, 'data') || [];
 

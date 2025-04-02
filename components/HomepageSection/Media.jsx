@@ -6,7 +6,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 const LIMIT = 3;
 
 const Media = () => {
-  const { videos, isLoading } = useFetchVideos(LIMIT);
+  const { videos, isLoading } = useFetchVideos({ limit: LIMIT });
 
   return (
     <SectionWrapper

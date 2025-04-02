@@ -66,7 +66,10 @@ Podcast.propTypes = {
 };
 
 export const Podcasts = () => {
-  const { videos: podcasts, isLoading } = useFetchVideos(LIMIT, true);
+  const { videos: podcasts, isLoading } = useFetchVideos({
+    limit: LIMIT,
+    isPodcast: true,
+  });
 
   return (
     <section className={`max-w-7xl mx-auto ${SECTION_BOX_CLASS}`}>
