@@ -10,7 +10,7 @@ const ArticlesPage = () => (
       description="Read up on the latest articles and news, keep up to date with Olas!"
     />
     <SectionWrapper>
-      <Articles displayFolders />
+      <Articles isMain displayFolders />
     </SectionWrapper>
   </PageWrapper>
 );
