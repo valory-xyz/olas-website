@@ -7,6 +7,20 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'ETHLisbon Encode Hackathon',
+    imageSrc: 'ethlisbon.png',
+    location: 'Lisbon, Portugal',
+    date: 'May 2025',
+    type: 'button',
+    status: 'Planning',
+    prizePool: '15,000 GBP',
+    projectTags: [
+      'Mech Marketplace - Demand Side',
+      'Mech Marketplace - Supply Side',
+      'Agent Integration via Olas SDK',
+    ],
+  },
+  {
     title: 'Imperial College AI Agents Hackathon',
     imageSrc: 'imperial-college.png',
     location: 'London, UK + Remote',
