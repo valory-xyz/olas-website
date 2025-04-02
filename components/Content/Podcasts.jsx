@@ -87,9 +87,9 @@ export const Podcasts = () => {
         {isLoading ? (
           <Spinner customClass="h-auto py-20" />
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
             {podcasts.length === 0 && (
-              <div className="mt-8 rounded-lg col-span-full place-items-center text-center border py-16 text-slate-500">
+              <div className="rounded-lg col-span-full place-items-center text-center border py-16 text-slate-500">
                 <AudioLines className="mb-2" size={40} /> Agents Unleashed
                 podcasts coming soon.
               </div>
