@@ -28,7 +28,7 @@ const Hero = () => (
         </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} lg:whitespace-nowrap mb-2`}>
-          The agent app-store
+          The Agent App Store
         </h2>
 
         <div className={`${TEXT_SMALL_CLASS} mb-6`}>
