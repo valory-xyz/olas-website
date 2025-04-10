@@ -1,4 +1,5 @@
 import PageWrapper from 'components/Layout/PageWrapper';
+import { FeeMetrics } from 'components/MechPage/FeeMetrics';
 import { GetInvolved } from 'components/MechPage/GetInvolved';
 import { MechAgentMetrics } from 'components/MechPage/MechAgentMetrics';
 import { MechHero } from 'components/MechPage/MechHero';
@@ -15,6 +16,7 @@ const Mech = () => (
 
     <MechHero />
     <MechAgentMetrics />
+    <FeeMetrics />
     <WhatIsOlasMech />
     <WhyOlasMech />
     <GetInvolved />

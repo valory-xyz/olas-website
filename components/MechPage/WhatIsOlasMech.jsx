@@ -40,7 +40,7 @@ const WhatIsMech = () => (
 );
 
 const TheProcess = () => (
-  <div>
+  <div id="the-process">
     <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-8`}>The process</h2>
     <Card className={`${CARD_BG} max-w mb-8`}>
       <Image
