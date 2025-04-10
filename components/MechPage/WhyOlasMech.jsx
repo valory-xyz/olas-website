@@ -1,7 +1,7 @@
 import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { BicepsFlexed, HandCoins, Sparkles } from 'lucide-react';
+import { BicepsFlexed, Flame, HandCoins, Sparkles } from 'lucide-react';
 
 const list = [
   {
@@ -18,6 +18,11 @@ const list = [
     title: 'Fee capture',
     icon: <HandCoins color="#606F85" />,
     desc: 'Mech marketplace offers a fee capture mechanism for the Olas protocol.',
+  },
+  {
+    title: 'Olas burn',
+    icon: <Flame color="#606F85" />,
+    desc: 'The captured DAO fees are burned, meaning they are permanently removed from circulation, thus reducing the total token supply.',
   },
 ];
 
