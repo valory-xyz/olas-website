@@ -29,7 +29,7 @@ const formerData = [
     // value: metrics?.contributeTxs?.toLocaleString(),
     value: 23298,
     source: MECH_ECONOMY_DASHBOARD_URL,
-    color: '#d96a5e',
+    color: '#272727',
   },
   {
     id: 'claimed',
@@ -51,7 +51,7 @@ const formerData = [
       </div>
     ),
     // value: metrics?.otherTxs?.toLocaleString(),
-    value: 15376.67,
+    value: 15376.68,
     source: MECH_ECONOMY_DASHBOARD_URL,
     color: '#68bcce',
   },
@@ -69,29 +69,66 @@ const formerData = [
   },
 ];
 
-const options = {
-  sankey: {
-    link: {
-      colorMode: 'gradient',
-    },
-    node: {
-      label: {
-        fontSize: 20,
-      },
-      nodePadding: 40,
-    },
-  },
-};
-
 export const FeeMetrics = () => {
   const data = [
-    ['From', 'To', ''],
-    ['Total Agent Fees Collected', 'Unclaimed Fees', formerData[1].value],
-    ['Unclaimed Fees', '', formerData[1].value],
-    ['Total Agent Fees Collected', 'Claimed Fees', formerData[2].value],
-    ['Claimed Fees', 'OLAS Burned', formerData[2].value * 0.1],
-    ['Claimed Fees', 'Fees Received', formerData[2].value * 0.9],
+    ['From', 'To', '', { role: 'tooltip', type: 'string', p: { html: true } }],
+    [
+      'Total Agent Fees Collected',
+      'Unclaimed Fees',
+      formerData[1].value,
+      `Total Agent Fees Collected → Unclaimed Fees | $${formerData[1].value.toLocaleString()} (${((formerData[1].value / formerData[0].value) * 100).toFixed(1)}%)`,
+    ],
+    [
+      'Unclaimed Fees',
+      '',
+      formerData[1].value,
+      `Total Agent Fees Collected → Unclaimed Fees | $${formerData[1].value.toLocaleString()} (${((formerData[1].value / formerData[0].value) * 100).toFixed(1)}%)`,
+    ],
+    [
+      'Total Agent Fees Collected',
+      'Claimed Fees',
+      formerData[2].value,
+      `Total Agent Fees Collected → Claimed Fees | $${formerData[2].value.toLocaleString()} (${((formerData[2].value / formerData[0].value) * 100).toFixed(1)}%)`,
+    ],
+    [
+      'Claimed Fees',
+      'OLAS Burned',
+      formerData[2].value * 0.1,
+      `Claimed Fees → OLAS Burned | $${(formerData[2].value * 0.01).toLocaleString()} (1%)`,
+    ],
+    [
+      'Claimed Fees',
+      'Fees Received',
+      formerData[2].value * 0.9,
+      `Claimed Fees → Fees Received | $${(formerData[2].value * 0.99).toLocaleString()} (99%)`,
+    ],
   ];
+
+  const options = {
+    sankey: {
+      link: {
+        colorMode: 'gradient',
+      },
+      node: {
+        label: {
+          fontSize: 20,
+        },
+        nodePadding: 40,
+        colors: [
+          '#7a9cf7',
+
+          '#ffffff',
+          '#ffffff',
+          '#5fb178',
+          '#dab2e4',
+          '#68bcce',
+        ],
+      },
+      tooltip: {
+        isHtml: true,
+      },
+    },
+  };
 
   return (
     <SectionWrapper
@@ -102,7 +139,7 @@ export const FeeMetrics = () => {
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
           Mech Marketplace Fee Flow
         </h2>
-        <p className="text-left text-slate-700 mx-auto">
+        <p className="text-base text-left text-slate-700 mx-auto">
           The Mech Marketplace handles the collection of fees from the delivery
           of tasks. A Mech triggers the transfer of its accumulated payments
           from the balance tracker contract, typically at various intervals.
@@ -137,7 +174,7 @@ export const FeeMetrics = () => {
               className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
               style={{ color: item.color }}
             >
-              <p className="text-black">{item.label}</p>
+              <div className="text-black">{item.label}</div>
               <span className="block text-4xl whitespace-nowrap max-sm:text-4xl font-extrabold mb-4 mt-auto">
                 $ {item.value.toLocaleString()} ↗
               </span>
