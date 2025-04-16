@@ -7,6 +7,22 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'Encode Hackathon @ ETH Lisbon 2025',
+    imageSrc: 'ethlisbon.png',
+    location: 'Lisbon, Portugal',
+    date: 'May 9-11, 2025',
+    link: 'https://lu.ma/ETH-Lisbon-2025',
+    type: 'button',
+    status: 'Upcoming',
+    prizePool: '15,000 GBP',
+    projectTags: [
+      'Mech Marketplace - Demand Side',
+      'Mech Marketplace - Supply Side',
+      'Agent Integration via Olas SDK',
+      'Build an Agent Using the Olas Stack',
+    ],
+  },
+  {
     title: 'Imperial College AI Agents Hackathon',
     imageSrc: 'imperial-college.png',
     location: 'London, UK + Remote',
@@ -50,6 +66,17 @@ const list = [
     ],
   },
   {
+    title: '[REDACTED] Hackathon NEAR',
+    imageSrc: 'near.png',
+    location: 'Bangkok, Thailand + Remote',
+    date: 'September 5 - November 11, 2024',
+    status: 'Completed',
+    projectTags: [
+      'Agent Integration via Olas SDK',
+      'Build an Agent Using the Olas Stack',
+    ],
+  },
+  {
     title: 'Prediction Agent Hackathon: Coding Clarevoyance',
     imageSrc: 'prediction-agent.png',
     location: 'Remote',
@@ -73,7 +100,7 @@ const CardImage = ({ src }) => (
 );
 
 const EventDetails = ({ location, date }) => (
-  <div className="flex flex-col md:flex-row gap-2 md:gap-8">
+  <div className="flex flex-wrap md:flex-row gap-2 md:gap-x-8">
     <span className="flex">
       <MapPin className={`mr-2 w-[20px] text-purple-700`} />
       {location}

@@ -55,7 +55,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
               width={width}
               height={height}
               alt={article.attributes.title}
-              className="rounded-t-lg py-auto object-contain"
+              className="rounded-t-lg py-auto object-cover"
               onError={() => {
                 setImageError(true);
               }}
