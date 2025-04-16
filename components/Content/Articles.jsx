@@ -2,6 +2,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import qs from 'qs';
 
+import { TITLE_CLASS } from 'common-util/classes';
 import { Card } from 'components/ui/card';
 import { ChevronRight, FolderClosed } from 'lucide-react';
 import useSWR from 'swr';
@@ -22,9 +23,6 @@ const folders = [
     link: '/case-studies',
   },
 ];
-
-const TITLE_CLASS =
-  'mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ';
 
 const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
   const params = {
@@ -47,11 +45,7 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
     <section>
       <div>
         <div>
-          {isMain ? (
-            <h1 className={TITLE_CLASS}>Blog</h1>
-          ) : (
-            <h2 className={TITLE_CLASS}>Blog</h2>
-          )}
+          {isMain ? '' : <h2 className={TITLE_CLASS}>Blog</h2>}
 
           {displayFolders && (
             <>

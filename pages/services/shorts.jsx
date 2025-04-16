@@ -1,10 +1,10 @@
-import Image from 'next/image';
 import {
-  LightbulbIcon,
-  FastForwardIcon,
-  CopyrightIcon,
   CircleDollarSign,
+  CopyrightIcon,
+  FastForwardIcon,
+  LightbulbIcon,
 } from 'lucide-react';
+import Image from 'next/image';
 
 import {
   MAIN_TITLE_CLASS,
@@ -14,11 +14,11 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import { SHORTS_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
-import { SHORTS_URL } from 'common-util/constants';
 
 const HeroImage = () => (
   <Image
@@ -34,9 +34,9 @@ const Hero = () => (
     <div className="grid max-w-screen-xl items-center mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
       <div className="md:mb-12 lg:mb-0 lg:col-span-6">
         <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>SHORTS.WTF</div>
-        <h2 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
+        <h1 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
           Create a short film with just one prompt
-        </h2>
+        </h1>
         <div className="md:hidden mb-8">
           <HeroImage />
         </div>
