@@ -20,9 +20,11 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
     'pagination[limit]': limit,
     filters: isPodcast
       ? {
-          title: {
-            $contains: 'Ep.',
-          },
+          $or: [
+            { apple_link: { $notNull: true } },
+            { spotify_link: { $notNull: true } },
+            { rss_link: { $notNull: true } },
+          ],
         }
       : undefined,
   };
@@ -38,6 +40,9 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
       platform_link,
       drive_link,
       platform,
+      apple_link,
+      spotify_link,
+      rss_link,
       thumbnail,
       video: videoUploaded,
     } = attributes || {};
@@ -58,6 +63,9 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
       platform_link,
       drive_link,
       platform,
+      apple_link,
+      spotify_link,
+      rss_link,
       imageFilename,
       video_url,
     };
