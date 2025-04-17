@@ -102,12 +102,15 @@ export const WhatCanYouBuild = () => (
     customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16"
   >
     <div className="max-w-[640px] mx-auto">
-      <h2 className={`${SUB_HEADER_CLASS} text-left mb-8`}>
-        What Can You Build?
+      <h2 className={`${SUB_HEADER_CLASS} text-center mb-8`}>
+        What Will You Build?
       </h2>
+      <p className="mb-2">
+        Hacking with Olas allows you to choose from 4 tracks.
+      </p>
       <p className="mb-8">
-        Olas Hackathons offer four core tracks aligned with protocol growth and
-        agent-to-agent interaction.
+        Create an agent, integrate an agent, or use an agent on the Mech
+        Marketplace: The AI Agent Bazaar.
       </p>
       {list.map((item, index) => (
         <Card

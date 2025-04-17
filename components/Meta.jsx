@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
+const TITLE_CHAR_MAX = '59';
+
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION =
   'Olas enables everyone to own a share of AI, specifically autonomous agent economies.';
@@ -8,7 +10,13 @@ const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.png`;
 
 const Meta = ({ pageTitle, description, siteImageUrl }) => {
-  const title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
+  let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
+
+  if (title.length > TITLE_CHAR_MAX) {
+    description = `Discover ${pageTitle}`;
+
+    title = pageTitle;
+  }
 
   return (
     <Head>

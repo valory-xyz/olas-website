@@ -34,7 +34,6 @@ const SOCIAL_LINKS = [
 ];
 
 const LEARN_LINKS = [
-  { title: 'What is Olas?', link: '/learn#what-is-olas' },
   { title: 'Olas Protocol', link: '/protocol' },
   { title: 'Olas Stack', link: '/stack' },
 ];
@@ -51,11 +50,6 @@ const GET_INVOLVED_LINKS = [
 
 const OTHER_APPS_LINKS = [
   { title: 'Registry', link: REGISTRY_URL, isExternal: true },
-  {
-    title: 'Roadmap',
-    link: 'https://contribute.olas.network/roadmap',
-    isExternal: true,
-  },
   {
     title: 'Press Kit',
     link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
@@ -78,22 +72,9 @@ const RESOURCES_LINKS = [
     link: '/blog',
   },
   {
-    title: 'Calendar',
-    link: 'https://contribute.olas.network/calendar',
-    isExternal: true,
-  },
-  {
     title: 'Olas Dev Academy Videos',
     link: 'https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl',
     isExternal: true,
-  },
-  {
-    title: 'Use Cases',
-    link: '/explore',
-  },
-  {
-    title: 'Olas Accelerator',
-    link: '/accelerator',
   },
   {
     title: 'Whitepaper',
@@ -119,6 +100,10 @@ const RESOURCES_LINKS = [
   {
     title: 'Agents Unleashed',
     link: '/agents-unleashed',
+  },
+  {
+    title: 'Olas Hackathons',
+    link: '/hackathons',
   },
 ];
 
@@ -210,19 +195,19 @@ const Footer = () => (
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 md:flex md:flex-row max-sm:gap-y-8 justify-between w-full flex-wrap">
+      <div className="grid grid-cols-2 md:flex md:flex-row max-sm:gap-y-8 gap-x-12 w-full flex-wrap">
         <LinksBlock title="Learn" links={LEARN_LINKS} />
         <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
         <LinksBlock title="Other" links={OTHER_APPS_LINKS} />
         <LinksBlock
           title="Resources"
           links={RESOURCES_LINKS}
-          className="lg:max-h-[300px] flex-wrap"
+          className="lg:max-h-[250px] flex-wrap"
         />
       </div>
     </div>
     <div className="text-center text-slate-500">
-      {`© Autonolas DAO ${CURRENT_YEAR} • `}
+      {`© Olas DAO ${CURRENT_YEAR} • `}
       <Link href="/disclaimer" className="hover:text-black">
         Disclaimer & Privacy Policy
       </Link>

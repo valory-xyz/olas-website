@@ -31,7 +31,7 @@ const quotes = [
     ),
     builderIcon: 'shutter-avatar.png',
     blogUrl:
-      '/blog/how-peaq-optimized-energy-management-with-ai-agents-built-on-olas',
+      '/blog/how-peaq-optimized-energy-management-with-ai-agents-built-on-olas-1',
   },
   {
     projectImage: 'alterscope.png',
