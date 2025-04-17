@@ -19,7 +19,6 @@ const list = [
       'Mech Marketplace - Demand Side',
       'Mech Marketplace - Supply Side',
       'Agent Integration via Olas SDK',
-      'Build an Agent Using the Olas Stack',
     ],
   },
   {
@@ -27,9 +26,7 @@ const list = [
     imageSrc: 'imperial-college.png',
     location: 'London, UK + Remote',
     date: 'March - April 2025',
-    link: 'https://lu.ma/aeumfimb',
-    type: 'button',
-    status: 'Ongoing',
+    status: 'Completed',
     prizePool: '15,000 USD',
     projectTags: [
       'Mech Marketplace - Demand Side',
@@ -59,11 +56,7 @@ const list = [
     location: 'Remote',
     date: 'February 2025',
     status: 'Completed',
-    projectTags: [
-      'Mech Marketplace - Demand Side',
-      'Mech Marketplace - Supply Side',
-      'Agent Integration via Olas SDK',
-    ],
+    projectTags: ['Mech Marketplace - Supply Side & Demand Integration'],
   },
   {
     title: '[REDACTED] Hackathon NEAR',
@@ -71,16 +64,15 @@ const list = [
     location: 'Bangkok, Thailand + Remote',
     date: 'September 5 - November 11, 2024',
     status: 'Completed',
-    projectTags: [
-      'Agent Integration via Olas SDK',
-      'Build an Agent Using the Olas Stack',
-    ],
+    projectTags: ['Best Agent Tool or Enhancement for Olas Predict'],
   },
   {
-    title: 'Prediction Agent Hackathon: Coding Clarevoyance',
+    title: 'Prediction Agent Hackathon: Coding Clairvoyance',
     imageSrc: 'prediction-agent.png',
     location: 'Remote',
     date: 'October 2023',
+    type: 'external-link',
+    link: 'https://www.valory.xyz/post/prediction-agent-hackathon-success',
     status: 'Completed',
     projectTags: [
       'Build an Agent Using the Olas Stack',
@@ -114,7 +106,7 @@ const EventDetails = ({ location, date }) => (
 
 const ProjectTypes = ({ projectTags }) => (
   <div className="flex flex-col gap-2 cursor-default">
-    <span className="text-slate-500 font-medium">Project types</span>
+    <span className="text-slate-500 font-medium">Project type(s)</span>
     <div className="flex gap-1 w-full flex-wrap">
       {projectTags.map((tag) => (
         <div
