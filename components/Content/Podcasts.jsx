@@ -73,7 +73,7 @@ const Podcast = ({ podcast }) => {
         )}
         <div className="flex flex-row flex-wrap gap-2 mt-auto">
           {links
-            .filter((link) => link.url)
+            .filter((link) => !!link.url)
             .map((link, index) => (
               <Button key={index} variant="outline" className="flex gap-1 px-1">
                 <Image
