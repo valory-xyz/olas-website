@@ -14,7 +14,10 @@ const VideosPage = () => {
         description="Tune in to our curated collection of videos and podcasts where we share valuable insights, expert interviews, and the latest updates on AI agents and crypto."
       />
       <SectionWrapper backgroundType="SUBTLE_GRADIENT">
-        <Videos isLoading={isLoading} videos={videos} />
+        <h1 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+          Videos & Podcasts
+        </h1>
+        <Videos isLoading={isLoading} videos={videos} isMain />
       </SectionWrapper>
     </PageWrapper>
   );

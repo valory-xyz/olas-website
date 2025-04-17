@@ -7,6 +7,9 @@
 export const MAIN_TITLE_CLASS =
   'font-bold !leading-[120%] text-3xl sm:text-4xl lg:mb-6 lg:text-4xl xl:mb-8 xl:text-5xl';
 
+export const TITLE_CLASS =
+  'mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ';
+
 export const HEADER_LARGE_CLASS =
   'font-extrabold text-3xl md:font-bold md:text-5xl lg:text-6xl';
 

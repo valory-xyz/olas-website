@@ -33,7 +33,7 @@ export const markdownComponents = {
   ),
   li: ({ node, ...props }) => <li className="mb-2" {...props} />,
   h1: ({ node, ...props }) => (
-    <h1 className="text-3xl font-bold mb-4" {...props} />
+    <h2 className="text-3xl font-bold mb-4" {...props} />
   ),
   h2: ({ node, ...props }) => (
     <h2 className="text-2xl font-semibold mb-3" {...props} />

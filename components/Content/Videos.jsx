@@ -44,13 +44,17 @@ Video.propTypes = {
   video: VideoPropTypes.isRequired,
 };
 
-export const Videos = ({ isLoading, videos, limit }) => (
+export const Videos = ({ isLoading, videos, limit, isMain }) => (
   <section>
     <div>
       <div>
-        <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
-          Videos & Podcasts
-        </h2>
+        {isMain ? (
+          ''
+        ) : (
+          <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+            Videos & Podcasts
+          </h2>
+        )}
 
         {limit !== null && (
           <div className="mb-4">
