@@ -10,7 +10,14 @@ import { formatDate } from 'common-util/formatDate';
 
 const Video = ({ video }) => (
   <a
-    href={video.platform_link || video.drive_link || video.video_url}
+    href={
+      video.platform_link ||
+      video.drive_link ||
+      video.video_url ||
+      video.apple_link ||
+      video.spotify_link ||
+      video.rss_link
+    }
     target="_blank"
     rel="noopener noreferrer"
   >

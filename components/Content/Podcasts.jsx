@@ -17,49 +17,81 @@ import { AudioLines } from 'lucide-react';
 
 const LIMIT = 3;
 
-const Podcast = ({ podcast }) => (
-  <div
-    className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
-  >
-    {podcast.imageFilename && (
-      <Image
-        src={`${podcast.imageFilename}`}
-        alt={podcast.title}
-        width={750}
-        height={200}
-        className="rounded-t-lg"
-      />
-    )}
-    <div className="p-6 flex flex-col h-full">
-      <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal min-h-[70px]">
-        {podcast.title}
-      </h2>
-      <div className="text-gray-500 mb-6">
-        <span className="text-sm md:text-xl lg:text-sm">
-          {formatDate(podcast.date)}
-        </span>
+const Podcast = ({ podcast }) => {
+  const watchLink =
+    podcast.platform_link || podcast.drive_link || podcast.video_url;
+
+  const links = [
+    {
+      label: 'Apple Podcasts',
+      url: podcast.apple_link,
+      imgSrc: 'apple-podcast.svg',
+    },
+    { label: 'Spotify', url: podcast.spotify_link, imgSrc: 'spotify.svg' },
+    { label: 'RSS.com', url: podcast.rss_link, imgSrc: 'rss.svg' },
+  ];
+
+  return (
+    <div
+      className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
+    >
+      {podcast.imageFilename && (
+        <Image
+          src={`${podcast.imageFilename}`}
+          alt={podcast.title}
+          width={750}
+          height={200}
+          className="rounded-t-lg"
+        />
+      )}
+      <div className="p-6 flex flex-col gap-2 h-full">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal">
+          {podcast.title}
+        </h2>
+        <div className="text-gray-500 mb-2">
+          <span className="text-sm md:text-xl lg:text-sm">
+            {formatDate(podcast.date)}
+          </span>
+        </div>
+        {watchLink && (
+          <Button variant="outline" className="py-2 mt-auto mb-2">
+            <a
+              href={watchLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-row gap-1"
+            >
+              <Image
+                src="/images/au-page/yt-icon.svg"
+                alt="watch"
+                width={20}
+                height={20}
+              />
+              Watch
+            </a>
+          </Button>
+        )}
+        <div className="flex flex-row flex-wrap gap-2 mt-auto">
+          {links
+            .filter((link) => !!link.url)
+            .map((link, index) => (
+              <Button key={index} variant="outline" className="flex gap-1 px-1">
+                <Image
+                  src={`/images/au-page/${link.imgSrc}`}
+                  alt={link.label}
+                  width={16}
+                  height={16}
+                />
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              </Button>
+            ))}
+        </div>
       </div>
-      <Button variant="outline" className="py-2 mt-auto">
-        <a
-          href={
-            podcast.platform_link || podcast.drive_link || podcast.video_url
-          }
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-row gap-1"
-        >
-          <Image
-            src="/images/au-page/yt-icon.svg"
-            alt="watch"
-            width={20}
-            height={20}
-          />
-          Watch
-        </a>
-      </Button>
     </div>
-  </div>
-);
+  );
+};
 
 Podcast.propTypes = {
   podcast: VideoPropTypes.isRequired,
