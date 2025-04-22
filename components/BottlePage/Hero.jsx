@@ -15,7 +15,7 @@ export const Hero = () => (
   >
     <div className="text-center max-sm:my-8">
       <Image
-        src="/images/bottle/pearl-icon.png"
+        src="/images/pearl-icon.png"
         alt="Pearl Icon"
         width={133}
         height={133}
