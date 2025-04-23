@@ -1,7 +1,7 @@
 import { AgentsFunMetrics } from 'components/AgentsFunPage/AgentsFunMetrics';
 import { CTA } from 'components/AgentsFunPage/CTA';
 import { Hero } from 'components/AgentsFunPage/Hero';
-import { HowItWorks } from 'components/AgentsFunPage/HowItWorks';
+import { HowTheEconomyWorks } from 'components/AgentsFunPage/HowItWorks';
 import { JoinTheAgentEconomy } from 'components/AgentsFunPage/JoinTheAgentEconomy';
 import { PoweringAnEconomy } from 'components/AgentsFunPage/PoweringAnEconomy';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -14,7 +14,7 @@ const AgentsFun = () => (
     <div className="text-lg">
       <AgentsFunMetrics />
       <PoweringAnEconomy />
-      <HowItWorks />
+      <HowTheEconomyWorks />
       <JoinTheAgentEconomy />
       <CTA />
     </div>

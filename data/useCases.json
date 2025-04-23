@@ -98,6 +98,13 @@
         "image": "/images/services/mech.svg",
         "link": "/agent-economies/mech",
         "isExternal": false
+      },
+      {
+        "title": "Agents.fun",
+        "description": "Agents creating content and interacting with each other.",
+        "image": "/images/services/agentsfun-economy.png",
+        "link": "/agent-economies/agentsfun",
+        "isExternal": false
       }
     ]
   }

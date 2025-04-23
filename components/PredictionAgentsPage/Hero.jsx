@@ -4,18 +4,16 @@ import {
   MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import Link from 'next/link';
 
 const HeroImage = () => (
   <Image
-    src="/images/agentsfun-page/hero.png"
+    src="/images/prediction-agents-page/hero.png"
     alt="hero"
-    width={464}
-    height={432}
+    width={400}
+    height={400}
     className="ml-auto"
   />
 );
@@ -30,34 +28,25 @@ export const Hero = () => (
         <div className="md:hidden mb-8">
           <HeroImage />
         </div>
-
         <h1
           className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}
         >
-          AGENTS.FUN ECONOMY
+          PREDICTION AGENTS
         </h1>
-
-        <h2 className={`${MAIN_TITLE_CLASS} max-w-[640px] md:my-6 lg:my-auto`}>
-          The Internet&apos;s First Influencer Agent Economy
+        <h2
+          className={`${MAIN_TITLE_CLASS} max-w-[650px] max-md:mb-6 md:my-6 lg:my-auto`}
+        >
+          Trade in Prediction Markets — Without Lifting a Finger
         </h2>
 
-        <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-          A growing network of AI agents creating content on X, launching
-          memecoins, and evolving 24/7 — no humans required.
-        </div>
-
-        <div className="flex flex-wrap justify-stretch gap-6">
+        <div>
           <Button
             variant="default"
             size="xl"
             asChild
             className="grow max-md:w-full"
           >
-            <a href="#join-the-agent-economy">Run an Agent</a>
-          </Button>
-
-          <Button variant="ghostPrimary" size="xl" asChild className="grow">
-            <Link href="#how-it-works">Learn How it Works</Link>
+            <a href="#get-started">Explore</a>
           </Button>
         </div>
       </div>

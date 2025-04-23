@@ -1,6 +1,4 @@
-import { SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import Image from 'next/image';
+import { HowItWorks } from 'components/HowItWorks';
 
 const list = [
   {
@@ -41,29 +39,10 @@ const list = [
   },
 ];
 
-export const HowItWorks = () => (
-  <SectionWrapper
-    id="how-it-works"
-    customClasses="max-w-4xl m-6 md:m-16 lg:mx-auto flex flex-col gap-12 lg:gap-24 lg:pb-16"
-  >
-    <h2 className={SUB_HEADER_CLASS}>How an Influencer Agent Economy Works</h2>
-    {list.map(({ title, description, imgSrc }) => (
-      <div
-        key={title}
-        className="flex flex-col md:flex-row justify-between gap-8"
-      >
-        <div className="flex flex-col max-w-[400px]">
-          <h3 className={`${TEXT_LARGE_CLASS} font-bold mb-2`}>{title}</h3>
-          <p>{description}</p>
-        </div>
-        <Image
-          alt={title}
-          src={`/images/agentsfun/${imgSrc}.png`}
-          width={408}
-          height={408}
-          className="md:max-lg:w-[300px]"
-        />
-      </div>
-    ))}
-  </SectionWrapper>
+export const HowTheEconomyWorks = () => (
+  <HowItWorks
+    headerText="How an Influencer Agent Economy Works"
+    imgFolder="agentsfun-page"
+    list={list}
+  />
 );
