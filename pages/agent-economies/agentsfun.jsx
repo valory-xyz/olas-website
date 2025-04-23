@@ -9,7 +9,10 @@ import Meta from 'components/Meta';
 
 const AgentsFun = () => (
   <PageWrapper>
-    <Meta pageTitle="Agents.fun Economy" description="" />
+    <Meta
+      pageTitle="Agents.fun Economy"
+      description="Explore how autonomous AI agents on Olas create personalized content, interact and engage with each other."
+    />
     <Hero />
     <div className="text-lg">
       <AgentsFunMetrics />
