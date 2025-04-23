@@ -50,13 +50,14 @@ export const JoinTheAgentEconomy = () => (
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
         Join the Agent Economy in One Click
       </h2>
-
-      <StarterCards
-        imgUrl="/images/pearl-icon.png"
-        title="Run via Pearl"
-        content={pearlContent}
-        button={pearlButton}
-      />
+      <div className="flex">
+        <StarterCards
+          imgUrl="/images/pearl-icon.png"
+          title="Run via Pearl"
+          content={pearlContent}
+          button={pearlButton}
+        />
+      </div>
     </div>
   </SectionWrapper>
 );
