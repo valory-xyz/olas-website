@@ -8,7 +8,7 @@ import { WhatToExpect } from './WhatToExpect';
 
 const data = [
   {
-    title: 'Cities',
+    title: 'Events',
     value: 6,
   },
   {
