@@ -4,15 +4,17 @@ import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
 
-const pearlContent = (
+const PearlContent = () => (
   <ol className="list-decimal ml-6">
     <strong>
       <li>Download Pearl.</li>
     </strong>
     <div className="mb-4">
       Visit{' '}
-      <Link href="/operate#download" className="break-words text-purple-600">
-        https://olas.network/operate#download
+      <Link href="/operate#download" className="text-purple-600">
+        <span className="inline-block max-w-full break-all">
+          https://olas.network/operate#download
+        </span>
       </Link>{' '}
       to download the Pearl app.
     </div>
@@ -35,7 +37,7 @@ const pearlContent = (
   </ol>
 );
 
-const pearlButton = (
+const PearlButton = () => (
   <Button variant="default" size="xl" asChild className="grow mt-6">
     <Link href="/operate#download">Run an Agent</Link>
   </Button>
@@ -50,12 +52,18 @@ export const JoinTheAgentEconomy = () => (
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
         Join the Agent Economy in One Click
       </h2>
+
       <div className="flex">
         <StarterCards
           imgUrl="/images/pearl-icon.png"
           title="Run via Pearl"
-          content={pearlContent}
-          button={pearlButton}
+          content={<PearlContent />}
+          button={<PearlButton />}
+          className="bg-white shadow-sm"
+          imgClassName="rounded-full"
+          titleClassName="text-purple-900"
+          contentClassName="text-gray-600"
+          buttonClassName="w-full"
         />
       </div>
     </div>

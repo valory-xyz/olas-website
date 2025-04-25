@@ -40,7 +40,6 @@ export const FurtherResources = () => (
           </div>
 
           <p className={`${TEXT_CLASS} flex-1`}>{resource.description}</p>
-
           <a
             href={resource.action.url}
             target="_blank"

@@ -1,7 +1,8 @@
+import { getLimitedText } from 'common-util/getLimitedText';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
-const TITLE_CHAR_MAX = '59';
+const TITLE_CHAR_MAX = '55';
 
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION =
@@ -15,7 +16,7 @@ const Meta = ({ pageTitle, description, siteImageUrl }) => {
   if (title.length > TITLE_CHAR_MAX) {
     description = `Discover ${pageTitle}`;
 
-    title = pageTitle;
+    title = `${getLimitedText(pageTitle, TITLE_CHAR_MAX)} | Olas`;
   }
 
   return (
