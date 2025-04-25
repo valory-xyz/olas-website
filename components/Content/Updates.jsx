@@ -11,7 +11,7 @@ const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const QUARTERLY_UPDATES_FUNNEL_ID = 8;
 
-export const Updates = ({ limit }) => {
+export const Updates = ({ limit, isMain = false }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -35,9 +35,11 @@ export const Updates = ({ limit }) => {
   return (
     <section>
       <div>
-        <h1 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
-          Quarterly Updates
-        </h1>
+        {!isMain && (
+          <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+            Quarterly Updates
+          </h2>
+        )}
 
         <p className="mb-8">
           Summarizing what happened in the Olas ecosystem in the last quarter

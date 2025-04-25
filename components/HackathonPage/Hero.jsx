@@ -39,7 +39,7 @@ const Hero = () => (
 
         <div className={`${TEXT_SMALL_CLASS} mb-6`}>
           Explore all the hackathons around the world where Olas is
-          participating.Find events, build Agents, collect rewards.
+          participating. Find events, build Agents, collect rewards.
         </div>
 
         <div className="md:hidden mb-8">

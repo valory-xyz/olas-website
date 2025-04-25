@@ -12,7 +12,10 @@ const UpdatesPage = () => (
     />
     <SectionWrapper>
       <BlogBackButton />
-      <Updates />
+      <h1 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+        Quarterly Updates
+      </h1>
+      <Updates isMain={true} />
     </SectionWrapper>
   </PageWrapper>
 );

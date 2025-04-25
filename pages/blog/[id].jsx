@@ -1,5 +1,6 @@
 import { getBlog } from 'common-util/api';
 import { formatDate } from 'common-util/formatDate';
+import { getLimitedText } from 'common-util/getLimitedText';
 import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
@@ -8,32 +9,6 @@ import Image from 'next/image';
 import { TEXT, TITLE } from 'styles/globals';
 
 const DESC_CHAR_LIMIT = 160;
-
-const stripMarkdown = (markdown) => {
-  // Remove markdown links, images and syntax
-  let text = markdown.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-  text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '');
-  text = text.replace(/(\*\*|__|\*|_|`|#+|\n)/g, ' ');
-  // Remove extra spaces
-  text = text.replace(/\s+/g, ' ').trim();
-  return text;
-};
-
-const getDesc = (input, charLimit) => {
-  const plainText = stripMarkdown(input);
-  return plainText
-    .split(/[\s\n]/)
-    .reduce((acc, word) => {
-      const currentLength = acc.join(' ').length + (acc.length > 0 ? 1 : 0);
-      if (currentLength + word.length <= charLimit) {
-        acc.push(word);
-      } else {
-        return acc;
-      }
-      return acc;
-    }, [])
-    .join(' ');
-};
 
 const BlogItem = ({ blog }) => {
   if (!blog) return <Spinner />;
@@ -44,7 +19,10 @@ const BlogItem = ({ blog }) => {
   const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${imagePath}`;
 
   const formattedContent = <Markdown>{content}</Markdown>;
-  const description = getDesc(formattedContent.props.children, DESC_CHAR_LIMIT);
+  const description = getLimitedText(
+    formattedContent.props.children,
+    DESC_CHAR_LIMIT,
+  );
 
   return (
     <PageWrapper>

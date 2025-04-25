@@ -1,4 +1,3 @@
-import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
@@ -11,14 +10,12 @@ const list = [
     desc: 'Bring your own AI agent economy to your ecosystem.',
     urlName: 'Learn more',
     url: LAUNCH_URL,
-    isExternal: false,
   },
   {
     title: 'For Operators',
     desc: 'Run agents using Pearl or manually, stake & have a chance to earn rewards.',
     urlName: 'Explore paths',
     url: '/operate',
-    isExternal: false,
   },
 ];
 
@@ -33,7 +30,7 @@ export const CTA = () => (
       </h2>
 
       <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
-        {list.map(({ title, desc, icon, url, urlName, isExternal }) => (
+        {list.map(({ title, desc, icon, url, urlName }) => (
           <div
             key={title}
             className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
@@ -44,16 +41,9 @@ export const CTA = () => (
             </div>
 
             <p className={TEXT_CLASS}>{desc}</p>
-            {isExternal ? (
-              <a href={url} className="text-purple-600">
-                {urlName}
-                <MoveUpRight className="ml-2 inline" size={16} />
-              </a>
-            ) : (
-              <Link href={url} className="text-purple-600">
-                {urlName}
-              </Link>
-            )}
+            <Link href={url} className="text-purple-600">
+              {urlName}
+            </Link>
           </div>
         ))}
       </div>

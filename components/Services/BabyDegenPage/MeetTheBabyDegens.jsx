@@ -64,7 +64,7 @@ const optimusKeyFeatures = [
 const ModiusAgent = () => (
   <div
     id="modius-agent"
-    className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto"
+    className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
   >
     <Image
       src="/images/services/babydegen/modius.png"
@@ -95,11 +95,11 @@ const ModiusAgent = () => (
         </ul>
       </div>
 
-      <div className="flex gap-4">
-        <Button variant="default" size="xl" className="w-fit">
+      <div className="flex flex-wrap gap-4">
+        <Button variant="default" size="xl" className="max-md:grow w-fit">
           <Link href="/operate#download">Run via Pearl</Link>
         </Button>
-        <Button variant="outline" size="xl" className="w-fit">
+        <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>
       </div>
@@ -110,7 +110,7 @@ const ModiusAgent = () => (
 const OptimusAgent = () => (
   <div
     id="optimus-agent"
-    className="flex flex-row gap-4 py-16 max-w-[968px] mx-auto"
+    className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
   >
     <Image
       src="/images/services/babydegen/optimus.png"
@@ -145,7 +145,7 @@ const OptimusAgent = () => (
       <p className="text-slate-500">
         Optimus is currently available on Quickstart.
       </p>
-      <Button variant="default" size="xl" className="w-fit">
+      <Button variant="default" size="xl" className="max-md:w-full w-fit">
         <a href={QUICKSTART_URL}>Run via Quickstart</a>
       </Button>
     </div>

@@ -121,7 +121,7 @@ const ProjectTypes = ({ projectTags }) => (
 );
 
 const EventLink = ({ link, type }) => (
-  <div className="p-6 border-t-1.5 flex justify-center w-full">
+  <>
     {type == 'button' && (
       <Button variant="default" size="lg" asChild>
         <a href={link} target="_blank" rel="noopenner noreferrer">
@@ -139,7 +139,7 @@ const EventLink = ({ link, type }) => (
         Hackathon results ↗
       </a>
     )}
-  </div>
+  </>
 );
 
 export const CatchTheNextEvent = () => (
@@ -217,7 +217,16 @@ export const CatchTheNextEvent = () => (
                   </div>
                   {projectTags && <ProjectTypes projectTags={projectTags} />}
                 </div>
-                {link && <EventLink link={link} type={type} />}
+
+                <div className="p-6 border-t-1.5 flex justify-center w-full">
+                  {link ? (
+                    <EventLink link={link} type={type} />
+                  ) : (
+                    <span className="text-slate-500">
+                      No qualifying submissions.
+                    </span>
+                  )}
+                </div>
               </Card>
             );
           },

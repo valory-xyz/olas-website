@@ -14,7 +14,6 @@ export const WhatIsBabyDegen = () => (
           skill. It&apos;s more than just a tool; it&apos;s your companion on
           your crypto trading journey.
         </p>
-
         <h2 className={`${SUB_HEADER_CLASS} mb-8`}>
           Get ready to participate in AI agent DeFi
         </h2>
