@@ -81,7 +81,7 @@ module.exports = withPlausibleProxy()({
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; `script-src 'self' 'strict-dynamic'; style-src 'self'; img-src 'self' blob: data:; font-src 'self' https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content; upgrade-insecure-requests; `connect-src 'self';",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io https://dune.com https://flipsidecrypto.xyz; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self' https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content; upgrade-insecure-requests; connect-src 'self' https://plausible.io https://dune.com https://flipsidecrypto.xyz https://cms-backend.staging.autonolas.tech https://cms-backend.autonolas.tech;",
           },
           {
             key: 'X-Content-Type-Options',
