@@ -48,3 +48,8 @@ export default function App({ Component, pageProps }) {
     </PlausibleProvider>
   );
 }
+
+App.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+};
