@@ -1,5 +1,6 @@
 import PlausibleProvider from 'next-plausible';
 import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import 'styles/globals.css';
 
@@ -49,7 +50,7 @@ export default function App({ Component, pageProps }) {
   );
 }
 
-App.propTypes = {
+App.PropTypes = {
   Component: PropTypes.elementType.isRequired,
   pageProps: PropTypes.object.isRequired,
 };
