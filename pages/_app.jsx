@@ -33,7 +33,7 @@ function PlausibleTracker() {
 export default function App({ Component, pageProps }) {
   return (
     <PlausibleProvider
-      domain="olas.network"
+      domain='olas.network'
       trackOutboundLinks={true}
       enabled={true}
       scriptProps={{
@@ -50,7 +50,7 @@ export default function App({ Component, pageProps }) {
   );
 }
 
-App.PropTypes = {
+App.propTypes = {
   Component: PropTypes.elementType.isRequired,
   pageProps: PropTypes.object.isRequired,
 };
