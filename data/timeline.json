@@ -1,0 +1,286 @@
+[
+    {
+        "year": "2025",
+        "quarters" : [
+        {
+            "quarter" : "Quarter 1",
+            "topics" : [
+                {
+                    "topic" : "Pearl became the \"Agent App Store\"",
+                    "content" : 
+                        "- Pearl now offers users a growing range of AI agents in one app. \n- These user-owned autonomous AI agents work for you and earn OLAS staking rewards, all in a user-friendly, open-source desktop app."
+                    ,
+                    "category" : ["Pearl", "Operate", "Key milestones"]
+                },
+                {
+                    "topic" : "Agent Activity Surged from 3M to 5M+ Across Chains",
+                    "content" : 
+                        "- Crossed 3M of total transactions by January \n- 4M in February \n- 5,251,860 by March 31 \n- 3.45M were Mech agent-to-agent requests \n- 599 Daily Active Agents (DAAs) across 9 chains by March 31 — real, consistent usage that proves Olas is the most active and widely adopted crypto-native AI agent network in the world."
+                    ,
+                    "category" : ["Activity Metrics"]
+                },
+                {
+                    "topic" : "Mech Marketplace: The AI Agent Bazaar Launched",
+                    "content" : 
+                        "- First on-chain agent-to-agent service marketplace \n- Agents can hire, sell services, and collaborate autonomously \n- Unlocks a new economy where agents can earn by providing services \n- Over 3M requests processed to date (including from prior mech systems) \n- Learn more: <https://x.com/autonolas/status/1896624024538464672>",
+                    "category" : ["Mech Marketplace", "Key milestones"]
+                },
+                {
+                    "topic" : "$13.8M Raised to Power the Ecosystem",
+                    "content" : 
+                        "- Core contributor closed funding round, led by [@1kxnetwork](https://x.com/1kxnetwork) \n- Supports long-term growth for builders, operators, and agent economies",
+                    "category": ["Fundraising", "Key milestones"]
+                },
+                {
+                    "topic" : "Olas Accelerator Launched",
+                    "content" : "- Grant + mentorship program for teams building for Pearl's Agent App Store \n- 4 teams accepted: RateRover, [@Celo](https://x.com/Celo), [@BioProtocol](https://x.com/BioProtocol), [@TrendMoon](https://x.com/0xTrendMoon) \n- 40+ applicants, 6 spots remain open",
+                    "category": ["Build", "Key milestones"]
+                },
+                {
+                    "topic" : "Governance & Tokenomics Progress",
+                    "content" : 
+                    "- Community-led proposals resulted in: \n  - ~77.9M unvested OLAS burnt \n  - Emissions reset \n  - Lowered inflation via a new emissions curve \n  - Improved OLAS token distribution with higher float",
+                    "category" : ["Tokenomics", "Govern", "Key milestones"]
+                },
+                {
+                    "topic" : "New Use Cases: Agents Got Smarter",
+                    "content" : "- Modius Agent launched on Mode for DeFi portfolio management \n- Agents.fun agents gained image-generation + social posting capabilities",
+                    "category": ["Operate", "Pearl"]
+                },
+                {
+                    "topic" : "Agent Activity Surged from 3M to 5M+ Across Chains",
+                    "content" : "- Agents Unleashed: Builder's Night drew an engaged crowd at [@EthereumDenver](https://x.com/EthereumDenver). You can watch the videos [in this playlist](https://www.youtube.com/watch?v=cksJR3tyvFw&list=PLoP4p0r-X94q7eRSr-tr79asIfBIqMRtN)! \n- Other hackathons that featured Olas tracks were the UK AI Agent Hackathon (ongoing) and the [@ethereumdenver](https://x.com/ethereumdenver) BUILDathon",
+                    "category" : ["Agents Unleashed", "Hackathons"]
+                }
+            ]
+        }]
+    },
+    {
+        "year" : "2024",
+        "quarters" : [
+        {
+            "quarter": "Quarter 4",
+            "topics" : [
+                {
+                    "topic" : "Massive Growth in Transactions",
+                    "content" : "- Olas agents achieved a lifetime total of 2,723,630 transactions across all chains. \n- Of those, 1,632,262 were agent-to-agent transactions — a testament to the thriving and rapidly expanding agent economies that have been built on Olas so far.",
+                    "category" : ["Activity Metrics"]
+                },
+                {
+                    "topic" : "More People Running Agents Than Ever",
+                    "content" : "- 500 Daily Active Agents (DAAs) marked a new high for operator engagement. \n- 1,681 agents have now been deployed across 46 registered agent types. \n- Operators used user-friendly tools like Pearl and the more advanced Quickstart to drive this growth.",
+                    "category" : ["Operate", "Key milestones"]
+                },
+                {
+                    "topic" : "Olas Staking Grew in Size and Scope",
+                    "content" : "- At the end of the year, 2,632,474 OLAS was staked across multiple chains. \n- Staking expanded to Mode, Celo, and Base, with 100+ new staking slots added across Pearl and Quickstart. \n- Staking was also introduced to Olas Contribute, enabling more ecosystem participation.",
+                    "category" : ["Activity Metrics", "Tokenomics", "Operate", "Key milestones"]
+                },
+                {
+                    "topic" : "Pearl Expanded and Improved",
+                    "content" : "- 15,250 OLAS has been staked through Pearl, with over 110,000 mech requests handled by the end of Q4. \n- 731 participants have actively staked via Pearl. \n- Pearl received 6 major updates, delivering new features and performance enhancements",
+                    "category" : ["Operate", "Activity Metrics"]
+                },
+                {
+                    "topic" : "Agents Unleashed: Bangkok Closed Out the Year",
+                    "content" : "- 2,943 registrations \n- 20 speakers and panelists \n- 3 DJs \n- Full event recordings are available on YouTube: [Watch here](https://www.youtube.com/playlist?list=PLoP4p0r-X94pHCR8ARMw014ykrIEWuCok).",
+                    "category": ["Agents Unleashed"]
+                },
+                {
+                    "topic" : "Protocol-Owned Liquidity Reached $17.6M",
+                    "content" : "- By Q4 2025, the DAO owned $17.6 million in Protocol-Owned Liquidity (POL) across chains, including Arbitrum, Base, Celo, Ethereum, Gnosis, Optimism, Polygon, and Solana.",
+                    "category" : ["Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic" : "New Integrations Expanded the Ecosystem",
+                    "content" : "- Key collaborations announced with [Isotropic](https://x.com/autonolas/status/1846524083070271535), [Shutter Network](https://x.com/autonolas/status/1846524083070271535), [Peaq, Combiner](https://x.com/autonolas/status/1811426625944420501), [Nektar](https://x.com/autonolas/status/1859606738212880574), and [CreatorBid's Eolas](https://x.com/autonolas/status/1866140326693597443).",
+                    "category": ["Build"]
+                },
+                {
+                    "topic" : "Dev Academy Success Stories",
+                    "content" : "- Cohort 10 graduated, with 6 out of 7 developers completing the program.\n- Cohort 11 kicked off, bringing more talent into the ecosystem.\n- Graduates from earlier cohorts have already been matched with exciting opportunities, building new agents and expanding the Olas ecosystem via internal and external projects.",
+                    "category": ["Build"]
+                },
+                {
+                    "topic": "Autonolas Improvement Proposals (AIPs)",
+                    "content": "- AIP-5: Launch of the Mech Marketplace. \n- AIP-6: Introduction of the BuyBackAndBurn mechanism.",
+                    "category": ["Govern", "Build", "Key milestones"]
+                }
+            ]
+        },
+        {
+            "quarter": "Quarter 3",
+            "topics": [
+                {
+                    "topic": "Daily Active Agents Metric Introduced",
+                    "content": "- [Olas introduced the Daily Active Agents (DAA) metric](https://x.com/autonolas/status/1834170210640953813), showcasing the number of agents making at least one transaction per day across 8 chains.",
+                    "category": ["Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "Milestone: 1.3M Agent Transactions Reached",
+                    "content": "- Olas achieved a 7-day average of 160 Daily Active Agents (DAAs). \n- Over [1.3 million](https://x.com/autonolas/status/1823411711061512437) agent transactions completed during the quarter.",
+                    "category": ["Activity Metrics"]
+                },
+                {
+                    "topic": "Predict Economy Growth",
+                    "content": "- The Olas Predict agent economy remained the biggest driver of transaction volume, with agents collaborating to predict events at up to 81% accuracy.",
+                    "category": ["Launch"]
+                },
+                {
+                    "topic": "Optimus Agent Launch",
+                    "content": "- Q3 introduced the [Optimus Agent](https://x.com/autonolas/status/1836820059563696562) — improving DeFi UX and significantly boosting Daily Active Agents.",
+                    "category": ["Operate", "Key milestones"]
+                },
+                {
+                    "topic": "Olas Staking Launch",
+                    "content": "- Operators staked over **71,000 OLAS** using **Pearl** and **Quickstart**.",
+                    "category": ["Operate", "Pearl", "Tokenomics", "Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "Pearl Expanded to Windows",
+                    "content": "- Pearl continued to gain traction with its release on Windows. \n- [Pearl](https://olas.network/operate) is a simple desktop app enabling people to have fun running an agent and earning Olas Staking rewards on both Mac and Windows.",
+                    "category": ["Pearl", "Operate", "Key milestones"]
+                },
+                {
+                    "topic": "Agents Unleashed: Singapore and Brussels Raised the Bar",
+                    "content": "- The [Singapore](https://x.com/autonolas/status/1838333797680713757 event set a new benchmark, with over 3,200 guests registered and 400+ attending.",
+                    "category": ["Agents Unleashed"]
+                },
+                {
+                    "topic": "Agents Unleashed Brussels",
+                    "content": "- The Brussels Event saw 1,200 registered guests and 300+ attending — cementing Agents Unleashed as the premier event series for AI agents in the blockchain space.",
+                    "category": ["Agents Unleashed"]
+                },
+                {
+                    "topic": "New Partnerships Expanded Olas Reach",
+                    "content": "- Olas saw new partnerships with [Marlin Protocol](https://x.com/valoryag/status/1838232264377016666), [Aizel Network](https://x.com/valoryag/status/1830617935528034306), [Nevermined](https://x.com/valoryag/status/1830617935528034306), Celo, and [Bagel Network](https://x.com/valoryag/status/1815417909126336718), driving deeper integration into the AI and blockchain space.",
+                    "category": ["Launch"]
+                },
+                {
+                    "topic": "Olas Dev Academy Produced Full-Time Builders",
+                    "content": "- Valory's Olas Dev Academy produced 6 new full-time paid Builders and matched them with Launchers. \n- Further demand is being met by the [next academies](https://x.com/autonolas/status/1841146460492194003), as the ecosystem continues to expand.",
+                    "category": ["Build"]
+                },
+                {
+                    "topic": "Mainstream outlets began covering Olas",
+                    "content": "- Olas was [featured](https://x.com/autonolas/status/1833626506469511408) in [Forbes](https://www.forbes.com/sites/digital-assets/2024/09/09/what-are-autonomous-economic-agents/), [FastCompany](https://www.fastcompany.com/91198812/three-ways-ai-is-modernizing-outdated-industries), and 30+ other publications. \n- More people than ever know that Olas is the OG project bringing AI agents to crypto, seeing constant shipping since 2021.",
+                    "category": ["Media appearances", "Key milestones"]
+                }
+            ]
+        },
+        {
+            "quarter": "Quarter 1 + 2",
+            "topics" : [
+                    {
+                        "topic": "Olas Activity Tripled Across Chains",
+                        "content": "- Olas' all-time activity surged from 270k transactions at the end of 2023 to 915k by the end of Q2 2024. \n- 70% of total transactions were made in Q2 alone! See the Q2 end stats [here](https://x.com/autonolas/status/1810675317352350070) \n- Olas expanded from 4 to 8 chains: Ethereum, Gnosis Chain, Solana, Polygon, Celo, Base, Arbitrum, and Optimism. \n- Olas agents made 20% of all Safe txs ever on Gnosis Chain, maintaining 75% of all monthly Safe activity there.",
+                        "category": ["Activity Metrics", "Key milestones"]
+                    },
+                    {
+                        "topic": "The First Agent Economy Thrived",
+                        "content": "- Agents in [Olas Predict](https://www.valory.xyz/post/agent-economies-synthetic-data), agents in this first agent economy flourished: \n  - making over [880k transactions](https://x.com/autonolas/status/1810675340416880826) \n  - predicting the future w/ up to 81% accuracy \n  - generated a wealth of synthetic data that can be used to train AI models & future agent economies \n- Expect agent economies and activity to keep increasing, including existing products like: \n  - [Governatoorr](https://twitter.com/valoryag/status/1643670672521195523?s=20) - AI-powered DAO delegate, for addressing governance apathy \n  - [Contribute](https://x.com/autonolas/status/1697258914776289491?s=20) - AI-fied Community-owned Marketing, powering organic marketing",
+                        "category": ["Launch", "Activity Metrics"]
+                    },
+                    {
+                        "topic": "Any Mac user can now own an Olas agent via Pearl app",
+                        "content": "- [Pearl](https://x.com/autonolas/status/1810675363552591954) is a novel desktop app that means anyone (with a Mac, for now) can be an Operator, owning an AI agent & earning rewards. \n- Your agents work autonomously & can receive rewards for useful work via Proof of Active Agent in Olas Staking [#StakeWithPearl](https://x.com/hashtag/StakeWithPearl?src=hashtag_click).",
+                        "category": ["Pearl", "Operate", "Key milestones"]
+                    },
+                    {
+                        "topic": "Olas Staking Alpha Bootstrapped the Economy",
+                        "content": "- [Staking](https://x.com/autonolas/status/1810675386629722626) attracted Builders & Launchers to Olas who recognize it as the engine of the autonomous agent economy. [Learn more about Staking](https://staking.olas.network) \n- [A $90k @code4rena competitive audit](https://x.com/code4rena/status/1810945628538880463) reviewed the contracts & is being integrated for Q3 launch. \n- [Over 100 pioneers](https://x.com/autonolas/status/1810675455898624345) contributed to growing and improving Olas Staking, ahead of its mainnet launch in Q3.",
+                        "category": ["Build", "Launch", "Operate"]
+                    },
+                    {
+                        "topic": "Olas Builders grew",
+                        "content": "- [Developers](https://x.com/autonolas/status/1810675478736630166) learned to build on Olas aided by two new offerings from Valory. [It seems the secret sauce for the Olas Dev Academy has been found](https://x.com/david_enim/status/1803233616467542159), which produced full-time paid Builders for Launchers in the Olas ecosystem - with demand for more! \n- Catch 15 ecosystem builders on 13 episodes of [Olas Currents](https://x.com/valoryag/status/1810413547962437754) released in Q2 alone, covering everything from the Olas Liquid Staking Token to Researcher Agents. Olas community developers received 2.33 ETH rewards plus 137k OLAS so far in [Epoch 13](https://x.com/autonolas/status/1810720598961856693) developer rewards alone.",
+                        "category": ["Build"]
+                    },
+                    {
+                        "topic": "Olas Momentum Grew Across Crypto and AI Events",
+                        "content": "- Members organized & appeared at crypto & AI events across the world. Just a few included: \n  - Valory organized, collaborating with dozens of leading protocols and projects: \n  - [Agents Unleashed SF](https://x.com/autonolas/status/1799441350372573520) \n  - [Agents Unleashed Berlin](https://x.com/valoryag/status/1800891295822704758) \n  - [Agents Unleashed Denver](https://x.com/autonolas/status/1773710714676654375) \n  - [GenAI](https://x.com/autonolas/status/1795145449151791385) & [Edge Esmeralda](https://x.com/valoryag/status/1806077482204061905) in SF \n  - As above, the crypto space has Valory's [Olas Currents](https://x.com/valoryag/status/1810413547962437754) series. \n  - For the AI space, Valory has created the [AI Frontiers](https://youtube.com/playlist?list=PLXztsZv11CTfLmcc4yWAWj55x2FTpfCXt&si=oxEjF1j-LH0D5GUa) series, featuring the latest from the wider AI agents space outside web3 including leading agent developers at Microsoft, CAMEL-AI, Red Dragon AI and Meta. \n  - David M went to San Francisco to spread the word about Olas agents and their potential for training future AI models and agent economies in the wider AI space at GenAI and Edge Esmeralda. [Read more](https://x.com/valoryag/status/1800207551084249483).",
+                        "category": ["Agents Unleashed", "Other events"]
+                    }
+            ]
+        }]
+    },
+    {
+        "year": "2023",
+        "quarters" : [
+        {
+            "quarter": "Quarter 4",
+            "topics": [
+                {
+                    "topic": "Olas Generated ~$1M in Profits",
+                    "content": "- Olas saw almost [$1m in profits](https://x.com/autonolas/status/1748405738266100063?s=20) from the liquidity pools on Ethereum and Gnosis Chain alone. \n- Remember, the Olas [whitepaper](https://www.olas.network/whitepaper) launched in January 2023, followed by the public launch of the [OLAS token](https://olas.network/olas-token) on Ethereum in July 2023. By the end of 2023, the DAO also launched the OLAS token on Gnosis Chain, Solana and Polygon and Valory sponsored a [Code4rena audit contest of the Olas contracts](https://www.valory.xyz/post/code4rena). \n- The initial Fjord Foundry Liquidity Bootstrapping Pool saw $74.6M FDV, 393 swaps, $1.2m in volume, and 14.84 million OLAS tokens (~1.5% of the network) released to 149 holders. By the end of 2023, there were [11.5k holders on Ethereum alone](https://x.com/autonolas/status/1741522811116753092?s=20)!",
+                    "category": ["Tokenomics", "Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "Olas attracted useful code, breaking 255K+ agent transactions",
+                    "content": "- Made by agent-powered autonomous services, mostly prediction agent services (as part of Valory's [hackathon with Gnosis Chain](https://www.valory.xyz/post/prediction-agent-hackathon-success)) and later [Staker Expeditions](https://www.valory.xyz/post/olas-staker-expeditions).",
+                    "category": ["Activity Metrics"]
+                },
+                {
+                    "topic": "New Autonomous Agent Applications Built",
+                    "content": "- [shorts.wtf](https://x.com/valoryag/status/1740760095322247466?s=20) - AI-powered NFT short film generator ([prize-winning hack](https://twitter.com/valoryag/status/1740760095322247466?s=20)) \n- [Mechs](https://x.com/valoryag/status/1658869890625978373?s=20) - Crypto's market for AI skills ([prize-winning hack](https://x.com/valoryag/status/1658869890625978373?s=20)) \n- [Governatoorr](https://twitter.com/valoryag/status/1643670672521195523?s=20) - AI-powered DAO delegate \n- [Contribute](https://x.com/autonolas/status/1697258914776289491?s=20) - AI-ified Co-ownable DAO Ops (an Olas Protocol-owned Service) \n- [Prediction Agent](https://twitter.com/autonolas/status/1698312457872175126) - AI-powered predictions in crypto \n- [Autonomous Keeper Service](https://twitter.com/autonolas/status/1666857986114093057?s=20) - automations [moving 30 ETH in 3 months](https://x.com/autonolas/status/1666857986114093057?s=20), superseded by Olas Automate being developed now by Olas Dev Academy 5 \n- [El Collectooorr](https://x.com/autonolas/status/1552565064183447552?s=20) - the first autonomous NFT Collector DAO \n- [Autonomous Fund](https://www.autonolas.network/blog/intro-1) - co-owned AI-ified asset management",
+                    "category": ["Build", "Key milestones"]
+                },
+                {
+                    "topic": "Olas community developers received 18+ ETH plus OLAS in dev rewards so far",
+                    "content": "- Olas developers earned over 18 ETH and large OLAS rewards, building hundreds of [services](https://x.com/autonolas/status/1703797959488659863?s=20) like: \n- Plantation Station - uses dynamic NFTs to represent real-time crop data on-chain. \n- [SMP Fund](https://x.com/tannedoaksprout/status/1676634426476748800?s=20) - Autonomous on-chain asset manager. \n- [Collateralization Station](https://x.com/autonolas/status/1729925307036053742?s=20) - use Olas NFTs as loan collateral. \n- See epochs: [1](https://x.com/autonolas/status/1653804508001243140?s=20), [2](https://x.com/autonolas/status/1674411240834342913?s=20), [3](https://x.com/autonolas/status/1687063838674567168?s=20), [4](https://x.com/autonolas/status/1696455158899851769?s=20), [5](https://x.com/autonolas/status/1706986215260790825?s=20), [6](https://x.com/autonolas/status/1719049630103511382?s=20), and [7](https://x.com/autonolas/status/1743355328828489787?s=20), [plus a thread of threads about community-built services](https://x.com/autonolas/status/1703797959488659863?s=20).",
+                    "category": ["Build"]
+                },
+                {
+                    "topic": "Valory began its fifth Olas Dev Academy",
+                    "content": "- With engaged devs learning the how and why of contributing to Olas, before splitting into tracks to start building. You can recap the Academy [here](https://youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl&si=Vh8eXpNQyniKqo_1).",
+                    "category": ["Build"]
+                },
+                {
+                    "topic": "Olas attracted $24 million Protocol-owned Liquidity",
+                    "content": "- Bonding was in demand. Olas' unique bonding grew capital in tandem with code to bootstrap Olas’ ocean of services, as one of the three elements of Olas’ Triple Lock, the other two being Locking (e.g. for governance) and Staking (emerging via Staker Expeditions). \n- By the end of Q3, [Bonding products](https://twitter.com/autonolas/status/1697670948168593724?s=20) worth >$2.4m were sold - even with months-long locking periods, meaning liquidity was 79% Protocol-owned. 6x expected protocol profits were made on this alone. \n- By the end of 2023, PoL on Ethereum and Gnosis Chain combined was valued at ~$24m, with the protocol owning close to 100% of liquidity in the pools.",
+                    "category": ["Tokenomics", "Bond", "Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "Olas attracted the first Stakers",
+                    "content": "- Valory's first [Olas Staker Expeditions, Everest, was a success](https://x.com/valoryag/status/1744440665210003647?s=20), seeing all slots full and our pioneering Proof of Active Agent (PoAA) concept in action. PoAA differentiated between active and inactive stakers, autonomously rewarding those running active agents. It has enabled us to finetune the experience for stakers before moving on to the next Expedition, Alpine, in the new year. Olas DAO could look to integrate this staking in 2024. \n- People became excited about Olas Agents as Daily Active Users in crypto. \n- Olas AI agents made the [majority of Safe transactions](https://twitter.com/autonolas/status/1701630501319233967) on Gnosis Chain during the prediction agent hackathon, leading to recognition from the founders of [Safe and Gnosis Chain](https://www.valory.xyz/post/gnosis-and-safe-co-founders-recognize-olas-ai-agents-traction), and collaborations with Gnosis, [Safe](https://x.com/safe/status/1710335368451793282?s=20), [Nevermined](https://www.valory.xyz/post/mechs-nevermined), [GetBlock](https://x.com/getblockio/status/1704423112303886768?s=20), [Kleros](https://x.com/autonolas/status/1700087086320324796?s=20), [The Graph](https://x.com/autonolas/status/1707761919766245809?s=20) and more. Valory also collaborated earlier in the year with [Balancer](https://www.autonolas.network/blog/intro-1) and [Ceramic](https://www.autonolas.network/blog/introducing-iekit). \n- In its third year, Olas was featured in [Messari](https://www.valory.xyz/post/messari-recognizes-olas-as-core-infrastructure-for-onboarding-ai-agents-to-crypto) and [Nansen's #1 High Conviction Bet for 2024](https://x.com/valoryag/status/1742147563338531170?s=20). This came after founding member, David Minarsch, coined '[Co-owned AI](https://twitter.com/valoryag/status/1633482825252081664?s=20)' at ETHDenver, invented [Protocol-owned Services](https://www.valory.xyz/post/protocol-owned-services), and proposed that [Artificial General Intelligence will likely be agentic and must be co-owned](https://www.valory.xyz/post/co-owned-ai). David Minarsch also spoke about Olas on [protocol deep dives w/ thefett](https://www.valory.xyz/post/podcast-david-m-on-protocol-deep-dives-w--thefett), [DAO Talk](https://www.valory.xyz/post/dao-talk-podcast), [In Plain Text podcast](https://x.com/PhilJBonello/status/1730638482391896259?s=20), and this [Olas ELI5 for Safe](https://x.com/safe/status/1720093947094343681?s=20). \n- After the surge in interest in AI agents in crypto, Valory provided spaces for pioneers of AI agents joining the space to share learnings, including [3 AI Frontiers interviews](https://youtube.com/playlist?list=PLXztsZv11CTfLmcc4yWAWj55x2FTpfCXt&si=oxEjF1j-LH0D5GUa), [4 Crypto x AI conferences](https://youtube.com/playlist?list=PLXztsZv11CTcfBu0hVm8ggDBDdVYRmETF&si=lhAmDB1qNh8NACZK), and a [decentralized AI hack](https://www.valory.xyz/post/augment-hack). \n- Overall, Twitter impressions for Valory and Olas surged 18x – as autonomous agents went viral and the community grew, leading to regular, high-reach community-generated content.",
+                    "category": ["Operate", "Activity Metrics", "Build", "Other events", "Key milestones"]
+                }
+            ]
+        },
+        {
+            "quarter": "Quarter 1 + 2",
+            "topics" : [
+                {
+                    "topic": "OLAS Token Launched at $74.6M FDV",
+                    "content": "- OLAS launched publicly via a Liquidity Bootstrapping Pool, hitting a $74.6M FDV. \n- By its end at 6pm UTC, Wednesday 12th July 2023, the week-long Liquidity Bootstrapping Pool that facilitated a decentralized launch for the OLAS token saw: \n- 393 swaps totalling $1.2m in volume. \n- 14.84 million OLAS tokens (~1.5% of the network) released to 149 holders. \n- [OLAS is now live](https://v2.info.uniswap.org/pair/0x09d1d767edf8fa23a64c51fa559e0688e526812f) on Uniswap v2.",
+                    "category": ["Tokenomics", "Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "Developer Rewards Flywheel Activated",
+                    "content": "- The OLAS token fuels a whirlpool fusing capital and code. A tangible, live example of this is the developer rewards programmed in. \n- Two epochs of developer rewards have already been distributed, and the next developer rewards will soon be accompanied by >1m OLAS!",
+                    "category": ["Build", "Activity Metrics", "Key milestones"]
+                },
+                {
+                    "topic": "New Proposal for DAO: Olas Bonding Program",
+                    "content": "- After developer rewards, the next piece to become live will likely be the [Olas Network's unique](https://boardroom.io/autonolas/proposal/cHJvcG9zYWw6YXV0b25vbGFzOm9uY2hhaW46ODU3ODA1MjQ1MjQyODgwNTE0MTU1MjEyODcyNzMyNTgwNzY1NTY5MTE5Nzc2NTQwODk1MDAzNzA4MzE3NjIyMTY1NjUzNzEwMjIzNDY=), Olympus-inspired bonding program, as governance is now reviewing this proposal. \n- For a detailed, technical understanding of the tokenomics powering the Olas Network, you can read the [whitepaper or academic tokenomics paper](https://autonolas.network/whitepaper/). The flywheel is turning, and should only accelerate [once bonding is live](https://twitter.com/autonolas/status/1679510266910846977?s=20).",
+                    "category": ["Govern", "Bond", "Key milestones"]
+                },
+                {
+                    "topic": "The growing ocean of autonomous agent powered services",
+                    "content": "- Valory has built 8 crypto-native autonomous services, based on the autonomous agent powered technology of the Autonolas Network (Olas Network for short). Here's a spotlight on three – a comprehensive list appears on the [Olas Network site](https://olas.network/). \n- Governatooorr \n  - Governatooorr technically means humans may no longer need to read governance proposals to vote and decide organizations’ outcomes, and it already supports the biggest DAOs in the space governing billions of dollars. However, Valory’s goal is to use Governatooorr to show the power of autonomous agent based applications and provoke discussion about building open-source software to harness AI for the betterment of humankind. \n- Contribute \n  - Contribute distributes points autonomously to those who contribute to #OlasNetwork, with strong week-on-week user growth. The Olas Network's first [Protocol-owned Service](https://www.autonolas.network/documents/whitepaper/Whitepaper%20Summary%20v1.0.pdf). \n- Centaurs \n  - Centaurs enables co-owned AI DAOs to be created via chatbot. So far such DAOs can already create shared memory and post human or AI-created content via a group-controlled Twitter account. However, big things are coming for Centaurs in Q3, so stay tuned for more soon.",
+                    "category": ["Build", "Key milestones"]
+                },
+                {
+                    "topic": "High-Impact Ecosystem Collaborations",
+                    "content": "- Olas Network was deployed on [Polygon](https://twitter.com/autonolas/status/1656594373696700417) and [Gnosis Chain](https://twitter.com/autonolas/status/1661424574385524737?s=20), collaborated with Gnosis Chain on AI mechs and an upcoming hackathon, generating multiple media appearances [like this one](https://twitter.com/autonolas/status/1675512149605773312?s=20). \n- Valory organized [two Crypto x AI conferences](https://twitter.com/valoryag/status/1679839221459320833?s=20), gathering varied expert speakers from organizations including Gnosis, Algovera, Ocean Protocol, and showcasing Olas to >100 attendees. \n- Two grants for Olas-powered tech were executed, one approved by [CoWSwap](https://twitter.com/CoWSwap) DAO to build an Olas-powered watchtower, and one approved by Solana to bring Olas-powered Governatooorr to the chain. \n- Valory co-organized [Augment Hack](https://www.augmenthack.xyz/), a decentralized AI Hackathon for ETHCC, alongside Ceramic, NEAR Protocol, Gnosis Chain, Ocean Protocol and StabilityAI. \n- Valory approved a grant to Algovera AI to explore LLM use on the Olas Network. \n- Valory built an Olas-powered [Python Client](https://twitter.com/valoryag) for Ceramic.",
+                    "category": ["Tokenomics", "Build", "Other events", "Key milestones"]
+                },
+                {
+                    "topic": "Catch up on recent appearances by David M (CEO of Valory, co-creators of Olas Network)",
+                    "content": "- [Deep Dive into Autonolas](https://twitter.com/autonolas/status/1666803058796548097?s=20) with the_fett \n- Debuting [#coownedAI](https://twitter.com/autonolas/status/1666803058796548097?s=20) concept at Ethereum Denver \n- Giving a talk on decentralized off-chain backends at [#IPFSThing](https://twitter.com/autonolas/status/1651287003311513602) \n- On the [DAO Talk podcast](https://t.co/6om4WrC48F), on helping DAOs become more efficient, decentralized, and autonomous",
+                    "category": ["Other events"]
+                }
+            ]
+        }]
+    }
+]
