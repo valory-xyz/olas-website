@@ -1,31 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Line } from 'react-chartjs-2';
 import {
   Chart,
+  Filler,
   LineElement,
   LinearScale,
   PointElement,
-  Filler,
   Tooltip,
 } from 'chart.js';
+import PropTypes from 'prop-types';
+import { memo } from 'react';
+import { Line } from 'react-chartjs-2';
 
 import {
-  getEmissionsChartOptions,
   EMISSIONS_CHART_COLORS,
+  getEmissionsChartOptions,
 } from 'common-util/charts';
 import { LegendItem } from './LegendItem';
 import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const EmissionsToBuilders = ({ emissions, loading }) => {
-  const devIncentivesPoints = emissions.map(
-    (item) => item.devIncentivesTotalTopUp || 0,
-  );
-  const availableDevIncentivesPoints = emissions.map(
-    (item) => item.availableDevIncentives || 0,
-  );
+export const EmissionsToBuilders = memo(({ emissions, loading }) => {
+  const devIncentivesPoints = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) => sum + Number(item.devIncentivesTotalTopUp || 0),
+        0,
+      );
+  });
+
+  const availableDevIncentivesPoints = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce((sum, item) => sum + Number(item.availableDevIncentives || 0), 0);
+  });
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -76,7 +84,9 @@ export const EmissionsToBuilders = ({ emissions, loading }) => {
       </div>
     </div>
   );
-};
+});
+
+EmissionsToBuilders.displayName = 'EmissionsToBuilders';
 
 EmissionsToBuilders.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,

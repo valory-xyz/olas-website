@@ -8,33 +8,41 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getEmissionsChartOptionsFromNumber,
+  getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 import { Line } from 'react-chartjs-2';
-import Web3 from 'web3';
 import { LegendItem } from './LegendItem';
 import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const ActualEmissionsChart = ({ emissions, loading }) => {
-  const maxAvailableEmissions = emissions.map((item) => {
-    const total =
-      BigInt(item.availableDevIncentives ?? 0) +
-      BigInt(item.availableStakingIncentives ?? 0) +
-      BigInt(item.effectiveBond ?? 0);
-
-    return Web3.utils.fromWei(total, 'ether');
+export const ActualEmissionsChart = memo(({ emissions, loading }) => {
+  const maxAvailableEmissions = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) =>
+          sum +
+          Number(item.availableDevIncentives || 0) +
+          Number(item.availableStakingIncentives || 0) +
+          Number(item.totalBondsClaimable || 0),
+        0,
+      );
   });
 
-  const actualEmissions = emissions.map((item) => {
-    const total =
-      BigInt(item.devIncentivesTotalTopUp ?? 0) +
-      BigInt(item.totalStakingIncentives ?? 0) +
-      BigInt(item.totalCreateBondsAmountOLAS ?? 0);
-
-    return Web3.utils.fromWei(total, 'ether');
+  const actualEmissions = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) =>
+          sum +
+          Number(item.devIncentivesTotalTopUp || 0) +
+          Number(item.totalStakingIncentives || 0) +
+          Number(item.totalBondsClaimed || 0),
+        0,
+      );
   });
 
   return (
@@ -77,17 +85,19 @@ export const ActualEmissionsChart = ({ emissions, loading }) => {
                   },
                 ],
               }}
-              options={getEmissionsChartOptionsFromNumber(
+              options={getEmissionsChartOptions([
                 ...maxAvailableEmissions,
                 ...actualEmissions,
-              )}
+              ])}
             />
           )}
         </div>
       </div>
     </div>
   );
-};
+});
+
+ActualEmissionsChart.displayName = 'ActualEmissionsChart';
 
 ActualEmissionsChart.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,

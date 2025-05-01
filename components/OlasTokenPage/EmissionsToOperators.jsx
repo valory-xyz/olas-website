@@ -1,30 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Line } from 'react-chartjs-2';
 import {
   Chart,
+  Filler,
   LineElement,
   LinearScale,
   PointElement,
-  Filler,
   Tooltip,
 } from 'chart.js';
 import {
-  getEmissionsChartOptions,
   EMISSIONS_CHART_COLORS,
+  getEmissionsChartOptions,
 } from 'common-util/charts';
+import PropTypes from 'prop-types';
+import { memo } from 'react';
+import { Line } from 'react-chartjs-2';
 import { LegendItem } from './LegendItem';
 import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const EmissionsToOperators = ({ emissions, loading }) => {
-  const availableStakingIncentivesPoints = emissions.map(
-    (item) => item.availableStakingIncentives || 0,
-  );
-  const totalStakingIncentivesPoints = emissions.map(
-    (item) => item.totalStakingIncentives || 0,
-  );
+export const EmissionsToOperators = memo(({ emissions, loading }) => {
+  const availableStakingIncentivesPoints = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) => sum + Number(item.availableStakingIncentives || 0),
+        0,
+      );
+  });
+  const totalStakingIncentivesPoints = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce((sum, item) => sum + Number(item.totalStakingIncentives || 0), 0);
+  });
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -77,7 +84,9 @@ export const EmissionsToOperators = ({ emissions, loading }) => {
       </div>
     </div>
   );
-};
+});
+
+EmissionsToOperators.displayName = 'EmissionsToOperators';
 
 EmissionsToOperators.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,
