@@ -40,24 +40,6 @@ const categories = [
   },
 ];
 
-const quarterRanges = {
-  1: ['Jan', 'Mar'],
-  2: ['Apr', 'Jun'],
-  3: ['Jul', 'Sep'],
-  4: ['Oct', 'Dec'],
-};
-
-function getQuarterLength(label) {
-  const matches = label.match(/\d/g);
-  if (!matches || matches.length === 0) return '???';
-
-  const quarters = matches.map(Number).sort((a, b) => a - b);
-  const start = quarterRanges[quarters[0]]?.[0];
-  const end = quarterRanges[quarters[quarters.length - 1]]?.[1];
-
-  return start && end ? `${start} - ${end}` : '???';
-}
-
 const Categories = ({ filters, toggleFilters }) => {
   return (
     <SectionWrapper id="categories">
@@ -137,9 +119,7 @@ const Timeline = ({ filters, setFilters }) => {
                       <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>
                         {quarter.quarter}
                       </h4>
-                      <p className="text-slate-600">
-                        {quarter.date || getQuarterLength(quarter.quarter)}
-                      </p>
+                      <p className="text-slate-600">{quarter.date || '???'}</p>
                     </div>
                     <div className="flex flex-col">
                       {filteredTopics.map((topic) => (

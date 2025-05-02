@@ -4,6 +4,7 @@
         "quarters" : [
         {
             "quarter" : "Quarter 1",
+            "date": "Jan - Mar",
             "topics" : [
                 {
                     "topic" : "Pearl became the \"Agent App Store\"",
@@ -60,6 +61,7 @@
         "quarters" : [
         {
             "quarter": "Quarter 4",
+            "date": "Oct - Dec",
             "topics" : [
                 {
                     "topic" : "Massive Growth in Transactions",
@@ -110,6 +112,7 @@
         },
         {
             "quarter": "Quarter 3",
+            "date": "Jul - Sep",
             "topics": [
                 {
                     "topic": "Daily Active Agents Metric Introduced",
@@ -143,7 +146,7 @@
                 },
                 {
                     "topic": "Agents Unleashed: Singapore and Brussels Raised the Bar",
-                    "content": "- The [Singapore](https://x.com/autonolas/status/1838333797680713757 event set a new benchmark, with over 3,200 guests registered and 400+ attending.",
+                    "content": "- The [Singapore](https://x.com/autonolas/status/1838333797680713757) event set a new benchmark, with over 3,200 guests registered and 400+ attending.",
                     "category": ["Agents Unleashed"]
                 },
                 {
@@ -170,6 +173,7 @@
         },
         {
             "quarter": "Quarter 1 + 2",
+            "date": "Jan - Jun",
             "topics" : [
                     {
                         "topic": "Olas Activity Tripled Across Chains",
@@ -209,6 +213,7 @@
         "quarters" : [
         {
             "quarter": "Quarter 4",
+            "date": "Oct - Dec",
             "topics": [
                 {
                     "topic": "Olas Generated ~$1M in Profits",
@@ -249,6 +254,7 @@
         },
         {
             "quarter": "Quarter 3",
+            "date": "Jul - Sep",
             "topics": [
                 {
                     "topic": "Olas exceeded $100k profits and 110k transactions",
@@ -269,6 +275,7 @@
         },
         {
             "quarter": "Quarter 1 + 2",
+            "date": "Jan - Jun",
             "topics" : [
                 {
                     "topic": "OLAS Token Launched at $74.6M FDV",
@@ -308,6 +315,7 @@
         "quarters": [
             {
                 "quarter": "Quarter 4",
+                "date": "Oct - Dec",
                 "topics" : [
                     {
                         "topic": "2 Major Grants: Balancer and Ceramic",
