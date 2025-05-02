@@ -248,6 +248,26 @@
             ]
         },
         {
+            "quarter": "Quarter 3",
+            "topics": [
+                {
+                    "topic": "Olas exceeded $100k profits and 110k transactions",
+                    "content" : "- Olas earned $100,000 in trading fees from Protocol-Owned Liquidity (POL) by the end of Q3. \n- 110,000+ transactions completed by Olas agents after the Gnosis Chain hackathon success. \n- Developers contributed code worth [1.6M OLAS](https://xyz.us5.list-manage.com/track/click?u=b0e788d1c8b599737210d65cb&id=73a0642664&e=3790932895) (Epoch 4) and [330K OLAS](https://xyz.us5.list-manage.com/track/click?u=b0e788d1c8b599737210d65cb&id=5c5f7182a1&e=3790932895) (Epoch 5) in rewards. \n- You can learn about the code that was contributed [here](https://xyz.us5.list-manage.com/track/click?u=b0e788d1c8b599737210d65cb&id=5c5f7182a1&e=3790932895). \n- Valory also led an AI update for Contribute, which is being used to decentralize the Olas DAO’s operations, including its Twitter account.",
+                    "category": ["Activity Metrics", "Tokenomics", "Build", "Key milestones"]
+                },
+                {
+                    "topic": "Olas' infra-app cycle showing traction as a go-to-market",
+                    "content" : "- Olas exhibited an infra-app cycle, where applications (like Contribute and prediction agents) drove demand for lower lever infrastructure (like Mechs). \n- A hackathon aimed to make a mark on Gnosis Chain and Safe, which was achieved when Olas AI agents [made the majority of Safe transactions on Gnosis Chain in September](https://twitter.com/autonolas/status/1701630501319233967). The hackathon centered on a Prediction Agent that consumes [Mechs](https://aimechs.autonolas.network/), showing how Olas' infra-app cycle can bootstrap the ocean of agents by providing swarms of AI agents as Daily Active Users for crypto projects. \n- The hackathon led to co-founders of both [Gnosis](http://v/) and [Safe](https://x.com/SchorLukas/status/1707335270847201713?s=20) sharing Olas' progress, predicting AI agents would shape the future of crypto. It also ignited further collaborations with Gnosis, [a new collaboration with Safe](https://x.com/safe/status/1710335368451793282?s=20), and integrations with [GetBlock](https://x.com/getblockio/status/1704423112303886768?s=20), [Kleros](https://x.com/autonolas/status/1700087086320324796?s=20), [The Graph](https://x.com/autonolas/status/1707761919766245809?s=20) and more.",
+                    "category": ["Tokenomics", "Hackathons"]
+                },
+                {
+                    "topic": "Community Growth and Protocol-Owned Liquidity Expanded",
+                    "content" : "- [Bonding products](https://twitter.com/autonolas/status/1697670948168593724?s=20) currently worth $2.4m+ were sold and continue to sell steadily - even with months-long locking periods, meaning liquidity is 79% Protocol-owned. \n- David M, DAO founding member, unveiled Olas tokenomics’ Triple Lock, and the DAO voted to add Staking and additional liquidity pairs. \n- Since the public token launch, @autonolas has received 3.5x the impressions and 5k+ more followers, and is seeing regular community-generated content with 10-50k views.",
+                    "category": ["Bond", "Tokenomics", "Activity Metrics", "Key milestones"]
+                }
+            ]
+        },
+        {
             "quarter": "Quarter 1 + 2",
             "topics" : [
                 {
@@ -282,5 +302,51 @@
                 }
             ]
         }]
+    },
+    {
+        "year": "2022",
+        "quarters": [
+            {
+                "quarter": "Quarter 4",
+                "topics" : [
+                    {
+                        "topic": "2 Major Grants: Balancer and Ceramic",
+                        "content": "- Balancer funded the creation of an Olas-powered service, the Autonomous Fund, which was executed by Valory. \n- Ceramic [accepted a further grant proposal](https://www.autonolas.network/blog/ceramic-grant) for a powerful new DAO coordination primitive powered by Olas. \n- Ceramic is keen to pioneer [Impact Evaluators](https://threebox.notion.site/ImpactEvaluators-over-Ceramic-data-5ac733f30a454356914b22778f512381) for DAOs. The toolkit MVP they are funding combines an Olas agent-powered application with Ceramic's dynamic data streams, opening the door to permissionless, self-improving contribution evaluation systems that can be customized for any organization.",
+                        "category": ["Build"]
+                    },
+                    {
+                        "topic": "3 Autonomous services in use, 2 - in production",
+                        "content": "- [Olas Contribute](https://contribute.olas.network/) launched - an Olas-powered application for coordinating and rewarding Olas community contributors—complete with dynamic NFT badges. \n  - In total, Contribute awarded 328,815 leaderboard points to 41 contributors, moving them up the rankings and updating their NFT badges accordingly autonomously. \n  - This application was showcased at Epic Web3 summit. Read the blog post introducing the Autonomous Fund [here](https://www.olas.network/blog/intro-1). \n- [Autonomous Fund](https://protocol.autonolas.network/services/2) \n  - The Autonomous (Crypto Fear & Greed Index) Fund is the first example of Smart Managed Pools, powered by Olas and funded by Balancer. \n  - The application autonomously changes the allocations of Managed Pools according to a rich set of predefined conditions. This is now in use by Valory for limited mainnet testing period. \n- [El collectooorr](https://elcollectooorr.art/) \n  - The first Autonomous NFT Collector DAO. This had been running as a single sovereign agent and has now been upgraded to 4 agents, demonstrating the stability of such a complex decentralized off-chain application, remaining in use by whitelisted users from the previous quarter. \n  - Plus, the [APY oracle](https://oracle.autonolas.network/) joined the [Price Oracle](https://oracle.autonolas.network/) as a production demonstration of how autonomous services can combine crypto native functionalities and AI such as machine learning.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Valory Propel: Full-stack solution to get you operational with an Olas-powered off-chain service",
+                        "content": "- Valory announced a new offering to propel DAOs to a decentralized future that they own: [A new subscription model, Propel](https://propel.valory.xyz/). This will enable those who want to decentralize and own their stack via Olas' open-source stack, to accelerate their journey. \n- Propel subscribers will be able to choose the right level of support for their needs, receiving technical consulting from the stack’s creators, one-on-one developer support, a hosted platform preventing DevOps headaches, and more. \n- Propel facilitates progressive decentralization: efficiently transform manual processes and scripts into a single agent with expert support, coding once, then easily scaling it to a distributed, multi-agent application, then a decentralized application that you own.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Open Autonomy and Open AEA commits exceed 8,000",
+                        "content": "- The Olas Stack saw continued investment [open-source frameworks](https://www.olas.network/stack), finishing the year with >8,000 commits in the two core frameworks alone.",
+                        "category": ["Build", "Activity Metrics"]
+                    },
+                    {
+                        "topic": "Olas Showcased at Major Conferences",
+                        "content": "- Starknet.cc, Fill The Gap in your Web3 Stack - David Galindo - [watch here](https://bit.ly/3DoeC54) \n- PyChain Conference, The Trends in Modern DAO Treasury Management - Oaksprout (Autonolas) with Carlos Noe Saavedra (Fyre) and Luca Mossini (Avantgarde Finance) moderated by Lawrence Chiu (Trading Strategy) - [watch here](https://bit.ly/3FnHFIh) \n- EpicWeb3 Summit, [How to Keep Web3 Users Engaged During a Downturn](https://twitter.com/autonolas/status/1600127343351119872?s=20&t=8e8e5aPcCOWdT3hlyRoY-A) - David Minarsch - no replay available",
+                        "category": ["Other events"]
+                    }
+                ]
+            },
+            {
+                "quarter": "Quarter 3",
+                "date": "September",
+                "topics": [
+                    {
+                        "topic": "How it all begun…",
+                        "content": "- Valory has created an [open-source software stack](https://olas.network/stack) allowing developers to build the next generation of crypto apps: based on autonomous AI agents, making them robust (run with multiple nodes), transparent (open-sourced code) and decentralized (run by multiple operators). \n- Valory launched the Olas DAO with early adopters, providing a [permissionless on-chain protocol](https://olas.network/protocol) for securing, managing, and incentivizing autonomous agent-based applications. Olas aims to enable DAOs to benefit from this new primitive and put Olas agent-powered application at the heart of their off-chain operations. \n- Olas agents are being built by early adopters, partners, and Valory. \n- A [$55k grant from Balancer was awarded to Valory to built the first Smart Managed Pool using Olas](https://twitter.com/autonolas/status/1562470002007375873?s=20&t=KQJInkX43jkUc-r4jy_Osw) \n- Notable projects like [Brahma](https://www.brahma.fi/) and [Postmint](https://www.postmint.xyz/), are building using the Olas Stack. \n- Valory has run [4 intensive Academy cohorts](https://www.valory.xyz/academy) and launched a free online course. The Academy has produced the first Olas-powered application in use (below). In addition, all the intensive cohorts with Python developers have produced usable code with high enthusiasm and strengthened the dev tooling, documentation & infrastructure, as well as grown the ecosystem of developers. \n- The first 2 Olas-powered applications are live \n- The [world's first autonomous NFT collector DAO, El Collectooorr](https://www.elcollectooorr.art/), was built by Academy participants and is in use on Ethereum. What began as a simplistic hackathon entry was spun into a fully-fledged service by Academy graduates, led by Ardian. [Join as an early user here](https://www.elcollectooorr.art/). \n- The autonomous price oracle is on Polygon, as a [demonstrative service](https://oracle.autonolas.network/) providing 24/7 BTC-USD price feed. \n- The [regular DAO operations research](https://twitter.com/autonolas/status/1531634091937845249?s=20&t=KQJInkX43jkUc-r4jy_Osw) and recent media appearances are steadily growing the early Olas community. Catch up on founding member appearances with [Chorus One](https://twitter.com/autonolas/status/1524412008849883137?s=20&t=8RcdB9TkUZAejXoyUZCMlw), [The Crypto Podcast](https://www.youtube.com/watch?v=oNNXlizKnYM) and rewatch 6 of community events [here](https://discord.com/invite/z2PT65jKqQ)).",
+                        "category": ["Build", "Media appearances", "Key milestones"]
+                    }
+                ]
+            }
+        ]
     }
 ]

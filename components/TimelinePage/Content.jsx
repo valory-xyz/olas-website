@@ -91,7 +91,7 @@ const Categories = ({ toggleFilters }) => (
 const Timeline = ({ filters, setFilters }) => {
   return (
     <SectionWrapper customClasses="pt-0 py-12">
-      <div className="max-w-[872px] mx-auto max-md:mx-4">
+      <div className="max-w-[872px] mx-auto max-lg:mx-4">
         <div className="justify-end flex flex-row place-items-center mb-10 gap-4">
           <div>{filters.length} filters applied.</div>
           <Button
@@ -108,7 +108,7 @@ const Timeline = ({ filters, setFilters }) => {
             className="flex flex-col md:flex-row gap-12 md:gap-[120px] w-full"
           >
             <h3
-              className={`${HEADER_LARGE_CLASS} sticky top-0 h-fit max-md:text-center`}
+              className={`${HEADER_LARGE_CLASS} md:sticky top-[120px] h-fit max-md:text-center`}
             >
               {item.year}
             </h3>
@@ -120,7 +120,7 @@ const Timeline = ({ filters, setFilters }) => {
                       {quarter.quarter}
                     </h4>
                     <p className="text-slate-600">
-                      {getQuarterLength(quarter.quarter)}
+                      {quarter.date || getQuarterLength(quarter.quarter)}
                     </p>
                   </div>
                   <div className="flex flex-col">
