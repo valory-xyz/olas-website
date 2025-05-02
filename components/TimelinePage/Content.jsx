@@ -6,7 +6,7 @@ import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import timeline from 'data/timeline.json';
 import { ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const categories = [
   {
@@ -61,7 +61,11 @@ const Categories = ({ filters, toggleFilters }) => {
                     <div
                       key={item}
                       onClick={() => toggleFilters(item)}
-                      className={`px-3 py-1 rounded-2xl cursor-pointer transition-colors ${isSelected ? 'bg-white border border-purple-700 text-purple-700' : 'bg-slate-100 hover:bg-slate-200'}`}
+                      className={`px-3 py-1 rounded-2xl cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-white border border-purple-700 text-purple-700'
+                          : 'bg-slate-100 hover:bg-slate-200'
+                      }`}
                     >
                       {item}
                     </div>
@@ -77,12 +81,34 @@ const Categories = ({ filters, toggleFilters }) => {
 };
 
 const Timeline = ({ filters, setFilters }) => {
+  const filteredTimeline = useMemo(() => {
+    return timeline
+      .map((item) => ({
+        ...item,
+        quarters: item.quarters
+          .map((quarter) => ({
+            ...quarter,
+            topics: quarter.topics.filter((topic) => {
+              return (
+                filters.length === 0 ||
+                filters.some((filter) => topic.category.includes(filter))
+              );
+            }),
+          }))
+          .filter((quarter) => quarter.topics.length > 0),
+      }))
+      .filter((item) => item.quarters.length > 0);
+  }, [filters]);
+
   return (
     <SectionWrapper customClasses="pt-0 py-12">
       <div className="max-w-[872px] mx-auto max-lg:mx-4">
         {filters.length > 0 && (
           <div className="justify-end flex flex-row place-items-center mb-10 gap-4">
-            <div>{filters.length} filters applied.</div>
+            <div>
+              {filters.length} filter{`${filters.length === 1 ? '' : 's'}`}{' '}
+              applied.
+            </div>
             <Button
               variant="outline"
               className="px-1"
@@ -92,7 +118,7 @@ const Timeline = ({ filters, setFilters }) => {
             </Button>
           </div>
         )}
-        {timeline.map((item, index) => (
+        {filteredTimeline.map((item, index) => (
           <div
             key={index}
             className="flex flex-col md:flex-row gap-12 md:gap-[120px] w-full"
@@ -103,41 +129,30 @@ const Timeline = ({ filters, setFilters }) => {
               {item.year}
             </h3>
             <div className="w-full flex flex-col">
-              {item.quarters.map((quarter, index) => {
-                const filteredTopics = quarter.topics.filter((topic) => {
-                  return (
-                    filters.length === 0 ||
-                    filters.every((filter) => topic.category.includes(filter))
-                  );
-                });
-
-                if (filteredTopics.length === 0) return null;
-
-                return (
-                  <div key={`quarter ${index}`} className="mb-14">
-                    <div className="w-full justify-between bg-slate-100 rounded-lg flex flex-row place-items-center px-6 py-4 mb-4">
-                      <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>
-                        {quarter.quarter}
-                      </h4>
-                      <p className="text-slate-600">{quarter.date || '???'}</p>
-                    </div>
-                    <div className="flex flex-col">
-                      {filteredTopics.map((topic) => (
-                        <div key={topic} className="px-6 py-4 border-b-1.5">
-                          <Accordion
-                            titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
-                            dropdownClass="border-none"
-                            label={topic.topic}
-                            defaultOpen={false}
-                          >
-                            <Markdown>{topic.content}</Markdown>
-                          </Accordion>
-                        </div>
-                      ))}
-                    </div>
+              {item.quarters.map((quarter, index) => (
+                <div key={`quarter ${index}`} className="mb-14">
+                  <div className="w-full justify-between bg-slate-100 rounded-lg flex flex-row place-items-center px-6 py-4 mb-4">
+                    <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>
+                      {quarter.quarter}
+                    </h4>
+                    <p className="text-slate-600">{quarter.date || '???'}</p>
                   </div>
-                );
-              })}
+                  <div className="flex flex-col">
+                    {quarter.topics.map((topic) => (
+                      <div key={topic} className="px-6 py-4 border-b-1.5">
+                        <Accordion
+                          titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
+                          dropdownClass="border-none"
+                          label={topic.topic}
+                          defaultOpen={false}
+                        >
+                          <Markdown>{topic.content}</Markdown>
+                        </Accordion>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
@@ -147,12 +162,12 @@ const Timeline = ({ filters, setFilters }) => {
 };
 
 const ScrollUpButton = () => {
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     const element = document.getElementById('categories');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, []);
 
   return (
     <div className="fixed bottom-8 right-8 z-50">
@@ -169,11 +184,11 @@ const ScrollUpButton = () => {
 export const Content = () => {
   const [filters, setFilters] = useState([]);
 
-  const toggleFilters = (label) => {
+  const toggleFilters = useCallback((label) => {
     setFilters((prev) =>
       prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label],
     );
-  };
+  }, []);
 
   return (
     <>

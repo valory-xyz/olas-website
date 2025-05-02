@@ -3,7 +3,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const Header = () => (
   <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12"
+    customClasses="lg:p-24 px-4 py-12 border-b-1.5"
     backgroundType="SUBTLE_GRADIENT"
   >
     <div className={`${HEADER_LARGE_CLASS}`}>
