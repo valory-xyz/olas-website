@@ -153,8 +153,8 @@ export const MeetPearlContent = () => (
         Pearl brings you the ultimate collection of AI agents in one app. From
         asset managers to custom AI influencers, Pearl has it all. Choose from a
         growing range of Olas agents, stake OLAS, and let them work autonomously
-        — earning you potential rewards from your agents&apos; work and Olas
-        Staking.
+        — earning you potential rewards from your crypto agents&apos; work and
+        Olas Staking.
       </p>
     </div>
     <Image

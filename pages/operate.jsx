@@ -14,7 +14,7 @@ const OperatePage = () => {
   return (
     <PageWrapper>
       <Meta
-        pageTitle="Operate"
+        pageTitle="Run & own AI Agents in Crypto with Olas"
         description="Become an Operator in the Olas ecosystem using Pearl. Run AI agents, stake assets, and earn rewards while helping to expand the crypto and AI agent network. Get involved in managing decentralized AI-powered systems."
         siteImageUrl={image}
       />
