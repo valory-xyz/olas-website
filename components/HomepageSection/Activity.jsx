@@ -123,7 +123,7 @@ export const Activity = () => {
           color="text-gray-900"
           weight="font-bold"
         >
-          Generating Decentralized autonomous AI Agent Economies
+          Generating Decentralized Autonomous AI Agent Economies
         </SectionHeading>
         <p className="text-lg md:text-xl text-slate-600 mb-8 mx-auto">
           Olas incentivizes the creation of open-source autonomous AI agents,
