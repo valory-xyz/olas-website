@@ -9,7 +9,7 @@ import { SECTION_BOX_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from './utils';
 const OperateHeroImage = () => (
   <Image
     src="/images/operate-page/hero-image.png"
-    alt="hero"
+    alt="Dashboard for managing AI agents in crypto, Operate decentralized AI agents with Olas"
     width={513}
     height={480}
     className="mx-auto xl:w-full"
