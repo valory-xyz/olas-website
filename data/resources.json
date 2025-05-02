@@ -62,5 +62,13 @@
     "url": "/hackathons",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "3b59e2a4-7f21-4e5a-911b-8a470de57638",
+    "title": "Timeline",
+    "description": "Chronological view of key Olas achievements",
+    "url": "/timeline",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]

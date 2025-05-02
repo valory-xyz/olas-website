@@ -115,7 +115,11 @@ export const FAQ = () => (
 
           {faq.list.map((eachFaq, index) => (
             <div className="py-2" key={index}>
-              <Accordion label={eachFaq.title} defaultOpen={false}>
+              <Accordion
+                label={eachFaq.title}
+                customClass="p-0 bg-white"
+                defaultOpen={false}
+              >
                 {eachFaq.desc}
               </Accordion>
             </div>
