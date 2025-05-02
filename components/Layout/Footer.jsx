@@ -105,6 +105,10 @@ const RESOURCES_LINKS = [
     title: 'Olas Hackathons',
     link: '/hackathons',
   },
+  {
+    title: 'Timeline',
+    link: '/timeline',
+  },
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
