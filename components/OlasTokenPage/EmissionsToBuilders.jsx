@@ -38,7 +38,7 @@ export const EmissionsToBuilders = memo(({ emissions, loading }) => {
   return (
     <div className="flex flex-col flex-auto p-4">
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
-        Actual emissions per epoch
+        Emissions per epoch
       </h2>
       <div className="flex gap-4 mb-6">
         <LegendItem

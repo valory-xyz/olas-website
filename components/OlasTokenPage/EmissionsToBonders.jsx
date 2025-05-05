@@ -34,16 +34,16 @@ export const EmissionsToBonders = memo(({ emissions, loading }) => {
   return (
     <div className="flex flex-col flex-auto p-4">
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
-        Actual emissions per epoch
+        Emissions per epoch
       </h2>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem
           color={EMISSIONS_CHART_COLORS.available.legend}
-          label="OLAS claimable"
+          label="OLAS bonds claimable"
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.bonds.legend}
-          label="OLAS claimed"
+          label="OLAS bonds claimed"
         />
       </div>
       <div className="flex flex-col flex-auto gap-8">
@@ -56,14 +56,14 @@ export const EmissionsToBonders = memo(({ emissions, loading }) => {
                 labels: emissions.map((item) => item.counter),
                 datasets: [
                   {
-                    label: 'Olas claimable',
+                    label: 'OLAS bonds claimable',
                     data: totalBondsClaimable,
                     order: 1,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
                     borderColor: EMISSIONS_CHART_COLORS.available.line,
                   },
                   {
-                    label: 'Olas claimed',
+                    label: 'OLAS bonds claimed',
                     data: totalBondsClaimed,
                     order: 2,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.bonds.line,

@@ -155,12 +155,9 @@ const Supply = () => {
 
           <div className="border rounded-lg mb-8 lg:mb-0">
             <div className="p-4 border-b">
-              <h2 className="text-xl mb-2 font-bold">
-                Actual Emissions Schedule
-              </h2>
+              <h2 className="text-xl mb-2 font-bold">Emissions Schedule</h2>
               <p className="text-slate-500">
-                What is the actual amount of OLAS minted by the protocol per
-                epoch?
+                What are the OLAS emissions per epoch
               </p>
             </div>
             <div className="p-4">
