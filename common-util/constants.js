@@ -33,7 +33,6 @@ export const OLAS_ECONOMY_DASHBOARD_URL =
   'https://dune.com/adrian0x/autonolas-ecosystem-activity';
 export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
 export const DAILY_CONTRIBUTORS_QUERY_ID = '4349554';
-export const FEE_FLOW_QUERY_ID = '5073375';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
