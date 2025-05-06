@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { Client } from '@gradio/client';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
@@ -104,3 +105,15 @@ export const getTotalOlasContributors = async () => {
     console.error(error);
   }
 };
+
+// ----------- OPTIMUS -----------
+export const getAverageAPRs = async () => {
+  try {
+    const client = await Client.connect('valory/Modius-Agent-Performance');
+    const averageAPRs = await client.predict('/refresh_graph', {}).data;
+  
+    return averageAPRs;
+  } catch (error) {
+    console.error(error);
+  };
+}
