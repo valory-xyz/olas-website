@@ -8,48 +8,56 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getEmissionsChartOptionsFromNumber,
+  getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 import { Line } from 'react-chartjs-2';
-import Web3 from 'web3';
 import { LegendItem } from './LegendItem';
 import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const ActualEmissionsChart = ({ emissions, loading }) => {
-  const maxAvailableEmissions = emissions.map((item) => {
-    const total =
-      BigInt(item.availableDevIncentives ?? 0) +
-      BigInt(item.availableStakingIncentives ?? 0) +
-      BigInt(item.effectiveBond ?? 0);
-
-    return Web3.utils.fromWei(total, 'ether');
+export const ActualEmissionsChart = memo(({ emissions, loading }) => {
+  const maxAvailableEmissions = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) =>
+          sum +
+          Number(item.availableDevIncentives || 0) +
+          Number(item.availableStakingIncentives || 0) +
+          Number(item.totalBondsClaimable || 0),
+        0,
+      );
   });
 
-  const actualEmissions = emissions.map((item) => {
-    const total =
-      BigInt(item.devIncentivesTotalTopUp ?? 0) +
-      BigInt(item.totalStakingIncentives ?? 0) +
-      BigInt(item.totalCreateBondsAmountOLAS ?? 0);
-
-    return Web3.utils.fromWei(total, 'ether');
+  const actualEmissions = emissions.map((_, index) => {
+    return emissions
+      .slice(0, index + 1)
+      .reduce(
+        (sum, item) =>
+          sum +
+          Number(item.devIncentivesTotalTopUp || 0) +
+          Number(item.totalStakingIncentives || 0) +
+          Number(item.totalBondsClaimed || 0),
+        0,
+      );
   });
 
   return (
     <div className="flex flex-col flex-auto p-4">
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
-        Actual emissions per epoch
+        Emissions per epoch
       </h2>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem
           color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Max available emissions"
+          label="Claimable emissions (including dev incentives, bonds, and staking)"
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.actual.legend}
-          label="Actual emissions"
+          label="Claimed emissions (including dev incentives, bonds, and staking)"
         />
       </div>
       <div className="flex flex-col flex-auto gap-8">
@@ -62,7 +70,7 @@ export const ActualEmissionsChart = ({ emissions, loading }) => {
                 labels: emissions.map((item) => item.counter),
                 datasets: [
                   {
-                    label: 'Available emissions',
+                    label: 'Claimable emissions',
                     data: maxAvailableEmissions,
                     order: 1,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
@@ -77,17 +85,19 @@ export const ActualEmissionsChart = ({ emissions, loading }) => {
                   },
                 ],
               }}
-              options={getEmissionsChartOptionsFromNumber(
+              options={getEmissionsChartOptions([
                 ...maxAvailableEmissions,
                 ...actualEmissions,
-              )}
+              ])}
             />
           )}
         </div>
       </div>
     </div>
   );
-};
+});
+
+ActualEmissionsChart.displayName = 'ActualEmissionsChart';
 
 ActualEmissionsChart.propTypes = {
   emissions: PropTypes.arrayOf(emissionType).isRequired,

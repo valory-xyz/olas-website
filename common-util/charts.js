@@ -1,7 +1,4 @@
-import {
-  formatChartNumber,
-  formatWeiNumber,
-} from 'common-util/numberFormatter';
+import { formatWeiNumber } from 'common-util/numberFormatter';
 
 export const EMISSIONS_CHART_COLORS = {
   available: {
@@ -71,46 +68,6 @@ export const getEmissionsChartOptions = (points) => ({
         title: (tooltipItems) => `Epoch ${tooltipItems[0].label}`,
         label: (tooltipItem) =>
           `${tooltipItem.dataset.label}: ${formatWeiNumber(tooltipItem.raw)}`,
-      },
-    },
-  },
-});
-
-export const getEmissionsChartOptionsFromNumber = () => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'Epoch',
-      },
-    },
-    y: {
-      title: {
-        display: true,
-        text: 'OLAS Emitted',
-      },
-      ticks: {
-        callback: function (value) {
-          return formatChartNumber(value);
-        },
-      },
-    },
-  },
-  interaction: {
-    intersect: false,
-    includeInvisible: true,
-    mode: 'nearest',
-    axis: 'x',
-  },
-  plugins: {
-    tooltip: {
-      enabled: true,
-      callbacks: {
-        title: (tooltipItems) => `Epoch ${tooltipItems[0].label}`,
-        label: (tooltipItem) =>
-          `${tooltipItem.dataset.label}: ${formatChartNumber(tooltipItem.raw)}`,
       },
     },
   },

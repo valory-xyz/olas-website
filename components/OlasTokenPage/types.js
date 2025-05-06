@@ -5,9 +5,8 @@ export const emissionType = PropTypes.shape({
   counter: PropTypes.number,
   availableDevIncentives: PropTypes.string,
   devIncentivesTotalTopUp: PropTypes.string,
-  effectiveBond: PropTypes.string,
-  totalCreateProductsSupply: PropTypes.string,
-  totalCreateBondsAmountOLAS: PropTypes.string,
   availableStakingIncentives: PropTypes.string,
   totalStakingIncentives: PropTypes.string,
+  totalBondsClaimable: PropTypes.string,
+  totalBondsClaimed: PropTypes.string,
 });
