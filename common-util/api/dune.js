@@ -3,7 +3,7 @@ import {
   MECH_TXS_QUERY_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
-  VEOLAS_HOLDERS_QUERY_ID
+  VEOLAS_HOLDERS_QUERY_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
 

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { Client } from '@gradio/client';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
@@ -109,11 +108,14 @@ export const getTotalOlasContributors = async () => {
 // ----------- OPTIMUS -----------
 export const getAverageAPRs = async () => {
   try {
-    const client = await Client.connect('valory/Modius-Agent-Performance');
-    const averageAPRs = await client.predict('/refresh_graph', {}).data;
-  
-    return averageAPRs;
+    const response = await fetch('/api/optimus-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error(error);
-  };
-}
+    console.error('Error fetching average APRs:', error);
+    return null;
+  }
+};
