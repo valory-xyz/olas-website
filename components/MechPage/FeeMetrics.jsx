@@ -47,29 +47,25 @@ export const FeeMetrics = () => {
       {
         id: 'unclaimed',
         label: 'Unclaimed Fees',
-        // value: metrics?.unclaimedFees || 0,
-        value: 1000,
+        value: metrics?.unclaimedFees || 0,
         color: '#90a1b9',
       },
       {
         id: 'claimed',
         label: 'Claimed Fees',
-        // value: metrics?.collectedFees || 0,
-        value: 1515,
+        value: metrics?.collectedFees || 0,
         color: '#5fb178',
       },
       {
         id: 'received',
         label: 'Fees Received',
-        // value: metrics?.recievedFees || 0,
-        value: 1500,
+        value: metrics?.recievedFees || 0,
         color: '#68bcce',
       },
       {
         id: 'olas-burned',
         label: 'OLAS Burned',
         value: metrics?.olasBurned || 0,
-        value: 15,
         color: '#dab2e4',
       },
     ],
@@ -96,6 +92,7 @@ export const FeeMetrics = () => {
       formerData[2].value,
       `Total Agent Fees Collected → Claimed Fees | $${formerData[2].value} (${Number((formerData[2].value / formerData[0].value) * 100).toFixed(2)}%)`,
     ],
+    // Olas burned branch is represented as 10% for better visual presentation as 1% appears too small on screens
     [
       'Claimed Fees',
       'OLAS Burned',
@@ -177,7 +174,7 @@ export const FeeMetrics = () => {
       ) : (
         <>
           <div className="w-full max-w-full overflow-x-auto mb-8">
-            <div className="min-w-[320px] max-w-7xl mx-auto w-full">
+            <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
               <Chart
                 chartType="Sankey"
                 width="100%"
