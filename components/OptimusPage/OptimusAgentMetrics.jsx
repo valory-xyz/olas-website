@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { getAverageAPRs } from 'common-util/api';
+import { getAverageAprs } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -11,21 +11,20 @@ const HUGGINGFACE_URL =
 
 const fetchMetrics = async () => {
   try {
-    const averageAPRs = await getAverageAPRs();
+    const averageAprs = await getAverageAprs();
     return {
-      latestAvgAPR: averageAPRs?.latestAvgAPR || null,
-      latestETHAPR: averageAPRs?.latestETHAPR || null,
+      latestAvgApr: averageAprs?.latestAvgApr || null,
+      latestETHApr: averageAprs?.latestETHApr || null,
     };
   } catch (error) {
-    console.error('Error fetching average APRs:', error);
-    return { latestAvgAPR: null, latestETHAPR: null };
+    console.error('Error fetching average Aprs:', error);
+    return { latestAvgApr: null, latestETHApr: null };
   }
 };
 
 const formatNumber = (num) => {
   const numTo1dp = Number(num?.toFixed(1));
-  const formattedNumber = `${numTo1dp}%`;
-  return formattedNumber;
+  return `${numTo1dp}%`;
 };
 
 export const OptimusAgentMetrics = () => {
@@ -36,13 +35,17 @@ export const OptimusAgentMetrics = () => {
       {
         id: 'toETH',
         subText: 'Relative to ETH',
-        value: formatNumber(metrics?.latestAvgAPR) || '--',
+        value: metrics?.latestAvgApr
+          ? formatNumber(metrics.latestAvgApr)
+          : '--',
         source: HUGGINGFACE_URL,
       },
       {
         id: 'toUSDC',
         subText: 'Relative to USDC',
-        value: formatNumber(metrics?.latestETHAPR) || '--',
+        value: metrics?.latestETHApr
+          ? formatNumber(metrics.latestETHApr)
+          : '--',
         source: HUGGINGFACE_URL,
       },
     ],
@@ -60,10 +63,10 @@ export const OptimusAgentMetrics = () => {
 
         <div className="md:grid-cols-2 grid gap-6">
           {data.map((item, index) => {
-            let borderClassName = '';
-            if (index == 0)
-              borderClassName +=
-                'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200';
+            const borderClassName =
+              index == 0
+                ? 'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200'
+                : '';
 
             const getValue = () => {
               if (item.value === '--') return '--';

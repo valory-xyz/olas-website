@@ -106,7 +106,7 @@ export const getTotalOlasContributors = async () => {
 };
 
 // ----------- OPTIMUS -----------
-export const getAverageAPRs = async () => {
+export const getAverageAprs = async () => {
   try {
     const response = await fetch('/api/optimus-metrics');
     if (!response.ok) {
