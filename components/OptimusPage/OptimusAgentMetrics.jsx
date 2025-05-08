@@ -37,7 +37,7 @@ export const OptimusAgentMetrics = () => {
         subText: 'Relative to ETH',
         value: metrics?.latestAvgApr
           ? formatNumber(metrics.latestAvgApr)
-          : '--',
+          : null,
         source: HUGGINGFACE_URL,
       },
       {
@@ -45,7 +45,7 @@ export const OptimusAgentMetrics = () => {
         subText: 'Relative to USDC',
         value: metrics?.latestETHApr
           ? formatNumber(metrics.latestETHApr)
-          : '--',
+          : null,
         source: HUGGINGFACE_URL,
       },
     ],
