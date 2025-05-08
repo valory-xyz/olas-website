@@ -69,7 +69,7 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (item.value === '--') return '--';
+              if (item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
                   {item.value}
