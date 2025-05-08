@@ -186,7 +186,7 @@ const PickYourAgent = () => (
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
             {agent.link ? (
-              <Button variant="default" size="lg" className="w-fit">
+              <Button variant="default" size="lg" className="w-fit" asChild>
                 <Link href={agent.link}>Run via Pearl</Link>
               </Button>
             ) : (

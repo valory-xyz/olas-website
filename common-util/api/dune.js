@@ -1,5 +1,6 @@
 import {
   DAILY_CONTRIBUTORS_QUERY_ID,
+  FEE_FLOW_QUERY_ID,
   MECH_TXS_QUERY_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
@@ -102,13 +103,14 @@ export const get7DayAvgDailyActiveContributors = async () => {
 
 export const getFeeFlowMetrics = async () => {
   try {
-    const json = await duneApiCall({queryId: FEE_FLOW_QUERY_ID});
-    const olasBurned = get(json, 'result.rows[0].amount');
-    const collectedFees = get(json, 'result.rows[1].amount');
-    const recievedFees = get(json, 'result.rows[2].amount');
-    const unclaimedFees = get(json, 'result.rows[3].amount');
-    const totalFees = get(json, 'result.rows[4].amount');
-    return {olasBurned, recievedFees, collectedFees, unclaimedFees, totalFees};
+    const json = await duneApiCall({
+      queryId: FEE_FLOW_QUERY_ID,
+    });
+    const totalFees = get(json, 'result.rows[0].usd_amount');
+    const collectedFees = get(json, 'result.rows[1].usd_amount');
+    const unclaimedFees = get(json, 'result.rows[2].usd_amount');
+    const recievedFees = get(json, 'result.rows[3].usd_amount');
+    return { totalFees, collectedFees, unclaimedFees, recievedFees };
   } catch (error) {
     console.error('Error in getFeeFlowMetrics: ', error);
     return;
