@@ -104,3 +104,18 @@ export const getTotalOlasContributors = async () => {
     console.error(error);
   }
 };
+
+// ----------- OPTIMUS -----------
+export const getAverageAprs = async () => {
+  try {
+    const response = await fetch('/api/optimus-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching average APRs:', error);
+    return null;
+  }
+};
