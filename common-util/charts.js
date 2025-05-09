@@ -74,21 +74,25 @@ export const getEmissionsChartOptions = (points) => ({
 });
 
 /**
- * Calculates cumulative sum of a single field or multiple fields from emissions data
- * @param {Array} emissions - Array of emission data objects
- * @param {string|string[]} fields - Single field name or array of field names to sum
- * @returns {Array} Array of cumulative sums
+ * Calculates cumulative sum of emission values for specified fields
+ * @param {Array<Object>} emissions - Array of emission data objects
+ * @param {string|string[]} fieldNames - Single field name or array of field names to sum
+ * @returns {Array<number>} Array of emissions with cumulative sums for the specified fields
  */
-export const getCumulativeData = (emissions, fields) => {
-  const fieldArray = Array.isArray(fields) ? fields : [fields];
+export const getCumulativeEmissions = (emissions, fieldNames) => {
+  const fieldsToSum = Array.isArray(fieldNames) ? fieldNames : [fieldNames];
+  const cumulativeEmissions = [];
 
-  return emissions.map((_, index) => {
-    return emissions.slice(0, index + 1).reduce((sum, item) => {
-      const fieldSum = fieldArray.reduce(
-        (fieldTotal, field) => fieldTotal + Number(item[field] || 0),
-        0,
-      );
-      return sum + fieldSum;
-    }, 0);
-  });
+  let cumulativeSum = 0;
+
+  for (const emission of emissions) {
+    const currentEmissionSum = fieldsToSum.reduce(
+      (sum, field) => sum + Number(emission[field] || 0),
+      0,
+    );
+    cumulativeSum += currentEmissionSum;
+    cumulativeEmissions.push(cumulativeSum);
+  }
+
+  return cumulativeEmissions;
 };

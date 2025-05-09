@@ -5,8 +5,7 @@ export const emissionsQuery = gql`
     epoches(orderBy: startBlock) {
       id
       counter
-      startBlock
-      endBlock
+      blockTimestamp
       availableDevIncentives
       devIncentivesTotalTopUp
       availableStakingIncentives
@@ -20,11 +19,11 @@ export const emissionsQuery = gql`
 export const rewardUpdates = (epochs) => gql`
   query RewardUpdates {
     ${epochs.map(
-      (epoch) => `
+      (epoch, index) => `
         _${epoch.counter}: rewardUpdates(
           where: {
-            blockNumber_gte: ${epoch.startBlock}
-            ${epoch.endBlock !== null && epoch.endBlock !== undefined ? `blockNumber_lte: ${epoch.endBlock}` : ''}
+            blockTimestamp_gt: ${index > 0 ? epochs[index - 1].blockTimestamp : 0}
+            ${index < epochs.length - 1 ? `blockTimestamp_lte: ${epoch.blockTimestamp}` : ''}
           }
             first: 1000
         ) {

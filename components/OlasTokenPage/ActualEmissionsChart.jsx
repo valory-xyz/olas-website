@@ -8,7 +8,7 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getCumulativeData,
+  getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
@@ -20,13 +20,13 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const ActualEmissionsChart = memo(({ emissions, loading }) => {
-  const maxAvailableEmissions = getCumulativeData(emissions, [
+  const maxAvailableEmissions = getCumulativeEmissions(emissions, [
     'availableDevIncentives',
     'totalClaimableStakingRewards',
     'totalBondsClaimable',
   ]);
 
-  const actualEmissions = getCumulativeData(emissions, [
+  const actualEmissions = getCumulativeEmissions(emissions, [
     'devIncentivesTotalTopUp',
     'totalClaimedStakingRewards',
     'totalBondsClaimed',

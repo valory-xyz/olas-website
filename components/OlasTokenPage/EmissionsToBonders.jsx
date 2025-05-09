@@ -8,7 +8,7 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getCumulativeData,
+  getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
@@ -20,11 +20,14 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const EmissionsToBonders = memo(({ emissions, loading }) => {
-  const totalBondsClaimable = getCumulativeData(
+  const totalBondsClaimable = getCumulativeEmissions(
     emissions,
     'totalBondsClaimable',
   );
-  const totalBondsClaimed = getCumulativeData(emissions, 'totalBondsClaimed');
+  const totalBondsClaimed = getCumulativeEmissions(
+    emissions,
+    'totalBondsClaimed',
+  );
 
   return (
     <div className="flex flex-col flex-auto p-4">

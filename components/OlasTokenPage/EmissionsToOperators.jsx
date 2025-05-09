@@ -8,7 +8,7 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
-  getCumulativeData,
+  getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
@@ -20,11 +20,11 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const EmissionsToOperators = memo(({ emissions, loading }) => {
-  const totalClaimableStakingRewards = getCumulativeData(
+  const totalClaimableStakingRewards = getCumulativeEmissions(
     emissions,
     'totalClaimableStakingRewards',
   );
-  const totalClaimedStakingRewards = getCumulativeData(
+  const totalClaimedStakingRewards = getCumulativeEmissions(
     emissions,
     'totalClaimedStakingRewards',
   );
