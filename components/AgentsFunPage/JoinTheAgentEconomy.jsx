@@ -61,7 +61,6 @@ export const JoinTheAgentEconomy = () => (
           button={<PearlButton />}
           className="bg-white shadow-sm"
           imgClassName="rounded-full"
-          titleClassName="text-purple-900"
           contentClassName="text-gray-600"
           buttonClassName="w-full"
         />
