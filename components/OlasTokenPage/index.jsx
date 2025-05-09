@@ -4,8 +4,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { FLIPSIDE_URL, OLAS_API_URL } from 'common-util/constants';
-import { tokenomicsGraphClient } from 'common-util/graphql/client';
-import { emissionsQuery } from 'common-util/graphql/queries';
+import {
+  STAKING_GRAPH_CLIENTS,
+  tokenomicsGraphClient,
+} from 'common-util/graphql/client';
+import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
 import SectionWrapper from '../Layout/SectionWrapper';
 import { ActualEmissionsChart } from './ActualEmissionsChart';
@@ -107,12 +110,55 @@ const Supply = () => {
         // emissions
         const emissionsData =
           await tokenomicsGraphClient.request(emissionsQuery);
-        setEmissions(
-          // Filter out the current epoch, because it may contain incorrect data
-          emissionsData.epoches.filter(
-            (epochEmissions) => epochEmissions.counter !== Number(newEpoch),
-          ),
+
+        // Fetch rewards updates from all staking subgraphs
+        const stakingRewardsPromises = Object.entries(
+          STAKING_GRAPH_CLIENTS,
+        ).map(async ([chain, client]) => {
+          try {
+            const rewards = await client.request(
+              rewardUpdates(emissionsData.epoches),
+            );
+            return { chain, rewards };
+          } catch (error) {
+            console.error(`Error fetching rewards from ${chain}:`, error);
+            return { chain, rewards: null };
+          }
+        });
+
+        const stakingRewardsResults = await Promise.allSettled(
+          stakingRewardsPromises,
         );
+
+        const emissions = [...emissionsData.epoches].map((epoch, index) => {
+          let totalClaimableStakingRewards = BigInt(0);
+          let totalClaimedStakingRewards = BigInt(0);
+
+          // Accumulate rewards from all chains
+          stakingRewardsResults.forEach((result) => {
+            if (result.status === 'fulfilled' && result.value.rewards) {
+              const epochRewards = result.value.rewards[`_${index + 1}`] || [];
+              totalClaimableStakingRewards += epochRewards.reduce(
+                (acc, item) =>
+                  item.type === 'Claimable' ? acc + BigInt(item.amount) : acc,
+                BigInt(0),
+              );
+              totalClaimedStakingRewards += epochRewards.reduce(
+                (acc, item) =>
+                  item.type === 'Claimed' ? acc + BigInt(item.amount) : acc,
+                BigInt(0),
+              );
+            }
+          });
+
+          return {
+            ...epoch,
+            totalClaimableStakingRewards,
+            totalClaimedStakingRewards,
+          };
+        });
+
+        setEmissions(emissions);
 
         setLoading(false);
       } catch (error) {

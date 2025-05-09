@@ -8,6 +8,7 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
+  getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
@@ -19,31 +20,17 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const ActualEmissionsChart = memo(({ emissions, loading }) => {
-  const maxAvailableEmissions = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce(
-        (sum, item) =>
-          sum +
-          Number(item.availableDevIncentives || 0) +
-          Number(item.availableStakingIncentives || 0) +
-          Number(item.totalBondsClaimable || 0),
-        0,
-      );
-  });
+  const maxAvailableEmissions = getCumulativeEmissions(emissions, [
+    'availableDevIncentives',
+    'totalClaimableStakingRewards',
+    'totalBondsClaimable',
+  ]);
 
-  const actualEmissions = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce(
-        (sum, item) =>
-          sum +
-          Number(item.devIncentivesTotalTopUp || 0) +
-          Number(item.totalStakingIncentives || 0) +
-          Number(item.totalBondsClaimed || 0),
-        0,
-      );
-  });
+  const actualEmissions = getCumulativeEmissions(emissions, [
+    'devIncentivesTotalTopUp',
+    'totalClaimedStakingRewards',
+    'totalBondsClaimed',
+  ]);
 
   return (
     <div className="flex flex-col flex-auto p-4">
