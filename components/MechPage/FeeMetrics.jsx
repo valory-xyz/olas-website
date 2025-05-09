@@ -1,10 +1,12 @@
 import { getFeeFlowMetrics } from 'common-util/api/dune';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { usePersistentSWR, useWindowWidth } from 'hooks';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Chart } from 'react-google-charts';
-import useSWR from 'swr';
+
+const DUNE_MMV2_URL = 'https://dune.com/queries/5103896/8420267';
 
 const fetchMetrics = async () => {
   try {
@@ -24,11 +26,8 @@ const fetchMetrics = async () => {
   }
 };
 
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
+const formatToTooltip = ({ from, to }) =>
+  `${from.label} → ${to.label} | $${to.value} (${Number((to.value / from.value) * 100).toFixed(2)}%))`;
 
 export const FeeMetrics = () => {
   const { data: metrics, error } = usePersistentSWR(
@@ -36,91 +35,99 @@ export const FeeMetrics = () => {
     fetchMetrics,
   );
 
+  const windowWidth = useWindowWidth();
+
+  const chartSizes = useMemo(() => {
+    if (windowWidth < 640) return { fontSize: 12, chartHeight: 200 };
+    if (windowWidth < 1024) return { fontSize: 16, chartHeight: 300 };
+    return { fontSize: 20, chartHeight: 400 };
+  }, [windowWidth]);
+
   const formerData = useMemo(
-    () => [
-      {
+    () => ({
+      total: {
         id: 'total-fees',
         label: 'Total Agent Fees Collected',
         value: metrics?.totalFees || 0,
         color: '#7a9cf7',
       },
-      {
+      unclaimed: {
         id: 'unclaimed',
         label: 'Unclaimed Fees',
         value: metrics?.unclaimedFees || 0,
         color: '#90a1b9',
       },
-      {
+      claimed: {
         id: 'claimed',
         label: 'Claimed Fees',
-        value: metrics?.collectedFees || 0,
+        value: metrics?.claimedFees || 0,
         color: '#5fb178',
       },
-      {
+      recieved: {
         id: 'received',
         label: 'Fees Received',
-        value: metrics?.recievedFees || 0,
+        value: metrics?.recievedFees || metrics?.claimedFees * 0.99 || 0,
         color: '#68bcce',
       },
-      {
+      burned: {
         id: 'olas-burned',
         label: 'OLAS Burned',
-        value: metrics?.olasBurned || 0,
+        // Olas burned will always be 1% of claimed fees
+        value: metrics?.claimedFees * 0.01 || 0,
         color: '#dab2e4',
       },
-    ],
+    }),
     [metrics],
   );
 
+  // Sankey diagram data structure:
+  // Each row represents a flow between nodes with format: [From, To, Value, Tooltip]
+  // The first row defines the column headers and tooltip configuration as the tooltip text is customised
   const data = [
     ['From', 'To', '', { role: 'tooltip', type: 'string', p: { html: true } }],
     [
+      // From header
       'Total Agent Fees Collected',
+      // To header
       'Unclaimed Fees',
-      formerData[1].value,
-      `Total Agent Fees Collected → Unclaimed Fees | $${formerData[1].value} (${Number((formerData[1].value / formerData[0].value) * 100).toFixed(2)}%)`,
-    ],
-    [
-      'Unclaimed Fees',
-      '',
-      formerData[1].value,
-      `Total Agent Fees Collected → Unclaimed Fees | $${formerData[1].value} (${Number((formerData[1].value / formerData[0].value) * 100).toFixed(2)}%)`,
+      // Branch thickness
+      formerData.unclaimed.value,
+      // Tooltip display
+      formatToTooltip({
+        from: formerData.total,
+        to: formerData.unclaimed,
+      }),
     ],
     [
       'Total Agent Fees Collected',
       'Claimed Fees',
-      formerData[2].value,
-      `Total Agent Fees Collected → Claimed Fees | $${formerData[2].value} (${Number((formerData[2].value / formerData[0].value) * 100).toFixed(2)}%)`,
+      formerData.claimed.value,
+      formatToTooltip({
+        from: formerData.total,
+        to: formerData.claimed,
+      }),
     ],
-    // Olas burned branch is represented as 10% for better visual presentation as 1% appears too small on screens
     [
       'Claimed Fees',
       'OLAS Burned',
-      formerData[2].value * 0.1,
-      `Claimed Fees → OLAS Burned | $${formerData[2].value * 0.1} (1%)`,
+      // Using 10% for visual clarity instead of actual 1% to make the flow visible
+      formerData.burned.value * 10,
+      formatToTooltip({
+        from: formerData.claimed,
+        to: formerData.burned,
+      }),
     ],
     [
       'Claimed Fees',
       'Fees Received',
-      formerData[2].value * 0.9,
-      `Claimed Fees → Fees Received | $${formerData[2].value * 0.9} (99%)`,
+      // Using 90% to fit "Claimed Fees" branch
+      formerData.recieved.value * (90 / 99),
+      formatToTooltip({
+        from: formerData.claimed,
+        to: formerData.recieved,
+      }),
     ],
   ];
-
-  const [windowWidth, setWindowWidth] = useState(1280);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const chartSizes = () => {
-    if (windowWidth < 640) return { fontSize: 12, chartHeight: 200 };
-    if (windowWidth < 1024) return { fontSize: 16, chartHeight: 300 };
-    return { fontSize: 20, chartHeight: 400 };
-  };
 
   const options = {
     sankey: {
@@ -129,17 +136,10 @@ export const FeeMetrics = () => {
       },
       node: {
         label: {
-          fontSize: chartSizes().fontSize,
+          fontSize: chartSizes.fontSize,
         },
         nodePadding: 40,
-        colors: [
-          '#7a9cf7',
-          '#ffffff',
-          '#ffffff',
-          '#5fb178',
-          '#dab2e4',
-          '#68bcce',
-        ],
+        colors: ['#7a9cf7', '#ffffff', '#5fb178', '#dab2e4', '#68bcce'],
       },
       tooltip: {
         isHtml: true,
@@ -173,12 +173,12 @@ export const FeeMetrics = () => {
         <div className="text-center py-8">Error loading metrics</div>
       ) : (
         <>
-          <div className="w-full max-w-full overflow-x-auto mb-8">
+          <div className="w-full max-w-full overflow-x-auto my-8">
             <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
               <Chart
                 chartType="Sankey"
                 width="100%"
-                height={chartSizes().chartHeight}
+                height={chartSizes.chartHeight}
                 data={data}
                 options={options}
               />
@@ -186,7 +186,7 @@ export const FeeMetrics = () => {
           </div>
 
           <div className="mx-auto grid grid-cols-2 xl:grid-cols-5 gap-0 w-full items-end mb-8 max-w-7xl mx-auto">
-            {formerData.map((item, index) => {
+            {Object.values(formerData).map((item, index) => {
               let borderClassName = '';
               if (index !== 0) borderClassName += 'xl:border-l-1.5';
               if (index % 2 !== 0) borderClassName += ' border-l-1.5';
@@ -202,9 +202,14 @@ export const FeeMetrics = () => {
                       {item.label}
                     </span>
                   </div>
-                  <span className="block text-4xl whitespace-nowrap max-sm:text-xl font-extrabold mb-4 mt-auto">
+                  <Link
+                    href={DUNE_MMV2_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-4xl whitespace-nowrap max-sm:text-xl font-extrabold mb-4 mt-auto"
+                  >
                     $ {item.value} ↗
-                  </span>
+                  </Link>
                 </div>
               );
             })}
