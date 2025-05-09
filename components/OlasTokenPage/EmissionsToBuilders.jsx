@@ -12,6 +12,7 @@ import { Line } from 'react-chartjs-2';
 
 import {
   EMISSIONS_CHART_COLORS,
+  getCumulativeData,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import { LegendItem } from './LegendItem';
@@ -20,20 +21,14 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const EmissionsToBuilders = memo(({ emissions, loading }) => {
-  const devIncentivesPoints = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce(
-        (sum, item) => sum + Number(item.devIncentivesTotalTopUp || 0),
-        0,
-      );
-  });
-
-  const availableDevIncentivesPoints = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce((sum, item) => sum + Number(item.availableDevIncentives || 0), 0);
-  });
+  const devIncentivesPoints = getCumulativeData(
+    emissions,
+    'devIncentivesTotalTopUp',
+  );
+  const availableDevIncentivesPoints = getCumulativeData(
+    emissions,
+    'availableDevIncentives',
+  );
 
   return (
     <div className="flex flex-col flex-auto p-4">

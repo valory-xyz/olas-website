@@ -8,6 +8,7 @@ import {
 } from 'chart.js';
 import {
   EMISSIONS_CHART_COLORS,
+  getCumulativeData,
   getEmissionsChartOptions,
 } from 'common-util/charts';
 import PropTypes from 'prop-types';
@@ -19,19 +20,14 @@ import { emissionType } from './types';
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
 export const EmissionsToOperators = memo(({ emissions, loading }) => {
-  const availableStakingIncentivesPoints = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce(
-        (sum, item) => sum + Number(item.availableStakingIncentives || 0),
-        0,
-      );
-  });
-  const totalStakingIncentivesPoints = emissions.map((_, index) => {
-    return emissions
-      .slice(0, index + 1)
-      .reduce((sum, item) => sum + Number(item.totalStakingIncentives || 0), 0);
-  });
+  const totalClaimableStakingRewards = getCumulativeData(
+    emissions,
+    'totalClaimableStakingRewards',
+  );
+  const totalClaimedStakingRewards = getCumulativeData(
+    emissions,
+    'totalClaimedStakingRewards',
+  );
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -41,11 +37,11 @@ export const EmissionsToOperators = memo(({ emissions, loading }) => {
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem
           color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Available staking emissions"
+          label="Staking rewards claimable"
         />
         <LegendItem
           color={EMISSIONS_CHART_COLORS.operators.legend}
-          label="OLAS emitted to staking contracts"
+          label="Staking rewards claimed"
         />
       </div>
       <div className="flex flex-col flex-auto gap-8">
@@ -58,15 +54,15 @@ export const EmissionsToOperators = memo(({ emissions, loading }) => {
                 labels: emissions.map((item) => item.counter),
                 datasets: [
                   {
-                    label: 'Available emissions',
-                    data: availableStakingIncentivesPoints,
+                    label: 'Staking rewards claimable',
+                    data: totalClaimableStakingRewards,
                     order: 1,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
                     borderColor: EMISSIONS_CHART_COLORS.available.line,
                   },
                   {
-                    label: 'Staking incentives',
-                    data: totalStakingIncentivesPoints,
+                    label: 'Staking rewards claimed',
+                    data: totalClaimedStakingRewards,
                     order: 2,
                     pointBackgroundColor: EMISSIONS_CHART_COLORS.operators.line,
                     borderColor: EMISSIONS_CHART_COLORS.operators.line,
@@ -74,8 +70,8 @@ export const EmissionsToOperators = memo(({ emissions, loading }) => {
                 ],
               }}
               options={getEmissionsChartOptions([
-                ...availableStakingIncentivesPoints,
-                ...availableStakingIncentivesPoints,
+                ...totalClaimableStakingRewards,
+                ...totalClaimableStakingRewards,
                 10 ** 18, // Add this temporarily while we don't have data on staking
               ])}
             />
