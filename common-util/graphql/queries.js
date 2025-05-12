@@ -5,6 +5,7 @@ export const emissionsQuery = gql`
     epoches(orderBy: startBlock) {
       id
       counter
+      blockTimestamp
       availableDevIncentives
       devIncentivesTotalTopUp
       availableStakingIncentives
@@ -12,5 +13,25 @@ export const emissionsQuery = gql`
       totalBondsClaimable
       totalBondsClaimed
     }
+  }
+`;
+
+export const rewardUpdates = (epochs) => gql`
+  query RewardUpdates {
+    ${epochs.map(
+      (epoch, index) => `
+        _${epoch.counter}: rewardUpdates(
+          where: {
+            blockTimestamp_gt: ${index > 0 ? epochs[index - 1].blockTimestamp : 0}
+            ${index < epochs.length - 1 ? `blockTimestamp_lte: ${epoch.blockTimestamp}` : ''}
+          }
+            first: 1000
+        ) {
+          id
+          amount
+          type
+        }
+      `,
+    )}
   }
 `;
