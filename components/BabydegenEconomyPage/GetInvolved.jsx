@@ -1,8 +1,8 @@
-import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { ExternalLink } from 'components/ui/typography';
 
 const list = [
   {
@@ -43,10 +43,9 @@ export const GetInvolved = () => (
 
             <p className={TEXT_CLASS}>{desc}</p>
             {isExternal ? (
-              <a href={url} className="text-purple-600 mt-auto" target="_blank">
+              <ExternalLink href={url} className="mt-auto">
                 {urlName}
-                <MoveUpRight className="ml-2 inline" size={16} />
-              </a>
+              </ExternalLink>
             ) : (
               <Link href={url} className="text-purple-600 mt-auto">
                 {urlName}
