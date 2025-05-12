@@ -25,6 +25,11 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/agent-economies/optimus',
+        destination: '/agent-economies/babydegen',
+        permanent: true,
+      },
+      {
         source: '/bonds',
         destination: '/bond',
         permanent: true,

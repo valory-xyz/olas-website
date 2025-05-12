@@ -24,7 +24,7 @@ const list = [
 export const HowBabydegenEconomyWorks = () => (
   <HowItWorks
     headerText="How Babydegen Economy Works"
-    imgFolder="optimus-page"
+    imgFolder="babydegen-econ-page"
     list={list}
   />
 );
