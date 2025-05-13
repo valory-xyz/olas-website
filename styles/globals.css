@@ -88,6 +88,10 @@
   @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
 }
 
+.operate-card {
+  box-shadow: 0px 0px 0px 4px #FFF inset;
+}
+
 .card-purple {
   @apply bg-gradient-to-t from-white to-purple-50 border-purple-200;
 }
@@ -98,6 +102,10 @@
 
 .card-rose {
   @apply bg-gradient-to-t from-white to-rose-50 border-rose-200;
+}
+
+.card-rainbow {
+  background: url("/images/operate-page/agentsfun-bg.png") white center center / cover no-repeat;
 }
 
 td, th {

@@ -3,7 +3,7 @@ import Hero from './Hero';
 import { InstallRunAnAgent } from './InstallRunAnAgent';
 import { MeetPearl } from './MeetPearl';
 import { OperateMetrics } from './OperateMetrics';
-import { WantMoreControl } from './WantMoreControl';
+import { WantToBuild } from './WantToBuild';
 import { WhyRunPearl } from './WhyRunPearl';
 
 const Pearl = () => (
@@ -13,7 +13,7 @@ const Pearl = () => (
     <MeetPearl />
     <WhyRunPearl />
     <InstallRunAnAgent />
-    <WantMoreControl />
+    <WantToBuild />
     <FAQ />
   </>
 );

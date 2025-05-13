@@ -1,10 +1,6 @@
-import { getTotalUniqueStakers } from 'common-util/api/dune';
 import { get7DaysAvgActivity } from 'common-util/api/flipside';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import {
-  OLAS_ECONOMY_DASHBOARD_URL,
-  PREDICTION_ECONOMY_DASHBOARD_URL,
-} from 'common-util/constants';
+import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -13,18 +9,11 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, totalUniqueStakers] = await Promise.allSettled([
-    get7DaysAvgActivity(),
-    getTotalUniqueStakers(),
-  ]);
+  const [dailyActiveAgents] = await Promise.allSettled([get7DaysAvgActivity()]);
 
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    totalUniqueStakers:
-      totalUniqueStakers.status === 'fulfilled'
-        ? totalUniqueStakers.value
-        : null,
   };
 };
 
@@ -36,14 +25,6 @@ export const OperateMetrics = () => {
 
   const data = useMemo(
     () => [
-      {
-        id: 'operators',
-        imageSrc: 'operators.png',
-        labelText: 'Operators',
-        subText: 'All-time unique operators',
-        value: metrics?.totalUniqueStakers?.toLocaleString(),
-        source: OLAS_ECONOMY_DASHBOARD_URL,
-      },
       {
         id: 'DAA',
         imageSrc: 'DAA.png',
@@ -57,17 +38,12 @@ export const OperateMetrics = () => {
   );
 
   return (
-    <SectionWrapper customClasses="mt-16">
+    <SectionWrapper customClasses="mt-16 max-sm:mx-4">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center mb-12`}>
         Join hundreds already using Pearl
       </h2>
-      <Card className="grid md:grid-cols-2 gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
+      <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
-          let borderClassName = '';
-          if (index == 0)
-            borderClassName +=
-              'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200';
-
           const getValue = () => {
             if (!item.value) return '--';
             return (
@@ -81,7 +57,7 @@ export const OperateMetrics = () => {
           return (
             <div
               key={item.id}
-              className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full w-full ${borderClassName}`}
+              className="text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full w-full"
             >
               <div className="flex gap-2 mb-5 justify-center">
                 <div className="aspect-square">

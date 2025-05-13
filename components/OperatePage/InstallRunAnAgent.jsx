@@ -124,7 +124,7 @@ const DownloadLinks = () => {
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
             asChild
-            className="mb-6 h-[56px] max-w-[165px] text-left cursor-pointer"
+            className="mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer"
           >
             <div className="flex flex-row">
               {icon}
@@ -141,7 +141,7 @@ const DownloadLinks = () => {
 };
 
 export const InstallRunAnAgent = () => (
-  <div id="download" className="mb-12">
+  <div id="download" className="mb-12 lg:mb-24 max-sm:mx-4">
     <DownloadLinks />
   </div>
 );

@@ -23,7 +23,13 @@ const Hero = () => (
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
       <div className="px-0 md:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
-        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left`}>
+        <div className="md:hidden mb-8">
+          <OperateHeroImage />
+        </div>
+
+        <h1
+          className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}
+        >
           OLAS PEARL
         </h1>
 
@@ -34,10 +40,6 @@ const Hero = () => (
         <div className={`${TEXT_SMALL_CLASS} mb-6`}>
           A world of AI agents in one app — working for you & earning you
           rewards.
-        </div>
-
-        <div className="md:hidden mb-8">
-          <OperateHeroImage />
         </div>
 
         <Button
