@@ -154,7 +154,7 @@ const funAgents = [
     description:
       'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas.',
     imgSrc: 'agentsfun-base.png',
-    link: '/operate#download',
+    link: '/pearl#download',
   },
   {
     title: 'Agent Celo',

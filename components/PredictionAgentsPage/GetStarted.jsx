@@ -16,11 +16,8 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          <Link
-            href="/operate#download"
-            className="break-words text-purple-600"
-          >
-            https://olas.network/operate#download
+          <Link href="/pearl#download" className="break-words text-purple-600">
+            https://olas.network/pearl#download
           </Link>{' '}
           to download the Pearl app.
         </div>
@@ -49,7 +46,7 @@ const list = [
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        <Link href="/operate#download">Run an Agent</Link>
+        <Link href="/pearl#download">Run an Agent</Link>
       </Button>
     ),
   },

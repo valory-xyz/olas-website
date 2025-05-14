@@ -39,7 +39,7 @@ const list = [
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        <Link href="/operate#download">Get Started with Pearl</Link>
+        <Link href="/pearl#download">Get Started with Pearl</Link>
       </Button>
     ),
   },
