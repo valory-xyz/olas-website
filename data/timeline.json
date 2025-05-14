@@ -346,12 +346,140 @@
             },
             {
                 "quarter": "Quarter 3",
-                "date": "September",
+                "date": "Jul - Sep",
                 "topics": [
                     {
-                        "topic": "How it all begun…",
-                        "content": "- Valory has created an [open-source software stack](https://olas.network/stack) allowing developers to build the next generation of crypto apps: based on autonomous AI agents, making them robust (run with multiple nodes), transparent (open-sourced code) and decentralized (run by multiple operators). \n- Valory launched the Olas DAO with early adopters, providing a [permissionless on-chain protocol](https://olas.network/protocol) for securing, managing, and incentivizing autonomous agent-based applications. Olas aims to enable DAOs to benefit from this new primitive and put Olas agent-powered application at the heart of their off-chain operations. \n- Olas agents are being built by early adopters, partners, and Valory. \n- A [$55k grant from Balancer was awarded to Valory to built the first Smart Managed Pool using Olas](https://twitter.com/autonolas/status/1562470002007375873?s=20&t=KQJInkX43jkUc-r4jy_Osw) \n- Notable projects like [Brahma](https://www.brahma.fi/) and [Postmint](https://www.postmint.xyz/), are building using the Olas Stack. \n- Valory has run [4 intensive Academy cohorts](https://www.valory.xyz/academy) and launched a free online course. The Academy has produced the first Olas-powered application in use (below). In addition, all the intensive cohorts with Python developers have produced usable code with high enthusiasm and strengthened the dev tooling, documentation & infrastructure, as well as grown the ecosystem of developers. \n- The first 2 Olas-powered applications are live \n- The [world's first autonomous NFT collector DAO, El Collectooorr](https://www.elcollectooorr.art/), was built by Academy participants and is in use on Ethereum. What began as a simplistic hackathon entry was spun into a fully-fledged service by Academy graduates, led by Ardian. [Join as an early user here](https://www.elcollectooorr.art/). \n- The autonomous price oracle is on Polygon, as a [demonstrative service](https://oracle.autonolas.network/) providing 24/7 BTC-USD price feed. \n- The [regular DAO operations research](https://twitter.com/autonolas/status/1531634091937845249?s=20&t=KQJInkX43jkUc-r4jy_Osw) and recent media appearances are steadily growing the early Olas community. Catch up on founding member appearances with [Chorus One](https://twitter.com/autonolas/status/1524412008849883137?s=20&t=8RcdB9TkUZAejXoyUZCMlw), [The Crypto Podcast](https://www.youtube.com/watch?v=oNNXlizKnYM) and rewatch 6 of community events [here](https://discord.com/invite/z2PT65jKqQ)).",
-                        "category": ["Build", "Media appearances", "Key milestones"]
+                        "topic": "Autonolas at EthCC: Protocol Launch Party",
+                        "content": "- Hosted a side event during EthCC titled Upgrade DAOs with Autonomous Services to celebrate the launch of the Autonolas Protocol. \n- Attendees experienced live demos and met the creators behind the agent-powered coordination stack. \n- Marked the public debut of Autonolas’ core protocol vision, focused on making DAOs autonomous.",
+                        "category": ["Other events"]
+                    },
+                    {
+                        "topic": "Brand and Site Refresh",
+                        "content": "- Launched a redesigned website with easier navigation, improved educational resources, and press content integration. \n- Introduced a new visual identity reflecting brand values like Safety, Hope, Wonder, and Excitement. \n- New site features included beginner-friendly intros to autonomous software and how to build with Open Autonomy.",
+                        "category": []
+                    },
+                    {
+                        "topic": "Protocol Launch Event",
+                        "content": "- Held a live launch event featuring real-time demos of the Autonolas Protocol and tooling. \n- Offered early access and insights into the coordination layer enabling DAOs and agents to act autonomously. \n- The launch represented a major milestone in transitioning from concept to working protocol.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Balancer Grant to Autonolas",
+                        "content": "- Received a grant from the Balancer Grants program to develop an MVP Smart Managed Pool powered by Autonolas. \n- SMPs act like DeFi-native robo-advisors—autonomously shifting allocations based on the Crypto Fear and Greed Index. \n- Project open-sourced for builders to fork and adapt, sparking a new frontier in autonomous asset management.",
+                        "category": ["Build"]
+                    },
+                    {
+                        "topic": "Community Leaderboard Program Launched",
+                        "content": "- Introduced a points-based leaderboard to reward contributions such as inviting members, giving feedback, and creating original content. \n- Included unique tasks like Alter Orbis creative submissions, documentation improvements, and education track completions. \n- Designed to deepen engagement and highlight top contributors in the Autonolas ecosystem.",
+                        "category": ["Contribute"]
+                    }
+                ]
+            },
+            {
+                "quarter": "Quarter 2",
+                "date": "Apr - Jun",
+                "topics": [
+                    {
+                        "topic": "Autonolas in ETHAmsterdam and EFDEVconnect",
+                        "content": "- Represented by two Valory team members and an Academy graduate, Autonolas earned 3 prizes from Skale Network and 1 from Gnosis Safe for the “decentrAPI” project. \n- decentrAPI used open-aea and cletns to autonomously manage HTTP traffic via Gnosis Safe, showcasing real-world use of agent-based infra. \n- The team connected with builders at ETHAmsterdam and EFDevconnect, engaging the community around the potential of autonomous agents.",
+                        "category": ["Contribute"]
+                    },
+                    {
+                        "topic": "Chorus One Podcast: Autonomy for DAOs",
+                        "content": "- Joined Chorus One to discuss how Autonolas enables off-chain operations and on-chain logic for DAOs via autonomous agents. \n- Explored the protocol's origins, technical architecture, and the vision for making DAOs truly self-operating. [The podcast can be found on YouTube](https://www.youtube.com/watch?v=ucxwaJhBr20).",
+                        "category": ["Other events"]
+                    },
+                    {
+                        "topic": "Autonolas Oracle: A New Approach to Off-Chain Consensus",
+                        "content": "- Launched a live proof-of-concept oracle powered by autonomous agents. \n- Aggregates BTC/USD data from multiple sources (CoinGecko, FTX, Binance, Coinbase). \n- Agents reach consensus off-chain and publish the result on-chain via a keeper agent. \n- Combines decentralization with cost efficiency, making it well-suited for real-world use.",
+                        "category": ["Build"]
+                    },
+                    {
+                        "topic": "Debut of El Collectooorr at NFTBerlin2022",
+                        "content": "- Introduced El Collectooorr, a playful autonomous agent designed to collect high-value NFTs. \n- First demoed at NFTBerlin, sparking conversation around autonomous creativity and art curation.",
+                        "category": ["Other events"]
+                    },
+                    {
+                        "topic": "Agent Dev Academy v2 Launch",
+                        "content": "- Released the second version of Agent Dev Academy, expanding resources for developers building with autonomous agents. \n- Focused on hands-on tutorials and improved learning modules.",
+                        "category": ["Build"]
+                    },
+                    {
+                        "topic": "Open Source Release: Docs, Open Autonomy & AEA Updates",
+                        "content": "- Published full technical documentation, released Open Autonomy, and updated the Open AEA framework. \n- Empowered developers to build their own autonomous services from scratch.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Autonomous Oracle Live on Polygon",
+                        "content": "- Deployed an autonomous oracle on Polygon to showcase multi-chain capabilities. \n- The deployment demonstrated seamless data flow between agents and L2 networks.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Gnosis Safe Guardian Launched",
+                        "content": "- Built an autonomous agent acting as a Gnosis Safe Guardian to automate treasury controls. \n- Advanced the security and composability of on-chain treasury governance.",
+                        "category": ["Key milestones"]
+                    }
+                ]
+            },
+            {
+                "quarter": "Quarter 1",
+                "date": "Jan - Mar",
+                "topics": [
+                    {
+                        "topic": "Custom NFT Christmas",
+                        "content": "- Each NFT was tailored to the recipient's interests and design preferences. \n- Created by Autonolas designer @kameha_san, many recipients received their first-ever NFT. \n- Reinforced our culture of thoughtful design and community appreciation.",
+                        "category": ["Contribute"]
+                    },
+                    {
+                        "topic": "World Buildathon: Exploring Creative Frontiers",
+                        "content": "- Invited artists, writers, and designers to imagine the world of Autonolas. \n- Held a creative hackathon with prizes and featured winners in a dedicated showcase. \n- Extended the concept of composable services to storytelling and design.",
+                        "category": ["Other events"]
+                    },
+                    {
+                        "topic": "Autonolas at Avalanche Summit",
+                        "content": "- Attended #AVAXSummit in Barcelona to connect with builders and introduce full-stack autonomy to the AVAX ecosystem. \n- Highlighted opportunities for collaboration and protocol integrations.",
+                        "category": ["Other events"]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "year": "2021",
+        "quarters": [
+            {
+                "quarter": "Quarter 4",
+                "date": "Oct - Dec",
+                "topics" : [
+                    {
+                        "topic": "El Collectooorr: A Fully Autonomous NFT Collector",
+                        "content": "- Introduced at ETHLisbon, El Collectooorr is a fully autonomous NFT-collecting agent. \n- Users fund the system, which monitors Art Blocks drops and participates in auctions autonomously. \n- Built with Gnosis Safe, AEA framework, and a decoupled React frontend. \n- Demonstrated seamless interaction between off-chain logic and on-chain execution. \n- Deployed on Ethereum's Ropsten testnet, with future plans for decentralization and extensibility.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "First Community Call: Welcoming Early Contributors",
+                        "content": "- Hosted an open call to introduce Autonolas to early supporters and share our roadmap. \n- Invited developers and ecosystem contributors to get involved from day one.",
+                        "category": ["Contribute", "Key milestones"]
+                    },
+                    {
+                        "topic": "Introducing the Autonolas Blog",
+                        "content": "- Published our first post outlining the need for better off-chain infrastructure in crypto. \n- Set the foundation for Autonolas' approach to autonomous, multi-agent services.",
+                        "category": ["Key milestones"]
+                    },
+                    {
+                        "topic": "Community Update 001",
+                        "content": "- Shared early momentum from the Agent Dev Academy and growing team progress. \n- Invited feedback on messaging, design, and future community development.",
+                        "category": ["Contribute", "Key milestones"]
+                    },
+                    {
+                        "topic": "Agent Dev Academy Announced",
+                        "content": "- Designed for Python developers ready to build in web3. \n- The academy offers a structured entry into creating autonomous services using agent-based systems.",
+                        "category": ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic": "Autonolas Website Launch",
+                        "content": "- Introduced autonolas.network — the central hub for learning, building, and contributing \n- Marks a step forward in accessibility for developers entering the ecosystem.",
+                        "category": ["Key milestones"]
                     }
                 ]
             }
