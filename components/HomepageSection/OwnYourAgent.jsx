@@ -36,7 +36,7 @@ export const OwnYourAgent = () => (
 
     <div className="w-fit mt-12 mx-auto">
       <Button variant="default" size="xl" asChild>
-        <Link href="/operate">Own Your Agent</Link>
+        <Link href="/pearl">Own Your Agent</Link>
       </Button>
     </div>
   </SectionWrapper>
