@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents] = await Promise.allSettled([get7DaysAvgActivity()]);
+  const [dailyActiveAgents] = await get7DaysAvgActivity();
 
   return {
     dailyActiveAgents:
