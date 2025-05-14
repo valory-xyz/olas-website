@@ -17,12 +17,8 @@ const fetchMetrics = async () => {
     getTotalUniqueStakers(),
   ]);
   return {
-    dailyActiveAgents:
-      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    totalUniqueStakers:
-      totalUniqueStakers.status === 'fulfilled'
-        ? totalUniqueStakers.value
-        : null,
+    dailyActiveAgents: dailyActiveAgents.value,
+    totalUniqueStakers: totalUniqueStakers.value,
   };
 };
 

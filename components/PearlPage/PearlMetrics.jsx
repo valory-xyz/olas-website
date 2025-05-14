@@ -2,25 +2,16 @@ import { get7DaysAvgActivity } from 'common-util/api/flipside';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { fetchMetrics } from 'components/MetricsCard';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-const fetchMetrics = async () => {
-  const [dailyActiveAgents] = await get7DaysAvgActivity();
-
-  return {
-    dailyActiveAgents:
-      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-  };
-};
-
 export const PearlMetrics = () => {
-  const { data: metrics } = usePersistentSWR(
-    'operateActivityMetrics',
-    fetchMetrics,
+  const { data: metrics } = usePersistentSWR('operateActivityMetrics', () =>
+    fetchMetrics([get7DaysAvgActivity]),
   );
 
   const data = useMemo(
@@ -30,7 +21,7 @@ export const PearlMetrics = () => {
         imageSrc: 'DAA.png',
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
-        value: metrics?.dailyActiveAgents?.toLocaleString(),
+        value: metrics?.toLocaleString(),
         source: PREDICTION_ECONOMY_DASHBOARD_URL,
       },
     ],
