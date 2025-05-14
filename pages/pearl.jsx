@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import Operate from 'components/PearlPage';
+import Pearl from 'components/PearlPage';
 
 const firstRewardImageSrc = '/images/operate-page/pear-first-reward.png';
 
@@ -13,8 +13,12 @@ const PearlPage = () => {
 
   return (
     <PageWrapper>
-      <Meta pageTitle="" description="" siteImageUrl={image} />
-      <Operate />
+      <Meta
+        pageTitle="Run & own AI Agents with Olas"
+        description="Pearl brings you the ultimate collection of AI agents in one app."
+        siteImageUrl={image}
+      />
+      <Pearl />
     </PageWrapper>
   );
 };

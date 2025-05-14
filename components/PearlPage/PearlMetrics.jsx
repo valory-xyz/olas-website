@@ -17,7 +17,7 @@ const fetchMetrics = async () => {
   };
 };
 
-export const OperateMetrics = () => {
+export const PearlMetrics = () => {
   const { data: metrics } = usePersistentSWR(
     'operateActivityMetrics',
     fetchMetrics,
@@ -43,7 +43,7 @@ export const OperateMetrics = () => {
         Join hundreds already using Pearl
       </h2>
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
-        {data.map((item, index) => {
+        {data.map((item) => {
           const getValue = () => {
             if (!item.value) return '--';
             return (
