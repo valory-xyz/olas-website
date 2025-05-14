@@ -23,7 +23,7 @@ export const Join = () => (
       </h2>
       <div className="flex flex-wrap justify-center gap-6 mx-auto">
         <Button variant="default" size="lg" asChild>
-          <Link href="/operate#download">Run Modius on Pearl</Link>
+          <Link href="/pearl#download">Run Modius on Pearl</Link>
         </Button>
 
         <Button variant="outline" size="lg" asChild>

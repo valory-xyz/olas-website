@@ -11,9 +11,9 @@ const PearlContent = () => (
     </strong>
     <div className="mb-4">
       Visit{' '}
-      <Link href="/operate#download" className="text-purple-600">
+      <Link href="/pearl#download" className="text-purple-600">
         <span className="inline-block max-w-full break-all">
-          https://olas.network/operate#download
+          https://olas.network/pearl#download
         </span>
       </Link>{' '}
       to download the Pearl app.
@@ -39,7 +39,7 @@ const PearlContent = () => (
 
 const PearlButton = () => (
   <Button variant="default" size="xl" asChild className="grow mt-6">
-    <Link href="/operate#download">Run an Agent</Link>
+    <Link href="/pearl#download">Run an Agent</Link>
   </Button>
 );
 

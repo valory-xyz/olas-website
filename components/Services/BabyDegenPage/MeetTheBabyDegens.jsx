@@ -97,7 +97,7 @@ const ModiusAgent = () => (
 
       <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <Link href="/operate#download">Run via Pearl</Link>
+          <Link href="/pearl#download">Run via Pearl</Link>
         </Button>
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>

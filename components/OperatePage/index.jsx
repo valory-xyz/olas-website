@@ -1,21 +1,19 @@
-import { FAQ } from './FAQ';
+import { EarnOlas } from './EarnOlas';
+import { GetStarted } from './GetStarted';
 import Hero from './Hero';
-import { InstallRunAnAgent } from './InstallRunAnAgent';
-import { MeetPearl } from './MeetPearl';
 import { OperateMetrics } from './OperateMetrics';
-import { WantMoreControl } from './WantMoreControl';
-import { WhyRunPearl } from './WhyRunPearl';
+import { WhatOperatorsAreSaying } from './WhatOperatorsAreSaying';
+import { WhyBecomeAnOperator } from './WhyBecomeAnOperator';
 
-const Pearl = () => (
+const Operate = () => (
   <>
     <Hero />
     <OperateMetrics />
-    <MeetPearl />
-    <WhyRunPearl />
-    <InstallRunAnAgent />
-    <WantMoreControl />
-    <FAQ />
+    <EarnOlas />
+    <WhyBecomeAnOperator />
+    <WhatOperatorsAreSaying />
+    <GetStarted />
   </>
 );
 
-export default Pearl;
+export default Operate;

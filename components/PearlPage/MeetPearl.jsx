@@ -7,14 +7,14 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
+const bgClasses = {
+  purple: 'card-purple',
+  lime: 'card-lime',
+  rose: 'card-rose',
+  rainbow: 'card-rainbow',
+};
+
 const agents = [
-  {
-    title: 'Prediction agent',
-    description: 'Forecasts outcomes and places bets in prediction markets.',
-    link: '/services/prediction-agents',
-    imgSrc: 'prediction-agent.png',
-    bgColour: 'purple',
-  },
   {
     title: 'Modius agent',
     description:
@@ -24,61 +24,57 @@ const agents = [
     bgColour: 'lime',
   },
   {
-    title: 'Agents.fun agent - Base',
-    description:
-      'Creates customized AI influencer personas that post on X and perform tasks on Base chain.',
-    link: '/services/agentsfun',
-    imgSrc: 'agentsfun-base.png',
+    title: 'Prediction agent',
+    description: 'Forecasts outcomes and places bets in prediction markets.',
+    link: '/services/prediction-agents',
+    imgSrc: 'prediction-agent.png',
+    bgColour: 'purple',
   },
   {
-    title: 'Optimus agent',
+    title: 'Agents.fun agent',
+    description:
+      'Your autonomous influencer Agent on X — generating content, interacting, and evolving its persona.',
+    link: '/services/agentsfun',
+    imgSrc: 'agentsfun.png',
+    bgColour: 'rainbow',
+  },
+  {
+    title: 'Optimus Agent',
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
     link: '/services/babydegen#optimus-agent',
+    isComingSoon: true,
     imgSrc: 'optimus.png',
     bgColour: 'rose',
-    isComingSoon: true,
-  },
-  {
-    title: 'Agents.fun agent - Celo',
-    description:
-      'Creates customized AI influencer personas that post on X and perform tasks on Celo chain.',
-    link: '/services/agentsfun',
-    imgSrc: 'agentsfun-celo.png',
-    isComingSoon: true,
-  },
-  {
-    imgSrc: 'no-agent.png',
   },
 ];
 
 const AgentsList = () => (
   <>
+    <h2
+      className={`${SUB_HEADER_CLASS} mb-4 font-semibold text-center mb-14 lg:mb-14`}
+    >
+      A World of AI Agents in One App
+    </h2>
     <div className="max-md:grid-cols-1 grid grid-cols-2 mx-auto max-w-6xl gap-4">
       {agents.map((item, index) => {
-        let cardClass = 'border-slate-200 to-slate-100';
-        if (item.bgColour === 'purple') {
-          cardClass = 'card-purple';
-        } else if (item.bgColour === 'lime') {
-          cardClass = 'card-lime';
-        } else if (item.bgColour === 'rose') {
-          cardClass = 'card-rose';
-        }
+        const cardClass =
+          bgClasses[item.bgColour] || 'border-slate-200 to-slate-100';
 
         return (
           <Card
             key={index}
-            className={`flex flex-row gap-4 border p-4 bg-gradient-to-t from-white shadow-none ${cardClass}`}
+            className={`operate-card flex flex-row gap-4 border p-4 bg-gradient-to-t from-white shadow-none ${cardClass}`}
           >
             <Image
-              src={`/images/operate-page/${item.imgSrc}`}
+              src={`/images/pearl-page/${item.imgSrc || 'default-agent.png'}`}
               alt={`Agent - ${item.title ? item.title : 'Coming soon'}`}
               width={80}
               height={80}
               className="aspect-square w-[80px] h-[80px]"
             />
             <div className="flex flex-col gap-2 w-full">
-              <div className="justify-between flex flex-row max-sm:flex-col">
+              <div className="place-items-center flex flex-row max-sm:flex-col">
                 <div className="text-xl font-semibold">
                   {item.title ? (
                     item.title
@@ -87,7 +83,9 @@ const AgentsList = () => (
                   )}
                 </div>
                 {item.isComingSoon && (
-                  <p className="text-slate-500 text-sm">Coming soon</p>
+                  <div className="ml-3 bg-purple-50 px-1 place-items-center text-purple-700 border border-fuchsia-200 rounded-sm text-sm">
+                    <p>Coming soon</p>
+                  </div>
                 )}
               </div>
               <div>
@@ -117,7 +115,7 @@ const AgentsList = () => (
       })}
     </div>
     <div className="border w-fit rounded-full px-4 py-1 mt-12 mx-auto">
-      More 🤖 agents coming
+      And more agents launching soon
     </div>
   </>
 );
@@ -140,7 +138,7 @@ export const MeetPearlContent = () => (
         style={{ marginLeft: -6 }}
         className="mb-2 lg:mb-4 w-16 lg:w-16"
         alt="Operate Logo"
-        src="/images/operate-page/operate-logo.svg"
+        src="/images/pearl-page/operate-logo.svg"
         width={48}
         height={48}
       />
@@ -160,7 +158,7 @@ export const MeetPearlContent = () => (
     <Image
       className="mx-auto max-sm:overflow-hidden block md:mt-8"
       alt="Meet Pearl"
-      src="/images/operate-page/discover-pearl.png"
+      src="/images/pearl-page/discover-pearl.png"
       width={580}
       height={574}
     />

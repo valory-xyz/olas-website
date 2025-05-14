@@ -14,7 +14,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for macOS M1+"
         className="mr-3"
         {...iconProps}
@@ -27,7 +27,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for MacOS Intel"
         className="mr-3"
         {...iconProps}
@@ -40,7 +40,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-windows.svg"
+        src="/images/pearl-page/brand-windows.svg"
         alt="Download for Windows"
         className="mr-3"
         {...iconProps}
@@ -96,7 +96,7 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <Card className="mt-32 max-w-[720px] mx-auto p-8 border-fuchsia-200 ring-8 ring-purple-50">
+    <Card className="mt-24 max-w-[720px] mx-auto p-8 border-fuchsia-200 ring-8 ring-purple-50">
       <h2 className="tracking-tight text-3xl lg:text-4xl text-left mb-8 font-semibold lg:text-center lg:mb-12">
         Get started with Pearl in 3 simple steps
       </h2>
@@ -113,7 +113,7 @@ const DownloadLinks = () => {
           Click “Run Agent” and start earning potential rewards.
         </p>
       </div>
-      <div className="flex flex-row max-md:flex-col md:gap-4 mt-8">
+      <div className="mx-auto md:w-fit flex flex-row max-md:flex-col md:gap-4 mt-8">
         {links.map(({ id, btnText, downloadLink, icon }) => (
           <Button
             key={id}
@@ -124,7 +124,7 @@ const DownloadLinks = () => {
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
             asChild
-            className="mb-6 h-[56px] max-w-[165px] text-left cursor-pointer"
+            className="mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer"
           >
             <div className="flex flex-row">
               {icon}
@@ -141,7 +141,7 @@ const DownloadLinks = () => {
 };
 
 export const InstallRunAnAgent = () => (
-  <div id="download" className="mb-12">
+  <div id="download" className="mb-12 lg:mb-24 max-sm:mx-4">
     <DownloadLinks />
   </div>
 );
