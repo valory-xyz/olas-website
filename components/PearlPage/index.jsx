@@ -9,10 +9,10 @@ import { WhyRunPearl } from './WhyRunPearl';
 const Pearl = () => (
   <>
     <Hero />
+    <InstallRunAnAgent />
     <OperateMetrics />
     <MeetPearl />
     <WhyRunPearl />
-    <InstallRunAnAgent />
     <WantToBuild />
     <FAQ />
   </>

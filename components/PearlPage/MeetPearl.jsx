@@ -39,36 +39,6 @@ const agents = [
     bgColour: 'rainbow',
   },
   {
-    title: 'Supafund',
-    description:
-      'Helps Web3 projects raise capital faster — by handling your entire application process autonomously.',
-    isComingSoon: true,
-  },
-  {
-    title: 'Trendmoon',
-    description:
-      'Trades based on social signal intelligence from 19K+ Telegram groups—built using Taraxa’s AI.',
-    isComingSoon: true,
-  },
-  {
-    title: 'Raterover',
-    description:
-      'DeFAI agent that scouts and acts on the best liquidity farming opportunities for you.',
-    isComingSoon: true,
-  },
-  {
-    title: 'Spectral Alpha Agent',
-    description:
-      'An alpha-seeking AI agent delivering high-signal trades and daily digests—autonomously.',
-    isComingSoon: true,
-  },
-  {
-    title: 'Bio Agent',
-    description:
-      'DeFAI agent that scouts and acts on the best liquidity farming opportunities for you.',
-    isComingSoon: true,
-  },
-  {
     title: 'Optimus Agent',
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
@@ -76,9 +46,6 @@ const agents = [
     isComingSoon: true,
     imgSrc: 'optimus.png',
     bgColour: 'rose',
-  },
-  {
-    imgSrc: 'no-agent.png',
   },
 ];
 
@@ -148,7 +115,7 @@ const AgentsList = () => (
       })}
     </div>
     <div className="border w-fit rounded-full px-4 py-1 mt-12 mx-auto">
-      More 🤖 agents coming
+      And more agents launching soon
     </div>
   </>
 );

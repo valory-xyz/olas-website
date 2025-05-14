@@ -96,7 +96,7 @@ const DownloadLinks = () => {
   }, []);
 
   return (
-    <Card className="mt-32 max-w-[720px] mx-auto p-8 border-fuchsia-200 ring-8 ring-purple-50">
+    <Card className="mt-24 max-w-[720px] mx-auto p-8 border-fuchsia-200 ring-8 ring-purple-50">
       <h2 className="tracking-tight text-3xl lg:text-4xl text-left mb-8 font-semibold lg:text-center lg:mb-12">
         Get started with Pearl in 3 simple steps
       </h2>
