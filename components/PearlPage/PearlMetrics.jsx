@@ -63,7 +63,7 @@ export const PearlMetrics = () => {
                 <div className="aspect-square">
                   <Image
                     alt="Operate"
-                    src={`/images/operate-page/${item.imageSrc}`}
+                    src={`/images/pearl-page/${item.imageSrc}`}
                     width={35}
                     height={35}
                   />

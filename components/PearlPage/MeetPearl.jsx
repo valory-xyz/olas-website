@@ -67,7 +67,7 @@ const AgentsList = () => (
             className={`operate-card flex flex-row gap-4 border p-4 bg-gradient-to-t from-white shadow-none ${cardClass}`}
           >
             <Image
-              src={`/images/operate-page/${item.imgSrc || 'default-agent.png'}`}
+              src={`/images/pearl-page/${item.imgSrc || 'default-agent.png'}`}
               alt={`Agent - ${item.title ? item.title : 'Coming soon'}`}
               width={80}
               height={80}
@@ -138,7 +138,7 @@ export const MeetPearlContent = () => (
         style={{ marginLeft: -6 }}
         className="mb-2 lg:mb-4 w-16 lg:w-16"
         alt="Operate Logo"
-        src="/images/operate-page/operate-logo.svg"
+        src="/images/pearl-page/operate-logo.svg"
         width={48}
         height={48}
       />
@@ -158,7 +158,7 @@ export const MeetPearlContent = () => (
     <Image
       className="mx-auto max-sm:overflow-hidden block md:mt-8"
       alt="Meet Pearl"
-      src="/images/operate-page/discover-pearl.png"
+      src="/images/pearl-page/discover-pearl.png"
       width={580}
       height={574}
     />

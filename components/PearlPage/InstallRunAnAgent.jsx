@@ -14,7 +14,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for macOS M1+"
         className="mr-3"
         {...iconProps}
@@ -27,7 +27,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for MacOS Intel"
         className="mr-3"
         {...iconProps}
@@ -40,7 +40,7 @@ const downloadLinks = [
     downloadLink: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-windows.svg"
+        src="/images/pearl-page/brand-windows.svg"
         alt="Download for Windows"
         className="mr-3"
         {...iconProps}
