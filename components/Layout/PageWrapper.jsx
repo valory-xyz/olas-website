@@ -18,7 +18,7 @@ const PageWrapper = ({ children }) => (
           className="mr-2"
         />
 
-        <Link href="/#own-your-agent" className="hover:underline ml-2">
+        <Link href="/pearl#download" className="hover:underline ml-2">
           Live Now: Pearl, the &quot;Agent App Store&quot;
           <ChevronRight className="ml-2 inline" size={20} />
         </Link>

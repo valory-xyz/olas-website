@@ -25,7 +25,7 @@ const Header = () => (
           asChild
           className="hidden md:inline-flex ml-auto"
         >
-          <Link href="/operate">Own Your Agent</Link>
+          <Link href="/pearl">Own Your Agent</Link>
         </Button>
       </div>
     </nav>
