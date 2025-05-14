@@ -35,6 +35,11 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/operate#download',
+        destination: '/pearl#download',
+        permanent: true,
+      },
+      {
         source: '/brand-and-press-kit',
         destination:
           'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
