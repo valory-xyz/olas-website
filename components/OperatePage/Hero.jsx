@@ -1,15 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { MAIN_TITLE_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
+import {
+  MAIN_TITLE_CLASS,
+  SECTION_BOX_CLASS,
+  TEXT_MEDIUM_LIGHT_CLASS,
+} from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { SECTION_BOX_CLASS, TEXT_MEDIUM_LIGHT_CLASS } from './utils';
 
-const HeroImage = () => (
+const OperateHeroImage = () => (
   <Image
-    src="/images/pearl-page/hero-image.png"
-    alt="Pearl hero"
+    src="/images/operate-page/hero.png"
+    alt="Dashboard for managing AI agents in crypto, Operate decentralized AI agents with Olas"
     width={513}
     height={480}
     className="mx-auto xl:w-full"
@@ -21,26 +24,22 @@ const Hero = () => (
     customClasses={`border-b ${SECTION_BOX_CLASS}`}
     backgroundType="SUBTLE_GRADIENT"
   >
-    <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
-      <div className="px-0 md:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
+    <div className="flex justify-between max-w-[1096px] items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
+      <div className="h-full max-lg:my-auto px-0 lg:mb-12 lg:col-span-5 lg:px-5 lg:text-left">
         <div className="md:hidden mb-8">
-          <HeroImage />
+          <OperateHeroImage />
         </div>
 
         <h1
           className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}
         >
-          OLAS PEARL
+          OLAS OPERATE
         </h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} lg:whitespace-nowrap mb-2`}>
-          The Agent App Store
+          Run AI Agents,
+          <br /> Earn Rewards
         </h2>
-
-        <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-          A world of AI agents in one app — working for you & earning you
-          rewards.
-        </div>
 
         <Button
           variant="default"
@@ -48,12 +47,12 @@ const Hero = () => (
           asChild
           className="mb-6 w-full md:w-auto"
         >
-          <Link href="#download">Try Pearl now</Link>
+          <Link href="#download">Explore Operator Role</Link>
         </Button>
       </div>
 
       <div className="hidden lg:mt-0 lg:col-span-6 lg:flex md:block">
-        <HeroImage />
+        <OperateHeroImage />
       </div>
     </div>
   </SectionWrapper>

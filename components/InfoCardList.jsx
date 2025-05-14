@@ -21,7 +21,7 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
                 {title}
               </h3>
             </div>
-            <p className={TEXT_CLASS}>{desc}</p>
+            <div className={TEXT_CLASS}>{desc}</div>
           </div>
         );
       })}

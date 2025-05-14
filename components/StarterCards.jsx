@@ -6,6 +6,7 @@ import { Card } from './ui/card';
 export const StarterCards = ({
   imgUrl,
   title,
+  subtitle,
   content,
   button,
   className,
@@ -19,13 +20,16 @@ export const StarterCards = ({
       <Image
         alt={title}
         src={imgUrl}
-        width={40}
-        height={40}
+        width={48}
+        height={48}
         className={imgClassName}
       />
-      <h2 className={`${TEXT_LARGE_CLASS} font-bold ${titleClassName || ''}`}>
-        {title}
-      </h2>
+      <div className="flex flex-col">
+        <h2 className={`${TEXT_LARGE_CLASS} font-bold ${titleClassName || ''}`}>
+          {title}
+        </h2>
+        {subtitle && <div className="text-slate-600">{subtitle}</div>}
+      </div>
     </div>
     <div
       className={`h-full flex flex-col p-6 w-full ${contentClassName || ''}`}
