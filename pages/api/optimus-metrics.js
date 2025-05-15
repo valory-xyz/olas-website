@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     const client = await Client.connect('valory/Modius-Agent-Performance');
 
-    const result = await client.predict('/refresh_graph', {});
+    const result = await client.predict('/refresh_apr_data', {});
 
     // Parse through plotly-structured response
     const plotString = result.data[0].plot;
@@ -29,10 +29,10 @@ export default async function handler(req, res) {
     }
 
     // Extract the last two traces, which are consistently structured as:
-    // - Second last: overall APR average
-    // - Last: ETH-adjusted APR average
-    const ETHAdjustedApr = traces[totalTraces - 1]?.y;
-    const avgApr = traces[totalTraces - 2]?.y;
+    // - Second last: ETH-adjusted APR average
+    // - Last: overall APR average
+    const avgApr = traces[totalTraces - 1]?.y;
+    const ETHAdjustedApr = traces[totalTraces - 2]?.y;
 
     const latestETHApr = ETHAdjustedApr[ETHAdjustedApr.length - 1];
     const latestAvgApr = avgApr[avgApr.length - 1];
