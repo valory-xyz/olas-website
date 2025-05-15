@@ -132,7 +132,7 @@ export const CTA = () => (
                   </div>
 
                   <div
-                    className={`flex flex-row items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
+                    className={`flex flex-row md:items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
                   >
                     {!replayLink && (
                       <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
@@ -177,7 +177,7 @@ export const CTA = () => (
                     )}
                   </div>
                 </div>
-                <div className="max-sm:hidden">
+                <div className="hidden md:block">
                   <CardImage src={imageSrc} />
                 </div>
               </Card>
