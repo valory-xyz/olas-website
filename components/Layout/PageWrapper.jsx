@@ -11,7 +11,7 @@ const PageWrapper = ({ children }) => (
     <div className="bg-purple-700 text-white p-2 flex justify-center items-center">
       <h2 className="flex items-center text-xl">
         <Image
-          src="/images/operate-page/operate-app-icon.png"
+          src="/images/pearl-page/operate-app-icon.png"
           alt="logo"
           width="48"
           height="48"

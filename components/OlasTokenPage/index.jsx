@@ -177,6 +177,7 @@ const Supply = () => {
         </div>
         <div className="flex-row lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="token-supply" />
             <div className="p-4 border-b">
               <h2 className="text-xl font-bold">Token Supply</h2>
             </div>
@@ -184,6 +185,7 @@ const Supply = () => {
           </div>
 
           <div className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0">
+            <div className="anchor-target" id="emission-schedule" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emission Schedule</h2>
               <p className="text-slate-500">
@@ -200,6 +202,7 @@ const Supply = () => {
           </div>
 
           <div className="border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="emissions-schedule" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions Schedule</h2>
               <p className="text-slate-500">
@@ -212,6 +215,7 @@ const Supply = () => {
           </div>
 
           <div className="border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="current-usage" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Current Usage</h2>
               <p className="text-slate-500">
@@ -224,6 +228,7 @@ const Supply = () => {
           </div>
 
           <div className="flex flex-col border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="emissions-to-builders" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Builders</h2>
             </div>
@@ -231,6 +236,7 @@ const Supply = () => {
           </div>
 
           <div className="flex flex-col border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="emissions-to-bonders" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Bonders</h2>
             </div>
@@ -238,6 +244,7 @@ const Supply = () => {
           </div>
 
           <div className="flex flex-col border rounded-lg mb-8 lg:mb-0">
+            <div className="anchor-target" id="emissions-to-operators" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>

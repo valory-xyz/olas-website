@@ -77,7 +77,7 @@ export const OperateMetrics = () => {
               key={item.id}
               className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full w-full ${borderClassName}`}
             >
-              <div className="flex gap-2 mb-5 justify-center">
+              <div className="flex gap-2 mb-5 justify-center items-center">
                 <div className="aspect-square">
                   <Image
                     alt="Operate"

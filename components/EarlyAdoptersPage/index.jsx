@@ -21,7 +21,7 @@ const downloadLinks = [
     assetName: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for Apple Silicon"
         {...iconProps}
       />
@@ -34,7 +34,7 @@ const downloadLinks = [
     assetName: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-apple.svg"
+        src="/images/pearl-page/brand-apple.svg"
         alt="Download for MacOS Intel"
         {...iconProps}
       />
@@ -47,7 +47,7 @@ const downloadLinks = [
     assetName: null,
     icon: (
       <Image
-        src="/images/operate-page/brand-windows.svg"
+        src="/images/pearl-page/brand-windows.svg"
         alt="Download for Windows x64"
         {...iconProps}
       />

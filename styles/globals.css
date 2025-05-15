@@ -105,7 +105,7 @@
 }
 
 .card-rainbow {
-  background: url("/images/operate-page/agentsfun-bg.png") white center center / cover no-repeat;
+  background: url("/images/pearl-page/agentsfun-bg.png") white center center / cover no-repeat;
 }
 
 td, th {
@@ -124,4 +124,18 @@ tr, th {
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+/* anchor classes to be used with unique id for in-page navigation
+  and prevent content being obscured by fixed header. */
+.anchor-target {
+  padding-top: 70px;
+  margin-top: -70px;
+}
+
+@media (min-width: theme('screens.md')) {
+  .anchor-target {
+    padding-top: 90px;
+    margin-top: -90px;
+  }
 }
