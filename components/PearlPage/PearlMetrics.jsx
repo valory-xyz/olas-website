@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 export const PearlMetrics = () => {
-  const { data: metrics } = usePersistentSWR('operateActivityMetrics', () =>
+  const { data: metrics } = usePersistentSWR('pearlActivityMetrics', () =>
     fetchMetrics([get7DaysAvgActivity]),
   );
 
