@@ -98,7 +98,7 @@ export const GetStarted = () => (
   >
     <div className="text-center max-w-[870px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} max-lg:mt-12 mb-8 md:mb-16`}>
-        Get Started with the Prediction Agent
+        Get Started as an Olas Operator
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

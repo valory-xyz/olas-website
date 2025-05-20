@@ -18,14 +18,14 @@ const agents = [
   {
     title: 'Modius agent',
     description:
-      'Invests crypto assets on your behalf and grows your portfolio on Mode chain.',
+      'Your personal DeFAI asset manager—built for hands-off asset management.',
     link: '/services/babydegen#modius-agent',
     imgSrc: 'modius.png',
     bgColour: 'lime',
   },
   {
     title: 'Prediction agent',
-    description: 'Forecasts outcomes and places bets in prediction markets.',
+    description: 'An AI-powered agent for trading in prediction markets.',
     link: '/services/prediction-agents',
     imgSrc: 'prediction-agent.png',
     bgColour: 'purple',

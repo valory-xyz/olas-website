@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 const HeroImage = () => (
   <Image
-    src="/images/agentsfun-page/hero.png"
+    src="/images/babydegen-econ-page/hero.png"
     alt="hero"
     width={464}
     height={432}
