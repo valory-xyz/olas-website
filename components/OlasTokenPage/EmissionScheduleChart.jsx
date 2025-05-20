@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import Verify from '../Verify';
 
 // manually register arc element, category scale, linear scale,
@@ -36,7 +35,7 @@ const OlasMintInfo = () => (
       rate can be reduced by the DAO.
     </p>
     <div className="mb-4">
-      <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F19" />
+      <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F23" />
     </div>
   </>
 );
@@ -60,7 +59,7 @@ export const EmissionScheduleChart = ({
               : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
           </span>
         </div>
-        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F40" />
+        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F42" />
       </div>
       <div>
         <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
@@ -71,7 +70,7 @@ export const EmissionScheduleChart = ({
             {loading ? '--' : Number(currentYear)}
           </span>
         </div>
-        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F9" />
+        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F11" />
       </div>
     </div>
     <div className="p-4">
