@@ -15,10 +15,11 @@ const fetchMetrics = async () => {
       throw new Error('Failed to fetch metrics');
     }
     return {
-      collectedFees: result.collectedFees,
-      recievedFees: result.recievedFees,
-      unclaimedFees: result.unclaimedFees,
       totalFees: result.totalFees,
+      claimedFees: result.claimedFees,
+      unclaimedFees: result.unclaimedFees,
+      recievedFees: result.recievedFees,
+      olasBurned: result.olasBurned,
     };
   } catch (error) {
     console.error('Error in fetchMetrics:', error);
@@ -27,7 +28,7 @@ const fetchMetrics = async () => {
 };
 
 const formatToTooltip = ({ from, to }) =>
-  `${from.label} → ${to.label} | $${to.value} (${Number((to.value / from.value) * 100).toFixed(2)}%))`;
+  `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
 export const FeeMetrics = () => {
   const { data: metrics, error } = usePersistentSWR(
@@ -66,19 +67,29 @@ export const FeeMetrics = () => {
       recieved: {
         id: 'received',
         label: 'Fees Received',
-        value: metrics?.recievedFees || metrics?.claimedFees * 0.99 || 0,
+        value: metrics?.recievedFees || 0,
         color: '#68bcce',
       },
       burned: {
         id: 'olas-burned',
         label: 'OLAS Burned',
-        // Olas burned will always be 1% of claimed fees
-        value: metrics?.claimedFees * 0.01 || 0,
+        // Olas burned should always be 1% of claimed fees
+        value: metrics?.olasBurned || 0,
         color: '#dab2e4',
       },
     }),
     [metrics],
   );
+
+  const CheckOlasBurnt = () => {
+    const { burned, recieved } = formerData;
+
+    const isZero = burned.value === 0;
+    return {
+      olasBurnedBranch: isZero ? 0 : burned.value * 10,
+      recievedFeesBranch: isZero ? recieved.value : recieved.value * (90 / 99),
+    };
+  };
 
   // Sankey diagram data structure:
   // Each row represents a flow between nodes with format: [From, To, Value, Tooltip]
@@ -111,7 +122,7 @@ export const FeeMetrics = () => {
       'Claimed Fees',
       'OLAS Burned',
       // Using 10% for visual clarity instead of actual 1% to make the flow visible
-      formerData.burned.value * 10,
+      CheckOlasBurnt().olasBurnedBranch,
       formatToTooltip({
         from: formerData.claimed,
         to: formerData.burned,
@@ -121,12 +132,16 @@ export const FeeMetrics = () => {
       'Claimed Fees',
       'Fees Received',
       // Using 90% to fit "Claimed Fees" branch
-      formerData.recieved.value * (90 / 99),
+      CheckOlasBurnt().recievedFeesBranch,
       formatToTooltip({
         from: formerData.claimed,
         to: formerData.recieved,
       }),
     ],
+    // Add a small dummy flow when olasBurned is 0 to maintain spacing between Unclaimed Fees and Fees Recieved node
+    ...(formerData.burned.value === 0
+      ? [['Claimed Fees', 'OLAS Burned', 0.01, '']]
+      : []),
   ];
 
   const options = {
@@ -206,9 +221,9 @@ export const FeeMetrics = () => {
                     href={DUNE_MMV2_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-4xl whitespace-nowrap max-sm:text-xl font-extrabold mb-4 mt-auto"
+                    className="block text-3xl whitespace-nowrap max-sm:text-xl font-extrabold mb-4 mt-auto"
                   >
-                    $ {item.value} ↗
+                    $ {Number(item.value.toFixed(2)).toLocaleString()} ↗
                   </Link>
                 </div>
               );
