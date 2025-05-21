@@ -49,14 +49,14 @@ const Supply = () => {
           .call();
         setTimeLaunch(newTimeLaunch);
 
-        // Call getInflationForYear method repeatedly for 0 through 12
+        // Call getActualInflationForYear method repeatedly for 0 through 12
         const newInflationForYear = Array.from({ length: 12 }, () => null);
         const promises = [];
 
         for (let i = 0; i <= 12; i += 1) {
           promises.push(
             tokenomicsContract.methods
-              .getInflationForYear(i)
+              .getActualInflationForYear(i)
               .call()
               .then((result) => {
                 newInflationForYear[i] = web3.utils.fromWei(
@@ -68,7 +68,7 @@ const Supply = () => {
               .catch((error) => {
                 newInflationForYear.push(undefined); // Push undefined if promise fails
                 console.error(
-                  `Error in getInflationForYear for year ${i}:`,
+                  `Error in getActualInflationForYear for year ${i}:`,
                   error,
                 );
               }),
