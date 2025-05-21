@@ -28,7 +28,7 @@ const fetchMetrics = async () => {
 };
 
 const formatToTooltip = ({ from, to }) =>
-  `${from.label} → ${to.label} | $${to.value} (${Number((to.value / from.value) * 100).toFixed(2)}%))`;
+  `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
 export const FeeMetrics = () => {
   const { data: metrics, error } = usePersistentSWR(
