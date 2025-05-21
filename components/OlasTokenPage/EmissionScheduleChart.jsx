@@ -59,7 +59,7 @@ export const EmissionScheduleChart = ({
               : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
           </span>
         </div>
-        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F42" />
+        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F46" />
       </div>
       <div>
         <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
