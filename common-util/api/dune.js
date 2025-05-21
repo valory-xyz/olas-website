@@ -106,11 +106,12 @@ export const getFeeFlowMetrics = async () => {
     const json = await duneApiCall({
       queryId: FEE_FLOW_QUERY_ID,
     });
-    const totalFees = get(json, 'result.rows[0].usd_amount');
-    const collectedFees = get(json, 'result.rows[1].usd_amount');
-    const unclaimedFees = get(json, 'result.rows[2].usd_amount');
-    const recievedFees = get(json, 'result.rows[3].usd_amount');
-    return { totalFees, collectedFees, unclaimedFees, recievedFees };
+    const totalFees = get(json, 'result.rows[0].Total_Agent_Fees_Collected');
+    const claimedFees = get(json, 'result.rows[0].Claimed_Fees');
+    const unclaimedFees = get(json, 'result.rows[0].Unclaimed_Fees');
+    const recievedFees = get(json, 'result.rows[0].Recieved_Fees');
+    const olasBurned = get(json, 'result.rows[0].OLAS_Burned');
+    return { totalFees, claimedFees, unclaimedFees, recievedFees, olasBurned };
   } catch (error) {
     console.error('Error in getFeeFlowMetrics: ', error);
     return;
