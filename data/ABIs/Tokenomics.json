@@ -1180,7 +1180,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "getSupplyCapForYear",
+        "name": "getActualSupplyCapForYear",
         "outputs": [
             {
                 "internalType": "uint256",
