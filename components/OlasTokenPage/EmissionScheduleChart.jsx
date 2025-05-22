@@ -70,7 +70,7 @@ export const EmissionScheduleChart = ({
             {loading ? '--' : Number(currentYear)}
           </span>
         </div>
-        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F11" />
+        <Verify url="https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F13" />
       </div>
     </div>
     <div className="p-4">
