@@ -1,6 +1,7 @@
 import { getFeeFlowMetrics } from 'common-util/api/dune';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Popover } from 'components/ui/popover';
 import { usePersistentSWR, useWindowWidth } from 'hooks';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -48,32 +49,40 @@ export const FeeMetrics = () => {
     () => ({
       total: {
         id: 'total-fees',
-        label: 'Total Agent Fees Collected',
+        label: 'Total Task Payments',
+        description:
+          'Micropayments made by agents (demand-side) when requesting tasks.',
         value: metrics?.totalFees || 0,
         color: '#7a9cf7',
       },
       unclaimed: {
         id: 'unclaimed',
-        label: 'Unclaimed Fees',
+        label: 'Unclaimed Payments',
+        description: 'Micropayments not yet claimed by mechs (supply-side).',
         value: metrics?.unclaimedFees || 0,
         color: '#90a1b9',
       },
       claimed: {
         id: 'claimed',
-        label: 'Claimed Fees',
+        label: 'Claimed Payments',
+        description: 'Micropayments already claimed by mechs (supply-side).',
         value: metrics?.claimedFees || 0,
         color: '#5fb178',
       },
       recieved: {
         id: 'received',
-        label: 'Fees Received',
+        label: 'Realised Mech Earnings',
+        description:
+          'Micropayments received by mechs (supply-side) after marketplace fees.',
         value: metrics?.recievedFees || 0,
         color: '#68bcce',
       },
       burned: {
         id: 'olas-burned',
-        label: 'OLAS Burned',
-        // Olas burned should always be 1% of claimed fees
+        label: 'Marketplace Fees Burned',
+        description:
+          'Marketplace fees taken from claimed payments and regularly burned by the DAO.',
+        // Marketplace Fees Burned should always be 1% of Claimed Payments
         value: metrics?.olasBurned || 0,
         color: '#dab2e4',
       },
@@ -98,9 +107,9 @@ export const FeeMetrics = () => {
     ['From', 'To', '', { role: 'tooltip', type: 'string', p: { html: true } }],
     [
       // From header
-      'Total Agent Fees Collected',
+      'Total Task Payments',
       // To header
-      'Unclaimed Fees',
+      'Unclaimed Payments',
       // Branch thickness
       formerData.unclaimed.value,
       // Tooltip display
@@ -110,8 +119,8 @@ export const FeeMetrics = () => {
       }),
     ],
     [
-      'Total Agent Fees Collected',
-      'Claimed Fees',
+      'Total Task Payments',
+      'Claimed Payments',
       formerData.claimed.value,
       formatToTooltip({
         from: formerData.total,
@@ -119,8 +128,8 @@ export const FeeMetrics = () => {
       }),
     ],
     [
-      'Claimed Fees',
-      'OLAS Burned',
+      'Claimed Payments',
+      'Marketplace Fees Burned',
       // Using 10% for visual clarity instead of actual 1% to make the flow visible
       CheckOlasBurnt().olasBurnedBranch,
       formatToTooltip({
@@ -129,18 +138,18 @@ export const FeeMetrics = () => {
       }),
     ],
     [
-      'Claimed Fees',
-      'Fees Received',
-      // Using 90% to fit "Claimed Fees" branch
+      'Claimed Payments',
+      'Realised Mech Earnings',
+      // Using 90% to fit "Claimed Payments" branch
       CheckOlasBurnt().recievedFeesBranch,
       formatToTooltip({
         from: formerData.claimed,
         to: formerData.recieved,
       }),
     ],
-    // Add a small dummy flow when olasBurned is 0 to maintain spacing between Unclaimed Fees and Fees Recieved node
+    // Add a small dummy flow when olasBurned is 0 to maintain spacing between Unclaimed Payments and Fees Recieved node
     ...(formerData.burned.value === 0
-      ? [['Claimed Fees', 'OLAS Burned', 0.01, '']]
+      ? [['Claimed Payments', 'Marketplace Fees Burned', 0.01, '']]
       : []),
   ];
 
@@ -213,15 +222,18 @@ export const FeeMetrics = () => {
                   style={{ color: item.color }}
                 >
                   <div className="flex flex-col gap-2 mb-3">
-                    <span className="text-base max-sm:text-sm flex flex-wrap text-black font-semibold">
-                      {item.label}
-                    </span>
+                    <div className="flex flex-wrap gap-2 text-black">
+                      <span className="text-base max-sm:text-sm font-semibold">
+                        {item.label}
+                      </span>
+                      <Popover>{item.description}</Popover>
+                    </div>
                   </div>
                   <Link
                     href={DUNE_MMV2_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-3xl whitespace-nowrap max-sm:text-xl font-extrabold mb-4 mt-auto"
+                    className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
                   >
                     $ {Number(item.value.toFixed(2)).toLocaleString()} ↗
                   </Link>
