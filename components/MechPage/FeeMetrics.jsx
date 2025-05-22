@@ -174,7 +174,7 @@ export const FeeMetrics = () => {
   return (
     <SectionWrapper
       customClasses="text-center py-16 px-4 border-b border-t"
-      id="activity"
+      id="mech-marketplace-fee-flow"
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
