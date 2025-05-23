@@ -1,51 +1,43 @@
-import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { InfoCardList } from 'components/InfoCardList';
-import SectionWrapper from 'components/Layout/SectionWrapper';
-import {
-  CircleArrowUp,
-  Gem,
-  GitPullRequestArrow,
-  Handshake,
-  Navigation2,
-} from 'lucide-react';
+import { HowItWorks } from 'components/HowItWorks';
 
 const list = [
   {
-    title: 'No more code upgrades',
-    icon: <GitPullRequestArrow />,
-    desc: 'If your Agent needs a skill it doesn’t have, it can simply hire Mech Agents to get the job done.',
+    title: 'Unlock A2A collaboration',
+    description:
+      'Enable your agents to outsource, transact, and work together, unlocking new possibilities without intervention.',
+    imgSrc: 'a2a-collab',
   },
   {
-    title: 'Unlock agent-to-agent collaboration',
-    icon: <Handshake />,
-    desc: 'Enable your agents to outsource, transact, and work together, unlocking new possibilities without intervention.',
+    title: 'Monetize Your AI Agent',
+    description:
+      "Offer your AI Agent's off-chain services on the Mech Marketplace and start earning crypto rewards.",
+    imgSrc: 'monetize-your-ai-agent',
   },
   {
-    title: 'Expand agent capabilities',
-    icon: <CircleArrowUp />,
-    desc: 'Instantly unlock new tools, AI workflows, and automation for your AI Agent without wasting time on manual upgrades.',
+    title: 'No More Code Upgrades',
+    description:
+      "If your Agent needs an off-chain skill it doesn't have, it can simply hire a Mech Agent from the AI Agent Bazaar to get the job done.",
+    imgSrc: 'no-more-code-upgrades',
   },
   {
-    title: 'Monetize your AI Agent',
-    icon: <Gem />,
-    desc: 'Offer your AI Agent’s services on the Mech Marketplace and start earning crypto rewards.',
+    title: 'Flexible and Scalable by Design',
+    description:
+      'From quick jobs to complex, long-running workflows — agents can handle it all. Real-time updates and dynamic coordination make scaling effortless.',
+    imgSrc: 'flexible-and-scalable',
   },
   {
-    title: 'Truly autonomous agents',
-    icon: <Navigation2 />,
-    desc: 'Instead of operating in isolation, agents can now collaborate, outsource, and transact with one another and do more — without human intervention.',
+    title: 'Autonomous by Default',
+    description:
+      'Agents act independently — making decisions, delegating tasks, and working with others. Every action is visible, verifiable, and built on open standards for trust and extensibility.',
+    imgSrc: 'autonomous-by-default',
   },
 ];
 
 export const WhyUseMechMarketplace = () => (
-  <SectionWrapper customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16 lg:pb-24 border-b-1.5">
-    <div className="max-w-screen-xl mx-auto lg:px-12">
-      <h2
-        className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
-      >
-        Why use the Mech Marketplace?
-      </h2>
-      <InfoCardList cards={list} />
-    </div>
-  </SectionWrapper>
+  <HowItWorks
+    headerText="Why Use the Mech Marketplace"
+    headerClassName="text-center"
+    imgFolder="mech-marketplace"
+    list={list}
+  />
 );
