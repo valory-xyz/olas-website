@@ -2,13 +2,21 @@ import { SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
 import Image from 'next/image';
 import SectionWrapper from './Layout/SectionWrapper';
 
-export const HowItWorks = ({ headerText, description, imgFolder, list }) => (
+export const HowItWorks = ({
+  headerText,
+  headerClassName,
+  description,
+  imgFolder,
+  list,
+}) => (
   <SectionWrapper
     id="how-it-works"
     customClasses="max-w-4xl m-6 md:m-16 lg:mx-auto lg:pb-16"
   >
     <div className="mb-16">
-      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>{headerText}</h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-6 ${headerClassName}`}>
+        {headerText}
+      </h2>
       {description && <div>{description}</div>}
     </div>
     <div className="flex flex-col gap-12 lg:gap-24">

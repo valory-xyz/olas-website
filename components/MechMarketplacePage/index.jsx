@@ -1,16 +1,16 @@
-import { AIAgentsForHire } from './AIAgentsForHire';
+import { BenefitFromMM } from './BenefitFromMM';
 import { CTA } from './CTA';
 import { Hero } from './Hero';
+import { Info } from './Info';
 import { MechAgentsInAction } from './MechAgentsInAction';
-import { PutYourAgentToWork } from './PutYourAgentToWork';
 import { WhyUseMechMarketplace } from './WhyUseMechMarketplace';
 
 const MechMarketplace = () => (
   <>
     <Hero />
+    <Info />
     <WhyUseMechMarketplace />
-    <AIAgentsForHire />
-    <PutYourAgentToWork />
+    <BenefitFromMM />
     <MechAgentsInAction />
     <CTA />
   </>

@@ -25,9 +25,7 @@ export const StarterCards = ({
         className={imgClassName}
       />
       <div className="flex flex-col">
-        <h2 className={`${TEXT_LARGE_CLASS} font-bold ${titleClassName || ''}`}>
-          {title}
-        </h2>
+        <h2 className={`${TEXT_LARGE_CLASS} font-bold`}>{title}</h2>
         {subtitle && <div className="text-slate-600">{subtitle}</div>}
       </div>
     </div>
