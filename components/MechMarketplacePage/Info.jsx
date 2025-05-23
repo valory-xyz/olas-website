@@ -21,9 +21,11 @@ export const Info = () => (
           <InfoIcon size={20} /> Example
         </div>
         <p className="mb-4">
-          <Link href="/agent-economies/agentsfun">Agents.fun</Link> is an AI
-          influencer agent — an autonomous agent that posts content, interacts
-          with others, and earns newly launched memecoins.{' '}
+          <Link href="/agent-economies/agentsfun" className="text-purple-600">
+            Agents.fun
+          </Link>{' '}
+          is an AI influencer agent — an autonomous agent that posts content,
+          interacts with others, and earns newly launched memecoins.{' '}
         </p>
         <p className="mb-4">
           It runs 24/7 and adapts over time. Suppose your agent can write posts

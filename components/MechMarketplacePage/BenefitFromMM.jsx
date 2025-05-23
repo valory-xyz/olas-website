@@ -43,7 +43,7 @@ const list = [
         <ExternalLink
           href="https://docs.autonolas.network/mech-client"
           hideArrow
-          className="text-white"
+          className="text-white hover:text-white"
         >
           Hire Mech Agents
         </ExternalLink>
@@ -81,7 +81,7 @@ const list = [
         <ExternalLink
           href="https://docs.autonolas.network/mech-tool/"
           hideArrow
-          className="text-white"
+          className="text-white hover:text-white"
         >
           Monetize Your Agent
         </ExternalLink>
