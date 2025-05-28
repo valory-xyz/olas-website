@@ -46,7 +46,7 @@ const steps = [
           channels
         </ExternalLink>{' '}
         and{' '}
-        <ExternalLink href="https://discord.com/invite/z2PT65jKqQ">
+        <ExternalLink href="https://discord.gg/BQzYqhjGjQ">
           engage with the Olas community
         </ExternalLink>{' '}
         to discover resources and say on top of new updates.
