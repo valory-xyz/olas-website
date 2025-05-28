@@ -1,71 +1,39 @@
 import Image from 'next/image';
 
-import {
-  MAIN_TITLE_CLASS,
-  SECTION_BOX_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
-} from 'common-util/classes';
-import SectionWrapper from 'components/Layout/SectionWrapper';
+import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
 
-const HeroImage = () => (
+const HeroImage = (
   <Image
     src="/images/babydegen-econ-page/hero.png"
     alt="hero"
     width={464}
     height={432}
-    className="ml-auto"
   />
 );
 
+const RunAnAgent = (
+  <Button variant="default" size="xl" asChild className="grow max-md:w-full">
+    <a href="#join-the-agent-economy">Run an Agent</a>
+  </Button>
+);
+
+const LearnHowItWorks = (
+  <Button variant="ghostPrimary" size="xl" asChild className="grow">
+    <Link href="#how-it-works">Learn How it Works</Link>
+  </Button>
+);
+
 export const Hero = () => (
-  <SectionWrapper
-    customClasses={`border-b ${SECTION_BOX_CLASS}`}
-    backgroundType="SUBTLE_GRADIENT"
-  >
-    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 md:gap-8 md:grid-cols-12 lg:items-center xl:gap-0">
-      <div className="px-0 md:mb-12 md:col-span-7 lg:px-5 max-w-[648px]">
-        <div className="md:hidden mb-8">
-          <HeroImage />
-        </div>
-
-        <h1
-          className={`${TEXT_MEDIUM_LIGHT_CLASS} lg:self-start mb-2 self-center`}
-        >
-          BABYDEGEN ECONOMY
-        </h1>
-
-        <h2 className={`${MAIN_TITLE_CLASS} max-w-[640px] md:my-6 lg:my-auto`}>
-          The First AI Trading Economy Built on Autonomous Agents
-        </h2>
-
-        <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-          A network of autonomous AI trading agents navigating DeFi ecosystems,
+  <HeroSection
+    image={HeroImage}
+    pageName="BABYDEGEN ECONOMY"
+    title="The First AI Trading Economy Built on Autonomous Agents"
+    description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
-          24/7 without human input.
-        </div>
-
-        <div className="flex flex-wrap justify-stretch gap-6">
-          <Button
-            variant="default"
-            size="xl"
-            asChild
-            className="grow max-md:w-full"
-          >
-            <a href="#join-the-agent-economy">Run an Agent</a>
-          </Button>
-
-          <Button variant="ghostPrimary" size="xl" asChild className="grow">
-            <Link href="#how-it-works">Learn How it Works</Link>
-          </Button>
-        </div>
-      </div>
-
-      <div className="hidden flex lg:mt-0 md:col-start-8 md:col-span-5 lg:flex md:block">
-        <HeroImage />
-      </div>
-    </div>
-  </SectionWrapper>
+          24/7 without human input."
+    button={RunAnAgent}
+    secondButton={LearnHowItWorks}
+  />
 );

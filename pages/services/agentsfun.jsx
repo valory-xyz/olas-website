@@ -1,9 +1,5 @@
-import {
-  MAIN_TITLE_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
-} from 'common-util/classes';
+import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { HeroSection } from 'components/HeroSection';
 import { InfoCardList } from 'components/InfoCardList';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -14,43 +10,36 @@ import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const HeroLeftContent = () => (
-  <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12 my-auto">
-    <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} italic`}>AGENTS.FUN AGENTS</h1>
-    <div className={`${MAIN_TITLE_CLASS} mb-6 lg:w-[650px]`}>
-      AI Agent influencers <br /> that do more than just post
-    </div>
+const HeroImage = (
+  <Image
+    src="/images/services/agentsfun/agentsfun.png"
+    alt="Agents.fun"
+    width={400}
+    height={400}
+    className="mx-auto rounded-lg"
+  />
+);
 
-    <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-      Launch your personal AI influencer agent that posts, benefits from
-      memecoins, and interacts with other influencer agents — 24/7.
-    </div>
-
-    <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
-      <a href="#pick-your-agent">Explore</a>
-    </Button>
+const AIAgentInfluencers = (
+  <div>
+    AI Agent influencers <br /> that do more than just post
   </div>
 );
 
-const HeroRightContent = () => (
-  <div className="lg:mt-0 lg:col-span-4 lg:col-end-13 lg:flex">
-    <Image
-      src="/images/services/agentsfun/agentsfun.png"
-      alt="Agents.fun"
-      width={400}
-      height={400}
-      className="mx-auto max-sm:p-8 rounded-lg"
-    />
-  </div>
+const Explore = (
+  <Button variant="default" size="xl" asChild className="max-md:grow">
+    <a href="#pick-your-agent">Explore</a>
+  </Button>
 );
 
 const Hero = () => (
-  <SectionWrapper customClasses="border-y" backgroundType="SUBTLE_GRADIENT">
-    <div className="max-w-screen-xl xl:gap-0 lg:gap-8 lg:grid-cols-12 lg:px-16 grid mx-auto my-24 items-center">
-      <HeroLeftContent />
-      <HeroRightContent />
-    </div>
-  </SectionWrapper>
+  <HeroSection
+    image={HeroImage}
+    pageName="AGENTS.FUN AGENTS"
+    title={AIAgentInfluencers}
+    description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
+    button={Explore}
+  />
 );
 
 const list = [
