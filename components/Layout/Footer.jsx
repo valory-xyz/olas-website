@@ -14,7 +14,7 @@ const SOCIAL_LINKS = [
   {
     title: 'Discord',
     icon: '/images/footer/discord.svg',
-    link: 'https://discord.com/invite/z2PT65jKqQ',
+    link: 'https://discord.gg/BQzYqhjGjQ',
   },
   {
     title: 'Coingecko',
