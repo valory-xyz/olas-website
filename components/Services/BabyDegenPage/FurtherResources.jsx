@@ -9,7 +9,7 @@ const resources = [
     description:
       'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
     action: {
-      url: 'https://discord.gg/RHY6eJ35ar',
+      url: 'https://discord.gg/BQzYqhjGjQ',
       text: 'Reach out on Discord',
     },
   },
@@ -17,7 +17,7 @@ const resources = [
     title: 'Join as an Alpha tester',
     description: 'Keen on being at the forefront of trading innovation?',
     action: {
-      url: 'https://discord.gg/RHY6eJ35ar',
+      url: 'https://discord.gg/BQzYqhjGjQ',
       text: 'Reach out on Discord',
     },
   },
