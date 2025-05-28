@@ -79,7 +79,7 @@ export const Paths = () => (
           size="xl"
           className="my-6 w-fit rounded-none border-black"
         >
-          <Link href="https://discord.gg/heKp5j3pk3">
+          <Link href="https://discord.gg/BQzYqhjGjQ">
             Join Discord for support
           </Link>
         </Button>
