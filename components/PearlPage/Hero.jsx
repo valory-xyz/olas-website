@@ -4,7 +4,7 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/pearl-page/hero-image.png"
     alt="Pearl hero"
@@ -14,7 +14,7 @@ const HeroImage = (
   />
 );
 
-const TryPearlNow = (
+const TryPearlNow = () => (
   <Button variant="default" size="xl" asChild className="mb-6 w-full md:w-auto">
     <Link href="#download">Try Pearl now</Link>
   </Button>
@@ -22,11 +22,11 @@ const TryPearlNow = (
 
 const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS PEARL"
     title="The Agent App Store"
     description="A world of AI agents in one app — working for you & earning you rewards."
-    button={TryPearlNow}
+    primaryButton={<TryPearlNow />}
   />
 );
 

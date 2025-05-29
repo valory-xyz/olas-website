@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/prediction-agents-page/hero.png"
     alt="hero"
@@ -12,7 +12,7 @@ const HeroImage = (
   />
 );
 
-const Explore = (
+const Explore = () => (
   <Button variant="default" size="xl" asChild className="max-md:grow">
     <a href="#get-started">Explore</a>
   </Button>
@@ -20,9 +20,9 @@ const Explore = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="PREDICTION AGENTS"
     title="Trade in Prediction Markets — Without Lifting a Finger"
-    button={Explore}
+    primaryButton={<Explore />}
   />
 );

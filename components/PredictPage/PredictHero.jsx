@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/predict-page/hero.png"
     alt="Predict Hero"
@@ -13,7 +13,7 @@ const HeroImage = (
   />
 );
 
-const OnDemand = (
+const OnDemand = () => (
   <div>
     On-demand
     <br />
@@ -23,13 +23,13 @@ const OnDemand = (
   </div>
 );
 
-const GetInvolved = (
+const GetInvolved = () => (
   <Button variant="default" size="xl" asChild className="max-xl:grow">
     <a href="#grow">Get involved</a>
   </Button>
 );
 
-const ExplorePredict = (
+const ExplorePredict = () => (
   <Button
     variant="ghostPrimary"
     size="xl"
@@ -44,10 +44,10 @@ const ExplorePredict = (
 
 export const PredictHero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS PREDICT"
-    title={OnDemand}
-    button={GetInvolved}
-    secondButton={ExplorePredict}
+    title={<OnDemand />}
+    primaryButton={<GetInvolved />}
+    secondaryButton={<ExplorePredict />}
   />
 );

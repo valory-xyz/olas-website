@@ -2,7 +2,7 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/mech-page/hero.png"
     alt="Mech Hero"
@@ -12,7 +12,7 @@ const HeroImage = (
   />
 );
 
-const AIWorkflow = (
+const AIWorkflow = () => (
   <div>
     AI Workflow for
     <br />
@@ -20,7 +20,7 @@ const AIWorkflow = (
   </div>
 );
 
-const GetInvolved = (
+const GetInvolved = () => (
   <Button variant="default" size="xl" asChild className="md:w-auto mb-6 w-full">
     <a href="#get-involved">Get involved</a>
   </Button>
@@ -28,9 +28,9 @@ const GetInvolved = (
 
 export const MechHero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS MECH"
-    title={AIWorkflow}
-    button={GetInvolved}
+    title={<AIWorkflow />}
+    primaryButton={<GetInvolved />}
   />
 );

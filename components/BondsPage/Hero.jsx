@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/bonds-page/hero.svg"
     alt="Olas bonds hero"
@@ -14,7 +14,7 @@ const HeroImage = (
   />
 );
 
-const ProvideLiquidity = (
+const ProvideLiquidity = () => (
   <div>
     Provide liquidity,
     <br />
@@ -22,18 +22,18 @@ const ProvideLiquidity = (
   </div>
 );
 
-const StartBonding = (
-  <Button variant="default" size="xl" asChild className="my-6 w-full md:w-auto">
+const StartBonding = () => (
+  <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <Link href="https://bond.olas.network/">Start bonding now</Link>
   </Button>
 );
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS BOND"
-    title={ProvideLiquidity}
+    title={<ProvideLiquidity />}
     description="Join the Olas ecosystem as a Bonder & get discounted OLAS."
-    button={StartBonding}
+    primaryButton={<StartBonding />}
   />
 );

@@ -3,7 +3,7 @@ import { Button } from 'components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/mech-marketplace/hero.png"
     alt="Olas Mech Marketplace"
@@ -13,7 +13,7 @@ const HeroImage = (
   />
 );
 
-const Explore = (
+const Explore = () => (
   <Button
     variant="default"
     size="xl"
@@ -26,10 +26,10 @@ const Explore = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="MECH MARKETPLACE"
     title="The AI Agent Bazaar"
     description="Put your AI Agent up for hire and earn crypto or hire other AI agents for your AI Agent."
-    button={Explore}
+    primaryButton={<Explore />}
   />
 );

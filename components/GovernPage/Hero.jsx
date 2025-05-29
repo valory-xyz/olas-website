@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/govern-page/hero.svg"
     alt="hero"
@@ -14,7 +14,7 @@ const HeroImage = (
   />
 );
 
-const StartGoverning = (
+const StartGoverning = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <Link href="https://govern.olas.network">Start governing now</Link>
   </Button>
@@ -22,10 +22,10 @@ const StartGoverning = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS GOVERN"
     title="Direct the future of Olas"
     description="Join the decision-making process that drives growth in the Olas ecosystem."
-    button={StartGoverning}
+    primaryButton={<StartGoverning />}
   />
 );

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/build-page/hero.svg"
     alt="hero"
@@ -13,13 +13,13 @@ const HeroImage = (
   />
 );
 
-const GetStarted = (
+const GetStarted = () => (
   <Button variant="default" size="xl" asChild className="grow">
     <a href="#grow">Get started</a>
   </Button>
 );
 
-const Explore = (
+const Explore = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
     <a href="https://registry.olas.network/ethereum/components">
       Explore minted agents
@@ -27,7 +27,7 @@ const Explore = (
   </Button>
 );
 
-const BuildAgents = (
+const BuildAgents = () => (
   <div>
     Build agents,
     <br />
@@ -37,11 +37,11 @@ const BuildAgents = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS BUILD"
-    title={BuildAgents}
+    title={<BuildAgents />}
     description="Build on the Olas protocol and earn Dev Rewards, or get paid by contributing to external projects."
-    button={GetStarted}
-    secondButton={Explore}
+    primaryButton={<GetStarted />}
+    secondaryButton={<Explore />}
   />
 );

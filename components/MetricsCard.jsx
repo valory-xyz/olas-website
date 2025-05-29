@@ -27,7 +27,7 @@ export const MetricsCard = ({ metrics }) => {
         return (
           <div
             key={metric.key}
-            className={`mx-auto p-8 pb-10 gap-6 flex flex-col items-center ${borderClassName}`}
+            className={`mx-auto p-3 pb-5 md:p-8 md:pb-10 gap-6 flex flex-col items-center ${borderClassName}`}
           >
             <div className="flex items-center">
               <Image

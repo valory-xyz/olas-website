@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/launch-page/hero.png"
     alt="Olas launch hero"
@@ -14,7 +14,7 @@ const HeroImage = (
   />
 );
 
-const LaunchNow = (
+const LaunchNow = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <Link href="https://launch.olas.network/">Launch now</Link>
   </Button>
@@ -22,10 +22,10 @@ const LaunchNow = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS LAUNCH"
     title="Launch your own agent economy with ease"
     description="Everything you need to bring AI agent economies to your ecosystem."
-    button={LaunchNow}
+    primaryButton={<LaunchNow />}
   />
 );

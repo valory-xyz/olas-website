@@ -10,7 +10,7 @@ import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/services/agentsfun/agentsfun.png"
     alt="Agents.fun"
@@ -20,13 +20,13 @@ const HeroImage = (
   />
 );
 
-const AIAgentInfluencers = (
+const AIAgentInfluencers = () => (
   <div>
     AI Agent influencers <br /> that do more than just post
   </div>
 );
 
-const Explore = (
+const Explore = () => (
   <Button variant="default" size="xl" asChild className="max-md:grow">
     <a href="#pick-your-agent">Explore</a>
   </Button>
@@ -34,11 +34,11 @@ const Explore = (
 
 const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="AGENTS.FUN AGENTS"
-    title={AIAgentInfluencers}
+    title={<AIAgentInfluencers />}
     description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
-    button={Explore}
+    primaryButton={<Explore />}
   />
 );
 

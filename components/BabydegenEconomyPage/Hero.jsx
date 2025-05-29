@@ -4,7 +4,7 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/babydegen-econ-page/hero.png"
     alt="hero"
@@ -13,13 +13,13 @@ const HeroImage = (
   />
 );
 
-const RunAnAgent = (
+const RunAnAgent = () => (
   <Button variant="default" size="xl" asChild className="grow max-md:w-full">
     <a href="#join-the-agent-economy">Run an Agent</a>
   </Button>
 );
 
-const LearnHowItWorks = (
+const LearnHowItWorks = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
     <Link href="#how-it-works">Learn How it Works</Link>
   </Button>
@@ -27,13 +27,13 @@ const LearnHowItWorks = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="BABYDEGEN ECONOMY"
     title="The First AI Trading Economy Built on Autonomous Agents"
     description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
           24/7 without human input."
-    button={RunAnAgent}
-    secondButton={LearnHowItWorks}
+    primaryButton={<RunAnAgent />}
+    secondaryButton={<LearnHowItWorks />}
   />
 );

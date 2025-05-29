@@ -11,8 +11,8 @@ export const HeroSection = ({
   pageName,
   title,
   description,
-  button,
-  secondButton,
+  primaryButton,
+  secondaryButton,
 }) => (
   <SectionWrapper
     customClasses={`border-b ${SECTION_BOX_CLASS}`}
@@ -35,8 +35,8 @@ export const HeroSection = ({
         )}
 
         <div className="flex flex-wrap justify-stretch gap-6">
-          {button}
-          {secondButton}
+          {primaryButton}
+          {secondaryButton}
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/operate-page/hero.png"
     alt="Dashboard for managing AI agents in crypto, Operate decentralized AI agents with Olas"
@@ -14,14 +14,14 @@ const HeroImage = (
   />
 );
 
-const RunAIAgents = (
+const RunAIAgents = () => (
   <div>
     Run AI Agents,
     <br /> Earn Rewards
   </div>
 );
 
-const Explore = (
+const Explore = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <Link href="/pearl#download">Explore Operator Role</Link>
   </Button>
@@ -29,9 +29,9 @@ const Explore = (
 
 export const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS OPERATE"
-    title={RunAIAgents}
-    button={Explore}
+    title={<RunAIAgents />}
+    primaryButton={<Explore />}
   />
 );

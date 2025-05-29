@@ -5,7 +5,7 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import { CTA_LINK } from './utils';
 
-const HeroImage = (
+const HeroImage = () => (
   <Image
     src="/images/services/contribute/hero.svg"
     alt="Olas contribute hero"
@@ -15,14 +15,14 @@ const HeroImage = (
   />
 );
 
-const PostAboutOlas = (
+const PostAboutOlas = () => (
   <div>
     Post about Olas, <br />
     earn rewards
   </div>
 );
 
-const StartContributing = (
+const StartContributing = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <Link href={CTA_LINK}>Start Contributing</Link>
   </Button>
@@ -30,11 +30,11 @@ const StartContributing = (
 
 const Hero = () => (
   <HeroSection
-    image={HeroImage}
+    image={<HeroImage />}
     pageName="OLAS CONTRIBUTE"
-    title={PostAboutOlas}
+    title={<PostAboutOlas />}
     description="Spread the word about Olas and earn OLAS for your contributions."
-    button={StartContributing}
+    primaryButton={<StartContributing />}
   />
 );
 
