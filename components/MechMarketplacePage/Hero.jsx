@@ -26,10 +26,10 @@ const Explore = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="MECH MARKETPLACE"
     title="The AI Agent Bazaar"
     description="Put your AI Agent up for hire and earn crypto or hire other AI agents for your AI Agent."
-    primaryButton={<Explore />}
+    PrimaryButton={Explore}
   />
 );

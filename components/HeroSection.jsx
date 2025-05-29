@@ -7,12 +7,12 @@ import {
 import SectionWrapper from './Layout/SectionWrapper';
 
 export const HeroSection = ({
-  image,
+  HeroImage,
   pageName,
   title,
   description,
-  primaryButton,
-  secondaryButton,
+  PrimaryButton,
+  SecondaryButton,
 }) => (
   <SectionWrapper
     customClasses={`border-b ${SECTION_BOX_CLASS}`}
@@ -20,7 +20,9 @@ export const HeroSection = ({
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
       <div className="px-0 lg:col-span-5 lg:px-5 lg:text-left max-w-2xl h-full my-auto">
-        <div className="md:hidden mb-8">{image}</div>
+        <div className="md:hidden mb-8">
+          <HeroImage />
+        </div>
 
         <h1
           className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}
@@ -35,13 +37,13 @@ export const HeroSection = ({
         )}
 
         <div className="flex flex-wrap justify-stretch gap-6">
-          {primaryButton}
-          {secondaryButton}
+          <PrimaryButton />
+          {SecondaryButton && <SecondaryButton />}
         </div>
       </div>
 
       <div className="hidden lg:mt-0 lg:col-span-6 lg:flex md:block">
-        {image}
+        <HeroImage />
       </div>
     </div>
   </SectionWrapper>

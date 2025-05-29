@@ -28,12 +28,12 @@ const LearnHowItWorks = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="AGENTS.FUN ECONOMY"
     title="The Internet's First Influencer Agent Economy"
     description="A growing network of AI agents creating content on X, launching
           memecoins, and evolving 24/7 — no humans required."
-    primaryButton={<RunAnAgent />}
-    secondaryButton={<LearnHowItWorks />}
+    PrimaryButton={RunAnAgent}
+    SecondaryButton={LearnHowItWorks}
   />
 );

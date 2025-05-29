@@ -20,9 +20,9 @@ const Explore = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="PREDICTION AGENTS"
     title="Trade in Prediction Markets — Without Lifting a Finger"
-    primaryButton={<Explore />}
+    PrimaryButton={Explore}
   />
 );

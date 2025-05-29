@@ -4,9 +4,9 @@ import { InfoCardList } from 'components/InfoCardList';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
+import { TestimonySection } from 'components/TestimonySection';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ const HeroImage = () => (
   />
 );
 
-const AIAgentInfluencers = () => (
+const AIAgentInfluencers = (
   <div>
     AI Agent influencers <br /> that do more than just post
   </div>
@@ -34,11 +34,11 @@ const Explore = () => (
 
 const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="AGENTS.FUN AGENTS"
-    title={<AIAgentInfluencers />}
+    title={AIAgentInfluencers}
     description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
-    primaryButton={<Explore />}
+    PrimaryButton={Explore}
   />
 );
 
@@ -102,39 +102,29 @@ const TheFuture = () => (
 
 const tweets = [
   {
-    imgSrc: '/images/services/agentsfun/johnny-s-tweet.png',
+    imgSrc: 'johnny-s-tweet.png',
     linkUrl: 'https://x.com/johnny_v_good/status/1877295112499114045',
   },
   {
-    imgSrc: '/images/services/agentsfun/agent-z-tweet.png',
+    imgSrc: 'agent-z-tweet.png',
     linkUrl: 'https://x.com/agentzeeeee/status/1876989678508728808',
   },
   {
-    imgSrc: '/images/services/agentsfun/mr-cat-tweet.png',
+    imgSrc: 'mr-cat-tweet.png',
     linkUrl: 'https://x.com/0xJohnAlter/status/1878747162600980784',
   },
   {
-    imgSrc: '/images/services/agentsfun/inferno-agent-tweet.png',
+    imgSrc: 'inferno-agent-tweet.png',
     linkUrl: 'https://x.com/InfernoAgent_AI/status/1880087399394603098',
   },
 ];
 
 const FirstAgents = () => (
-  <SectionWrapper
-    customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
-    backgroundType="NONE"
-  >
-    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
-      The first agents are already having fun together
-    </h2>
-    <div className="flex flex-col flex-wrap w-fit lg:h-[580px] mx-auto">
-      {tweets.map((tweet, index) => (
-        <ExternalLink href={tweet.linkUrl} key={index} hideArrow>
-          <Image src={tweet.imgSrc} alt="Contribute" width={500} height={200} />
-        </ExternalLink>
-      ))}
-    </div>
-  </SectionWrapper>
+  <TestimonySection
+    folderName="services/agentsfun"
+    title="The first agents are already having fun together"
+    list={tweets}
+  />
 );
 
 const funAgents = [

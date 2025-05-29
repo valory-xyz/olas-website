@@ -27,7 +27,7 @@ const Explore = () => (
   </Button>
 );
 
-const BuildAgents = () => (
+const BuildAgents = (
   <div>
     Build agents,
     <br />
@@ -37,11 +37,11 @@ const BuildAgents = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS BUILD"
-    title={<BuildAgents />}
+    title={BuildAgents}
     description="Build on the Olas protocol and earn Dev Rewards, or get paid by contributing to external projects."
-    primaryButton={<GetStarted />}
-    secondaryButton={<Explore />}
+    PrimaryButton={GetStarted}
+    SecondaryButton={Explore}
   />
 );

@@ -15,7 +15,7 @@ const HeroImage = () => (
   />
 );
 
-const PostAboutOlas = () => (
+const PostAboutOlas = (
   <div>
     Post about Olas, <br />
     earn rewards
@@ -30,11 +30,11 @@ const StartContributing = () => (
 
 const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS CONTRIBUTE"
-    title={<PostAboutOlas />}
+    title={PostAboutOlas}
     description="Spread the word about Olas and earn OLAS for your contributions."
-    primaryButton={<StartContributing />}
+    PrimaryButton={StartContributing}
   />
 );
 

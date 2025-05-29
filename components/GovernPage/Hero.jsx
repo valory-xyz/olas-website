@@ -22,10 +22,10 @@ const StartGoverning = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS GOVERN"
     title="Direct the future of Olas"
     description="Join the decision-making process that drives growth in the Olas ecosystem."
-    primaryButton={<StartGoverning />}
+    PrimaryButton={StartGoverning}
   />
 );

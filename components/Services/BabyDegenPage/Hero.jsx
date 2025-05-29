@@ -18,7 +18,7 @@ const ExploreBabydegens = () => (
   </Button>
 );
 
-const StepIntoDefAI = () => (
+const StepIntoDefAI = (
   <div>
     Step into DeFAI: <br />
     AI agent powered trading
@@ -27,9 +27,9 @@ const StepIntoDefAI = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="BABY DEGEN"
-    title={<StepIntoDefAI />}
-    primaryButton={<ExploreBabydegens />}
+    title={StepIntoDefAI}
+    PrimaryButton={ExploreBabydegens}
   />
 );

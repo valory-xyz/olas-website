@@ -14,7 +14,7 @@ const HeroImage = () => (
   />
 );
 
-const RunAIAgents = () => (
+const RunAIAgents = (
   <div>
     Run AI Agents,
     <br /> Earn Rewards
@@ -29,9 +29,9 @@ const Explore = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS OPERATE"
-    title={<RunAIAgents />}
-    primaryButton={<Explore />}
+    title={RunAIAgents}
+    PrimaryButton={Explore}
   />
 );

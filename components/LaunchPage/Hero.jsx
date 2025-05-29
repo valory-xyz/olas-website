@@ -22,10 +22,10 @@ const LaunchNow = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS LAUNCH"
     title="Launch your own agent economy with ease"
     description="Everything you need to bring AI agent economies to your ecosystem."
-    primaryButton={<LaunchNow />}
+    PrimaryButton={LaunchNow}
   />
 );

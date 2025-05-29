@@ -13,7 +13,7 @@ const HeroImage = () => (
   />
 );
 
-const OnDemand = () => (
+const OnDemand = (
   <div>
     On-demand
     <br />
@@ -44,10 +44,10 @@ const ExplorePredict = () => (
 
 export const PredictHero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS PREDICT"
-    title={<OnDemand />}
-    primaryButton={<GetInvolved />}
-    secondaryButton={<ExplorePredict />}
+    title={OnDemand}
+    PrimaryButton={GetInvolved}
+    SecondaryButton={ExplorePredict}
   />
 );

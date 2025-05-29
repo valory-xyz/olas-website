@@ -14,7 +14,7 @@ const HeroImage = () => (
   />
 );
 
-const ProvideLiquidity = () => (
+const ProvideLiquidity = (
   <div>
     Provide liquidity,
     <br />
@@ -30,10 +30,10 @@ const StartBonding = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS BOND"
-    title={<ProvideLiquidity />}
+    title={ProvideLiquidity}
     description="Join the Olas ecosystem as a Bonder & get discounted OLAS."
-    primaryButton={<StartBonding />}
+    PrimaryButton={StartBonding}
   />
 );

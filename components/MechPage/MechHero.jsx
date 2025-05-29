@@ -12,7 +12,7 @@ const HeroImage = () => (
   />
 );
 
-const AIWorkflow = () => (
+const AIWorkflow = (
   <div>
     AI Workflow for
     <br />
@@ -28,9 +28,9 @@ const GetInvolved = () => (
 
 export const MechHero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="OLAS MECH"
-    title={<AIWorkflow />}
-    primaryButton={<GetInvolved />}
+    title={AIWorkflow}
+    PrimaryButton={GetInvolved}
   />
 );

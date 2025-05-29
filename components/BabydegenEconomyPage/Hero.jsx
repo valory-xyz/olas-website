@@ -27,13 +27,13 @@ const LearnHowItWorks = () => (
 
 export const Hero = () => (
   <HeroSection
-    image={<HeroImage />}
+    HeroImage={HeroImage}
     pageName="BABYDEGEN ECONOMY"
     title="The First AI Trading Economy Built on Autonomous Agents"
     description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
           24/7 without human input."
-    primaryButton={<RunAnAgent />}
-    secondaryButton={<LearnHowItWorks />}
+    PrimaryButton={RunAnAgent}
+    SecondaryButton={LearnHowItWorks}
   />
 );
