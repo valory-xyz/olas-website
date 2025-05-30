@@ -154,7 +154,7 @@ const OptimusAgent = () => (
 
 export const MeetTheBabyDegens = () => (
   <SectionWrapper
-    id="meet-the-babydegens"
+    id="agents"
     customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
   >
     <div className="text-center">

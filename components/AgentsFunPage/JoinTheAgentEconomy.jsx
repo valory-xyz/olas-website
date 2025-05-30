@@ -44,10 +44,7 @@ const PearlButton = () => (
 );
 
 export const JoinTheAgentEconomy = () => (
-  <SectionWrapper
-    id="join-the-agent-economy"
-    customClasses="max-md:p-4 lg:my-32"
-  >
+  <SectionWrapper id="get-started" customClasses="max-md:p-4 lg:my-32">
     <div className="text-center max-w-[650px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
         Join the Agent Economy in One Click

@@ -28,7 +28,7 @@ const LeftContent = () => (
     </Button> */}
     <div className="flex flex-wrap justify-stretch gap-6 mb-6 w-full">
       <Button variant="default" size="xl" asChild className="md:w-auto grow">
-        <a href="#grow">Get involved</a>
+        <a href="#get-started">Get involved</a>
       </Button>
 
       <Button

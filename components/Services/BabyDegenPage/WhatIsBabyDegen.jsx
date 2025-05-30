@@ -3,7 +3,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
 export const WhatIsBabyDegen = () => (
-  <SectionWrapper customClasses="lg:p-24 py-12 border-b-1.5">
+  <SectionWrapper id="about" customClasses="lg:p-24 py-12 border-b-1.5">
     <div className="grid max-w-screen-xl lg:px-16 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h2 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h2>

@@ -109,7 +109,10 @@ export const Activity = () => {
   );
 
   return (
-    <SectionWrapper customClasses="text-center border-b" id="activity">
+    <SectionWrapper
+      customClasses="text-center border-b"
+      id="generating-decentralized-autonomous-ai-agent-economies"
+    >
       <div className="text-7xl lg:text-9xl max-w-[900px] mx-auto pt-16 px-4">
         <Image
           alt="Placeholder"

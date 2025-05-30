@@ -42,7 +42,7 @@ export const NewToOlas = () => (
   <SectionWrapper
     backgroundType="NONE"
     customClasses="bg-gradient-to-t from-[#E7EAF4] to-[#F8F9FC] py-16 md:py-24 px-4 border-b"
-    id="grow"
+    id="learn"
   >
     <div className="w-auto lg:max-w-[700px] mx-auto">
       <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>

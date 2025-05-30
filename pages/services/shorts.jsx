@@ -88,10 +88,7 @@ const list = [
   },
 ];
 const TurnYourIdeas = () => (
-  <SectionWrapper
-    customClasses={SECTION_BOX_CLASS}
-    id="turn-your-ideas-into-films"
-  >
+  <SectionWrapper customClasses={SECTION_BOX_CLASS} id="about">
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
       <div className="pr-0 lg:col-span-6 lg:pr-16">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
@@ -122,7 +119,10 @@ const TurnYourIdeas = () => (
 );
 
 const Benefits = () => (
-  <div className="max-w-screen-xl px-6 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-4">
+  <div
+    id="benefits"
+    className="max-w-screen-xl px-6 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-4"
+  >
     <h2
       className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
     >
@@ -200,8 +200,8 @@ const getStartedList = [
 
 const GetStarted = () => (
   <SectionWrapper
+    id="get-started"
     customClasses={`${SECTION_BOX_CLASS} border-y border-t-0`}
-    id="what-is-olas-contribute-service"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
       <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">

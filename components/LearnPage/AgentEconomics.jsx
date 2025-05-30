@@ -4,7 +4,10 @@ import { SCREEN_WIDTH_LG, SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const AgentEconomics = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
+  <SectionWrapper
+    id="agent-economies"
+    customClasses="lg:p-24 px-4 py-12 border-y"
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <Image
         src="/images/learn/agent-economies.png"

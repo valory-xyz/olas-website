@@ -32,7 +32,7 @@ const steps = [
 ];
 
 export const HowItWorks = () => (
-  <SectionWrapper customClasses="py-8 px-5 lg:px-0">
+  <SectionWrapper id="how-it-works" customClasses="py-8 px-5 lg:px-0">
     <div className="max-w-[640px] gap-2 mx-auto">
       <h2 className={`${SUB_HEADER_CLASS}`}>How It Works</h2>
 

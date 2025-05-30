@@ -12,7 +12,7 @@ const HeaderLeftContent = () => (
       AI agent powered trading
     </H1>
     <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
-      <a href="#meet-the-babydegens">Explore Babydegens</a>
+      <a href="#agents">Explore Babydegens</a>
     </Button>
   </div>
 );

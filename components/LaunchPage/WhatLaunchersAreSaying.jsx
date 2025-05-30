@@ -75,6 +75,7 @@ const quotes = [
 
 export const WhatLaunchersAreSaying = () => (
   <SectionWrapper
+    id="social-proof"
     customClasses="lg:p-24 px-4 py-20 mt-20 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
   >

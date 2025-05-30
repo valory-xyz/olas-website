@@ -54,7 +54,7 @@ export const Hero = () => (
             asChild
             className="grow max-md:w-full"
           >
-            <a href="#join-the-agent-economy">Run an Agent</a>
+            <a href="#get-started">Run an Agent</a>
           </Button>
 
           <Button variant="ghostPrimary" size="xl" asChild className="grow">

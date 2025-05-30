@@ -40,7 +40,7 @@ export const BondMetrics = () => {
   ];
 
   return (
-    <SectionWrapper customClasses="mt-16">
+    <SectionWrapper id="stats" customClasses="mt-16">
       {bondData.map((data, index) => (
         <MetricsCard key={index} metrics={data} />
       ))}

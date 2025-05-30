@@ -17,7 +17,7 @@ const Hero = () => (
         >
           Unlock the Olas network
         </SectionHeading>
-        <Button href="#get-olas">Get OLAS</Button>
+        <Button href="#token-details">Get OLAS</Button>
       </div>
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image

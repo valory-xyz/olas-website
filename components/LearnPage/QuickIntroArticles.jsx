@@ -19,6 +19,7 @@ export const QuickIntroArticles = () => {
 
   return (
     <SectionWrapper
+      id="quick-intro-articles"
       customClasses="lg:p-24 px-4 py-12 border-b"
       backgroundType="SUBTLE_GRADIENT"
     >

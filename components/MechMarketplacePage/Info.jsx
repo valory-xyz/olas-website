@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const Info = () => (
-  <SectionWrapper>
+  <SectionWrapper id="about">
     <div className="max-w-[650px] mx-auto">
       <p className="mb-6">
         The Mech Marketplace is the ultimate bazaar for AI Agents. It gives you

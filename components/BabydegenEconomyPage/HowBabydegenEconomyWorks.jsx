@@ -22,9 +22,11 @@ const list = [
 ];
 
 export const HowBabydegenEconomyWorks = () => (
-  <HowItWorks
-    headerText="How Babydegen Economy Works"
-    imgFolder="babydegen-econ-page"
-    list={list}
-  />
+  <div id="how-it-works">
+    <HowItWorks
+      headerText="How Babydegen Economy Works"
+      imgFolder="babydegen-econ-page"
+      list={list}
+    />
+  </div>
 );

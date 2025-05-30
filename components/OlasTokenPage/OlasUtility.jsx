@@ -5,10 +5,7 @@ import Link from 'next/link';
 
 export function OlasUtility() {
   return (
-    <SectionWrapper
-      customClasses="lg:p-24 px-4 py-12 text-center"
-      id="olas-token"
-    >
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 text-center" id="utility">
       <div className="text-5xl font-bold mb-8 tracking-tight text-black text-center">
         Utility
       </div>

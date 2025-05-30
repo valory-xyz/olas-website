@@ -102,7 +102,7 @@ const faqList = [
           <p className="mb-3">
             The most up-to-date and heavily showcased products can be found on
             the{' '}
-            <Link href="/#usecases" className="text-purple-600">
+            <Link href="/#use-cases" className="text-purple-600">
               homepage
             </Link>
             .

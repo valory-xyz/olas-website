@@ -40,9 +40,11 @@ const list = [
 ];
 
 export const HowTheEconomyWorks = () => (
-  <HowItWorks
-    headerText="How an Influencer Agent Economy Works"
-    imgFolder="agentsfun-page"
-    list={list}
-  />
+  <div id="how-it-works">
+    <HowItWorks
+      headerText="How an Influencer Agent Economy Works"
+      imgFolder="agentsfun-page"
+      list={list}
+    />
+  </div>
 );

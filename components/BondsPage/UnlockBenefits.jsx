@@ -28,7 +28,10 @@ const list = [
 ];
 
 export const UnlockBenefits = () => (
-  <SectionWrapper customClasses={`bg-no-repeat ${SECTION_BOX_CLASS}`} id="faq">
+  <SectionWrapper
+    id="about"
+    customClasses={`bg-no-repeat ${SECTION_BOX_CLASS}`}
+  >
     <div className={`${SCREEN_WIDTH_LG} px-0lg:px-12`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
         Unlock benefits as an Olas Bonder
@@ -42,24 +45,26 @@ export const UnlockBenefits = () => (
         and benefit from the growth of the Olas ecosystem.
       </p>
 
-      <h2 className={`${SUB_HEADER_CLASS} mt-8 mb-6 lg:mt-36`}>
-        Why become an Olas Bonder?
-      </h2>
+      <div id="why-bond">
+        <h2 className={`${SUB_HEADER_CLASS} mt-8 mb-6 lg:mt-36`}>
+          Why become an Olas Bonder?
+        </h2>
 
-      <div className="grid grid-cols-1 gap-6">
-        {list.map(({ icon, title, desc }) => (
-          <div
-            key={title}
-            className="flex gap-2 bg-gradient-to-r p-2 rounded-xl border lg:p-4 lg:gap-4"
-            style={CARD_CSS}
-          >
-            <div className="flex items-center">{icon}</div>
-            <div>
-              <h3 className="text-xl font-semibold mb-1">{title}</h3>
-              <p className={TEXT_CLASS}>{desc}</p>
+        <div className="grid grid-cols-1 gap-6">
+          {list.map(({ icon, title, desc }) => (
+            <div
+              key={title}
+              className="flex gap-2 bg-gradient-to-r p-2 rounded-xl border lg:p-4 lg:gap-4"
+              style={CARD_CSS}
+            >
+              <div className="flex items-center">{icon}</div>
+              <div>
+                <h3 className="text-xl font-semibold mb-1">{title}</h3>
+                <p className={TEXT_CLASS}>{desc}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   </SectionWrapper>

@@ -23,7 +23,7 @@ const list = [
 
 export const WhyParticipate = () => (
   <SectionWrapper
-    id="why-participate"
+    id="benefits"
     customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16"
   >
     <div className="max-w-screen-xl mx-auto lg:px-12">

@@ -30,7 +30,7 @@ export const WhyOlasMech = () => (
   <SectionWrapper customClasses="lg:pt-16 max-lg:px-6 py-8">
     <div
       className="max-w-screen-xl lg:px-44 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
-      id="why-olas-mech"
+      id="benefits"
     >
       <h2
         className={`${SUB_HEADER_LG_CLASS} text-left mb-8 lg:text-center lg:mb-14`}

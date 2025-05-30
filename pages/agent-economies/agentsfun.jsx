@@ -1,5 +1,4 @@
 import { AgentsFunMetrics } from 'components/AgentsFunPage/AgentsFunMetrics';
-import { CTA } from 'components/AgentsFunPage/CTA';
 import { Hero } from 'components/AgentsFunPage/Hero';
 import { HowTheEconomyWorks } from 'components/AgentsFunPage/HowItWorks';
 import { JoinTheAgentEconomy } from 'components/AgentsFunPage/JoinTheAgentEconomy';
@@ -19,7 +18,7 @@ const AgentsFun = () => (
       <PoweringAnEconomy />
       <HowTheEconomyWorks />
       <JoinTheAgentEconomy />
-      <CTA />
+      {/* <CTA /> */}
     </div>
   </PageWrapper>
 );

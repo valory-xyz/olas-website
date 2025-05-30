@@ -61,7 +61,7 @@ const howItWorksSteps = [
 ];
 
 export const HowItWorks = () => (
-  <SectionWrapper>
+  <SectionWrapper id="how-it-works">
     <div className="max-w-screen-lg mx-auto lg:px-50">
       <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center`}>How it works</h2>
 

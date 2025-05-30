@@ -40,7 +40,7 @@ export const GovernMetrics = () => {
   ];
 
   return (
-    <SectionWrapper customClasses="mt-16">
+    <SectionWrapper id="stats" customClasses="mt-16">
       {governData.map((data, index) => (
         <MetricsCard key={index} metrics={data} />
       ))}
