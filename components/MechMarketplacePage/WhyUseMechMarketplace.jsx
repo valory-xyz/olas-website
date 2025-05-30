@@ -34,10 +34,12 @@ const list = [
 ];
 
 export const WhyUseMechMarketplace = () => (
-  <HowItWorks
-    headerText="Why Use the Mech Marketplace"
-    headerClassName="text-center"
-    imgFolder="mech-marketplace"
-    list={list}
-  />
+  <div id="why-mech-marketplace">
+    <HowItWorks
+      headerText="Why Use the Mech Marketplace"
+      headerClassName="text-center"
+      imgFolder="mech-marketplace"
+      list={list}
+    />
+  </div>
 );

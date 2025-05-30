@@ -174,7 +174,7 @@ export const FeeMetrics = () => {
   return (
     <SectionWrapper
       customClasses="text-center py-16 px-4 border-b border-t"
-      id="mech-marketplace-fee-flow"
+      id="fee-flow"
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
@@ -186,7 +186,7 @@ export const FeeMetrics = () => {
           from the balance tracker contract, typically at various intervals.
           Upon this transfer, a small percentage of the payment is taken as a
           DAO fee, which is subsequently burned. Here&apos;s more on{' '}
-          <Link href="#the-process" className="text-purple-600">
+          <Link href="#process" className="text-purple-600">
             the process
           </Link>
           .

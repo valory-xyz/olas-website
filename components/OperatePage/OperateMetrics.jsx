@@ -51,7 +51,7 @@ export const OperateMetrics = () => {
   );
 
   return (
-    <SectionWrapper customClasses="mx-4 md:mx-12 mt-24 mb-16">
+    <SectionWrapper id="stats" customClasses="mx-4 md:mx-12 mt-24 mb-16">
       <h2
         className={`text-2xl md:text-[32px] tracking-tighter font-bold text-center mb-12`}
       >

@@ -36,7 +36,7 @@ export const WhyBecomeGovernor = () => (
   <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-16 lg:pb-12`}>
     <div
       className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
-      id="why-become-governor"
+      id="why-govern"
     >
       <h2
         className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}

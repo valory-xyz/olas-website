@@ -43,7 +43,7 @@ const Hero = () => (
           asChild
           className="hidden md:inline-flex ml-auto"
         >
-          <Link href="#get-involved">Other Ways To Get Involved</Link>
+          <Link href="#choose-your-role">Other Ways To Get Involved</Link>
         </Button>
       </div>
     </div>

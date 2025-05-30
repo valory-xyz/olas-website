@@ -49,7 +49,7 @@ const Hero = () => (
 
         <div className="flex flex-wrap justify-stretch gap-6">
           <Button variant="default" size="xl" asChild className="grow">
-            <a href="#grow">Get started</a>
+            <a href="#get-started">Get started</a>
           </Button>
 
           <Button variant="ghostPrimary" size="xl" asChild className="grow">

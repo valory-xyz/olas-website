@@ -27,7 +27,7 @@ export const BuildMetrics = () => {
   ];
 
   return (
-    <SectionWrapper customClasses="border-b-1.5 py-16">
+    <SectionWrapper id="stats" customClasses="border-b-1.5 py-16">
       {buildData.map((data, index) => (
         <MetricsCard key={index} metrics={data} />
       ))}

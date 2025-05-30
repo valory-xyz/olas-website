@@ -2,7 +2,10 @@ import { SCREEN_WIDTH_LG, SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const DoesOlSupportMultiAgentSystems = () => (
-  <SectionWrapper customClasses="px-4 py-8 lg:px-24 lg:py-20">
+  <SectionWrapper
+    id="multi-agent-systems"
+    customClasses="px-4 py-8 lg:px-24 lg:py-20"
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-2`}>
         Does Olas support multi-agent systems?

@@ -104,7 +104,7 @@ export const Podcasts = () => {
   });
 
   return (
-    <section className={`max-w-7xl mx-auto ${SECTION_BOX_CLASS}`}>
+    <section id="podcasts" className={`max-w-7xl mx-auto ${SECTION_BOX_CLASS}`}>
       <div>
         <div className="flex flex-col gap-6">
           <h2 className={SUB_HEADER_CLASS}>Watch the Latest Podcasts</h2>

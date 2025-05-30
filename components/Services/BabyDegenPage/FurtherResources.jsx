@@ -24,7 +24,7 @@ const resources = [
 ];
 
 export const FurtherResources = () => (
-  <SectionWrapper>
+  <SectionWrapper id="babydegen-resources">
     <h2 className={`${SUB_HEADER_CLASS} text-center lg:mb-14 text-left mb-6 `}>
       Further resources
     </h2>

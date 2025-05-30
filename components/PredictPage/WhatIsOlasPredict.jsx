@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import {
   BicepsFlexed,
   Expand,
@@ -6,13 +5,14 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
+import Image from 'next/image';
 
 import {
   SCREEN_WIDTH_LG,
   SUB_HEADER_CLASS,
   SUB_HEADER_MEDIUM_CLASS,
-  TEXT_MEDIUM_CLASS,
   TEXT_CLASS,
+  TEXT_MEDIUM_CLASS,
 } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
@@ -93,7 +93,7 @@ const olasPredictList = [
 ];
 
 const WhatIs = () => (
-  <div className={`${SCREEN_WIDTH_LG} gap-5 lg:pb-20 pb-12`}>
+  <div id="about" className={`${SCREEN_WIDTH_LG} gap-5 lg:pb-20 pb-12`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>What is Olas Predict?</h2>
 
     <p>
@@ -107,7 +107,7 @@ const WhatIs = () => (
 );
 
 const HowItWorks = () => (
-  <div className={`${SCREEN_WIDTH_LG} lg:gap-5 gap-2 mb-12`}>
+  <div id="how-it-works" className={`${SCREEN_WIDTH_LG} lg:gap-5 gap-2 mb-12`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>How It Works</h2>
 
     <p>
@@ -159,7 +159,7 @@ const AgentRoles = () => (
 );
 
 const TheProcess = () => (
-  <div className={`${SCREEN_WIDTH_LG} gap-5 lg:mt-16 mt-8`}>
+  <div id="process" className={`${SCREEN_WIDTH_LG} gap-5 lg:mt-16 mt-8`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>The Process</h2>
 
     <Image
@@ -186,7 +186,10 @@ const eachCardCss = {
 };
 
 const WhyOlasPredict = () => (
-  <div className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12">
+  <div
+    id="why-predict-economy"
+    className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12"
+  >
     <h2
       className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}
     >

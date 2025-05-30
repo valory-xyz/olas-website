@@ -8,7 +8,7 @@ const CARD_BG =
   'border-1.5 border-gray-200 rounded-2xl py-6 bg-gradient-to-t from-[#F2F4F7] to-white max-md:px-3';
 
 const WhatIsMech = () => (
-  <div>
+  <div id="about">
     <h1 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
       What is the Olas Mech agent economy?
     </h1>
@@ -40,7 +40,7 @@ const WhatIsMech = () => (
 );
 
 const TheProcess = () => (
-  <div id="the-process">
+  <div id="process">
     <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-8`}>The process</h2>
     <Card className={`${CARD_BG} max-w mb-8`}>
       <Image

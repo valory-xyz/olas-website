@@ -44,9 +44,7 @@ const Hero = () => (
           size="xl"
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/services/contribute#what-is-olas-contribute-service">
-            Learn how
-          </Link>
+          <Link href="/services/contribute#about">Learn how</Link>
         </Button>
       </div>
 
@@ -60,10 +58,7 @@ const Hero = () => (
 );
 
 const WhatIsOlasContributeService = () => (
-  <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12"
-    id="what-is-olas-contribute-service"
-  >
+  <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="about">
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
       <div className="pr-0 mb-12 lg:col-span-6 lg:pr-20">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
@@ -123,10 +118,7 @@ const howItWorksList = [
   ],
 ];
 const HowItWorks = () => (
-  <SectionWrapper
-    customClasses="px-4 py-12 lg:px-24 lg:py-0"
-    id="what-is-olas-contribute-service"
-  >
+  <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:py-0" id="how-it-works">
     <div className="max-w-screen-md items-start m-auto">
       <div className="pr-0 lg:pr-12 mb-12">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>
@@ -165,7 +157,7 @@ const HowItWorks = () => (
 const GetStarted = () => (
   <SectionWrapper
     customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
-    id="what-is-olas-contribute-service"
+    id="get-started"
   >
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
       <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">

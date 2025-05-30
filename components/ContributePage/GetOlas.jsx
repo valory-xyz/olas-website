@@ -10,7 +10,7 @@ const DESC =
   'Turn your passion for the Olas ecosystem into rewards. As an Olas Contributor, posts you share about Olas can earn you OLAS, while amplifying the reach and impact of the network. No complicated steps — just tweet, earn, and play a vital role in shaping the future of Olas.';
 
 export const GetOlas = () => (
-  <SectionWrapper customClasses={SECTION_BOX_CLASS}>
+  <SectionWrapper id="about" customClasses={SECTION_BOX_CLASS}>
     <div className="grid max-w-[1180px] mx-auto lg:px-8 lg:grid-cols-12">
       <h2
         className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-4 lg:pr-6`}

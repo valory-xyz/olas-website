@@ -32,7 +32,10 @@ const list = [
 ];
 
 export const WhyBecomeAnOlasContributor = () => (
-  <SectionWrapper customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16">
+  <SectionWrapper
+    id="why-contribute"
+    customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16"
+  >
     <div className="max-w-screen-xl mx-auto lg:px-12">
       <h2
         className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}

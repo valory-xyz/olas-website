@@ -24,6 +24,7 @@ const tweets = [
 
 export const WhatContributorsAreSaying = () => (
   <SectionWrapper
+    id="social-proof"
     customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
   >

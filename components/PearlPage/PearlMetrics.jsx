@@ -29,7 +29,7 @@ export const PearlMetrics = () => {
   );
 
   return (
-    <SectionWrapper customClasses="mt-16 max-sm:mx-4">
+    <SectionWrapper id="daas" customClasses="mt-16 max-sm:mx-4">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center mb-12`}>
         Join hundreds already using Pearl
       </h2>

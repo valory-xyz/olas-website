@@ -106,7 +106,7 @@ export const MechAgentMetrics = () => {
   return (
     <SectionWrapper
       customClasses="text-center py-16 px-4 border-b border-t"
-      id="activity"
+      id="stats"
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[650px] mx-auto mb-16">
         <p className="text-xl text-slate-700 mb-8 mx-auto">

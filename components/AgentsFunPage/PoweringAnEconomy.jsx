@@ -19,7 +19,7 @@ const list = [
 ];
 
 export const PoweringAnEconomy = () => (
-  <div>
+  <div id="features">
     <div className="flex flex-col gap-12 max-w-[650px] mx-auto mt-8 max-md:p-6">
       <h2 className={SUB_HEADER_CLASS}>Powering an Entire Social Economy</h2>
       {list.map((item) => (

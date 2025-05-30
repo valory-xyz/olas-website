@@ -8,7 +8,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 export const ShapeTheFuture = () => (
   <SectionWrapper
     customClasses={`${SECTION_BOX_CLASS} lg:pb-12`}
-    id="shape-the-future"
+    id="about-govern"
   >
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>

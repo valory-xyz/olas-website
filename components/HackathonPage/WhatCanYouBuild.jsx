@@ -98,7 +98,7 @@ const list = [
 
 export const WhatCanYouBuild = () => (
   <SectionWrapper
-    id="you-can-build"
+    id="what-youll-build"
     customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16"
   >
     <div className="max-w-[640px] mx-auto">

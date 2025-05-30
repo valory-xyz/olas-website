@@ -53,7 +53,7 @@ export const OptimusAgentMetrics = () => {
   );
 
   return (
-    <SectionWrapper>
+    <SectionWrapper id="stats">
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         <div className="text-center mb-6">
           <span className="text-lg text-black max-w-fit">

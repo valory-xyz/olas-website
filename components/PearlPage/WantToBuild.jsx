@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const WantToBuild = () => (
-  <div className="bg-slate-100 py-14">
+  <div id="accelerator" className="bg-slate-100 py-14">
     <div className="max-w-[650px] max-sm:mx-4 mx-auto flex flex-col">
       <h2 className="tracking-tight text-3xl lg:text-4xl mb-8 text-left font-semibold">
         Want to build an AI Agent for Pearl?

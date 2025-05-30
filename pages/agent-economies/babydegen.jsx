@@ -1,5 +1,4 @@
 import { Descriptions } from 'components/BabydegenEconomyPage/Descriptions';
-import { GetInvolved } from 'components/BabydegenEconomyPage/GetInvolved';
 import { Hero } from 'components/BabydegenEconomyPage/Hero';
 import { HowBabydegenEconomyWorks } from 'components/BabydegenEconomyPage/HowBabydegenEconomyWorks';
 import { Join } from 'components/BabydegenEconomyPage/Join';
@@ -18,7 +17,7 @@ const Optimus = () => (
     <Descriptions />
     <HowBabydegenEconomyWorks />
     <Join />
-    <GetInvolved />
+    {/* <GetInvolved /> */}
   </PageWrapper>
 );
 

@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { MoveUpRight } from 'lucide-react';
+import Link from 'next/link';
 
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import { LAUNCH_URL } from 'common-util/constants';
+import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
   {
@@ -30,7 +30,7 @@ const list = [
 ];
 
 const Content = () => (
-  <SectionWrapper id="get-involved">
+  <SectionWrapper id="get-started">
     <h2
       className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
     >

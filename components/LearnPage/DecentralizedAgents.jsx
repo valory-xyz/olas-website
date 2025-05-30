@@ -4,7 +4,10 @@ import { SCREEN_WIDTH_LG, SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const DecentralizedAgents = () => (
-  <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:p-16">
+  <SectionWrapper
+    id="decentralized-agents"
+    customClasses="px-4 py-12 lg:px-24 lg:p-16"
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-5 justify-center`}>
       <Image
         src="/images/learn/decentralized-agents.png"

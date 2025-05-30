@@ -23,7 +23,7 @@ export const TokenHoldersMetric = () => {
   );
 
   return (
-    <SectionWrapper customClasses="border-b-1.5 py-16">
+    <SectionWrapper id="stats" customClasses="border-b-1.5 py-16">
       <Card className="flex flex-col gap-6 p-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         <div className="flex items-center">
           <Image

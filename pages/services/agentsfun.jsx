@@ -27,7 +27,7 @@ const HeroLeftContent = () => (
     </div>
 
     <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
-      <a href="#pick-your-agent">Explore</a>
+      <a href="#choose-agent">Explore</a>
     </Button>
   </div>
 );
@@ -90,7 +90,7 @@ const list = [
 ];
 
 const TheFuture = () => (
-  <SectionWrapper>
+  <SectionWrapper id="about">
     <div className="text-center max-w-[720px] mx-auto mb-16">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         The future of AI influencers
@@ -102,7 +102,7 @@ const TheFuture = () => (
         and adapting their strategies to achieve more.{' '}
       </p>
     </div>
-    <div className="mx-auto max-w-screen-lg">
+    <div id="benefits" className="mx-auto max-w-screen-lg">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         Benefits
       </h2>
@@ -132,6 +132,7 @@ const tweets = [
 
 const FirstAgents = () => (
   <SectionWrapper
+    id="use-case"
     customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
   >
@@ -151,27 +152,29 @@ const FirstAgents = () => (
 const funAgents = [
   {
     title: 'Agent Base',
+    anchor: 'agent-base',
     description:
       'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas. Get started today & create AI influencer on Base.',
     imgSrc: 'agentsfun-base.png',
     link: '/pearl#download',
   },
-  {
-    title: 'Agent Celo',
-    description:
-      "Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you'll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.",
-    imgSrc: 'agentsfun-celo.png',
-  },
+  // {
+  //   title: 'Agent Celo',
+  //   description:
+  //     "Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you'll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.",
+  //   imgSrc: 'agentsfun-celo.png',
+  // },
 ];
 
 const PickYourAgent = () => (
-  <SectionWrapper id="pick-your-agent">
+  <SectionWrapper id="choose-agent">
     <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
       Pick your agent
     </h2>
     <div className="max-w-[800px] mx-auto flex flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
+          id={agent.anchor}
           key={agent.title}
           className="flex max-sm:flex-col mx-auto flex-row gap-8 p-5"
         >

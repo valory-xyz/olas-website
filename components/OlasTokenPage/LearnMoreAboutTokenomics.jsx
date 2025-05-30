@@ -29,7 +29,7 @@ const list = [
 ];
 
 export const LearnMoreAboutTokenomics = () => (
-  <SectionWrapper>
+  <SectionWrapper id="learn-more-about-tokenomics">
     <h2
       className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
     >
