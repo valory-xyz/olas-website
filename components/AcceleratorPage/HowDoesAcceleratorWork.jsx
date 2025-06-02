@@ -12,30 +12,37 @@ const list = [
         <ExternalLink href={ACCELERATOR_APPLY_URL}>
           Submit a proposal
         </ExternalLink>{' '}
-        detailing your AI agent&apos;s concept, integration with Pearl, and user
-        adoption plan.
+        detailing your AI agent&apos;s purpose and mission alignment with the
+        Pearl app store, product strategy, and adoption strategy.
       </>
     ),
   },
   {
-    title: 'Get selected & receive $10,000',
+    title: 'Get selected & receive $5,000',
     description:
-      'Awarded to the teams with the most promising agent concepts and detailed implementation plans.',
+      'Awarded to the teams with the highest potential, mission aligned, and impactful proposals.',
   },
   {
-    title: '$40,000 for delivering agent MVP on Pearl',
+    title:
+      '$5,000 on delivery and approval of the design, specification and technical plan of the MVP within the first 2 weeks from the project start date. ',
+  },
+  {
+    title:
+      '$40,000 for delivering agent MVP on Pearl within 90 days from the project start date',
     description:
       'The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
   },
   {
-    title: 'Reach 100 DAA milestones & unlock $10K',
+    title:
+      'Reach 100 DAA milestone within 90 days from the MVP delivery & unlock $10K',
     description:
       'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
   },
   {
-    title: 'Unlock $40K for 1000 DAAs',
+    title:
+      'Reach 1000 DAAs within 90 days from the previous milestone, and unlock $40K',
     description:
-      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
+      'Awarded on achieving 1000 active users of this agent, this is measured as 1000 Daily Active Agents per Olas Staking.',
   },
   {
     title: 'Earn additional OLAS rewards',

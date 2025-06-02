@@ -93,7 +93,7 @@ export const EvaluationCriteria = () => (
         <h2 className={`${SUB_HEADER_CLASS} font-semibold my-8`}>
           What support is provided?
         </h2>
-        Selected teams will enter a 6-12 week self-paced development phase to
+        Selected teams will enter a 12 week self-paced development phase to
         build their MVPs. <br />
         <div className="flex flex-row gap-2">
           <div className="text-purple-600">-&gt;</div>
