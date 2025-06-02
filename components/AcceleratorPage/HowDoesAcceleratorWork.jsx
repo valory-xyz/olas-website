@@ -12,15 +12,15 @@ const list = [
         <ExternalLink href={ACCELERATOR_APPLY_URL}>
           Submit a proposal
         </ExternalLink>{' '}
-        detailing your AI agent&apos;s purpose and mission alignment with the
-        Pearl app store, product strategy, and adoption strategy.
+        detailing your AI agent&apos;s purpose, product strategy, adoption
+        strategy, and alignment with the accelerator program.
       </>
     ),
   },
   {
     title: 'Get selected & receive $5,000',
     description:
-      'Awarded to the teams with the highest potential, mission aligned, and impactful proposals.',
+      'Awarded to the teams with the highest potential and impactful proposals.',
   },
   {
     title:
@@ -40,9 +40,9 @@ const list = [
   },
   {
     title:
-      'Reach 1000 DAAs within 90 days from the previous milestone, and unlock $40K',
+      'Reach 1,000 DAAs within 90 days from the previous milestone, and unlock $40K',
     description:
-      'Awarded on achieving 1000 active users of this agent, this is measured as 1000 Daily Active Agents per Olas Staking.',
+      'Awarded on achieving 1,000 active users of this agent, this is measured as 1,000 Daily Active Agents per Olas Staking.',
   },
   {
     title: 'Earn additional OLAS rewards',
