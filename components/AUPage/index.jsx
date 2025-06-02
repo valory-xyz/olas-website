@@ -9,7 +9,7 @@ import { WhatToExpect } from './WhatToExpect';
 const data = [
   {
     title: 'Events',
-    value: 6,
+    value: 7,
   },
   {
     title: 'Sponsors',
@@ -21,7 +21,7 @@ const data = [
   },
   {
     title: 'Attendees',
-    value: '2500+',
+    value: '2800+',
   },
 ];
 
