@@ -18,31 +18,30 @@ const list = [
     ),
   },
   {
-    title: 'Get selected & receive $5,000',
+    title: 'Get selected & receive $5K',
     description:
       'Awarded to the teams with the highest potential and impactful proposals.',
   },
   {
     title:
-      '$5,000 on delivery and approval of the design, specification and technical plan of the MVP within the first 2 weeks from the project start date. ',
+      'Additional $5K on delivery and approval of the design, specification and technical plan',
+    description:
+      'Put together all the plans for your MVP within the first 2 weeks of the project start date to earn an additional $5K.',
   },
   {
-    title:
-      '$40,000 for delivering agent MVP on Pearl within 90 days from the project start date',
+    title: '$40K for delivering the MVP',
     description:
-      'The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
+      'Deliver the agent MVP on Pearl within 90 days from the project start date to earn $40K. The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
   },
   {
-    title:
-      'Reach 100 DAA milestone within 90 days from the MVP delivery & unlock $10K',
+    title: 'Reach 100 DAA milestone to unlock $10K',
     description:
-      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
+      'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
-    title:
-      'Reach 1,000 DAAs within 90 days from the previous milestone, and unlock $40K',
+    title: 'Reach 1000 DAAs',
     description:
-      'Awarded on achieving 1,000 active users of this agent, this is measured as 1,000 Daily Active Agents per Olas Staking.',
+      'Awarded on achieving 1000 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
     title: 'Earn additional OLAS rewards',

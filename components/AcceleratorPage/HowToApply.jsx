@@ -28,19 +28,19 @@ export const HowToApply = () => (
           How to apply to the Olas Accelerator
         </h2>
         <div className="mb-8">
-          We recommend you download and try Pearl:{' '}
+          We recommend you{' '}
           <Link href="/pearl" className="text-purple-600">
-            https://olas.network/pearl
-          </Link>{' '}
-          and consult the{' '}
+            download and try Pearl
+          </Link>
+          , consult the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">
             Integrating Your AI Agent with Pearl
           </ExternalLink>{' '}
-          and the{' '}
+          document and the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1GlK2h7cpcNLqidjEHrPDde7xuQDhABzN/view">
             Agent Integration Checklist
           </ExternalLink>{' '}
-          documentations before you submit your proposal.
+          documentations before you frame and submit your proposal.
         </div>
         <h2 className="text-3xl font-semibold mb-6">Submit your proposal</h2>
         <div className="flex flex-col gap-4 mb-8">
@@ -66,7 +66,7 @@ export const HowToApply = () => (
           <div>
             <div className="font-semibold text-xl mb-1">Adoption Plan</div>
             <p>
-              An adoption strategy to achieve the 100 and 1,000 DAA milestone.
+              Adoption strategy to achieve the 100 and 1,000 DAA milestones.
             </p>
           </div>
         </div>
