@@ -40,7 +40,7 @@ export const HowToApply = () => (
           <ExternalLink href="https://drive.google.com/file/d/1GlK2h7cpcNLqidjEHrPDde7xuQDhABzN/view">
             Agent Integration Checklist
           </ExternalLink>{' '}
-          documentations before you frame and submit your proposal.
+          before you frame and submit your proposal.
         </div>
         <h2 className="text-3xl font-semibold mb-6">Submit your proposal</h2>
         <div className="flex flex-col gap-4 mb-8">

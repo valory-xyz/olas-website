@@ -39,9 +39,9 @@ const list = [
       'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
-    title: 'Reach 1000 DAAs',
+    title: 'Reach 1,000 DAAs',
     description:
-      'Awarded on achieving 1000 Daily Active Agents within 90 days of the MVP delivery.',
+      'Awarded on achieving 1,000 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
     title: 'Earn additional OLAS rewards',
