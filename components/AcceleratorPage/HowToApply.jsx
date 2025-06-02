@@ -65,9 +65,7 @@ export const HowToApply = () => (
           </div>
           <div>
             <div className="font-semibold text-xl mb-1">Adoption Plan</div>
-            <p>
-              Adoption strategy to achieve the 100 and 1,000 DAA milestones.
-            </p>
+            <p>Adoption plan to achieve the 100 and 1,000 DAA milestones.</p>
           </div>
         </div>
       </div>

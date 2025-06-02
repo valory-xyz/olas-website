@@ -24,7 +24,7 @@ const list = [
   },
   {
     title:
-      'Additional $5K on delivery and approval of the design, specification and technical plan',
+      'Additional $5K on approval of the design, specification and technical plan',
     description:
       'Put together all the plans for your MVP within the first 2 weeks of the project start date to earn an additional $5K.',
   },
@@ -39,7 +39,7 @@ const list = [
       'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
-    title: 'Reach 1,000 DAAs',
+    title: 'Reach 1,000 DAAs to unlock $40K',
     description:
       'Awarded on achieving 1,000 Daily Active Agents within 90 days of the MVP delivery.',
   },
