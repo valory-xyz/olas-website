@@ -36,6 +36,7 @@ const modiusKeyFeatures = [
   <>
     Supported protocols: <TaggedItem item="Balancer" />
     <TaggedItem item="Sturdy" />
+    <TaggedItem item="Velodrome" />
   </>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
@@ -45,8 +46,8 @@ const optimusKeyFeatures = [
   'Personalized portfolio management.',
   'Expanding strategy library.',
   <>
-    Blockchain networks: <TaggedItem item="Mode" />
-    <TaggedItem item="Optimism" /> <TaggedItem item="Base" />
+    Blockchain networks:
+    <TaggedItem item="Optimism" />
   </>,
   <>
     Financial assets: <TaggedItem item="USDC" />
@@ -54,8 +55,8 @@ const optimusKeyFeatures = [
   </>,
   <>
     Supported protocols: <TaggedItem item="Balancer" />
-    <TaggedItem item="Sturdy" />
     <TaggedItem item="Uniswap" />
+    <TaggedItem item="Velodrome" />
   </>,
   'Active 24/7 when the agent is running.',
   'Fully autonomous and owned locally by you.',
@@ -142,12 +143,15 @@ const OptimusAgent = () => (
           ))}
         </ul>
       </div>
-      <p className="text-slate-500">
-        Optimus is currently available on Quickstart.
-      </p>
-      <Button variant="default" size="xl" className="max-md:w-full w-fit">
-        <a href={QUICKSTART_URL}>Run via Quickstart</a>
-      </Button>
+
+      <div className="flex flex-wrap gap-4">
+        <Button variant="default" size="xl" className="max-md:grow w-fit">
+          <Link href="/pearl#download">Run via Pearl</Link>
+        </Button>
+        <Button variant="outline" size="xl" className="max-md:grow w-fit">
+          <a href={QUICKSTART_URL}>Run via Quickstart</a>
+        </Button>
+      </div>
     </div>
   </div>
 );
