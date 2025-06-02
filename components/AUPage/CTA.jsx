@@ -11,7 +11,6 @@ const list = [
     location: 'Cannes',
     date: "Jun 30 '25",
     eventLink: 'https://ethcc.io/',
-    replayLink: 'https://www.youtube.com/@autonolas/playlists',
   },
   {
     title: 'Builders Night',
