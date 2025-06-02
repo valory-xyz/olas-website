@@ -11,6 +11,7 @@ const list = [
     location: 'Cannes',
     date: "Jun 30 '25",
     eventLink: 'https://ethcc.io/',
+    replayLink: '',
   },
   {
     title: 'Builders Night',
