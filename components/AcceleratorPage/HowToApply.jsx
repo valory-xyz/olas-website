@@ -3,6 +3,7 @@ import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
 import { SquareCheck } from 'lucide-react';
+import Link from 'next/link';
 
 const evaluationList = [
   {
@@ -10,13 +11,12 @@ const evaluationList = [
     description: 'Creativity of the agent concept.',
   },
   {
-    title: 'Feasibility',
-    description: 'Clarity and practicality of the implementation plan.',
+    title: 'Mission alignment',
+    description: 'Product Sense and Strategy.',
   },
   {
     title: 'Impact',
-    description:
-      'Potential to drive adoption and enhance Pearl and the Olas ecosystem.',
+    description: 'Potential to drive adoption and enhance the Olas ecosystem.',
   },
 ];
 
@@ -27,6 +27,21 @@ export const HowToApply = () => (
         <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-8 mt-12`}>
           How to apply to the Olas Accelerator
         </h2>
+        <div className="mb-8">
+          We recommend you{' '}
+          <Link href="/pearl" className="text-purple-600">
+            download and try Pearl
+          </Link>
+          , consult the{' '}
+          <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">
+            Integrating Your AI Agent with Pearl
+          </ExternalLink>{' '}
+          document and the{' '}
+          <ExternalLink href="https://drive.google.com/file/d/1GlK2h7cpcNLqidjEHrPDde7xuQDhABzN/view">
+            Agent Integration Checklist
+          </ExternalLink>{' '}
+          before you frame and submit your proposal.
+        </div>
         <h2 className="text-3xl font-semibold mb-6">Submit your proposal</h2>
         <div className="flex flex-col gap-4 mb-8">
           <div>
@@ -36,23 +51,21 @@ export const HowToApply = () => (
             with a proposal, including:
           </div>
           <div>
+            <div className="font-semibold text-xl mb-1">Team</div>
+            <p>Team lead information, team size, and team expertise.</p>
+          </div>
+          <div>
             <div className="font-semibold text-xl mb-1">
-              Purpose & functionality
+              Mission, User Personas & Strategy
             </div>
             <p>
-              The agent&apos;s purpose, core functionality, and target users.
+              Agent&apos;s mission, alignment with Pearl, definition of the
+              end-user personas, and the agent&apos;s product strategy.
             </p>
           </div>
           <div>
-            <div className="font-semibold text-xl mb-1">Technical plan</div>
-            <p>
-              A technical implementation plan, highlighting an integration with
-              Pearl.
-            </p>
-          </div>
-          <div>
-            <div className="font-semibold text-xl mb-1">Adoption plan</div>
-            <p>An adoption strategy to achieve the 100 DAA user milestone.</p>
+            <div className="font-semibold text-xl mb-1">Adoption Plan</div>
+            <p>Adoption plan to achieve the 100 and 1,000 DAA milestones.</p>
           </div>
         </div>
       </div>

@@ -12,30 +12,36 @@ const list = [
         <ExternalLink href={ACCELERATOR_APPLY_URL}>
           Submit a proposal
         </ExternalLink>{' '}
-        detailing your AI agent&apos;s concept, integration with Pearl, and user
-        adoption plan.
+        detailing your AI agent&apos;s purpose, product strategy, adoption
+        strategy, and alignment with the accelerator program.
       </>
     ),
   },
   {
-    title: 'Get selected & receive $10,000',
+    title: 'Get selected & receive $5K',
     description:
-      'Awarded to the teams with the most promising agent concepts and detailed implementation plans.',
+      'Awarded to the teams with the highest potential and impactful proposals.',
   },
   {
-    title: '$40,000 for delivering agent MVP on Pearl',
+    title:
+      'Additional $5K on approval of the design, specification and technical plan',
     description:
-      'The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
+      'Put together all the plans for your MVP within the first 2 weeks of the project start date to earn an additional $5K.',
   },
   {
-    title: 'Reach 100 DAA milestones & unlock $10K',
+    title: '$40K for delivering the MVP',
     description:
-      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
+      'Deliver the agent MVP on Pearl within 90 days from the project start date to earn $40K. The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
   },
   {
-    title: 'Unlock $40K for 1000 DAAs',
+    title: 'Reach 100 DAA milestone to unlock $10K',
     description:
-      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
+      'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
+  },
+  {
+    title: 'Reach 1,000 DAAs to unlock $40K',
+    description:
+      'Awarded on achieving 1,000 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
     title: 'Earn additional OLAS rewards',
