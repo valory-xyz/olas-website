@@ -23,12 +23,20 @@ const fetchMetrics = async () => {
 };
 
 const formatNumber = (num) => {
+  if (num === null || num === undefined) return null;
   const numTo1dp = Number(num?.toFixed(1));
   return `${numTo1dp}%`;
 };
 
 export const OptimusAgentMetrics = () => {
-  const { data: metrics } = usePersistentSWR('OptimusMetrics', fetchMetrics);
+  const {
+    data: metrics,
+    isLoading,
+    error,
+  } = usePersistentSWR('OptimusMetrics', fetchMetrics, {
+    refreshInterval: 3600000, // Refresh every hour
+    revalidateOnFocus: true,
+  });
 
   const data = useMemo(
     () => [
@@ -69,7 +77,7 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (item.value === null) return '--';
+              if (!metrics || item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
                   {item.value}

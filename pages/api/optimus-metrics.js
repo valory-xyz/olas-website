@@ -1,12 +1,21 @@
 import { Client } from '@gradio/client';
+import fs from 'fs';
+import path from 'path';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_FILE_PATH = path.join(
+  process.cwd(),
+  'data',
+  'optimus-metrics-cache.json',
+);
 
-let cachedResponse = null;
-let isFetching = false;
+// Ensure the data directory exists
+if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
+  fs.mkdirSync(path.join(process.cwd(), 'data'));
+}
 
-async function fetchNewData() {
+const fetchNewData = async () => {
   try {
     const client = await Client.connect('valory/Modius-Agent-Performance');
     const result = await client.predict('/refresh_apr_data', {});
@@ -19,30 +28,57 @@ async function fetchNewData() {
     const totalTraces = traces.length;
 
     if (totalTraces < MIN_TOTAL_TRACES) {
+      console.error('Not enough traces found:', totalTraces);
       return null;
     }
 
-    // Extract the last two traces, which are consistently structured as:
-    // - Second last: ETH-adjusted APR average
-    // - Last: overall APR average
+    // Extract the last two traces
     const avgApr = traces[totalTraces - 1]?.y;
     const ETHAdjustedApr = traces[totalTraces - 2]?.y;
+
+    if (!avgApr || !ETHAdjustedApr) {
+      console.error('Missing APR data in traces');
+      return null;
+    }
 
     const latestETHApr = ETHAdjustedApr[ETHAdjustedApr.length - 1];
     const latestAvgApr = avgApr[avgApr.length - 1];
 
-    return {
+    const data = {
       data: {
         latestAvgApr: latestAvgApr,
         latestETHApr: latestETHApr,
       },
       timestamp: Date.now(),
     };
+
+    // Save to cache file
+    try {
+      fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(data, null, 2));
+    } catch (writeError) {
+      console.error('Error writing to cache:', writeError);
+    }
+
+    return data;
   } catch (error) {
     console.error('Error fetching APR values:', error);
     return null;
   }
-}
+};
+
+const getCachedData = () => {
+  try {
+    if (fs.existsSync(CACHE_FILE_PATH)) {
+      const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf8');
+      const cachedData = JSON.parse(fileContent);
+
+      return cachedData;
+    }
+  } catch (error) {
+    console.error('Error reading cache:', error);
+  }
+  return null;
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -54,41 +90,33 @@ export default async function handler(req, res) {
     'public, s-maxage=86400, stale-while-revalidate=43200',
   );
 
-  const now = Date.now();
-  const isCacheExpired =
-    cachedResponse && now - cachedResponse.timestamp > CACHE_DURATION;
+  try {
+    const cachedData = getCachedData();
+    const now = Date.now();
+    const isCacheExpired =
+      !cachedData || now - cachedData.timestamp > CACHE_DURATION;
 
-  if (isCacheExpired && !isFetching) {
-    isFetching = true;
-    fetchNewData()
-      .then((newData) => {
-        if (newData) {
-          cachedResponse = newData;
-        }
-        isFetching = false;
-      })
-      .catch(() => {
-        isFetching = false;
-      });
-  }
+    if (isCacheExpired) {
+      // Fetch new data in the background
+      fetchNewData().catch(console.error);
 
-  // Always returns available cached data
-  if (cachedResponse) {
-    return res.status(200).json(cachedResponse.data);
-  }
-
-  if (!cachedResponse) {
-    try {
-      const newData = await fetchNewData();
-      if (newData) {
-        cachedResponse = newData;
-        return res.status(200).json(cachedResponse.data);
+      // Return cached data if available, even if expired
+      if (cachedData) {
+        return res.status(200).json(cachedData.data);
       }
-      return res.status(404).json({ error: 'Not enough data traces found' });
-    } catch (error) {
-      return res.status(500).json({ error: 'Failed to fetch APR values' });
+    } else {
+      return res.status(200).json(cachedData.data);
     }
-  }
 
-  return res.status(503).json({ error: 'Service temporarily unavailable' });
+    // If no cached data is available, fetch synchronously
+    const newData = await fetchNewData();
+    if (newData) {
+      return res.status(200).json(newData.data);
+    }
+
+    return res.status(404).json({ error: 'Not enough data traces found' });
+  } catch (error) {
+    console.error('Error in handler:', error);
+    return res.status(500).json({ error: 'Failed to fetch APR values' });
+  }
 }
