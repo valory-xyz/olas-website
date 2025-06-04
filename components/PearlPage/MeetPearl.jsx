@@ -43,7 +43,6 @@ const agents = [
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
     link: '/services/babydegen#optimus-agent',
-    isComingSoon: true,
     imgSrc: 'optimus.png',
     bgColour: 'rose',
   },
