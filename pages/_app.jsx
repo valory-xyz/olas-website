@@ -17,6 +17,7 @@ function PlausibleTracker() {
           utm_campaign: router.query.utm_campaign,
           utm_term: router.query.utm_term,
           utm_content: router.query.utm_content,
+          hash: window.location.hash,
         },
       });
     };
@@ -34,8 +35,9 @@ export default function App({ Component, pageProps }) {
   return (
     <PlausibleProvider
       domain="olas.network"
-      trackOutboundLinks={true}
-      enabled={true}
+      trackOutboundLinks
+      taggedEvents
+      enabled
       scriptProps={{
         'data-domain': 'olas.network',
         'data-track-outbound-links': true,

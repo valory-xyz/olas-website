@@ -3,8 +3,13 @@ import { Octokit } from '@octokit/core';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+import {
+  getPlausibleDownloadPearlClass,
+  getPlausibleUpdatePearlClass,
+} from 'common-util/plausible';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
+import { useHash } from 'hooks/useHash';
 
 const iconProps = { width: 24, height: 24 };
 const downloadLinks = [
@@ -71,6 +76,8 @@ async function getLatestRelease() {
 const DownloadLinks = () => {
   const [links, setLinks] = useState(downloadLinks);
 
+  const { hash } = useHash();
+
   useEffect(() => {
     getLatestRelease()
       .then((data) => {
@@ -123,15 +130,18 @@ const DownloadLinks = () => {
             disabled={!downloadLink}
             variant={downloadLink ? 'default' : 'outline'}
             size="xl"
-            asChild
-            className="mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer"
+            id={id}
+            className={`mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer flex flex-row
+              ${
+                hash === '#update'
+                  ? getPlausibleUpdatePearlClass(id)
+                  : getPlausibleDownloadPearlClass(id)
+              }`}
           >
-            <div className="flex flex-row">
-              {icon}
-              <div className="flex flex-col">
-                <div className="text-sm opacity-75">Download for</div>
-                {btnText}
-              </div>
+            {icon}
+            <div className="flex flex-col">
+              <div className="text-sm opacity-75">Download for</div>
+              {btnText}
             </div>
           </Button>
         ))}
@@ -141,7 +151,12 @@ const DownloadLinks = () => {
 };
 
 export const InstallRunAnAgent = () => (
-  <div id="download" className="mb-12 lg:mb-24 max-sm:mx-4">
+  <div className="mb-12 lg:mb-24 max-sm:mx-4">
+    {/** Both ids are needed for correct tracking in Plausible
+     * to separate downloads and updates navigated from Pearl */}
+    <div id="download" />
+    <div id="update" />
+
     <DownloadLinks />
   </div>
 );
