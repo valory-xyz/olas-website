@@ -130,7 +130,7 @@ const DownloadLink = ({
   setShowCaption,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { hash } = useHash();
+  const hash = useHash();
 
   const handleDownload = async () => {
     setIsLoading(true);

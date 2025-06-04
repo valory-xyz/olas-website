@@ -76,7 +76,7 @@ async function getLatestRelease() {
 const DownloadLinks = () => {
   const [links, setLinks] = useState(downloadLinks);
 
-  const { hash } = useHash();
+  const hash = useHash();
 
   useEffect(() => {
     getLatestRelease()
