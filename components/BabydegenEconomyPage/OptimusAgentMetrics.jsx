@@ -23,6 +23,7 @@ const fetchMetrics = async () => {
 };
 
 const formatNumber = (num) => {
+  if (num === null || num === undefined) return null;
   const numTo1dp = Number(num?.toFixed(1));
   return `${numTo1dp}%`;
 };
@@ -69,7 +70,7 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (item.value === null) return '--';
+              if (!metrics || item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
                   {item.value}
