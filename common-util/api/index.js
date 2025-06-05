@@ -108,7 +108,7 @@ export const getTotalOlasContributors = async () => {
 // ----------- OPTIMUS -----------
 export const getAverageAprs = async () => {
   try {
-    const response = await fetch('/api/optimus-metrics', { revalidate: 86400 }); // One day for revalidate
+    const response = await fetch('/api/optimus-metrics');
     if (!response.ok) {
       throw new Error('Failed to fetch metrics');
     }
