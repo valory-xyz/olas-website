@@ -9,8 +9,13 @@ import {
   SUB_HEADER_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
+import {
+  getPlausibleDownloadEaPearlClass,
+  getPlausibleUpdateEaPearlClass,
+} from 'common-util/plausible';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import { useHash } from 'hooks/useHash';
 
 const iconProps = { width: 24, height: 24 };
 const downloadLinks = [
@@ -117,6 +122,7 @@ const Spinner = () => (
 );
 
 const DownloadLink = ({
+  id,
   assetId,
   assetName,
   icon,
@@ -124,6 +130,7 @@ const DownloadLink = ({
   setShowCaption,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const hash = useHash();
 
   const handleDownload = async () => {
     setIsLoading(true);
@@ -160,7 +167,12 @@ const DownloadLink = ({
       disabled={!assetId || isLoading}
       variant={assetId ? 'default' : 'outline'}
       size="xl"
-      className="w-full lg:w-auto lg:px-6"
+      id={id}
+      className={`w-full lg:w-auto lg:px-6 ${
+        hash === '#update'
+          ? getPlausibleUpdateEaPearlClass(id)
+          : getPlausibleDownloadEaPearlClass(id)
+      }`}
     >
       <div className="flex items-center">
         {isLoading ? <Spinner /> : icon}
@@ -172,6 +184,7 @@ const DownloadLink = ({
 };
 
 DownloadLink.propTypes = {
+  id: PropTypes.string.isRequired,
   assetId: PropTypes.number,
   assetName: PropTypes.string,
   icon: PropTypes.string.isRequired,
@@ -219,6 +232,7 @@ const DownloadLinks = ({ agentType }) => {
           <Fragment key={id}>
             <div className="flex flex-col gap-2 w-full align-top text-center md:text-left md:w-auto">
               <DownloadLink
+                id={id}
                 assetId={assetId}
                 assetName={name}
                 btnText={btnText}
