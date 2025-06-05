@@ -56,6 +56,7 @@ const innovations = [
   },
 ];
 
+// to be moved to docs.olas.network landing page
 export const TheTech = ({ hideLearnMoreButton = false }) => (
   <SectionWrapper
     backgroundType="NONE"

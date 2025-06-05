@@ -11,9 +11,9 @@ const list = [
     imageSrc: 'ethlisbon.png',
     location: 'Lisbon, Portugal',
     date: 'May 9-11, 2025',
-    link: 'https://lu.ma/ETH-Lisbon-2025',
-    type: 'button',
-    status: 'Upcoming',
+    link: 'https://www.blog.encode.club/ethlisbon-2025-powered-by-lightshift-and-encode-ce529cddc5d1',
+    type: 'external-link',
+    status: 'Completed',
     prizePool: '15,000 GBP',
     projectTags: [
       'Mech Marketplace - Demand Side',

@@ -126,6 +126,14 @@ export const FAQ = () => (
           ))}
         </div>
       ))}
+
+      <div className="mt-8">
+        To find out more,{' '}
+        <Link href="/faq" className="text-purple-600">
+          check out our FAQ
+        </Link>
+        .
+      </div>
     </div>
   </SectionWrapper>
 );

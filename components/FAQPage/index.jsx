@@ -613,6 +613,14 @@ const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
     <h1 className="text-5xl font-extrabold mb-12 mt-8 text-slate-800">FAQ</h1>
 
+    <div className="mb-8">
+      Have a question about Pearl: The &quot;Agent App Store&quot;?{' '}
+      <Link href="/pearl#faq" className="text-purple-600">
+        Check out the Pearl FAQ
+      </Link>
+      .
+    </div>
+
     {faqList.map((eachSet, setIndex) => (
       <div
         key={eachSet.category}
