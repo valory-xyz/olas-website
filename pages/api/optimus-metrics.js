@@ -1,6 +1,4 @@
 import { Client } from '@gradio/client';
-import fs from 'fs';
-import path from 'path';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -28,17 +26,12 @@ const fetchLatestMetric = async () => {
     const totalTraces = traces.length;
 
     if (totalTraces < MIN_TOTAL_TRACES) {
-      return res.status(404).json({ error: 'Not enough traces found' });
+      return res.status(404).json({ error: 'Not enough data traces found' });
     }
 
     // Extract the last two traces
     const avgApr = traces[totalTraces - 1]?.y;
     const ETHAdjustedApr = traces[totalTraces - 2]?.y;
-
-    if (!avgApr || !ETHAdjustedApr) {
-      console.error('Missing APR data in traces');
-      return null;
-    }
 
     const latestETHApr = ETHAdjustedApr[ETHAdjustedApr.length - 1];
     const latestAvgApr = avgApr[avgApr.length - 1];
