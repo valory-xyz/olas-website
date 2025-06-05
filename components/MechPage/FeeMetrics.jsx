@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { Chart } from 'react-google-charts';
 
-const DUNE_MMV2_URL = 'https://dune.com/queries/5103896/8420267';
+const DUNE_MMV2_URL = 'https://dune.com/queries/5166975';
 
 const fetchMetrics = async () => {
   try {

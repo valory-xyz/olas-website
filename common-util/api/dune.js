@@ -1,10 +1,11 @@
 import {
+  A2A_TRANSACTIONS_ID,
   DAILY_CONTRIBUTORS_QUERY_ID,
   FEE_FLOW_QUERY_ID,
   MECH_TXS_QUERY_ID,
+  TOTAL_MECH_TXS_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
-  VEOLAS_HOLDERS_QUERY_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
 
@@ -28,29 +29,29 @@ const duneApiCall = async ({ queryId }) => {
   return json;
 };
 
+export const getTotalMechTxs = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: TOTAL_MECH_TXS_ID,
+    });
+    const totalTxs = get(json, 'result.rows[0].request_number');
+    return totalTxs;
+  } catch (error) {
+    console.error('Error in getTotalMechTxs: ', error);
+    return;
+  }
+};
+
 export const getMechTxs = async () => {
   try {
     const json = await duneApiCall({
       queryId: MECH_TXS_QUERY_ID,
     });
-    const predictTxs = get(
-      json,
-      'result.rows[0].predict_cumulative_transaction_count',
-    );
-    const contributeTxs = get(
-      json,
-      'result.rows[0].contribute_cumulative_transaction_count',
-    );
-    const governatooorTxs = get(
-      json,
-      'result.rows[0].governatoor_cumulative_transaction_count',
-    );
-    const otherTxs = get(
-      json,
-      'result.rows[0].other_cumulative_transaction_count',
-    );
-    const totalTxs = get(json, 'result.rows[0].total_cumulative_transactions');
-    return { totalTxs, predictTxs, contributeTxs, governatooorTxs, otherTxs };
+    const predictTxs = get(json, 'result.rows[2].num_requests');
+    const contributeTxs = get(json, 'result.rows[3].num_requests');
+    const governatooorTxs = get(json, 'result.rows[1].num_requests');
+    const otherTxs = get(json, 'result.rows[0].num_requests');
+    return { predictTxs, contributeTxs, governatooorTxs, otherTxs };
   } catch (error) {
     console.error('Error in getMechTxs: ', error);
     return;
@@ -60,7 +61,7 @@ export const getMechTxs = async () => {
 export const getTotalUniqueStakers = async () => {
   try {
     const json = await duneApiCall({ queryId: UNIQUE_STAKERS_QUERY_ID });
-    const totalUniqueStakers = get(json, 'result.rows[0].total_stakers');
+    const totalUniqueStakers = get(json, 'result.rows[0].unique_operators');
     return totalUniqueStakers;
   } catch (error) {
     console.error('Error in getTotalUniqueStakers: ', error);
@@ -79,17 +80,6 @@ export const getTotalUniqueBuilders = async () => {
   }
 };
 
-export const getVeOlasHolders = async () => {
-  try {
-    const json = await duneApiCall({ queryId: VEOLAS_HOLDERS_QUERY_ID });
-    const veOlasHolders = get(json, 'result.rows[0].unique_depositor_count');
-    return veOlasHolders;
-  } catch (error) {
-    console.error('Error in getVeOlasHolders: ', error);
-    return;
-  }
-};
-
 export const get7DayAvgDailyActiveContributors = async () => {
   try {
     const json = await duneApiCall({ queryId: DAILY_CONTRIBUTORS_QUERY_ID });
@@ -98,6 +88,30 @@ export const get7DayAvgDailyActiveContributors = async () => {
   } catch (error) {
     console.error('Error in get7DayAvgDailyActiveContributors: ', error);
     return;
+  }
+};
+
+export const getA2ATransactions = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: A2A_TRANSACTIONS_ID,
+    });
+    const a2aTxs = get(json, 'result.rows[0].total_a2a_transactions');
+    return a2aTxs;
+  } catch (error) {
+    console.error('Error in getA2ATransactions: ', error);
+  }
+};
+
+export const getUniqueOperatorCount = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: 5200009,
+    });
+    const agents = get(json, 'result.rows[0].unique_operators');
+    return agents;
+  } catch (error) {
+    console.error('Error in getUniqueOperatorCount: ', error);
   }
 };
 

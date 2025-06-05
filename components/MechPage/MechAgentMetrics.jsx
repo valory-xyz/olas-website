@@ -1,5 +1,4 @@
-import { getMechTxs } from 'common-util/api/dune';
-import { MECH_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
+import { getMechTxs, getTotalMechTxs } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
@@ -7,14 +6,19 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const result = await getMechTxs();
+  const [totalTxs, result] = await Promise.allSettled([
+    getTotalMechTxs(),
+    getMechTxs(),
+  ]);
+
+  const mechTxs = result.status === 'fulfilled' ? result.value : null;
 
   return {
-    totalTxs: result.totalTxs,
-    predictTxs: result.predictTxs,
-    contributeTxs: result.contributeTxs,
-    governatooorTxs: result.governatooorTxs,
-    otherTxs: result.otherTxs,
+    totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value : null,
+    predictTxs: mechTxs?.predictTxs || null,
+    contributeTxs: mechTxs?.contributeTxs || null,
+    governatooorTxs: mechTxs?.governatooorTxs || null,
+    otherTxs: mechTxs?.otherTxs || null,
   };
 };
 
@@ -47,7 +51,6 @@ export const MechAgentMetrics = () => {
         ),
         subText: 'requests',
         value: metrics?.predictTxs?.toLocaleString(),
-        source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
         id: 'contribute',
@@ -66,7 +69,6 @@ export const MechAgentMetrics = () => {
         ),
         subText: 'requests',
         value: metrics?.contributeTxs?.toLocaleString(),
-        source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
         id: 'governatooor',
@@ -85,7 +87,6 @@ export const MechAgentMetrics = () => {
         ),
         subText: 'requests',
         value: metrics?.governatooorTxs?.toLocaleString(),
-        source: MECH_ECONOMY_DASHBOARD_URL,
       },
       {
         id: 'other',
@@ -97,7 +98,6 @@ export const MechAgentMetrics = () => {
         ),
         subText: 'requests',
         value: metrics?.otherTxs?.toLocaleString(),
-        source: MECH_ECONOMY_DASHBOARD_URL,
       },
     ],
     [metrics],
@@ -113,7 +113,7 @@ export const MechAgentMetrics = () => {
           The Olas Mech agent economy is thriving, powering over{' '}
           <ExternalLink
             className="font-bold"
-            href={MECH_ECONOMY_DASHBOARD_URL}
+            href="https://dune.com/queries/5194313/8548512"
             hideArrow
           >
             {metrics?.totalTxs.toLocaleString()}&nbsp;↗
@@ -130,7 +130,7 @@ export const MechAgentMetrics = () => {
           const getValue = () => {
             if (!item.value) return '--';
             return (
-              <ExternalLink href={item.source} hideArrow>
+              <ExternalLink href="https://dune.com/queries/5195400" hideArrow>
                 {item.value}
                 <span className="text-2xl">↗</span>
               </ExternalLink>

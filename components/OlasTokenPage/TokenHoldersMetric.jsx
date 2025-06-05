@@ -1,5 +1,4 @@
 import { getTotalTokenHolders } from 'common-util/api/flipside';
-import { FLIPSIDE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -38,7 +37,7 @@ export const TokenHoldersMetric = () => {
         {metrics?.totalTokenHolders ? (
           <ExternalLink
             className="font-extrabold text-6xl"
-            href={`${FLIPSIDE_URL}?tabIndex=3`}
+            href="https://flipsidecrypto.xyz/flipsideteam/q/WGkAsswnV2pH/total-holders/visualizations/v2/d57457e2-1c31-4c9b-af60-3a58de583eeb"
             target="_blank"
             hideArrow
           >

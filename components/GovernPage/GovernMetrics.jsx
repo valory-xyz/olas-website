@@ -1,9 +1,7 @@
-import { getVeOlasHolders } from 'common-util/api/dune';
-import { getVeOLASCirculatingSupply } from 'common-util/api/flipside';
 import {
-  FLIPSIDE_URL,
-  OLAS_ECONOMY_DASHBOARD_URL,
-} from 'common-util/constants';
+  getVeOLASCirculatingSupply,
+  getVeOlasHolders,
+} from 'common-util/api/flipside';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
@@ -25,14 +23,15 @@ export const GovernMetrics = () => {
           key: 'lockedOlas',
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
-          source: `${FLIPSIDE_URL}?tabIndex=3`,
+          source: `https://flipsidecrypto.xyz/flipsideteam/q/ORaUMVaQVovq/veolas/visualizations/v2/a437de1b-5d22-4139-82b8-b51cd1b07848`,
           metric: Math.round(metrics[0]),
         },
         {
           key: 'veOlasHolders',
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
-          source: `${OLAS_ECONOMY_DASHBOARD_URL}#govern-donations-to-useful-services`,
+          source:
+            'https://flipsidecrypto.xyz/flipsideteam/q/6ANzqADDc8VL/total-veolas-holders/visualizations/v2/939139ef-5597-4058-8e85-38e406cb6387',
           metric: metrics[1],
         },
       ],
