@@ -15,7 +15,7 @@ if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
   fs.mkdirSync(path.join(process.cwd(), 'data'));
 }
 
-const fetchNewData = async () => {
+const fetchLatestMetric = async () => {
   try {
     const client = await Client.connect('valory/Modius-Agent-Performance');
     const result = await client.predict('/refresh_apr_data', {});
@@ -28,8 +28,7 @@ const fetchNewData = async () => {
     const totalTraces = traces.length;
 
     if (totalTraces < MIN_TOTAL_TRACES) {
-      console.error('Not enough traces found:', totalTraces);
-      return null;
+      return res.status(404).json({ error: 'Not enough traces found' });
     }
 
     // Extract the last two traces
@@ -45,10 +44,7 @@ const fetchNewData = async () => {
     const latestAvgApr = avgApr[avgApr.length - 1];
 
     const data = {
-      data: {
-        latestAvgApr: latestAvgApr,
-        latestETHApr: latestETHApr,
-      },
+      data: { latestAvgApr: latestAvgApr, latestETHApr: latestETHApr },
       timestamp: Date.now(),
     };
 
@@ -87,7 +83,7 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Cache-Control',
-    'public, s-maxage=86400, stale-while-revalidate=43200',
+    `public, s-maxage=${CACHE_DURATION}, stale-while-revalidate=43200`,
   );
 
   try {
@@ -97,10 +93,9 @@ export default async function handler(req, res) {
       !cachedData || now - cachedData.timestamp > CACHE_DURATION;
 
     if (isCacheExpired) {
-      // Fetch new data in the background
-      fetchNewData().catch(console.error);
+      fetchLatestMetric().catch(console.error);
 
-      // Return cached data if available, even if expired
+      // Returns cached data, even expired
       if (cachedData) {
         return res.status(200).json(cachedData.data);
       }
@@ -109,9 +104,9 @@ export default async function handler(req, res) {
     }
 
     // If no cached data is available, fetch synchronously
-    const newData = await fetchNewData();
-    if (newData) {
-      return res.status(200).json(newData.data);
+    const latestMetric = await fetchLatestMetric();
+    if (latestMetric) {
+      return res.status(200).json(latestMetric.data);
     }
 
     return res.status(404).json({ error: 'Not enough data traces found' });

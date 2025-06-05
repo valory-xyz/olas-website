@@ -84,23 +84,6 @@
   }
 }
 
-.bg-shimmer {
-  font-size: 66px;
-  line-height: 80px;
-  font-weight: 800;
-  text-transform: uppercase;
-  animation: shimmer 2s infinite linear;
-  background: linear-gradient(
-    to right,
-    hsl(var(--border-default)) 4%,
-    hsl(var(--background-surface-200)) 25%,
-    hsl(var(--border-default)) 36%
-  );
-  color: blueviolet;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
 }
