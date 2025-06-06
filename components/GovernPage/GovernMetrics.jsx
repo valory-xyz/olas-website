@@ -1,5 +1,5 @@
 import {
-  getVeOLASCirculatingSupply,
+  getVeOlasCirculatingSupply,
   getVeOlasHolders,
 } from 'common-util/api/flipside';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -8,7 +8,7 @@ import { usePersistentSWR } from 'hooks';
 
 export const GovernMetrics = () => {
   const { data: metrics } = usePersistentSWR('governMetrics', () =>
-    fetchMetrics([getVeOLASCirculatingSupply, getVeOlasHolders]),
+    fetchMetrics([getVeOlasCirculatingSupply, getVeOlasHolders]),
   );
 
   if (!metrics) {
@@ -23,15 +23,14 @@ export const GovernMetrics = () => {
           key: 'lockedOlas',
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
-          source: `https://flipsidecrypto.xyz/flipsideteam/q/ORaUMVaQVovq/veolas/visualizations/v2/a437de1b-5d22-4139-82b8-b51cd1b07848`,
+          source: `${FLIPSIDE_QUERY_URL}ORaUMVaQVovq/veolas/visualizations/v2/a437de1b-5d22-4139-82b8-b51cd1b07848`,
           metric: Math.round(metrics[0]),
         },
         {
           key: 'veOlasHolders',
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
-          source:
-            'https://flipsidecrypto.xyz/flipsideteam/q/6ANzqADDc8VL/total-veolas-holders/visualizations/v2/939139ef-5597-4058-8e85-38e406cb6387',
+          source: `${FLIPSIDE_QUERY_URL}6ANzqADDc8VL/total-veolas-holders/visualizations/v2/939139ef-5597-4058-8e85-38e406cb6387`,
           metric: metrics[1],
         },
       ],

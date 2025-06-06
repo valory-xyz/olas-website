@@ -49,9 +49,9 @@ export const getMechTxs = async () => {
     });
     const predictTxs = get(json, 'result.rows[2].num_requests');
     const contributeTxs = get(json, 'result.rows[3].num_requests');
-    const governatooorTxs = get(json, 'result.rows[1].num_requests');
+    const governatooorrTxs = get(json, 'result.rows[1].num_requests');
     const otherTxs = get(json, 'result.rows[0].num_requests');
-    return { predictTxs, contributeTxs, governatooorTxs, otherTxs };
+    return { predictTxs, contributeTxs, governatooorrTxs, otherTxs };
   } catch (error) {
     console.error('Error in getMechTxs: ', error);
     return;
@@ -96,8 +96,8 @@ export const getA2ATransactions = async () => {
     const json = await duneApiCall({
       queryId: A2A_TRANSACTIONS_ID,
     });
-    const a2aTxs = get(json, 'result.rows[0].total_a2a_transactions');
-    return a2aTxs;
+    const agentToAgentTxs = get(json, 'result.rows[0].total_a2a_transactions');
+    return agentToAgentTxs;
   } catch (error) {
     console.error('Error in getA2ATransactions: ', error);
   }

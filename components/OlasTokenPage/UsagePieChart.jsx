@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
 import Verify from '../Verify';
 
-const ETHERSCAN_URL =
+const READ_PROXY_ETHERSCAN_URL =
   'https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#';
 
 // manually register arc element – required due to chart.js tree shaking
@@ -22,7 +22,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
         </span>
       </div>
       <div className="mb-4">
-        <Verify url={`${ETHERSCAN_URL}F19`} />
+        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F19`} />
       </div>
       <p className="mb-8 text-slate-500">
         Tokens are distributed to builders, operators and bonders each epoch.
@@ -89,10 +89,10 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
           />
         )}
       </div>
-      <div className="text-center mb-4">
-        <Verify url={`${ETHERSCAN_URL}F29`} />
-        <Verify url={`${ETHERSCAN_URL}F32`} />
-        <Verify url={`${ETHERSCAN_URL}F33`} />
+      <div className="flex flex-row gap-3 mb-4">
+        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F29`} />
+        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F32`} />
+        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F33`} />
       </div>
       <p className="text-slate-500">
         DAO members can vote to update how newly minted tokens are distributed.

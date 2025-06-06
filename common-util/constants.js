@@ -16,6 +16,7 @@ export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 export const FLIPSIDE_URL =
   'https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda';
+export const FLIPSIDE_QUERY_URL = 'https://flipsidecrypto.xyz/flipsideteam/q/';
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
 export const PREDICTION_DAA_QUERY_ID = '4165113';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';

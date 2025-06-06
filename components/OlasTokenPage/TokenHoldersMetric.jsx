@@ -37,7 +37,7 @@ export const TokenHoldersMetric = () => {
         {metrics?.totalTokenHolders ? (
           <ExternalLink
             className="font-extrabold text-6xl"
-            href="https://flipsidecrypto.xyz/flipsideteam/q/WGkAsswnV2pH/total-holders/visualizations/v2/d57457e2-1c31-4c9b-af60-3a58de583eeb"
+            href={`${FLIPSIDE_QUERY_URL}WGkAsswnV2pH/total-holders/visualizations/v2/d57457e2-1c31-4c9b-af60-3a58de583eeb`}
             target="_blank"
             hideArrow
           >

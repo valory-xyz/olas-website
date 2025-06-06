@@ -138,7 +138,7 @@ export const getVeOlasHolders = async () => {
 };
 
 const VEOLAS_CIRCULATING_SUPPLY_ID = '3d387d8d-0324-4476-b6b6-96ec2f4c60c1';
-export const getVeOLASCirculatingSupply = async () => {
+export const getVeOlasCirculatingSupply = async () => {
   try {
     const result = await flipsideCryptoApiCall({
       queryId: VEOLAS_CIRCULATING_SUPPLY_ID,
@@ -146,6 +146,6 @@ export const getVeOLASCirculatingSupply = async () => {
     const veOLASCirculatingSupply = get(result, "[0]['CIR_SUPPLY']") || null;
     return veOLASCirculatingSupply;
   } catch (error) {
-    console.error('Error in getVeOLASCirculatingSupply: ', error);
+    console.error('Error in getVeOlasCirculatingSupply: ', error);
   }
 };

@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { LinkIcon } from 'lucide-react';
 
+import { FLIPSIDE_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
@@ -322,7 +323,7 @@ const faqList = [
               inception of OLAS, and for convenience, on Flipside dashboards
               like this one{' '}
               <Link
-                href="https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda"
+                href={FLIPSIDE_URL}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
