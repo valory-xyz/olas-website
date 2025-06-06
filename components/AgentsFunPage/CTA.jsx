@@ -16,4 +16,4 @@ const list = [
   },
 ];
 
-export const CTA = () => <GetInvolvedCards list={list} />;
+export const CTA = () => <GetInvolvedCards id="get-involved" list={list} />;
