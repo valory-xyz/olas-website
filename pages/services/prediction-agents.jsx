@@ -1,10 +1,10 @@
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import { GetInvolved } from 'components/PredictionAgentsPage/GetInvolved';
-import { GetStarted } from 'components/PredictionAgentsPage/GetStarted';
-import { Hero } from 'components/PredictionAgentsPage/Hero';
-import { HowPredictionAgentsWork } from 'components/PredictionAgentsPage/HowPredictionAgentsWork';
-import { PredictionMarkets } from 'components/PredictionAgentsPage/PredictionMarkets';
+import { GetInvolved } from 'components/Services/PredictionAgentsPage/GetInvolved';
+import { GetStarted } from 'components/Services/PredictionAgentsPage/GetStarted';
+import { Hero } from 'components/Services/PredictionAgentsPage/Hero';
+import { HowPredictionAgentsWork } from 'components/Services/PredictionAgentsPage/HowPredictionAgentsWork';
+import { PredictionMarkets } from 'components/Services/PredictionAgentsPage/PredictionMarkets';
 import { CTASection } from 'components/ui/section/cta';
 
 const PredictionAgents = () => (
