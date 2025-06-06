@@ -3,14 +3,12 @@ import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 import SectionWrapper from './Layout/SectionWrapper';
 
-export const GetInvolvedCards = ({ title = 'Get Involved', list }) => {
+export const GetInvolvedCards = ({ id, title = 'Get Involved', list }) => {
   const listLength = list.length;
-  let sectionWidth = '';
-
-  if (listLength === 2) sectionWidth = 'max-w-screen-xl';
+  const sectionWidth = listLength === 2 ? 'max-w-screen-xl' : '';
 
   return (
-    <SectionWrapper>
+    <SectionWrapper id={id}>
       <h2
         className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
       >
@@ -44,7 +42,6 @@ export const GetInvolvedCards = ({ title = 'Get Involved', list }) => {
             ) : (
               <Link href={url} className="text-purple-600">
                 {urlName}
-                <MoveUpRight className="ml-2 inline" size={16} />
               </Link>
             )}
           </div>

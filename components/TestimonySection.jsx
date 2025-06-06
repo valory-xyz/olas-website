@@ -6,12 +6,14 @@ import { Card } from './ui/card';
 import { ExternalLink } from './ui/typography';
 
 export const TestimonySection = ({
+  id,
   isQuote = false,
   folderName,
   title,
   list,
 }) => (
   <SectionWrapper
+    id={id}
     customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
     backgroundType="NONE"
   >
