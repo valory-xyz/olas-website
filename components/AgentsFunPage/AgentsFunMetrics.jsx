@@ -4,6 +4,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const AgentsFunMetrics = () => (
   <SectionWrapper
+    id="about-agents-fun-economy"
     customClasses={`${SECTION_BOX_CLASS} lg:py-14 max-w-[650px] mx-auto flex gap-8 flex-col`}
   >
     <div className="max-w-[650px] text-center">

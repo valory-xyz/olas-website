@@ -23,6 +23,7 @@ const fetchMetrics = async () => {
 };
 
 const formatNumber = (num) => {
+  if (num === null || num === undefined) return null;
   const numTo1dp = Number(num?.toFixed(1));
   return `${numTo1dp}%`;
 };
@@ -53,7 +54,7 @@ export const OptimusAgentMetrics = () => {
   );
 
   return (
-    <SectionWrapper>
+    <SectionWrapper id="stats">
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         <div className="text-center mb-6">
           <span className="text-lg text-black max-w-fit">
@@ -69,7 +70,7 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (item.value === null) return '--';
+              if (!metrics || item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
                   {item.value}

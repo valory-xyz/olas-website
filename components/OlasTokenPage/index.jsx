@@ -171,7 +171,7 @@ const Supply = () => {
 
   return (
     <div className="text-black border-b" id="supply">
-      <SectionWrapper>
+      <SectionWrapper id="supply">
         <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">
           Supply
         </div>
@@ -184,10 +184,13 @@ const Supply = () => {
             <SupplyPieChart epoch={epoch} split={split} loading={loading} />
           </div>
 
-          <div className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0">
+          <div
+            id="max-emission-schedule"
+            className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0"
+          >
             <div id="emission-schedule" />
             <div className="p-4 border-b">
-              <h2 className="text-xl mb-2 font-bold">Emission Schedule</h2>
+              <h2 className="text-xl mb-2 font-bold">Max Emission Schedule</h2>
               <p className="text-slate-500">
                 What is the maximum amount of OLAS that can be minted by the
                 protocol over time?
@@ -202,19 +205,6 @@ const Supply = () => {
           </div>
 
           <div className="border rounded-lg mb-8 lg:mb-0">
-            <div id="emissions-schedule" />
-            <div className="p-4 border-b">
-              <h2 className="text-xl mb-2 font-bold">Emissions Schedule</h2>
-              <p className="text-slate-500">
-                What are the OLAS emissions per epoch
-              </p>
-            </div>
-            <div className="p-4">
-              <ActualEmissionsChart emissions={emissions} loading={loading} />
-            </div>
-          </div>
-
-          <div className="border rounded-lg mb-8 lg:mb-0">
             <div id="current-usage" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Current Usage</h2>
@@ -224,6 +214,19 @@ const Supply = () => {
             </div>
             <div className="p-4">
               <UsagePieChart epoch={epoch} split={split} loading={loading} />
+            </div>
+          </div>
+
+          <div id="actual-emissions" className="border rounded-lg mb-8 lg:mb-0">
+            <div id="emissions-schedule" />
+            <div className="p-4 border-b">
+              <h2 className="text-xl mb-2 font-bold">Actual Emissions</h2>
+              <p className="text-slate-500">
+                What are the OLAS emissions per epoch
+              </p>
+            </div>
+            <div className="p-4">
+              <ActualEmissionsChart emissions={emissions} loading={loading} />
             </div>
           </div>
 

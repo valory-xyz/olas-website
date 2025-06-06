@@ -14,7 +14,7 @@ const HeroImage = () => (
 
 const ExploreBabydegens = () => (
   <Button variant="default" size="xl" asChild className="max-md:grow">
-    <a href="#meet-the-babydegens">Explore Babydegens</a>
+    <a href="#agents">Explore Babydegens</a>
   </Button>
 );
 

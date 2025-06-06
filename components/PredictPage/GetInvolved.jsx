@@ -26,7 +26,7 @@ const list = [
   },
 ];
 
-const Content = () => <GetInvolvedCards list={list} />;
+const Content = () => <GetInvolvedCards id="get-started" list={list} />;
 
 export const PredictFooter = () => (
   <SectionWrapper

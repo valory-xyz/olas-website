@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export const OwnYourAgent = () => (
   <SectionWrapper
-    id="own-your-agent"
+    id="pearl"
     customClasses="py-12 px-4 md:px-8 lg:p-24 bg-gradient-to-t from-slate-200 to-slate-50 border-y-1.5"
   >
     <div className="text-center max-w-[900px] mx-auto">

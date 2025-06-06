@@ -25,7 +25,7 @@ const OnDemand = (
 
 const GetInvolved = () => (
   <Button variant="default" size="xl" asChild className="max-xl:grow">
-    <a href="#grow">Get involved</a>
+    <a href="#get-started">Get involved</a>
   </Button>
 );
 

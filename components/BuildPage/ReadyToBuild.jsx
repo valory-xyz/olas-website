@@ -25,7 +25,7 @@ export const ReadyToBuild = () => (
   <SectionWrapper
     backgroundType="NONE"
     customClasses=" pt-8 pb-16 md:pb-24 px-4 border-b"
-    id="grow"
+    id="get-started"
   >
     <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>
       READY TO BUILD?

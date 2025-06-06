@@ -15,7 +15,7 @@ const HeroImage = () => (
 
 const GetStarted = () => (
   <Button variant="default" size="xl" asChild className="grow">
-    <a href="#grow">Get started</a>
+    <a href="#get-started">Get started</a>
   </Button>
 );
 

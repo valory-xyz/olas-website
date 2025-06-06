@@ -26,5 +26,9 @@ const list = [
 ];
 
 export const LearnMoreAboutTokenomics = () => (
-  <GetInvolvedCards title="Learn more about tokenomics" list={list} />
+  <GetInvolvedCards
+    id="learn-more-about-tokenomics"
+    title="Learn more about tokenomics"
+    list={list}
+  />
 );

@@ -11,12 +11,10 @@ const criteria = [
     desc: (
       <ol className="list-decimal ml-6">
         <li className="mb-2">
-          <p className="mb-2">
-            How well is the agent integrated into the Pearl App?
-          </p>
+          <p className="mb-2">How well is the agent integrated into Pearl?</p>
           <ol className="list-[lower-alpha] ml-6">
             <li className="mb-2">
-              Users run your AI Agent locally on their devices.
+              Users can run your AI Agent locally on their devices.
             </li>
             <li className="mb-2">
               Agents will act autonomously on the user&apos;s behalf.
@@ -37,11 +35,9 @@ const criteria = [
     desc: (
       <ol className="list-decimal ml-6">
         <li className="mb-2">
-          How likely is the agent to attract and retain DAA users?
+          How likely is the agent to attract and retain DAAs?
         </li>
-        <li className="mb-2">
-          Does it contribute to the growth of Pearl&apos;s user base?
-        </li>
+        <li className="mb-2">Does it contribute to the growth of Pearl?</li>
         <li className="mb-2">
           Why would Pearl users want to operate your agent? What does it do for
           them?
@@ -58,7 +54,7 @@ const criteria = [
     desc: (
       <ol className="list-decimal ml-6">
         <li className="mb-2">
-          Does the agent enhance the functionality and appeal of the Pearl App?
+          Does the agent enhance the functionality and appeal of Pearl?
         </li>
         <li className="mb-2">
           How does your agent use case benefit from having multiple operators?
@@ -93,7 +89,7 @@ export const EvaluationCriteria = () => (
         <h2 className={`${SUB_HEADER_CLASS} font-semibold my-8`}>
           What support is provided?
         </h2>
-        Selected teams will enter a 6-12 week self-paced development phase to
+        Selected teams will enter a 12 week self-paced development phase to
         build their MVPs. <br />
         <div className="flex flex-row gap-2">
           <div className="text-purple-600">-&gt;</div>

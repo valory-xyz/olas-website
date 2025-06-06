@@ -1,8 +1,5 @@
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
-const { default: SectionWrapper } = require('components/Layout/SectionWrapper');
-const { MoveUpRight } = require('lucide-react');
-
 const resources = [
   {
     title: 'Contribute a strategy',
@@ -20,5 +17,9 @@ const resources = [
 ];
 
 export const FurtherResources = () => (
-  <GetInvolvedCards title="Further resources" list={resources} />
+  <GetInvolvedCards
+    id="babydegen-resources"
+    title="Further resources"
+    list={resources}
+  />
 );

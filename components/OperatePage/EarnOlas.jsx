@@ -2,7 +2,7 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const EarnOlas = () => (
-  <SectionWrapper>
+  <SectionWrapper id="about">
     <div className="max-w-[648px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
         Earn OLAS for Running AI Agents

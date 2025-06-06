@@ -8,7 +8,10 @@ const list = [
 ];
 
 export const WhatToExpect = () => (
-  <SectionWrapper customClasses="max-sm:mx-0 mx-8 xl:mx-auto max-w-[1000px] mb-24">
+  <SectionWrapper
+    id="what-to-expect"
+    customClasses="max-sm:mx-0 mx-8 xl:mx-auto max-w-[1000px] mb-24"
+  >
     <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center`}>What to expect</h2>
 
     <div className="grid grid-cols-1 gap-6">

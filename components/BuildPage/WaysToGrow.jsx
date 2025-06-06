@@ -100,7 +100,7 @@ export const WaysToGrow = () => {
     <SectionWrapper
       backgroundType="NONE"
       customClasses="py-16 md:py-24 px-4"
-      id="grow"
+      id="why-build"
     >
       <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
         Three ways to grow and earn as an Olas Builder

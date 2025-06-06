@@ -75,7 +75,10 @@ const CARD_BG =
   'border-1.5 border-gray-200 rounded-2xl p-6 bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] hover:from-[#F1DBFF] hover:to-[#FDFAFF] hover:border-[#EFCFFF] hover:-translate-y-2 ease-in-out transition duration-150';
 
 const GetInvolved = () => (
-  <SectionWrapper id="get-involved" customClasses="py-12 px-4 md:px-8 lg:p-24">
+  <SectionWrapper
+    id="choose-your-role"
+    customClasses="py-12 px-4 md:px-8 lg:p-24"
+  >
     <div className="text-center max-w-[640px] mx-auto">
       <SectionHeading
         size="max-sm:text-5xl"

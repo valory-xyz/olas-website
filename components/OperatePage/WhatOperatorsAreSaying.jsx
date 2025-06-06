@@ -21,6 +21,7 @@ const tweets = [
 
 export const WhatOperatorsAreSaying = () => (
   <TestimonySection
+    id="social-proof"
     folderName="operate-page"
     title="What Operators are saying"
     list={tweets}

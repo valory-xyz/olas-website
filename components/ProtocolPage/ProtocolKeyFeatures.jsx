@@ -58,7 +58,10 @@ const mainList = [
 ];
 
 export const ProtocolKeyFeatures = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
+  <SectionWrapper
+    id="key-components"
+    customClasses="lg:p-24 px-4 py-12 border-y"
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <div>
         The Olas Protocol provides a framework for coordinating and managing{' '}

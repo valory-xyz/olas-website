@@ -43,14 +43,13 @@ const agents = [
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
     link: '/services/babydegen#optimus-agent',
-    isComingSoon: true,
     imgSrc: 'optimus.png',
     bgColour: 'rose',
   },
 ];
 
 const AgentsList = () => (
-  <>
+  <div id="ai-agents">
     <h2
       className={`${SUB_HEADER_CLASS} mb-4 font-semibold text-center mb-14 lg:mb-14`}
     >
@@ -117,7 +116,7 @@ const AgentsList = () => (
     <div className="border w-fit rounded-full px-4 py-1 mt-12 mx-auto">
       And more agents launching soon
     </div>
-  </>
+  </div>
 );
 
 const ReadyToRun = () => (
@@ -166,7 +165,7 @@ export const MeetPearlContent = () => (
 );
 
 export const MeetPearl = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS}`}>
+  <SectionWrapper id="about" customClasses={`${SECTION_BOX_CLASS}`}>
     <MeetPearlContent />
     <AgentsList />
     <ReadyToRun />

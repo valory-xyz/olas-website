@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 export const MechAgentsInAction = () => (
   <SectionWrapper
+    id="sample-use-case"
     customClasses={`border-b bg-gradient-to-t from-slate-200 to-slate-50 ${SECTION_BOX_CLASS}`}
   >
     <div className="mx-auto max-w-6xl flex flex-col gap-14">

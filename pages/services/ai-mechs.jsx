@@ -81,10 +81,10 @@ const AiMechs = () => (
           </Lead>
           <div className="grid md:grid-cols-2 gap-8">
             <Button size="xl" asChild variant="default">
-              <a href="#resourcesSection">Learn more</a>
+              <a href="#mech-resources">Learn more</a>
             </Button>
             <Button size="xl" asChild variant="outline">
-              <a href="#integrateMechsSection">Integrate Mechs</a>
+              <a href="#integrate">Integrate Mechs</a>
             </Button>
           </div>
         </div>
@@ -99,7 +99,7 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
+    <SectionWrapper id="about" customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H2 className="mb-8">What are Mech agents?</H2>
@@ -120,7 +120,7 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper>
+    <SectionWrapper id="why-mechs">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H2 className="mb-8">Why do we need mechs?</H2>
@@ -133,7 +133,10 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
+    <SectionWrapper
+      id="how-it-works"
+      customClasses="lg:p-24 px-4 py-12 border-y"
+    >
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0">
           <H2 className="mb-8">How it works</H2>
@@ -161,7 +164,7 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper>
+    <SectionWrapper id="use-case">
       <H2 className="text-center mb-12">Case study: Mechs Predictions</H2>
       <PredictionAgentsTable />
       <Lead className="mt-12 text-center">
@@ -172,10 +175,7 @@ const AiMechs = () => (
         for more information on Prediction Agents
       </Lead>
     </SectionWrapper>
-    <SectionWrapper
-      customClasses="lg:p-24 px-4 py-12 border-y"
-      id="integrateMechsSection"
-    >
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="integrate">
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
           <H2 className="mb-8">Integrate Mechs into your application</H2>
@@ -220,7 +220,7 @@ const AiMechs = () => (
     </SectionWrapper>
     <SectionWrapper
       customClasses="lg:p-24 px-4 py-12 border-b"
-      id="resourcesSection"
+      id="mech-resources"
     >
       <div className="max-w-screen-lg mx-auto">
         <H2 className="text-center mb-12">Further resources</H2>

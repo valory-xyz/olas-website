@@ -8,7 +8,7 @@ import Link from 'next/link';
 export const Join = () => (
   <SectionWrapper
     customClasses="max-sm:mt-24 max-sm:mx-6 mb-8"
-    id="join-the-agent-economy"
+    id="get-started"
   >
     <Card className="max-w-[720px] mx-auto p-8 border-fuchsia-200 ring-8 ring-purple-50">
       <Image

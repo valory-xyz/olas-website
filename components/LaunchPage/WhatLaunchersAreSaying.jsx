@@ -71,6 +71,7 @@ const quotes = [
 
 export const WhatLaunchersAreSaying = () => (
   <TestimonySection
+    id="social-proof"
     isQuote
     folderName="launch-page"
     title="What Launchers are saying"

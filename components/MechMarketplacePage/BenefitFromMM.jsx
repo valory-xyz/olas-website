@@ -9,6 +9,7 @@ import Link from 'next/link';
 const list = [
   {
     title: 'Hire Mech Agents',
+    anchor: 'hire-mechs',
     imgUrl: '/images/mech-marketplace/hire-mech-agents.png',
     content: (
       <div>
@@ -52,6 +53,7 @@ const list = [
   },
   {
     title: 'Monetize Your Agent',
+    anchor: 'monetize',
     imgUrl: '/images/mech-marketplace/monetize-your-agent.png',
     content: (
       <div>
@@ -92,7 +94,7 @@ const list = [
 
 export const BenefitFromMM = () => (
   <SectionWrapper
-    id="benefit-from-mech-marketplace"
+    id="get-involved"
     customClasses="max-md:py-12 max-md:p-4 max-lg:px-4 lg:my-32"
   >
     <div className="text-center max-w-[870px] mx-auto flex flex-col gap-8 md:gap-20">
@@ -106,7 +108,11 @@ export const BenefitFromMM = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (
-          <Card key={item.title} className={`flex flex-col w-full p-6`}>
+          <Card
+            key={item.title}
+            id={item.anchor}
+            className={`flex flex-col w-full p-6`}
+          >
             <Image
               alt={item.title}
               src={item.imgUrl}

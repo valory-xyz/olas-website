@@ -41,12 +41,12 @@ const list = [
 ];
 
 export const WhyBecomeAnOperator = () => (
-  <SectionWrapper>
+  <SectionWrapper id="why-operate">
     <div className="max-w-screen-xl mx-auto lg:px-12">
       <h2
         className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
       >
-        Why become an Olas Contributor?
+        Why become an Olas Operator?
       </h2>
       <InfoCardList cards={list} />
     </div>

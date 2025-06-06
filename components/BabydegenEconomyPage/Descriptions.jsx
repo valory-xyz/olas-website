@@ -47,7 +47,7 @@ const babydegens = [
 ];
 
 const WhatIsOptimus = () => (
-  <div className="max-w-screen-sm mx-auto">
+  <div id="about" className="max-w-screen-sm mx-auto">
     <h1 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
       AI Agents That Evolve Your DeFi Strategy
     </h1>
@@ -74,7 +74,7 @@ const WhatIsOptimus = () => (
 );
 
 const AgentTypes = () => (
-  <div id="babydegens-live-now">
+  <div id="sub-economies">
     <h1
       className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}
     >

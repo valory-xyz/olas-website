@@ -22,7 +22,7 @@ export const Hero = () => (
         className="mx-auto mb-8 md:mb-12"
       />
       <div className={`font-semibold ${SUB_HEADER_CLASS} mb-4`}>
-        Try running your first AI Agent today
+        Run Your First AI Agent Today
       </div>
       <div className={TEXT_SMALL_CLASS}>
         Run an AI Agent on Pearl: The Agent App Store!
@@ -33,7 +33,7 @@ export const Hero = () => (
         asChild
         className="my-6 w-full md:w-auto"
       >
-        <Link href="/operate">Explore</Link>
+        <Link href="/pearl">Run an Agent</Link>
       </Button>
     </div>
   </SectionWrapper>

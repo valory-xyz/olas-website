@@ -74,6 +74,7 @@ const quotes = [
 
 export const WhatBuildersAreSaying = () => (
   <TestimonySection
+    id="social-proof"
     isQuote
     folderName="build-page"
     title="What Builders are saying"

@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 export const WhyBondingMatters = () => (
   <SectionWrapper
+    id="why-bonding-matters-to-olas"
     customClasses={`${SECTION_BOX_CLASS}`}
     backgroundType="NONE"
     customStyle={{

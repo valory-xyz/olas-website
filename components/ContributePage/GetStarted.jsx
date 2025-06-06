@@ -52,7 +52,10 @@ const steps = [
 ];
 
 export const GetStarted = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}>
+  <SectionWrapper
+    id="get-started"
+    customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>
         Get started as an Olas Contributor

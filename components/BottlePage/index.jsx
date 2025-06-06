@@ -1,10 +1,10 @@
-import { Events } from './Events';
+import { BottleCards } from './BottleCards';
 import { Hero } from './Hero';
 
 const Bottle = () => (
   <>
     <Hero />
-    <Events />
+    <BottleCards />
   </>
 );
 

@@ -60,8 +60,12 @@ const gettingStarted = [
 ];
 
 const mainList = [
-  { mainTitle: 'Key Features', list: keyFeatures },
-  { mainTitle: 'Getting Started with Olas Stack', list: gettingStarted },
+  { mainTitle: 'Key Features', anchor: 'key-features', list: keyFeatures },
+  {
+    mainTitle: 'Getting Started with Olas Stack',
+    anchor: 'get-started',
+    list: gettingStarted,
+  },
 ];
 
 export const StackKeyFeatures = () => (
@@ -78,8 +82,8 @@ export const StackKeyFeatures = () => (
         with ease and efficiency.
       </p>
 
-      {mainList.map(({ mainTitle, list }) => (
-        <Fragment key={mainTitle}>
+      {mainList.map(({ mainTitle, anchor, list }) => (
+        <div id={anchor} key={mainTitle}>
           <p className={`${TEXT_LARGE_CLASS} font-bold`}>{mainTitle}</p>
 
           <ul className="list-disc ml-4">
@@ -92,7 +96,7 @@ export const StackKeyFeatures = () => (
               </li>
             ))}
           </ul>
-        </Fragment>
+        </div>
       ))}
     </div>
   </SectionWrapper>

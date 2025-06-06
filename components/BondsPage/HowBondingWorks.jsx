@@ -46,7 +46,7 @@ const steps = [
           channels
         </ExternalLink>{' '}
         and{' '}
-        <ExternalLink href="https://discord.com/invite/z2PT65jKqQ">
+        <ExternalLink href="https://discord.gg/BQzYqhjGjQ">
           engage with the Olas community
         </ExternalLink>{' '}
         to discover resources and say on top of new updates.
@@ -56,7 +56,10 @@ const steps = [
 ];
 
 export const HowBondingWorks = () => (
-  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}>
+  <SectionWrapper
+    id="how-it-works"
+    customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
+  >
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>How bonding works</h2>
 
