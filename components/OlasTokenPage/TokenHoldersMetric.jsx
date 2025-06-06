@@ -1,4 +1,5 @@
 import { getTotalTokenHolders } from 'common-util/api/flipside';
+import { FLIPSIDE_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';

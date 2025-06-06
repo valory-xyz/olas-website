@@ -7,7 +7,11 @@ import {
   getTotalTransactionsCount,
   getTotalUnitsCount,
 } from 'common-util/api/flipside';
-import { DUNE_QUERY_URL, FLIPSIDE_URL } from 'common-util/constants';
+import {
+  DUNE_QUERY_URL,
+  FLIPSIDE_QUERY_URL,
+  FLIPSIDE_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';

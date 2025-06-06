@@ -2,6 +2,7 @@ import {
   getVeOlasCirculatingSupply,
   getVeOlasHolders,
 } from 'common-util/api/flipside';
+import { FLIPSIDE_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
