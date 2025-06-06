@@ -28,8 +28,7 @@ const UNITS_COUNT_ID = '0648695d-0383-4154-afda-e0bb153b1b70';
 export const getTotalUnitsCount = async () => {
   const result = await flipsideCryptoApiCall({ queryId: UNITS_COUNT_ID });
   const agentTypesCount = get(result, '[1].TOTAL_MINTS') || null;
-  const agentsCount = get(result, '[0].TOTAL_MINTS') || null;
-  return { agentTypesCount, agentsCount };
+  return agentTypesCount;
 };
 
 const DAILY_ACTIVITY_ID = 'd874c1cb-a38d-4e11-bbe2-bc0c409b22c1';
@@ -37,19 +36,6 @@ export const get7DaysAvgActivity = async () => {
   const result = await flipsideCryptoApiCall({ queryId: DAILY_ACTIVITY_ID });
   const average = get(result, "[0]['7-day trailing avg']") || null;
   return Math.floor(average);
-};
-
-const A2A_TRANSACTIONS_ID = '7e9a5b20-b6e6-47d7-8420-2410542085d5';
-export const getA2ATransactions = async () => {
-  try {
-    const result = await flipsideCryptoApiCall({
-      queryId: A2A_TRANSACTIONS_ID,
-    });
-    const a2aTxs = get(result, "[1]['CUMULATIVE_TOTAL']") || null;
-    return a2aTxs;
-  } catch (error) {
-    console.error('Error in getA2ATransactions: ', error);
-  }
 };
 
 const SEVEN_DAY_AVG_DAILY_ACTIVE_AGENTS_ID =
@@ -124,21 +110,35 @@ export const getTotalProtocolOwnedLiquidity = async () => {
 };
 
 const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID =
-  '188ecbaa-82bf-420f-b1f2-a43740ac51f4';
+  '377d716e-6ef5-44e1-a1dd-8af9b4b75a38';
 export const getTotalProtocolRevenue = async () => {
   try {
     const result = await flipsideCryptoApiCall({
       queryId: TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
     });
-    const totalProtocolRevenue = get(result, "[0]['TOTAL_FEE']") || null;
+    const totalProtocolRevenue =
+      get(result, "[0]['Total protocol earned fee']") || null;
     return totalProtocolRevenue;
   } catch (error) {
     console.error('Error in getTotalProtocolRevenue: ', error);
   }
 };
 
+const VEOLAS_HOLDERS_ID = '2c18d82a-a51d-40e0-9944-f874c99ca52c';
+export const getVeOlasHolders = async () => {
+  try {
+    const result = await flipsideCryptoApiCall({
+      queryId: VEOLAS_HOLDERS_ID,
+    });
+    const veOlasHolders = get(result, "[0]['UNIQUE_DEPOSITOR_COUNT']") || null;
+    return veOlasHolders;
+  } catch (error) {
+    console.error('Error in getVeOlasHolders: ', error);
+  }
+};
+
 const VEOLAS_CIRCULATING_SUPPLY_ID = '3d387d8d-0324-4476-b6b6-96ec2f4c60c1';
-export const getVeOLASCirculatingSupply = async () => {
+export const getVeOlasCirculatingSupply = async () => {
   try {
     const result = await flipsideCryptoApiCall({
       queryId: VEOLAS_CIRCULATING_SUPPLY_ID,
@@ -146,6 +146,6 @@ export const getVeOLASCirculatingSupply = async () => {
     const veOLASCirculatingSupply = get(result, "[0]['CIR_SUPPLY']") || null;
     return veOLASCirculatingSupply;
   } catch (error) {
-    console.error('Error in getVeOLASCirculatingSupply: ', error);
+    console.error('Error in getVeOlasCirculatingSupply: ', error);
   }
 };

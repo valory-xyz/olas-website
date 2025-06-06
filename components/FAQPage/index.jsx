@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { LinkIcon } from 'lucide-react';
 
+import { FLIPSIDE_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
@@ -322,7 +323,7 @@ const faqList = [
               inception of OLAS, and for convenience, on Flipside dashboards
               like this one{' '}
               <Link
-                href="https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda"
+                href={FLIPSIDE_URL}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -612,6 +613,14 @@ Question.propTypes = {
 const FAQPage = () => (
   <div className="p-4 max-w-screen-sm mx-auto text-slate-800">
     <h1 className="text-5xl font-extrabold mb-12 mt-8 text-slate-800">FAQ</h1>
+
+    <div className="mb-8">
+      Have a question about Pearl: The &quot;Agent App Store&quot;?{' '}
+      <Link href="/pearl#faq" className="text-purple-600">
+        Check out the Pearl FAQ
+      </Link>
+      .
+    </div>
 
     {faqList.map((eachSet, setIndex) => (
       <div
