@@ -1,9 +1,13 @@
 import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
-import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 import SectionWrapper from './Layout/SectionWrapper';
+import { ExternalLink } from './ui/typography';
 
-export const GetInvolvedCards = ({ id, title = 'Get Involved', list }) => {
+export const GetInvolvedCards = ({
+  id = 'get-involved',
+  title = 'Get Involved',
+  list,
+}) => {
   const listLength = list.length;
   const sectionWidth = listLength === 2 ? 'max-w-screen-xl' : '';
 
@@ -30,15 +34,7 @@ export const GetInvolvedCards = ({ id, title = 'Get Involved', list }) => {
 
             <p className={TEXT_CLASS}>{desc}</p>
             {isExternal ? (
-              <a
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-purple-600"
-              >
-                {urlName}
-                <MoveUpRight className="ml-2 inline" size={16} />
-              </a>
+              <ExternalLink href={url}>{urlName}</ExternalLink>
             ) : (
               <Link href={url} className="text-purple-600">
                 {urlName}

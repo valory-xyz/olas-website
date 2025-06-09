@@ -17,6 +17,4 @@ const list = [
   },
 ];
 
-export const GetInvolved = () => (
-  <GetInvolvedCards id="get-involved" list={list} />
-);
+export const GetInvolved = () => <GetInvolvedCards list={list} />;

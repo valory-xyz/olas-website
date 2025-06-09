@@ -18,7 +18,6 @@ const AgentsFun = () => (
       <PoweringAnEconomy />
       <HowTheEconomyWorks />
       <JoinTheAgentEconomy />
-      {/* <CTA /> */}
     </div>
   </PageWrapper>
 );

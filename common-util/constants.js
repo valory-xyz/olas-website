@@ -50,3 +50,5 @@ export const ACCELERATOR_APPLY_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSed_jc5XNlnib0m9yG2IRo8_PKFNPwp0DFTdbph4LpR9E9uhg/viewform';
 
 export const QUICKSTART_URL = 'https://github.com/valory-xyz/quickstart';
+
+export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';

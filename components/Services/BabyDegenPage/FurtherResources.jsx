@@ -1,3 +1,4 @@
+import { DISCORD_INVITE_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
 const resources = [
@@ -5,13 +6,13 @@ const resources = [
     title: 'Contribute a strategy',
     description:
       'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
-    url: 'https://discord.gg/RHY6eJ35ar',
+    url: { DISCORD_INVITE_URL },
     urlName: 'Reach out on Discord',
   },
   {
     title: 'Join as an Alpha tester',
     description: 'Keen on being at the forefront of trading innovation?',
-    url: 'https://discord.gg/RHY6eJ35ar',
+    url: { DISCORD_INVITE_URL },
     urlName: 'Reach out on Discord',
   },
 ];

@@ -1,13 +1,14 @@
-import { Fragment } from 'react';
 import Link from 'next/link';
+import { Fragment } from 'react';
 
 import {
-  SECTION_BOX_CLASS,
   SCREEN_WIDTH_LG,
+  SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
-import { Button } from 'components/ui/button';
+import { LAUNCH_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 
 const steps = [
   {
@@ -54,7 +55,7 @@ export const CreateYourAgentEconomyToday = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href="https://launch.olas.network/">Get Started</Link>
+          <Link href={LAUNCH_URL}>Get Started</Link>
         </Button>
       </div>
     </div>
