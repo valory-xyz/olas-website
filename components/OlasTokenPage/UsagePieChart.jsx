@@ -98,7 +98,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
       <div className="flex flex-row gap-3 text-slate-400 mb-4">
         <p>Verify: </p>
         {verifyLinks.map((link, index) => (
-          <Verify key={`Verify ${index}`} url={link} text={index} />
+          <Verify key={`Verify ${index + 1}`} url={link} text={index} />
         ))}
       </div>
       <p className="text-slate-500">
