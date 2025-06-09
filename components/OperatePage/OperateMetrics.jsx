@@ -1,6 +1,9 @@
 import { getTotalUniqueStakers } from 'common-util/api/dune';
 import { get7DaysAvgActivity } from 'common-util/api/flipside';
-import { DUNE_QUERY_URL, FLIPSIDE_QUERY_URL } from 'common-util/constants';
+import {
+  DUNE_OPERATORS_QUERY_URL,
+  FLIPSIDE_DAAS_QUERY_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -33,7 +36,7 @@ export const OperateMetrics = () => {
         labelText: 'Operators',
         subText: 'All-time unique agent Operators',
         value: metrics?.totalUniqueStakers?.toLocaleString(),
-        source: `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`,
+        source: DUNE_OPERATORS_QUERY_URL,
       },
       {
         id: 'DAA',
@@ -41,7 +44,7 @@ export const OperateMetrics = () => {
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
         value: metrics?.dailyActiveAgents?.toLocaleString(),
-        source: `${FLIPSIDE_QUERY_URL}9u9HmWdL4ioR/daily-active-autonomous-services/visualizations/8e57f727-bbc7-4fb7-80ee-6654214e5020`,
+        source: FLIPSIDE_DAAS_QUERY_URL,
       },
     ],
     [metrics],

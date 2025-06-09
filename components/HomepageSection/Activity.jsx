@@ -8,8 +8,9 @@ import {
   getTotalUnitsCount,
 } from 'common-util/api/flipside';
 import {
-  DUNE_QUERY_URL,
-  FLIPSIDE_QUERY_URL,
+  DUNE_A2A_TRANSACTIONS_QUERY_URL,
+  DUNE_AGENTS_QUERY_URL,
+  FLIPSIDE_DAAS_QUERY_URL,
   FLIPSIDE_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -64,7 +65,7 @@ export const Activity = () => {
             {metrics?.a2aTransactions ? (
               <ExternalLink
                 className="text-2xl font-bold text-purple-600"
-                href={`${DUNE_QUERY_URL}/5204254/8561534`}
+                href={DUNE_A2A_TRANSACTIONS_QUERY_URL}
               >
                 {metrics.a2aTransactions.toLocaleString()}
               </ExternalLink>
@@ -86,7 +87,7 @@ export const Activity = () => {
         id: 'agents',
         subText: 'agents deployed by Operators',
         value: metrics?.agents,
-        source: `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`,
+        source: DUNE_AGENTS_QUERY_URL,
         isExternal: true,
       },
       {
@@ -154,7 +155,7 @@ export const Activity = () => {
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={`${FLIPSIDE_QUERY_URL}9u9HmWdL4ioR/daily-active-autonomous-services/visualizations/8e57f727-bbc7-4fb7-80ee-6654214e5020`}
+              href={FLIPSIDE_DAAS_QUERY_URL}
               hideArrow
             >
               {metrics.dailyActiveAgents}

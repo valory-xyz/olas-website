@@ -1,5 +1,8 @@
 import { getMechTxs, getTotalMechTxs } from 'common-util/api/dune';
-import { DUNE_QUERY_URL } from 'common-util/constants';
+import {
+  DUNE_CLASSIFIED_REQUESTS_QUERY_URL,
+  DUNE_TOTAL_TRANSACTIONS_QUERY_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
@@ -114,7 +117,7 @@ export const MechAgentMetrics = () => {
           The Olas Mech agent economy is thriving, powering over{' '}
           <ExternalLink
             className="font-bold"
-            href={`${DUNE_QUERY_URL}/5194313/8548512`}
+            href={DUNE_TOTAL_TRANSACTIONS_QUERY_URL}
             hideArrow
           >
             {metrics?.totalTxs.toLocaleString()}&nbsp;↗
@@ -131,7 +134,7 @@ export const MechAgentMetrics = () => {
           const getValue = () => {
             if (!item.value) return '--';
             return (
-              <ExternalLink href={`${DUNE_QUERY_URL}/5195400`} hideArrow>
+              <ExternalLink href={DUNE_CLASSIFIED_REQUESTS_QUERY_URL} hideArrow>
                 {item.value}
                 <span className="text-2xl">↗</span>
               </ExternalLink>
