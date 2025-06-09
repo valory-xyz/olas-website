@@ -10,6 +10,12 @@ const READ_PROXY_ETHERSCAN_URL =
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
+const verifyLinks = [
+  `${READ_PROXY_ETHERSCAN_URL}F29`,
+  `${READ_PROXY_ETHERSCAN_URL}F32`,
+  `${READ_PROXY_ETHERSCAN_URL}F33`,
+];
+
 export const UsagePieChart = ({ epoch, split, loading }) => (
   <div>
     <div>
@@ -89,10 +95,11 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
           />
         )}
       </div>
-      <div className="flex flex-row gap-3 mb-4">
-        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F29`} />
-        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F32`} />
-        <Verify url={`${READ_PROXY_ETHERSCAN_URL}F33`} />
+      <div className="flex flex-row gap-3 text-slate-400 mb-4">
+        <p>Verify: </p>
+        {verifyLinks.map((link, index) => (
+          <Verify key={`Verify ${index}`} url={link} text={index} />
+        ))}
       </div>
       <p className="text-slate-500">
         DAO members can vote to update how newly minted tokens are distributed.
