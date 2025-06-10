@@ -1,4 +1,6 @@
 import { Client } from '@gradio/client';
+import fs from 'fs';
+import path from 'path';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -8,7 +10,6 @@ const CACHE_FILE_PATH = path.join(
   'optimus-metrics-cache.json',
 );
 
-// Ensure the data directory exists
 if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
   fs.mkdirSync(path.join(process.cwd(), 'data'));
 }
@@ -26,7 +27,7 @@ const fetchLatestMetric = async () => {
     const totalTraces = traces.length;
 
     if (totalTraces < MIN_TOTAL_TRACES) {
-      return res.status(404).json({ error: 'Not enough data traces found' });
+      throw new Error('Not enough data traces found');
     }
 
     // Extract the last two traces
@@ -37,7 +38,7 @@ const fetchLatestMetric = async () => {
     const latestAvgApr = avgApr[avgApr.length - 1];
 
     const data = {
-      data: { latestAvgApr: latestAvgApr, latestETHApr: latestETHApr },
+      data: { latestAvgApr, latestETHApr },
       timestamp: Date.now(),
     };
 
@@ -59,9 +60,7 @@ const getCachedData = () => {
   try {
     if (fs.existsSync(CACHE_FILE_PATH)) {
       const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf8');
-      const cachedData = JSON.parse(fileContent);
-
-      return cachedData;
+      return JSON.parse(fileContent);
     }
   } catch (error) {
     console.error('Error reading cache:', error);
