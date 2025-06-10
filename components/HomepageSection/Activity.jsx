@@ -122,7 +122,7 @@ export const Activity = () => {
           className="mx-auto mb-16"
         />
         <SectionHeading
-          size="max-sm:text-5xl"
+          size="lg:text-5xl"
           color="text-gray-900"
           weight="font-bold"
         >

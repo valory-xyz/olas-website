@@ -1,8 +1,5 @@
-import { MoveUpRight } from 'lucide-react';
-import Link from 'next/link';
-
-import { SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import { LAUNCH_URL } from 'common-util/constants';
+import { GetInvolvedCards } from 'components/GetInvolvedCards';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
@@ -29,41 +26,7 @@ const list = [
   },
 ];
 
-const Content = () => (
-  <SectionWrapper id="get-started">
-    <h2
-      className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-6 `}
-    >
-      Get Involved
-    </h2>
-
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {list.map(({ title, desc, icon, url, urlName, isExternal }) => (
-        <div
-          key={title}
-          className="lg:p-6 flex flex-col gap-2 p-4 rounded-xl border border-l-4"
-        >
-          <div className="flex items-center">
-            {icon}
-            <h2 className="text-xl font-semibold">{title}</h2>
-          </div>
-
-          <p className={TEXT_CLASS}>{desc}</p>
-          {isExternal ? (
-            <a href={url} className="text-purple-600">
-              {urlName}
-              <MoveUpRight className="ml-2 inline" size={16} />
-            </a>
-          ) : (
-            <Link href={url} className="text-purple-600">
-              {urlName}
-            </Link>
-          )}
-        </div>
-      ))}
-    </div>
-  </SectionWrapper>
-);
+const Content = () => <GetInvolvedCards id="get-started" list={list} />;
 
 export const PredictFooter = () => (
   <SectionWrapper

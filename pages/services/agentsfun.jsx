@@ -1,56 +1,45 @@
-import {
-  MAIN_TITLE_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
-} from 'common-util/classes';
+import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { HeroSection } from 'components/HeroSection';
 import { InfoCardList } from 'components/InfoCardList';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
+import { TestimonySection } from 'components/TestimonySection';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const HeroLeftContent = () => (
-  <div className="lg:col-span-6 px-5 lg:p-0 lg:text-left w-auto mb-12 my-auto">
-    <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} italic`}>AGENTS.FUN AGENTS</h1>
-    <div className={`${MAIN_TITLE_CLASS} mb-6 lg:w-[650px]`}>
-      AI Agent influencers <br /> that do more than just post
-    </div>
+const HeroImage = () => (
+  <Image
+    src="/images/services/agentsfun/agentsfun.png"
+    alt="Agents.fun"
+    width={400}
+    height={400}
+    className="mx-auto rounded-lg"
+  />
+);
 
-    <div className={`${TEXT_SMALL_CLASS} mb-6`}>
-      Launch your personal AI influencer agent that posts, benefits from
-      memecoins, and interacts with other influencer agents — 24/7.
-    </div>
-
-    <Button variant="default" size="xl" asChild className="grow lg:w-auto ">
-      <a href="#choose-agent">Explore</a>
-    </Button>
+const AIAgentInfluencers = (
+  <div>
+    AI Agent influencers <br /> that do more than just post
   </div>
 );
 
-const HeroRightContent = () => (
-  <div className="lg:mt-0 lg:col-span-4 lg:col-end-13 lg:flex">
-    <Image
-      src="/images/services/agentsfun/agentsfun.png"
-      alt="Agents.fun"
-      width={400}
-      height={400}
-      className="mx-auto max-sm:p-8 rounded-lg"
-    />
-  </div>
+const Explore = () => (
+  <Button variant="default" size="xl" asChild className="max-md:grow">
+    <a href="#choose-agent">Explore</a>
+  </Button>
 );
 
 const Hero = () => (
-  <SectionWrapper customClasses="border-y" backgroundType="SUBTLE_GRADIENT">
-    <div className="max-w-screen-xl xl:gap-0 lg:gap-8 lg:grid-cols-12 lg:px-16 grid mx-auto my-24 items-center">
-      <HeroLeftContent />
-      <HeroRightContent />
-    </div>
-  </SectionWrapper>
+  <HeroSection
+    HeroImage={HeroImage}
+    pageName="AGENTS.FUN AGENTS"
+    title={AIAgentInfluencers}
+    description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
+    PrimaryButton={Explore}
+  />
 );
 
 const list = [
@@ -113,40 +102,30 @@ const TheFuture = () => (
 
 const tweets = [
   {
-    imgSrc: '/images/services/agentsfun/johnny-s-tweet.png',
+    imgSrc: 'johnny-s-tweet.png',
     linkUrl: 'https://x.com/johnny_v_good/status/1877295112499114045',
   },
   {
-    imgSrc: '/images/services/agentsfun/agent-z-tweet.png',
+    imgSrc: 'agent-z-tweet.png',
     linkUrl: 'https://x.com/agentzeeeee/status/1876989678508728808',
   },
   {
-    imgSrc: '/images/services/agentsfun/mr-cat-tweet.png',
+    imgSrc: 'mr-cat-tweet.png',
     linkUrl: 'https://x.com/0xJohnAlter/status/1878747162600980784',
   },
   {
-    imgSrc: '/images/services/agentsfun/inferno-agent-tweet.png',
+    imgSrc: 'inferno-agent-tweet.png',
     linkUrl: 'https://x.com/InfernoAgent_AI/status/1880087399394603098',
   },
 ];
 
 const FirstAgents = () => (
-  <SectionWrapper
+  <TestimonySection
     id="use-case"
-    customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
-    backgroundType="NONE"
-  >
-    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
-      The first agents are already having fun together
-    </h2>
-    <div className="flex flex-col flex-wrap w-fit lg:h-[580px] mx-auto">
-      {tweets.map((tweet, index) => (
-        <ExternalLink href={tweet.linkUrl} key={index} hideArrow>
-          <Image src={tweet.imgSrc} alt="Contribute" width={500} height={200} />
-        </ExternalLink>
-      ))}
-    </div>
-  </SectionWrapper>
+    folderName="services/agentsfun"
+    title="The first agents are already having fun together"
+    list={tweets}
+  />
 );
 
 const funAgents = [
