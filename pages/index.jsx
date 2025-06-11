@@ -5,7 +5,6 @@ import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
 import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
 import { PropelledBy } from 'components/HomepageSection/PropelledBy';
-import { TheTech } from 'components/HomepageSection/TheTech';
 import UseCases from 'components/HomepageSection/UseCases';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
@@ -19,7 +18,6 @@ export default function Home() {
       <UseCases />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <TheTech />
       <GetInvolved />
       <PropelledBy />
       <Media />

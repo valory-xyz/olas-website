@@ -1,5 +1,5 @@
 import { getTotalTokenHolders } from 'common-util/api/flipside';
-import { FLIPSIDE_URL } from 'common-util/constants';
+import { FLIPSIDE_TOTAL_HOLDERS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -38,7 +38,7 @@ export const TokenHoldersMetric = () => {
         {metrics?.totalTokenHolders ? (
           <ExternalLink
             className="font-extrabold text-6xl"
-            href={`${FLIPSIDE_URL}?tabIndex=3`}
+            href={FLIPSIDE_TOTAL_HOLDERS_QUERY_URL}
             target="_blank"
             hideArrow
           >

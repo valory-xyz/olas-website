@@ -1,13 +1,12 @@
 import { getFeeFlowMetrics } from 'common-util/api/dune';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { DUNE_MMV2_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
 import { usePersistentSWR, useWindowWidth } from 'hooks';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Chart } from 'react-google-charts';
-
-const DUNE_MMV2_URL = 'https://dune.com/queries/5103896/8420267';
 
 const fetchMetrics = async () => {
   try {

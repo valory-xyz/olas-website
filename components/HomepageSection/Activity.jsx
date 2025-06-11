@@ -1,10 +1,18 @@
 import {
-  get7DaysAvgActivity,
   getA2ATransactions,
+  getUniqueOperatorCount,
+} from 'common-util/api/dune';
+import {
+  get7DaysAvgActivity,
   getTotalTransactionsCount,
   getTotalUnitsCount,
 } from 'common-util/api/flipside';
-import { FLIPSIDE_URL } from 'common-util/constants';
+import {
+  DUNE_A2A_TRANSACTIONS_QUERY_URL,
+  DUNE_AGENTS_QUERY_URL,
+  FLIPSIDE_DAAS_QUERY_URL,
+  FLIPSIDE_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -19,9 +27,10 @@ import SectionHeading from '../SectionHeading';
 const BLOCKCHAIN_COUNT = chains.length;
 
 const fetchMetrics = async () => {
-  const [transactions, unitsCount, dailyActiveAgents, a2aTransactions] =
+  const [transactions, agents, unitsCount, dailyActiveAgents, a2aTransactions] =
     await Promise.allSettled([
       getTotalTransactionsCount(),
+      getUniqueOperatorCount(),
       getTotalUnitsCount(),
       get7DaysAvgActivity(),
       getA2ATransactions(),
@@ -30,12 +39,8 @@ const fetchMetrics = async () => {
   return {
     transactions:
       transactions.status === 'fulfilled' ? transactions.value : null,
-    agents:
-      unitsCount.status === 'fulfilled' ? unitsCount.value.agentsCount : null,
-    agentsTypes:
-      unitsCount.status === 'fulfilled'
-        ? unitsCount.value.agentTypesCount
-        : null,
+    agents: agents.status === 'fulfilled' ? agents.value : null,
+    agentsTypes: unitsCount.status === 'fulfilled' ? unitsCount.value : null,
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
     a2aTransactions:
@@ -60,7 +65,7 @@ export const Activity = () => {
             {metrics?.a2aTransactions ? (
               <ExternalLink
                 className="text-2xl font-bold text-purple-600"
-                href="https://flipsidecrypto.xyz/flipsideteam/q/PVARr5q0B7HD/mech-requests/visualizations/v2/34079b3c-8115-428b-9902-5a0afca3149e"
+                href={DUNE_A2A_TRANSACTIONS_QUERY_URL}
               >
                 {metrics.a2aTransactions.toLocaleString()}
               </ExternalLink>
@@ -82,7 +87,7 @@ export const Activity = () => {
         id: 'agents',
         subText: 'agents deployed by Operators',
         value: metrics?.agents,
-        source: `${FLIPSIDE_URL}?tabIndex=5`,
+        source: DUNE_AGENTS_QUERY_URL,
         isExternal: true,
       },
       {
@@ -150,7 +155,7 @@ export const Activity = () => {
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={`${FLIPSIDE_URL}?tabIndex=1`}
+              href={FLIPSIDE_DAAS_QUERY_URL}
               hideArrow
             >
               {metrics.dailyActiveAgents}
