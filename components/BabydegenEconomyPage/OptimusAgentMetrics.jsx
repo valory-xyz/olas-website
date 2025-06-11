@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { getAverageAprs } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -29,7 +29,13 @@ const formatNumber = (num) => {
 };
 
 export const OptimusAgentMetrics = () => {
-  const { data: metrics } = usePersistentSWR('OptimusMetrics', fetchMetrics);
+  const containerRef = useRef(null);
+  const { data: metrics } = usePersistentSWR(
+    'OptimusMetrics',
+    fetchMetrics,
+    true,
+    containerRef,
+  );
 
   const data = useMemo(
     () => [
@@ -54,7 +60,7 @@ export const OptimusAgentMetrics = () => {
   );
 
   return (
-    <SectionWrapper id="stats">
+    <SectionWrapper id="stats" ref={containerRef}>
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         <div className="text-center mb-6">
           <span className="text-lg text-black max-w-fit">
@@ -70,10 +76,9 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (!metrics || item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
-                  {item.value}
+                  {!metrics || item.value === null ? '0.0%' : item.value}
                   <span className="text-2xl">↗</span>
                 </ExternalLink>
               );
