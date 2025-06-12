@@ -6,7 +6,6 @@ import builders from 'data/builders.json';
 import chains from 'data/chains.json';
 import featuredIn from 'data/featuredIn.json';
 import friends from 'data/friends.json';
-import SectionHeading from '../SectionHeading';
 
 const FeaturedIn = () => (
   <section
@@ -137,14 +136,6 @@ const MoreFriends = () => (
 
 export const PropelledBy = () => (
   <SectionWrapper customClasses="px-4 md:px-8 py-12 md:py-24" id="ecosystem">
-    <SectionHeading
-      size="max-sm:text-5xl"
-      color="text-gray-900"
-      weight="font-bold"
-      other="max-w-[616px] max-sm:mb-12 mb-24 text-center mx-auto"
-    >
-      Propelled by a growing ecosystem
-    </SectionHeading>
     <FeaturedIn />
     <Chains />
     <Builders />

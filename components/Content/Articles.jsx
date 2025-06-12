@@ -45,7 +45,7 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
     <section>
       <div>
         <div>
-          {isMain ? '' : <h2 className={TITLE_CLASS}>Blog</h2>}
+          {isMain ? '' : <h2 className={`${TITLE_CLASS} mb-6`}>Blog</h2>}
 
           {displayFolders && (
             <>
@@ -74,9 +74,9 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
             <div className="mb-4">
               <Link
                 href="/blog"
-                className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
+                className="text-xl text-purple-700 hover:text-purple-800 transition-colors duration-300"
               >
-                See all ▶
+                See all
               </Link>
             </div>
           )}
