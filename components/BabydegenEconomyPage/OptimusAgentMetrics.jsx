@@ -29,11 +29,10 @@ const formatNumber = (num) => {
 };
 
 export const OptimusAgentMetrics = () => {
-  const { data: metrics } = usePersistentSWR(
-    'OptimusMetrics',
-    fetchMetrics,
-    true,
-  );
+  const { data: metrics } = usePersistentSWR('OptimusMetrics', fetchMetrics, {
+    refreshInterval: 10000, // refresh every 10s
+    dedupingInterval: 5000,
+  });
 
   const data = useMemo(
     () => [
