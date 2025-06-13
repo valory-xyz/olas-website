@@ -14,7 +14,15 @@ const faqList = [
       },
       {
         title: 'How do I install Pearl?',
-        desc: 'Simply download Pearl here and follow the step-by-step installation guide to get started.',
+        desc: (
+          <div>
+            Simply download Pearl{' '}
+            <Link href="#download" className="text-purple-600">
+              here
+            </Link>{' '}
+            and follow the step-by-step installation guide to get started.
+          </div>
+        ),
       },
       {
         title: 'What are the system requirements for Pearl?',
@@ -42,7 +50,53 @@ const faqList = [
     name: 'General',
     list: [
       {
-        title: 'Can I run an agent without using the Pearl app?',
+        title: 'What is an AI agent?',
+        desc: 'AI agents are autonomous, open-source software entities designed to act on behalf of users or organizations, operating both off-chain and on-chain to deliver valuable services and interact within decentralized economies.',
+      },
+      {
+        title:
+          'Can I truly own and control my AI agent when using Pearl locally?',
+        desc: 'Yes, you can truly own your AI agent when using Pearl.',
+      },
+      {
+        title: 'What does it mean to co-own AI with Olas?',
+        desc: (
+          <div>
+            When you use Pearl locally, you don&apos;t just interact with an AI
+            agent — <strong>you own it</strong>. The agent runs directly on your
+            device. Running an agent on Pearl means it&apos;s yours: you operate
+            it and benefit from it.
+          </div>
+        ),
+      },
+      {
+        title: 'Which AI agents can I find on Pearl (AI Agent App Store)?',
+        desc: (
+          <div>
+            <p className="mb-3">
+              Pearl features a growing collection of AI agents designed to
+              perform various tasks. Available AI agents include: Modius Agent:
+              Your DeFAI portfolio manager.
+            </p>
+            <ul className="list-disc ml-6">
+              <li>
+                Prediction Agent: An autonomous AI agent that participates in
+                Prediction Markets.
+              </li>
+              <li>
+                Agents.fun Agent: An AI influencer Agent that creates and shares
+                content on X.
+              </li>
+              <li>
+                Optimus Agent: An autonomous AI agent designed to streamline
+                your DeFi experience.
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+      {
+        title: 'Can I run an AI agent without using the Pearl app?',
         desc: (
           <>
             Yes, using the CLI. For more technical control, you can set up and
@@ -80,7 +134,7 @@ const faqList = [
         ),
       },
       {
-        title: "How can I optimize my agent's performance?",
+        title: "How can I optimize my AI agent's performance?",
         desc: (
           <>
             Modify your agent&apos;s code for better results.{' '}

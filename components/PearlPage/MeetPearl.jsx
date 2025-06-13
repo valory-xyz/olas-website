@@ -114,7 +114,7 @@ const AgentsList = () => (
       })}
     </div>
     <div className="border w-fit rounded-full px-4 py-1 mt-12 mx-auto">
-      And more agents launching soon
+      ...and more agents launching soon on Pearl.
     </div>
   </div>
 );
@@ -147,11 +147,11 @@ export const MeetPearlContent = () => (
       </h2>
 
       <p className={TEXT_CLASS}>
-        Pearl brings you the ultimate collection of AI agents in one app. From
-        asset managers to custom AI influencers, Pearl has it all. Choose from a
-        growing range of Olas agents, stake OLAS, and let them work autonomously
-        — earning you potential rewards from your crypto agents&apos; work and
-        Olas Staking.
+        Pearl brings you the ultimate collection of AI agents in one app — your
+        Agent App Store. From asset managers to custom AI influencers, Pearl has
+        it all. Choose from a growing range of Olas agents, stake OLAS, and let
+        them work autonomously — earning you potential rewards from your crypto
+        agents&apos; work and Olas Staking.
       </p>
     </div>
     <Image

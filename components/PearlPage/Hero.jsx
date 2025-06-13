@@ -25,7 +25,7 @@ const Hero = () => (
     HeroImage={HeroImage}
     pageName="OLAS PEARL"
     title="The Agent App Store"
-    description="A world of AI agents in one app — working for you & earning you rewards."
+    description="A world of AI agents in one app — the Agent App Store, working for you and earning you rewards."
     PrimaryButton={TryPearlNow}
   />
 );
