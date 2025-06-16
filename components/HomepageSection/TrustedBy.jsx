@@ -2,7 +2,7 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import Markdown from 'common-util/Markdown';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import quotes from 'data/TrustedBy.json';
+import quotes from 'data/trustedBy.json';
 import Image from 'next/image';
 import Link from 'next/link';
 
