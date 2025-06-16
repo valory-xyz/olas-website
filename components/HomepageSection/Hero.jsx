@@ -1,42 +1,74 @@
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import trustedBy from 'data/trustedBy.json';
 import Image from 'next/image';
+import { TrustedByItem } from './TrustedByItem';
 
-const trustedBySortedByOrder = trustedBy.sort((a, b) => a.order - b.order);
+const trustedBySortedByOrder = [...trustedBy].sort((a, b) => a.order - b.order);
 const trustedByLength = trustedBySortedByOrder.length;
+const hoverZIndex = (trustedByLength + 1) * 10;
 
-const TrustedByItem = ({ order, icon, name }) => {
-  const xplacement = order * 20;
-  const zplacement = (trustedByLength - order) * 10;
+const QuoteIcon = ({ quote }) => {
+  const xPlacement = quote.order * 20;
+  const zPlacement = (trustedByLength - quote.order) * 10;
 
   const [isHovered, setIsHovered] = useState(false);
-  const zIndex = isHovered ? 50 : zplacement;
+  const zIndex = isHovered ? hoverZIndex : zPlacement;
 
   return (
-    <div
-      className={
-        'rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
-      }
-      style={{
-        zIndex,
-        translate: xplacement,
-      }}
-      onMouseOver={() => setIsHovered(true)}
-      onMouseOut={() => setIsHovered(false)}
-    >
-      <Image
-        src={`/images/homepage/${icon}`}
-        alt={name}
-        width={20}
-        height={20}
-      />
+    <div>
+      <Tooltip.Provider>
+        <Tooltip.Root open={isHovered}>
+          <Tooltip.Trigger asChild>
+            <div
+              className={
+                'block rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
+              }
+              style={{
+                zIndex,
+                translate: xPlacement,
+              }}
+              onMouseOver={() => setIsHovered(true)}
+              onMouseOut={() => setIsHovered(false)}
+            >
+              <Image
+                src={`/images/homepage/${quote.icon}`}
+                alt={quote.name}
+                width={20}
+                height={20}
+              />
+            </div>
+          </Tooltip.Trigger>
+          <Tooltip.Content
+            side="right"
+            align="center"
+            sideOffset={8}
+            className="relative"
+            style={{
+              zIndex: hoverZIndex,
+            }}
+          >
+            <TrustedByItem
+              quote={quote}
+              className="bg-white p-4 rounded-xl shadow-2xl max-w-[360px] text-left"
+            />
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Tooltip.Provider>
     </div>
   );
+};
+
+TrustedByItem.propTypes = {
+  icon: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  order: PropTypes.string.isRequired,
 };
 
 const Hero = () => (
@@ -74,13 +106,8 @@ const Hero = () => (
         </div>
         <ChevronRight size={16} />
         <div className="relative w-[90px] h-[30px] group">
-          {trustedBySortedByOrder.map((item) => (
-            <TrustedByItem
-              order={item.order}
-              icon={item.icon}
-              name={item.name}
-              key={item.name}
-            />
+          {trustedBySortedByOrder.map((quote) => (
+            <QuoteIcon quote={quote} key={quote.name} />
           ))}
         </div>
       </div>
