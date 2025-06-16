@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Martin Köppelmann",
+        "title": "Co-founder, Gnosis",
+        "quote": "Olas-powered AI Agents trading on prediction markets have become a large user of Gnosis Chain, bringing Gnosis back into the prediction market game with Olas and Safe. On many days these agents make over 75% of Safe transactions on Gnosis Chain.",
+        "XUrl": "https://x.com/koeppelmann",
+        "userIcon": "mkoeppelmann.png",
+        "icon": "gnosis.png",
+        "order": 0
+    },
+    {
+        "name": "Andrew Barcenas",
+        "quote": "Literally just bought a new computer JUST to stake with Pearl because my 2016 Macbook wasn't compatible with the newest version of Pearl. 🙃<br><br>For Mac OS 13.0 in the minimum needed :)<br><br>We ride. 🫡",
+        "XUrl": "https://x.com/andrewjbarcenas",
+        "icon": "andrewbarcenas.png",
+        "order": 2
+    },{
+        "name": "8 Baller",
+        "title": "Web3 Developer",
+        "quote": "Olas is under the spotlight, with attention from Vitalik it is clear that not only is the narrative compelling but also the technology is there to back it up. The network numbers only go up everyday a new all time high of daily active agents. This is why I build on Olas, it's the clear leader in AI Agents and will be that way into the foreseeable future.",
+        "XUrl": "https://twitter.com/8baller11",
+        "icon": "8baller.png",
+        "blogUrl": "/blog/how-8-baller-earned-over-1-2-m-olas-in-a-year-by-building-for-the-olas-ecosystem",
+        "order": 1
+    },
+    {
+        "name": "ChowdieBoi",
+        "title": "Pearl User",
+        "quote": "One of the exciting projects that [@autonolas](https://x.com/autonolas) covers: autonomous trading, using real time market data from coin gecko, the agent trades for you. <br><br>All you have to do is sit back, relax, sip a cup of coffee and wait. <br><br>Average return: +/-17% APY from modius+ 138% APY from staking",
+        "XUrl": "https://x.com/Ryanchowder1",
+        "icon": "chowdieboi.png",
+        "order": 3
+    }
+]
