@@ -94,7 +94,7 @@ const Hero = () => (
       <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
     </div>
     <div className="absolute h-[500px] place-content-center mx-auto text-center">
-      <h1 className="tracking-tight text-4xl md:text-6xl max-sm:text-6xl md:text-[4rem] mb-12 text-black  font-extrabold lg:mb-4">
+      <h1 className="tracking-tight text-5xl md:text-6xl mb-12 text-black font-extrabold lg:mb-4">
         Co-own AI
       </h1>
       <div className="mb-10 text-xl leading-8 text-gray-900">
@@ -104,17 +104,17 @@ const Hero = () => (
         <div className="text-gray-500">
           Trusted by leading web3 teams and users
         </div>
-        <ChevronRight size={16} />
-        <div className="relative w-[90px] h-[30px] group">
+        <ChevronRight size={16} className="text-gray-500" />
+        <div className="relative w-[90px] h-[30px] group hidden sm:block">
           {trustedBySortedByOrder.map((quote) => (
             <QuoteIcon quote={quote} key={quote.name} />
           ))}
         </div>
       </div>
-      <div className="flex max-sm:flex-wrap max-sm:place-content-center max-sm:mx-4 gap-4 w-fit mx-auto">
+      <div className="flex flex-wrap place-content-center mx-4 gap-4 w-fit mx-auto">
         <Button
           variant="default"
-          size="xl"
+          size="lg"
           asChild
           className="inline-flex md:ml-auto max-sm:grow"
         >
@@ -122,7 +122,7 @@ const Hero = () => (
         </Button>
         <Button
           variant="outline"
-          size="xl"
+          size="lg"
           asChild
           className="inline-flex md:ml-auto max-sm:grow"
         >
