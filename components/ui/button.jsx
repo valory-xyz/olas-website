@@ -60,7 +60,7 @@ Button.propTypes = {
   asChild: PropTypes.bool,
   className: PropTypes.string,
   size: PropTypes.oneOf(['default', 'sm', 'lg', 'xl', 'icon']),
-  variant: [
+  variant: PropTypes.oneOf([
     'default',
     'destructive',
     'outline',
@@ -69,14 +69,14 @@ Button.propTypes = {
     'ghostPrimary',
     'link',
     'valory',
-  ],
+  ]),
 };
 
 Button.defaultProps = {
   asChild: false,
   className: null,
-  size: null,
-  variant: null,
+  size: 'default',
+  variant: 'default',
 };
 
 export { Button, buttonVariants };
