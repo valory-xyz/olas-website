@@ -17,10 +17,10 @@ export default function Home() {
       <Meta />
       <Hero />
       <WorldOfAgents />
-      <Activity />
-      <UseCases />
       <OwnYourAgent />
       <AgentsWorkingTogether />
+      <Activity />
+      <UseCases />
       <GetInvolved />
       <TrustedBy />
       <PropelledBy />

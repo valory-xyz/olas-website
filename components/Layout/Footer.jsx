@@ -1,4 +1,4 @@
-import { REGISTRY_URL } from 'common-util/constants';
+import { REGISTRY_URL, WHITEPAPER } from 'common-util/constants';
 import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
@@ -33,43 +33,57 @@ const SOCIAL_LINKS = [
   },
 ];
 
-const LEARN_LINKS = [
-  { title: 'Olas Protocol', link: '/protocol' },
-  { title: 'Olas Stack', link: '/stack' },
+const FOR_USERS_LINKS = [
+  {
+    title: 'Pearl: The “Agent App Store”',
+    link: '/pearl',
+  },
+  {
+    title: 'Mech Marketplace: The "AI Agent Bazaar"',
+    link: '/mech-marketplace',
+  },
+  {
+    title: 'OLAS Token',
+    link: '/olas-token',
+  },
 ];
 
-const GET_INVOLVED_LINKS = [
-  { title: 'Get OLAS', link: '/olas-token' },
+const DAO_LINKS = [
   { title: 'Contribute', link: '/contribute' },
   { title: 'Launch', link: '/launch' },
   { title: 'Build', link: '/build' },
   { title: 'Operate', link: '/operate' },
   { title: 'Bond', link: '/bond' },
   { title: 'Govern', link: '/govern' },
-];
-
-const OTHER_APPS_LINKS = [
-  { title: 'Registry', link: REGISTRY_URL, isExternal: true },
   {
-    title: 'Press Kit',
-    link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
+    title: 'Constitution',
+    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
     isExternal: true,
   },
 ];
 
 const RESOURCES_LINKS = [
   {
-    title: 'Docs',
+    title: 'Blog',
+    link: '/blog',
+  },
+  {
+    title: 'FAQ',
+    link: '/faq',
+  },
+  {
+    title: 'Documentation',
     link: 'https://docs.autonolas.network',
     isExternal: true,
   },
   {
-    title: 'Videos & Podcasts',
-    link: '/videos',
+    title: 'Quarterly Updates',
+    link: '/quarterly-updates',
   },
+  { title: 'Registry', link: REGISTRY_URL, isExternal: true },
   {
-    title: 'Blog',
-    link: '/blog',
+    title: 'Agents Unleashed',
+    link: '/agents-unleashed',
   },
   {
     title: 'Olas Dev Academy Videos',
@@ -77,37 +91,32 @@ const RESOURCES_LINKS = [
     isExternal: true,
   },
   {
+    title: 'Videos & Podcasts',
+    link: '/videos',
+  },
+  {
+    title: 'Olas Hackathons',
+    link: '/hackathons',
+  },
+];
+
+const MORE_LINKS = [
+  {
+    title: 'About',
+    link: '/about',
+  },
+  {
     title: 'Whitepaper',
-    link: '/whitepaper',
-  },
-  {
-    title: 'DAO Constitution',
-    link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
-    isExternal: true,
-  },
-  {
-    title: 'Quarterly Updates',
-    link: '/quarterly-updates',
-  },
-  {
-    title: 'FAQ',
-    link: '/faq',
+    link: WHITEPAPER,
   },
   {
     title: 'Tokenomics',
     link: '/olas-token',
   },
   {
-    title: 'Agents Unleashed',
-    link: '/agents-unleashed',
-  },
-  {
-    title: 'Olas Hackathons',
-    link: '/hackathons',
-  },
-  {
-    title: 'Timeline',
-    link: '/timeline',
+    title: 'Brand Kit',
+    link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
+    isExternal: true,
   },
 ];
 
@@ -199,15 +208,11 @@ const Footer = () => (
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 md:flex md:flex-row max-sm:gap-y-8 gap-x-12 w-full flex-wrap">
-        <LinksBlock title="Learn" links={LEARN_LINKS} />
-        <LinksBlock title="Get Involved" links={GET_INVOLVED_LINKS} />
-        <LinksBlock title="Other" links={OTHER_APPS_LINKS} />
-        <LinksBlock
-          title="Resources"
-          links={RESOURCES_LINKS}
-          className="lg:max-h-[250px] flex-wrap"
-        />
+      <div className="grid max-sm:grid-cols-1 grid-cols-2 xl:flex md:flex-row max-xl:gap-y-8 gap-x-12 w-full flex-wrap">
+        <LinksBlock title="For Users" links={FOR_USERS_LINKS} />
+        <LinksBlock title="DAO" links={DAO_LINKS} />
+        <LinksBlock title="Resources" links={RESOURCES_LINKS} />
+        <LinksBlock title="More" links={MORE_LINKS} />
       </div>
     </div>
     <div className="text-center text-slate-500">
