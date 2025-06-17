@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
-export const TrustedByItem = ({ quote, className }) => (
+export const Trustee = ({ quote, className }) => (
   <Card
     className={`flex flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-slate-50 ${className}`}
   >
@@ -26,7 +26,7 @@ export const TrustedByItem = ({ quote, className }) => (
         />
       </div>
       <div className="flex flex-col mr-auto">
-        <a href={quote.nameUrl} target="_blank" className="font-semibold">
+        <a href={quote.xUrl} target="_blank" className="font-semibold">
           {quote.name}
         </a>
         <p className="text-slate-500 text-sm">{quote.title}</p>
@@ -35,19 +35,19 @@ export const TrustedByItem = ({ quote, className }) => (
   </Card>
 );
 
-TrustedByItem.propTypes = {
+Trustee.propTypes = {
   quote: PropTypes.shape({
     quote: PropTypes.string.isRequired,
     blogUrl: PropTypes.string.isRequired,
     userIcon: PropTypes.string.isRequired,
     icon: PropTypes.string.isRequired,
-    nameUrl: PropTypes.string.isRequired,
+    xUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
   }).isRequired,
   className: PropTypes.string,
 };
 
-TrustedByItem.defaultProps = {
+Trustee.defaultProps = {
   className: '',
 };

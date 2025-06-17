@@ -6,12 +6,12 @@ import { useState } from 'react';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import trustedBy from 'data/trustedBy.json';
+import unsortedTrustedBy from 'data/trustedBy.json';
 import Image from 'next/image';
-import { TrustedByItem } from './TrustedByItem';
+import { Trustee } from './Trustee';
 
-const trustedBySortedByOrder = [...trustedBy].sort((a, b) => a.order - b.order);
-const trustedByLength = trustedBySortedByOrder.length;
+const trustedBy = [...unsortedTrustedBy].sort((a, b) => a.order - b.order);
+const trustedByLength = trustedBy.length;
 const hoverZIndex = (trustedByLength + 1) * 10;
 
 const QuoteIcon = ({ quote }) => {
@@ -24,39 +24,38 @@ const QuoteIcon = ({ quote }) => {
   return (
     <div>
       <Tooltip.Provider>
-        <Tooltip.Root open={isHovered}>
-          <Tooltip.Trigger asChild>
-            <div
-              className={
-                'block rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
-              }
-              style={{
-                zIndex,
-                translate: xPlacement,
-              }}
-              onMouseOver={() => setIsHovered(true)}
-              onMouseOut={() => setIsHovered(false)}
-            >
-              <Image
-                src={`/images/homepage/${quote.icon}`}
-                alt={quote.name}
-                width={20}
-                height={20}
-              />
-            </div>
+        <Tooltip.Root
+          delayDuration={0}
+          open={isHovered}
+          onOpenChange={setIsHovered}
+        >
+          <Tooltip.Trigger
+            className={
+              'block rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
+            }
+            style={{
+              zIndex,
+              translate: xPlacement,
+            }}
+          >
+            <Image
+              src={`/images/homepage/${quote.icon}`}
+              alt={quote.name}
+              width={20}
+              height={20}
+            />
           </Tooltip.Trigger>
           <Tooltip.Content
             side="right"
             align="center"
-            sideOffset={8}
             className="relative"
             style={{
               zIndex: hoverZIndex,
             }}
           >
-            <TrustedByItem
+            <Trustee
               quote={quote}
-              className="bg-white p-4 rounded-xl shadow-2xl max-w-[360px] text-left"
+              className="bg-white p-4 rounded-xl shadow-2xl max-w-[360px] text-left ml-2"
             />
           </Tooltip.Content>
         </Tooltip.Root>
@@ -65,7 +64,7 @@ const QuoteIcon = ({ quote }) => {
   );
 };
 
-TrustedByItem.propTypes = {
+Trustee.propTypes = {
   icon: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   order: PropTypes.string.isRequired,
@@ -101,12 +100,14 @@ const Hero = () => (
         Olas enables everyone to own and monetize their AI agents.
       </div>
       <div className="px-4 py-3 flex flex-row place-items-center gap-2 rounded-full bg-opacity-80 cursor-pointer border border-white mb-8 bg-white w-fit mx-auto transition duration-300">
-        <div className="text-gray-500">
-          Trusted by leading web3 teams and users
-        </div>
-        <ChevronRight size={16} className="text-gray-500" />
+        <Link href="#social-proof" className="inline-flex items-center gap-2">
+          <div className="text-gray-500">
+            Trusted by leading web3 teams and users
+          </div>
+          <ChevronRight size={16} className="text-gray-500" />
+        </Link>
         <div className="relative w-[90px] h-[30px] group hidden sm:block">
-          {trustedBySortedByOrder.map((quote) => (
+          {trustedBy.map((quote) => (
             <QuoteIcon quote={quote} key={quote.name} />
           ))}
         </div>

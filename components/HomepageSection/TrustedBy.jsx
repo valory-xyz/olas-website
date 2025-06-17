@@ -1,7 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import quotes from 'data/trustedBy.json';
-import { TrustedByItem } from './TrustedByItem';
+import Link from 'next/link';
+import { Trustee } from './Trustee';
 
 export const TrustedBy = () => (
   <SectionWrapper
@@ -13,10 +15,15 @@ export const TrustedBy = () => (
       Trusted by Leading Web3 Teams and Users
     </h2>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-10 md:mb-14">
       {quotes.map((quote, index) => (
-        <TrustedByItem key={index} quote={quote} />
+        <Trustee key={index} quote={quote} />
       ))}
+    </div>
+    <div className="flex justify-center">
+      <Button variant="outline" size="lg" asChild className="">
+        <Link href="/case-studies">Explore Case Studies</Link>
+      </Button>
     </div>
   </SectionWrapper>
 );
