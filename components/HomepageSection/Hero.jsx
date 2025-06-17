@@ -1,9 +1,9 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 
+import { TrusteeQuotePropTypes } from 'common-util/propTypes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import unsortedTrustedBy from 'data/trustedBy.json';
@@ -64,10 +64,8 @@ const QuoteIcon = ({ quote }) => {
   );
 };
 
-Trustee.propTypes = {
-  icon: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  order: PropTypes.string.isRequired,
+QuoteIcon.propTypes = {
+  quote: TrusteeQuotePropTypes,
 };
 
 const Hero = () => (

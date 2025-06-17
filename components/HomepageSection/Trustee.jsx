@@ -1,7 +1,7 @@
 import Markdown from 'common-util/Markdown';
+import { TrusteeQuotePropTypes } from 'common-util/propTypes';
 import { Card } from 'components/ui/card';
 import Image from 'next/image';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 export const Trustee = ({ quote, className }) => (
@@ -10,11 +10,6 @@ export const Trustee = ({ quote, className }) => (
   >
     <div className="text-purple-600">
       <Markdown className="text-black">{quote.quote}</Markdown>
-      {quote.blogUrl && (
-        <div className="mt-4 font-semibold">
-          <Link href={quote.blogUrl}>Read more</Link>
-        </div>
-      )}
     </div>
     <div className="mt-auto flex flex-row gap-3">
       <div className="aspect-square mt-auto">
@@ -36,15 +31,7 @@ export const Trustee = ({ quote, className }) => (
 );
 
 Trustee.propTypes = {
-  quote: PropTypes.shape({
-    quote: PropTypes.string.isRequired,
-    blogUrl: PropTypes.string.isRequired,
-    userIcon: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    xUrl: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    title: PropTypes.string,
-  }).isRequired,
+  quote: TrusteeQuotePropTypes,
   className: PropTypes.string,
 };
 
