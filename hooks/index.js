@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-export const usePersistentSWR = (key, fetcher) =>
+export const usePersistentSWR = (key, fetcher, config) =>
   useSWR(key, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
+    ...config,
   });
 
 export const useWindowWidth = () => {
