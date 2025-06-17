@@ -4,6 +4,7 @@ import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
 import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
+import { PowersAIAgentEconomies } from 'components/HomepageSection/PowersAIAgentEconomies';
 import { PropelledBy } from 'components/HomepageSection/PropelledBy';
 import UseCases from 'components/HomepageSection/UseCases';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -18,6 +19,7 @@ export default function Home() {
       <UseCases />
       <OwnYourAgent />
       <AgentsWorkingTogether />
+      <PowersAIAgentEconomies />
       <GetInvolved />
       <PropelledBy />
       <Media />
