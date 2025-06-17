@@ -108,7 +108,9 @@ const DownloadLinks = () => {
         Get started with Pearl in 3 simple steps
       </h2>
       <div className="flex flex-col gap-2">
-        <h3 className="font-semibold text-xl">Install Pearl</h3>
+        <h3 className="font-semibold text-xl">
+          Install Pearl (Agent App Store)
+        </h3>
         <p className="mb-4">Download the app suitable for your device.</p>
         <h3 className="font-semibold text-xl">Setup</h3>
         <p className="mb-4">
