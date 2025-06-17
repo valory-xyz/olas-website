@@ -10,7 +10,7 @@ const list = [
     imageSrc: 'EthCC-Cannes.png',
     location: 'Cannes',
     date: "Jun 30 '25",
-    eventLink: 'https://ethcc.io/',
+    eventLink: 'https://lu.ma/tp6rhykz',
   },
   {
     title: 'Builders Night',
