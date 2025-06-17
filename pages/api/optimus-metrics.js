@@ -86,7 +86,6 @@ export default async function handler(req, res) {
 
     if (isCacheExpired) {
       fetchLatestMetric().catch(console.error);
-
       // Returns cached data, even expired
       if (cachedData) {
         return res.status(200).json(cachedData.data);

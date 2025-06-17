@@ -29,7 +29,10 @@ const formatNumber = (num) => {
 };
 
 export const OptimusAgentMetrics = () => {
-  const { data: metrics } = usePersistentSWR('OptimusMetrics', fetchMetrics);
+  const { data: metrics } = usePersistentSWR('OptimusMetrics', fetchMetrics, {
+    refreshInterval: 10000, // refresh every 10s
+    dedupingInterval: 5000,
+  });
 
   const data = useMemo(
     () => [
@@ -70,10 +73,9 @@ export const OptimusAgentMetrics = () => {
                 : '';
 
             const getValue = () => {
-              if (!metrics || item.value === null) return '--';
               return (
                 <ExternalLink href={item.source} hideArrow>
-                  {item.value}
+                  {!metrics || item.value === null ? '0.0%' : item.value}
                   <span className="text-2xl">↗</span>
                 </ExternalLink>
               );
