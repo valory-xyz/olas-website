@@ -253,8 +253,8 @@ const Activity = () => {
             />
             <OlasIsBurnedArrow />
           </div>
-          <div className="flex flex-col">
-            <div className="flex flex-row w-[132px] flex-wrap mb-2">
+          <div className="flex flex-col place-items-center z-10">
+            <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
               {agentsHere.map((item) => (
                 <Image
                   key={item}
