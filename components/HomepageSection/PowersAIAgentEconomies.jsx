@@ -1,3 +1,6 @@
+import { ChevronDown, Copy } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
 import { getA2ATransactions, getFeeFlowMetrics } from 'common-util/api/dune';
 import {
   get7DaysAvgActivity,
@@ -17,11 +20,10 @@ import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
+import addresses from 'data/addresses.json';
 import { usePersistentSWR } from 'hooks';
-import { ChevronDown, Copy } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -47,68 +49,11 @@ const fetchMetrics = async () => {
   };
 };
 
-const addresses = [
-  {
-    name: 'Etherium',
-    src: 'eth.svg',
-    activeSrc: 'eth-color.svg',
-    address: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0',
-  },
-  {
-    name: 'Gnosis',
-    src: 'gnosis.svg',
-    activeSrc: 'gnosis-color.svg',
-    address: '0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f',
-  },
-  {
-    name: 'Polygon',
-    src: 'polygon.svg',
-    activeSrc: 'polygon-color.svg',
-    address: '0xFEF5d947472e72Efbb2E388c730B7428406F2F95',
-  },
-  {
-    name: 'Arbitrum',
-    src: 'arbitrum.svg',
-    activeSrc: 'arbitrum-color.svg',
-    address: '0x064F8B858C2A603e1b106a2039f5446D32dc81c1',
-  },
-  {
-    name: 'Solana',
-    src: 'solana.svg',
-    activeSrc: 'solana-color.svg',
-    address: 'Ez3nzG9ofodYCvEmw73XhQ87LWNYVRM2s7diB5tBZPyM',
-  },
-  {
-    name: 'Optimism',
-    src: 'optimism.svg',
-    activeSrc: 'optimism-color.svg',
-    address: '0xFC2E6e6BCbd49ccf3A5f029c79984372DcBFE527',
-  },
-  {
-    name: 'Base',
-    src: 'base.svg',
-    activeSrc: 'base-color.svg',
-    address: '0x54330d28ca3357F294334BDC454a032e7f353416',
-  },
-  {
-    name: 'Celo',
-    src: 'celo.svg',
-    activeSrc: 'celo-color.svg',
-    address: '0xaCFfAe8e57Ec6E394Eb1b41939A8CF7892DbDc51',
-  },
-  {
-    name: 'Mode',
-    src: 'mode.svg',
-    activeSrc: 'mode-color.svg',
-    address: '0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9',
-  },
-];
-
 const agentsHere = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
 const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
-  <div className={`flex flex-row gap-2 ${className}`}>
-    <p className="w-[76px] md:ml-[66px] text-sm my-auto max-sm:text-slate-500">
+  <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
+    <p className="w-[76px] md:ml-[58px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
       OLAS is burned
     </p>
     <Image
@@ -118,12 +63,12 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
       height={124}
       className="h-[124px]"
     />
-    <div className="mb-auto mt-[42px] font-semibold text-sm md:mt-[54px] text-black">
-      OFF{' '}
+    <div className="mb-auto mt-[47px] font-semibold text-sm md:mt-[58px] text-black z-20 content-center flex flex-row gap-2">
+      <p>OFF</p>
       <Popover
-        align="start"
+        align="center"
         side="right"
-        contentClassName="w-[382px] text-left"
+        contentClassName="w-[382px] text-left font-normal translate-x-2"
       >
         Fees collected can be turned on or off by the Governors of the Olas
         Protocol. Currently, fees are turned off to encourage early adoption and
@@ -223,7 +168,7 @@ const Activity = () => {
             alt="arrow"
             width={124}
             height={176}
-            className="mt-12 ml-3 w-[124px] h-[176px]"
+            className="mt-12 ml-3 md:mr-4 w-[124px] h-[176px]"
           />
           <ActivityCard
             icon="users.png"
@@ -247,7 +192,7 @@ const Activity = () => {
           <div className="flex flex-col">
             <ActivityCard
               icon="olas-burnt.png"
-              primaryValue={`$${Number(processedMetrics?.olasBurned || 0).toLocaleString()}`}
+              primaryValue={`$${Number(processedMetrics?.olasBurned).toLocaleString()}`}
               primaryText="OLAS burned"
               primaryLink={DUNE_MMV2_URL}
             />
@@ -294,7 +239,7 @@ const Activity = () => {
                 height={124}
                 className="h-[124px] ml-auto"
               />
-              <p className="w-[76px] text-sm mr-[76px] ml-2 my-auto">
+              <p className="w-[76px] text-sm mr-[68px] ml-2 my-auto">
                 Agents are active
               </p>
             </div>
@@ -308,7 +253,7 @@ const Activity = () => {
             primaryValue={processedMetrics?.a2aTransactions}
             primaryText="A2A txns"
             primaryLink={DUNE_A2A_TRANSACTIONS_QUERY_URL}
-            secondaryValue={`$${Number(processedMetrics?.feesCollected || 0).toLocaleString()}`}
+            secondaryValue={`$${Number(processedMetrics?.feesCollected).toLocaleString()}`}
             secondaryText="fees collected"
             secondaryLink={DUNE_MMV2_URL}
           />
@@ -385,14 +330,14 @@ const Activity = () => {
           primaryValue={processedMetrics?.a2aTransactions}
           primaryText="A2A txns"
           primaryLink={DUNE_A2A_TRANSACTIONS_QUERY_URL}
-          secondaryValue={`$${Number(processedMetrics?.feesCollected || 0).toLocaleString()}`}
+          secondaryValue={`$${Number(processedMetrics?.feesCollected).toLocaleString()}`}
           secondaryText="fees collected"
           secondaryLink={DUNE_MMV2_URL}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <ActivityCard
           icon="olas-burnt.png"
-          primaryValue={`$${Number(processedMetrics?.olasBurned || 0).toLocaleString()}`}
+          primaryValue={`$${Number(processedMetrics?.olasBurned).toLocaleString()}`}
           primaryText="OLAS burned"
           primaryLink={DUNE_MMV2_URL}
         />
@@ -408,12 +353,124 @@ const Activity = () => {
   );
 };
 
+// For mobile view
+const TokenDropdown = ({ activeTab, setActiveTab, setCurrentAddress }) => {
+  const activeItem = addresses.find((item) => item.name === activeTab);
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(false);
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
+
+  return (
+    <div
+      className="flex md:hidden text-left w-full mb-4 relative"
+      ref={dropdownRef}
+    >
+      <button
+        type="button"
+        className="w-full flex items-center justify-between bg-white rounded-lg p-2"
+        onClick={() => setOpenDropdown((prevValue) => !prevValue)}
+        aria-expanded={openDropdown}
+        aria-haspopup="true"
+      >
+        <div className="flex items-center gap-2">
+          {activeItem && (
+            <Image
+              src={`/images/homepage/addresses/${activeItem.activeSrc}`}
+              alt={activeItem.name}
+              width={20}
+              height={20}
+            />
+          )}
+          <span>{activeTab}</span>
+        </div>
+        <ChevronDown size={24} />
+      </button>
+
+      {openDropdown && (
+        <div
+          className="absolute w-full z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5"
+          role="menu"
+          aria-orientation="vertical"
+        >
+          <div className="py-1">
+            {addresses.map((address, index) => (
+              <button
+                key={index}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex flex-row gap-2"
+                role="menuitem"
+                onClick={() => {
+                  setOpenDropdown(false);
+                  setActiveTab(address.name);
+                  setCurrentAddress(address.address);
+                }}
+              >
+                <Image
+                  src={`/images/homepage/addresses/${address.src}`}
+                  alt={address.name}
+                  width={20}
+                  height={20}
+                />
+                {address.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// For desktop view
+const TokenTabs = ({ activeTab, setActiveTab, setCurrentAddress }) => (
+  <div className="hidden md:flex flex-row mb-6">
+    {addresses.map((address) => {
+      const activeClass =
+        activeTab === address.name
+          ? 'border-purple-700 selected-button'
+          : 'border-transparent';
+      const imageSrc =
+        activeTab === address.name ? address.activeSrc : address.src;
+      return (
+        <button
+          key={address.name}
+          onClick={() => {
+            setActiveTab(address.name);
+            setCurrentAddress(address.address);
+          }}
+          className={`opaque-button max-sm:text-sm font-medium transition-colors w-full w-[66px] h-[44px] border-b-4 hover:border-slate-500 ${activeClass}`}
+        >
+          <Image
+            src={`/images/homepage/addresses/${imageSrc}`}
+            alt={addresses.name}
+            width={20}
+            height={20}
+            className="mx-auto aspect-square min-w-[20px]"
+          />
+        </button>
+      );
+    })}
+  </div>
+);
+
 const TokenAddress = () => {
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState('Etherium');
-  const [currentAddress, setCurrentAddress] = useState(
-    '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0',
-  );
+  const [activeTab, setActiveTab] = useState(addresses[0].name);
+  const [currentAddress, setCurrentAddress] = useState(addresses[0].address);
 
   const getTokenAddress = async () => {
     try {
@@ -425,8 +482,6 @@ const TokenAddress = () => {
     }
   };
 
-  const [openDropdown, setOpenDropdown] = useState(false);
-
   return (
     <div className="place-items-center mt-20">
       <Image
@@ -436,95 +491,16 @@ const TokenAddress = () => {
         height={444}
       />
       <Card className="absolute card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
-        <div className="flex md:hidden text-left w-full mb-4 relative">
-          <button
-            type="button"
-            className="w-full flex items-center justify-between bg-white rounded-lg p-2"
-            onClick={() => setOpenDropdown(!openDropdown)}
-            aria-expanded={openDropdown}
-            aria-haspopup="true"
-          >
-            <div className="flex items-center gap-2">
-              {(() => {
-                const activeItem = addresses.find(
-                  (item) => item.name === activeTab,
-                );
-                return (
-                  activeItem && (
-                    <Image
-                      src={`/images/homepage/addresses/${activeItem.activeSrc}`}
-                      alt={activeItem.name}
-                      width={20}
-                      height={20}
-                    />
-                  )
-                );
-              })()}
-              <span>{activeTab}</span>
-            </div>
-            <ChevronDown size={24} />
-          </button>
-
-          {openDropdown && (
-            <div
-              className="absolute w-full z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5"
-              role="menu"
-              aria-orientation="vertical"
-            >
-              <div className="py-1">
-                {addresses.map((address, index) => (
-                  <button
-                    key={index}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex flex-row gap-2"
-                    role="menuitem"
-                    onClick={() => {
-                      setOpenDropdown(false);
-                      setActiveTab(address.name);
-                      setCurrentAddress(address.address);
-                    }}
-                  >
-                    <Image
-                      src={`/images/homepage/addresses/${address.src}`}
-                      alt={address.name}
-                      width={20}
-                      height={20}
-                    />
-                    {address.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="hidden md:flex flex-row mb-6">
-          {addresses.map((address) => {
-            const activeClass =
-              activeTab === address.name
-                ? 'border-purple-700 selected-button'
-                : 'border-transparent';
-            const imageSrc =
-              activeTab === address.name ? address.activeSrc : address.src;
-            return (
-              <button
-                key={address.name}
-                onClick={() => {
-                  setActiveTab(address.name);
-                  setCurrentAddress(address.address);
-                }}
-                className={`opaque-button max-sm:text-sm font-medium transition-colors w-full w-[66px] h-[44px] border-b-4 hover:border-slate-500 ${activeClass}`}
-              >
-                <Image
-                  src={`/images/homepage/addresses/${imageSrc}`}
-                  alt={addresses.name}
-                  width={20}
-                  height={20}
-                  className="mx-auto aspect-square min-w-[20px]"
-                />
-              </button>
-            );
-          })}
-        </div>
+        <TokenDropdown
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          setCurrentAddress={setCurrentAddress}
+        />
+        <TokenTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          setCurrentAddress={setCurrentAddress}
+        />
         <div className="text-left flex flex-col gap-4">
           <p className="text-slate-600 text-medium">
             Token address on {activeTab}
