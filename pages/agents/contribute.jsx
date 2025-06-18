@@ -44,7 +44,7 @@ const Hero = () => (
           size="xl"
           className="mt-6 w-full md:w-auto"
         >
-          <Link href="/services/contribute#about">Learn how</Link>
+          <Link href="/agents/contribute#about">Learn how</Link>
         </Button>
       </div>
 

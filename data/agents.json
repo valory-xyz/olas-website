@@ -197,7 +197,7 @@
     "iconFilename": "optimus-agent.png",
     "demo": false,
     "builder": "Valory",
-    "path": "/services/babydegen#optimus-agent"
+    "path": "/agents/babydegen#optimus-agent"
   },
   {
     "id": "d9f7ac4f-e5c1-44b0-95d4-89d74cd31cfe",
@@ -211,7 +211,7 @@
     "iconFilename": "modius-agent.png",
     "demo": false,
     "builder": "Valory",
-    "path": "/services/babydegen#modius-agent"
+    "path": "/agents/babydegen#modius-agent"
   },
   {
     "id": "ac1cbd30-5290-48e2-91d6-9c8c7e6c1b22",
@@ -225,6 +225,6 @@
     "iconFilename": "agentsfun.png",
     "demo": false,
     "builder": "Valory",
-    "path": "/services/agentsfun"
+    "path": "/agents/agentsfun"
   }
 ]

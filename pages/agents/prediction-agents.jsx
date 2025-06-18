@@ -1,10 +1,10 @@
+import { GetInvolved } from 'components/Agents/PredictionAgentsPage/GetInvolved';
+import { GetStarted } from 'components/Agents/PredictionAgentsPage/GetStarted';
+import { Hero } from 'components/Agents/PredictionAgentsPage/Hero';
+import { HowPredictionAgentsWork } from 'components/Agents/PredictionAgentsPage/HowPredictionAgentsWork';
+import { PredictionMarkets } from 'components/Agents/PredictionAgentsPage/PredictionMarkets';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import { GetInvolved } from 'components/Services/PredictionAgentsPage/GetInvolved';
-import { GetStarted } from 'components/Services/PredictionAgentsPage/GetStarted';
-import { Hero } from 'components/Services/PredictionAgentsPage/Hero';
-import { HowPredictionAgentsWork } from 'components/Services/PredictionAgentsPage/HowPredictionAgentsWork';
-import { PredictionMarkets } from 'components/Services/PredictionAgentsPage/PredictionMarkets';
 import { CTASection } from 'components/ui/section/cta';
 
 const PredictionAgents = () => (
@@ -12,7 +12,7 @@ const PredictionAgents = () => (
     <Meta
       pageTitle="Prediction Agents"
       description="Run an agent designed to trade in prediction markets on your behalf. Predict the future, autonomously."
-      siteImageUrl="/images/services/prediction-agents.png"
+      siteImageUrl="/images/agents/prediction-agents.png"
     />
     <Hero />
     <div className="text-lg">
