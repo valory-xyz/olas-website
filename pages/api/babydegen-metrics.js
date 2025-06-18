@@ -4,7 +4,11 @@ import path from 'path';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-const CACHE_FOLDER = path.join(process.cwd(), 'data', 'cache');
+const CACHE_FOLDER = path.join(
+  process.env.VERCEL ? '/tmp' : process.cwd(),
+  'data',
+  'cache',
+);
 const CACHE_FILE_PATH = path.join(CACHE_FOLDER, 'babydegen-metrics-cache.json');
 
 if (!fs.existsSync(CACHE_FOLDER)) {
