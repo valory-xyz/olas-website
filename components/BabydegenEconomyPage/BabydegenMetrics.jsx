@@ -99,10 +99,7 @@ const MetricsBubble = ({ metrics, sourceUrl, name }) => {
 };
 
 export const BabydegenMetrics = () => {
-  const { data: metrics } = usePersistentSWR('BabydegenMetrics', fetchMetrics, {
-    refreshInterval: 10000, // refresh every 10s
-    dedupingInterval: 5000,
-  });
+  const { data: metrics } = usePersistentSWR('BabydegenMetrics', fetchMetrics);
 
   return (
     <SectionWrapper id="stats">
