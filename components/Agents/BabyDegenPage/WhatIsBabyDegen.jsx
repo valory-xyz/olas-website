@@ -29,7 +29,7 @@ export const WhatIsBabyDegen = () => (
 
       <div className="lg:mt-0 lg:col-span-4 lg:col-end-13 lg:flex">
         <Image
-          src="/images/services/babydegen/participate.webp"
+          src="/images/agents/babydegen/participate.webp"
           alt="Get ready to participate in AI agent DeFi"
           width={400}
           height={400}

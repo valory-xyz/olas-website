@@ -6,14 +6,16 @@ const resources = [
     title: 'Contribute a strategy',
     description:
       'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
-    url: { DISCORD_INVITE_URL },
+    url: DISCORD_INVITE_URL,
     urlName: 'Reach out on Discord',
+    isExternal: true,
   },
   {
     title: 'Join as an Alpha tester',
     description: 'Keen on being at the forefront of trading innovation?',
-    url: { DISCORD_INVITE_URL },
+    url: DISCORD_INVITE_URL,
     urlName: 'Reach out on Discord',
+    isExternal: true,
   },
 ];
 

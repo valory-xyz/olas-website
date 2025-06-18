@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const HeroImage = () => (
   <Image
-    src="/images/services/babydegen/babydegen.png"
+    src="/images/agents/babydegen/babydegen.png"
     alt="Baby Degen"
     width={400}
     height={400}

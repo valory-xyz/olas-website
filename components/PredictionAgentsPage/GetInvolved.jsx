@@ -6,7 +6,7 @@ const list = [
     title: 'Contribute a Strategy',
     desc: 'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
     urlName: 'Reach out on Discord',
-    url: { DISCORD_INVITE_URL },
+    url: DISCORD_INVITE_URL,
     isExternal: true,
   },
   {

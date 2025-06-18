@@ -25,7 +25,7 @@ const programs = [
       <>
         Get exposure and hands-on experience to Olas Stack by building{' '}
         <Link
-          href="/services/ai-mechs"
+          href="/agents/ai-mechs"
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
