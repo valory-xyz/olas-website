@@ -18,11 +18,11 @@ const fetchMetrics = async () => {
     return {
       modius: {
         latestAvgApr: averageAprs?.modius?.latestAvgApr || null,
-        latestETHApr: averageAprs?.modius?.latestETHApr || null,
+        latestEthApr: averageAprs?.modius?.latestEthApr || null,
       },
       optimus: {
         latestAvgApr: averageAprs?.optimus?.latestAvgApr || null,
-        latestETHApr: averageAprs?.optimus?.latestETHApr || null,
+        latestEthApr: averageAprs?.optimus?.latestEthApr || null,
       },
     };
   } catch (error) {
@@ -33,7 +33,7 @@ const fetchMetrics = async () => {
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
-  const numTo1dp = Number(num?.toFixed(1));
+  const numTo1dp = Number(num.toFixed(1));
   return `${numTo1dp}%`;
 };
 
@@ -51,8 +51,8 @@ const MetricsBubble = ({ metrics, sourceUrl, name }) => {
       {
         id: 'toUSDC',
         subText: 'Relative to USDC',
-        value: metrics?.latestETHApr
-          ? formatNumber(metrics.latestETHApr)
+        value: metrics?.latestEthApr
+          ? formatNumber(metrics.latestEthApr)
           : null,
         source: sourceUrl,
       },
@@ -72,7 +72,7 @@ const MetricsBubble = ({ metrics, sourceUrl, name }) => {
       <div className="md:grid-cols-2 grid gap-6">
         {data.map((item, index) => {
           const borderClassName =
-            index == 0
+            index === 0
               ? 'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200'
               : '';
 

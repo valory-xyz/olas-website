@@ -1,5 +1,4 @@
 import { Client } from '@gradio/client';
-import fs from 'fs';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION_SECONDS = 24 * 60 * 60; // 86400 seconds = 24 hours
@@ -22,12 +21,12 @@ const fetchAgentPerformance = async (agentName) => {
     }
 
     const avgApr = traces[totalTraces - 1]?.y;
-    const ETHAdjustedApr = traces[totalTraces - 2]?.y;
+    const ethAdjustedApr = traces[totalTraces - 2]?.y;
 
-    const latestETHApr = ETHAdjustedApr[ETHAdjustedApr.length - 1];
+    const latestEthApr = ethAdjustedApr[ethAdjustedApr.length - 1];
     const latestAvgApr = avgApr[avgApr.length - 1];
 
-    return { latestAvgApr, latestETHApr };
+    return { latestAvgApr, latestEthApr };
   } catch (error) {
     console.error(`Error fetching APR values for ${agentName}:`, error);
     return null;
@@ -61,13 +60,6 @@ const fetchAllAgentMetrics = async () => {
       data: { optimus: optimusData, modius: modiusData },
       timestamp: Date.now(),
     };
-
-    // Save data to cache
-    try {
-      fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(data, null, 2));
-    } catch (writeError) {
-      console.error('Error writing to cache:', writeError);
-    }
 
     return data;
   } catch (error) {
