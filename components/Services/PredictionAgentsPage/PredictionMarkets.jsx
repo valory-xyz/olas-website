@@ -13,7 +13,7 @@ export const PredictionMarkets = () => (
         className="rounded-lg shadow-none mb-8"
       >
         <source
-          src="/images/prediction-agents-page/pred-agent.mp4"
+          src="/videos/prediction-agents-page/pred-agent.mp4"
           type="video/mp4"
         />
       </video>
