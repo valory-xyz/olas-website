@@ -1,5 +1,5 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import TOKEN_DETAILS from 'data/addresses.json';
+import TOKEN_DETAILS from 'data/tokens.json';
 import SectionHeading from '../SectionHeading';
 import {
   Table,

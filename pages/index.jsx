@@ -3,7 +3,7 @@ import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
 import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
-import { PowersAIAgentEconomies } from 'components/HomepageSection/PowersAIAgentEconomies';
+import { PowersAiAgentEconomies } from 'components/HomepageSection/PowersAiAgentEconomies';
 import { PropelledBy } from 'components/HomepageSection/PropelledBy';
 import { TrustedBy } from 'components/HomepageSection/TrustedBy';
 import { WorldOfAgents } from 'components/HomepageSection/WorldOfAgents';
@@ -18,7 +18,7 @@ export default function Home() {
       <WorldOfAgents />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAIAgentEconomies />
+      <PowersAiAgentEconomies />
       <GetInvolved />
       <TrustedBy />
       <PropelledBy />
