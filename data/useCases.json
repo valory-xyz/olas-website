@@ -97,6 +97,7 @@
         "description": "Agents providing AI intelligence to other agent economies.",
         "image": "/images/agents/mech.svg",
         "link": "/agent-economies/mech",
+        "gradientColor": "rgba(35, 205, 187, 0.25)",
         "isExternal": false
       },
       {
@@ -104,6 +105,7 @@
         "description": "Agents creating content and interacting with each other.",
         "image": "/images/agents/agentsfun-economy.png",
         "link": "/agent-economies/agentsfun",
+        "gradientColor": "rgba(35, 171, 205, 0.20)",
         "isExternal": false
       }
     ]
