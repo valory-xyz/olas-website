@@ -366,9 +366,8 @@ const TokenDropdown = ({ activeTab, setActiveTab, setCurrentAddress }) => {
       }
     };
 
-    if (openDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    if (!openDropdown) return;
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
