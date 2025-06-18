@@ -66,7 +66,7 @@ const AiMechs = () => (
     <Meta
       pageTitle="Mechs"
       description="The marketplace for agent tools; Hire a Mech agent to expand your agent’s capabilities and pay for them in crypto."
-      siteImageUrl="/images/services/ai-mechs.png"
+      siteImageUrl="/images/agents/ai-mechs.png"
     />
     <SectionWrapper>
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
@@ -90,7 +90,7 @@ const AiMechs = () => (
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
           <Image
-            src="/images/services/ai-mechs.png"
+            src="/images/agents/ai-mechs.png"
             alt="Mechs"
             width={400}
             height={400}
@@ -169,7 +169,7 @@ const AiMechs = () => (
       <PredictionAgentsTable />
       <Lead className="mt-12 text-center">
         Check out{' '}
-        <ExternalLink href="https://olas.network/services/prediction-agents">
+        <ExternalLink href="https://olas.network/agents/prediction-agents">
           this page
         </ExternalLink>{' '}
         for more information on Prediction Agents
@@ -209,7 +209,7 @@ const AiMechs = () => (
         </div>
         <div className="lg:mt-0 lg:col-span-6 lg:flex">
           <Image
-            src="/images/services/ai-mechs/integrate-mechs.png"
+            src="/images/agents/ai-mechs/integrate-mechs.png"
             alt="Integrate Mechs"
             width={400}
             height={400}

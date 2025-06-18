@@ -21,7 +21,7 @@ const howItWorksSteps = [
       </>
     ),
     image: {
-      path: '/images/services/babydegen/data-gathering.png',
+      path: '/images/agents/babydegen/data-gathering.png',
       alt: 'Data Gathering',
     },
   },
@@ -36,7 +36,7 @@ const howItWorksSteps = [
       </>
     ),
     image: {
-      path: '/images/services/babydegen/strategy-selection.png',
+      path: '/images/agents/babydegen/strategy-selection.png',
       alt: 'Data Gathering',
     },
   },
@@ -54,7 +54,7 @@ const howItWorksSteps = [
       </>
     ),
     image: {
-      path: '/images/services/babydegen/making-moves.png',
+      path: '/images/agents/babydegen/making-moves.png',
       alt: 'Making Moves',
     },
   },

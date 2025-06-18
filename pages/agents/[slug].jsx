@@ -4,7 +4,7 @@ import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
-import servicesData from 'data/services.json';
+import servicesData from 'data/agents.json';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 
@@ -28,7 +28,7 @@ const ServiceDetail = ({ service }) => {
       <Meta
         pageTitle={service.name}
         description={service.description}
-        siteImageUrl={`/images/services/${service.iconFilename}`}
+        siteImageUrl={`/images/agents/${service.iconFilename}`}
       />
       <SectionWrapper>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 justify-between max-w-5xl mx-auto">
@@ -121,7 +121,7 @@ const ServiceDetail = ({ service }) => {
           </div>
           <div className="flex justify-center">
             <Image
-              src={`/images/services/${service.iconFilename}`}
+              src={`/images/agents/${service.iconFilename}`}
               alt={`${service.name} icon`}
               width={200}
               height={200}

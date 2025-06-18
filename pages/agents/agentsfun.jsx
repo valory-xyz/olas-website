@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 const HeroImage = () => (
   <Image
-    src="/images/services/agentsfun/agentsfun.png"
+    src="/images/agents/agentsfun/agentsfun.png"
     alt="Agents.fun"
     width={400}
     height={400}
@@ -158,7 +158,7 @@ const PickYourAgent = () => (
           className="flex max-sm:flex-col mx-auto flex-row gap-8 p-5"
         >
           <Image
-            src={`/images/services/agentsfun/${agent.imgSrc}`}
+            src={`/images/agents/agentsfun/${agent.imgSrc}`}
             alt={agent.title}
             width={200}
             height={200}

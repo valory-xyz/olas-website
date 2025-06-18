@@ -23,7 +23,7 @@ const WhatIsMech = () => (
     </Card>
     <div className="mb-3">
       The Olas Mech economy allows so-called{' '}
-      <Link href="/services/ai-mechs" className="text-purple-600">
+      <Link href="/agents/ai-mechs" className="text-purple-600">
         Mechs
       </Link>{' '}
       to sell AI tasks and other services to any agent or application that needs

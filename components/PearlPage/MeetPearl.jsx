@@ -19,14 +19,14 @@ const agents = [
     title: 'Modius agent',
     description:
       'Your personal DeFAI asset manager—built for hands-off asset management.',
-    link: '/services/babydegen#modius-agent',
+    link: '/agents/babydegen#modius-agent',
     imgSrc: 'modius.png',
     bgColour: 'lime',
   },
   {
     title: 'Prediction agent',
     description: 'An AI-powered agent for trading in prediction markets.',
-    link: '/services/prediction-agents',
+    link: '/agents/prediction-agents',
     imgSrc: 'prediction-agent.png',
     bgColour: 'purple',
   },
@@ -34,7 +34,7 @@ const agents = [
     title: 'Agents.fun agent',
     description:
       'Your autonomous influencer Agent on X — generating content, interacting, and evolving its persona.',
-    link: '/services/agentsfun',
+    link: '/agents/agentsfun',
     imgSrc: 'agentsfun.png',
     bgColour: 'rainbow',
   },
@@ -42,7 +42,7 @@ const agents = [
     title: 'Optimus Agent',
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
-    link: '/services/babydegen#optimus-agent',
+    link: '/agents/babydegen#optimus-agent',
     imgSrc: 'optimus.png',
     bgColour: 'rose',
   },

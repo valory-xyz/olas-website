@@ -13,7 +13,7 @@ import Link from 'next/link';
 const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
     <Image
-      src={`/images/services/babydegen/${item.toLowerCase()}.png`}
+      src={`/images/agents/babydegen/${item.toLowerCase()}.png`}
       alt={item}
       width={30}
       height={30}
@@ -68,7 +68,7 @@ const ModiusAgent = () => (
     className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
   >
     <Image
-      src="/images/services/babydegen/modius.png"
+      src="/images/agents/babydegen/modius.png"
       alt="modius agent"
       width={250}
       height={300}
@@ -114,7 +114,7 @@ const OptimusAgent = () => (
     className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
   >
     <Image
-      src="/images/services/babydegen/optimus.png"
+      src="/images/agents/babydegen/optimus.png"
       alt="optimus agent"
       width={250}
       height={300}
@@ -165,7 +165,7 @@ export const MeetTheBabyDegens = () => (
       <H2>
         Meet the{' '}
         <Image
-          src="/images/services/babydegen/babydegen-icon.png"
+          src="/images/agents/babydegen/babydegen-icon.png"
           alt="Meet the BabyDegens"
           width={70}
           height={80}

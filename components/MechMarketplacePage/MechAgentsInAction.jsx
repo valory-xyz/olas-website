@@ -39,7 +39,7 @@ export const MechAgentsInAction = () => (
         </p>
         <p>
           Behind the scenes,{' '}
-          <Link href="/services/ai-mechs" className="text-purple-600">
+          <Link href="/agents/ai-mechs" className="text-purple-600">
             Olas Mechs
           </Link>{' '}
           handle everything: agent-to-agent payments, task delegation, and
