@@ -1,19 +1,8 @@
 import { Client } from '@gradio/client';
 import fs from 'fs';
-import path from 'path';
 
 const MIN_TOTAL_TRACES = 2;
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-const CACHE_FOLDER = path.join(
-  process.env.VERCEL ? '/tmp' : process.cwd(),
-  'data',
-  'cache',
-);
-const CACHE_FILE_PATH = path.join(CACHE_FOLDER, 'babydegen-metrics-cache.json');
-
-if (!fs.existsSync(CACHE_FOLDER)) {
-  fs.mkdirSync(CACHE_FOLDER);
-}
+const CACHE_DURATION_SECONDS = 24 * 60 * 60; // 86400 seconds = 24 hours
 
 const fetchAgentPerformance = async (agentName) => {
   try {
@@ -87,49 +76,22 @@ const fetchAllAgentMetrics = async () => {
   }
 };
 
-const getCachedData = () => {
-  try {
-    if (fs.existsSync(CACHE_FILE_PATH)) {
-      const fileContent = fs.readFileSync(CACHE_FILE_PATH, 'utf8');
-      return JSON.parse(fileContent);
-    }
-  } catch (error) {
-    console.error('Error reading cache:', error);
-  }
-  return null;
-};
-
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   res.setHeader(
+    'Vercel-CDN-Cache-Control',
+    `max-age=${CACHE_DURATION_SECONDS}`,
+  );
+  res.setHeader('CDN-Cache-Control', `max-age=${CACHE_DURATION_SECONDS}`);
+  res.setHeader(
     'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION}, stale-while-revalidate=43200`,
+    `public, max-age=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
   );
 
   try {
-    const cachedData = getCachedData();
-    const now = Date.now();
-    const isCacheExpired =
-      !cachedData || now - cachedData.timestamp > CACHE_DURATION;
-
-    if (isCacheExpired) {
-      // Asynchronously update cache but return existing (potentially stale) data immediately
-      fetchAllAgentMetrics().catch(console.error);
-
-      // Returns cached data, even expired
-      if (cachedData) {
-        return res.status(200).json(cachedData.data);
-      }
-    } else {
-      // Returns cached data
-      return res.status(200).json(cachedData.data);
-    }
-
-    // If no cached data is available (first run or cache cleared),
-    // fetch synchronously
     const latestMetrics = await fetchAllAgentMetrics();
     if (latestMetrics) {
       return res.status(200).json(latestMetrics.data);
