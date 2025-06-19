@@ -91,14 +91,6 @@
   left: 0;
 }
 
-.transparent-gradient { 
-  background: radial-gradient(47.41% 45.97% at 50.57% 48.91%, rgba(255, 255, 255, 0.00) 65%, #ffffff 85%); 
-}
-
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
-}
-
 .activity-bg {
   position: absolute;
   z-index: 0;
@@ -107,6 +99,21 @@
   opacity: 0.4;
   height: 100%;
   width: 100%;
+}
+
+.transparent-gradient { 
+  background: radial-gradient(47.41% 45.97% at 50.57% 48.91%, rgba(255, 255, 255, 0.00) 65%, #ffffff 85%); 
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-tr from-purple-600 to-purple-400;
+}
+
+.agent-economy-card {
+  border-radius: 12px;
+  border: 1px solid #FFF;
+  background: radial-gradient(ellipse 585px 263px at top center, var(--gradient-color, rgba(126, 34, 237, 0.15)) 20%, #F2F4F9, rgba(242, 244, 249, 0.50) 100%);
+  box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
 .operate-card {

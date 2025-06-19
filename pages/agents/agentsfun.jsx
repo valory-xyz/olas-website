@@ -122,7 +122,7 @@ const tweets = [
 const FirstAgents = () => (
   <TestimonySection
     id="use-case"
-    folderName="services/agentsfun"
+    folderName="agents/agentsfun"
     title="The first agents are already having fun together"
     list={tweets}
   />
