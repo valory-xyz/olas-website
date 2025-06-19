@@ -30,7 +30,7 @@ export const OwnYourAgent = () => (
         weight="font-bold"
         other="mb-12"
       >
-        Pearl: The &quot;Agent App-Store&quot;
+        Pearl: The &quot;AI Agent App-Store&quot;
       </SectionHeading>
       <p className="text-xl text-slate-600">
         Own your agent with Pearl - the ultimate collection of AI agents. Choose

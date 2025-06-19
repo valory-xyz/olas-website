@@ -1,5 +1,4 @@
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
-import GetInvolved from 'components/HomepageSection/GetInvolved';
 import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
 import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
@@ -19,7 +18,6 @@ export default function Home() {
       <OwnYourAgent />
       <AgentsWorkingTogether />
       <PowersAiAgentEconomies />
-      <GetInvolved />
       <TrustedBy />
       <PropelledBy />
       <Media />

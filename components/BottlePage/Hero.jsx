@@ -25,7 +25,7 @@ export const Hero = () => (
         Run Your First AI Agent Today
       </div>
       <div className={TEXT_SMALL_CLASS}>
-        Run an AI Agent on Pearl: The Agent App Store!
+        Run an AI Agent on Pearl: The AI Agent App Store!
       </div>
       <Button
         variant="default"

@@ -41,8 +41,8 @@ const Only10Teams = () => (
     </h2>
     <p>
       The Olas Accelerator is awarding $1M (USDC) in grants + OLAS Dev Rewards
-      to developers building AI Agents for Pearl — The Agent App Store. The top
-      10 teams will receive milestone-based funding to develop, launch, and
+      to developers building AI Agents for Pearl — The AI Agent App Store. The
+      top 10 teams will receive milestone-based funding to develop, launch, and
       scale their agents. Spots are limited —{' '}
       <ExternalLink href={ACCELERATOR_APPLY_URL}>apply today</ExternalLink>!
     </p>

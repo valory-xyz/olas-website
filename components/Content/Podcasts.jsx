@@ -8,6 +8,7 @@ import {
   CARD_CLASS,
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
+  SUB_HEADER_MEDIUM_CLASS,
 } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 import { useFetchVideos } from 'common-util/useFetchApi';
@@ -122,7 +123,7 @@ export const Podcasts = () => {
         {isLoading ? (
           <Spinner customClass="h-auto py-20" />
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8 mb-14">
             {podcasts.length === 0 && (
               <div className="rounded-lg col-span-full place-items-center text-center border py-16 text-slate-500">
                 <AudioLines className="mb-2" size={40} /> Agents Unleashed
@@ -136,6 +137,31 @@ export const Podcasts = () => {
             ))}
           </div>
         )}
+        <div className="w-full py-10 flex flex-col gap-8 text-center place-items-center bg-slate-100 rounded-2xl">
+          <h4 className={SUB_HEADER_MEDIUM_CLASS}>
+            Playlist with All Episodes
+          </h4>
+          <div className="flex flex-col md:flex-row gap-4">
+            <Button variant="outline" size="lg" className="text-black" asChild>
+              <a
+                href="https://www.youtube.com/playlist?list=PLoP4p0r-X94r1FA7yoOwRqvOjiYGSNQoj"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Watch on Youtube
+              </a>
+            </Button>
+            <Button variant="outline" size="lg" className="text-black" asChild>
+              <a
+                href="https://x.com/autonolas/status/1926956504441065621"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Watch on X (Twitter)
+              </a>
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -125,7 +125,7 @@ const Hero = () => (
           asChild
           className="inline-flex md:ml-auto max-sm:grow"
         >
-          <Link href="#choose-your-role">Get Involved</Link>
+          <Link href="/olas-token#choose-your-role">Get Involved</Link>
         </Button>
       </div>
     </div>

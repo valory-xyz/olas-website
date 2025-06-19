@@ -10,6 +10,7 @@ import {
 } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
+import GetInvolved from 'components/OlasTokenPage/GetInvolved';
 import SectionWrapper from '../Layout/SectionWrapper';
 import { ActualEmissionsChart } from './ActualEmissionsChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
@@ -18,7 +19,6 @@ import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToOperators } from './EmissionsToOperators';
 import Hero from './Hero';
 import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
-import { OlasUtility } from './OlasUtility';
 import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
 import { TokenHoldersMetric } from './TokenHoldersMetric';
@@ -343,7 +343,7 @@ const OlasToken = () => (
     <Hero />
     <TokenHoldersMetric />
     <Supply />
-    <OlasUtility />
+    <GetInvolved />
     <TokenDetails />
     <LearnMoreAboutTokenomics />
   </>
