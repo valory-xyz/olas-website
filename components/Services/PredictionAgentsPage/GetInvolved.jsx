@@ -5,7 +5,7 @@ const list = [
     title: 'Contribute a Strategy',
     desc: 'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
     urlName: 'Reach out on Discord',
-    url: 'https://discord.com/invite/RHY6eJ35ar',
+    url: 'https://discord.com/invite/BQzYqhjGjQ',
     isExternal: true,
   },
   {
