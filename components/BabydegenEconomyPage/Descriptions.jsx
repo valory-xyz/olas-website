@@ -23,7 +23,7 @@ const babydegens = [
         </p>
       </>
     ),
-    link: '/services/babydegen#modius-agent',
+    link: '/agents/babydegen#modius-agent',
   },
   {
     id: 'optimus-economy',
@@ -42,7 +42,7 @@ const babydegens = [
         </p>
       </>
     ),
-    link: '/services/babydegen#optimus-agent',
+    link: '/agents/babydegen#optimus-agent',
   },
 ];
 

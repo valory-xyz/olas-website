@@ -3,15 +3,15 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import servicesData from 'data/agents.json';
 import serviceCategories from 'data/serviceCategories.json';
-import servicesData from 'data/services.json';
 
-const servicePath = (service) => service.path || `/services/${service.slug}`;
+const servicePath = (service) => service.path || `/agents/${service.slug}`;
 
 const NoServicesYet = () => (
   <div className="mb-2 flex items-center">
     <Image
-      src="/images/services/empty.svg"
+      src="/images/agents/empty.svg"
       width={75}
       height={75}
       alt="No services yet"
@@ -42,7 +42,7 @@ const ServiceCategoryCard = ({ serviceCategory, services }) => {
           <div key={service.id} className="mb-2 flex items-center">
             <Link href={servicePath(service)}>
               <Image
-                src={`/images/services/${service.iconFilename}`}
+                src={`/images/agents/${service.iconFilename}`}
                 width={75}
                 height={75}
                 alt={`${service.name} icon`}

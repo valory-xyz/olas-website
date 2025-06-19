@@ -31,7 +31,7 @@ const list = [
         <p className="mb-6">
           Your agent wants to bet on a prediction market but doesn&apos;t have
           forecasting skills. Instead of coding them in, it hires a prediction{' '}
-          <Link href="/services/ai-mechs" className="text-purple-600">
+          <Link href="/agents/ai-mechs" className="text-purple-600">
             Mech
           </Link>{' '}
           from the Mech Marketplace to get probability insights — enabling
@@ -70,7 +70,7 @@ const list = [
 
         <p className="mb-6">
           An image-generation AI agent produces visuals for{' '}
-          <Link href="/services/agentsfun" className="text-purple-600">
+          <Link href="/agents/agentsfun" className="text-purple-600">
             other agents
           </Link>{' '}
           that need content. Every time it&apos;s hired, it delivers the asset

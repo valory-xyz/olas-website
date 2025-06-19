@@ -9,3 +9,12 @@ export const VideoPropTypes = PropTypes.shape({
   platform_link: PropTypes.string,
   filename: PropTypes.string,
 });
+
+export const TrusteeQuotePropTypes = PropTypes.shape({
+  quote: PropTypes.string.isRequired,
+  userIcon: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  xUrl: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  title: PropTypes.string,
+}).isRequired;

@@ -46,7 +46,7 @@ export const MechAgentMetrics = () => {
           <div className="flex flex-col gap-2 mb-3">
             <Image
               alt="Mech"
-              src="/images/services/predict.png"
+              src="/images/agents/predict.png"
               width="35"
               height="35"
             />
@@ -62,7 +62,7 @@ export const MechAgentMetrics = () => {
           <div className="flex flex-col gap-2 mb-3">
             <Image
               alt="Mech"
-              src="/images/services/contribute.svg"
+              src="/images/agents/contribute.svg"
               width="35"
               height="35"
             />
@@ -80,7 +80,7 @@ export const MechAgentMetrics = () => {
           <div className="flex flex-col gap-2 mb-3">
             <Image
               alt="Mech"
-              src="/images/services/governatooorr.svg"
+              src="/images/agents/governatooorr.svg"
               width="35"
               height="35"
             />
