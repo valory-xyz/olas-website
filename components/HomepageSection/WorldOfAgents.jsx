@@ -43,12 +43,12 @@ export const WorldOfAgents = () => {
           size="max-sm:text-5xl"
           color="text-gray-900"
           weight="font-bold"
-          other="mb-6"
+          other="mb-6 z-10 text-center max-sm:mx-4"
         >
           An Entire World of AI Agents — One Token
         </SectionHeading>
 
-        <p className="text-xl text-slate-600 mb-14">
+        <p className="text-xl text-slate-600 mb-14 max-sm:text-center max-sm:mx-4">
           Access your autonomous AI agents for diverse use cases with OLAS.
         </p>
         <AutoScrollCarousel />

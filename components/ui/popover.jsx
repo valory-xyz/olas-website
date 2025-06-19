@@ -3,7 +3,14 @@ import { InfoIcon } from 'components/ui/info-icon';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-export const Popover = ({ children, text, align, side, className }) => {
+export const Popover = ({
+  children,
+  text,
+  align,
+  side,
+  className,
+  contentClassName,
+}) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = (e) => {
@@ -25,7 +32,7 @@ export const Popover = ({ children, text, align, side, className }) => {
         <Tooltip.Content
           side={side}
           align={align}
-          className="p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1"
+          className={`p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1 ${contentClassName}`}
         >
           <p>{children}</p>
         </Tooltip.Content>
