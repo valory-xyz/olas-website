@@ -18,39 +18,21 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              The network for co-owning AI. Olas enables everyone to own a share
-              of AI, specifically autonomous agents.
+              Olas enables everyone to own and monetize their AI agents. It is
+              the platform that enables true co-ownership of AI.
             </p>
             <p className="mb-3">
-              One of the first Crypto x AI projects, founded in 2021, Olas
-              offers the composable{' '}
-              <Link href="/stack" className="text-purple-600">
-                Olas Stack
-              </Link>{' '}
-              for developing autonomous AI agents, and the{' '}
-              <Link href="/protocol" className="text-purple-600">
-                Olas Protocol
-              </Link>{' '}
-              for incentivizing their creation and co-ownership.
+              With Pearl, the first “AI Agent App Store,” any consumer with a
+              laptop can use AI agents they truly own.
             </p>
             <p className="mb-3">
-              Olas&apos; mission is to incentivize and coordinate different
-              parties to launch autonomous agents that form entire AI economies
-              serving all humans.
+              With Mech Marketplace, businesses can put their AI agent up for
+              hire to earn crypto and tap into other AI agents&apos; services.
             </p>
             <p>
-              Olas is giving rise to agent economies across major blockchains.
-              Check the{' '}
-              <Link href="/#ecosystem" className="text-purple-600">
-                homepage
-              </Link>{' '}
-              to see how many hundreds of thousands of transactions have been
-              made. In{' '}
-              <Link href="/agent-economies/predict" className="text-purple-600">
-                Olas Predict
-              </Link>
-              , AI agents predict the future, using state-of-the-art AI models,
-              and then apply their predictions to on-chain markets.
+              Launched in 2021 as one of the first Crypto x AI projects, Olas
+              today powers multiple active agent economies with millions of
+              transactions to date.
             </p>
           </>
         ),
@@ -61,21 +43,20 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              The best AI is increasingly agentic but centralized.
+              AI is changing the world at breakneck speed — but with this comes
+              the risk of its ownership becoming more and more centralized. Labs
+              like OpenAI, Anthropic, and DeepMind are building AI Agents that
+              they hope will soon run everything.
             </p>
             <p className="mb-3">
-              {' '}
-              Everyone (end users, businesses, governments) wants general
-              purpose autonomous AI agents to do valuable (health, wealth,
-              wellbeing, all industries, all services) things for them.
+              If unchecked, the best AI will be owned by the few and rented by
+              the many.
             </p>
             <p className="mb-3">
-              {' '}
-              As it stands, the best AI agents will be provided by centralized
-              labs (e.g., OpenAI, Anthropic, DeepMind, etc.) and require all
-              users to pay them a continuous tax.{' '}
+              For everyone who dreams of AI Agents that could satisfy your every
+              wish or revolutionize industries, there will always be a price:
+              pay the tax forever — or get left behind.
             </p>
-            <p className="mb-3">This is the problem that Olas is solving.</p>
           </>
         ),
       },
@@ -83,31 +64,44 @@ const faqList = [
         id: 'olas-solution',
         title: "What is Olas' solution?",
         desc: (
-          <>
-            <p className="mb-3">
-              Olas is a path to powerful AI that is user-owned.
-            </p>
-            <p className="mb-3">
-              It is a coordination protocol for autonomous AI agents that
-              bootstraps the best agents and incentivizes them to be
-              open-source! Users can share in the growth of the protocol and own
-              their powerful agents outright.
-            </p>
-          </>
+          <p className="mb-3">
+            Olas solves this problem by enabling true co-ownership of AI. With
+            Olas&apos; Pearl, the first “AI Agent App Store”, any consumer with
+            a laptop can use AI agents they truly own. With the Mech
+            Marketplace, the “AI Agent Bazaar”, businesses can put their AI
+            agent up for hire to earn crypto and tap into other AI agents&apos;
+            services.
+          </p>
         ),
       },
       {
         id: 'use-cases',
         title: 'What are the main products/use cases?',
         desc: (
-          <p className="mb-3">
-            The most up-to-date and heavily showcased products can be found on
-            the{' '}
-            <Link href="/#use-cases" className="text-purple-600">
-              homepage
-            </Link>
-            .
-          </p>
+          <>
+            <p className="mb-3">
+              For consumers, Pearl: the AI Agent App Store is a desktop app that
+              lets anyone with a laptop run and own multiple AI agents easily.
+            </p>
+            <p className="mb-3">
+              For businesses, Mech Marketplace: the AI Agent Bazaar is where
+              they can offer their AI agents for hire to earn crypto and tap
+              into other AI agents’ services.
+            </p>
+            <p className="mb-3">
+              Everyone can co-own a piece of Olas through the OLAS utility
+              token. OLAS grants access to core functions of the network and
+              coordinates autonomous AI agent economies.
+            </p>
+            <p className="mb-3">
+              Additionally, the most up-to-date and heavily showcased products
+              can be found on the Olas homepage and{' '}
+              <Link href="/timeline" className="text-purple-600">
+                Olas Timeline
+              </Link>
+              .
+            </p>
+          </>
         ),
       },
       {
@@ -225,6 +219,23 @@ const faqList = [
               had a seed round
             </Link>
             .
+          </p>
+        ),
+      },
+      {
+        id: 'otc-round',
+        title: 'Did Olas have an OTC round?',
+        desc: (
+          <p>
+            No, Olas DAO itself did not have an OTC round. However, in early
+            2025, core contributor{' '}
+            <Link
+              href="/blog/olas-announces-the-agent-app-store-after-core-contributor-raises-13-8m-led-by-1kx"
+              className="text-purple-600"
+            >
+              Valory announced an OTC fundraise of $13.8
+            </Link>
+            million to continue supporting and scaling the Olas ecosystem.
           </p>
         ),
       },
