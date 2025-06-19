@@ -7,11 +7,11 @@ import useCases from 'data/useCases.json';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const AgentEconomies = () => {
-  const agentEconomies = useCases.find(
-    (item) => item.title === 'Agent Economies',
-  );
+const agentEconomies = useCases.find(
+  (item) => item.title === 'Agent Economies',
+);
 
+export const AgentEconomies = () => {
   return (
     <SectionWrapper
       backgroundType="NONE"
