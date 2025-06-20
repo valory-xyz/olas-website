@@ -62,70 +62,6 @@ const GET_INVOLVED_DATA = [
   },
 ];
 
-const GetInvolved = () => (
-  <div className="relative">
-    <div className="activity-bg h-full" />
-
-    <SectionWrapper
-      id="choose-your-role"
-      customClasses="py-12 px-4 md:px-8 lg:p-24 bg-slate-100"
-      backgroundType="NONE"
-    >
-      <div className="text-center max-w-[640px] mx-auto">
-        <SectionHeading
-          size="max-sm:text-5xl"
-          color="text-gray-900"
-          weight="font-bold"
-          other="mb-12"
-        >
-          Get Involved in Growing Olas
-        </SectionHeading>
-        <p className="text-xl text-[#4D596A] mb-12">
-          Choose a role and benefit from the Olas protocol, no matter what you
-          bring to the table.
-        </p>
-      </div>
-
-      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <div className="md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
-          <Image
-            src="/images/get-involved-diagram.png"
-            alt="Get involved diagram"
-            width={920}
-            height={595}
-            className="mx-auto m-2"
-          />
-        </div>
-
-        {GET_INVOLVED_DATA.map((datum) => {
-          const {
-            imageSrc,
-            imageHeight,
-            imageWidth,
-            title,
-            description,
-            ctaText,
-            href,
-          } = datum;
-          return (
-            <GetInvolvedCard
-              key={datum.id}
-              id={datum.id}
-              imageSrc={imageSrc}
-              imageHeight={imageHeight}
-              imageWidth={imageWidth}
-              title={title}
-              description={description}
-              ctaText={ctaText}
-              href={href}
-            />
-          );
-        })}
-      </div>
-    </SectionWrapper>
-  </div>
-);
-
 const GetInvolvedCard = ({
   id,
   imageSrc,
@@ -163,4 +99,66 @@ const GetInvolvedCard = ({
   );
 };
 
-export default GetInvolved;
+export const GetInvolved = () => (
+  <div className="relative">
+    <div className="activity-bg h-full bg-slate-100" />
+
+    <SectionWrapper
+      id="choose-your-role"
+      customClasses="py-12 px-4 md:px-8 lg:p-24 relative z-10"
+      backgroundType="NONE"
+    >
+      <div className="text-center max-w-[640px] mx-auto">
+        <SectionHeading
+          size="max-sm:text-5xl"
+          color="text-gray-900"
+          weight="font-bold"
+          other="mb-12"
+        >
+          Get Involved in Growing Olas
+        </SectionHeading>
+        <p className="text-xl text-[#4D596A] mb-12">
+          Choose a role and benefit from the Olas protocol, no matter what you
+          bring to the table.
+        </p>
+      </div>
+
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="md:p-6 flex flex-row col-span-1 md:col-span-2 lg:col-span-3 h-full">
+          <Image
+            src="/images/get-involved.png"
+            alt="Get involved"
+            width={920}
+            height={595}
+            className="mx-auto m-2"
+          />
+        </div>
+
+        {GET_INVOLVED_DATA.map((datum) => {
+          const {
+            imageSrc,
+            imageHeight,
+            imageWidth,
+            title,
+            description,
+            ctaText,
+            href,
+          } = datum;
+          return (
+            <GetInvolvedCard
+              key={datum.id}
+              id={datum.id}
+              imageSrc={imageSrc}
+              imageHeight={imageHeight}
+              imageWidth={imageWidth}
+              title={title}
+              description={description}
+              ctaText={ctaText}
+              href={href}
+            />
+          );
+        })}
+      </div>
+    </SectionWrapper>
+  </div>
+);

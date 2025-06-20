@@ -10,14 +10,14 @@ import {
 } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
-import GetInvolved from 'components/OlasTokenPage/GetInvolved';
+import { GetInvolved } from 'components/OlasTokenPage/GetInvolved';
 import SectionWrapper from '../Layout/SectionWrapper';
 import { ActualEmissionsChart } from './ActualEmissionsChart';
 import { EmissionScheduleChart } from './EmissionScheduleChart';
 import { EmissionsToBonders } from './EmissionsToBonders';
 import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToOperators } from './EmissionsToOperators';
-import Hero from './Hero';
+import { Hero } from './Hero';
 import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
