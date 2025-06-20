@@ -35,7 +35,7 @@ const SOCIAL_LINKS = [
 
 const FOR_USERS_LINKS = [
   {
-    title: 'Pearl: The “Agent App Store”',
+    title: 'Pearl: The “AI Agent App Store”',
     link: '/pearl',
   },
   {

@@ -20,7 +20,7 @@ export const Hero = () => (
         </h2>
 
         <div className={TEXT_SMALL_CLASS}>
-          Build AI agents for Pearl: The Agent App Store & get paid.
+          Build AI agents for Pearl: The AI Agent App Store & get paid.
         </div>
       </div>
 

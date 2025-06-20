@@ -626,7 +626,7 @@ const FAQPage = () => (
     <h1 className="text-5xl font-extrabold mb-12 mt-8 text-slate-800">FAQ</h1>
 
     <div className="mb-8">
-      Have a question about Pearl: The &quot;Agent App Store&quot;?{' '}
+      Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
       <Link href="/pearl#faq" className="text-purple-600">
         Check out the Pearl FAQ
       </Link>

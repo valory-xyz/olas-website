@@ -1,35 +1,30 @@
-import SectionWrapper from 'components/Layout/SectionWrapper';
+import { HeroSection } from 'components/HeroSection';
+import { Button } from 'components/ui/button';
 import Image from 'next/image';
-import { Button } from '../Button';
-import SectionHeading from '../SectionHeading';
+import Link from 'next/link';
 
-const Hero = () => (
-  <SectionWrapper
-    backgroundType="SUBTLE_GRADIENT"
-    customClasses="py-16 border-y text-black"
-  >
-    <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-      <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
-        <h1 className="mb-6 text-lg tracking-widest uppercase">OLAS Token</h1>
-        <SectionHeading
-          size="text-6xl sm:text-7xl lg:text-5xl xl:text-6xl lg:mb-12 font-bold"
-          color="text-black"
-        >
-          Unlock the Olas network
-        </SectionHeading>
-        <Button href="#token-details">Get OLAS</Button>
-      </div>
-      <div className="lg:mt-0 lg:col-span-6 lg:flex">
-        <Image
-          src="/images/olas-token-page/hero.png"
-          alt="hero"
-          width={500}
-          height={500}
-          className="mx-auto"
-        />
-      </div>
-    </div>
-  </SectionWrapper>
+const HeroImage = () => (
+  <Image
+    src="/images/olas-token-page/hero.png"
+    alt="hero"
+    width={500}
+    height={500}
+    className="mx-auto"
+  />
 );
 
-export default Hero;
+const GetOlas = () => (
+  <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
+    <Link href="#token-details">Get OLAS</Link>
+  </Button>
+);
+
+export const Hero = () => (
+  <HeroSection
+    HeroImage={HeroImage}
+    pageName="OLAS TOKEN"
+    title="Unlock the Olas Network"
+    description="OLAS token provides access to the core functions of the network."
+    PrimaryButton={GetOlas}
+  />
+);

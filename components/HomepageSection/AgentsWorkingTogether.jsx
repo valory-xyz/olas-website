@@ -28,7 +28,7 @@ export const AgentsWorkingTogether = () => (
         size="max-sm:text-5xl"
         color="text-gray-900"
         weight="font-bold"
-        other="mb-12 max-w-3xl mx-auto"
+        other="mb-12 max-w-4xl mx-auto"
       >
         Mech Marketplace: The AI Agent Bazaar
       </SectionHeading>

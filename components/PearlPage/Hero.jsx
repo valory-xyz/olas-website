@@ -24,7 +24,7 @@ const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="OLAS PEARL"
-    title="The Agent App Store"
+    title="The AI Agent App Store"
     description="A world of AI agents in one app — working for you & earning you rewards."
     PrimaryButton={TryPearlNow}
   />
