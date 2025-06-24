@@ -105,10 +105,10 @@ export const getTotalOlasContributors = async () => {
   }
 };
 
-// ----------- OPTIMUS -----------
+// ----------- BABYDEGEN -----------
 export const getAverageAprs = async () => {
   try {
-    const response = await fetch('/api/optimus-metrics');
+    const response = await fetch('/api/babydegen-metrics');
     if (!response.ok) {
       throw new Error('Failed to fetch metrics');
     }
