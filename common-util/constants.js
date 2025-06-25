@@ -32,6 +32,7 @@ export const DUNE_MMV2_URL = `${DUNE_QUERY_URL}/5166975`;
 export const DUNE_TOTAL_TRANSACTIONS_QUERY_URL = `${DUNE_QUERY_URL}/5194313/8548512`;
 export const DUNE_CLASSIFIED_REQUESTS_QUERY_URL = `${DUNE_QUERY_URL}/5195400`;
 export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
+export const DUNE_OLAS_STAKED_URL = `${DUNE_QUERY_URL}/5344501/8755325`;
 
 export const PREDICTION_DAA_QUERY_ID = '4165113';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
@@ -50,6 +51,7 @@ export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
 export const DAILY_CONTRIBUTORS_QUERY_ID = '4349554';
 export const FEE_FLOW_QUERY_ID = '5166975';
 export const A2A_TRANSACTIONS_ID = '5204254';
+export const OLAS_STAKED_QUERY_ID = '5344501';
 
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
