@@ -48,9 +48,26 @@ export const AgentEconomies = () => {
             </Link>
           ))}
         </div>
-        <Button variant="default" size="lg" className="w-fit mx-auto" asChild>
-          <Link href="/agents">Explore Agents</Link>
-        </Button>
+        <div className="max-sm:flex-col flex gap-4 w-fit mx-auto">
+          <Button
+            variant="default"
+            size="lg"
+            className="w-fit mx-auto max-sm:w-full"
+            asChild
+          >
+            <Link href="/agents">Explore Agents</Link>
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            className="max-sm:w-full w-fit mx-auto"
+            asChild
+          >
+            <Link href="/deprecated-usecases">
+              Explore Deprecated Use Cases
+            </Link>
+          </Button>
+        </div>
       </div>
     </SectionWrapper>
   );
