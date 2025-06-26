@@ -33,6 +33,13 @@ const Hero = () => (
   <SectionWrapper customClasses={`border-b ${SECTION_BOX_CLASS}`}>
     <div className="grid max-w-screen-xl items-center mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
       <div className="md:mb-12 lg:mb-0 lg:col-span-6">
+        <Image
+          src="/images/agents/deprecated-tag.svg"
+          alt="deprecated"
+          width={113}
+          height={32}
+          className="mb-4"
+        />
         <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>SHORTS.WTF</div>
         <h1 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
           Create a short film with just one prompt

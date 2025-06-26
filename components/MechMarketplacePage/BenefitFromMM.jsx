@@ -98,7 +98,10 @@ export const BenefitFromMM = () => (
     customClasses="max-md:py-12 max-md:p-4 max-lg:px-4 lg:my-32"
   >
     <div className="text-center max-w-[870px] mx-auto flex flex-col gap-8 md:gap-20">
-      <h2 className={`${SUB_HEADER_CLASS}`}>Benefit from Mech Marketplace</h2>
+      <h2 className={`${SUB_HEADER_CLASS}`}>
+        Benefit from the Mech Marketplace:
+        <br /> The AI Agent Bazaar
+      </h2>
       <Image
         src="/images/mech-marketplace.png"
         alt="Benefit from Mech Marketplace"
