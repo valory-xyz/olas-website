@@ -41,10 +41,12 @@ const OlasToken = () => (
 
 export const MMPearlDiagram = () => (
   <div className="mt-12">
-    <div className="lg:hidden mb-12 flex mx-auto w-fit">
-      <OlasToken />
+    <div className="max-md:hidden lg:hidden mb-12 bg-[url('/images/roadmap-page/bg.webp')] bg-cover bg-center h-[500px]">
+      <div className="translate-y-[300px]">
+        <OlasToken />
+      </div>
     </div>
-    <div className="max-w-[1320px] max-xl:gap-12 w-full mx-auto flex max-md:flex-col flex-row justify-between">
+    <div className="max-w-[1320px] max-xl:gap-12 w-full mx-auto flex max-md:flex-col flex-row justify-between mb-12">
       <InfoBlock
         imgSrc="pearl.png"
         title="Pearl — The “AI Agent App Store”"
@@ -105,6 +107,11 @@ export const MMPearlDiagram = () => (
           integration and other tooling that keeps the bazaar open to all.
         </p>
       </InfoBlock>
+    </div>
+    <div className="md:hidden bg-[url('/images/roadmap-page/mobile-bg.webp')] bg-cover bg-center w-full h-[1260px] bg-no-repeat relative">
+      <div className="mb-12 absolute mx-auto w-fit bottom-10 left-1/2 transform -translate-x-1/2">
+        <OlasToken />
+      </div>
     </div>
   </div>
 );

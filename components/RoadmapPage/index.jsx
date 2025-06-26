@@ -6,7 +6,7 @@ import { MMPearlDiagram } from './MMPearlDiagram';
 
 export const Roadmap = () => (
   <SectionWrapper
-    customClasses={`${SECTION_BOX_CLASS} relative overflow-hidden border border-b-1.5`}
+    customClasses={`${SECTION_BOX_CLASS} max-sm:px-0 relative overflow-hidden border border-b-1.5`}
   >
     <div className="flex flex-col mx-auto relative">
       <div className="max-lg:hidden">
