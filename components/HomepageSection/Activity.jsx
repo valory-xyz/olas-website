@@ -1,13 +1,18 @@
-import { getA2ATransactions, getFeeFlowMetrics } from 'common-util/api/dune';
+import {
+  getA2ATransactions,
+  getFeeFlowMetrics,
+  getTotalOlasStaked,
+  getTotalUniqueStakers,
+} from 'common-util/api/dune';
 import {
   get7DaysAvgActivity,
   getTotalTransactionsCount,
-  getTotalUnitsCount,
 } from 'common-util/api/flipside';
 import {
   DUNE_A2A_TRANSACTIONS_QUERY_URL,
   DUNE_AGENTS_QUERY_URL,
   DUNE_MMV2_URL,
+  DUNE_OLAS_STAKED_URL,
   FLIPSIDE_DAAS_QUERY_URL,
   FLIPSIDE_URL,
 } from 'common-util/constants';
@@ -23,19 +28,27 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [transactions, agents, dailyActiveAgents, a2aTransactions, feeMetrics] =
-    await Promise.allSettled([
-      getTotalTransactionsCount(),
-      getTotalUnitsCount(),
-      get7DaysAvgActivity(),
-      getA2ATransactions(),
-      getFeeFlowMetrics(),
-    ]);
+  const [
+    transactions,
+    agents,
+    olasStaked,
+    dailyActiveAgents,
+    a2aTransactions,
+    feeMetrics,
+  ] = await Promise.allSettled([
+    getTotalTransactionsCount(),
+    getTotalUniqueStakers(),
+    getTotalOlasStaked(),
+    get7DaysAvgActivity(),
+    getA2ATransactions(),
+    getFeeFlowMetrics(),
+  ]);
 
   return {
     transactions:
       transactions.status === 'fulfilled' ? transactions.value : null,
     agents: agents.status === 'fulfilled' ? agents.value : null,
+    olasStaked: agents.status === 'fulfilled' ? olasStaked.value : null,
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
     a2aTransactions:
@@ -123,6 +136,80 @@ const ActivityCard = ({
   );
 };
 
+const UsersCard = ({ agents, olasStaked }) => (
+  <ActivityCard
+    icon="users.png"
+    text="Users"
+    primary={{
+      value: agents,
+      text: 'agents deployed',
+      link: DUNE_AGENTS_QUERY_URL,
+    }}
+    secondary={{
+      value: olasStaked,
+      text: 'OLAS staked',
+      link: DUNE_OLAS_STAKED_URL,
+    }}
+  />
+);
+
+const OlasBurnedCard = ({ olasBurned }) => (
+  <ActivityCard
+    icon="olas-burned.png"
+    primary={{
+      value: `$${Number(olasBurned).toLocaleString()}`,
+      text: 'OLAS burned',
+      link: DUNE_MMV2_URL,
+    }}
+  />
+);
+
+const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
+  <ActivityCard
+    icon="daas.png"
+    iconWidth={252}
+    iconHeight={56}
+    primary={{
+      value: dailyActiveAgents,
+      text: (
+        <>
+          DAAs <Popover>7-day average Daily Active Agents</Popover>
+        </>
+      ),
+      link: FLIPSIDE_DAAS_QUERY_URL,
+    }}
+  />
+);
+
+const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
+  <ActivityCard
+    icon="agent-to-agent.png"
+    iconWidth={104}
+    iconHeight={36}
+    primary={{
+      value: a2aTransactions,
+      text: 'A2A txns',
+      link: DUNE_A2A_TRANSACTIONS_QUERY_URL,
+    }}
+    secondary={{
+      value: `$${Number(feesCollected).toLocaleString()}`,
+      text: 'fees collected',
+      link: DUNE_MMV2_URL,
+    }}
+  />
+);
+
+const TransactionsCard = ({ transactions }) => (
+  <ActivityCard
+    icon="txns.png"
+    primary={{
+      value: transactions,
+      text: 'txns',
+      link: FLIPSIDE_URL,
+    }}
+  />
+);
+
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR('tokenMetrics', fetchMetrics);
 
@@ -132,6 +219,7 @@ export const Activity = () => {
     return {
       transactions: metrics.transactions?.toLocaleString() || '--',
       agents: metrics.agents?.toLocaleString() || '--',
+      olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
@@ -169,14 +257,9 @@ export const Activity = () => {
             height={176}
             className="mt-12 ml-3 md:mr-4 w-[124px] h-[176px]"
           />
-          <ActivityCard
-            icon="users.png"
-            text="Users"
-            primary={{
-              value: processedMetrics?.agents,
-              text: 'agents deployed',
-              link: DUNE_AGENTS_QUERY_URL,
-            }}
+          <UsersCard
+            agents={processedMetrics?.agents}
+            olasStaked={processedMetrics?.olasStaked}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -191,14 +274,7 @@ export const Activity = () => {
         </div>
         <div className="flex flex-row place-items-center w-full justify-between">
           <div className="flex flex-col">
-            <ActivityCard
-              icon="olas-burnt.png"
-              primary={{
-                value: `$${Number(processedMetrics?.olasBurned).toLocaleString()}`,
-                text: 'OLAS burned',
-                link: DUNE_MMV2_URL,
-              }}
-            />
+            <OlasBurnedCard olasBurned={processedMetrics?.olasBurned} />
             <OlasIsBurnedArrow />
           </div>
           <div className="flex flex-col place-items-center z-10">
@@ -222,19 +298,8 @@ export const Activity = () => {
             </Link>
           </div>
           <div className="flex flex-col">
-            <ActivityCard
-              icon="daas.png"
-              iconWidth={252}
-              iconHeight={56}
-              primary={{
-                value: processedMetrics?.dailyActiveAgents,
-                text: (
-                  <>
-                    DAAs <Popover>7-day average Daily Active Agents</Popover>
-                  </>
-                ),
-                link: FLIPSIDE_DAAS_QUERY_URL,
-              }}
+            <DailyActiveAgentsCard
+              dailyActiveAgents={processedMetrics?.dailyActiveAgents}
             />
             <div className="flex flex-row">
               <Image
@@ -251,20 +316,9 @@ export const Activity = () => {
           </div>
         </div>
         <div className="flex flex-row place-items-center">
-          <ActivityCard
-            icon="agent-to-agent.png"
-            iconWidth={104}
-            iconHeight={36}
-            primary={{
-              value: processedMetrics?.a2aTransactions,
-              text: 'A2A txns',
-              link: DUNE_A2A_TRANSACTIONS_QUERY_URL,
-            }}
-            secondary={{
-              value: `$${Number(processedMetrics?.feesCollected).toLocaleString()}`,
-              text: 'fees collected',
-              link: DUNE_MMV2_URL,
-            }}
+          <AgentToAgentCard
+            a2aTransactions={processedMetrics?.a2aTransactions}
+            feesCollected={processedMetrics?.feesCollected}
           />
           <div>
             <Image
@@ -276,26 +330,14 @@ export const Activity = () => {
             />
             <p>AI Agent Bazaar is used</p>
           </div>
-          <ActivityCard
-            icon="txns.png"
-            primary={{
-              value: processedMetrics?.transactions,
-              text: 'txns',
-              link: FLIPSIDE_URL,
-            }}
-          />
+          <TransactionsCard transactions={processedMetrics?.transactions} />
         </div>
       </div>
 
       <div className="flex flex-col md:hidden w-[90%] mx-auto">
-        <ActivityCard
-          icon="users.png"
-          text="Users"
-          primary={{
-            value: processedMetrics?.agents,
-            text: 'agents deployed',
-            link: DUNE_AGENTS_QUERY_URL,
-          }}
+        <UsersCard
+          agents={processedMetrics?.agents}
+          olasStaked={processedMetrics?.olasStaked}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}
@@ -304,19 +346,8 @@ export const Activity = () => {
           height={120}
           className="mx-auto mb-2"
         />
-        <ActivityCard
-          icon="daas.png"
-          iconWidth={252}
-          iconHeight={56}
-          primary={{
-            value: processedMetrics?.dailyActiveAgents,
-            text: (
-              <>
-                DAAs <Popover>7-day average Daily Active Agents</Popover>
-              </>
-            ),
-            link: FLIPSIDE_DAAS_QUERY_URL,
-          }}
+        <DailyActiveAgentsCard
+          dailyActiveAgents={processedMetrics?.dailyActiveAgents}
         />
         <Image
           src={`${imgPath}mobile-arrow2.png`}
@@ -325,14 +356,7 @@ export const Activity = () => {
           height={120}
           className="mx-auto mb-2"
         />
-        <ActivityCard
-          icon="txns.png"
-          primary={{
-            value: processedMetrics?.transactions,
-            text: 'txns',
-            link: FLIPSIDE_URL,
-          }}
-        />
+        <TransactionsCard transactions={processedMetrics?.transactions} />
         <Image
           src={`${imgPath}mobile-arrow3.png`}
           alt="arrow"
@@ -340,30 +364,12 @@ export const Activity = () => {
           height={120}
           className="mx-auto mb-2"
         />
-        <ActivityCard
-          icon="agent-to-agent.png"
-          iconWidth={104}
-          iconHeight={36}
-          primary={{
-            value: processedMetrics?.a2aTransactions,
-            text: 'A2A txns',
-            link: DUNE_A2A_TRANSACTIONS_QUERY_URL,
-          }}
-          secondary={{
-            value: `$${Number(processedMetrics?.feesCollected).toLocaleString()}`,
-            text: 'fees collected',
-            link: DUNE_MMV2_URL,
-          }}
+        <AgentToAgentCard
+          a2aTransactions={processedMetrics?.a2aTransactions}
+          feesCollected={processedMetrics?.feesCollected}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
-        <ActivityCard
-          icon="olas-burnt.png"
-          primary={{
-            value: `$${Number(processedMetrics?.olasBurned).toLocaleString()}`,
-            text: 'OLAS burned',
-            link: DUNE_MMV2_URL,
-          }}
-        />
+        <OlasBurnedCard olasBurned={processedMetrics?.olasBurned} />
         <Image
           src={`${imgPath}mobile-arrow5.png`}
           alt="arrow"
