@@ -1,7 +1,7 @@
 import { Client } from '@gradio/client';
 
 const MIN_TOTAL_TRACES = 2;
-const CACHE_DURATION_SECONDS = 24 * 60 * 60; // 86400 seconds = 24 hours
+const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 
 const fetchAgentPerformance = async (agentName) => {
   try {

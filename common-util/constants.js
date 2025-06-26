@@ -57,7 +57,8 @@ export const BONDING_PROGRAMS_URL =
   'https://bond.olas.network/bonding-products';
 
 export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
-export const OPERATE_AGENTS_URL = 'https://operate.olas.network/agents';
+export const OPERATE_URL = 'https://operate.olas.network';
+export const OPERATE_AGENTS_URL = `${OPERATE_URL}/agents`;
 export const LAUNCH_URL = 'https://launch.olas.network/';
 export const VEOLAS_URL = 'https://govern.olas.network/veolas';
 
@@ -68,3 +69,18 @@ export const ACCELERATOR_APPLY_URL =
 export const QUICKSTART_URL = 'https://github.com/valory-xyz/quickstart';
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
+
+export const MODIUS_STAKING_CONTRACTS = [
+  '0x534C0A05B6d4d28d5f3630D6D74857B253cf8332',
+  '0xeC013E68FE4B5734643499887941eC197fd757D0',
+  '0x9034D0413D122015710f1744A19eFb1d7c2CEB13',
+  '0x8BcAdb2c291C159F9385964e5eD95a9887302862',
+  '0x5fc25f50e96857373c64dc0edb1abcbed4587e91',
+  '0xa008f200a4eba119d25a19c8e100751a6da1f52c',
+  '0xed8cded731b34c90bdaf5f6e9d9035433cf73689',
+];
+export const OPTIMUS_STAKING_CONTRACTS = [
+  '0xBCA056952D2A7a8dD4A002079219807CFDF9fd29',
+  '0x0f69f35652B1acdbD769049334f1AC580927E139',
+  '0x6891Cf116f9a3bDbD1e89413118eF81F69D298C3',
+];
