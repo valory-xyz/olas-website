@@ -1,4 +1,10 @@
 /* eslint-disable no-console */
+import {
+  MODIUS_STAKING_CONTRACTS,
+  OPTIMUS_STAKING_CONTRACTS,
+} from 'common-util/constants';
+import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { stakingContractsQuery } from 'common-util/graphql/queries';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
@@ -117,5 +123,54 @@ export const getAverageAprs = async () => {
   } catch (error) {
     console.error('Error fetching average APRs:', error);
     return null;
+  }
+};
+
+const ONE_YEAR = 1 * 24 * 60 * 60 * 365;
+const getMaxApy = (contracts) => {
+  const getApy = (contract) => {
+    const rewardsPerYear = BigInt(contract.rewardsPerSecond) * BigInt(ONE_YEAR);
+    const apy =
+      (rewardsPerYear * BigInt(100)) / BigInt(contract.minStakingDeposit);
+    return Number(apy) / (1 + Number(contract.numAgentInstances));
+  };
+
+  const firstApy = getApy(contracts[0]);
+  console.log('firstApy', firstApy);
+
+  return Math.max(...contracts.map((contract) => getApy(contract)));
+};
+
+export const getBabydegenOlasApy = async () => {
+  try {
+    const [modiusContractsResult, optimusContractsResult] =
+      await Promise.allSettled([
+        STAKING_GRAPH_CLIENTS.mode.request(
+          stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+        ),
+        STAKING_GRAPH_CLIENTS.optimism.request(
+          stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+        ),
+      ]);
+
+    const modiusContracts =
+      modiusContractsResult.status === 'fulfilled'
+        ? modiusContractsResult.value.stakingContracts
+        : null;
+    const optimusContracts =
+      optimusContractsResult.status === 'fulfilled'
+        ? optimusContractsResult.value.stakingContracts
+        : null;
+
+    return {
+      modius: modiusContracts ? getMaxApy(modiusContracts) : null,
+      optimus: optimusContracts ? getMaxApy(optimusContracts) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching OLAS APYs:', error);
+    return {
+      modius: null,
+      optimus: null,
+    };
   }
 };
