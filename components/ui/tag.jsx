@@ -8,6 +8,7 @@ const tagVariants = cva(
     variants: {
       variant: {
         primary: 'bg-[#7E22CE0D] text-[#7E22CE]',
+        secondary: 'bg-[#F4F7FB] text-black',
         white: 'bg-[#FFFFFF0D] text-white',
       },
     },
@@ -21,6 +22,7 @@ const tagBordersVariants = cva('absolute w-2 h-2', {
   variants: {
     variant: {
       primary: 'border-[#C084FC]',
+      secondary: 'border-[#A3AEBB]',
       white: 'border-[#FFFFFF80]',
     },
   },
@@ -36,37 +38,37 @@ export const Tag = ({ className, variant, children, ...props }) => {
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'top-0 left-0 border-t-2 border-l-2',
+            'top-0 left-0 border-t-2 border-l-2 z-20',
           )}
         />
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'top-0 right-0 border-t-2 border-r-2',
+            'top-0 right-0 border-t-2 border-r-2 z-20',
           )}
         />
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'bottom-0 left-0 border-b-2 border-l-2',
+            'bottom-0 left-0 border-b-2 border-l-2 z-20',
           )}
         />
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'bottom-0 right-0 border-b-2 border-r-2',
+            'bottom-0 right-0 border-b-2 border-r-2 z-20',
           )}
         />
       </div>
 
-      <div className={cn(tagVariants({ variant }))}>{children}</div>
+      <div className={cn(tagVariants({ variant }), 'z-10')}>{children}</div>
     </div>
   );
 };
 
 Tag.propTypes = {
   className: PropTypes.string,
-  variant: PropTypes.oneOf(['primary', 'white']),
+  variant: PropTypes.oneOf(['primary', 'secondary', 'white']),
   children: PropTypes.node.isRequired,
 };
 
