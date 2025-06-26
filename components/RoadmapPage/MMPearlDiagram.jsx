@@ -46,7 +46,7 @@ export const MMPearlDiagram = () => (
         <OlasToken />
       </div>
     </div>
-    <div className="max-w-[1320px] max-xl:gap-12 w-full mx-auto flex max-md:flex-col flex-row justify-between mb-12">
+    <div className="max-w-[1320px] max-xl:gap-12 w-full mx-auto flex max-md:flex-col flex-row justify-between mb-12 max-sm:px-6">
       <InfoBlock
         imgSrc="pearl.png"
         title="Pearl — The “AI Agent App Store”"
@@ -77,7 +77,7 @@ export const MMPearlDiagram = () => (
         </p>
       </InfoBlock>
 
-      <div className="max-lg:hidden absolute z-20 w-fit h-fit -bottom-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="max-lg:hidden absolute z-20 w-fit h-fit -bottom-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <OlasToken />
       </div>
 
@@ -108,8 +108,8 @@ export const MMPearlDiagram = () => (
         </p>
       </InfoBlock>
     </div>
-    <div className="md:hidden bg-[url('/images/roadmap-page/mobile-bg.webp')] bg-cover bg-center w-full h-[1260px] bg-no-repeat relative">
-      <div className="mb-12 absolute mx-auto w-fit bottom-10 left-1/2 transform -translate-x-1/2">
+    <div className="md:hidden bg-[url('/images/roadmap-page/mobile-bg.webp')] bg-cover bg-center w-full h-[1420px] border border-t-1.5 bg-no-repeat relative">
+      <div className="mb-12 absolute mx-auto w-fit bottom-28 left-1/2 transform -translate-x-1/2">
         <OlasToken />
       </div>
     </div>
