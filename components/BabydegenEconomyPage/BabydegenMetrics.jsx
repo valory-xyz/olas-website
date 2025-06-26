@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-import { getAverageAprs, getBabydegenOlasApy } from 'common-util/api';
+import { getAverageAprs, getBabydegenOlasApr } from 'common-util/api';
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
@@ -15,26 +15,26 @@ const OPTIMUS_HUGGINGFACE_URL =
 
 const fetchMetrics = async () => {
   try {
-    const [averageAprsResult, maxOlasApysResult] = await Promise.allSettled([
+    const [averageAprsResult, maxOlasAprsResult] = await Promise.allSettled([
       getAverageAprs(),
-      getBabydegenOlasApy(),
+      getBabydegenOlasApr(),
     ]);
 
     const averageAprs =
       averageAprsResult.status === 'fulfilled' ? averageAprsResult.value : null;
-    const maxOlasApys =
-      maxOlasApysResult.status === 'fulfilled' ? maxOlasApysResult.value : null;
+    const maxOlasAprs =
+      maxOlasAprsResult.status === 'fulfilled' ? maxOlasAprsResult.value : null;
 
     return {
       modius: {
         latestAvgApr: averageAprs?.modius?.latestAvgApr || null,
         latestEthApr: averageAprs?.modius?.latestEthApr || null,
-        maxOlasApy: maxOlasApys?.modius || null,
+        maxOlasApr: maxOlasAprs?.modius || null,
       },
       optimus: {
         latestAvgApr: averageAprs?.optimus?.latestAvgApr || null,
         latestEthApr: averageAprs?.optimus?.latestEthApr || null,
-        maxOlasApy: maxOlasApys?.optimus || null,
+        maxOlasApr: maxOlasAprs?.optimus || null,
       },
     };
   } catch (error) {
@@ -69,9 +69,9 @@ const MetricsBubble = ({ metrics, sourceUrl, image, title }) => {
         source: sourceUrl,
       },
       {
-        id: 'olasApy',
-        subText: 'APY, OLAS - Via OLAS Staking',
-        value: metrics?.maxOlasApy ? formatNumber(metrics.maxOlasApy) : null,
+        id: 'olasApr',
+        subText: 'APR, OLAS - Via OLAS Staking',
+        value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
         source: OPERATE_URL,
       },
     ],

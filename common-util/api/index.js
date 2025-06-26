@@ -127,21 +127,18 @@ export const getAverageAprs = async () => {
 };
 
 const ONE_YEAR = 1 * 24 * 60 * 60 * 365;
-const getMaxApy = (contracts) => {
-  const getApy = (contract) => {
+const getMaxApr = (contracts) => {
+  const getApr = (contract) => {
     const rewardsPerYear = BigInt(contract.rewardsPerSecond) * BigInt(ONE_YEAR);
     const apy =
       (rewardsPerYear * BigInt(100)) / BigInt(contract.minStakingDeposit);
     return Number(apy) / (1 + Number(contract.numAgentInstances));
   };
 
-  const firstApy = getApy(contracts[0]);
-  console.log('firstApy', firstApy);
-
-  return Math.max(...contracts.map((contract) => getApy(contract)));
+  return Math.max(...contracts.map((contract) => getApr(contract)));
 };
 
-export const getBabydegenOlasApy = async () => {
+export const getBabydegenOlasApr = async () => {
   try {
     const [modiusContractsResult, optimusContractsResult] =
       await Promise.allSettled([
@@ -163,11 +160,11 @@ export const getBabydegenOlasApy = async () => {
         : null;
 
     return {
-      modius: modiusContracts ? getMaxApy(modiusContracts) : null,
-      optimus: optimusContracts ? getMaxApy(optimusContracts) : null,
+      modius: modiusContracts ? getMaxApr(modiusContracts) : null,
+      optimus: optimusContracts ? getMaxApr(optimusContracts) : null,
     };
   } catch (error) {
-    console.error('Error fetching OLAS APYs:', error);
+    console.error('Error fetching OLAS APRs:', error);
     return {
       modius: null,
       optimus: null,
