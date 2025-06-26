@@ -27,7 +27,7 @@ const OlasToken = () => (
       height={78}
     />
     <p className="text-xl font-semibold">OLAS Token</p>
-    <Card className="activity-card-opaque p-4 max-w-[326px] text-center">
+    <Card className="activity-card-opaque p-4 w-[326px] text-center">
       OLAS bootstraps the{' '}
       <Link
         href="/#agent-economies"
@@ -41,7 +41,7 @@ const OlasToken = () => (
 
 export const MMPearlDiagram = () => (
   <div className="mt-12">
-    <div className="max-md:hidden lg:hidden mb-12 bg-[url('/images/roadmap-page/bg.webp')] bg-cover bg-center h-[500px]">
+    <div className="max-md:hidden lg:hidden mb-12 bg-[url('/images/roadmap-page/roadmap-bg.webp')] bg-cover bg-center h-[500px]">
       <div className="translate-y-[300px]">
         <OlasToken />
       </div>

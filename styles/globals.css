@@ -102,13 +102,14 @@
 }
 
 .roadmap-bg {
-  background-image: url('/images/roadmap-page/bg.webp');
+  background-image: url('/images/roadmap-page/roadmap-bg.webp');
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: contain;
   position: absolute;
   bottom: -15%;
-  width: 100%;
+  left: -5%;
+  width: 110%;
   height: 100%;
   pointer-events: none;
   z-index: 0;
