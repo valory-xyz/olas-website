@@ -33,6 +33,15 @@ const ServiceDetail = ({ service }) => {
       <SectionWrapper>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 justify-between max-w-5xl mx-auto">
           <div className="flex flex-col justify-center">
+            {service.deprecated && (
+              <Image
+                src="/images/agents/deprecated-tag.svg"
+                alt="deprecated"
+                width={113}
+                height={32}
+                className="mb-4"
+              />
+            )}
             <h1 className="text-5xl font-bold mb-4">{service.name}</h1>
             {service.demo && (
               <div className="inline-block">

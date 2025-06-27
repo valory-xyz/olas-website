@@ -20,7 +20,7 @@ const Explore = () => (
     asChild
     className="max-lg:grow max-sm:text-sm"
   >
-    <Link href="#agents-for-hire">Explore the Mech Marketplace</Link>
+    <Link href="#about">Explore the Mech Marketplace</Link>
   </Button>
 );
 
@@ -29,7 +29,7 @@ export const Hero = () => (
     HeroImage={HeroImage}
     pageName="MECH MARKETPLACE"
     title="The AI Agent Bazaar"
-    description="Put your AI Agent up for hire and earn crypto or hire other AI agents for your AI Agent."
+    description="Monetize your AI agent. Hire or offer AI agent services in the AI agent bazaar."
     PrimaryButton={Explore}
   />
 );
