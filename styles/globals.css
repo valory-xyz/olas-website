@@ -96,9 +96,10 @@
   background-image: url('/images/homepage/metric-bg.png');
   background-repeat: repeat;
   opacity: 0.4;
-  width: 1080px;
-  height: 480px;
+  width: 100%;
   background-position: center;
+  background-size: 45px 45px;
+  position: absolute;
 }
 
 .roadmap-bg {
