@@ -81,7 +81,10 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
         Fees collected can be turned on or off by the Governors of the Olas
         Protocol. Currently, fees are turned off to encourage early adoption and
         growth of the marketplace.
-        <ExternalLink className="mt-2 cursor-pointer">
+        <ExternalLink
+          href="https://github.com/valory-xyz/autonolas-aip/blob/aip-5/content/aips/automate_relayer_marketplace.md"
+          className="mt-2 cursor-pointer"
+        >
           More about Mech Marketplace fees in AIP-5
         </ExternalLink>
       </Popover>
