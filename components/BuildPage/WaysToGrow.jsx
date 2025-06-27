@@ -69,7 +69,7 @@ const ways = [
       <>
         <p>
           Apply for the $1million grants program to build AI Agents for Pearl:
-          The =&quot;Agent App Store&quot;.
+          The =&quot;AI Agent App Store&quot;.
         </p>
         <h3 className="font-semibold mt-4">Get funded</h3>
         <p>Up to $100K in grants to build, launch, and scale your AI agent.</p>

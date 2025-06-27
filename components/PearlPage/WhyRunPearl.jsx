@@ -1,7 +1,7 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Bot, Gem, LockKeyhole, WandSparkles } from 'lucide-react';
+import { Bot, Copyright, Gem, LockKeyhole, WandSparkles } from 'lucide-react';
 
 const list = [
   {
@@ -23,6 +23,11 @@ const list = [
     title: 'Transparent and Secure',
     icon: <LockKeyhole />,
     desc: "Pearl's open-source design ensures transparency, while smart wallet backups keep your funds secure.",
+  },
+  {
+    title: 'Own Your AI agent',
+    icon: <Copyright />,
+    desc: "When you use run an AI agent on Pearl, you don't just run it— you own it. Running an agent on Pearl means it's yours: you operate it and benefit from it.",
   },
 ];
 

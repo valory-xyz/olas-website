@@ -1,9 +1,9 @@
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
-import { Activity } from 'components/PredictPage/Activity';
-import { GetInvolved } from 'components/PredictPage/GetInvolved';
-import { PredictHero } from 'components/PredictPage/PredictHero';
-import { WhatIsOlasPredict } from 'components/PredictPage/WhatIsOlasPredict';
+import { Activity } from 'components/AgentEconomies/PredictPage/Activity';
+import { GetInvolved } from 'components/AgentEconomies/PredictPage/GetInvolved';
+import { PredictHero } from 'components/AgentEconomies/PredictPage/PredictHero';
+import { WhatIsOlasPredict } from 'components/AgentEconomies/PredictPage/WhatIsOlasPredict';
 
 const Predict = () => (
   <PageWrapper>

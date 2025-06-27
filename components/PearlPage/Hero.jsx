@@ -16,7 +16,7 @@ const HeroImage = () => (
 
 const TryPearlNow = () => (
   <Button variant="default" size="xl" asChild className="mb-6 w-full md:w-auto">
-    <Link href="#download">Try Pearl now</Link>
+    <Link href="#download">Own Your Agent</Link>
   </Button>
 );
 
@@ -24,8 +24,8 @@ const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="OLAS PEARL"
-    title="The Agent App Store"
-    description="A world of AI agents in one app — the Agent App Store, working for you and earning you rewards."
+    title='The "AI Agent App Store"'
+    description="A world of AI agents owned by you — in one app. "
     PrimaryButton={TryPearlNow}
   />
 );

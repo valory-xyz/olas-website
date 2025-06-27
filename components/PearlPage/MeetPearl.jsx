@@ -1,7 +1,6 @@
 import Image from 'next/image';
 
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -19,14 +18,14 @@ const agents = [
     title: 'Modius agent',
     description:
       'Your personal DeFAI asset manager—built for hands-off asset management.',
-    link: '/services/babydegen#modius-agent',
+    link: '/agents/babydegen#modius-agent',
     imgSrc: 'modius.png',
     bgColour: 'lime',
   },
   {
     title: 'Prediction agent',
     description: 'An AI-powered agent for trading in prediction markets.',
-    link: '/services/prediction-agents',
+    link: '/agents/prediction-agents',
     imgSrc: 'prediction-agent.png',
     bgColour: 'purple',
   },
@@ -34,7 +33,7 @@ const agents = [
     title: 'Agents.fun agent',
     description:
       'Your autonomous influencer Agent on X — generating content, interacting, and evolving its persona.',
-    link: '/services/agentsfun',
+    link: '/agents/agentsfun',
     imgSrc: 'agentsfun.png',
     bgColour: 'rainbow',
   },
@@ -42,7 +41,7 @@ const agents = [
     title: 'Optimus Agent',
     description:
       'Streamlines your DeFi experience by intelligently managing your assets across the Superchain.',
-    link: '/services/babydegen#optimus-agent',
+    link: '/agents/babydegen#optimus-agent',
     imgSrc: 'optimus.png',
     bgColour: 'rose',
   },
@@ -53,7 +52,7 @@ const AgentsList = () => (
     <h2
       className={`${SUB_HEADER_CLASS} mb-4 font-semibold text-center mb-14 lg:mb-14`}
     >
-      A World of AI Agents in One App
+      A World of AI Agents You Can Own in One App
     </h2>
     <div className="max-md:grid-cols-1 grid grid-cols-2 mx-auto max-w-6xl gap-4">
       {agents.map((item, index) => {
@@ -119,17 +118,6 @@ const AgentsList = () => (
   </div>
 );
 
-const ReadyToRun = () => (
-  <div className="place-items-center flex flex-col gap-8 bg-slate-100 max-w-6xl mx-auto mt-20 rounded-xl py-12">
-    <h3 className="text-3xl tracking-tight font-semibold text-center max-sm:mx-4">
-      Ready to run your agent?
-    </h3>
-    <Button variant="default" size="xl" asChild className="w-auto">
-      <Link href="#download">Try Pearl now</Link>
-    </Button>
-  </div>
-);
-
 export const MeetPearlContent = () => (
   <div className="h-[540px] max-w-6xl sm:h-auto mb-20 lg:pl-12 mx-auto lg:items-center flex flex-col lg:flex-row justify-between">
     <div className="mb-6 px-0 lg:max-w-[460px] lg:px-5 lg:text-left lg:mb-12">
@@ -148,10 +136,11 @@ export const MeetPearlContent = () => (
 
       <p className={TEXT_CLASS}>
         Pearl brings you the ultimate collection of AI agents in one app — your
-        Agent App Store. From asset managers to custom AI influencers, Pearl has
-        it all. Choose from a growing range of Olas agents, stake OLAS, and let
-        them work autonomously — earning you potential rewards from your crypto
-        agents&apos; work and Olas Staking.
+        &quot;AI Agent App Store&quot;. From asset managers to custom AI
+        influencers, Pearl has it all. Choose from a growing range of Olas
+        agents you can own — stake OLAS, and let them work autonomously, earning
+        you potential rewards from your crypto agents&apos; work and Olas
+        Staking.
       </p>
     </div>
     <Image
@@ -168,6 +157,5 @@ export const MeetPearl = () => (
   <SectionWrapper id="about" customClasses={`${SECTION_BOX_CLASS}`}>
     <MeetPearlContent />
     <AgentsList />
-    <ReadyToRun />
   </SectionWrapper>
 );

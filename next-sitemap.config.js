@@ -1,4 +1,4 @@
-const servicesData = require('./data/services.json');
+const agentsData = require('./data/agents.json');
 
 module.exports = {
   siteUrl: 'https://olas.network',
@@ -6,11 +6,11 @@ module.exports = {
   sitemapSize: 5000,
 
   additionalPaths: () => {
-    const servicesPaths = servicesData.map((service) => ({
-      loc: `/services/${service.slug}`,
+    const agentsPaths = agentsData.map((agents) => ({
+      loc: `/agents/${service.slug}`,
       changefreq: 'weekly',
     }));
 
-    return servicesPaths;
+    return agentsPaths;
   },
 };

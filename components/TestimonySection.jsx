@@ -14,8 +14,8 @@ export const TestimonySection = ({
 }) => (
   <SectionWrapper
     id={id}
-    customClasses="px-4 py-16 border-y bg-gradient-to-t from-[#E7EAF4] to-gray-50"
-    backgroundType="NONE"
+    customClasses="px-4 py-16 border-y"
+    backgroundType="GRAY_GRADIENT"
   >
     <h2 className={`${SUB_HEADER_CLASS} text-center mb-6`}>{title}</h2>
     {isQuote ? (

@@ -1,8 +1,8 @@
-import { BabydegenMetrics } from 'components/BabydegenEconomyPage/BabydegenMetrics';
-import { Descriptions } from 'components/BabydegenEconomyPage/Descriptions';
-import { Hero } from 'components/BabydegenEconomyPage/Hero';
-import { HowBabydegenEconomyWorks } from 'components/BabydegenEconomyPage/HowBabydegenEconomyWorks';
-import { Join } from 'components/BabydegenEconomyPage/Join';
+import { BabydegenMetrics } from 'components/AgentEconomies/BabydegenEconomyPage/BabydegenMetrics';
+import { Descriptions } from 'components/AgentEconomies/BabydegenEconomyPage/Descriptions';
+import { Hero } from 'components/AgentEconomies/BabydegenEconomyPage/Hero';
+import { HowBabydegenEconomyWorks } from 'components/AgentEconomies/BabydegenEconomyPage/HowBabydegenEconomyWorks';
+import { Join } from 'components/AgentEconomies/BabydegenEconomyPage/Join';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 

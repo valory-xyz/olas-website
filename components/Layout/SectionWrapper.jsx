@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 const SectionWrapper = ({
   children,
@@ -13,6 +13,10 @@ const SectionWrapper = ({
     switch (backgroundType) {
       case 'SUBTLE_GRADIENT':
         return 'w-full h-full bg-subtle-gradient bg-white';
+      case 'GRAY':
+        return 'w-full h-full bg-[#F4F7FB]';
+      case 'GRAY_GRADIENT':
+        return 'w-full h-full bg-gradient-to-t from-[#E7EAF4] to-gray-50';
       case 'GOVERNATOOORR':
         return 'w-full h-full bg-governatooorr bg-size-50 bg-repeat';
       case 'NONE':
@@ -34,7 +38,13 @@ const SectionWrapper = ({
 };
 
 SectionWrapper.propTypes = {
-  backgroundType: PropTypes.oneOf(['SUBTLE_GRADIENT', 'GOVERNATOOORR', 'NONE']),
+  backgroundType: PropTypes.oneOf([
+    'SUBTLE_GRADIENT',
+    'GRAY',
+    'GRAY_GRADIENT',
+    'GOVERNATOOORR',
+    'NONE',
+  ]),
   children: PropTypes.node.isRequired,
   customClasses: PropTypes.string,
   id: PropTypes.string,

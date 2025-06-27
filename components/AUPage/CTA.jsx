@@ -88,13 +88,7 @@ const CardImage = ({ src }) => (
 );
 
 export const CTA = () => (
-  <SectionWrapper
-    id="events"
-    backgroundType="NONE"
-    customStyle={{
-      background: 'linear-gradient(180deg, #F8F9FC 100%, #E7EAF4 100%)',
-    }}
-  >
+  <SectionWrapper id="events" backgroundType="GRAY">
     <div>
       <h2
         className={`${SUB_HEADER_CLASS} mb-12 text-center max-w-[700px] mx-auto`}

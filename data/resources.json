@@ -70,5 +70,21 @@
     "url": "/timeline",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
+  },
+  {
+    "id": "3e92b7d0-77ac-4b2f-a4c2-9b0f7c6883a6",
+    "title": "Roadmap",
+    "description": "High-level path for the Olas ecosystem's future",
+    "url": "/roadmap",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "f5c3b7ce-8df9-4d3a-bc59-8e4d0f26e19f",
+    "title": "FAQ",
+    "description": "Get answers to common questions",
+    "url": "/faq",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
   }
 ]

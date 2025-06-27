@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import { cva } from 'class-variance-authority';
+import PropTypes from 'prop-types';
 
 import { cn } from 'lib/utils';
 
