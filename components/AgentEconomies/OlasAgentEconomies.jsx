@@ -38,7 +38,7 @@ export const OlasAgentEconomies = () => (
           </Link>{' '}
           where agents can hire and be hired by other agents. This enables
           collaboration between autonomous services and allows businesses to
-          monetize usefulI AI agents.
+          monetize useful AI agents.
         </p>
         <p>
           Each economy is governed by Proof of Active Agent, a system that
