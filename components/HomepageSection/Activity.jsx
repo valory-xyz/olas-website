@@ -96,12 +96,19 @@ const ActivityCard = ({
   text,
   primary: { text: primaryText, link: primaryLink, value: primaryValue },
   secondary = {},
+  tertiary = {},
 }) => {
   const {
     text: secondaryText,
     link: secondaryLink,
     value: secondaryValue,
   } = secondary;
+
+  const {
+    text: tertiaryText,
+    link: tertiaryLink,
+    value: tertiaryValue,
+  } = tertiary;
 
   return (
     <Card className="flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque">
@@ -130,6 +137,16 @@ const ActivityCard = ({
             </div>
           </ExternalLink>
           {secondaryText}
+        </div>
+      )}
+      {tertiaryValue && (
+        <div className="flex flex-row gap-2 place-items-center">
+          <ExternalLink href={tertiaryLink}>
+            <div className="text-purple-700 text-xl font-semibold">
+              {tertiaryValue}
+            </div>
+          </ExternalLink>
+          {tertiaryText}
         </div>
       )}
     </Card>
@@ -181,7 +198,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
+const AgentToAgentCard = ({ a2aTransactions, feesCollected, protocolFees }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
@@ -193,6 +210,11 @@ const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
     }}
     secondary={{
       value: `$${Number(feesCollected).toLocaleString()}`,
+      text: 'turnover',
+      link: DUNE_MMV2_URL,
+    }}
+    tertiary={{
+      value: `${protocolFees}%`,
       text: 'fees collected',
       link: DUNE_MMV2_URL,
     }}
@@ -223,6 +245,7 @@ export const Activity = () => {
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
+      protocolFees: metrics.feeMetrics?.protocolFees?.toFixed(2) || '--',
       olasBurned: metrics.feeMetrics?.olasBurned?.toFixed(2) || '--',
     };
   }, [metrics]);
@@ -319,6 +342,7 @@ export const Activity = () => {
           <AgentToAgentCard
             a2aTransactions={processedMetrics?.a2aTransactions}
             feesCollected={processedMetrics?.feesCollected}
+            protocolFees={processedMetrics?.protocolFees}
           />
           <div>
             <Image
@@ -367,6 +391,7 @@ export const Activity = () => {
         <AgentToAgentCard
           a2aTransactions={processedMetrics?.a2aTransactions}
           feesCollected={processedMetrics?.feesCollected}
+          protocolFees={processedMetrics?.protocolFees}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard olasBurned={processedMetrics?.olasBurned} />

@@ -98,6 +98,10 @@ const RESOURCES_LINKS = [
     title: 'Olas Hackathons',
     link: '/hackathons',
   },
+  {
+    title: 'Roadmap',
+    link: '/roadmap',
+  },
 ];
 
 const MORE_LINKS = [

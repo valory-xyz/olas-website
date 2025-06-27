@@ -23,10 +23,10 @@ const list = [
         </div>
 
         <strong>
-          <li>Launch the Agents.fun agent.</li>
+          <li>Launch the Prediction agent.</li>
         </strong>
         <p className="mb-4">
-          Choose the Agents.fun agent from the agent catalog and follow the
+          Choose the Prediction agent from the agent catalog and follow the
           onboarding steps.
         </p>
 

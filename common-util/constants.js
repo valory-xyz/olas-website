@@ -4,8 +4,8 @@ export const DOCS_BASE_URL = 'https://docs.autonolas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
+  { link: '/about', text: 'About' },
   { link: '/blog', text: 'Blog' },
-  { link: '/faq', text: 'FAQ' },
   { text: 'More resources', submenu: resources },
 ];
 

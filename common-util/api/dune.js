@@ -125,8 +125,16 @@ export const getFeeFlowMetrics = async () => {
     const claimedFees = get(json, 'result.rows[0].Claimed_Fees');
     const unclaimedFees = get(json, 'result.rows[0].Unclaimed_Fees');
     const recievedFees = get(json, 'result.rows[0].Recieved_Fees');
+    const protocolFees = get(json, 'result.rows[0].Protocol_fee_collected');
     const olasBurned = get(json, 'result.rows[0].OLAS_Burned');
-    return { totalFees, claimedFees, unclaimedFees, recievedFees, olasBurned };
+    return {
+      totalFees,
+      claimedFees,
+      unclaimedFees,
+      recievedFees,
+      protocolFees,
+      olasBurned,
+    };
   } catch (error) {
     console.error('Error in getFeeFlowMetrics: ', error);
     return;
