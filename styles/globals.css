@@ -84,6 +84,12 @@
   }
 }
 
+video {
+  background-color: transparent !important;
+  filter: none !important;
+  color-scheme: light dark;
+}
+
 .homepage-hero-bg {
   object-fit: contain;
   width: 100vw;

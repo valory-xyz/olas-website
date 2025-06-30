@@ -83,6 +83,7 @@ const Hero = () => (
       loop
       muted
       playsInline
+      poster="/images/homepage/hero-bg.png"
       className="homepage-video-bg h-full object-fill w-full"
     >
       <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
