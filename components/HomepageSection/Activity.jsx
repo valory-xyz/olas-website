@@ -256,7 +256,6 @@ export const Activity = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <SectionHeading
-        size="max-sm:text-5xl"
         color="text-gray-900"
         weight="font-bold"
         other="mb-12 max-w-3xl text-center mx-auto max-lg:mx-4"

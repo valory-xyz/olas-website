@@ -25,7 +25,6 @@ export const AgentsWorkingTogether = () => (
   >
     <div className="text-center max-w-[900px] mx-auto place-items-center">
       <SectionHeading
-        size="max-sm:text-5xl"
         color="text-gray-900"
         weight="font-bold"
         other="mb-12 max-w-4xl mx-auto"

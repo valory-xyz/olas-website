@@ -90,7 +90,7 @@ const Hero = () => (
     <div className="absolute w-full h-full overflow-hidden">
       <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
     </div>
-    <div className="absolute h-[500px] place-content-center mx-auto text-center">
+    <div className="absolute h-[500px] 2xl:h-[800px] place-content-center mx-auto text-center align-middle">
       <h1 className="tracking-tight text-5xl md:text-6xl mb-12 text-black font-extrabold lg:mb-4">
         Co-own AI
       </h1>
