@@ -1,8 +1,8 @@
-import { AgentsFunMetrics } from 'components/AgentsFunPage/AgentsFunMetrics';
-import { Hero } from 'components/AgentsFunPage/Hero';
-import { HowTheEconomyWorks } from 'components/AgentsFunPage/HowItWorks';
-import { JoinTheAgentEconomy } from 'components/AgentsFunPage/JoinTheAgentEconomy';
-import { PoweringAnEconomy } from 'components/AgentsFunPage/PoweringAnEconomy';
+import { AgentsFunMetrics } from 'components/AgentEconomies/AgentsFunPage/AgentsFunMetrics';
+import { Hero } from 'components/AgentEconomies/AgentsFunPage/Hero';
+import { HowTheEconomyWorks } from 'components/AgentEconomies/AgentsFunPage/HowItWorks';
+import { JoinTheAgentEconomy } from 'components/AgentEconomies/AgentsFunPage/JoinTheAgentEconomy';
+import { PoweringAnEconomy } from 'components/AgentEconomies/AgentsFunPage/PoweringAnEconomy';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 

@@ -31,7 +31,7 @@ const list = [
         <p className="mb-6">
           Your agent wants to bet on a prediction market but doesn&apos;t have
           forecasting skills. Instead of coding them in, it hires a prediction{' '}
-          <Link href="/services/ai-mechs" className="text-purple-600">
+          <Link href="/agents/ai-mechs" className="text-purple-600">
             Mech
           </Link>{' '}
           from the Mech Marketplace to get probability insights — enabling
@@ -70,7 +70,7 @@ const list = [
 
         <p className="mb-6">
           An image-generation AI agent produces visuals for{' '}
-          <Link href="/services/agentsfun" className="text-purple-600">
+          <Link href="/agents/agentsfun" className="text-purple-600">
             other agents
           </Link>{' '}
           that need content. Every time it&apos;s hired, it delivers the asset
@@ -98,7 +98,10 @@ export const BenefitFromMM = () => (
     customClasses="max-md:py-12 max-md:p-4 max-lg:px-4 lg:my-32"
   >
     <div className="text-center max-w-[870px] mx-auto flex flex-col gap-8 md:gap-20">
-      <h2 className={`${SUB_HEADER_CLASS}`}>Benefit from Mech Marketplace</h2>
+      <h2 className={`${SUB_HEADER_CLASS}`}>
+        Benefit from the Mech Marketplace:
+        <br /> The AI Agent Bazaar
+      </h2>
       <Image
         src="/images/mech-marketplace.png"
         alt="Benefit from Mech Marketplace"

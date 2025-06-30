@@ -7,7 +7,7 @@ import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
   <Image
-    src="/images/services/contribute/hero.svg"
+    src="/images/agents/contribute/hero.svg"
     alt="Olas contribute hero"
     width={464}
     height={432}
