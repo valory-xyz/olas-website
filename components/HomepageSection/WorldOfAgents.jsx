@@ -18,7 +18,7 @@ const AutoScrollCarousel = () => {
   const duplicatedList = [...list, ...list];
 
   return (
-    <div className="relative w-full overflow-hidden max-w-7xl mx-auto">
+    <div className="relative w-full overflow-hidden max-w-[1440px] mx-auto">
       <div className="flex animate-scroll">
         {duplicatedList.map((image, index) => (
           <div key={index} className="flex-shrink-0 w-[224px] h-[224px] mx-2">
