@@ -24,12 +24,7 @@ export const OwnYourAgent = () => (
     customClasses="py-12 px-4 md:px-8 lg:p-24 bg-gradient-to-t from-[#7E22CE14] to-[rgba(0,0,0,0)]"
   >
     <div className="text-center max-w-[900px] mx-auto place-items-center">
-      <SectionHeading
-        size="max-sm:text-5xl"
-        color="text-gray-900"
-        weight="font-bold"
-        other="mb-12"
-      >
+      <SectionHeading color="text-gray-900" weight="font-bold" other="mb-12">
         Pearl: The &quot;AI Agent App-Store&quot;
       </SectionHeading>
       <p className="text-xl text-slate-600">

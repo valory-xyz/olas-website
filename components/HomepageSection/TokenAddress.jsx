@@ -57,7 +57,7 @@ const TokenDropdown = ({ activeTab, setActiveTab, setCurrentAddress }) => {
 
       {openDropdown && (
         <div
-          className="absolute w-full z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5"
+          className="absolute w-full z-20 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5"
           role="menu"
           aria-orientation="vertical"
         >
@@ -144,7 +144,7 @@ export const TokenAddress = () => {
         width={487}
         height={444}
       />
-      <Card className="absolute card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
+      <Card className="absolute z-20 card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
         <TokenDropdown
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -181,7 +181,7 @@ export const TokenAddress = () => {
           Copied to clipboard
         </Card>
       )}
-      <div className="flex flex-row gap-4 mt-14">
+      <div className="flex flex-row gap-4 mt-14 w-fit mx-auto">
         <Button variant="default" size="lg" asChild className="z-10">
           <Link href="/olas-token#token-details">Get OLAS</Link>
         </Button>
