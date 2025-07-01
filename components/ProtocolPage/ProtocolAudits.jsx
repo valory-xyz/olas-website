@@ -3,7 +3,11 @@ import {
   SUB_HEADER_CLASS,
   TEXT_LARGE_CLASS,
 } from 'common-util/classes';
-import { VALORY_GIT_URL, X_OLAS_URL } from 'common-util/constants';
+import {
+  VALORY_GIT_URL,
+  X_OLAS_URL,
+  X_VALORY_AG_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 

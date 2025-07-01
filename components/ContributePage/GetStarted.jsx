@@ -70,7 +70,7 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href={CTA_LINK}>Get started</Link>
+          <Link href={CONTRIBUTE_URL}>Get started</Link>
         </Button>
       </div>
     </div>
