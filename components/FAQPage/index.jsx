@@ -5,6 +5,7 @@ import { LinkIcon } from 'lucide-react';
 import {
   COINGECKO_URL,
   CONTRIBUTE_URL,
+  ETHERSCAN_URL,
   FLIPSIDE_URL,
   SNAPSHOT_URL,
   STAKING_URL,
