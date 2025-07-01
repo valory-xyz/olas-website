@@ -3,6 +3,7 @@ import {
   DAILY_CONTRIBUTORS_QUERY_ID,
   FEE_FLOW_QUERY_ID,
   MECH_TXS_QUERY_ID,
+  OLAS_STAKED_QUERY_ID,
   TOTAL_MECH_TXS_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
@@ -124,10 +125,31 @@ export const getFeeFlowMetrics = async () => {
     const claimedFees = get(json, 'result.rows[0].Claimed_Fees');
     const unclaimedFees = get(json, 'result.rows[0].Unclaimed_Fees');
     const recievedFees = get(json, 'result.rows[0].Recieved_Fees');
+    const protocolFees = get(json, 'result.rows[0].Protocol_fee_collected');
     const olasBurned = get(json, 'result.rows[0].OLAS_Burned');
-    return { totalFees, claimedFees, unclaimedFees, recievedFees, olasBurned };
+    return {
+      totalFees,
+      claimedFees,
+      unclaimedFees,
+      recievedFees,
+      protocolFees,
+      olasBurned,
+    };
   } catch (error) {
     console.error('Error in getFeeFlowMetrics: ', error);
+    return;
+  }
+};
+
+export const getTotalOlasStaked = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: OLAS_STAKED_QUERY_ID,
+    });
+    const totalOlasStaked = get(json, 'result.rows[0].total_balance_in_eth');
+    return totalOlasStaked;
+  } catch (error) {
+    console.error('Error in getTotalOlasStaked: ', error);
     return;
   }
 };

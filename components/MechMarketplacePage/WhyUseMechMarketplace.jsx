@@ -36,7 +36,7 @@ const list = [
 export const WhyUseMechMarketplace = () => (
   <div id="why-mech-marketplace">
     <HowItWorks
-      headerText="Why Use the Mech Marketplace"
+      headerText="Why Businesses Use the Mech Marketplace: The AI Agent Bazaar"
       headerClassName="text-center"
       imgFolder="mech-marketplace"
       list={list}

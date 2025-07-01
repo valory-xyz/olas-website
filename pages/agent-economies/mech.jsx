@@ -1,10 +1,10 @@
 import PageWrapper from 'components/Layout/PageWrapper';
-import { FeeMetrics } from 'components/MechPage/FeeMetrics';
-import { GetInvolved } from 'components/MechPage/GetInvolved';
-import { MechAgentMetrics } from 'components/MechPage/MechAgentMetrics';
-import { MechHero } from 'components/MechPage/MechHero';
-import { WhatIsOlasMech } from 'components/MechPage/WhatIsOlasMech';
-import { WhyOlasMech } from 'components/MechPage/WhyOlasMech';
+import { FeeMetrics } from 'components/AgentEconomies/MechPage/FeeMetrics';
+import { GetInvolved } from 'components/AgentEconomies/MechPage/GetInvolved';
+import { MechAgentMetrics } from 'components/AgentEconomies/MechPage/MechAgentMetrics';
+import { MechHero } from 'components/AgentEconomies/MechPage/MechHero';
+import { WhatIsOlasMech } from 'components/AgentEconomies/MechPage/WhatIsOlasMech';
+import { WhyOlasMech } from 'components/AgentEconomies/MechPage/WhyOlasMech';
 import Meta from 'components/Meta';
 
 const Mech = () => (

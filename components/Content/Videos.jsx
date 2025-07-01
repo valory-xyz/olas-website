@@ -58,7 +58,7 @@ export const Videos = ({ isLoading, videos, limit, isMain }) => (
         {isMain ? (
           ''
         ) : (
-          <h2 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+          <h2 className="mb-6 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
             Videos & Podcasts
           </h2>
         )}
@@ -67,9 +67,9 @@ export const Videos = ({ isLoading, videos, limit, isMain }) => (
           <div className="mb-4">
             <Link
               href="/videos"
-              className="text-xl md:text-2xl text-primary hover:text-primary-800 transition-colors duration-300"
+              className="text-xl text-purple-700 hover:text-purple-800 transition-colors duration-300"
             >
-              See all ▶
+              See all
             </Link>
           </div>
         )}

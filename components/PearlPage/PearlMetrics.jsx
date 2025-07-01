@@ -31,7 +31,7 @@ export const PearlMetrics = () => {
   return (
     <SectionWrapper id="daas" customClasses="mt-16 max-sm:mx-4">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center mb-12`}>
-        Join hundreds already using Pearl
+        Join Hundreds Already Owning AI Agents
       </h2>
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item) => {

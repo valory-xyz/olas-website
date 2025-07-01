@@ -119,6 +119,15 @@ const audits = [
               </a>{' '}
               ($50k)
             </li>
+            <li>
+              <a
+                href="https://cantina.xyz/portfolio/ff3a291b-4cdd-4ebb-9828-c0ebc7f21edf"
+                className="text-purple-600"
+                target="_blank"
+              >
+                AI Registry Mech Security Audit, 01.25
+              </a>
+            </li>
           </ul>
         ),
       },

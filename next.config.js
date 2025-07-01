@@ -47,6 +47,12 @@ module.exports = withPlausibleProxy()({
       },
       // old tokenomics app redirects
       {
+        source: '/services/:path*',
+        destination: '/agents/:path*',
+        permanent: true,
+      },
+      // previously /services but renamed /agents
+      {
         source: '/dev-incentives',
         destination: 'https://build.olas.network/dev-incentives',
         permanent: true,
