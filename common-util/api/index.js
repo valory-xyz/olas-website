@@ -1,4 +1,10 @@
 /* eslint-disable no-console */
+import {
+  MODIUS_STAKING_CONTRACTS,
+  OPTIMUS_STAKING_CONTRACTS,
+} from 'common-util/constants';
+import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { stakingContractsQuery } from 'common-util/graphql/queries';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
@@ -117,5 +123,52 @@ export const getAverageAprs = async () => {
   } catch (error) {
     console.error('Error fetching average APRs:', error);
     return null;
+  }
+};
+
+const ONE_YEAR = 1 * 24 * 60 * 60 * 365;
+const getMaxApr = (contracts) => {
+  return Math.max(
+    ...contracts.map((contract) => {
+      const rewardsPerYear =
+        BigInt(contract.rewardsPerSecond) * BigInt(ONE_YEAR);
+      const apy =
+        (rewardsPerYear * BigInt(100)) / BigInt(contract.minStakingDeposit);
+      return Number(apy) / (1 + Number(contract.numAgentInstances));
+    }),
+  );
+};
+
+export const getBabydegenOlasApr = async () => {
+  try {
+    const [modiusContractsResult, optimusContractsResult] =
+      await Promise.allSettled([
+        STAKING_GRAPH_CLIENTS.mode.request(
+          stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+        ),
+        STAKING_GRAPH_CLIENTS.optimism.request(
+          stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+        ),
+      ]);
+
+    const modiusContracts =
+      modiusContractsResult.status === 'fulfilled'
+        ? modiusContractsResult.value.stakingContracts
+        : null;
+    const optimusContracts =
+      optimusContractsResult.status === 'fulfilled'
+        ? optimusContractsResult.value.stakingContracts
+        : null;
+
+    return {
+      modius: modiusContracts ? getMaxApr(modiusContracts) : null,
+      optimus: optimusContracts ? getMaxApr(optimusContracts) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching OLAS APRs:', error);
+    return {
+      modius: null,
+      optimus: null,
+    };
   }
 };

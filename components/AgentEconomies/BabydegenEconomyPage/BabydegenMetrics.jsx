@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { useMemo } from 'react';
 
-import { getAverageAprs } from 'common-util/api';
+import { getAverageAprs, getBabydegenOlasApr } from 'common-util/api';
+import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -13,16 +15,26 @@ const OPTIMUS_HUGGINGFACE_URL =
 
 const fetchMetrics = async () => {
   try {
-    const averageAprs = await getAverageAprs();
+    const [averageAprsResult, maxOlasAprsResult] = await Promise.allSettled([
+      getAverageAprs(),
+      getBabydegenOlasApr(),
+    ]);
+
+    const averageAprs =
+      averageAprsResult.status === 'fulfilled' ? averageAprsResult.value : null;
+    const maxOlasAprs =
+      maxOlasAprsResult.status === 'fulfilled' ? maxOlasAprsResult.value : null;
 
     return {
       modius: {
         latestAvgApr: averageAprs?.modius?.latestAvgApr || null,
         latestEthApr: averageAprs?.modius?.latestEthApr || null,
+        maxOlasApr: maxOlasAprs?.modius || null,
       },
       optimus: {
         latestAvgApr: averageAprs?.optimus?.latestAvgApr || null,
         latestEthApr: averageAprs?.optimus?.latestEthApr || null,
+        maxOlasApr: maxOlasAprs?.optimus || null,
       },
     };
   } catch (error) {
@@ -37,62 +49,54 @@ const formatNumber = (num) => {
   return `${numTo1dp}%`;
 };
 
-const MetricsBubble = ({ metrics, sourceUrl, name }) => {
+const MetricsBubble = ({ metrics, sourceUrl, image, title }) => {
   const data = useMemo(
     () => [
       {
+        id: 'toUSDC',
+        subText: 'APR, Relative to USDC - Moving Average 7D',
+        value: metrics?.latestEthApr
+          ? formatNumber(metrics.latestEthApr)
+          : null,
+        source: sourceUrl,
+      },
+      {
         id: 'toETH',
-        subText: 'Relative to ETH',
+        subText: 'APR, Relative to ETH - Moving Average 7D',
         value: metrics?.latestAvgApr
           ? formatNumber(metrics.latestAvgApr)
           : null,
         source: sourceUrl,
       },
       {
-        id: 'toUSDC',
-        subText: 'Relative to USDC',
-        value: metrics?.latestEthApr
-          ? formatNumber(metrics.latestEthApr)
-          : null,
-        source: sourceUrl,
+        id: 'olasApr',
+        subText: 'APR, OLAS - Via OLAS Staking',
+        value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
+        source: OPERATE_URL,
       },
     ],
     [metrics, sourceUrl],
   );
 
   return (
-    <Card className="p-6 border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
-      <div className="text-center mb-6">
-        <div className="font-bold">{name}</div>
-        <span className="text-lg text-black max-w-fit">
-          📈 APR - Moving Average 7d
-        </span>
-      </div>
+    <Card className="p-8 border border-slate-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] items-center">
+      <Image alt={title} src={image} width="48" height="48" className="mb-4" />
+      <div className="text-lg font-medium mb-6">{title}</div>
 
-      <div className="md:grid-cols-2 grid gap-6">
-        {data.map((item, index) => {
-          const borderClassName =
-            index === 0
-              ? 'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200'
-              : '';
-
-          return (
-            <div
-              key={item.id}
-              className={`text-center w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full w-full ${borderClassName}`}
-            >
-              <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
-                <ExternalLink href={item.source} hideArrow>
-                  {!metrics || item.value === null ? '0.0%' : item.value}
-                  <span className="text-2xl">↗</span>
-                </ExternalLink>
-              </span>
-              <span className="block text-lg text-slate-700">
-                {item.subText}
-              </span>
-            </div>
-          );
-        })}
+      <div className="flex flex-col gap-8">
+        {data.map((item) => (
+          <div key={item.id} className="flex flex-col gap-3">
+            <span className="block text-base text-slate-700">
+              {item.subText}
+            </span>
+            <span className="block text-2xl font-semibold text-purple-600">
+              <ExternalLink href={item.source} hideArrow>
+                {!metrics || item.value === null ? '0.0%' : item.value}
+                <span className="text-2xl">↗</span>
+              </ExternalLink>
+            </span>
+          </div>
+        ))}
       </div>
     </Card>
   );
@@ -103,21 +107,19 @@ export const BabydegenMetrics = () => {
 
   return (
     <SectionWrapper id="stats">
-      <div className="flex flex-wrap gap-8 justify-center">
-        <div className="flex flex-col gap-4">
-          <MetricsBubble
-            name="MODIUS"
-            metrics={metrics?.modius}
-            sourceUrl={MODIUS_HUGGINGFACE_URL}
-          />
-        </div>
-        <div className="flex flex-col gap-4">
-          <MetricsBubble
-            name="OPTIMUS"
-            metrics={metrics?.optimus}
-            sourceUrl={OPTIMUS_HUGGINGFACE_URL}
-          />
-        </div>
+      <div className="flex flex-wrap gap-6 justify-center">
+        <MetricsBubble
+          title="Modius Agent Economy"
+          image="/images/babydegen-econ-page/modius.png"
+          metrics={metrics?.modius}
+          sourceUrl={MODIUS_HUGGINGFACE_URL}
+        />
+        <MetricsBubble
+          title="Optimus Agent Economy"
+          image="/images/babydegen-econ-page/optimus.png"
+          metrics={metrics?.optimus}
+          sourceUrl={OPTIMUS_HUGGINGFACE_URL}
+        />
       </div>
     </SectionWrapper>
   );
