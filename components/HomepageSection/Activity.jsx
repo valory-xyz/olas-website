@@ -401,9 +401,9 @@ export const Activity = () => {
         <Image
           src={`${imgPath}mobile-arrow5.png`}
           alt="arrow"
-          width={287}
+          width={343}
           height={202}
-          className="ml-[30px]"
+          className="mx-auto"
         />
       </div>
     </div>
