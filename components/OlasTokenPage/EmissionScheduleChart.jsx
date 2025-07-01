@@ -1,4 +1,5 @@
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
+import { ETHERSCAN_URL } from 'common-util/constants';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
