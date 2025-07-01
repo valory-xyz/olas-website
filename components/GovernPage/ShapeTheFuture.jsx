@@ -3,6 +3,7 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
+import { BOARDROOM_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const ShapeTheFuture = () => (
@@ -19,7 +20,7 @@ export const ShapeTheFuture = () => (
         affecting the success of agent-driven economies. Beyond emissions, Olas
         Govern also connects you to platforms like{' '}
         <a
-          href="https://snapshot.org/#/autonolas.eth"
+          href={SNAPSHOT_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
@@ -28,7 +29,7 @@ export const ShapeTheFuture = () => (
         </a>{' '}
         and{' '}
         <a
-          href="https://boardroom.io/autonolas/"
+          href={BOARDROOM_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"

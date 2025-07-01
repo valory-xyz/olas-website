@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
@@ -58,7 +59,9 @@ const list = [
         </strong>
         <p className="mb-4">
           Choose an agent, follow the{' '}
-          <ExternalLink href="https://github.com/valory-xyz/quickstart?tab=readme-ov-file#supported-agents">
+          <ExternalLink
+            href={`${QUICKSTART_URL}?tab=readme-ov-file#supported-agents`}
+          >
             README guide
           </ExternalLink>{' '}
           to get it running, and keep it online.
@@ -82,7 +85,7 @@ const list = [
       >
         <ExternalLink
           hideArrow
-          href="https://github.com/valory-xyz/quickstart?tab=readme-ov-file#olas-agents---quickstart"
+          href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}
         >
           Get Started with Quickstart
         </ExternalLink>

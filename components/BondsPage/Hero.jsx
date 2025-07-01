@@ -1,8 +1,9 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
+import { BOND_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
+import { ExternalLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -24,7 +25,7 @@ const ProvideLiquidity = (
 
 const StartBonding = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <Link href="https://bond.olas.network/">Start bonding now</Link>
+    <ExternalLink href={BOND_URL}>Start bonding now</ExternalLink>
   </Button>
 );
 

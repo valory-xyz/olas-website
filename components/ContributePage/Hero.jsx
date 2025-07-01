@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { CONTRIBUTE_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
-import { CTA_LINK } from './utils';
 
 const HeroImage = () => (
   <Image
@@ -24,7 +24,7 @@ const PostAboutOlas = (
 
 const StartContributing = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <Link href={CTA_LINK}>Start Contributing</Link>
+    <Link href={CONTRIBUTE_URL}>Start Contributing</Link>
   </Button>
 );
 

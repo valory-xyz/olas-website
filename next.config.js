@@ -1,3 +1,9 @@
+const {
+  BUILD_URL,
+  GOVERN_URL,
+  BONDING_PROGRAMS_URL,
+  BOND_URL,
+} = require('common-util/constants');
 const { withPlausibleProxy } = require('next-plausible');
 
 module.exports = withPlausibleProxy()({
@@ -54,32 +60,32 @@ module.exports = withPlausibleProxy()({
       // previously /services but renamed /agents
       {
         source: '/dev-incentives',
-        destination: 'https://build.olas.network/dev-incentives',
+        destination: `${BUILD_URL}/dev-incentives`,
         permanent: true,
       },
       {
         source: '/donate',
-        destination: 'https://govern.olas.network/donate',
+        destination: `${GOVERN_URL}/donate`,
         permanent: true,
       },
       {
         source: '/bonding-products',
-        destination: 'https://bond.olas.network/bonding-products',
+        destination: BONDING_PROGRAMS_URL,
         permanent: true,
       },
       {
         source: '/manage-solana-products',
-        destination: 'https://bond.olas.network/manage-solana-liquidity',
+        destination: `${BOND_URL}/manage-solana-liquidity`,
         permanent: true,
       },
       {
         source: '/manage-solana-liquidity',
-        destination: 'https://bond.olas.network/manage-solana-liquidity',
+        destination: `${BOND_URL}/manage-solana-liquidity`,
         permanent: true,
       },
       {
         source: '/my-bonds',
-        destination: 'https://bond.olas.network/my-bonds',
+        destination: `${BOND_URL}/my-bonds`,
         permanent: true,
       },
     ];

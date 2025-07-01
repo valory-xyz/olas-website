@@ -1,4 +1,5 @@
 import { ArcElement, Chart } from 'chart.js';
+import { COINGECKO_URL, ETHERSCAN_URL } from 'common-util/constants';
 import { getOlasContract, olasAddress } from 'common-util/web3';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
@@ -67,7 +68,7 @@ const LegendItem = ({ label, color, address, value }) => (
     {address && (
       <span className="ml-1 font-medium">
         <a
-          href={`https://etherscan.io/token/${olasAddress}?a=${address}`}
+          href={`${ETHERSCAN_URL}/token/${olasAddress}?a=${address}`}
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -95,7 +96,9 @@ const TotalSupplyInfo = () => (
       <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
       <span className="font-semibold">buOLAS</span> value
     </span>
-    <ExternalLink href="https://etherscan.io/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16">
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16`}
+    >
       Verify on-chain value
     </ExternalLink>
     <p>
@@ -106,13 +109,19 @@ const TotalSupplyInfo = () => (
       </ExternalLink>
       . Verify:
     </p>
-    <ExternalLink href="https://etherscan.io/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog">
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog`}
+    >
       Revoke buOLAS execution 1
     </ExternalLink>
-    <ExternalLink href="https://etherscan.io/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog">
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog`}
+    >
       Revoke buOLAS execution 2
     </ExternalLink>
-    <ExternalLink href="https://etherscan.io/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog">
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog`}
+    >
       Revoke buOLAS execution 3
     </ExternalLink>
   </div>
@@ -212,7 +221,7 @@ export const SupplyPieChart = () => {
             {loading ? '--' : formatNumber(data[data.length - 1].value)}
           </div>
           <div className="mb-4">
-            <Verify url="https://www.coingecko.com/en/coins/autonolas" />
+            <Verify url={`${COINGECKO_URL}/en/coins/autonolas`} />
           </div>
         </div>
       </div>

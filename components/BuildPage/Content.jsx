@@ -1,5 +1,5 @@
 import { SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
-import { DEV_REWARDS_URL } from 'common-util/constants';
+import { DEV_REWARDS_URL, REGISTRY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { InfoIcon } from 'components/ui/info-icon';
 import { ExternalLink, Link } from '../ui/typography';
@@ -49,10 +49,7 @@ const Content = () => (
       <p>
         In order to qualify for developer rewards an Olas builder must mint a
         component or agent on the{' '}
-        <ExternalLink
-          href="https://registry.olas.network/ethereum/components"
-          hideArrow
-        >
+        <ExternalLink href={`${REGISTRY_URL}/ethereum/components`} hideArrow>
           Olas Registry
         </ExternalLink>{' '}
         and have that component or agent be referenced in a service that

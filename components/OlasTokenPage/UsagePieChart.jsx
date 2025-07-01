@@ -1,11 +1,11 @@
 import { ArcElement, Chart } from 'chart.js';
+import { ETHERSCAN_URL, STAKING_URL } from 'common-util/constants';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
 import Verify from '../Verify';
 
-const READ_PROXY_ETHERSCAN_URL =
-  'https://etherscan.io/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#';
+const READ_PROXY_ETHERSCAN_URL = `${ETHERSCAN_URL}/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#`;
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
@@ -63,10 +63,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             {loading ? '--' : split?.staking}%
           </span>{' '}
           of the new tokens are earmarked for{' '}
-          <Link
-            href="https://staking.olas.network/"
-            className="text-yellow-600 font-bold"
-          >
+          <Link href={STAKING_URL} className="text-yellow-600 font-bold">
             Operators
           </Link>
         </div>

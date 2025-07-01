@@ -2,6 +2,7 @@
 import { AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
+import { VALORY_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -22,14 +23,11 @@ const PearlTerms = () => (
             <li>
               The Pearl Application (“Application”) is the desktop application
               available for download on the{' '}
-              <Link href="https://olas.network/" className={linkClass}>
+              <Link href="/" className={linkClass}>
                 Olas Site
               </Link>
               , therefore is subject to the “
-              <Link
-                href="https://olas.network/disclaimer"
-                className={linkClass}
-              >
+              <Link href="/disclaimer" className={linkClass}>
                 Olas Disclaimer & Privacy Policy
               </Link>
               ”.
@@ -38,7 +36,7 @@ const PearlTerms = () => (
               Both the Application and brand “Pearl” or “Olas Pearl” and
               associated Marks are part of Valory AG’s “Offerings”, thus are
               subject to the “
-              <Link href="https://valory.xyz/terms" className={linkClass}>
+              <Link href={`${VALORY_URL}/terms`} className={linkClass}>
                 Valory Terms
               </Link>
               ” and related definitions therein.

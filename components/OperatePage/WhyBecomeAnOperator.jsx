@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { OPERATE_URL } from 'common-util/constants';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -31,7 +32,7 @@ const list = [
     desc: (
       <p>
         Choose from a growing list of{' '}
-        <ExternalLink href="https://operate.olas.network/contracts">
+        <ExternalLink href={`${OPERATE_URL}/contracts`}>
           staking contracts
         </ExternalLink>
         .

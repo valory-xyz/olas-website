@@ -1,4 +1,5 @@
 import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
+import { BUILD_URL, DOCS_BASE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
@@ -10,14 +11,14 @@ const content = [
     description:
       'Follow structured paths to streamline your development process.',
     linkText: 'Get started with Build paths',
-    link: 'https://build.olas.network/paths',
+    link: `${BUILD_URL}/paths`,
   },
   {
     title: 'Comprehensive docs',
     imageSrc: '/images/build-page/docs.png',
     description: 'Dive deep with our detailed documentation.',
     linkText: 'Review Olas documentation',
-    link: 'https://docs.autonolas.network',
+    link: { DOCS_BASE_URL },
   },
 ];
 

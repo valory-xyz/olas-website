@@ -9,6 +9,7 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import { DOCS_BASE_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -196,7 +197,7 @@ const GetStarted = () => (
             className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
           >
             <a
-              href="https://docs.autonolas.network/product/coordinationkit/"
+              href={`${DOCS_BASE_URL}/product/coordinationkit/`}
               rel="noopener noreferrer"
               target="_blank"
             >

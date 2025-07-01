@@ -1,4 +1,5 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { BUILD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
@@ -54,7 +55,7 @@ const ways = [
     ),
     link: (
       <Link
-        href={'https://build.olas.network/opportunities'}
+        href={`${BUILD_URL}/opportunities`}
         className="text-purple-600 mt-auto"
         target="_blank"
       >

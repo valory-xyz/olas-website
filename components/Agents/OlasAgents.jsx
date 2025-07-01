@@ -1,5 +1,9 @@
 import { SECTION_BOX_CLASS } from 'common-util/classes';
-import { REGISTRY_URL } from 'common-util/constants';
+import {
+  DOCS_BASE_URL,
+  REGISTRY_URL,
+  STAKING_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import Link from 'next/link';
@@ -66,10 +70,7 @@ export const OlasAgents = () => (
           <li className="font-medium mb-3">
             <p className="mb-3">
               They optionally earn rewards via{' '}
-              <ExternalLink href="https://staking.olas.network/">
-                Olas Staking
-              </ExternalLink>
-              :
+              <ExternalLink href={STAKING_URL}>Olas Staking</ExternalLink>:
             </p>
             <ul className="ml-6 list-disc font-normal text-base mb-3">
               <li>
@@ -100,10 +101,8 @@ export const OlasAgents = () => (
         </p>
         <p>
           Olas offers the{' '}
-          <ExternalLink href="https://docs.olas.network/">
-            Olas Stack
-          </ExternalLink>{' '}
-          which allows developers to build agents easily.
+          <ExternalLink href={DOCS_BASE_URL}>Olas Stack</ExternalLink> which
+          allows developers to build agents easily.
         </p>
       </div>
       <div className="gap-8 flex flex-col">

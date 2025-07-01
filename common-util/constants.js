@@ -1,6 +1,6 @@
 import resources from 'data/resources.json';
 
-export const DOCS_BASE_URL = 'https://docs.autonolas.network';
+export const DOCS_BASE_URL = 'https://docs.olas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
@@ -15,9 +15,9 @@ export const WHITEPAPER_SUMMARY =
 export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
-export const FLIPSIDE_URL =
-  'https://flipsidecrypto.xyz/flipsideteam/olas-key-activity-metrics-pnPjda';
-export const FLIPSIDE_QUERY_URL = 'https://flipsidecrypto.xyz/flipsideteam/q/';
+export const FLIPSIDE_BASE_URL = 'https://flipsidecrypto.xyz';
+export const FLIPSIDE_URL = `${FLIPSIDE_BASE_URL}/flipsideteam/olas-key-activity-metrics-pnPjda`;
+export const FLIPSIDE_QUERY_URL = `${FLIPSIDE_BASE_URL}/flipsideteam/q/`;
 export const FLIPSIDE_LIQUIDITY_QUERY_URL = `${FLIPSIDE_QUERY_URL}EVHMVqzqhIvF/total/visualizations/v2/2d31feb6-a661-4103-ba09-02f60d3d28e8`;
 export const FLIPSIDE_PROTOCOL_FEES_QUERY_URL = `${FLIPSIDE_QUERY_URL}0H0TnBLIMXjf/olas-total-protocol-revenue-from-lp-new/visualizations/fa540a62-ac0b-4030-9b43-26d1d7faa454`;
 export const FLIPSIDE_LOCKED_OLAS_QUERY_URL = `${FLIPSIDE_QUERY_URL}ORaUMVaQVovq/veolas/visualizations/v2/a437de1b-5d22-4139-82b8-b51cd1b07848`;
@@ -37,40 +37,54 @@ export const DUNE_OLAS_STAKED_URL = `${DUNE_QUERY_URL}/5344501/8755325`;
 export const PREDICTION_DAA_QUERY_ID = '4165113';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
 export const PROTOCOL_EARNED_FEES_ID = '3511561';
-export const PREDICTION_ECONOMY_DASHBOARD_URL =
-  'https://flipsidecrypto.xyz/MLDZMN/olas-predict-on-demand-agent-powered-predictions-47WGHl';
+export const PREDICTION_ECONOMY_DASHBOARD_URL = `${FLIPSIDE_BASE_URL}/MLDZMN/olas-predict-on-demand-agent-powered-predictions-47WGHl`;
 export const MECH_TXS_QUERY_ID = '5195400';
 export const TOTAL_MECH_TXS_ID = '5194313';
-export const MECH_ECONOMY_DASHBOARD_URL =
-  'https://dune.com/adrian0x/the-mechs-agent-economy';
 export const UNIQUE_STAKERS_QUERY_ID = '5200009';
 export const UNIQUE_BUILDERS_QUERY_ID = '4331416';
-export const OLAS_ECONOMY_DASHBOARD_URL =
-  'https://dune.com/adrian0x/autonolas-ecosystem-activity';
-export const OLAS_PROTOCOL_LIQUIDITY_URL = 'https://dune.com/adrian0x/olas';
 export const DAILY_CONTRIBUTORS_QUERY_ID = '4349554';
 export const FEE_FLOW_QUERY_ID = '5166975';
 export const A2A_TRANSACTIONS_ID = '5204254';
 export const OLAS_STAKED_QUERY_ID = '5344501';
 
+export const DUNE_BASE_URL = 'https://dune.com/adrian0x';
+export const MECH_ECONOMY_DASHBOARD_URL = `${DUNE_BASE_URL}/the-mechs-agent-economy`;
+export const OLAS_ECONOMY_DASHBOARD_URL = `${DUNE_BASE_URL}/autonolas-ecosystem-activity`;
+export const OLAS_PROTOCOL_LIQUIDITY_URL = `${DUNE_BASE_URL}/olas`;
+
+export const X_OLAS_URL = 'https://x.com/autonolas';
+export const X_VALORY_AG_URL = 'https://x.com/valoryag';
+export const VALORY_URL = 'https://www.valory.xyz';
 export const SHORTS_URL = 'https://shorts.wtf';
 export const REGISTRY_URL = 'https://registry.olas.network/';
-export const BONDING_PROGRAMS_URL =
-  'https://bond.olas.network/bonding-products';
 
-export const DEV_REWARDS_URL = 'https://build.olas.network/dev-incentives';
+export const CONTRIBUTE_URL = 'https://contribute.olas.network';
 export const OPERATE_URL = 'https://operate.olas.network';
-export const OPERATE_AGENTS_URL = `${OPERATE_URL}/agents`;
 export const LAUNCH_URL = 'https://launch.olas.network/';
-export const VEOLAS_URL = 'https://govern.olas.network/veolas';
+export const STAKING_URL = 'https://staking.olas.network';
+export const BUILD_URL = 'https://build.olas.network';
+export const GOVERN_URL = 'https://govern.olas.network';
+export const BOND_URL = 'https://bond.olas.network';
+
+export const BONDING_PROGRAMS_URL = `${BOND_URL}/bonding-products`;
+export const VEOLAS_URL = `${GOVERN_URL}/veolas`;
+export const OPERATE_AGENTS_URL = `${OPERATE_URL}/agents`;
+export const DEV_REWARDS_URL = `${BUILD_URL}/dev-incentives`;
+export const BUILD_MECH_TOOL_URL = `${BUILD_URL}/paths/prediction-agents-mechs-ai-tool`;
 
 export const OLAS_API_URL = 'https://api.olas.autonolas.tech';
 export const ACCELERATOR_APPLY_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSed_jc5XNlnib0m9yG2IRo8_PKFNPwp0DFTdbph4LpR9E9uhg/viewform';
 
-export const QUICKSTART_URL = 'https://github.com/valory-xyz/quickstart';
+export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
+export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
+
+export const COINGECKO_URL = 'https://www.coingecko.com';
+export const ETHERSCAN_URL = 'https://etherscan.io';
+export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
+export const BOARDROOM_URL = 'https://boardroom.io/autonolas';
 
 export const MODIUS_STAKING_CONTRACTS = [
   '0x534C0A05B6d4d28d5f3630D6D74857B253cf8332',

@@ -1,3 +1,4 @@
+import { X_OLAS_URL, X_VALORY_AG_URL } from 'common-util/constants';
 import { TestimonySection } from 'components/TestimonySection';
 import { ExternalLink } from 'components/ui/typography';
 
@@ -10,11 +11,11 @@ const quotes = [
         AI Agents are a core part of our DeFi mass adoption strategy here at
         Mode. We are thrilled to be building on the number one AI Agent network,
         launching Olas Modius with{' '}
-        <ExternalLink href="https://x.com/valoryag" hideArrow>
+        <ExternalLink href={X_VALORY_AG_URL} hideArrow>
           @ValoryAG
         </ExternalLink>
         , core contributors to{' '}
-        <ExternalLink href="https://x.com/autonolas" hideArrow>
+        <ExternalLink href={X_OLAS_URL} hideArrow>
           @Autonolas
         </ExternalLink>
         . Olas Modius is an autonomous multi-agent system on Mode focused on

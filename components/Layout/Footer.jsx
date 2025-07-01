@@ -1,4 +1,11 @@
-import { REGISTRY_URL, WHITEPAPER } from 'common-util/constants';
+import {
+  COINGECKO_URL,
+  DISCORD_INVITE_URL,
+  DOCS_BASE_URL,
+  REGISTRY_URL,
+  WHITEPAPER,
+  X_OLAS_URL,
+} from 'common-util/constants';
 import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
@@ -9,17 +16,17 @@ const SOCIAL_LINKS = [
   {
     title: 'Twitter',
     icon: '/images/footer/x.svg',
-    link: 'https://twitter.com/autonolas',
+    link: X_OLAS_URL,
   },
   {
     title: 'Discord',
     icon: '/images/footer/discord.svg',
-    link: 'https://discord.gg/BQzYqhjGjQ',
+    link: DISCORD_INVITE_URL,
   },
   {
     title: 'Coingecko',
     icon: '/images/footer/coingecko.svg',
-    link: 'https://www.coingecko.com/en/coins/autonolas',
+    link: `${COINGECKO_URL}/en/coins/autonolas`,
   },
   {
     title: 'Coinmarketcap',
@@ -73,7 +80,7 @@ const RESOURCES_LINKS = [
   },
   {
     title: 'Documentation',
-    link: 'https://docs.autonolas.network',
+    link: DOCS_BASE_URL,
     isExternal: true,
   },
   {

@@ -2,8 +2,18 @@
 /* eslint-disable max-len */
 import { LinkIcon } from 'lucide-react';
 
-import { FLIPSIDE_URL } from 'common-util/constants';
+import {
+  COINGECKO_URL,
+  CONTRIBUTE_URL,
+  FLIPSIDE_URL,
+  SNAPSHOT_URL,
+  STAKING_URL,
+  VALORY_URL,
+  VEOLAS_URL,
+  X_OLAS_URL,
+} from 'common-util/constants';
 import { Card } from 'components/ui/card';
+import { ExternalLink } from 'components/ui/typography';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -120,7 +130,7 @@ const faqList = [
             </p>
             <p className="mb-3">
               <Link
-                href="https://x.com/autonolas/status/1676576697863507968?s=20"
+                href={`${X_OLAS_URL}/status/1676576697863507968?s=20`}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -134,7 +144,7 @@ const faqList = [
             <p>
               You can also{' '}
               <a
-                href="https://contribute.olas.network/roadmap"
+                href={`${CONTRIBUTE_URL}/roadmap`}
                 target="_blank"
                 className="text-purple-600"
               >
@@ -183,7 +193,7 @@ const faqList = [
             . This LBP is the only one planned and was created by Valory to
             establish initial liquidity in a decentralized manner because{' '}
             <Link
-              href="https://twitter.com/autonolas/status/1675892568905900033?s=20"
+              href={`${X_OLAS_URL}/status/1675892568905900033?s=20`}
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
@@ -211,7 +221,7 @@ const faqList = [
             Olas was founded as above and did not have a seed round. Valory, the
             dev company many of the founding members work from,{' '}
             <Link
-              href="https://www.valory.xyz/post/autonomous-services-to-power-next-gen-apps-for-crypto-users-and-daos"
+              href={`${VALORY_URL}/post/autonomous-services-to-power-next-gen-apps-for-crypto-users-and-daos`}
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
@@ -289,7 +299,7 @@ const faqList = [
           <p>
             Read more at{' '}
             <Link
-              href="https://staking.olas.network"
+              href={STAKING_URL}
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
@@ -314,17 +324,10 @@ const faqList = [
             </p>{' '}
             <p className="mb-3">
               The introduction of{' '}
-              <Link
-                href="https://staking.olas.network"
-                className="text-purple-600"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Olas Staking
-              </Link>{' '}
-              gave the DAO the ability to direct emissions to useful builders
-              and the DAO treasury, controlling how much OLAS is emitted into
-              the market. For more information on voting, see:{' '}
+              <ExternalLink href={STAKING_URL}>Olas Staking</ExternalLink> gave
+              the DAO the ability to direct emissions to useful builders and the
+              DAO treasury, controlling how much OLAS is emitted into the
+              market. For more information on voting, see:{' '}
               <Link href="/govern" className="text-purple-600">
                 https://olas.network/govern.
               </Link>
@@ -363,7 +366,7 @@ const faqList = [
             <p className="mb-3">
               You can also see the primary source for the buOLAS contract{' '}
               <Link
-                href="https://etherscan.io/token/0xb09ccf0dbf0c178806aaee28956c74bd66d21f73"
+                href={`${ETHERSCAN_URL}/token/0xb09ccf0dbf0c178806aaee28956c74bd66d21f73`}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -372,7 +375,7 @@ const faqList = [
               </Link>{' '}
               and the veOLAS contract{' '}
               <Link
-                href="https://etherscan.io/token/0x7e01a500805f8a52fad229b3015ad130a332b7b3"
+                href={`${ETHERSCAN_URL}/token/0x7e01a500805f8a52fad229b3015ad130a332b7b3`}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -382,29 +385,29 @@ const faqList = [
               . veOLAS is the governance token, which anyone can get by locking
               OLAS to participate in governance. Governance proposals can be
               found for off-chain votes on Snapshot{' '}
-              <Link
-                href="https://snapshot.org/#/autonolas.eth"
+              <ExternalLink
+                href={SNAPSHOT_URL}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 here
-              </Link>{' '}
+              </ExternalLink>{' '}
               and for on-chain votes{' '}
-              <Link
-                href="https://snapshot.org/#/autonolas.eth"
+              <ExternalLink
+                href={SNAPSHOT_URL}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 here
-              </Link>
+              </ExternalLink>
               . buOLAS is a vesting contract for the founding members.
             </p>
             <p>
               You can lock OLAS for veOLAS and check unlocks for your wallet{' '}
               <Link
-                href="https://govern.olas.network/veolas"
+                href={VEOLAS_URL}
                 className="text-purple-600"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -492,7 +495,7 @@ const faqList = [
             The definition of circulating supply is set by Coingecko and other
             aggregators -{' '}
             <Link
-              href="https://www.coingecko.com/en/glossary/circulating-supply"
+              href={`${COINGECKO_URL}/en/glossary/circulating-supply`}
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
@@ -501,7 +504,7 @@ const faqList = [
             </Link>
             , and
             <Link
-              href="https://www.coingecko.com/en/coins/autonolas"
+              href={`${COINGECKO_URL}/en/coins/autonolas`}
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"

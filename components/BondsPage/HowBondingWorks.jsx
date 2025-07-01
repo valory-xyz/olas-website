@@ -6,7 +6,12 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
-import { BONDING_PROGRAMS_URL } from 'common-util/constants';
+import {
+  BOND_URL,
+  BONDING_PROGRAMS_URL,
+  DISCORD_INVITE_URL,
+  X_OLAS_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
@@ -41,12 +46,8 @@ const steps = [
     title: 'Stay informed',
     description: (
       <>
-        Follow Olas{' '}
-        <ExternalLink href="https://twitter.com/autonolas">
-          channels
-        </ExternalLink>{' '}
-        and{' '}
-        <ExternalLink href="https://discord.gg/BQzYqhjGjQ">
+        Follow Olas <ExternalLink href={X_OLAS_URL}>channels</ExternalLink> and{' '}
+        <ExternalLink href={DISCORD_INVITE_URL}>
           engage with the Olas community
         </ExternalLink>{' '}
         to discover resources and say on top of new updates.
@@ -72,7 +73,7 @@ export const HowBondingWorks = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href="https://bond.olas.network/">Start bonding now</Link>
+          <Link href={BOND_URL}>Start bonding now</Link>
         </Button>
       </div>
     </div>

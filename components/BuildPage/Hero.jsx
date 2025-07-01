@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { REGISTRY_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
@@ -21,9 +22,7 @@ const GetStarted = () => (
 
 const Explore = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
-    <a href="https://registry.olas.network/ethereum/components">
-      Explore minted agents
-    </a>
+    <a href={`${REGISTRY_URL}/ethereum/components`}>Explore minted agents</a>
   </Button>
 );
 

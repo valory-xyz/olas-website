@@ -15,6 +15,7 @@ import {
   DUNE_OLAS_STAKED_URL,
   FLIPSIDE_DAAS_QUERY_URL,
   FLIPSIDE_URL,
+  VALORY_GIT_URL,
 } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
@@ -82,7 +83,7 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
         Protocol. Currently, fees are turned off to encourage early adoption and
         growth of the marketplace.
         <ExternalLink
-          href="https://github.com/valory-xyz/autonolas-aip/blob/aip-5/content/aips/automate_relayer_marketplace.md"
+          href={`${VALORY_GIT_URL}/autonolas-aip/blob/aip-5/content/aips/automate_relayer_marketplace.md`}
           className="mt-2 cursor-pointer"
         >
           More about Mech Marketplace fees in AIP-5

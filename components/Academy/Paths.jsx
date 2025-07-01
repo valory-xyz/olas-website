@@ -1,3 +1,8 @@
+import {
+  BUILD_MECH_TOOL_URL,
+  DISCORD_INVITE_URL,
+  X_OLAS_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
@@ -44,14 +49,14 @@ export const Paths = () => (
         about dev rewards, check out{' '}
         <ExternalLink
           className="underline text-slate-800"
-          href="https://build.olas.network/paths/prediction-agents-mechs-ai-tool"
+          href={BUILD_MECH_TOOL_URL}
         >
           this guide
         </ExternalLink>{' '}
         and{' '}
         <ExternalLink
           className="underline text-slate-800"
-          href="https://x.com/autonolas/status/1787895934451597563"
+          href={`${X_OLAS_URL}/status/1787895934451597563`}
         >
           this thread
         </ExternalLink>
@@ -79,9 +84,7 @@ export const Paths = () => (
           size="xl"
           className="my-6 w-fit rounded-none border-black"
         >
-          <Link href="https://discord.gg/BQzYqhjGjQ">
-            Join Discord for support
-          </Link>
+          <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
         </Button>
       </div>
     </div>

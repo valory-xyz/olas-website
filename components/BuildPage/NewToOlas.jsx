@@ -1,4 +1,5 @@
 import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
+import { VALORY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
@@ -88,7 +89,7 @@ export const NewToOlas = () => (
           asChild
           className="whitespace-normal max-sm:max-w-auto text-center max-sm:h-auto max-sm:py-2"
         >
-          <a href={'https://www.valory.xyz/academy'}>
+          <a href={`${VALORY_URL}/academy`}>
             Explore Valory&apos;s structured programs
           </a>
         </Button>

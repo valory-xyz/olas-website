@@ -1,3 +1,4 @@
+import { QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -27,11 +28,7 @@ export const Join = () => (
         </Button>
 
         <Button variant="outline" size="lg" asChild>
-          <ExternalLink
-            hideArrow
-            href="https://github.com/valory-xyz/quickstart/"
-            className="text-black"
-          >
+          <ExternalLink hideArrow href={QUICKSTART_URL} className="text-black">
             Run Optimus via Quickstart
           </ExternalLink>
         </Button>

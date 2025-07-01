@@ -1,3 +1,9 @@
+import {
+  BUILD_URL,
+  DOCS_BASE_URL,
+  VALORY_GIT_URL,
+  VALORY_URL,
+} from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -13,6 +19,7 @@ import {
 } from 'components/ui/card';
 import { ExternalLink, H1, H2, Lead, Upcase } from 'components/ui/typography';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const resources = [
   {
@@ -21,7 +28,7 @@ const resources = [
       'Contribute tools for existing Mechs and be eligible for rewards',
     actions: [
       {
-        url: 'https://build.olas.network/paths/general-mechs-tool',
+        url: `${BUILD_URL}/paths/general-mechs-tool`,
         text: 'See the build path',
       },
     ],
@@ -31,7 +38,7 @@ const resources = [
     description: 'Construct your own marketplace for AI tools',
     actions: [
       {
-        url: 'https://docs.autonolas.network/product/mechkit/',
+        url: `${DOCS_BASE_URL}/product/mechkit/`,
         text: 'See the MechKit',
       },
     ],
@@ -41,7 +48,7 @@ const resources = [
     description: 'Dive into the code',
     actions: [
       {
-        url: 'https://github.com/valory-xyz/mech',
+        url: `${VALORY_GIT_URL}/mech`,
         text: 'See the github repo',
       },
     ],
@@ -50,11 +57,11 @@ const resources = [
     title: 'Press',
     actions: [
       {
-        url: 'https://www.valory.xyz/post/nevermined-mechs-launch',
+        url: `${VALORY_URL}/post/nevermined-mechs-launch`,
         text: 'Advancing AI Commerce with Mechs Integration',
       },
       {
-        url: 'https://www.valory.xyz/post/mechs-nevermined',
+        url: `${VALORY_URL}/post/mechs-nevermined`,
         text: 'Mechs and Flexible Agent Payments',
       },
     ],
@@ -156,7 +163,9 @@ const AiMechs = () => (
           </ol>
           <div className="text-slate-500">
             Check out{' '}
-            <ExternalLink href="https://github.com/valory-xyz/mech/tree/main?tab=readme-ov-file#mech-request-response-flow">
+            <ExternalLink
+              href={`${VALORY_GIT_URL}/mech/tree/main?tab=readme-ov-file#mech-request-response-flow`}
+            >
               the repo
             </ExternalLink>{' '}
             for more details on the architecture
@@ -168,11 +177,8 @@ const AiMechs = () => (
       <H2 className="text-center mb-12">Case study: Mechs Predictions</H2>
       <PredictionAgentsTable />
       <Lead className="mt-12 text-center">
-        Check out{' '}
-        <ExternalLink href="https://olas.network/agents/prediction-agents">
-          this page
-        </ExternalLink>{' '}
-        for more information on Prediction Agents
+        Check out <Link href="/agents/prediction-agents">this page</Link> for
+        more information on Prediction Agents
       </Lead>
     </SectionWrapper>
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="integrate">
@@ -184,7 +190,7 @@ const AiMechs = () => (
           </h2>
           <Lead className="mb-8">
             Use the&nbsp;
-            <ExternalLink href="https://github.com/valory-xyz/mech-client">
+            <ExternalLink href={`${VALORY_GIT_URL}/mech-client`}>
               mech-client
             </ExternalLink>
             &nbsp;for command line or Python script integrations.
@@ -194,14 +200,18 @@ const AiMechs = () => (
           </h2>
           <Lead className="mb-8">
             Implement the&nbsp;
-            <ExternalLink href="https://github.com/valory-xyz/IEKit/tree/main/packages/valory/skills/mech_interact_abci">
+            <ExternalLink
+              href={`${VALORY_GIT_URL}/IEKit/tree/main/packages/valory/skills/mech_interact_abci`}
+            >
               mech_interact_abci skill
             </ExternalLink>
             &nbsp;to streamline IPFS and blockchain interactions
           </Lead>
           <Lead className="mb-8">
             Refer to&nbsp;
-            <ExternalLink href="https://github.com/valory-xyz/mech/tree/main?tab=readme-ov-file#integrating-mechs-into-your-application">
+            <ExternalLink
+              href={`${VALORY_GIT_URL}/mech/tree/main?tab=readme-ov-file#integrating-mechs-into-your-application`}
+            >
               the guide in the docs
             </ExternalLink>
             &nbsp;for more precise instructions.
