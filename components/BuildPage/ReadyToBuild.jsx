@@ -18,7 +18,7 @@ const content = [
     imageSrc: '/images/build-page/docs.png',
     description: 'Dive deep with our detailed documentation.',
     linkText: 'Review Olas documentation',
-    link: { DOCS_BASE_URL },
+    link: DOCS_BASE_URL,
   },
 ];
 

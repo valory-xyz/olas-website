@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Fragment } from 'react';
 
 import {
@@ -73,7 +72,9 @@ export const HowBondingWorks = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href={BOND_URL}>Start bonding now</Link>
+          <ExternalLink href={BOND_URL} hideArrow className="text-white">
+            Start bonding now
+          </ExternalLink>
         </Button>
       </div>
     </div>

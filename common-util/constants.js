@@ -47,10 +47,10 @@ export const FEE_FLOW_QUERY_ID = '5166975';
 export const A2A_TRANSACTIONS_ID = '5204254';
 export const OLAS_STAKED_QUERY_ID = '5344501';
 
-export const DUNE_BASE_URL = 'https://dune.com/adrian0x';
-export const MECH_ECONOMY_DASHBOARD_URL = `${DUNE_BASE_URL}/the-mechs-agent-economy`;
-export const OLAS_ECONOMY_DASHBOARD_URL = `${DUNE_BASE_URL}/autonolas-ecosystem-activity`;
-export const OLAS_PROTOCOL_LIQUIDITY_URL = `${DUNE_BASE_URL}/olas`;
+export const DUNE_URL = 'https://dune.com/adrian0x';
+export const MECH_ECONOMY_DASHBOARD_URL = `${DUNE_URL}/the-mechs-agent-economy`;
+export const OLAS_ECONOMY_DASHBOARD_URL = `${DUNE_URL}/autonolas-ecosystem-activity`;
+export const OLAS_PROTOCOL_LIQUIDITY_URL = `${DUNE_URL}/olas`;
 
 export const X_OLAS_URL = 'https://x.com/autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';

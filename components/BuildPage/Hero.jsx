@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { REGISTRY_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
+import { ExternalLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -22,7 +23,9 @@ const GetStarted = () => (
 
 const Explore = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
-    <a href={`${REGISTRY_URL}/ethereum/components`}>Explore minted agents</a>
+    <ExternalLink href={`${REGISTRY_URL}/ethereum/agents`} hideArrow>
+      Explore minted agents
+    </ExternalLink>
   </Button>
 );
 

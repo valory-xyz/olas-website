@@ -7,6 +7,7 @@ import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import SectionHeading from 'components/SectionHeading';
+import { ExternalLink } from 'components/ui/typography';
 
 const linkClass = 'text-purple-600 hover:text-purple-800';
 
@@ -34,11 +35,15 @@ const PearlTerms = () => (
             </li>
             <li>
               Both the Application and brand “Pearl” or “Olas Pearl” and
-              associated Marks are part of Valory AG’s “Offerings”, thus are
-              subject to the “
-              <Link href={`${VALORY_URL}/terms`} className={linkClass}>
+              associated Marks are part of Valory AG&apos;s “Offerings”, thus
+              are subject to the “
+              <ExternalLink
+                href={`${VALORY_URL}/terms`}
+                hideArrow
+                className={linkClass}
+              >
                 Valory Terms
-              </Link>
+              </ExternalLink>
               ” and related definitions therein.
             </li>
 
