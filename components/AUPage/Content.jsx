@@ -4,11 +4,6 @@ import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 const ACTUAL_BLOG_POST_URL = `${VALORY_URL}/post/co-owned-ai`;
-const fragment =
-  '#:~:text=Valory believes AGI will likely,avoid devastating outcomes for societies.';
-const encodedFragment = encodeURIComponent(fragment);
-
-const ENCODED_BLOG_POST_URL = `${ACTUAL_BLOG_POST_URL}${encodedFragment}`;
 
 const largeIcons = [
   {
@@ -215,7 +210,7 @@ export const Content = () => (
         agents, a booming area at the intersection of crypto and AI. Its
         organizers believe that{' '}
         <a
-          href={ENCODED_BLOG_POST_URL}
+          href={ACTUAL_BLOG_POST_URL}
           className="text-purple-600"
           target="_blank"
         >
