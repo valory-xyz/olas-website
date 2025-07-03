@@ -14,16 +14,17 @@ export const CoownershipOfAi = () => (
           </span>
         </h2>
         <p>
-          With Olas’ <Link href="/pearl">Pearl</Link>, the first “AI Agent App
-          Store”, any consumer with a laptop can use AI agents they truly own.
+          With Olas&apos; <Link href="/pearl">Pearl</Link>, the first “AI Agent
+          App Store”, any consumer with a laptop can use AI agents they truly
+          own.
         </p>
         <p>
-          With Olas’ <Link href="/mech-marketplace">Mech Marketplace</Link>, the
-          “AI Agent Bazaar”, businesses can put their AI agent up for hire to
-          earn crypto and tap into other AI agents’ services.
+          With Olas&apos; <Link href="/mech-marketplace">Mech Marketplace</Link>
+          , the “AI Agent Bazaar”, businesses can put their AI agents up for
+          hire to earn crypto and tap into other AI agents&apos; services.
         </p>
         <p>
-          Today, Olas’ AI Agents serve{' '}
+          Today, Olas&apos; AI Agents serve{' '}
           <Link href="/#agent-economies">diverse use cases</Link> - from
           prediction markets and asset management to influencer agents -
           autonomously creating valuable outcomes.

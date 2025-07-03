@@ -17,7 +17,7 @@ export const OlasStory = () => (
           <p>
             AI is getting better and stronger each day, and with this comes the
             risk of its ownership getting more and more centralized. Labs like
-            OpenAI, Anthropic, and Deepmind are building AI Agents that they
+            OpenAI, Anthropic, and DeepMind are building AI Agents that they
             hope to soon run everything. If unchecked, this creates a world
             where the{' '}
             <span className="font-semibold">
@@ -25,7 +25,7 @@ export const OlasStory = () => (
             </span>
           </p>
           <p>
-            For everyone that dreams about AI Agents that could satisfy your
+            For everyone who dreams about AI Agents that could satisfy your
             every wish or would revolutionize industries and change the world
             for the better,{' '}
             <span className="font-semibold">
