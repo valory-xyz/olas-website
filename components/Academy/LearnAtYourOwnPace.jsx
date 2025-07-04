@@ -1,3 +1,4 @@
+import { DISCORD_INVITE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
@@ -48,9 +49,7 @@ export const LearnAtYourOwnPace = () => (
           </Link>
         </Button>
         <Button variant="valory" size="xl" className="my-6 w-fit rounded-none">
-          <Link href="https://discord.gg/BQzYqhjGjQ">
-            Join Discord for support
-          </Link>
+          <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
         </Button>
       </div>
     </div>

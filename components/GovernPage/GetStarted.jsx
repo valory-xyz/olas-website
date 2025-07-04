@@ -1,13 +1,14 @@
-import { Fragment } from 'react';
 import Link from 'next/link';
+import { Fragment } from 'react';
 
-import { Button } from 'components/ui/button';
 import {
-  SECTION_BOX_CLASS,
   SCREEN_WIDTH_LG,
+  SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
+import { BOARDROOM_URL, GOVERN_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 
 const steps = [
   {
@@ -21,7 +22,7 @@ const steps = [
       <>
         You can do everything governance related on the{' '}
         <a
-          href="https://govern.olas.network"
+          href={GOVERN_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
@@ -43,7 +44,7 @@ const steps = [
       <>
         Use the Govern App to access proposals on platforms like{' '}
         <a
-          href="https://snapshot.org/#/autonolas.eth"
+          href={SNAPSHOT_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
@@ -52,7 +53,7 @@ const steps = [
         </a>{' '}
         and{' '}
         <a
-          href="https://boardroom.io/autonolas/"
+          href={BOARDROOM_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
@@ -83,7 +84,7 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-10">
-          <Link href="https://govern.olas.network">Start governing now</Link>
+          <Link href={GOVERN_URL}>Start governing now</Link>
         </Button>
       </div>
     </div>

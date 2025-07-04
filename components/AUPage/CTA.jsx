@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { X_OLAS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { CalendarIcon, MapPin } from 'lucide-react';
@@ -71,7 +72,7 @@ const list = [
     imageSrc: 'ai-stack.png',
     location: 'Denver, ETHDenver',
     date: "Mar 1 '24",
-    eventLink: 'https://x.com/autonolas/status/1754535517566431633',
+    eventLink: `${X_OLAS_URL}/status/1754535517566431633`,
     replayLink:
       'https://www.youtube.com/watch?v=0_DkEF-r69s&list=PLoP4p0r-X94pSEkgAQt13y98oVpkB3uyb',
   },

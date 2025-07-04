@@ -1,13 +1,14 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   CORE_TECHNICAL_DOCUMENT,
+  STAKING_URL,
   WHITEPAPER,
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
-import { H1 } from '../ui/typography';
 import SectionWrapper from '../Layout/SectionWrapper';
+import { H1 } from '../ui/typography';
 
 export const WhitepaperPage = () => (
   <SectionWrapper>
@@ -53,7 +54,7 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Tokenomics</h3>
           </div>
         </Link>
-        <Link href="https://staking.olas.network/poaa-whitepaper.pdf">
+        <Link href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Proof of Active Agent icon"

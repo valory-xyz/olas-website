@@ -10,6 +10,7 @@ import {
   SUB_HEADER_CLASS,
   SUB_HEADER_MEDIUM_CLASS,
 } from 'common-util/classes';
+import { X_OLAS_URL } from 'common-util/constants';
 import { formatDate } from 'common-util/formatDate';
 import { useFetchVideos } from 'common-util/useFetchApi';
 import { Button } from 'components/ui/button';
@@ -153,7 +154,7 @@ export const Podcasts = () => {
             </Button>
             <Button variant="outline" size="lg" className="text-black" asChild>
               <a
-                href="https://x.com/autonolas/status/1926956504441065621"
+                href={`${X_OLAS_URL}/status/1926956504441065621`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

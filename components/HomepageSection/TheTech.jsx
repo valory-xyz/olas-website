@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 
+import { STAKING_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
@@ -27,7 +28,7 @@ const innovations = [
     descriptionItems: [
       'Developer Rewards mechanism to incentivise agent code contributions.',
       <>
-        <ExternalLink href="https://staking.olas.network/" hideArrow>
+        <ExternalLink href={STAKING_URL} hideArrow>
           Staking mechanism
         </ExternalLink>{' '}
         to incentivise active agent contributions.

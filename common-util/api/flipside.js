@@ -1,9 +1,10 @@
+import { FLIPSIDE_BASE_URL } from 'common-util/constants';
 import { get } from 'lodash';
 
 const flipsideCryptoApiCall = async ({ queryId }) => {
   try {
     const response = await fetch(
-      `https://flipsidecrypto.xyz/api/v1/queries/${queryId}/data/latest`,
+      `${FLIPSIDE_BASE_URL}/api/v1/queries/${queryId}/data/latest`,
     );
     const json = await response.json();
     return json;

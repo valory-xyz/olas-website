@@ -6,10 +6,10 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
+import { CONTRIBUTE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { ExternalLink } from 'components/ui/typography';
-import { CTA_LINK } from './utils';
 
 const steps = [
   {
@@ -17,7 +17,7 @@ const steps = [
     description: (
       <>
         Go to the{' '}
-        <ExternalLink href={CTA_LINK} className="text-purple-600">
+        <ExternalLink href={CONTRIBUTE_URL} className="text-purple-600">
           Contribute App
         </ExternalLink>
         . <br />
@@ -70,7 +70,7 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href={CTA_LINK}>Get started</Link>
+          <Link href={CONTRIBUTE_URL}>Get started</Link>
         </Button>
       </div>
     </div>

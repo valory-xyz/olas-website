@@ -1,4 +1,5 @@
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
+import { CONTRIBUTE_URL } from 'common-util/constants';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -24,7 +25,7 @@ const list = [
           Directly steer Olas&apos;s development, ensuring a future where every
           update and growth strategy is community-driven and transparent.
         </span>
-        <ExternalLink href="https://contribute.olas.network/roadmap">
+        <ExternalLink href={`${CONTRIBUTE_URL}/roadmap`}>
           View roadmap
         </ExternalLink>
       </>

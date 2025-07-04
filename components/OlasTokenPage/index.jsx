@@ -3,7 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { FLIPSIDE_URL, OLAS_API_URL } from 'common-util/constants';
+import {
+  COINGECKO_URL,
+  FLIPSIDE_URL,
+  OLAS_API_URL,
+} from 'common-util/constants';
 import {
   STAKING_GRAPH_CLIENTS,
   tokenomicsGraphClient,
@@ -298,7 +302,7 @@ const Supply = () => {
                 </span>
                 <span>
                   <Link
-                    href="https://www.coingecko.com/en/coins/autonolas"
+                    href={`${COINGECKO_URL}/en/coins/autonolas`}
                     className="text-purple-600"
                     target="_blank"
                     rel="noopener noreferrer"

@@ -1,4 +1,4 @@
-import { LAUNCH_URL } from 'common-util/constants';
+import { BUILD_MECH_TOOL_URL, LAUNCH_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
@@ -7,7 +7,7 @@ const list = [
     title: 'For Builders',
     desc: 'Build Mech tools and improve Trader strategies.',
     urlName: 'View path',
-    url: 'https://build.olas.network/paths/prediction-agents-mechs-ai-tool',
+    url: BUILD_MECH_TOOL_URL,
     isExternal: true,
   },
   {

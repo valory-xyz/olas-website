@@ -50,7 +50,7 @@ const list = [
         Teams that register their agent code in the Olas Protocol can also
         receive ongoing OLAS Dev Rewards. Top developers are already earning
         thousands of OLAS each month.{' '}
-        <Link className="text-purple-600" href="https://olas.network/build">
+        <Link className="text-purple-600" href="/build">
           Learn more
         </Link>
         .

@@ -3,6 +3,11 @@ import {
   SUB_HEADER_CLASS,
   TEXT_LARGE_CLASS,
 } from 'common-util/classes';
+import {
+  VALORY_GIT_URL,
+  X_OLAS_URL,
+  X_VALORY_AG_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
@@ -55,7 +60,7 @@ const audits = [
           <ul className="list-disc ml-6 space-y-2">
             <li className="text-purple-600">
               <a
-                href="https://github.com/valory-xyz/autonolas-governance/blob/main/audits/Valory%20Review%20Final.pdf"
+                href={`${VALORY_GIT_URL}/autonolas-governance/blob/main/audits/Valory%20Review%20Final.pdf`}
                 className="text-purple-600"
                 target="_blank"
               >
@@ -78,7 +83,7 @@ const audits = [
             <li>
               <p>Up to $50k: </p>
               <a
-                href="https://x.com/autonolas/status/1557431064632647680"
+                href={`${X_OLAS_URL}/status/1557431064632647680`}
                 className="text-purple-600"
                 target="_blank"
               >
@@ -86,7 +91,7 @@ const audits = [
               </a>
               ;{' '}
               <a
-                href="https://x.com/autonolas/status/1689316293030359040"
+                href={`${X_OLAS_URL}/status/1689316293030359040`}
                 className="text-purple-600"
                 target="_blank"
               >
@@ -111,7 +116,7 @@ const audits = [
           <ul className="list-disc ml-6 space-y-2">
             <li>
               <a
-                href="https://x.com/valoryag/status/1769951643330810357"
+                href={`${X_VALORY_AG_URL}/status/1769951643330810357`}
                 className="text-purple-600"
                 target="_blank"
               >

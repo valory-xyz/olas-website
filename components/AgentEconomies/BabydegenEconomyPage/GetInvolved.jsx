@@ -1,3 +1,4 @@
+import { BUILD_MECH_TOOL_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
 const list = [
@@ -5,7 +6,7 @@ const list = [
     title: 'For Launchers',
     desc: 'Bring your own AI agent economy to your ecosystem.',
     urlName: 'Learn more',
-    url: 'https://build.olas.network/paths/prediction-agents-mechs-ai-tool',
+    url: BUILD_MECH_TOOL_URL,
     isExternal: true,
   },
   {

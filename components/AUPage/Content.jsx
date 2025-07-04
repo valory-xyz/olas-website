@@ -1,13 +1,9 @@
+import { VALORY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 
-const ACTUAL_BLOG_POST_URL = 'https://www.valory.xyz/post/co-owned-ai';
-const fragment =
-  '#:~:text=Valory believes AGI will likely,avoid devastating outcomes for societies.';
-const encodedFragment = encodeURIComponent(fragment);
-
-const ENCODED_BLOG_POST_URL = `${ACTUAL_BLOG_POST_URL}${encodedFragment}`;
+const ACTUAL_BLOG_POST_URL = `${VALORY_URL}/post/co-owned-ai`;
 
 const largeIcons = [
   {
@@ -214,7 +210,7 @@ export const Content = () => (
         agents, a booming area at the intersection of crypto and AI. Its
         organizers believe that{' '}
         <a
-          href={ENCODED_BLOG_POST_URL}
+          href={ACTUAL_BLOG_POST_URL}
           className="text-purple-600"
           target="_blank"
         >
@@ -229,9 +225,8 @@ export const Content = () => (
       </p>{' '}
       <div>
         The &apos;Agents Unleashed&apos; event series is hosted by Olas and
-        coordinated by{' '}
-        <ExternalLink href="https://www.valory.xyz/">Valory</ExternalLink>. Both
-        organizations were established in 2021, dedicated to leveraging AI
+        coordinated by <ExternalLink href={VALORY_URL}>Valory</ExternalLink>.
+        Both organizations were established in 2021, dedicated to leveraging AI
         agents to enable co-owned AI. They started Agents Unleashed as a way to
         bring together those working on agents to share best practices,
         innovations and common language, ultimately unleashing AI agents for the

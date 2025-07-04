@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { VALORY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -72,7 +73,7 @@ const list = [
     location: 'Remote',
     date: 'October 2023',
     type: 'external-link',
-    link: 'https://www.valory.xyz/post/prediction-agent-hackathon-success',
+    link: `${VALORY_URL}/post/prediction-agent-hackathon-success`,
     status: 'Completed',
     projectTags: [
       'Build an Agent Using the Olas Stack',

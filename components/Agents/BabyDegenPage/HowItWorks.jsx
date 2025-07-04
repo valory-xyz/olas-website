@@ -1,4 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { COINGECKO_URL } from 'common-util/constants';
 
 const { default: SectionWrapper } = require('components/Layout/SectionWrapper');
 const { ExternalLink } = require('components/ui/typography');
@@ -10,11 +11,7 @@ const howItWorksSteps = [
     description: (
       <>
         BabyDegen pulls in market data from{' '}
-        <ExternalLink
-          href="https://www.coingecko.com/"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <ExternalLink href={COINGECKO_URL} target="_blank" rel="noreferrer">
           CoinGecko
         </ExternalLink>
         , ensuring it has the latest information at its fingertips.
