@@ -32,8 +32,8 @@ export const UniqueEdge = () => (
           <p>
             This drives a healthy flywheel between Pearl and Mech Marketplace
             adoption. Both users and businesses require the utility token OLAS
-            to access the products and benefits from this flywheel. That’s how
-            Olas helps create sustainable, user-owned AI at scale.
+            to access the products and benefit from this flywheel. That&apos;s
+            how Olas helps create sustainable, user-owned AI at scale.
           </p>
         </div>
         <Image

@@ -2,6 +2,96 @@
     {
         "year": "2025",
         "quarters" : [
+            {
+                "quarter" : "Quarter 2",
+                "date": "Apr - Jun",
+                "topics" : [
+                    {
+                        "topic" : "Optimus Agent Went Live on Pearl",
+                        "content" : 
+                            "Pearl welcomed Optimus, a personal asset-manager agent for the Optimism Superchain, letting anyone own & run DeFi AI Agent in one click."
+                        ,
+                        "category" : ["Pearl", "Operate", "Key milestones"]
+                    },
+                    {
+                        "topic" : "OLAS Max Emissions Reduced",
+                        "content" : 
+                            "Historic DAO vote implemented a new emissions curve, slashing maximum OLAS output for the next 10 years."
+                        ,
+                        "category" : ["Tokenomics", "Govern", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Five New Teams Joined the Olas Accelerator",
+                        "content" : 
+                            "- Supafund by [Spartan Labs](https://x.com/TheSpartanLabs) \n- Quorum Agent by [Backland Labs](https://x.com/_BacklandLabs) \n- Research Assistant by [Lilypad Network](https://x.com/Lilypad_Tech) \n- Cupid Agent by [OneSoul.AI](https://x.com/OneSoul_AI) \n- Mindshare DeFi Agent by [TrendMoon](https://x.com/0xTrendMoon)"
+                        ,
+                        "category" : ["Build", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Agents Unleashed Podcast Launched",
+                        "content" : 
+                            "- [Digital spin-off](https://www.youtube.com/playlist?list=PLoP4p0r-X94r1FA7yoOwRqvOjiYGSNQoj) of the flagship event; [Episode 1](https://www.youtube.com/watch?v=hw5eFFOGow8&list=PLoP4p0r-X94r1FA7yoOwRqvOjiYGSNQoj&index=11&t=1s) recaps “Builder's Night” highlights. \n- Keeps the community current on AI Agents × Crypto between IRL meet-ups."
+                        ,
+                        "category" : ["Agents Unleashed"]
+                    },
+                    {
+                        "topic" : "Agent Activity Shattered Records",
+                        "content" : 
+                            "- 2,416,232 transactions this quarter — 854,297 agent-to-agent. \n- Daily Active Agents (DAAs) topped 600+ in April. \n- 4,774,964 OLAS staked behind live agents."
+                        ,
+                        "category" : ["Activity Metrics"]
+                    },
+                    {
+                        "topic" : "Modius Got Its Biggest Update",
+                        "content" : 
+                            "- New chat UI lets users tweak strategy, review decisions & steer behaviour without code. \n- Keeps Modius fully autonomous yet fully yours."
+                        ,
+                        "category" : ["Pearl", "Operate"]
+                    },
+                    {
+                        "topic" : "Agents Unleashed Cannes Broke Attendance Records",
+                        "content" : 
+                            "828 people showed up IRL from 2,600+ registrations — the largest AU yet."
+                        ,
+                        "category" : ["Agents Unleashed", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Olas Featured in Top-Tier Media",
+                        "content" : 
+                            "- Deep-dive in [Forbes](https://www.forbes.com/sites/davidbirch/2025/03/24/the-art-of-the-e-deal-my-agent-will-call-your-agent-and-pay-it/) explored the Mech Marketplace. \n- Additional coverage in Hackernoon, mPost, Business Insider, CoinChapter and more."
+                        ,
+                        "category" : ["Media appearances"]
+                    },
+                    {
+                        "topic" : "Hackathons & Conferences Expanded IRL Footprint",
+                        "content" : 
+                            "- ETH Lisbon, UK AI Agent Hackathon, Token 2049 Dubai, and EthCC Cannes all featured Olas. \n- Dedicated [Hackathons](https://olas.network/hackathons) page launched to aggregate opportunities."
+                        ,
+                        "category" : ["Hackathons", "Other events"]
+                    },
+                    {
+                        "topic" : "Leadership Update at Valory",
+                        "content" : 
+                            "- Olas OG [@contentwillvary](https://twitter.com/contentwillvary) appointed COO. \n- [@tannedoaksprout](https://twitter.com/tannedoaksprout) moves from CPO to ecosystem-builder role."
+                        ,
+                        "category" : ["Key milestones"]
+                    },
+                    {
+                        "topic" : "OLAS Listed on Derive XYZ",
+                        "content" : 
+                            "Additional exchange listing broadens token accessibility and liquidity."
+                        ,
+                        "category" : ["Tokenomics"]
+                    },
+                    {
+                        "topic" : "Major Brand & Website Upgrade",
+                        "content" : 
+                            "- New visual identity and improved messaging: \n  - Own Your Agent with Pearl \n  - Monetize Your Agent via Mech Marketplace \n  - Access a world of AI agents with the OLAS token"
+                        ,
+                        "category" : ["Key milestones"]
+                    }
+                ]
+            },
         {
             "quarter" : "Quarter 1",
             "date": "Jan - Mar",
