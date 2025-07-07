@@ -15,17 +15,13 @@ export const WHITEPAPER_SUMMARY =
 export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
-export const FLIPSIDE_BASE_URL = 'https://flipsidecrypto.xyz';
-export const FLIPSIDE_URL = `${FLIPSIDE_BASE_URL}/flipsideteam/olas-key-activity-metrics-pnPjda`;
-export const FLIPSIDE_QUERY_URL = `${FLIPSIDE_BASE_URL}/flipsideteam/q/`;
-export const FLIPSIDE_LIQUIDITY_QUERY_URL = `${FLIPSIDE_QUERY_URL}EVHMVqzqhIvF/total/visualizations/v2/2d31feb6-a661-4103-ba09-02f60d3d28e8`;
-export const FLIPSIDE_PROTOCOL_FEES_QUERY_URL = `${FLIPSIDE_QUERY_URL}0H0TnBLIMXjf/olas-total-protocol-revenue-from-lp-new/visualizations/fa540a62-ac0b-4030-9b43-26d1d7faa454`;
-export const FLIPSIDE_LOCKED_OLAS_QUERY_URL = `${FLIPSIDE_QUERY_URL}ORaUMVaQVovq/veolas/visualizations/v2/a437de1b-5d22-4139-82b8-b51cd1b07848`;
-export const FLIPSIDE_VEOLAS_HOLDERS_QUERY_URL = `${FLIPSIDE_QUERY_URL}6ANzqADDc8VL/total-veolas-holders/visualizations/v2/939139ef-5597-4058-8e85-38e406cb6387`;
-export const FLIPSIDE_DAAS_QUERY_URL = `${FLIPSIDE_QUERY_URL}9u9HmWdL4ioR/daily-active-autonomous-services/visualizations/8e57f727-bbc7-4fb7-80ee-6654214e5020`;
-export const FLIPSIDE_TOTAL_HOLDERS_QUERY_URL = `${FLIPSIDE_QUERY_URL}WGkAsswnV2pH/total-holders/visualizations/v2/d57457e2-1c31-4c9b-af60-3a58de583eeb`;
-
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
+export const DUNE_DAAS_QUERY_URL = `${DUNE_QUERY_URL}/4915321/8136719`;
+export const DUNE_TOTAL_SERVICE_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/4915404/8136824`;
+export const DUNE_TOTAL_TOKEN_HOLDERS_URL = `${DUNE_QUERY_URL}/4957109/8202489`;
+export const DUNE_PREDICT_DAA_QUERY_URL = `${DUNE_QUERY_URL}/5417479/8846100`;
+export const DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5417451/8846057`;
+export const DUNE_TOTAL_PREDICT_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5416224/8846038`;
 export const DUNE_A2A_TRANSACTIONS_QUERY_URL = `${DUNE_QUERY_URL}/5204254/8561534`;
 export const DUNE_AGENTS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
 export const DUNE_MMV2_URL = `${DUNE_QUERY_URL}/5166975`;
@@ -33,11 +29,22 @@ export const DUNE_TOTAL_TRANSACTIONS_QUERY_URL = `${DUNE_QUERY_URL}/5194313/8548
 export const DUNE_CLASSIFIED_REQUESTS_QUERY_URL = `${DUNE_QUERY_URL}/5195400`;
 export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
 export const DUNE_OLAS_STAKED_URL = `${DUNE_QUERY_URL}/5344501/8755325`;
+export const DUNE_OLAS_LOCKED_URL = `${DUNE_QUERY_URL}/5376597/8799234`;
+export const DUNE_VEOLAS_HOLDERS_URL = `${DUNE_QUERY_URL}/5376793/8799111`;
+export const DUNE_TOTAL_LIQUIDITY_URL = `${DUNE_QUERY_URL}/5383248/8807520`;
+export const DUNE_TOTAL_PROTOCOL_REVENUE_URL = `${DUNE_QUERY_URL}/5409446/8836411`;
 
-export const PREDICTION_DAA_QUERY_ID = '4165113';
-export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '4161414';
+export const DAA_QUERY_ID = '4915321';
+export const TOTAL_SERVICE_TRANSACTIONS_QUERY_ID = '4915404';
+export const TOTAL_TOKEN_HOLDERS_ID = '4957109';
+export const PREDICTION_DAA_QUERY_ID = '5417479';
+export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '5417451';
+export const PREDICTION_TOTAL_TXS_QUERY_ID = '5416224';
+export const VEOLAS_CIRCULATING_SUPPLY_ID = '5376597';
+export const VEOLAS_HOLDERS_ID = '5376793';
+export const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID = '5383248';
+export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
 export const PROTOCOL_EARNED_FEES_ID = '3511561';
-export const PREDICTION_ECONOMY_DASHBOARD_URL = `${FLIPSIDE_BASE_URL}/MLDZMN/olas-predict-on-demand-agent-powered-predictions-47WGHl`;
 export const MECH_TXS_QUERY_ID = '5195400';
 export const TOTAL_MECH_TXS_ID = '5194313';
 export const UNIQUE_STAKERS_QUERY_ID = '5200009';
@@ -48,9 +55,7 @@ export const A2A_TRANSACTIONS_ID = '5204254';
 export const OLAS_STAKED_QUERY_ID = '5344501';
 
 export const DUNE_URL = 'https://dune.com/adrian0x';
-export const MECH_ECONOMY_DASHBOARD_URL = `${DUNE_URL}/the-mechs-agent-economy`;
 export const OLAS_ECONOMY_DASHBOARD_URL = `${DUNE_URL}/autonolas-ecosystem-activity`;
-export const OLAS_PROTOCOL_LIQUIDITY_URL = `${DUNE_URL}/olas`;
 
 export const X_OLAS_URL = 'https://x.com/autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';

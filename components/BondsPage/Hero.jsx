@@ -25,7 +25,9 @@ const ProvideLiquidity = (
 
 const StartBonding = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <ExternalLink href={BOND_URL}>Start bonding now</ExternalLink>
+    <ExternalLink href={BOND_URL} className="text-white" hideArrow>
+      Start bonding now
+    </ExternalLink>
   </Button>
 );
 

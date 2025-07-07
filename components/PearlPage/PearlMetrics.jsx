@@ -1,6 +1,6 @@
-import { get7DaysAvgActivity } from 'common-util/api/flipside';
+import { get7DaysAvgActivity } from 'common-util/api/dune';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
+import { DUNE_DAAS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics } from 'components/MetricsCard';
 import { Card } from 'components/ui/card';
@@ -22,7 +22,7 @@ export const PearlMetrics = () => {
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
         value: metrics?.toLocaleString(),
-        source: PREDICTION_ECONOMY_DASHBOARD_URL,
+        source: DUNE_DAAS_QUERY_URL,
       },
     ],
     [metrics],
