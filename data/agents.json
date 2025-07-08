@@ -79,11 +79,13 @@
     "slug": "governatooorr",
     "serviceCategory": "AI",
     "description": "An AI-powered delegate that autonomously votes on on-chain governance proposals on Ethereum & Solana, enhancing DAO governance.",
+    "shortDescription": "AI-powered autonomous system that votes on blockchain governance proposals.",
     "appUrl": "https://governatooorr.autonolas.network",
     "marketingUrl": "https://twitter.com/valoryag/status/1643670672521195523?s=20",
     "buildUrl": "https://www.autonolas.network/product/govkit",
     "iconFilename": "governatooorr.svg",
     "demo": true,
+    "deprecated": true,
     "builder": "Valory"
   },
   {
