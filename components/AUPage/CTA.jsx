@@ -12,6 +12,8 @@ const list = [
     location: 'Cannes',
     date: "Jun 30 '25",
     eventLink: 'https://lu.ma/tp6rhykz',
+    replayLink:
+      'https://www.youtube.com/playlist?list=PLoP4p0r-X94quxM9EVcheuv--pJB0UfXM',
   },
   {
     title: 'Builders Night',
