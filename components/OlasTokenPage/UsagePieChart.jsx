@@ -63,9 +63,13 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             {loading ? '--' : split?.staking}%
           </span>{' '}
           of the new tokens are earmarked for{' '}
-          <Link href={STAKING_URL} className="text-yellow-600 font-bold">
+          <a
+            href={STAKING_URL}
+            className="text-yellow-600 font-bold"
+            rel="noopener noreferrer"
+          >
             Operators
-          </Link>
+          </a>
         </div>
       </div>
       <div className="mb-4 max-w-[300px] mx-auto">

@@ -2,7 +2,7 @@ import { SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
 import { DEV_REWARDS_URL, REGISTRY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { InfoIcon } from 'components/ui/info-icon';
-import { ExternalLink, Link } from '../ui/typography';
+import { Link, SubsiteLink } from '../ui/typography';
 
 const ulClass = 'ml-6 flex flex-col gap-3';
 
@@ -18,7 +18,7 @@ const TokenomicsAlert = () => (
       <p>
         You can check available dev rewards for existing/minted agents and
         components on{' '}
-        <ExternalLink href={DEV_REWARDS_URL}>Tokenomics</ExternalLink>.
+        <SubsiteLink href={DEV_REWARDS_URL}>Tokenomics</SubsiteLink>.
       </p>
     </div>
   </div>
@@ -49,9 +49,9 @@ const Content = () => (
       <p>
         In order to qualify for developer rewards an Olas builder must mint a
         component or agent on the{' '}
-        <ExternalLink href={`${REGISTRY_URL}/ethereum/components`} hideArrow>
+        <SubsiteLink href={`${REGISTRY_URL}/ethereum/components`}>
           Olas Registry
-        </ExternalLink>{' '}
+        </SubsiteLink>{' '}
         and have that component or agent be referenced in a service that
         receives donations. Note that services are made up of agents, and agents
         are made up of components. You can learn more about the{' '}

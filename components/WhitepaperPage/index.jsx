@@ -54,7 +54,10 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Tokenomics</h3>
           </div>
         </Link>
-        <Link href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
+        <a
+          href={`${STAKING_URL}/poaa-whitepaper.pdf`}
+          rel="noopener noreferrer"
+        >
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Proof of Active Agent icon"
@@ -68,7 +71,7 @@ export const WhitepaperPage = () => (
               Proof of Active Agent (PoAA)/Olas Staking
             </h3>
           </div>
-        </Link>
+        </a>
       </div>
     </div>
   </SectionWrapper>

@@ -1,6 +1,6 @@
 import { Accordion } from 'common-util/Accordion';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 import { CTA, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from './utils';
 
@@ -101,7 +101,7 @@ const faqList = [
           <>
             Yes, using the CLI. For more technical control, you can set up and
             run agents manually using Quickstart. Click{' '}
-            <ExternalLink href={CTA}>here</ExternalLink> to get started.
+            <SubsiteLink href={CTA}>here</SubsiteLink> to get started.
           </>
         ),
       },
@@ -138,7 +138,7 @@ const faqList = [
         desc: (
           <>
             Modify your agent&apos;s code for better results.{' '}
-            <ExternalLink href={CTA}>Click here</ExternalLink> for Quickstart
+            <SubsiteLink href={CTA}>Click here</SubsiteLink> for Quickstart
             guides and technical resources. You can optimize agent performance
             through modifying the agent code.
           </>

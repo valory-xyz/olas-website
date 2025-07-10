@@ -254,7 +254,7 @@ const AiMechs = () => (
                       <Button
                         asChild
                         key={actionIndex}
-                        className="whitespace-normal"
+                        className="whitespace-normal h-fit"
                       >
                         <a
                           href={action.url}

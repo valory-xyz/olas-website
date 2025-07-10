@@ -2,6 +2,7 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import { BUILD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
+import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -54,13 +55,9 @@ const ways = [
       </>
     ),
     link: (
-      <Link
-        href={`${BUILD_URL}/opportunities`}
-        className="text-purple-600 mt-auto"
-        target="_blank"
-      >
-        Get matched with an opportunity ↗
-      </Link>
+      <SubsiteLink href={`${BUILD_URL}/opportunities`} className="mt-auto">
+        Get matched with an opportunity
+      </SubsiteLink>
     ),
   },
   {
@@ -88,7 +85,7 @@ const ways = [
     ),
     link: (
       <Link href="/accelerator" className="text-purple-600 mt-auto">
-        Learn more & apply ↗
+        Learn more & apply
       </Link>
     ),
   },

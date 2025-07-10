@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { GOVERN_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -17,7 +17,9 @@ const HeroImage = () => (
 
 const StartGoverning = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <Link href={GOVERN_URL}>Start governing now</Link>
+    <SubsiteLink href={GOVERN_URL} isInButton>
+      Start governing now
+    </SubsiteLink>
   </Button>
 );
 

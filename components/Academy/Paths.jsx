@@ -47,12 +47,13 @@ export const Paths = () => (
         By following this workshop, you&apos;ll have a working mech tool and a
         chance to start earning dev rewards in the Olas ecosystem. To learn more
         about dev rewards, check out{' '}
-        <ExternalLink
+        <a
           className="underline text-slate-800"
           href={BUILD_MECH_TOOL_URL}
+          rel="noopener noreferrer"
         >
           this guide
-        </ExternalLink>{' '}
+        </a>{' '}
         and{' '}
         <ExternalLink
           className="underline text-slate-800"

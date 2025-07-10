@@ -10,7 +10,7 @@ const list = [
     title: 'Tokenomics Dev Documentation',
     urlName: 'Learn more',
     url: `${DOCS_BASE_URL}/protocol/tokenomics/`,
-    isExternal: true,
+    isSubsite: true,
   },
   {
     title: 'Olas Whitepaper',

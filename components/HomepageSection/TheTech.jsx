@@ -5,7 +5,7 @@ import { STAKING_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { ExternalLink, Link } from 'components/ui/typography';
+import { Link, SubsiteLink } from 'components/ui/typography';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -28,10 +28,8 @@ const innovations = [
     descriptionItems: [
       'Developer Rewards mechanism to incentivise agent code contributions.',
       <>
-        <ExternalLink href={STAKING_URL} hideArrow>
-          Staking mechanism
-        </ExternalLink>{' '}
-        to incentivise active agent contributions.
+        <SubsiteLink href={STAKING_URL}>Staking mechanism</SubsiteLink> to
+        incentivise active agent contributions.
       </>,
       'Bonding mechanism to incentivise liquidity provision.',
     ],
