@@ -35,7 +35,6 @@ const ExplorePredict = () => (
     size="xl"
     asChild
     className="max-xl:grow"
-    target="_blank"
     rel="noopener noreferrer"
   >
     <a href="https://predict.olas.network">Explore Predict UI</a>
