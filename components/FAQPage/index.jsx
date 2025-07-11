@@ -6,7 +6,6 @@ import {
   COINGECKO_URL,
   CONTRIBUTE_URL,
   ETHERSCAN_URL,
-  FLIPSIDE_URL,
   SNAPSHOT_URL,
   STAKING_URL,
   VALORY_URL,
@@ -323,20 +322,6 @@ const faqList = [
               <Link href="/govern" className="text-purple-600">
                 https://olas.network/govern.
               </Link>
-            </p>{' '}
-            <p>
-              The current token distribution can be tracked on-chain since the
-              inception of OLAS, and for convenience, on Flipside dashboards
-              like this one{' '}
-              <Link
-                href={FLIPSIDE_URL}
-                className="text-purple-600"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </Link>
-              .
             </p>
           </>
         ),

@@ -1,8 +1,10 @@
-import { getTotalUniqueStakers } from 'common-util/api/dune';
-import { get7DaysAvgActivity } from 'common-util/api/flipside';
 import {
+  get7DaysAvgActivity,
+  getTotalUniqueStakers,
+} from 'common-util/api/dune';
+import {
+  DUNE_DAAS_QUERY_URL,
   DUNE_OPERATORS_QUERY_URL,
-  FLIPSIDE_DAAS_QUERY_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
@@ -44,7 +46,7 @@ export const OperateMetrics = () => {
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
         value: metrics?.dailyActiveAgents?.toLocaleString(),
-        source: FLIPSIDE_DAAS_QUERY_URL,
+        source: DUNE_DAAS_QUERY_URL,
       },
     ],
     [metrics],

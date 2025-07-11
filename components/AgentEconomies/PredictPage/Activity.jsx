@@ -1,8 +1,13 @@
 import {
+  get7DaysAvgActivityPredict,
   getPredictionTxs,
-  getSevenDayAvgDailyActiveAgents,
-} from 'common-util/api/flipside';
-import { PREDICTION_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
+  getTotalPredictTransactions,
+} from 'common-util/api/dune';
+import {
+  DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+  DUNE_PREDICT_DAA_QUERY_URL,
+  DUNE_TOTAL_PREDICT_TRANSACTIONS_URL,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -12,9 +17,10 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, transactions] = await Promise.allSettled([
-    getSevenDayAvgDailyActiveAgents(),
+  const [dailyActiveAgents, transactions, total] = await Promise.allSettled([
+    get7DaysAvgActivityPredict(),
     getPredictionTxs(),
+    getTotalPredictTransactions(),
   ]);
 
   return {
@@ -28,8 +34,7 @@ const fetchMetrics = async () => {
       transactions.status === 'fulfilled'
         ? transactions.value.marketCreatorTxs
         : null,
-    totalTxs:
-      transactions.status === 'fulfilled' ? transactions.value.totalTxs : null,
+    totalTxs: total.status === 'fulfilled' ? total.value : null,
   };
 };
 
@@ -56,7 +61,7 @@ export const Activity = () => {
         ),
         subText: 'transactions',
         value: metrics?.traderTxs?.toLocaleString(),
-        source: PREDICTION_ECONOMY_DASHBOARD_URL,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
       },
       {
         id: 'mechs',
@@ -73,7 +78,7 @@ export const Activity = () => {
         ),
         subText: 'transactions',
         value: metrics?.mechTxs?.toLocaleString(),
-        source: PREDICTION_ECONOMY_DASHBOARD_URL,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
       },
       {
         id: 'marketCreatorsAndClosers',
@@ -100,7 +105,7 @@ export const Activity = () => {
         ),
         subText: 'transactions',
         value: metrics?.marketCreatorTxs?.toLocaleString(),
-        source: PREDICTION_ECONOMY_DASHBOARD_URL,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
       },
     ],
     [metrics],
@@ -126,7 +131,7 @@ export const Activity = () => {
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={PREDICTION_ECONOMY_DASHBOARD_URL}
+              href={DUNE_PREDICT_DAA_QUERY_URL}
               hideArrow
             >
               {metrics.dailyActiveAgents}
@@ -144,7 +149,7 @@ export const Activity = () => {
           Four key autonomous AI agent types have generated over{' '}
           <ExternalLink
             className="font-bold"
-            href={PREDICTION_ECONOMY_DASHBOARD_URL}
+            href={DUNE_TOTAL_PREDICT_TRANSACTIONS_URL}
             hideArrow
           >
             {metrics?.totalTxs?.toLocaleString()}&nbsp;↗

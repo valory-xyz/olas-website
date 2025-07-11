@@ -1,12 +1,22 @@
 import {
   A2A_TRANSACTIONS_ID,
+  DAA_QUERY_ID,
   DAILY_CONTRIBUTORS_QUERY_ID,
   FEE_FLOW_QUERY_ID,
   MECH_TXS_QUERY_ID,
   OLAS_STAKED_QUERY_ID,
+  PREDICTION_DAA_QUERY_ID,
+  PREDICTION_TOTAL_TXS_QUERY_ID,
+  PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
   TOTAL_MECH_TXS_ID,
+  TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
+  TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
+  TOTAL_SERVICE_TRANSACTIONS_QUERY_ID,
+  TOTAL_TOKEN_HOLDERS_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
+  VEOLAS_CIRCULATING_SUPPLY_ID,
+  VEOLAS_HOLDERS_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
 
@@ -28,6 +38,89 @@ const duneApiCall = async ({ queryId }) => {
 
   const json = await response.json();
   return json;
+};
+
+export const get7DaysAvgActivity = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: DAA_QUERY_ID,
+    });
+    const average = get(json, 'result.rows[0].seven_day_trailing_avg');
+    return Math.floor(average);
+  } catch (error) {
+    console.error('Error in get7DaysAvgActivity: ', error);
+    return;
+  }
+};
+
+export const get7DaysAvgActivityPredict = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: PREDICTION_DAA_QUERY_ID,
+    });
+    const average = get(json, 'result.rows[0].avg_7d_active_multisigs');
+    return Math.floor(average);
+  } catch (error) {
+    console.error('Error in get7DaysAvgActivityPredict: ', error);
+    return;
+  }
+};
+
+export const getTotalTransactionsCount = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: TOTAL_SERVICE_TRANSACTIONS_QUERY_ID,
+    });
+    const totalTxs = get(json, 'result.rows[0].total_agent_txs');
+    return totalTxs;
+  } catch (error) {
+    console.error('Error in getTotalTransactionsCount: ', error);
+    return;
+  }
+};
+
+export const getTotalTokenHolders = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: TOTAL_TOKEN_HOLDERS_ID,
+    });
+    const tokenHolders = get(
+      json,
+      'result.rows[0].Num_OLAS_holders_across_chains',
+    );
+    return tokenHolders;
+  } catch (error) {
+    console.error('Error in getTotalTokenHolders: ', error);
+    return;
+  }
+};
+
+export const getPredictionTxs = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
+    });
+    const traderTxs = get(json, 'result.rows[0].transactions_number');
+    const mechTxs = get(json, 'result.rows[1].transactions_number');
+    const marketCreatorTxs = get(json, 'result.rows[2].transactions_number');
+    return { traderTxs, mechTxs, marketCreatorTxs };
+  } catch (error) {
+    console.error('Error in getPredictionTxs: ', error);
+    return;
+  }
+};
+
+export const getTotalPredictTransactions = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: PREDICTION_TOTAL_TXS_QUERY_ID,
+    });
+    const totalTxs = get(json, 'result.rows[0].transactions_number');
+    return totalTxs;
+  } catch (error) {
+    console.error('Error in getTotalPredictTransactions: ', error);
+    return;
+  }
 };
 
 export const getTotalMechTxs = async () => {
@@ -150,6 +243,64 @@ export const getTotalOlasStaked = async () => {
     return totalOlasStaked;
   } catch (error) {
     console.error('Error in getTotalOlasStaked: ', error);
+    return;
+  }
+};
+
+export const getVeOlasCirculatingSupply = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: VEOLAS_CIRCULATING_SUPPLY_ID,
+    });
+    const olasLocked = get(json, 'result.rows[0].olas_locked');
+    return olasLocked;
+  } catch (error) {
+    console.error('Error in getVeOlasCirculatingSupply: ', error);
+    return;
+  }
+};
+
+export const getVeOlasHolders = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: VEOLAS_HOLDERS_ID,
+    });
+    const olasHolders = get(json, 'result.rows[0].veOLAS_holders');
+    return olasHolders;
+  } catch (error) {
+    console.error('Error in getVeOlasHolders: ', error);
+    return;
+  }
+};
+
+export const getTotalProtocolOwnedLiquidity = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
+    });
+    const totalOwnedLiquidity = get(
+      json,
+      'result.rows[0].protocol_owned_liquidity_value_across_chains',
+    );
+    return totalOwnedLiquidity;
+  } catch (error) {
+    console.error('Error in getTotalProtocolOwnedLiquidity: ', error);
+    return;
+  }
+};
+
+export const getTotalProtocolRevenue = async () => {
+  try {
+    const json = await duneApiCall({
+      queryId: TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
+    });
+    const totalProtocolRevenue = get(
+      json,
+      'result.rows[0].Cumulative_Protocol_Earned_Fees',
+    );
+    return totalProtocolRevenue;
+  } catch (error) {
+    console.error('Error in getTotalProtocolRevenue: ', error);
     return;
   }
 };

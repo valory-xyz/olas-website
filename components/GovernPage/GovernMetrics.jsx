@@ -1,10 +1,10 @@
 import {
   getVeOlasCirculatingSupply,
   getVeOlasHolders,
-} from 'common-util/api/flipside';
+} from 'common-util/api/dune';
 import {
-  FLIPSIDE_LOCKED_OLAS_QUERY_URL,
-  FLIPSIDE_VEOLAS_HOLDERS_QUERY_URL,
+  DUNE_OLAS_LOCKED_URL,
+  DUNE_VEOLAS_HOLDERS_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
@@ -27,14 +27,14 @@ export const GovernMetrics = () => {
           key: 'lockedOlas',
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
-          source: FLIPSIDE_LOCKED_OLAS_QUERY_URL,
+          source: DUNE_OLAS_LOCKED_URL,
           metric: Math.round(metrics[0]),
         },
         {
           key: 'veOlasHolders',
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
-          source: FLIPSIDE_VEOLAS_HOLDERS_QUERY_URL,
+          source: DUNE_VEOLAS_HOLDERS_URL,
           metric: metrics[1],
         },
       ],
