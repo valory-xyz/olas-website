@@ -7,7 +7,7 @@ const list = [
     desc: 'Bring your own AI agent economy to your ecosystem.',
     urlName: 'Learn more',
     url: BUILD_MECH_TOOL_URL,
-    isExternal: true,
+    isSubsite: true,
   },
   {
     title: 'For Operators',

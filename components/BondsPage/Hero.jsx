@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { BOND_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
+import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -25,9 +25,9 @@ const ProvideLiquidity = (
 
 const StartBonding = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <ExternalLink href={BOND_URL} className="text-white" hideArrow>
+    <SubsiteLink href={BOND_URL} isInButton>
       Start bonding now
-    </ExternalLink>
+    </SubsiteLink>
   </Button>
 );
 

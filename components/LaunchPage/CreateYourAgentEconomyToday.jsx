@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Fragment } from 'react';
 
 import {
@@ -9,6 +8,7 @@ import {
 import { LAUNCH_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 
 const steps = [
   {
@@ -55,7 +55,9 @@ export const CreateYourAgentEconomyToday = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href={LAUNCH_URL}>Get Started</Link>
+          <SubsiteLink href={LAUNCH_URL} isInButton>
+            Get Started
+          </SubsiteLink>
         </Button>
       </div>
     </div>

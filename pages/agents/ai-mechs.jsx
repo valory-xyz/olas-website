@@ -17,7 +17,14 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card';
-import { ExternalLink, H1, H2, Lead, Upcase } from 'components/ui/typography';
+import {
+  ExternalLink,
+  H1,
+  H2,
+  Lead,
+  SubsiteLink,
+  Upcase,
+} from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -121,9 +128,9 @@ const AiMechs = () => (
             marketplace to provide their own specialized skills and tasks.
           </Lead>
 
-          <ExternalLink href="https://mech.olas.network/gnosis/mech/0x77af31De935740567Cf4fF1986D04B2c964A786a?legacy=true">
+          <SubsiteLink href="https://mech.olas.network/gnosis/mech/0x77af31De935740567Cf4fF1986D04B2c964A786a?legacy=true">
             Check out Mechs in action
-          </ExternalLink>
+          </SubsiteLink>
         </div>
       </div>
     </SectionWrapper>
@@ -254,7 +261,7 @@ const AiMechs = () => (
                       <Button
                         asChild
                         key={actionIndex}
-                        className="whitespace-normal"
+                        className="whitespace-normal h-fit"
                       >
                         <a
                           href={action.url}

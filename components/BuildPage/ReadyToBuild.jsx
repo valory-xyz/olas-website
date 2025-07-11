@@ -2,6 +2,7 @@ import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
 import { BUILD_URL, DOCS_BASE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
+import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 const content = [
@@ -53,13 +54,9 @@ export const ReadyToBuild = () => (
               <span>{item.title}</span>
             </CardTitle>
             <div className="mb-2 text-start">{item.description}</div>
-            <a
-              href={item.link}
-              className="mt-auto text-purple-600"
-              target="_blank"
-            >
-              {item.linkText} ↗
-            </a>
+            <SubsiteLink href={item.link} className="mt-auto">
+              {item.linkText}
+            </SubsiteLink>
           </div>
         </Card>
       ))}

@@ -67,6 +67,7 @@ export const CONTRIBUTE_URL = 'https://contribute.olas.network';
 export const OPERATE_URL = 'https://operate.olas.network';
 export const LAUNCH_URL = 'https://launch.olas.network/';
 export const STAKING_URL = 'https://staking.olas.network';
+export const PREDICT_URL = 'https://predict.olas.network';
 export const BUILD_URL = 'https://build.olas.network';
 export const GOVERN_URL = 'https://govern.olas.network';
 export const BOND_URL = 'https://bond.olas.network';

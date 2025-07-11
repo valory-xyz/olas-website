@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Fragment } from 'react';
 
 import {
@@ -9,7 +8,7 @@ import {
 import { CONTRIBUTE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
+import { SubsiteLink } from 'components/ui/typography';
 
 const steps = [
   {
@@ -17,9 +16,7 @@ const steps = [
     description: (
       <>
         Go to the{' '}
-        <ExternalLink href={CONTRIBUTE_URL} className="text-purple-600">
-          Contribute App
-        </ExternalLink>
+        <SubsiteLink href={CONTRIBUTE_URL}>Contribute App</SubsiteLink>
         . <br />
         Link your crypto wallet to get started with Contribute.
       </>
@@ -70,7 +67,9 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <Link href={CONTRIBUTE_URL}>Get started</Link>
+          <SubsiteLink href={CONTRIBUTE_URL} isInButton>
+            Get started
+          </SubsiteLink>
         </Button>
       </div>
     </div>

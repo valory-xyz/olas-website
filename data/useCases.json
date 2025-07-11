@@ -46,12 +46,6 @@
     "description": "Highly transparent and robust through consensus, run by multiple separate operators.",
     "services": [
       {
-        "title": "Governatooorr",
-        "description": "AI-powered governance delegate.",
-        "image": "/images/agents/governatooorr.svg",
-        "link": "/agents/governatooorr"
-      },
-      {
         "title": "Mech agent",
         "description": "Agent-to-agent AI tools marketplace.",
         "image": "/images/agents/ai-mechs.svg",

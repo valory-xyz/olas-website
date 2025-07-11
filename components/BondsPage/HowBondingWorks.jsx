@@ -13,7 +13,7 @@ import {
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 
 const steps = [
   {
@@ -23,10 +23,8 @@ const steps = [
         As a Bonder, you exchange your LP tokens for discounted OLAS to help the
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
         tokens to your chosen{' '}
-        <a href={BONDING_PROGRAMS_URL} className="text-purple-600">
-          bonding program
-        </a>
-        , exchanging your LP tokens for discounted OLAS, available after the
+        <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>,
+        exchanging your LP tokens for discounted OLAS, available after the
         predetermined vesting period.
       </>
     ),
@@ -72,9 +70,9 @@ export const HowBondingWorks = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          <ExternalLink href={BOND_URL} hideArrow className="text-white">
+          <SubsiteLink href={BOND_URL} isInButton>
             Start bonding now
-          </ExternalLink>
+          </SubsiteLink>
         </Button>
       </div>
     </div>

@@ -13,7 +13,7 @@ import {
   X_OLAS_URL,
 } from 'common-util/constants';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -143,13 +143,9 @@ const faqList = [
             </p>
             <p>
               You can also{' '}
-              <a
-                href={`${CONTRIBUTE_URL}/roadmap`}
-                target="_blank"
-                className="text-purple-600"
-              >
+              <SubsiteLink href={`${CONTRIBUTE_URL}/roadmap`}>
                 read the Roadmap
-              </a>
+              </SubsiteLink>
               .
             </p>
           </>
@@ -298,14 +294,9 @@ const faqList = [
         desc: (
           <p>
             Read more at{' '}
-            <Link
-              href={STAKING_URL}
-              className="text-purple-600"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <SubsiteLink href={STAKING_URL}>
               https://staking.olas.network
-            </Link>
+            </SubsiteLink>
             .
           </p>
         ),
@@ -324,7 +315,7 @@ const faqList = [
             </p>{' '}
             <p className="mb-3">
               The introduction of{' '}
-              <ExternalLink href={STAKING_URL}>Olas Staking</ExternalLink> gave
+              <SubsiteLink href={STAKING_URL}>Olas Staking</SubsiteLink> gave
               the DAO the ability to direct emissions to useful builders and the
               DAO treasury, controlling how much OLAS is emitted into the
               market. For more information on voting, see:{' '}
@@ -392,15 +383,7 @@ const faqList = [
             </p>
             <p>
               You can lock OLAS for veOLAS and check unlocks for your wallet{' '}
-              <Link
-                href={VEOLAS_URL}
-                className="text-purple-600"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </Link>
-              .
+              <SubsiteLink href={VEOLAS_URL}>here</SubsiteLink>.
             </p>
           </>
         ),
