@@ -8,14 +8,14 @@ import {
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
 import SectionWrapper from '../Layout/SectionWrapper';
-import { H1 } from '../ui/typography';
+import { H1, SubsiteLink } from '../ui/typography';
 
 export const WhitepaperPage = () => (
   <SectionWrapper>
     <div>
       <H1>Whitepaper</H1>
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 md:gap-8 mt-8">
-        <Link href={WHITEPAPER_SUMMARY}>
+        <Link href={WHITEPAPER_SUMMARY} target="_blank">
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Summary icon"
@@ -28,7 +28,7 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Summary</h3>
           </div>
         </Link>
-        <Link href={WHITEPAPER}>
+        <Link href={WHITEPAPER} target="_blank">
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Whitepaper icon"
@@ -41,7 +41,7 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Whitepaper</h3>
           </div>
         </Link>
-        <Link href={CORE_TECHNICAL_DOCUMENT}>
+        <Link href={CORE_TECHNICAL_DOCUMENT} target="_blank">
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Tokenomics icon"
@@ -54,7 +54,11 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Tokenomics</h3>
           </div>
         </Link>
-        <Link href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
+        <SubsiteLink
+          href={`${STAKING_URL}/poaa-whitepaper.pdf`}
+          target="_blank"
+          className="text-slate-800 hover:text-slate-800"
+        >
           <div className="flex flex-col items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-lg p-4 h-full">
             <Image
               alt="Proof of Active Agent icon"
@@ -68,7 +72,7 @@ export const WhitepaperPage = () => (
               Proof of Active Agent (PoAA)/Olas Staking
             </h3>
           </div>
-        </Link>
+        </SubsiteLink>
       </div>
     </div>
   </SectionWrapper>

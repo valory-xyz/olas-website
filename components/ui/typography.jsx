@@ -64,6 +64,34 @@ ExternalLink.propTypes = {
 };
 ExternalLink.defaultProps = { className: null, hideArrow: false };
 
+export const SubsiteLink = ({
+  children,
+  className,
+  href,
+  isInButton = false,
+}) => {
+  const textClass = isInButton
+    ? 'text-white'
+    : 'text-purple-600 hover:text-purple-800 transition-colors duration-300';
+
+  return (
+    <a
+      className={`${textClass} ${className}`}
+      href={href}
+      rel="noopener noreferrer"
+    >
+      {children}
+    </a>
+  );
+};
+
+SubsiteLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  href: PropTypes.string.isRequired,
+  class: PropTypes.string,
+  isInButton: PropTypes.bool,
+};
+
 export const Link = ({ children, className, href }) => (
   <NextLink
     className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}

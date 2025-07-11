@@ -14,7 +14,6 @@ const list = [
     desc: 'Developer, innovator, or AI enthusiast? Build with the Olas stack and help shape the future of autonomous AI trading.',
     urlName: 'Build on Olas',
     url: '/build',
-    isExternal: false,
   },
 ];
 

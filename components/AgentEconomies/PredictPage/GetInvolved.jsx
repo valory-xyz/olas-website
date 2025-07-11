@@ -8,21 +8,20 @@ const list = [
     desc: 'Build Mech tools and improve Trader strategies.',
     urlName: 'View path',
     url: BUILD_MECH_TOOL_URL,
-    isExternal: true,
+    isSubsite: true,
   },
   {
     title: 'For Operators',
     desc: 'Run Trader agents using Pearl or manually.',
     urlName: 'Explore paths',
     url: '/operate',
-    isExternal: false,
   },
   {
     title: 'For Launchers',
     desc: 'Launch your own agent economy.',
     urlName: 'Explore',
     url: LAUNCH_URL,
-    isExternal: false,
+    isSubsite: true,
   },
 ];
 

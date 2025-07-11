@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Fragment } from 'react';
 
 import {
@@ -9,6 +8,7 @@ import {
 import { BOARDROOM_URL, GOVERN_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 
 const steps = [
   {
@@ -21,15 +21,8 @@ const steps = [
     description: (
       <>
         You can do everything governance related on the{' '}
-        <a
-          href={GOVERN_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-purple-600"
-        >
-          Govern App ↗
-        </a>
-        . Simply connect your wallet to start voting.
+        <SubsiteLink href={GOVERN_URL}>Govern App</SubsiteLink>. Simply connect
+        your wallet to start voting.
       </>
     ),
   },
@@ -84,7 +77,9 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-10">
-          <Link href={GOVERN_URL}>Start governing now</Link>
+          <SubsiteLink href={GOVERN_URL} isInButton>
+            Start governing now
+          </SubsiteLink>
         </Button>
       </div>
     </div>

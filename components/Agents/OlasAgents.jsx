@@ -5,7 +5,7 @@ import {
   STAKING_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 
 export const OlasAgents = () => (
@@ -54,7 +54,7 @@ export const OlasAgents = () => (
           <li className="font-medium mb-3">
             <p className="mb-3">
               They are listed on a global agent directory called{' '}
-              <ExternalLink href={REGISTRY_URL}>Olas Registry</ExternalLink>:
+              <SubsiteLink href={REGISTRY_URL}>Olas Registry</SubsiteLink>:
             </p>
             <ul className="ml-6 list-disc font-normal text-base mb-3">
               <li className="mb-3">Enables agents to list their services.</li>
@@ -70,7 +70,7 @@ export const OlasAgents = () => (
           <li className="font-medium mb-3">
             <p className="mb-3">
               They optionally earn rewards via{' '}
-              <ExternalLink href={STAKING_URL}>Olas Staking</ExternalLink>:
+              <SubsiteLink href={STAKING_URL}>Olas Staking</SubsiteLink>:
             </p>
             <ul className="ml-6 list-disc font-normal text-base mb-3">
               <li>
