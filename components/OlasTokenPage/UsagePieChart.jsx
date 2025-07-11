@@ -1,5 +1,6 @@
 import { ArcElement, Chart } from 'chart.js';
 import { ETHERSCAN_URL, STAKING_URL } from 'common-util/constants';
+import { SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
@@ -63,13 +64,12 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
             {loading ? '--' : split?.staking}%
           </span>{' '}
           of the new tokens are earmarked for{' '}
-          <a
+          <SubsiteLink
             href={STAKING_URL}
-            className="text-yellow-600 font-bold"
-            rel="noopener noreferrer"
+            className="text-yellow-600 hover:text-yellow-600 font-bold"
           >
             Operators
-          </a>
+          </SubsiteLink>
         </div>
       </div>
       <div className="mb-4 max-w-[300px] mx-auto">

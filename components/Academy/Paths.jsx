@@ -5,7 +5,7 @@ import {
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -47,13 +47,13 @@ export const Paths = () => (
         By following this workshop, you&apos;ll have a working mech tool and a
         chance to start earning dev rewards in the Olas ecosystem. To learn more
         about dev rewards, check out{' '}
-        <a
+        <SubsiteLink
           className="underline text-slate-800"
           href={BUILD_MECH_TOOL_URL}
           rel="noopener noreferrer"
         >
           this guide
-        </a>{' '}
+        </SubsiteLink>{' '}
         and{' '}
         <ExternalLink
           className="underline text-slate-800"

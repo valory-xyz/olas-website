@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { PREDICT_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
@@ -37,7 +38,7 @@ const ExplorePredict = () => (
     className="max-xl:grow"
     rel="noopener noreferrer"
   >
-    <a href="https://predict.olas.network">Explore Predict UI</a>
+    <a href={PREDICT_URL}>Explore Predict UI</a>
   </Button>
 );
 
