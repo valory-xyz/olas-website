@@ -1,13 +1,8 @@
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import {
-  COINGECKO_URL,
-  FLIPSIDE_URL,
-  OLAS_API_URL,
-} from 'common-util/constants';
+import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
 import {
   STAKING_GRAPH_CLIENTS,
   tokenomicsGraphClient,
@@ -256,29 +251,6 @@ const Supply = () => {
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>
             <EmissionsToOperators emissions={emissions} loading={loading} />
-          </div>
-
-          <div className="flex flex-col border rounded-lg place-content-center text-center mb-8 lg:mb-0 py-6">
-            <div className="inline-block mx-auto mb-4">
-              <Image
-                src="/images/olas-token-page/flipside.svg"
-                width={60}
-                height={60}
-                alt="Flipside logo"
-              />
-            </div>
-
-            <h2 className="text-xl mb-4 font-bold">
-              Dive into the current distribution details
-            </h2>
-            <a
-              href={FLIPSIDE_URL}
-              className="text-purple-500"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Visit OLAS Flipside dashboard ↗
-            </a>
           </div>
 
           <div className="flex flex-col col-span-2 border rounded-lg py-6 px-4">

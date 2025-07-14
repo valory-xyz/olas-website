@@ -1,5 +1,5 @@
-import { getTotalTokenHolders } from 'common-util/api/flipside';
-import { FLIPSIDE_TOTAL_HOLDERS_QUERY_URL } from 'common-util/constants';
+import { getTotalTokenHolders } from 'common-util/api/dune';
+import { DUNE_TOTAL_TOKEN_HOLDERS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -38,7 +38,7 @@ export const TokenHoldersMetric = () => {
         {metrics?.totalTokenHolders ? (
           <ExternalLink
             className="font-extrabold text-6xl"
-            href={FLIPSIDE_TOTAL_HOLDERS_QUERY_URL}
+            href={DUNE_TOTAL_TOKEN_HOLDERS_URL}
             target="_blank"
             hideArrow
           >

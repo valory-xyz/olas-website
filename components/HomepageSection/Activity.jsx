@@ -1,20 +1,18 @@
 import {
+  get7DaysAvgActivity,
   getA2ATransactions,
   getFeeFlowMetrics,
   getTotalOlasStaked,
+  getTotalTransactionsCount,
   getTotalUniqueStakers,
 } from 'common-util/api/dune';
 import {
-  get7DaysAvgActivity,
-  getTotalTransactionsCount,
-} from 'common-util/api/flipside';
-import {
   DUNE_A2A_TRANSACTIONS_QUERY_URL,
   DUNE_AGENTS_QUERY_URL,
+  DUNE_DAAS_QUERY_URL,
   DUNE_MMV2_URL,
   DUNE_OLAS_STAKED_URL,
-  FLIPSIDE_DAAS_QUERY_URL,
-  FLIPSIDE_URL,
+  DUNE_TOTAL_SERVICE_TRANSACTIONS_URL,
   VALORY_GIT_URL,
 } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
@@ -197,7 +195,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
           DAAs <Popover>7-day average Daily Active Agents</Popover>
         </>
       ),
-      link: FLIPSIDE_DAAS_QUERY_URL,
+      link: DUNE_DAAS_QUERY_URL,
     }}
   />
 );
@@ -231,7 +229,7 @@ const TransactionsCard = ({ transactions }) => (
     primary={{
       value: transactions,
       text: 'txns',
-      link: FLIPSIDE_URL,
+      link: DUNE_TOTAL_SERVICE_TRANSACTIONS_URL,
     }}
   />
 );

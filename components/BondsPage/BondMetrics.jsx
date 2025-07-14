@@ -1,10 +1,10 @@
 import {
   getTotalProtocolOwnedLiquidity,
   getTotalProtocolRevenue,
-} from 'common-util/api/flipside';
+} from 'common-util/api/dune';
 import {
-  FLIPSIDE_LIQUIDITY_QUERY_URL,
-  FLIPSIDE_PROTOCOL_FEES_QUERY_URL,
+  DUNE_TOTAL_LIQUIDITY_URL,
+  DUNE_TOTAL_PROTOCOL_REVENUE_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
@@ -26,7 +26,7 @@ export const BondMetrics = () => {
           key: 'liquidity',
           imageSrc: 'liquidity.png',
           labelText: 'Total Protocol-owned Liquidity',
-          source: FLIPSIDE_LIQUIDITY_QUERY_URL,
+          source: DUNE_TOTAL_LIQUIDITY_URL,
           metric: Math.round(metrics[0]),
           isMoney: true,
         },
@@ -34,7 +34,7 @@ export const BondMetrics = () => {
           key: 'fees',
           imageSrc: 'protocol-fees.png',
           labelText: 'Fees from Protocol-owned Liquidity',
-          source: FLIPSIDE_PROTOCOL_FEES_QUERY_URL,
+          source: DUNE_TOTAL_PROTOCOL_REVENUE_URL,
           metric: Math.round(metrics[1]),
           isMoney: true,
         },
