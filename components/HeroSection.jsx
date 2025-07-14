@@ -4,6 +4,7 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
+import Image from 'next/image';
 import SectionWrapper from './Layout/SectionWrapper';
 
 export const HeroSection = ({
@@ -13,16 +14,28 @@ export const HeroSection = ({
   description,
   PrimaryButton,
   SecondaryButton,
+  isUnderConstruction,
+  backgroundType = 'SUBTLE_GRADIENT',
 }) => (
   <SectionWrapper
     customClasses={`border-b ${SECTION_BOX_CLASS}`}
-    backgroundType="SUBTLE_GRADIENT"
+    backgroundType={backgroundType}
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">
       <div className="px-0 lg:col-span-5 lg:px-5 lg:text-left max-w-2xl h-full my-auto">
         <div className="md:hidden mb-8">
           <HeroImage />
         </div>
+
+        {isUnderConstruction && (
+          <Image
+            src="/images/under-construction.svg"
+            alt="Under Construction"
+            width={186}
+            height={32}
+            className="mb-4"
+          />
+        )}
 
         <h1
           className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}

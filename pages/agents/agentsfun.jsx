@@ -22,7 +22,8 @@ const HeroImage = () => (
 
 const AIAgentInfluencers = (
   <div>
-    AI Agent influencers <br /> that do more than just post
+    AI Agent Influencers <br />
+    That Do More Than Just Post
   </div>
 );
 
@@ -39,6 +40,8 @@ const Hero = () => (
     title={AIAgentInfluencers}
     description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
     PrimaryButton={Explore}
+    backgroundType="NONE"
+    isUnderConstruction
   />
 );
 
@@ -133,16 +136,15 @@ const funAgents = [
     title: 'Agent Base',
     anchor: 'agent-base',
     description:
-      'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas. Get started today & create AI influencer on Base.',
+      'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas.',
     imgSrc: 'agentsfun-base.png',
-    link: '/pearl#download',
   },
-  // {
-  //   title: 'Agent Celo',
-  //   description:
-  //     "Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you'll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.",
-  //   imgSrc: 'agentsfun-celo.png',
-  // },
+  {
+    title: 'Agent Celo',
+    description:
+      'Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you’ll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.',
+    imgSrc: 'agentsfun-celo.png',
+  },
 ];
 
 const PickYourAgent = () => (
@@ -150,33 +152,28 @@ const PickYourAgent = () => (
     <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
       Pick your agent
     </h2>
-    <div className="max-w-[800px] mx-auto flex flex-col gap-8">
+    <div className="max-w-[800px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
           id={agent.anchor}
           key={agent.title}
-          className="flex max-sm:flex-col mx-auto flex-row gap-8 p-5"
+          className="flex mx-auto flex-col gap-8 p-5"
         >
           <Image
             src={`/images/agents/agentsfun/${agent.imgSrc}`}
             alt={agent.title}
-            width={200}
-            height={200}
-            className="mx-auto"
+            width={128}
+            height={128}
           />
-          <div className="flex flex-col gap-4">
-            <CardTitle>{agent.title}</CardTitle>
-            {agent.description}
-            {agent.link ? (
-              <Button variant="default" size="lg" className="w-fit" asChild>
-                <Link href={agent.link}>Run via Pearl</Link>
-              </Button>
-            ) : (
-              <Button className="w-fit bg-slate-100 text-gray-400 p-3 mt-auto">
-                Coming soon
-              </Button>
-            )}
-          </div>
+          <CardTitle>{agent.title}</CardTitle>
+          {agent.description}
+          {agent.link ? (
+            <Button variant="default" size="lg" className="w-fit" asChild>
+              <Link href={agent.link}>Run via Pearl</Link>
+            </Button>
+          ) : (
+            <p className="text-amber-800">The agent is under construction.</p>
+          )}
         </Card>
       ))}
     </div>
