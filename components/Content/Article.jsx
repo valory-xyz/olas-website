@@ -23,7 +23,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 
   const {
     title,
-    datePublished: unFormattedDatePublished,
+    publishedAt: unFormattedDatePublished,
     readTime,
   } = article.attributes;
   const { url, width, height } = image || {};
