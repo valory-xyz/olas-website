@@ -4,7 +4,6 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
-import Image from 'next/image';
 import SectionWrapper from './Layout/SectionWrapper';
 
 export const HeroSection = ({
@@ -14,7 +13,7 @@ export const HeroSection = ({
   description,
   PrimaryButton,
   SecondaryButton,
-  isUnderConstruction,
+  statusTag,
   backgroundType = 'SUBTLE_GRADIENT',
 }) => (
   <SectionWrapper
@@ -27,15 +26,7 @@ export const HeroSection = ({
           <HeroImage />
         </div>
 
-        {isUnderConstruction && (
-          <Image
-            src="/images/under-construction.svg"
-            alt="Under Construction"
-            width={186}
-            height={32}
-            className="mb-4"
-          />
-        )}
+        {statusTag}
 
         <h1
           className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}

@@ -33,6 +33,16 @@ const Explore = () => (
   </Button>
 );
 
+const Tag = (
+  <Image
+    src="/images/under-construction.svg"
+    alt="Under Construction"
+    width={186}
+    height={32}
+    className="mb-4"
+  />
+);
+
 const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
@@ -41,7 +51,7 @@ const Hero = () => (
     description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
     PrimaryButton={Explore}
     backgroundType="NONE"
-    isUnderConstruction
+    statusTag={Tag}
   />
 );
 
@@ -139,12 +149,12 @@ const funAgents = [
       'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas.',
     imgSrc: 'agentsfun-base.png',
   },
-  {
-    title: 'Agent Celo',
-    description:
-      'Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you’ll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.',
-    imgSrc: 'agentsfun-celo.png',
-  },
+  // {
+  //   title: 'Agent Celo',
+  //   description:
+  //     'Agent Celo operates on the Celo blockchain, delivering a seamless AI influencer experience. With Agent Celo, you’ll enjoy decentralized interactions, evolving personas, and potential benefits from meme coins.',
+  //   imgSrc: 'agentsfun-celo.png',
+  // },
 ];
 
 const PickYourAgent = () => (
