@@ -21,7 +21,7 @@ import {
 import get from 'lodash/get';
 
 const duneApiCall = async ({ queryId }) => {
-  const response = await fetch(`api/dune?queryId=${queryId}`);
+  const response = await fetch(`/api/dune?queryId=${queryId}`);
 
   if (!response.ok) {
     throw new Error(
