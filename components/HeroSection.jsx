@@ -15,9 +15,10 @@ export const HeroSection = ({
   SecondaryButton,
   statusTag,
   backgroundType = 'SUBTLE_GRADIENT',
+  className,
 }) => (
   <SectionWrapper
-    customClasses={`border-b ${SECTION_BOX_CLASS}`}
+    customClasses={`border-b ${SECTION_BOX_CLASS} ${className}`}
     backgroundType={backgroundType}
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">

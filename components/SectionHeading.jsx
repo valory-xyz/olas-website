@@ -11,7 +11,7 @@ const SectionHeading = ({
   other,
 }) => (
   <h2
-    className={`text-4xl md:text-[40px] ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
+    className={`text-3xl lg:text-[40px] ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
   >
     {children}
   </h2>
@@ -32,7 +32,7 @@ SectionHeading.defaultProps = {
   display: '',
   size: '',
   spacing: 'mb-12',
-  weight: 'font-bold md:font-black',
+  weight: 'font-semibold',
   other: '',
 };
 
