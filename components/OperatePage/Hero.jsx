@@ -23,7 +23,7 @@ const RunAIAgents = (
 
 const Explore = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
-    <Link href="/pearl#download">Explore Operator Role</Link>
+    <Link href="#get-started">Explore Operator Role</Link>
   </Button>
 );
 

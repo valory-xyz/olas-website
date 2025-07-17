@@ -8,8 +8,18 @@ import { TrustedBy } from 'components/HomepageSection/TrustedBy';
 import { WorldOfAgents } from 'components/HomepageSection/WorldOfAgents';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (window.location.hash === '#get-involved') {
+      router.replace('/olas-token#choose-your-role');
+    }
+  }, [router]);
+
   return (
     <PageWrapper>
       <Meta />
