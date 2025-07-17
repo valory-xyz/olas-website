@@ -30,7 +30,7 @@ const list = [
 export const ForOlasHolders = () => (
   <SectionWrapper id="for-olas-holders">
     <div className="max-w-2xl mx-auto">
-      <div className="place-items-center w-full">
+      <div className="grid place-items-center w-full">
         <Tag variant="primary" className="mb-6">
           What This Means for OLAS Holders
         </Tag>

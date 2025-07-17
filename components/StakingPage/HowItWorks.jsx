@@ -27,7 +27,7 @@ export const HowItWorks = () => {
   return (
     <SectionWrapper>
       <div className="max-w-5xl mx-auto">
-        <div className="place-items-center mb-10">
+        <div className="place-items-center grid mb-10">
           <Tag variant="primary" className="mb-6">
             How It Works
           </Tag>
