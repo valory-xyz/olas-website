@@ -120,7 +120,7 @@ export const MechAgentMetrics = () => {
             href={DUNE_TOTAL_TRANSACTIONS_QUERY_URL}
             hideArrow
           >
-            {metrics?.totalTxs.toLocaleString()}&nbsp;↗
+            {metrics?.totalTxs?.toLocaleString()}&nbsp;↗
           </ExternalLink>{' '}
           requests autonomously driven by agents in Olas.
         </p>

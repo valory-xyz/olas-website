@@ -7,7 +7,7 @@ const list = [
   {
     title: 'Specialization',
     icon: <Sparkles color="#606F85" />,
-    desc: 'Thanks to Mechs, agents in use cases like Predict or Optimus do not need to run open-source models or maintain API keys to closed source models.',
+    desc: 'Thanks to Mechs, agents in use cases like Predict or BabyDegen do not need to run open-source models or maintain API keys to closed source models.',
   },
   {
     title: 'Scale',
