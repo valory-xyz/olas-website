@@ -3,12 +3,11 @@ import Link from 'next/link';
 
 import {
   CORE_TECHNICAL_DOCUMENT,
-  STAKING_URL,
   WHITEPAPER,
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
 import SectionWrapper from '../Layout/SectionWrapper';
-import { H1, SubsiteLink } from '../ui/typography';
+import { H1 } from '../ui/typography';
 
 export const WhitepaperPage = () => (
   <SectionWrapper>
@@ -54,8 +53,8 @@ export const WhitepaperPage = () => (
             <h3 className="font-bold text-xl mt-4 text-center">Tokenomics</h3>
           </div>
         </Link>
-        <SubsiteLink
-          href={`${STAKING_URL}/poaa-whitepaper.pdf`}
+        <Link
+          href="/documents/whitepaper/PoAA Whitepaper.pdf"
           target="_blank"
           className="text-slate-800 hover:text-slate-800"
         >
@@ -72,7 +71,7 @@ export const WhitepaperPage = () => (
               Proof of Active Agent (PoAA)/Olas Staking
             </h3>
           </div>
-        </SubsiteLink>
+        </Link>
       </div>
     </div>
   </SectionWrapper>

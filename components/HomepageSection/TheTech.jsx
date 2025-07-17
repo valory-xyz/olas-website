@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 
-import { STAKING_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
-import { Link, SubsiteLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import SectionHeading from '../SectionHeading';
 
 const innovations = [
@@ -28,8 +27,10 @@ const innovations = [
     descriptionItems: [
       'Developer Rewards mechanism to incentivise agent code contributions.',
       <>
-        <SubsiteLink href={STAKING_URL}>Staking mechanism</SubsiteLink> to
-        incentivise active agent contributions.
+        <Link href="/staking" className="text-purple-600">
+          Staking mechanism
+        </Link>{' '}
+        to incentivise active agent contributions.
       </>,
       'Bonding mechanism to incentivise liquidity provision.',
     ],
