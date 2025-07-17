@@ -1,7 +1,6 @@
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import { STAKING_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubsiteLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 
 export const PoweredBy = () => (
   <SectionWrapper
@@ -17,9 +16,9 @@ export const PoweredBy = () => (
       <div className="flex flex-col gap-6">
         <p>
           Olas Staking is based on{' '}
-          <SubsiteLink href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
+          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
             Proof-of-Active-Agent (PoAA)
-          </SubsiteLink>{' '}
+          </Link>{' '}
           — a mechanism that rewards real AI agent activity, not passive token
           lockup.
         </p>

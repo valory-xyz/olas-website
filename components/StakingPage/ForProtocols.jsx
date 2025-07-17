@@ -80,12 +80,10 @@ export const ForProtocols = () => (
           What This Means for Protocols, Builders and AI Agent Operators
         </Tag>
       </div>
-      <div className="flex flex-col gap-[120px]">
+      <div className="flex flex-col gap-14 lg:gap-[120px]">
         {list.map((item, index) => {
-          let order = 'flex-row';
-          if (index % 2 !== 0) {
-            order = 'flex-row-reverse';
-          }
+          const order = index % 2 === 0 ? 'flex-row' : 'flex-row-reverse';
+
           return (
             <div
               key={item.title}

@@ -1,8 +1,7 @@
 import { Accordion } from 'common-util/Accordion';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import { STAKING_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Link, SubsiteLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 
 const faq = [
@@ -19,9 +18,9 @@ const faq = [
         />
         <p>
           For full technical detail, check the{' '}
-          <SubsiteLink href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
+          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
             whitepaper
-          </SubsiteLink>
+          </Link>
           .
         </p>
       </>
@@ -50,9 +49,9 @@ const faq = [
         Proof-of-Work. It rewards agents — and the users who run them — for
         doing useful, verifiable work like making on-chain calls or meeting KPI
         targets. For more details, check out{' '}
-        <SubsiteLink href={`${STAKING_URL}/poaa-whitepaper.pdf`}>
+        <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
           PoAA Whitepaper
-        </SubsiteLink>
+        </Link>
         .
       </p>
     ),

@@ -7,7 +7,6 @@ import {
   CONTRIBUTE_URL,
   ETHERSCAN_URL,
   SNAPSHOT_URL,
-  STAKING_URL,
   VALORY_URL,
   VEOLAS_URL,
   X_OLAS_URL,
@@ -293,10 +292,10 @@ const faqList = [
         title: 'How does Staking work on Olas?',
         desc: (
           <p>
-            Read more at{' '}
-            <SubsiteLink href={STAKING_URL}>
-              https://staking.olas.network
-            </SubsiteLink>
+            Read more on the{' '}
+            <Link href="/staking" className="text-purple-600">
+              staking page
+            </Link>
             .
           </p>
         ),
@@ -315,10 +314,12 @@ const faqList = [
             </p>{' '}
             <p className="mb-3">
               The introduction of{' '}
-              <SubsiteLink href={STAKING_URL}>Olas Staking</SubsiteLink> gave
-              the DAO the ability to direct emissions to useful builders and the
-              DAO treasury, controlling how much OLAS is emitted into the
-              market. For more information on voting, see:{' '}
+              <Link href="/staking" className="text-purple-600">
+                Olas Staking
+              </Link>{' '}
+              gave the DAO the ability to direct emissions to useful builders
+              and the DAO treasury, controlling how much OLAS is emitted into
+              the market. For more information on voting, see:{' '}
               <Link href="/govern" className="text-purple-600">
                 https://olas.network/govern.
               </Link>
