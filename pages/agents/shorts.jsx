@@ -7,18 +7,17 @@ import {
 import Image from 'next/image';
 
 import {
-  MAIN_TITLE_CLASS,
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
   TEXT_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
 } from 'common-util/classes';
 import { SHORTS_URL } from 'common-util/constants';
+import { HeroSection } from 'components/HeroSection';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -29,47 +28,34 @@ const HeroImage = () => (
   />
 );
 
+const StartCreating = () => (
+  <Button asChild variant="default" size="xl" className="mt-6 w-full md:w-auto">
+    <SubsiteLink href={SHORTS_URL} isInButton>
+      Start creating now
+    </SubsiteLink>
+  </Button>
+);
+
+const Tag = (
+  <Image
+    src="/images/agents/deprecated-tag.svg"
+    alt="deprecated"
+    width={113}
+    height={32}
+    className="mb-4"
+  />
+);
+
 const Hero = () => (
-  <SectionWrapper customClasses={`border-b ${SECTION_BOX_CLASS}`}>
-    <div className="grid max-w-screen-xl items-center mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
-      <div className="md:mb-12 lg:mb-0 lg:col-span-6">
-        <Image
-          src="/images/agents/deprecated-tag.svg"
-          alt="deprecated"
-          width={113}
-          height={32}
-          className="mb-4"
-        />
-        <div className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2`}>SHORTS.WTF</div>
-        <h1 className={`mb-4 ${MAIN_TITLE_CLASS}`}>
-          Create a short film with just one prompt
-        </h1>
-        <div className="md:hidden mb-8">
-          <HeroImage />
-        </div>
-        <div className={TEXT_SMALL_CLASS}>
-          Start with an idea and get a complete AI agent-generated short film in
-          30 minutes.
-        </div>
-        <Button
-          asChild
-          variant="default"
-          size="xl"
-          className="mt-6 w-full md:w-auto"
-        >
-          <a href={SHORTS_URL} rel="noopener noreferrer" target="_blank">
-            Start creating now
-          </a>
-        </Button>
-      </div>
-
-      <div className="hidden sm:block col-span-1" />
-
-      <div className="hidden lg:mt-0 lg:col-span-5 lg:flex md:block justify-end">
-        <HeroImage />
-      </div>
-    </div>
-  </SectionWrapper>
+  <HeroSection
+    HeroImage={HeroImage}
+    pageName="SHORTS.WTF"
+    title="Create a short film with just one prompt"
+    description="Start with an idea and get a complete AI agent-generated short film in 30 minutes."
+    PrimaryButton={StartCreating}
+    backgroundType="NONE"
+    statusTag={Tag}
+  />
 );
 
 const list = [

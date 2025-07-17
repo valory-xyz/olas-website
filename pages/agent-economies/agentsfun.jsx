@@ -1,7 +1,7 @@
 import { AgentsFunMetrics } from 'components/AgentEconomies/AgentsFunPage/AgentsFunMetrics';
+import { GetInvolved } from 'components/AgentEconomies/AgentsFunPage/GetInvolved';
 import { Hero } from 'components/AgentEconomies/AgentsFunPage/Hero';
 import { HowTheEconomyWorks } from 'components/AgentEconomies/AgentsFunPage/HowItWorks';
-import { JoinTheAgentEconomy } from 'components/AgentEconomies/AgentsFunPage/JoinTheAgentEconomy';
 import { PoweringAnEconomy } from 'components/AgentEconomies/AgentsFunPage/PoweringAnEconomy';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
@@ -17,7 +17,8 @@ const AgentsFun = () => (
       <AgentsFunMetrics />
       <PoweringAnEconomy />
       <HowTheEconomyWorks />
-      <JoinTheAgentEconomy />
+      <GetInvolved />
+      {/* <JoinTheAgentEconomy /> */}
     </div>
   </PageWrapper>
 );
