@@ -21,14 +21,7 @@ import {
 import get from 'lodash/get';
 
 const duneApiCall = async ({ queryId }) => {
-  const response = await fetch(
-    `https://api.dune.com/api/v1/query/${queryId}/results`,
-    {
-      headers: {
-        'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY,
-      },
-    },
-  );
+  const response = await fetch(`api/dune?queryId=${queryId}`);
 
   if (!response.ok) {
     throw new Error(
