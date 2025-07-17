@@ -32,7 +32,7 @@ const list = [
         <p>Launch an agent economy on top of your protocol.</p>
       </>
     ),
-    buttonUrl: { DISCORD_INVITE_URL },
+    buttonUrl: DISCORD_INVITE_URL,
     isExternal: true,
     buttonText: 'Get Community Support',
   },
