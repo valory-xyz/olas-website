@@ -117,6 +117,10 @@ const MORE_LINKS = [
     link: '/about',
   },
   {
+    title: 'Staking',
+    link: '/staking',
+  },
+  {
     title: 'Whitepaper',
     link: WHITEPAPER,
   },

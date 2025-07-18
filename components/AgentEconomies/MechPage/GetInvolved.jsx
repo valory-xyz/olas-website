@@ -19,7 +19,7 @@ const list = [
   {
     title: 'For Operators',
     desc: 'Run agents using Pearl or manually, stake & have a chance to earn rewards.',
-    urlName: 'Run Optimus agent',
+    urlName: 'Explore paths',
     url: '/operate',
     isExternal: false,
   },
