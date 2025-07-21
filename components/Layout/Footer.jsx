@@ -62,6 +62,7 @@ const DAO_LINKS = [
   { title: 'Operate', link: '/operate' },
   { title: 'Bond', link: '/bond' },
   { title: 'Govern', link: '/govern' },
+  { title: 'Registry', link: REGISTRY_URL },
   {
     title: 'Constitution',
     link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
@@ -79,21 +80,19 @@ const RESOURCES_LINKS = [
     link: '/faq',
   },
   {
-    title: 'Documentation',
+    title: 'Docs',
     link: DOCS_BASE_URL,
-    isExternal: true,
   },
   {
     title: 'Quarterly Updates',
     link: '/quarterly-updates',
   },
-  { title: 'Registry', link: REGISTRY_URL, isExternal: true },
   {
     title: 'Agents Unleashed',
     link: '/agents-unleashed',
   },
   {
-    title: 'Olas Dev Academy Videos',
+    title: 'Dev Academy Videos',
     link: 'https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl',
     isExternal: true,
   },
@@ -102,7 +101,7 @@ const RESOURCES_LINKS = [
     link: '/videos',
   },
   {
-    title: 'Olas Hackathons',
+    title: 'Hackathons',
     link: '/hackathons',
   },
   {
