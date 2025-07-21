@@ -80,7 +80,7 @@ const RESOURCES_LINKS = [
     link: '/faq',
   },
   {
-    title: 'Documentation',
+    title: 'Docs',
     link: DOCS_BASE_URL,
   },
   {
@@ -92,7 +92,7 @@ const RESOURCES_LINKS = [
     link: '/agents-unleashed',
   },
   {
-    title: 'Olas Dev Academy Videos',
+    title: 'Dev Academy Videos',
     link: 'https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl',
     isExternal: true,
   },
@@ -101,7 +101,7 @@ const RESOURCES_LINKS = [
     link: '/videos',
   },
   {
-    title: 'Olas Hackathons',
+    title: 'Hackathons',
     link: '/hackathons',
   },
   {
