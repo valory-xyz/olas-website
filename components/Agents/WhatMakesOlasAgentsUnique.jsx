@@ -4,6 +4,19 @@ import SectionHeading from 'components/SectionHeading';
 import { ExternalLink, Link, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 
+export const OlasAgents = () => (
+  <div>
+    <Image
+      src="/images/agents/olas-agent.png"
+      alt="Olas AI Agents"
+      width={157}
+      height={157}
+      className="mx-auto"
+    />
+    <p className="-top-[40px] relative text-center">Olas AI Agent</p>
+  </div>
+);
+
 export const WhatMakesOlasAgentsUnique = () => (
   <SectionWrapper>
     <div className="flex flex-col max-w-[1320px] mx-auto text-center">
@@ -17,15 +30,18 @@ export const WhatMakesOlasAgentsUnique = () => (
           <div className="agents-bg" />
         </div>
         <div className="flex flex-col md:flex-row gap-4 lg:gap-14 md:pt-14 relative z-10">
-          <div className="md:hidden">
+          <div className="md:hidden relative my-10 z-10">
             <Image
-              src="/images/agents/olas-agent.png"
-              alt="Olas AI Agents"
-              width={157}
-              height={157}
-              className="mx-auto"
+              src="/images/agents/mobile-circles.png"
+              alt="bg"
+              width={385}
+              height={385}
+              className="absolute mx-auto -top-16 z-0"
             />
-            <p className="-top-[40px] relative text-center">Olas AI Agent</p>
+
+            <div className="relative z-10">
+              <OlasAgents />
+            </div>
           </div>
           <div className="flex flex-col justify-between max-w-[267px]">
             <div>
@@ -55,13 +71,7 @@ export const WhatMakesOlasAgentsUnique = () => (
             </div>
           </div>
           <div className="content-center max-md:hidden">
-            <Image
-              src="/images/agents/olas-agent.png"
-              alt="Olas AI Agents"
-              width={157}
-              height={157}
-            />
-            <p className="-top-[40px] relative text-center">Olas AI Agent</p>
+            <OlasAgents />
           </div>
           <div className="flex flex-col justify-between max-w-[267px]">
             <div>
