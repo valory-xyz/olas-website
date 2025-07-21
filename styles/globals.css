@@ -97,6 +97,18 @@ video {
   left: 0;
 }
 
+.circles-bg {
+  z-index: 0;
+  background-image: url('/images/agents/cirles-bg.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  width: 110%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .activity-bg {
   z-index: 0;
   background-image: url('/images/homepage/metric-bg.png');
@@ -106,6 +118,18 @@ video {
   background-position: center;
   background-size: 45px 45px;
   position: absolute;
+}
+
+.agents-bg {
+  background-image: url('/images/agents/circles-bg.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .roadmap-bg {
