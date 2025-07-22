@@ -1,4 +1,5 @@
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
+const CACHE_DURATION_SECONDS =
+  (Number(process.env.NEXT_PUBLIC_DUNE_CACHE_DURATION_HOURS) || 36) * 60 * 60;
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
