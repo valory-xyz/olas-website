@@ -1,9 +1,13 @@
 import { AvailableEconomies } from './AvailableEconomies';
-import { OlasAgentEconomies } from './OlasAgentEconomies';
+import { Hero } from './Hero';
+import { WhatIsAnAgentEconomy } from './WhatIsAnAgentEconomy';
+import { WhatMakesOlasAgentEconomiesUnique } from './WhatMakesOlasAgentEconomiesUnique';
 
 export const AgentEconomies = () => (
   <>
-    <OlasAgentEconomies />
+    <Hero />
+    <WhatIsAnAgentEconomy />
+    <WhatMakesOlasAgentEconomiesUnique />
     <AvailableEconomies />
   </>
 );
