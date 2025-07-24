@@ -2,7 +2,6 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
-import Link from 'next/link';
 
 const list = [
   {
@@ -43,20 +42,20 @@ const list = [
     description:
       'Awarded on achieving 1,000 Daily Active Agents within 90 days of the MVP delivery.',
   },
-  {
-    title: 'Earn additional OLAS rewards',
-    description: (
-      <>
-        Teams that register their agent code in the Olas Protocol can also
-        receive ongoing OLAS Dev Rewards. Top developers are already earning
-        thousands of OLAS each month.{' '}
-        <Link className="text-purple-600" href="/build">
-          Learn more
-        </Link>
-        .
-      </>
-    ),
-  },
+  // {
+  //   title: 'Earn additional OLAS rewards',
+  //   description: (
+  //     <>
+  //       Teams that register their agent code in the Olas Protocol can also
+  //       receive ongoing OLAS Dev Rewards. Top developers are already earning
+  //       thousands of OLAS each month.{' '}
+  //       <Link className="text-purple-600" href="/build">
+  //         Learn more
+  //       </Link>
+  //       .
+  //     </>
+  //   ),
+  // },
 ];
 
 export const HowDoesAcceleratorWork = () => (
