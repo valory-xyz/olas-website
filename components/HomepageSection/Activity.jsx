@@ -18,10 +18,9 @@ import {
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useMemo } from 'react';
 
 const imgPath = '/images/homepage/activity/';
@@ -234,6 +233,21 @@ const TransactionsCard = ({ transactions }) => (
   />
 );
 
+const AgentsGrid = () => (
+  <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
+    {agents.map((item) => (
+      <Image
+        key={item}
+        src={`/images/homepage/activity/${item}.png`}
+        alt={item}
+        width={62}
+        height={62}
+        className="hover:-translate-y-1 duration-150"
+      />
+    ))}
+  </div>
+);
+
 export const Activity = () => {
   const { data: metrics } = usePersistentSWR('tokenMetrics', fetchMetrics);
 
@@ -302,24 +316,8 @@ export const Activity = () => {
             <OlasIsBurnedArrow />
           </div>
           <div className="flex flex-col place-items-center z-10">
-            <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
-              {agents.map((item) => (
-                <Image
-                  key={item}
-                  src={`/images/homepage/activity/${item}.png`}
-                  alt={item}
-                  width={62}
-                  height={62}
-                  className="hover:-translate-y-1 duration-150"
-                />
-              ))}
-            </div>
-            <Link
-              href="/agent-economies"
-              className="text-purple-700 hover:text-purple-900"
-            >
-              Agent economies
-            </Link>
+            <AgentsGrid />
+            <Link href="/agent-economies">Agent economies</Link>
           </div>
           <div className="flex flex-col">
             <DailyActiveAgentsCard
@@ -401,8 +399,15 @@ export const Activity = () => {
           alt="arrow"
           width={343}
           height={202}
-          className="mx-auto"
+          className="mx-auto mb-12"
         />
+        <div className="mx-auto grid place-items-center">
+          <AgentsGrid />
+          <div>
+            As a result, <Link href="/agent-economies">Agent economies</Link>{' '}
+            are thriving.
+          </div>
+        </div>
       </div>
     </div>
   );

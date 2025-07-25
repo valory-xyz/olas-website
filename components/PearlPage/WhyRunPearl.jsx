@@ -27,7 +27,7 @@ const list = [
   {
     title: 'Own Your AI agent',
     icon: <Copyright />,
-    desc: "When you use run an AI agent on Pearl, you don't just run it— you own it. Running an agent on Pearl means it's yours: you operate it and benefit from it.",
+    desc: "When you use an AI agent on Pearl, you don't just run it— you own it. Running an agent on Pearl means it's yours: you operate it and benefit from it.",
   },
 ];
 
