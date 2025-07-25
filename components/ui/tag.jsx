@@ -9,6 +9,7 @@ const tagVariants = cva(
       variant: {
         primary: 'bg-[#7E22CE0D] text-[#7E22CE]',
         secondary: 'bg-[#F4F7FB] text-black',
+        tertiary: 'bg-[#00998C0D] text-black',
         white: 'bg-[#FFFFFF0D] text-white',
       },
     },
@@ -23,6 +24,7 @@ const tagBordersVariants = cva('absolute w-2 h-2', {
     variant: {
       primary: 'border-[#C084FC]',
       secondary: 'border-[#A3AEBB]',
+      tertiary: 'border-[#00998C99]',
       white: 'border-[#FFFFFF80]',
     },
   },
@@ -68,7 +70,7 @@ export const Tag = ({ className, variant, children, ...props }) => {
 
 Tag.propTypes = {
   className: PropTypes.string,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'white']),
+  variant: PropTypes.oneOf(['primary', 'secondary', 'tertiary', 'white']),
   children: PropTypes.node.isRequired,
 };
 
