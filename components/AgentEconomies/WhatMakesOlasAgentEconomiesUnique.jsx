@@ -11,7 +11,7 @@ export const WhatMakesOlasAgentEconomiesUnique = () => (
       </SectionHeading>
       <div className="z-10 relative">
         <Image
-          src="/images/agent-economies/half-circles-bg.png"
+          src="/images/agent-economies/half-circles.png"
           alt="bg"
           width={802}
           height={401}
