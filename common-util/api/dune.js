@@ -134,10 +134,10 @@ export const getMechTxs = async () => {
     const json = await duneApiCall({
       queryId: MECH_TXS_QUERY_ID,
     });
-    const predictTxs = get(json, 'result.rows[2].num_requests');
-    const contributeTxs = get(json, 'result.rows[3].num_requests');
-    const governatooorrTxs = get(json, 'result.rows[1].num_requests');
-    const otherTxs = get(json, 'result.rows[0].num_requests');
+    const predictTxs = get(json, 'result.rows[1].num_requests');
+    const contributeTxs = get(json, 'result.rows[2].num_requests');
+    const governatooorrTxs = get(json, 'result.rows[0].num_requests');
+    const otherTxs = get(json, 'result.rows[3].num_requests');
     return { predictTxs, contributeTxs, governatooorrTxs, otherTxs };
   } catch (error) {
     console.error('Error in getMechTxs: ', error);
