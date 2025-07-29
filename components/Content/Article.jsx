@@ -23,11 +23,12 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 
   const {
     title,
-    publishedAt: unFormattedDatePublished,
     readTime,
+    datePublished: datePublishedFromArticle,
+    publishedAt,
   } = article.attributes;
   const { url, width, height } = image || {};
-  const datePublished = formatDate(unFormattedDatePublished);
+  const datePublished = formatDate(datePublishedFromArticle || publishedAt);
 
   const moreInfo = useMemo(() => {
     const moreInfoArray = [];
