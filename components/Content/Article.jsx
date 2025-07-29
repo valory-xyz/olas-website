@@ -21,15 +21,19 @@ const Article = ({ article, href, showReadTime, showDate }) => {
     return data?.attributes?.formats?.large;
   }, [article]);
 
-  const { title, datePublished, readTime } = article.attributes;
+  const {
+    title,
+    readTime,
+    datePublished: unformattedDatePublished = article.attributes.publishedAt,
+  } = article.attributes;
   const { url, width, height } = image || {};
-  const formattedDatePublished = formatDate(datePublished);
+  const datePublished = formatDate(unformattedDatePublished);
 
   const moreInfo = useMemo(() => {
     const moreInfoArray = [];
 
-    if (showDate && formattedDatePublished) {
-      moreInfoArray.push(formattedDatePublished);
+    if (showDate && datePublished) {
+      moreInfoArray.push(datePublished);
     }
 
     if (showReadTime && readTime) {
@@ -37,7 +41,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
     }
 
     return moreInfoArray.join(' • ');
-  }, [showDate, formattedDatePublished, showReadTime, readTime]);
+  }, [showDate, datePublished, showReadTime, readTime]);
 
   return (
     <Link href={href}>
@@ -80,7 +84,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
 Article.propTypes = {
   article: PropTypes.shape({
     attributes: PropTypes.shape({
-      formattedDatePublished: PropTypes.string,
+      datePublished: PropTypes.string,
       headerImage: PropTypes.object,
       slug: PropTypes.string,
       title: PropTypes.string,
