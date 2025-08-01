@@ -91,6 +91,9 @@ export const ETHERSCAN_URL = 'https://etherscan.io';
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const BOARDROOM_URL = 'https://boardroom.io/autonolas';
 
+export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
+export const PREDICT_MARKET_DURATION_DAYS = 4;
+
 export const MODIUS_STAKING_CONTRACTS = [
   '0x534C0A05B6d4d28d5f3630D6D74857B253cf8332',
   '0xeC013E68FE4B5734643499887941eC197fd757D0',

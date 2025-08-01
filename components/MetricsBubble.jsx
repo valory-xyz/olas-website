@@ -1,5 +1,5 @@
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 
@@ -21,12 +21,17 @@ export const MetricsBubble = ({ metrics, image, title }) => {
       <div className="flex flex-col gap-8">
         {metrics.map((item) => {
           const value = !metrics || item.value === null ? '--' : item.value;
+          const SourceTag = item.source
+            ? item.source.isExternal
+              ? ExternalLink
+              : Link
+            : 'div';
           const source =
             item.source && value !== '--' ? (
-              <ExternalLink href={item.source} hideArrow>
+              <SourceTag href={item.source.link} hideArrow>
                 {value}
-                <span className="text-2xl">↗</span>
-              </ExternalLink>
+                {item.source.isExternal && <span className="text-2xl">↗</span>}
+              </SourceTag>
             ) : (
               value
             );
@@ -53,7 +58,10 @@ MetricsBubble.propTypes = {
       id: PropTypes.string.isRequired,
       subText: PropTypes.string.isRequired,
       value: PropTypes.string,
-      source: PropTypes.string.isRequired,
+      source: PropTypes.shape({
+        link: PropTypes.string.isRequired,
+        isExternal: PropTypes.bool,
+      }),
     }),
   ),
   image: PropTypes.string,

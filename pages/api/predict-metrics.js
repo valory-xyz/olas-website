@@ -1,4 +1,8 @@
-import { GNOSIS_STAKING_CONTRACTS } from 'common-util/constants';
+import {
+  DEFAULT_MECH_FEE,
+  GNOSIS_STAKING_CONTRACTS,
+  PREDICT_MARKET_DURATION_DAYS,
+} from 'common-util/constants';
 import {
   mechGraphClient,
   predictAgentsGraphClient,
@@ -13,30 +17,15 @@ import {
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
-const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
-const PREDICT_MARKET_DURATION_DAYS = 4;
 const LIMIT = 1000;
 const PAGES = 10;
 const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 const INVALID_ANSWER_HEX =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
-// Returns the timestamp for 00:00 UTC N days ago
-const getMidnightUtcTimestampDaysAgo = (daysAgo) => {
-  const now = new Date();
-  const utcMidnightToday = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-  );
-  const timestamp = Math.floor(
-    (utcMidnightToday - daysAgo * 24 * 60 * 60 * 1000) / 1000,
-  );
-  return timestamp;
-};
 
 const fetchRoi = async () => {
   try {

@@ -7,6 +7,7 @@ import {
 import {
   DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
   DUNE_PREDICT_DAA_QUERY_URL,
+  OPERATE_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
@@ -88,19 +89,28 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
           </span>
         ),
         value: metrics?.finalRoi ? `${metrics.finalRoi}%` : null,
-        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: '/data#predict-roi',
+          isExternal: false,
+        },
       },
       {
         id: 'apr',
         subText: 'APR, OLAS - Via OLAS Staking',
         value: metrics?.apr ? `${metrics.apr}%` : null,
-        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: OPERATE_URL,
+          isExternal: true,
+        },
       },
       {
         id: 'accuracy',
         subText: 'Prediction Accuracy - Average',
         value: metrics?.successRate ? `${metrics.successRate}%` : null,
-        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: '/data#predict-accuracy',
+          isExternal: false,
+        },
       },
     ],
     [metrics],
@@ -126,7 +136,10 @@ const TransactionsBubble = ({ metrics, image, title }) => {
           </div>
         ),
         value: metrics?.traderTxs ? metrics.traderTxs.toLocaleString() : null,
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+          isExternal: true,
+        },
       },
       {
         id: 'mechs',
@@ -142,7 +155,10 @@ const TransactionsBubble = ({ metrics, image, title }) => {
           </div>
         ),
         value: metrics?.mechTxs ? metrics.mechTxs.toLocaleString() : null,
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+          isExternal: true,
+        },
       },
       {
         id: 'marketCreatorsAndClosers',
@@ -167,7 +183,10 @@ const TransactionsBubble = ({ metrics, image, title }) => {
         value: metrics?.marketCreatorTxs
           ? metrics.marketCreatorTxs.toLocaleString()
           : null,
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+        source: {
+          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+          isExternal: true,
+        },
       },
     ],
     [metrics],

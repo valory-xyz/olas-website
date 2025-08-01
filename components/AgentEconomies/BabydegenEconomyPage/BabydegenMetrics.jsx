@@ -48,7 +48,10 @@ const BabydegenMetricsBubble = ({ metrics, sourceUrl, image, title }) => {
         value: metrics?.latestEthApr
           ? formatNumber(metrics.latestEthApr)
           : null,
-        source: sourceUrl,
+        source: {
+          link: sourceUrl,
+          isExternal: true,
+        },
       },
       {
         id: 'toETH',
@@ -56,13 +59,19 @@ const BabydegenMetricsBubble = ({ metrics, sourceUrl, image, title }) => {
         value: metrics?.latestAvgApr
           ? formatNumber(metrics.latestAvgApr)
           : null,
-        source: sourceUrl,
+        source: {
+          link: sourceUrl,
+          isExternal: true,
+        },
       },
       {
         id: 'olasApr',
         subText: 'APR, OLAS - Via OLAS Staking',
         value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
-        source: OPERATE_URL,
+        source: {
+          link: OPERATE_URL,
+          isExternal: true,
+        },
       },
     ],
     [metrics, sourceUrl],
