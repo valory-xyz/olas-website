@@ -1,3 +1,4 @@
+import { getPredictMetrics } from 'common-util/api';
 import {
   get7DaysAvgActivityPredict,
   getPredictionTxs,
@@ -6,9 +7,9 @@ import {
 import {
   DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
   DUNE_PREDICT_DAA_QUERY_URL,
-  DUNE_TOTAL_PREDICT_TRANSACTIONS_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
@@ -17,11 +18,13 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, transactions, total] = await Promise.allSettled([
-    get7DaysAvgActivityPredict(),
-    getPredictionTxs(),
-    getTotalPredictTransactions(),
-  ]);
+  const [dailyActiveAgents, transactions, total, performanceMetrics] =
+    await Promise.allSettled([
+      get7DaysAvgActivityPredict(),
+      getPredictionTxs(),
+      getTotalPredictTransactions(),
+      getPredictMetrics(),
+    ]);
 
   return {
     dailyActiveAgents:
@@ -35,7 +38,142 @@ const fetchMetrics = async () => {
         ? transactions.value.marketCreatorTxs
         : null,
     totalTxs: total.status === 'fulfilled' ? total.value : null,
+    partialRoi:
+      performanceMetrics.status === 'fulfilled'
+        ? performanceMetrics.value?.roi?.partialRoi
+        : null,
+    finalRoi:
+      performanceMetrics.status === 'fulfilled'
+        ? performanceMetrics.value?.roi?.finalRoi
+        : null,
+    apr:
+      performanceMetrics.status === 'fulfilled'
+        ? performanceMetrics.value?.apr
+        : null,
+    successRate:
+      performanceMetrics.status === 'fulfilled'
+        ? performanceMetrics.value?.successRate
+        : null,
   };
+};
+
+const AgentPerformanceBubble = ({ metrics, image, title }) => {
+  const data = useMemo(
+    () => [
+      {
+        id: 'roi',
+        subText: (
+          <span className="flex items-center gap-2">
+            Total ROI - Average{' '}
+            {metrics?.partialRoi && (
+              <Popover>
+                <div className="flex flex-col max-w-[320px] gap-4 text-base ">
+                  <p className="text-gray-500">
+                    Total ROI shows your agent&apos;s overall earnings,
+                    including profits from predictions and staking rewards,
+                    minus all related costs such as bet amounts, gas fees, and
+                    Mech request fees.
+                  </p>
+                  <p className="text-gray-500">
+                    Partial ROI reflects only prediction performance, excluding
+                    staking rewards.
+                  </p>
+                  <div className="flex justify-between">
+                    <span className="text-gray-900">Partial ROI</span>
+                    <span className="text-purple-600">{`${metrics.partialRoi}%`}</span>
+                  </div>
+                </div>
+              </Popover>
+            )}
+          </span>
+        ),
+        value: metrics?.finalRoi ? `${metrics.finalRoi}%` : null,
+        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+      {
+        id: 'apr',
+        subText: 'APR, OLAS - Via OLAS Staking',
+        value: metrics?.apr ? `${metrics.apr}%` : null,
+        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+      {
+        id: 'accuracy',
+        subText: 'Prediction Accuracy - Average',
+        value: metrics?.successRate ? `${metrics.successRate}%` : null,
+        // source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+    ],
+    [metrics],
+  );
+
+  return <MetricsBubble metrics={data} image={image} title={title} />;
+};
+
+const TransactionsBubble = ({ metrics, image, title }) => {
+  const data = useMemo(
+    () => [
+      {
+        id: 'traders',
+        subText: (
+          <div className="flex items-center gap-2">
+            <Image
+              alt="Predict"
+              src="/images/predict-page/traders.png"
+              width="48"
+              height="22"
+            />
+            <span>Traders</span>
+          </div>
+        ),
+        value: metrics?.traderTxs ? metrics.traderTxs.toLocaleString() : null,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+      {
+        id: 'mechs',
+        subText: (
+          <div className="flex items-center gap-2">
+            <Image
+              alt="Predict"
+              src="/images/predict-page/mechs.png"
+              width="48"
+              height="22"
+            />
+            <span>Mechs: Prediction Brokers</span>
+          </div>
+        ),
+        value: metrics?.mechTxs ? metrics.mechTxs.toLocaleString() : null,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+      {
+        id: 'marketCreatorsAndClosers',
+        subText: (
+          <div className="flex flex-wrap items-center gap-2">
+            <Image
+              alt="Predict"
+              src="/images/predict-page/market-creators.png"
+              width="48"
+              height="22"
+            />
+            <span>Market Creators</span>
+            <Image
+              alt="Predict"
+              src="/images/predict-page/closers.png"
+              width="48"
+              height="22"
+            />
+            <span>Closers</span>
+          </div>
+        ),
+        value: metrics?.marketCreatorTxs
+          ? metrics.marketCreatorTxs.toLocaleString()
+          : null,
+        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
+      },
+    ],
+    [metrics],
+  );
+
+  return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
 export const Activity = () => {
@@ -44,89 +182,18 @@ export const Activity = () => {
     fetchMetrics,
   );
 
-  const data = useMemo(
-    () => [
-      {
-        id: 'traders',
-        label: (
-          <div className="flex flex-col gap-2 mb-3">
-            <Image
-              alt="Predict"
-              src="/images/predict-page/traders.png"
-              width="72"
-              height="32"
-            />
-            <span className="text-base font-semibold text-black">Traders</span>
-          </div>
-        ),
-        subText: 'transactions',
-        value: metrics?.traderTxs?.toLocaleString(),
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-      },
-      {
-        id: 'mechs',
-        label: (
-          <div className="flex flex-col gap-2 mb-3">
-            <Image
-              alt="Predict"
-              src="/images/predict-page/mechs.png"
-              width="72"
-              height="32"
-            />
-            <span className="text-base font-semibold text-black">Mechs</span>
-          </div>
-        ),
-        subText: 'transactions',
-        value: metrics?.mechTxs?.toLocaleString(),
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-      },
-      {
-        id: 'marketCreatorsAndClosers',
-        label: (
-          <div className="flex flex-col max-w-max gap-2 mb-3">
-            <div className="flex gap-2 justify-between">
-              <Image
-                alt="Predict"
-                src="/images/predict-page/market-creators.png"
-                width="72"
-                height="32"
-              />
-              <Image
-                alt="Predict"
-                src="/images/predict-page/closers.png"
-                width="72"
-                height="32"
-              />
-            </div>
-            <span className="text-base font-semibold text-black">
-              Market creators & closers
-            </span>
-          </div>
-        ),
-        subText: 'transactions',
-        value: metrics?.marketCreatorTxs?.toLocaleString(),
-        source: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-      },
-    ],
-    [metrics],
-  );
-
   return (
-    <SectionWrapper
-      customClasses="text-center py-16 px-4 border-b border-t"
-      id="stats"
-    >
-      <div className="text-7xl lg:text-9xl mb-12 max-w-[750px] mx-auto mb-16">
-        <Card className="flex flex-col items-center gap-6 p-8 mb-16 border border-purple-200 rounded-full text-xl w-fit mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
-          <div className="flex items-center">
+    <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
+      <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
+        <Card className="md:col-span-2 flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-full text-xl w-full mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+          <div className="flex gap-4 items-center">
             <Image
               alt="Predict"
               src="/images/predict-page/predict.svg"
-              width="35"
-              height="35"
-              className="mr-4"
+              width="36"
+              height="36"
             />
-            Olas Predict agent economy is ever growing
+            Predict Agent Economy
           </div>
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
@@ -145,49 +212,12 @@ export const Activity = () => {
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <p className="text-xl text-slate-700 mb-8 mx-auto">
-          Four key autonomous AI agent types have generated over{' '}
-          <ExternalLink
-            className="font-bold"
-            href={DUNE_TOTAL_PREDICT_TRANSACTIONS_URL}
-            hideArrow
-          >
-            {metrics?.totalTxs?.toLocaleString()}&nbsp;↗
-          </ExternalLink>{' '}
-          transactions in the Olas Predict agent economy on the Gnosis Chain
-        </p>
-      </div>
-      <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-0 w-max items-end mb-8">
-        {data.map((item, index) => {
-          let borderClassName = '';
-          if (index !== 0) borderClassName += 'xl:border-l-1.5';
-          if (index % 2 !== 0) borderClassName += ' md:border-l-1.5';
 
-          const getValue = () => {
-            if (!item.value) return '--';
-            return (
-              <ExternalLink href={item.source} hideArrow>
-                {item.value}
-                <span className="text-2xl">↗</span>
-              </ExternalLink>
-            );
-          };
-
-          return (
-            <div
-              key={item.id}
-              className={`text-start w-[345px] py-6 2xl:py-3 px-8 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
-            >
-              {item.label}
-              <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
-                {getValue()}
-              </span>
-              <span className="block text-base text-slate-700">
-                {item.subText}
-              </span>
-            </div>
-          );
-        })}
+        <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
+        <TransactionsBubble
+          title="Transactions by Agent Type"
+          metrics={metrics}
+        />
       </div>
     </SectionWrapper>
   );
