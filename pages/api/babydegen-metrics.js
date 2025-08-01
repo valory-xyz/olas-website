@@ -1,4 +1,11 @@
 import { Client } from '@gradio/client';
+import {
+  MODIUS_STAKING_CONTRACTS,
+  OPTIMUS_STAKING_CONTRACTS,
+} from 'common-util/constants';
+import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { stakingContractsQuery } from 'common-util/graphql/queries';
+import { getMaxApr } from 'common-util/olasApr';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
@@ -33,27 +40,74 @@ const fetchAgentPerformance = async (agentName) => {
   }
 };
 
+const fetchOlasApr = async () => {
+  try {
+    const [modiusContractsResult, optimusContractsResult] =
+      await Promise.allSettled([
+        STAKING_GRAPH_CLIENTS.mode.request(
+          stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+        ),
+        STAKING_GRAPH_CLIENTS.optimism.request(
+          stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+        ),
+      ]);
+
+    const modiusContracts =
+      modiusContractsResult.status === 'fulfilled'
+        ? modiusContractsResult.value.stakingContracts
+        : null;
+    const optimusContracts =
+      optimusContractsResult.status === 'fulfilled'
+        ? optimusContractsResult.value.stakingContracts
+        : null;
+
+    return {
+      modius: modiusContracts ? getMaxApr(modiusContracts) : null,
+      optimus: optimusContracts ? getMaxApr(optimusContracts) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching OLAS APRs:', error);
+    return {
+      modius: null,
+      optimus: null,
+    };
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
-    const [optimusResult, modiusResult] = await Promise.allSettled([
-      fetchAgentPerformance('Optimus'),
-      fetchAgentPerformance('Modius'),
-    ]);
+    const [optimusPerformanceResult, modiusPerformanceResult, olasAprResult] =
+      await Promise.allSettled([
+        fetchAgentPerformance('Optimus'),
+        fetchAgentPerformance('Modius'),
+        fetchOlasApr(),
+      ]);
 
     let optimusData = null;
     let modiusData = null;
 
     // Process the results from Promise.allSettled
-    if (optimusResult.status === 'fulfilled') {
-      optimusData = optimusResult.value;
+    if (optimusPerformanceResult.status === 'fulfilled') {
+      optimusData = optimusPerformanceResult.value;
     } else {
-      console.error('Optimus data fetch failed:', optimusResult.reason);
+      console.error(
+        'Optimus data fetch failed:',
+        optimusPerformanceResult.reason,
+      );
     }
 
-    if (modiusResult.status === 'fulfilled') {
-      modiusData = modiusResult.value;
+    if (modiusPerformanceResult.status === 'fulfilled') {
+      modiusData = modiusPerformanceResult.value;
     } else {
-      console.error('Modius data fetch failed:', modiusResult.reason);
+      console.error(
+        'Modius data fetch failed:',
+        modiusPerformanceResult.reason,
+      );
+    }
+
+    if (olasAprResult.status === 'fulfilled') {
+      optimusData.maxOlasApr = olasAprResult.value.optimus;
+      modiusData.maxOlasApr = olasAprResult.value.modius;
     }
 
     const data = {

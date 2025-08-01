@@ -1,10 +1,4 @@
 /* eslint-disable no-console */
-import {
-  MODIUS_STAKING_CONTRACTS,
-  OPTIMUS_STAKING_CONTRACTS,
-} from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { stakingContractsQuery } from 'common-util/graphql/queries';
 import get from 'lodash/get';
 import isFinite from 'lodash/isFinite';
 import qs from 'qs';
@@ -112,7 +106,7 @@ export const getTotalOlasContributors = async () => {
 };
 
 // ----------- BABYDEGEN -----------
-export const getAverageAprs = async () => {
+export const getBabydegenMetrics = async () => {
   try {
     const response = await fetch('/api/babydegen-metrics');
     if (!response.ok) {
@@ -121,54 +115,22 @@ export const getAverageAprs = async () => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching average APRs:', error);
+    console.error('Error fetching babydegen metrics:', error);
     return null;
   }
 };
 
-const ONE_YEAR = 1 * 24 * 60 * 60 * 365;
-const getMaxApr = (contracts) => {
-  return Math.max(
-    ...contracts.map((contract) => {
-      const rewardsPerYear =
-        BigInt(contract.rewardsPerSecond) * BigInt(ONE_YEAR);
-      const apy =
-        (rewardsPerYear * BigInt(100)) / BigInt(contract.minStakingDeposit);
-      return Number(apy) / (1 + Number(contract.numAgentInstances));
-    }),
-  );
-};
-
-export const getBabydegenOlasApr = async () => {
+// ----------- PREDICT -----------
+export const getPredictMetrics = async () => {
   try {
-    const [modiusContractsResult, optimusContractsResult] =
-      await Promise.allSettled([
-        STAKING_GRAPH_CLIENTS.mode.request(
-          stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
-        ),
-        STAKING_GRAPH_CLIENTS.optimism.request(
-          stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
-        ),
-      ]);
-
-    const modiusContracts =
-      modiusContractsResult.status === 'fulfilled'
-        ? modiusContractsResult.value.stakingContracts
-        : null;
-    const optimusContracts =
-      optimusContractsResult.status === 'fulfilled'
-        ? optimusContractsResult.value.stakingContracts
-        : null;
-
-    return {
-      modius: modiusContracts ? getMaxApr(modiusContracts) : null,
-      optimus: optimusContracts ? getMaxApr(optimusContracts) : null,
-    };
+    const response = await fetch('/api/predict-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error('Error fetching OLAS APRs:', error);
-    return {
-      modius: null,
-      optimus: null,
-    };
+    console.error('Error fetching predict metrics:', error);
+    return null;
   }
 };
