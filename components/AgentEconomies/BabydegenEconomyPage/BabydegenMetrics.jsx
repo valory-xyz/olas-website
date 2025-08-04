@@ -1,11 +1,9 @@
-import Image from 'next/image';
 import { useMemo } from 'react';
 
-import { getAverageAprs, getBabydegenOlasApr } from 'common-util/api';
+import { getBabydegenMetrics } from 'common-util/api';
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { MetricsBubble } from 'components/MetricsBubble';
 import { usePersistentSWR } from 'hooks';
 
 const MODIUS_HUGGINGFACE_URL =
@@ -15,26 +13,18 @@ const OPTIMUS_HUGGINGFACE_URL =
 
 const fetchMetrics = async () => {
   try {
-    const [averageAprsResult, maxOlasAprsResult] = await Promise.allSettled([
-      getAverageAprs(),
-      getBabydegenOlasApr(),
-    ]);
-
-    const averageAprs =
-      averageAprsResult.status === 'fulfilled' ? averageAprsResult.value : null;
-    const maxOlasAprs =
-      maxOlasAprsResult.status === 'fulfilled' ? maxOlasAprsResult.value : null;
+    const babydegenMetrics = await getBabydegenMetrics();
 
     return {
       modius: {
-        latestAvgApr: averageAprs?.modius?.latestAvgApr || null,
-        latestEthApr: averageAprs?.modius?.latestEthApr || null,
-        maxOlasApr: maxOlasAprs?.modius || null,
+        latestAvgApr: babydegenMetrics?.modius?.latestAvgApr || null,
+        latestEthApr: babydegenMetrics?.modius?.latestEthApr || null,
+        maxOlasApr: babydegenMetrics?.modius?.maxOlasApr || null,
       },
       optimus: {
-        latestAvgApr: averageAprs?.optimus?.latestAvgApr || null,
-        latestEthApr: averageAprs?.optimus?.latestEthApr || null,
-        maxOlasApr: maxOlasAprs?.optimus || null,
+        latestAvgApr: babydegenMetrics?.optimus?.latestAvgApr || null,
+        latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
+        maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
       },
     };
   } catch (error) {
@@ -49,7 +39,7 @@ const formatNumber = (num) => {
   return `${numTo1dp}%`;
 };
 
-const MetricsBubble = ({ metrics, sourceUrl, image, title }) => {
+const BabydegenMetricsBubble = ({ metrics, sourceUrl, image, title }) => {
   const data = useMemo(
     () => [
       {
@@ -58,7 +48,10 @@ const MetricsBubble = ({ metrics, sourceUrl, image, title }) => {
         value: metrics?.latestEthApr
           ? formatNumber(metrics.latestEthApr)
           : null,
-        source: sourceUrl,
+        source: {
+          link: sourceUrl,
+          isExternal: true,
+        },
       },
       {
         id: 'toETH',
@@ -66,40 +59,25 @@ const MetricsBubble = ({ metrics, sourceUrl, image, title }) => {
         value: metrics?.latestAvgApr
           ? formatNumber(metrics.latestAvgApr)
           : null,
-        source: sourceUrl,
+        source: {
+          link: sourceUrl,
+          isExternal: true,
+        },
       },
       {
         id: 'olasApr',
         subText: 'APR, OLAS - Via OLAS Staking',
         value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
-        source: OPERATE_URL,
+        source: {
+          link: OPERATE_URL,
+          isExternal: true,
+        },
       },
     ],
     [metrics, sourceUrl],
   );
 
-  return (
-    <Card className="p-8 border border-slate-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] items-center">
-      <Image alt={title} src={image} width="48" height="48" className="mb-4" />
-      <div className="text-lg font-medium mb-6">{title}</div>
-
-      <div className="flex flex-col gap-8">
-        {data.map((item) => (
-          <div key={item.id} className="flex flex-col gap-3">
-            <span className="block text-base text-slate-700">
-              {item.subText}
-            </span>
-            <span className="block text-2xl font-semibold text-purple-600">
-              <ExternalLink href={item.source} hideArrow>
-                {!metrics || item.value === null ? '0.0%' : item.value}
-                <span className="text-2xl">↗</span>
-              </ExternalLink>
-            </span>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
+  return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
 export const BabydegenMetrics = () => {
@@ -107,14 +85,14 @@ export const BabydegenMetrics = () => {
 
   return (
     <SectionWrapper id="stats">
-      <div className="flex flex-wrap gap-6 justify-center">
-        <MetricsBubble
+      <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
+        <BabydegenMetricsBubble
           title="Modius Agent Economy"
           image="/images/babydegen-econ-page/modius.png"
           metrics={metrics?.modius}
           sourceUrl={MODIUS_HUGGINGFACE_URL}
         />
-        <MetricsBubble
+        <BabydegenMetricsBubble
           title="Optimus Agent Economy"
           image="/images/babydegen-econ-page/optimus.png"
           metrics={metrics?.optimus}

@@ -3,6 +3,10 @@
     "pages/api/downloadAsset.js": {
       "maxDuration": 300,
       "memory": 3009
+    },
+    "pages/api/predict-metrics.js": {
+      "maxDuration": 300,
+      "memory": 3009
     }
   }
 }

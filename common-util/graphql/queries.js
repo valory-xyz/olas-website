@@ -46,3 +46,86 @@ export const stakingContractsQuery = (addresses) => gql`
     }
   }
 `;
+
+export const totalMechRequestsQuery = gql`
+  query TotalMechRequests {
+    global(id: "") {
+      totalRequests
+    }
+  }
+`;
+
+export const getMechRequestsQuery = ({
+  timestamp_gt,
+  first,
+  skip,
+  pages,
+}) => gql`
+  query MechRequests {
+    ${Array.from({ length: pages })
+      .map((_, i) => {
+        const _skip = i * first + skip;
+        return `
+          _page${i + 1}: requests(
+            first: ${first}
+            skip: ${_skip}
+            where: { blockTimestamp_gt: ${timestamp_gt} }
+          ) {
+            id
+            questionTitle
+            blockTimestamp
+          }
+        `;
+      })
+      .join('\n')}
+  }`;
+
+export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
+  query MarketsAndBets {
+    fixedProductMarketMakerCreations(
+      where: { blockTimestamp_gt: ${timestamp_gt} }
+    ) {
+      id
+      question
+    }
+
+    global(id: "") {
+      totalFees
+      totalPayout
+      totalTraded
+    }
+  }
+`;
+
+export const stakingRewardsQuery = gql`
+  query StakingRewards {
+    global(id: "") {
+      totalRewards
+    }
+  }
+`;
+
+export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
+  query ClosedMarketsBets {
+    ${Array.from({ length: pages })
+      .map((_, i) => {
+        const skip = i * first;
+        return `
+          _page${i + 1}: bets(
+            first: ${first}
+            skip: ${skip}
+            where: { fixedProductMarketMaker_: { currentAnswer_not: null } }
+            orderBy: timestamp
+            orderDirection: desc
+          ) {
+            outcomeIndex
+            fixedProductMarketMaker {
+              id
+              currentAnswer
+            }
+          }
+        `;
+      })
+      .join('\n')}
+  }
+`;

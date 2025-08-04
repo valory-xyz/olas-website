@@ -30,3 +30,13 @@ export const STAKING_GRAPH_CLIENTS = {
     requestConfig,
   ),
 };
+
+export const mechGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL,
+  requestConfig,
+);
+
+export const predictAgentsGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL,
+  requestConfig,
+);
