@@ -53,7 +53,7 @@ export const PredictRoiInfo = () => {
           1) Mech Requests query
         </h3>
 
-        <p className="max-w-[800px]">
+        <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
           <ul className="list-decimal list-inside space-y-1">
             <li>
@@ -64,7 +64,7 @@ export const PredictRoiInfo = () => {
               subtract those done for open markets
             </li>
           </ul>
-        </p>
+        </div>
         <ExternalLink href={process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL}>
           Subgraph link
         </ExternalLink>
@@ -76,7 +76,7 @@ export const PredictRoiInfo = () => {
           2) Markets & Bets Query
         </h3>
 
-        <p className="max-w-[800px]">
+        <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
           <ul className="list-decimal list-inside space-y-1">
             <li>
@@ -86,7 +86,7 @@ export const PredictRoiInfo = () => {
             </li>
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
-        </p>
+        </div>
         <ExternalLink
           href={process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}
         >

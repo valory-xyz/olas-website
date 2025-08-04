@@ -94,6 +94,11 @@ export const BOARDROOM_URL = 'https://boardroom.io/autonolas';
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
 
+/**
+ * List of staking contracts currently available for staking on different chains
+ * Source: https://operate.olas.network/contracts
+ * TODO: read directly from https://etherscan.io/address/0x95418b46d5566D3d1ea62C12Aea91227E566c5c1#readContract#F9
+ **/
 export const MODIUS_STAKING_CONTRACTS = [
   '0x534C0A05B6d4d28d5f3630D6D74857B253cf8332',
   '0xeC013E68FE4B5734643499887941eC197fd757D0',

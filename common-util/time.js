@@ -1,4 +1,4 @@
-// Returns the timestamp for 00:00 UTC N days ago
+/** @returns the timestamp for 00:00 UTC N days ago */
 export const getMidnightUtcTimestampDaysAgo = (daysAgo) => {
   const now = new Date();
   const utcMidnightToday = Date.UTC(
