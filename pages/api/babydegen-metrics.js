@@ -129,12 +129,12 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Vercel-CDN-Cache-Control',
-    `max-age=${CACHE_DURATION_SECONDS}`,
+    `s-maxage=${CACHE_DURATION_SECONDS}`,
   );
-  res.setHeader('CDN-Cache-Control', `max-age=${CACHE_DURATION_SECONDS}`);
+  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
   res.setHeader(
     'Cache-Control',
-    `public, max-age=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
+    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
   );
 
   try {
