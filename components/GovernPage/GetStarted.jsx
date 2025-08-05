@@ -5,7 +5,7 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
-import { BOARDROOM_URL, GOVERN_URL, SNAPSHOT_URL } from 'common-util/constants';
+import { GOVERN_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { SubsiteLink } from 'components/ui/typography';
@@ -35,7 +35,8 @@ const steps = [
     title: 'Participate in Proposals',
     description: (
       <>
-        Use the Govern App to access proposals on platforms like{' '}
+        Use the Govern App to access on-chain proposals (off-chain proposals can
+        be found on{' '}
         <a
           href={SNAPSHOT_URL}
           target="_blank"
@@ -43,17 +44,8 @@ const steps = [
           className="text-purple-600"
         >
           Snapshot ↗
-        </a>{' '}
-        and{' '}
-        <a
-          href={BOARDROOM_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-purple-600"
-        >
-          Boardroom ↗
         </a>
-        . Here, you can vote on existing proposals or submit your own, shaping
+        ). Here, you can vote on existing proposals or submit your own, shaping
         the future direction of Olas.
       </>
     ),

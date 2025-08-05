@@ -1,8 +1,7 @@
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import { CONTRIBUTE_URL } from 'common-util/constants';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubsiteLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 
 const list = [
   {
@@ -25,9 +24,7 @@ const list = [
           Directly steer Olas&apos;s development, ensuring a future where every
           update and growth strategy is community-driven and transparent.
         </span>
-        <SubsiteLink href={`${CONTRIBUTE_URL}/roadmap`}>
-          View roadmap
-        </SubsiteLink>
+        <Link href="/roadmap">View roadmap</Link>
       </>
     ),
   },
