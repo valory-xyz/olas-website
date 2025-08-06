@@ -12,11 +12,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing queryId parameter' });
   }
 
-  res.setHeader(
-    'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`,
-  );
-  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
+  // Set proper cache headers for Vercel
   res.setHeader(
     'Cache-Control',
     `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
