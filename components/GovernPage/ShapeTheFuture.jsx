@@ -3,7 +3,7 @@ import {
   SECTION_BOX_CLASS,
   SUB_HEADER_CLASS,
 } from 'common-util/classes';
-import { BOARDROOM_URL, SNAPSHOT_URL } from 'common-util/constants';
+import { ON_CHAIN_PROPOSALS_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 export const ShapeTheFuture = () => (
@@ -29,12 +29,12 @@ export const ShapeTheFuture = () => (
         </a>{' '}
         and{' '}
         <a
-          href={BOARDROOM_URL}
+          href={ON_CHAIN_PROPOSALS_URL}
           target="_blank"
           rel="noreferrer"
           className="text-purple-600"
         >
-          Boardroom ↗
+          on-chain proposals ↗
         </a>{' '}
         to engage with broader governance proposals.
       </p>

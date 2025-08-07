@@ -89,7 +89,7 @@ export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
-export const BOARDROOM_URL = 'https://boardroom.io/autonolas';
+export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
