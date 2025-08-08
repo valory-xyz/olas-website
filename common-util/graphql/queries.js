@@ -129,3 +129,49 @@ export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
       .join('\n')}
   }
 `;
+
+export const dailyBabydegenPerformancesQuery = gql`
+  query GetDailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 40 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      activeMultisigCount
+    }
+  }
+`;
+
+export const dailyMechAgentPerformancesQuery = gql`
+  query getDailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          {
+            or: [
+              { agentId: 9 }
+              { agentId: 26 }
+              { agentId: 29 }
+              { agentId: 36 }
+              { agentId: 37 }
+            ]
+          }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      activeMultisigCount
+    }
+  }
+`;

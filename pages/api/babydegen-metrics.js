@@ -4,7 +4,10 @@ import {
   OPTIMUS_STAKING_CONTRACTS,
 } from 'common-util/constants';
 import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { stakingContractsQuery } from 'common-util/graphql/queries';
+import {
+  dailyBabydegenPerformancesQuery,
+  stakingContractsQuery,
+} from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
 
 const MIN_TOTAL_TRACES = 2;
@@ -74,17 +77,60 @@ const fetchOlasApr = async () => {
   }
 };
 
+const fetchDailyAgentPerformance = async () => {
+  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of 8 days ago UTC midnight
+  const timestamp_gt = timestamp_lt - 8 * 24 * 60 * 60; // timestamp of today UTC midnight
+
+  try {
+    const [modeResult, optimismResult] = await Promise.all([
+      STAKING_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+      STAKING_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+    ]);
+
+    const modePerformances = modeResult.dailyAgentPerformances ?? [];
+    const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
+
+    const performances = [...modePerformances, ...optimismPerformances];
+
+    if (performances.length === 0) return 0;
+
+    const total = performances.reduce(
+      (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
+      0,
+    );
+
+    const average = total / performances.length;
+
+    return average;
+  } catch (error) {
+    console.error('Error fetching babydegen daily agent performances:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
-    const [optimusPerformanceResult, modiusPerformanceResult, olasAprResult] =
-      await Promise.allSettled([
-        fetchAgentPerformance('Optimus'),
-        fetchAgentPerformance('Modius'),
-        fetchOlasApr(),
-      ]);
+    const [
+      optimusPerformanceResult,
+      modiusPerformanceResult,
+      olasAprResult,
+      DAAsResult,
+    ] = await Promise.allSettled([
+      fetchAgentPerformance('Optimus'),
+      fetchAgentPerformance('Modius'),
+      fetchOlasApr(),
+      fetchDailyAgentPerformance(),
+    ]);
 
     let optimusData = null;
     let modiusData = null;
+    let DAAsData = null;
 
     // Process the results from Promise.allSettled
     if (optimusPerformanceResult.status === 'fulfilled') {
@@ -110,8 +156,14 @@ const fetchAllAgentMetrics = async () => {
       modiusData.maxOlasApr = olasAprResult.value.modius;
     }
 
+    if (DAAsResult.status === 'fulfilled') {
+      DAAsData = DAAsResult.value;
+    } else {
+      console.error('Babydegen DAAs data fetch failed:', DAAsResult.reason);
+    }
+
     const data = {
-      data: { optimus: optimusData, modius: modiusData },
+      data: { optimus: optimusData, modius: modiusData, DAAs: DAAsData },
       timestamp: Date.now(),
     };
 
