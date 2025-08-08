@@ -134,3 +134,18 @@ export const getPredictMetrics = async () => {
     return null;
   }
 };
+
+// ----------- MECH -----------
+export const getMechMetrics = async () => {
+  try {
+    const response = await fetch('/api/mech-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching mech metrics:', error);
+    return null;
+  }
+};
