@@ -1,4 +1,4 @@
-import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { dailyMechAgentPerformancesQuery } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -10,11 +10,11 @@ const fetchDailyAgentPerformance = async () => {
 
   try {
     const [gnosisResult, baseResult] = await Promise.all([
-      STAKING_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
+      REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
       }),
-      STAKING_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
+      REGISTRY_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
       }),
