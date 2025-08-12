@@ -3,7 +3,10 @@ import {
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
 } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import {
+  REGISTRY_GRAPH_CLIENTS,
+  STAKING_GRAPH_CLIENTS,
+} from 'common-util/graphql/client';
 import {
   dailyBabydegenPerformancesQuery,
   stakingContractsQuery,
@@ -84,11 +87,11 @@ const fetchDailyAgentPerformance = async () => {
 
   try {
     const [modeResult, optimismResult] = await Promise.all([
-      STAKING_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
+      REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
       }),
-      STAKING_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
+      REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
       }),
