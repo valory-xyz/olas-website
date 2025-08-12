@@ -12,25 +12,18 @@ const HeroImage = () => (
   />
 );
 
-const AIWorkflow = (
-  <div>
-    AI Workflow for
-    <br />
-    Agent Economies
-  </div>
-);
-
-const GetInvolved = () => (
+const Explore = () => (
   <Button variant="default" size="xl" asChild className="md:w-auto mb-6 w-full">
-    <a href="#get-involved">Get involved</a>
+    <a href="#get-involved">Explore</a>
   </Button>
 );
 
 export const MechHero = () => (
   <HeroSection
     HeroImage={HeroImage}
-    pageName="OLAS MECH"
-    title={AIWorkflow}
-    PrimaryButton={GetInvolved}
+    pageName="OLAS MECH AGENT ECONOMY"
+    title="Powering Agent-to-Agent Collaboration"
+    description="AI agents that work together autonomously."
+    PrimaryButton={Explore}
   />
 );

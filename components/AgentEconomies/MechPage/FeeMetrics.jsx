@@ -172,7 +172,7 @@ export const FeeMetrics = () => {
 
   return (
     <SectionWrapper
-      customClasses="text-center py-16 px-4 border-b border-t"
+      customClasses="text-center py-16 px-4 border-b"
       id="fee-flow"
     >
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">

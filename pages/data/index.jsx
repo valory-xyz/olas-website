@@ -1,4 +1,5 @@
 import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
+import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { PredictAccuracyInfo } from 'components/DataPage/PredictAccuracy';
 import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -15,6 +16,7 @@ const DataVerifyPage = () => (
     >
       <PredictRoiInfo />
       <PredictAccuracyInfo />
+      <DailyActiveAgentsInfo />
     </div>
     <div className="border-b-1.5" />
   </PageWrapper>
