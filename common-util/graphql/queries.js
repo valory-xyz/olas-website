@@ -131,7 +131,7 @@ export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
 `;
 
 export const dailyBabydegenPerformancesQuery = gql`
-  query GetDailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
       where: {
         and: [
@@ -150,7 +150,7 @@ export const dailyBabydegenPerformancesQuery = gql`
 `;
 
 export const dailyMechAgentPerformancesQuery = gql`
-  query getDailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
       where: {
         and: [

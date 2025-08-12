@@ -13,7 +13,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [DAAs, totalTxs, result] = await Promise.allSettled([
+  const [dailyActiveAgents, totalTxs, result] = await Promise.allSettled([
     getMechMetrics(),
     getTotalMechTxs(),
     getMechTxs(),
@@ -22,7 +22,8 @@ const fetchMetrics = async () => {
   const mechTxs = result.status === 'fulfilled' ? result.value : null;
 
   return {
-    DAAs: DAAs.status === 'fulfilled' ? DAAs.value : null,
+    dailyActiveAgents:
+      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
     totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value : null,
     predictTxs: mechTxs?.predictTxs || null,
     contributeTxs: mechTxs?.contributeTxs || null,
@@ -126,9 +127,13 @@ export const MechAgentMetrics = () => {
             />
             Mech Agent Economy
           </div>
-          {metrics?.DAAs ? (
-            <Link className="font-extrabold text-6xl" href="/data" hideArrow>
-              {Math.floor(metrics?.DAAs).toLocaleString()}
+          {metrics?.dailyActiveAgents ? (
+            <Link
+              className="font-extrabold text-6xl"
+              href="/data#mech-daily-active-agents"
+              hideArrow
+            >
+              {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
               <span className="text-4xl">↗</span>
             </Link>
           ) : (

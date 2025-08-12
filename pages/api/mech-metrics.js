@@ -1,11 +1,12 @@
 import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { dailyMechAgentPerformancesQuery } from 'common-util/graphql/queries';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 
 const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of 8 days ago UTC midnight
-  const timestamp_gt = timestamp_lt - 8 * 24 * 60 * 60; // timestamp of today UTC midnight
+  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of today UTC midnight
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
 
   try {
     const [gnosisResult, baseResult] = await Promise.all([

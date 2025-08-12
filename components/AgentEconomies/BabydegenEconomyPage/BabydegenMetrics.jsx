@@ -30,11 +30,11 @@ const fetchMetrics = async () => {
         latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
         maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
       },
-      DAAs: babydegenMetrics?.DAAs || null,
+      dailyActiveAgents: babydegenMetrics?.dailyActiveAgents || null,
     };
   } catch (error) {
     console.error('Error fetching average Aprs:', error);
-    return { modius: null, optimus: null, DAAs: null };
+    return { modius: null, optimus: null, dailyActiveAgents: null };
   }
 };
 
@@ -102,9 +102,13 @@ export const BabydegenMetrics = () => {
             />
             BabyDegen Agent Economy
           </div>
-          {metrics?.DAAs ? (
-            <Link className="font-extrabold text-6xl" href="/data" hideArrow>
-              {Math.floor(metrics?.DAAs).toLocaleString()}
+          {metrics?.dailyActiveAgents ? (
+            <Link
+              className="font-extrabold text-6xl"
+              href="/data#babydegen-daily-active-agents"
+              hideArrow
+            >
+              {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
               <span className="text-4xl">↗</span>
             </Link>
           ) : (

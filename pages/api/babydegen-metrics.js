@@ -9,6 +9,7 @@ import {
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const MIN_TOTAL_TRACES = 2;
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
@@ -78,8 +79,8 @@ const fetchOlasApr = async () => {
 };
 
 const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of 8 days ago UTC midnight
-  const timestamp_gt = timestamp_lt - 8 * 24 * 60 * 60; // timestamp of today UTC midnight
+  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of today UTC midnight
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
 
   try {
     const [modeResult, optimismResult] = await Promise.all([
@@ -120,7 +121,7 @@ const fetchAllAgentMetrics = async () => {
       optimusPerformanceResult,
       modiusPerformanceResult,
       olasAprResult,
-      DAAsResult,
+      dailyActiveAgentsResult,
     ] = await Promise.allSettled([
       fetchAgentPerformance('Optimus'),
       fetchAgentPerformance('Modius'),
@@ -130,7 +131,7 @@ const fetchAllAgentMetrics = async () => {
 
     let optimusData = null;
     let modiusData = null;
-    let DAAsData = null;
+    let dailyActiveAgentsData = null;
 
     // Process the results from Promise.allSettled
     if (optimusPerformanceResult.status === 'fulfilled') {
@@ -156,14 +157,21 @@ const fetchAllAgentMetrics = async () => {
       modiusData.maxOlasApr = olasAprResult.value.modius;
     }
 
-    if (DAAsResult.status === 'fulfilled') {
-      DAAsData = DAAsResult.value;
+    if (dailyActiveAgentsResult.status === 'fulfilled') {
+      dailyActiveAgentsData = dailyActiveAgentsResult.value;
     } else {
-      console.error('Babydegen DAAs data fetch failed:', DAAsResult.reason);
+      console.error(
+        'Babydegen DAAs data fetch failed:',
+        dailyActiveAgentsResult.reason,
+      );
     }
 
     const data = {
-      data: { optimus: optimusData, modius: modiusData, DAAs: DAAsData },
+      data: {
+        optimus: optimusData,
+        modius: modiusData,
+        dailyActiveAgents: dailyActiveAgentsData,
+      },
       timestamp: Date.now(),
     };
 
