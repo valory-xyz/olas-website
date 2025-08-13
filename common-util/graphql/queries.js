@@ -97,10 +97,11 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
   }
 `;
 
-export const stakingRewardsQuery = gql`
-  query StakingRewards {
+export const stakingGlobalsQuery = gql`
+  query StakingGlobals {
     global(id: "") {
       totalRewards
+      currentOlasStaked
     }
   }
 `;
@@ -172,6 +173,33 @@ export const dailyMechAgentPerformancesQuery = gql`
     ) {
       id
       activeMultisigCount
+    }
+  }
+`;
+
+export const dailyAgentPerformancesQuery = gql`
+  query DailyActiveMultisigs($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyActiveMultisigs_collection(
+      where: {
+        and: [
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      count
+    }
+  }
+`;
+
+export const registryGlobalsQuery = gql`
+  query RegistryGlobals {
+    global(id: "") {
+      id
+      txCount
     }
   }
 `;

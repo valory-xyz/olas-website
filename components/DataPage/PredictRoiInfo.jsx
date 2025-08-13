@@ -3,7 +3,7 @@ import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
-  stakingRewardsQuery,
+  stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -17,7 +17,7 @@ export const PredictRoiInfo = () => {
   );
   const totalMechRequests = totalMechRequestsQuery;
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
-  const stakingRewards = stakingRewardsQuery;
+  const stakingGlobals = stakingGlobalsQuery;
   const mechRequests = getMechRequestsQuery({
     timestamp_gt: marketOpenTimestamp,
     first: 1000,
@@ -95,7 +95,7 @@ export const PredictRoiInfo = () => {
         <CodeSnippet>{marketsAndBets}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          3) Staking Rewards query
+          3) Staking Globals query
         </h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
@@ -104,7 +104,7 @@ export const PredictRoiInfo = () => {
         >
           Subgraph link
         </ExternalLink>
-        <CodeSnippet>{stakingRewards}</CodeSnippet>
+        <CodeSnippet>{stakingGlobals}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
