@@ -247,7 +247,7 @@ const AiMechs = () => (
               resource.actions.length > 1 ? CardContent : CardFooter;
             return (
               <div key={index} className="mb-4 md:mb-0">
-                <Card className="max-w-sm mx-auto h-full">
+                <Card className="max-w-md mx-auto h-full">
                   <CardHeader>
                     <CardTitle>{resource.title}</CardTitle>
                   </CardHeader>
@@ -259,6 +259,7 @@ const AiMechs = () => (
                   <FooterTag className="space-y-4">
                     {resource.actions.map((action, actionIndex) => (
                       <Button
+                        variant="secondary"
                         asChild
                         key={actionIndex}
                         className="whitespace-normal h-fit"
