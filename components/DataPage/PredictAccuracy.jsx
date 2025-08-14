@@ -23,10 +23,10 @@ export const PredictAccuracyInfo = () => {
           performance remains relevant.
         </p>
 
-        <p>The following queries are used:</p>
+        <p>The following query is used:</p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          1) Closed Markets Bets query
+          Closed Markets Bets query
         </h3>
 
         <p className="max-w-[800px]">

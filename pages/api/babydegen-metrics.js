@@ -82,7 +82,7 @@ const fetchOlasApr = async () => {
 };
 
 const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000); // timestamp of today UTC midnight
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
 
   try {

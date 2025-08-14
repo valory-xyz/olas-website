@@ -1,18 +1,13 @@
+import { getMainMetrics } from 'common-util/api';
 import {
-  get7DaysAvgActivity,
   getA2ATransactions,
   getFeeFlowMetrics,
-  getTotalOlasStaked,
-  getTotalTransactionsCount,
   getTotalUniqueStakers,
 } from 'common-util/api/dune';
 import {
   DUNE_A2A_TRANSACTIONS_QUERY_URL,
   DUNE_AGENTS_QUERY_URL,
-  DUNE_DAAS_QUERY_URL,
   DUNE_MMV2_URL,
-  DUNE_OLAS_STAKED_URL,
-  DUNE_TOTAL_SERVICE_TRANSACTIONS_URL,
   VALORY_GIT_URL,
 } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
@@ -26,29 +21,28 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [
-    transactions,
-    agents,
-    olasStaked,
-    dailyActiveAgents,
-    a2aTransactions,
-    feeMetrics,
-  ] = await Promise.allSettled([
-    getTotalTransactionsCount(),
-    getTotalUniqueStakers(),
-    getTotalOlasStaked(),
-    get7DaysAvgActivity(),
-    getA2ATransactions(),
-    getFeeFlowMetrics(),
-  ]);
+  const [mainMetrics, agents, a2aTransactions, feeMetrics] =
+    await Promise.allSettled([
+      getMainMetrics(),
+      getTotalUniqueStakers(),
+      getA2ATransactions(),
+      getFeeFlowMetrics(),
+    ]);
 
   return {
     transactions:
-      transactions.status === 'fulfilled' ? transactions.value : null,
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.transactions
+        : null,
     agents: agents.status === 'fulfilled' ? agents.value : null,
-    olasStaked: agents.status === 'fulfilled' ? olasStaked.value : null,
+    olasStaked:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.olasStaked
+        : null,
     dailyActiveAgents:
-      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.dailyActiveAgents
+        : null,
     a2aTransactions:
       a2aTransactions.status === 'fulfilled' ? a2aTransactions.value : null,
     feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
@@ -95,7 +89,12 @@ const ActivityCard = ({
   iconWidth = 40,
   iconHeight = 40,
   text,
-  primary: { text: primaryText, link: primaryLink, value: primaryValue },
+  primary: {
+    text: primaryText,
+    link: primaryLink,
+    value: primaryValue,
+    isLinkExternal: primaryIsLinkExternal = true,
+  },
   secondary = {},
   tertiary = {},
 }) => {
@@ -103,13 +102,19 @@ const ActivityCard = ({
     text: secondaryText,
     link: secondaryLink,
     value: secondaryValue,
+    isLinkExternal: secondaryIsLinkExternal = true,
   } = secondary;
 
   const {
     text: tertiaryText,
     link: tertiaryLink,
     value: tertiaryValue,
+    isLinkExternal: tertiaryIsLinkExternal = true,
   } = tertiary;
+
+  const PrimaryLink = primaryIsLinkExternal ? ExternalLink : Link;
+  const SecondaryLink = secondaryIsLinkExternal ? ExternalLink : Link;
+  const TertiaryLink = tertiaryIsLinkExternal ? ExternalLink : Link;
 
   return (
     <Card className="flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque">
@@ -123,30 +128,30 @@ const ActivityCard = ({
         {text}
       </div>
       <div className="flex flex-row gap-2 place-items-center">
-        <ExternalLink href={primaryLink}>
+        <PrimaryLink href={primaryLink}>
           <div className="text-purple-700 text-2xl font-semibold">
             {primaryValue}
           </div>
-        </ExternalLink>
+        </PrimaryLink>
         {primaryText}
       </div>
       {secondaryValue && (
         <div className="flex flex-row gap-2 place-items-center">
-          <ExternalLink href={secondaryLink}>
+          <SecondaryLink href={secondaryLink}>
             <div className="text-purple-700 text-xl font-semibold">
               {secondaryValue}
             </div>
-          </ExternalLink>
+          </SecondaryLink>
           {secondaryText}
         </div>
       )}
       {tertiaryValue && (
         <div className="flex flex-row gap-2 place-items-center">
-          <ExternalLink href={tertiaryLink}>
+          <TertiaryLink href={tertiaryLink}>
             <div className="text-purple-700 text-xl font-semibold">
               {tertiaryValue}
             </div>
-          </ExternalLink>
+          </TertiaryLink>
           {tertiaryText}
         </div>
       )}
@@ -166,7 +171,8 @@ const UsersCard = ({ agents, olasStaked }) => (
     secondary={{
       value: olasStaked,
       text: 'OLAS staked',
-      link: DUNE_OLAS_STAKED_URL,
+      link: '/data#olas-staked',
+      isLinkExternal: false,
     }}
   />
 );
@@ -194,7 +200,8 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
           DAAs <Popover>7-day average Daily Active Agents</Popover>
         </>
       ),
-      link: DUNE_DAAS_QUERY_URL,
+      link: '/data#daily-active-agents',
+      isLinkExternal: false,
     }}
   />
 );
@@ -228,7 +235,8 @@ const TransactionsCard = ({ transactions }) => (
     primary={{
       value: transactions,
       text: 'txns',
-      link: DUNE_TOTAL_SERVICE_TRANSACTIONS_URL,
+      link: '/data#transactions',
+      isLinkExternal: false,
     }}
   />
 );

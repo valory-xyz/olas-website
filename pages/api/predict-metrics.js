@@ -13,7 +13,7 @@ import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
   stakingContractsQuery,
-  stakingRewardsQuery,
+  stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
@@ -44,7 +44,7 @@ const fetchRoi = async () => {
       predictAgentsGraphClient.request(
         getMarketsAndBetsQuery(marketOpenTimestamp),
       ),
-      STAKING_GRAPH_CLIENTS.gnosis.request(stakingRewardsQuery),
+      STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL),
     ]);
 
