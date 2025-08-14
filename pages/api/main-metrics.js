@@ -30,44 +30,35 @@ const fetchDailyAgentPerformance = async () => {
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
 
   try {
-    const [gnosisResult, baseResult, modeResult, optimismResult] =
-      await Promise.all([
-        REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }),
-        REGISTRY_GRAPH_CLIENTS.base.request(dailyAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }),
-        REGISTRY_GRAPH_CLIENTS.mode.request(dailyAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }),
-        REGISTRY_GRAPH_CLIENTS.optimism.request(dailyAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }),
-      ]);
+    const results = await Promise.allSettled([
+      REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+      REGISTRY_GRAPH_CLIENTS.base.request(dailyAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+      REGISTRY_GRAPH_CLIENTS.mode.request(dailyAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+      REGISTRY_GRAPH_CLIENTS.optimism.request(dailyAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      }),
+    ]);
 
-    const gnosisPerformances = get7DaysPerformanceArray(
-      gnosisResult.dailyActiveMultisigs_collection,
-    );
-    const basePerformances = get7DaysPerformanceArray(
-      baseResult.dailyActiveMultisigs_collection,
-    );
-    const modePerformances = get7DaysPerformanceArray(
-      modeResult.dailyActiveMultisigs_collection,
-    );
-    const optimismPerformances = get7DaysPerformanceArray(
-      optimismResult.dailyActiveMultisigs_collection,
-    );
+    const performanceByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) =>
+        get7DaysPerformanceArray(result.value.dailyActiveMultisigs_collection),
+      );
 
-    const totalAverage =
-      get7DaysAverage(gnosisPerformances) +
-      get7DaysAverage(basePerformances) +
-      get7DaysAverage(modePerformances) +
-      get7DaysAverage(optimismPerformances);
+    const totalAverage = performanceByChains.reduce(
+      (sum, performanceByChain) => sum + get7DaysAverage(performanceByChain),
+      0,
+    );
 
     return Math.floor(totalAverage);
   } catch (error) {
@@ -78,24 +69,21 @@ const fetchDailyAgentPerformance = async () => {
 
 const fetchTotalOlasStaked = async () => {
   try {
-    const [gnosisResult, baseResult, modeResult, optimismResult] =
-      await Promise.all([
-        STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
-        STAKING_GRAPH_CLIENTS.base.request(stakingGlobalsQuery),
-        STAKING_GRAPH_CLIENTS.mode.request(stakingGlobalsQuery),
-        STAKING_GRAPH_CLIENTS.optimism.request(stakingGlobalsQuery),
-      ]);
+    const results = await Promise.allSettled([
+      STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
+      STAKING_GRAPH_CLIENTS.base.request(stakingGlobalsQuery),
+      STAKING_GRAPH_CLIENTS.mode.request(stakingGlobalsQuery),
+      STAKING_GRAPH_CLIENTS.optimism.request(stakingGlobalsQuery),
+    ]);
 
-    const gnosisOlasStaked = gnosisResult.global?.currentOlasStaked ?? '0';
-    const baseOlasStaked = baseResult.global?.currentOlasStaked ?? '0';
-    const modeOlasStaked = modeResult.global?.currentOlasStaked ?? '0';
-    const optimismOlasStaked = optimismResult.global?.currentOlasStaked ?? '0';
+    const olasStakedByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value.global?.currentOlasStaked ?? '0');
 
-    const olasStaked =
-      BigInt(gnosisOlasStaked) +
-      BigInt(baseOlasStaked) +
-      BigInt(modeOlasStaked) +
-      BigInt(optimismOlasStaked);
+    const olasStaked = olasStakedByChains.reduce(
+      (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
+      BigInt(0),
+    );
 
     return formatWeiNumber(`${olasStaked}`, { notation: 'standard' });
   } catch (error) {
@@ -106,24 +94,25 @@ const fetchTotalOlasStaked = async () => {
 
 const fetchTransactions = async () => {
   try {
-    const [gnosisResult, baseResult, modeResult, optimismResult] =
-      await Promise.all([
-        REGISTRY_GRAPH_CLIENTS.gnosis.request(registryGlobalsQuery),
-        REGISTRY_GRAPH_CLIENTS.base.request(registryGlobalsQuery),
-        REGISTRY_GRAPH_CLIENTS.mode.request(registryGlobalsQuery),
-        REGISTRY_GRAPH_CLIENTS.optimism.request(registryGlobalsQuery),
-      ]);
+    const results = await Promise.allSettled([
+      REGISTRY_GRAPH_CLIENTS.gnosis.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.base.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.mode.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.optimism.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.celo.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.ethereum.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.polygon.request(registryGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.arbitrum.request(registryGlobalsQuery),
+    ]);
 
-    const gnosisTransactions = gnosisResult.global?.txCount ?? '0';
-    const baseTransactions = baseResult.global?.txCount ?? '0';
-    const modeTransactions = modeResult.global?.txCount ?? '0';
-    const optimismTransactions = optimismResult.global?.txCount ?? '0';
+    const txCountByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value.global?.txCount ?? '0');
 
-    const transactions =
-      BigInt(gnosisTransactions) +
-      BigInt(baseTransactions) +
-      BigInt(modeTransactions) +
-      BigInt(optimismTransactions);
+    const transactions = txCountByChains.reduce(
+      (sum, txCountByChain) => sum + BigInt(txCountByChain),
+      BigInt(0),
+    );
 
     return formatEthNumber(`${transactions}`, { notation: 'standard' });
   } catch (error) {

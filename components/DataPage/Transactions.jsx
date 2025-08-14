@@ -30,6 +30,10 @@ export const TransactionsInfo = () => {
             process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
             process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
             process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
+            process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL,
+            process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL,
+            process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL,
+            process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL,
           ].map((link, index) => (
             <ExternalLink key={index} href={link} className="mr-2">
               {index + 1}
