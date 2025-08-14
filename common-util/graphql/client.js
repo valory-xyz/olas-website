@@ -48,6 +48,22 @@ export const REGISTRY_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
     requestConfig,
   ),
+  celo: new GraphQLClient(
+    process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  ethereum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  arbitrum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  polygon: new GraphQLClient(
+    process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL,
+    requestConfig,
+  ),
 };
 
 export const mechGraphClient = new GraphQLClient(
