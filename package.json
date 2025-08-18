@@ -73,5 +73,8 @@
     "plugins": [
       "@babel/plugin-proposal-class-properties"
     ]
+  },
+  "engines": {
+    "node": "22.18.0"
   }
 }
