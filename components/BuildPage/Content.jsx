@@ -1,5 +1,5 @@
 import { SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
-import { DEV_REWARDS_URL, REGISTRY_URL } from 'common-util/constants';
+import { DEV_REWARDS_URL, MECH_MARKETPLACE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { InfoIcon } from 'components/ui/info-icon';
 import { Link, SubsiteLink } from '../ui/typography';
@@ -49,8 +49,8 @@ const Content = () => (
       <p>
         In order to qualify for developer rewards an Olas builder must mint a
         component or agent on the{' '}
-        <SubsiteLink href={`${REGISTRY_URL}/ethereum/components`}>
-          Olas Registry
+        <SubsiteLink href={`${MECH_MARKETPLACE_URL}/ethereum/components`}>
+          Mech Marketplace
         </SubsiteLink>{' '}
         and have that component or agent be referenced in a service that
         receives donations. Note that services are made up of agents, and agents

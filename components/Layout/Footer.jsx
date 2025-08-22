@@ -2,7 +2,7 @@ import {
   COINGECKO_URL,
   DISCORD_INVITE_URL,
   DOCS_BASE_URL,
-  REGISTRY_URL,
+  MECH_MARKETPLACE_URL,
   WHITEPAPER,
   X_OLAS_URL,
 } from 'common-util/constants';
@@ -62,7 +62,7 @@ const DAO_LINKS = [
   { title: 'Operate', link: '/operate' },
   { title: 'Bond', link: '/bond' },
   { title: 'Govern', link: '/govern' },
-  { title: 'Registry', link: REGISTRY_URL },
+  { title: 'Mech Marketplace', link: MECH_MARKETPLACE_URL },
   {
     title: 'Constitution',
     link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',

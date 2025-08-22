@@ -1,4 +1,4 @@
-import { REGISTRY_URL } from 'common-util/constants';
+import { MECH_MARKETPLACE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { ExternalLink, Link, SubsiteLink } from 'components/ui/typography';
@@ -83,7 +83,10 @@ export const WhatMakesOlasAgentsUnique = () => (
               />
               <p className="-top-[35px] relative">
                 They are listed on a global agent directory called{' '}
-                <SubsiteLink href={REGISTRY_URL}>Olas Registry</SubsiteLink>.
+                <SubsiteLink href={MECH_MARKETPLACE_URL}>
+                  Mech Marketplace
+                </SubsiteLink>
+                .
               </p>
             </div>
             <div>
