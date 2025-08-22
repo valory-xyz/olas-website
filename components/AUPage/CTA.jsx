@@ -7,6 +7,14 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'Agents Unleashed: The Next Wave',
+    imageSrc: 'token2049.png',
+    location: 'Singapore, Token2049',
+    date: "Oct 1 '25",
+    eventLink: 'https://lu.ma/h0zgn96s',
+  },
+  ,
+  {
     title: 'EthCC Cannes 🇫🇷',
     imageSrc: 'EthCC-Cannes.png',
     location: 'Cannes',
