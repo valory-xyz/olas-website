@@ -61,7 +61,7 @@ export const X_OLAS_URL = 'https://x.com/autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';
 export const VALORY_URL = 'https://www.valory.xyz';
 export const SHORTS_URL = 'https://shorts.wtf';
-export const REGISTRY_URL = 'https://registry.olas.network/';
+export const MECH_MARKETPLACE_URL = 'https://marketplace.olas.network/';
 
 export const CONTRIBUTE_URL = 'https://contribute.olas.network';
 export const OPERATE_URL = 'https://operate.olas.network';

@@ -128,7 +128,7 @@ const AiMechs = () => (
             marketplace to provide their own specialized skills and tasks.
           </Lead>
 
-          <SubsiteLink href="https://mech.olas.network/gnosis/mech/0x77af31De935740567Cf4fF1986D04B2c964A786a?legacy=true">
+          <SubsiteLink href="https://marketplace.olas.network/gnosis/ai-agents/2235?activity=true">
             Check out Mechs in action
           </SubsiteLink>
         </div>

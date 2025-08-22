@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { REGISTRY_URL } from 'common-util/constants';
+import { MECH_MARKETPLACE_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import { SubsiteLink } from 'components/ui/typography';
@@ -23,8 +23,8 @@ const GetStarted = () => (
 
 const Explore = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
-    <SubsiteLink href={`${REGISTRY_URL}/ethereum/agents`}>
-      Explore minted agents
+    <SubsiteLink href={`${MECH_MARKETPLACE_URL}/ethereum/agent-blueprints`}>
+      Explore minted agent blueprints
     </SubsiteLink>
   </Button>
 );
