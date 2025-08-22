@@ -177,13 +177,14 @@ const UsersCard = ({ agents, olasStaked }) => (
   />
 );
 
-const OlasBurnedCard = ({ olasBurned }) => (
+const OlasBurnedCard = () => (
   <ActivityCard
     icon="olas-burned.png"
     primary={{
-      value: `$${Number(olasBurned).toLocaleString()}`,
+      value: '$0',
       text: 'OLAS burned',
-      link: DUNE_MMV2_URL,
+      link: '/data#protocol-fees',
+      isLinkExternal: false,
     }}
   />
 );
@@ -206,7 +207,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ a2aTransactions, feesCollected, protocolFees }) => (
+const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
@@ -222,9 +223,10 @@ const AgentToAgentCard = ({ a2aTransactions, feesCollected, protocolFees }) => (
       link: DUNE_MMV2_URL,
     }}
     tertiary={{
-      value: `${protocolFees}%`,
+      value: '0%',
       text: 'fees collected',
-      link: DUNE_MMV2_URL,
+      link: '/data#protocol-fees',
+      isLinkExternal: false,
     }}
   />
 );
@@ -269,8 +271,6 @@ export const Activity = () => {
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
-      protocolFees: metrics.feeMetrics?.protocolFees?.toFixed(2) || '--',
-      olasBurned: metrics.feeMetrics?.olasBurned?.toFixed(2) || '--',
     };
   }, [metrics]);
 
@@ -320,7 +320,7 @@ export const Activity = () => {
         </div>
         <div className="flex flex-row place-items-center w-full justify-between">
           <div className="flex flex-col">
-            <OlasBurnedCard olasBurned={processedMetrics?.olasBurned} />
+            <OlasBurnedCard />
             <OlasIsBurnedArrow />
           </div>
           <div className="flex flex-col place-items-center z-10">
@@ -349,7 +349,6 @@ export const Activity = () => {
           <AgentToAgentCard
             a2aTransactions={processedMetrics?.a2aTransactions}
             feesCollected={processedMetrics?.feesCollected}
-            protocolFees={processedMetrics?.protocolFees}
           />
           <div>
             <Image
@@ -398,10 +397,9 @@ export const Activity = () => {
         <AgentToAgentCard
           a2aTransactions={processedMetrics?.a2aTransactions}
           feesCollected={processedMetrics?.feesCollected}
-          protocolFees={processedMetrics?.protocolFees}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
-        <OlasBurnedCard olasBurned={processedMetrics?.olasBurned} />
+        <OlasBurnedCard />
         <Image
           src={`${imgPath}mobile-arrow5.png`}
           alt="arrow"

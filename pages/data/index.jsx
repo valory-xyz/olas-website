@@ -1,5 +1,6 @@
 import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
+import { FeesInfo } from 'components/DataPage/Fees';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import { PredictAccuracyInfo } from 'components/DataPage/PredictAccuracy';
 import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
@@ -19,6 +20,7 @@ const DataVerifyPage = () => (
       <OlasStakedInfo />
       <PredictRoiInfo />
       <PredictAccuracyInfo />
+      <FeesInfo />
     </div>
     <div className="border-b-1.5" />
   </PageWrapper>
