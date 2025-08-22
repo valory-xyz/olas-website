@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 const list = [
   {
-    title: 'Agents Unleashed: The Next Wave',
+    title: 'The Next Wave',
     imageSrc: 'token2049.png',
     location: 'Singapore, Token2049',
     date: "Oct 1 '25",
