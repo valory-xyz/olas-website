@@ -1,3 +1,4 @@
+import { MECH_MARKETPLACE_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
@@ -20,7 +21,7 @@ const Explore = () => (
     asChild
     className="max-lg:grow max-sm:text-sm"
   >
-    <Link href="#about">Explore the Mech Marketplace</Link>
+    <Link href={MECH_MARKETPLACE_URL}>Explore the Mech Marketplace</Link>
   </Button>
 );
 
