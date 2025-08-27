@@ -1,5 +1,4 @@
 import {
-  A2A_TRANSACTIONS_ID,
   DAA_QUERY_ID,
   DAILY_CONTRIBUTORS_QUERY_ID,
   FEE_FLOW_QUERY_ID,
@@ -175,18 +174,6 @@ export const get7DayAvgDailyActiveContributors = async () => {
   } catch (error) {
     console.error('Error in get7DayAvgDailyActiveContributors: ', error);
     return;
-  }
-};
-
-export const getA2ATransactions = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: A2A_TRANSACTIONS_ID,
-    });
-    const agentToAgentTxs = get(json, 'result.rows[0].total_a2a_transactions');
-    return agentToAgentTxs;
-  } catch (error) {
-    console.error('Error in getA2ATransactions: ', error);
   }
 };
 

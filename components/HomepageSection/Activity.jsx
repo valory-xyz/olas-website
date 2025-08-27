@@ -1,11 +1,6 @@
 import { getMainMetrics } from 'common-util/api';
+import { getFeeFlowMetrics, getTotalUniqueStakers } from 'common-util/api/dune';
 import {
-  getA2ATransactions,
-  getFeeFlowMetrics,
-  getTotalUniqueStakers,
-} from 'common-util/api/dune';
-import {
-  DUNE_A2A_TRANSACTIONS_QUERY_URL,
   DUNE_AGENTS_QUERY_URL,
   DUNE_MMV2_URL,
   VALORY_GIT_URL,
@@ -21,13 +16,11 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, agents, a2aTransactions, feeMetrics] =
-    await Promise.allSettled([
-      getMainMetrics(),
-      getTotalUniqueStakers(),
-      getA2ATransactions(),
-      getFeeFlowMetrics(),
-    ]);
+  const [mainMetrics, agents, feeMetrics] = await Promise.allSettled([
+    getMainMetrics(),
+    getTotalUniqueStakers(),
+    getFeeFlowMetrics(),
+  ]);
 
   return {
     transactions:
@@ -47,8 +40,6 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.ataTransactions
         : null,
-    a2aTransactions:
-      a2aTransactions.status === 'fulfilled' ? a2aTransactions.value : null,
     feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
   };
 };
@@ -211,21 +202,16 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({
-  a2aTransactions,
-  ataTransactions,
-  feesCollected,
-}) => (
+const AgentToAgentCard = ({ ataTransactions, feesCollected }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
     iconHeight={36}
     primary={{
-      value: ataTransactions || a2aTransactions,
+      value: ataTransactions,
       text: 'A2A txns',
-      link: ataTransactions
-        ? '/data#ata-transactions'
-        : DUNE_A2A_TRANSACTIONS_QUERY_URL,
+      link: '/data#ata-transactions',
+      isLinkExternal: false,
     }}
     secondary={{
       value: `$${Number(feesCollected).toLocaleString()}`,
@@ -279,7 +265,6 @@ export const Activity = () => {
       agents: metrics.agents?.toLocaleString() || '--',
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
-      a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
       ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
     };
@@ -358,7 +343,6 @@ export const Activity = () => {
         </div>
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
-            a2aTransactions={processedMetrics?.a2aTransactions}
             ataTransactions={processedMetrics?.ataTransactions}
             feesCollected={processedMetrics?.feesCollected}
           />
@@ -407,7 +391,6 @@ export const Activity = () => {
           className="mx-auto mb-2"
         />
         <AgentToAgentCard
-          a2aTransactions={processedMetrics?.a2aTransactions}
           ataTransactions={processedMetrics?.ataTransactions}
           feesCollected={processedMetrics?.feesCollected}
         />
