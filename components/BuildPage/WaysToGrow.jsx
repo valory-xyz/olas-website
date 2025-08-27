@@ -10,51 +10,22 @@ import Content from './Content';
 
 const ways = [
   {
-    title: 'Earn Dev Rewards by building on Olas Protocol',
-    imageSrc: '/images/build-page/earn-dev-rewards.png',
-    description: (
-      <>
-        <p className="mb-4">
-          Contribute valuable code units — like agents or components — to the
-          Olas protocol and have a chance at receiving Developer Rewards.
-        </p>
-        <p className="mb-4">
-          Dev Rewards is a part of the protocol that facilitates the
-          distribution of capital to developers who contribute to various
-          services in the ecosystem.
-        </p>
-        <p>
-          This system is designed to reward both the contribution of code
-          components and entire agents.
-        </p>
-      </>
-    ),
-    showDevRewards: (setDevRewardsOpen) => (
-      <a
-        className="text-purple-600 cursor-pointer"
-        onClick={() => setDevRewardsOpen(true)}
-      >
-        Learn more about Dev Rewards
-      </a>
-    ),
-  },
-  {
     title: 'Hire an Agent on Marketplace',
     imageSrc: '/images/build-page/explore-opportunities.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
-      <SubsiteLink href={MECH_MARKETPLACE_URL} className="mt-auto">
+      <SubsiteLink href={MECH_MARKETPLACE_URL} className="mt-4">
         View available AI Agents
       </SubsiteLink>
     ),
   },
   {
     title: "Offer your agent's services on Marketplace",
-    imageSrc: '',
+    imageSrc: '/images/build-page/mm.png',
     description: (
       <>
         <p>Try your hand at making your own AI Agent. You can either:</p>
-        <ul className="list-disc ml-6">
+        <ul className="list-disc ml-6 mt-4">
           <li>
             Build tools using the{' '}
             <SubsiteLink href={`${STACK_URL}/mech-tools-dev`}>
@@ -62,11 +33,11 @@ const ways = [
             </SubsiteLink>
           </li>
           <li>
-            Or build you agent with whatever framework you want, wrap it in Olas
-            SDK
+            Or build you agent with whatever framework you want, wrap it in{' '}
+            <SubsiteLink href={`${STACK_URL}/olas-sdk`}>Olas SDK</SubsiteLink>
           </li>
-          And then register on Marketplace.
         </ul>
+        <p className="mt-4">And then register on Marketplace.</p>
       </>
     ),
     link: (
@@ -107,6 +78,35 @@ const ways = [
       </Link>
     ),
   },
+  {
+    title: 'Earn Dev Rewards by building on Olas Protocol',
+    imageSrc: '/images/build-page/earn-dev-rewards.png',
+    description: (
+      <>
+        <p className="mb-4">
+          Contribute valuable code units — like agents or components — to the
+          Olas protocol and have a chance at receiving Developer Rewards.
+        </p>
+        <p className="mb-4">
+          Dev Rewards is a part of the protocol that facilitates the
+          distribution of capital to developers who contribute to various
+          services in the ecosystem.
+        </p>
+        <p>
+          This system is designed to reward both the contribution of code
+          components and entire agents.
+        </p>
+      </>
+    ),
+    showDevRewards: (setDevRewardsOpen) => (
+      <a
+        className="text-purple-600 cursor-pointer"
+        onClick={() => setDevRewardsOpen(true)}
+      >
+        Learn more about Dev Rewards
+      </a>
+    ),
+  },
 ];
 
 export const WaysToGrow = () => {
@@ -126,7 +126,7 @@ export const WaysToGrow = () => {
         Olas ecosystem.
       </p>
 
-      <div className="grid md:grid-cols-4 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto ">
+      <div className="grid md:grid-cols-4 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto">
         {ways.map((item) => (
           <Card
             className="flex flex-col overflow-hidden border rounded-xl"
@@ -174,7 +174,7 @@ export const WaysToGrow = () => {
                   </Card>
                 </>
               )}
-              {item.link}
+              <div className="mt-auto">{item.link}</div>
             </div>
           </Card>
         ))}
