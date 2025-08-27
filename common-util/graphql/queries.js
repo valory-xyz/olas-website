@@ -203,3 +203,12 @@ export const registryGlobalsQuery = gql`
     }
   }
 `;
+
+export const ataTransactionsQuery = gql`
+  query AtaTransactions {
+    globals(where: { id: "" }) {
+      id
+      totalAtaTransactions
+    }
+  }
+`;
