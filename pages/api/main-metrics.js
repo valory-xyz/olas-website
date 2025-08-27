@@ -1,8 +1,10 @@
 import {
+  ATA_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
+  ataTransactionsQuery,
   dailyAgentPerformancesQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
@@ -121,38 +123,79 @@ const fetchTransactions = async () => {
   }
 };
 
+const fetchAtaTransactions = async () => {
+  try {
+    const results = await Promise.allSettled([
+      ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
+      ATA_GRAPH_CLIENTS.base.request(ataTransactionsQuery),
+    ]);
+
+    const ataTransactionsByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value?.globals?.[0]?.totalAtaTransactions || '0');
+
+    const totalAtaTransactions = ataTransactionsByChains.reduce(
+      (sum, ataTxByChain) => sum + BigInt(ataTxByChain),
+      BigInt(0),
+    );
+
+    return formatEthNumber(`${totalAtaTransactions}`, { notation: 'standard' });
+  } catch (error) {
+    console.error('Error fetching ATA transactions:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
-    const [dailyActiveAgentsResult, olasStakedResult, transactionsResult] =
-      await Promise.allSettled([
-        fetchDailyAgentPerformance(),
-        fetchTotalOlasStaked(),
-        fetchTransactions(),
-      ]);
+    const [
+      dailyActiveAgentsResult,
+      olasStakedResult,
+      transactionsResult,
+      ataTransactionsResult,
+    ] = await Promise.allSettled([
+      fetchDailyAgentPerformance(),
+      fetchTotalOlasStaked(),
+      fetchTransactions(),
+      fetchAtaTransactions(),
+    ]);
 
     const metrics = {
       dailyActiveAgents: null,
       olasStaked: null,
       transactions: null,
+      ataTransactions: null,
     };
 
     // Process the results from Promise.allSettled
     if (dailyActiveAgentsResult.status === 'fulfilled') {
       metrics.dailyActiveAgents = dailyActiveAgentsResult.value;
     } else {
-      console.error('Fetch daily active agents failed:', roiResult.reason);
+      console.error(
+        'Fetch daily active agents failed:',
+        dailyActiveAgentsResult.reason,
+      );
     }
 
     if (olasStakedResult.status === 'fulfilled') {
       metrics.olasStaked = olasStakedResult.value;
     } else {
-      console.error('Fetch OLAS staked failed:', aprResult.reason);
+      console.error('Fetch OLAS staked failed:', olasStakedResult.reason);
     }
 
     if (transactionsResult.status === 'fulfilled') {
       metrics.transactions = transactionsResult.value;
     } else {
-      console.error('Fetch transactions failed:', aprResult.reason);
+      console.error('Fetch transactions failed:', transactionsResult.reason);
+    }
+
+    if (ataTransactionsResult.status === 'fulfilled') {
+      metrics.ataTransactions = ataTransactionsResult.value;
+    } else {
+      console.error(
+        'Fetch ATA transactions failed:',
+        ataTransactionsResult.reason,
+      );
     }
 
     const data = {

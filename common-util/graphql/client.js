@@ -76,7 +76,13 @@ export const predictAgentsGraphClient = new GraphQLClient(
   requestConfig,
 );
 
-export const ataTransactionsGraphClient = new GraphQLClient(
-  process.env.NEXT_PUBLIC_ATA_TRANSACTIONS_SUBGRAPH_URL,
-  requestConfig,
-);
+export const ATA_GRAPH_CLIENTS = {
+  gnosis: new GraphQLClient(
+    process.env.NEXT_PUBLIC_GNOSIS_ATA_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  base: new GraphQLClient(
+    process.env.NEXT_PUBLIC_BASE_ATA_SUBGRAPH_URL,
+    requestConfig,
+  ),
+};

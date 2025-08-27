@@ -43,6 +43,10 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.dailyActiveAgents
         : null,
+    ataTransactions:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.ataTransactions
+        : null,
     a2aTransactions:
       a2aTransactions.status === 'fulfilled' ? a2aTransactions.value : null,
     feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
@@ -207,15 +211,21 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
+const AgentToAgentCard = ({
+  a2aTransactions,
+  ataTransactions,
+  feesCollected,
+}) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
     iconHeight={36}
     primary={{
-      value: a2aTransactions,
+      value: ataTransactions || a2aTransactions,
       text: 'A2A txns',
-      link: DUNE_A2A_TRANSACTIONS_QUERY_URL,
+      link: ataTransactions
+        ? '/data#ata-transactions'
+        : DUNE_A2A_TRANSACTIONS_QUERY_URL,
     }}
     secondary={{
       value: `$${Number(feesCollected).toLocaleString()}`,
@@ -271,6 +281,7 @@ export const Activity = () => {
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
+      ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
     };
   }, [metrics]);
 
@@ -348,6 +359,7 @@ export const Activity = () => {
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
             a2aTransactions={processedMetrics?.a2aTransactions}
+            ataTransactions={processedMetrics?.ataTransactions}
             feesCollected={processedMetrics?.feesCollected}
           />
           <div>
@@ -396,6 +408,7 @@ export const Activity = () => {
         />
         <AgentToAgentCard
           a2aTransactions={processedMetrics?.a2aTransactions}
+          ataTransactions={processedMetrics?.ataTransactions}
           feesCollected={processedMetrics?.feesCollected}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
