@@ -1,5 +1,5 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
-import { BUILD_URL } from 'common-util/constants';
+import { MECH_MARKETPLACE_URL, STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
 import { SubsiteLink } from 'components/ui/typography';
@@ -9,6 +9,75 @@ import { useState } from 'react';
 import Content from './Content';
 
 const ways = [
+  {
+    title: 'Hire an Agent on Marketplace',
+    imageSrc: '/images/build-page/mm.png',
+    description: <>Make use of the available mechs on Mech Marketplace.</>,
+    link: (
+      <SubsiteLink href={MECH_MARKETPLACE_URL} className="mt-4">
+        View available AI Agents
+      </SubsiteLink>
+    ),
+  },
+  {
+    title: "Offer your agent's services on Marketplace",
+    imageSrc: '/images/build-page/mm.png',
+    description: (
+      <>
+        <p>Try your hand at making your own AI Agent. You can either:</p>
+        <ul className="list-disc ml-6 mt-4">
+          <li>
+            Build tools using the{' '}
+            <SubsiteLink href={`${STACK_URL}/mech-tools-dev`}>
+              Mech Tools Dev
+            </SubsiteLink>
+          </li>
+          <li>
+            Or build you agent with whatever framework you want, wrap it in{' '}
+            <SubsiteLink href={`${STACK_URL}/olas-sdk`}>Olas SDK</SubsiteLink>
+          </li>
+        </ul>
+        <p className="mt-4">And then register on Marketplace.</p>
+      </>
+    ),
+    link: (
+      <Link
+        href={`${STACK_URL}/mech-tools-dev`}
+        className="text-purple-600 mt-auto"
+      >
+        Build your own AI Agent
+      </Link>
+    ),
+  },
+  {
+    title: 'Build an Agent for Pearl in Accelerator',
+    imageSrc: '/images/build-page/accelerator-program.png',
+    description: (
+      <>
+        <p>
+          Apply for the $1million grants program to build AI Agents for Pearl:
+          The &quot;AI Agent App Store&quot;.
+        </p>
+        <h3 className="font-semibold mt-4">Get funded</h3>
+        <p>Up to $100K in grants to build, launch, and scale your AI agent.</p>
+        <h3 className="font-semibold mt-4">Earn rewards</h3>
+        <p>
+          Have a chance to receive ongoing OLAS Dev Rewards for your registered
+          agents.
+        </p>
+        <h3 className="font-semibold mt-4">Access support</h3>
+        <p>
+          Leverage technical resources, developer workshops, and marketing
+          support to succeed.
+        </p>
+      </>
+    ),
+    link: (
+      <Link href="/accelerator" className="text-purple-600 mt-auto">
+        Learn more & apply
+      </Link>
+    ),
+  },
   {
     title: 'Earn Dev Rewards by building on Olas Protocol',
     imageSrc: '/images/build-page/earn-dev-rewards.png',
@@ -38,57 +107,6 @@ const ways = [
       </a>
     ),
   },
-  {
-    title: 'Explore opportunities with external projects',
-    imageSrc: '/images/build-page/explore-opportunities.png',
-    description: (
-      <>
-        <p>
-          Collaborate with external projects seeking skilled developers and
-          discover opportunities that align with your expertise, with
-          compensation handled directly by the third-party projects.
-        </p>
-        <h3 className="font-semibold mt-4">Browse opportunities</h3>
-        <p>Discover a list of projects that match your skills. </p>
-        <h3 className="font-semibold mt-4">Get in touch</h3>
-        <p>Find projects that align with your expertise and interests.</p>
-      </>
-    ),
-    link: (
-      <SubsiteLink href={`${BUILD_URL}/opportunities`} className="mt-auto">
-        Get matched with an opportunity
-      </SubsiteLink>
-    ),
-  },
-  {
-    title: 'Join the Olas Accelerator Program',
-    imageSrc: '/images/build-page/accelerator-program.png',
-    description: (
-      <>
-        <p>
-          Apply for the $1million grants program to build AI Agents for Pearl:
-          The =&quot;AI Agent App Store&quot;.
-        </p>
-        <h3 className="font-semibold mt-4">Get funded</h3>
-        <p>Up to $100K in grants to build, launch, and scale your AI agent.</p>
-        <h3 className="font-semibold mt-4">Earn rewards</h3>
-        <p>
-          Have a chance to receive ongoing OLAS Dev Rewards for your registered
-          agents.
-        </p>
-        <h3 className="font-semibold mt-4">Access support</h3>
-        <p>
-          Leverage technical resources, developer workshops, and marketing
-          support to succeed.
-        </p>
-      </>
-    ),
-    link: (
-      <Link href="/accelerator" className="text-purple-600 mt-auto">
-        Learn more & apply
-      </Link>
-    ),
-  },
 ];
 
 export const WaysToGrow = () => {
@@ -101,14 +119,14 @@ export const WaysToGrow = () => {
       id="why-build"
     >
       <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
-        Three ways to grow and earn as an Olas Builder
+        Four ways to grow and earn as an Olas Builder
       </h2>
       <p className="text-gray-600 text-center mb-12">
-        Embark on one or both ways of building to maximize your impact and
-        earnings in the Olas ecosystem.
+        Embark on ways of building to maximize your impact and earnings in the
+        Olas ecosystem.
       </p>
 
-      <div className="grid md:grid-cols-3 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto ">
+      <div className="grid md:grid-cols-4 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto">
         {ways.map((item) => (
           <Card
             className="flex flex-col overflow-hidden border rounded-xl"
@@ -156,7 +174,7 @@ export const WaysToGrow = () => {
                   </Card>
                 </>
               )}
-              {item.link}
+              <div className="mt-auto">{item.link}</div>
             </div>
           </Card>
         ))}

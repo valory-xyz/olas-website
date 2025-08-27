@@ -70,6 +70,7 @@ export const PREDICT_URL = 'https://predict.olas.network';
 export const BUILD_URL = 'https://build.olas.network';
 export const GOVERN_URL = 'https://govern.olas.network';
 export const BOND_URL = 'https://bond.olas.network';
+export const STACK_URL = 'https://stack.olas.network';
 
 export const BONDING_PROGRAMS_URL = `${BOND_URL}/bonding-products`;
 export const VEOLAS_URL = `${GOVERN_URL}/veolas`;
