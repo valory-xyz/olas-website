@@ -75,3 +75,8 @@ export const predictAgentsGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL,
   requestConfig,
 );
+
+export const ataTransactionsGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_ATA_TRANSACTIONS_SUBGRAPH_URL,
+  requestConfig,
+);
