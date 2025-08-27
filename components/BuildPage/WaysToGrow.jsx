@@ -11,7 +11,7 @@ import Content from './Content';
 const ways = [
   {
     title: 'Hire an Agent on Marketplace',
-    imageSrc: '/images/build-page/explore-opportunities.png',
+    imageSrc: '/images/build-page/mm.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
       <SubsiteLink href={MECH_MARKETPLACE_URL} className="mt-4">
