@@ -1,4 +1,5 @@
 import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
+import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
@@ -17,6 +18,7 @@ const DataVerifyPage = () => (
     >
       <DailyActiveAgentsInfo />
       <TransactionsInfo />
+      <AtaTransactionsInfo />
       <OlasStakedInfo />
       <PredictRoiInfo />
       <PredictAccuracyInfo />
