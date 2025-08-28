@@ -127,7 +127,7 @@ const fetchTransactions = async () => {
   }
 };
 
-export const fetchTotalOperators = async () => {
+const fetchTotalOperators = async () => {
   try {
     const results = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
