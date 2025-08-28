@@ -1,3 +1,4 @@
+import { getMainMetrics } from 'common-util/api';
 import { get7DaysAvgActivity } from 'common-util/api/dune';
 import { DUNE_DAAS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -10,7 +11,7 @@ import { useMemo } from 'react';
 const fetchMetrics = async () => {
   const [dailyActiveAgents, mainMetrics] = await Promise.allSettled([
     get7DaysAvgActivity(),
-    fetch('/api/main-metrics').then((r) => r.json()),
+    getMainMetrics(),
   ]);
   return {
     dailyActiveAgents: dailyActiveAgents.value,
