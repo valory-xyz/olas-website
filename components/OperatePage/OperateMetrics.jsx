@@ -6,16 +6,15 @@ import { ExternalLink } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { fetchTotalOperators } from '../../pages/api/main-metrics';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, totalOperators] = await Promise.allSettled([
+  const [dailyActiveAgents, mainMetrics] = await Promise.allSettled([
     get7DaysAvgActivity(),
-    fetchTotalOperators(),
+    fetch('/api/main-metrics').then((r) => r.json()),
   ]);
   return {
     dailyActiveAgents: dailyActiveAgents.value,
-    totalOperators: totalOperators.value,
+    totalOperators: mainMetrics.value?.data?.totalOperators,
   };
 };
 
