@@ -1,10 +1,6 @@
 import { getMainMetrics } from 'common-util/api';
 import { getTotalUniqueStakers } from 'common-util/api/dune';
-import {
-  DUNE_AGENTS_QUERY_URL,
-  DUNE_MMV2_URL,
-  VALORY_GIT_URL,
-} from 'common-util/constants';
+import { DUNE_AGENTS_QUERY_URL, VALORY_GIT_URL } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -218,7 +214,8 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
     secondary={{
       value: `$${Number(mechTurnover).toLocaleString()}`,
       text: 'turnover',
-      link: DUNE_MMV2_URL,
+      link: '/data#mech-turnover',
+      isLinkExternal: false,
     }}
     tertiary={{
       value: '0%',
