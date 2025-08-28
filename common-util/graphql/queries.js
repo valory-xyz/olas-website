@@ -212,3 +212,21 @@ export const ataTransactionsQuery = gql`
     }
   }
 `;
+
+export const newMechFeesQuery = gql`
+  query NewMechFees {
+    global(id: "1") {
+      id
+      totalFeesInUSD
+    }
+  }
+`;
+
+export const legacyMechFeesQuery = gql`
+  query LegacyMechFees {
+    global(id: "global") {
+      id
+      totalFeesIn
+    }
+  }
+`;
