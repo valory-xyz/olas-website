@@ -41,6 +41,10 @@ const fetchMetrics = async () => {
         ? mainMetrics.value?.data?.ataTransactions
         : null,
     feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
+    mechTurnover:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.mechFees
+        : null,
   };
 };
 
@@ -202,7 +206,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ ataTransactions, feesCollected }) => (
+const AgentToAgentCard = ({ ataTransactions, feesCollected, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
@@ -214,7 +218,7 @@ const AgentToAgentCard = ({ ataTransactions, feesCollected }) => (
       isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(feesCollected).toLocaleString()}`,
+      value: `$${Number(mechTurnover).toLocaleString()}`,
       text: 'turnover',
       link: DUNE_MMV2_URL,
     }}
@@ -266,6 +270,7 @@ export const Activity = () => {
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
+      mechTurnover: metrics.mechTurnover || '--',
       ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
     };
   }, [metrics]);
@@ -345,6 +350,7 @@ export const Activity = () => {
           <AgentToAgentCard
             ataTransactions={processedMetrics?.ataTransactions}
             feesCollected={processedMetrics?.feesCollected}
+            mechTurnover={processedMetrics?.mechTurnover}
           />
           <div>
             <Image
@@ -393,6 +399,7 @@ export const Activity = () => {
         <AgentToAgentCard
           ataTransactions={processedMetrics?.ataTransactions}
           feesCollected={processedMetrics?.feesCollected}
+          mechTurnover={processedMetrics?.mechTurnover}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />
