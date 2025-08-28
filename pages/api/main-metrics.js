@@ -1,11 +1,14 @@
 import {
   ATA_GRAPH_CLIENTS,
+  MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
   ataTransactionsQuery,
   dailyAgentPerformancesQuery,
+  legacyMechFeesQuery,
+  newMechFeesQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
@@ -146,6 +149,40 @@ const fetchAtaTransactions = async () => {
   }
 };
 
+const fetchMechFees = async () => {
+  try {
+    const results = await Promise.allSettled([
+      MECH_FEES_GRAPH_CLIENTS.newMechGnosis.request(newMechFeesQuery),
+      MECH_FEES_GRAPH_CLIENTS.newMechBase.request(newMechFeesQuery),
+      MECH_FEES_GRAPH_CLIENTS.legacyMechGnosis.request(legacyMechFeesQuery),
+    ]);
+
+    let totalFees = 0;
+
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled' && result.value?.global) {
+        const feeValue = result.value.global;
+
+        if (index === 2) {
+          // Legacy mech fees (index 2) - convert from wei to XDAI
+          const weiValue = feeValue.totalFeesIn || '0';
+          const xdaiValue = Number(weiValue) / 10 ** 18;
+          totalFees += xdaiValue;
+        } else {
+          // New mech fees (indices 0, 1) - already in USD
+          const usdValue = Number(feeValue.totalFeesInUSD || '0');
+          totalFees += usdValue;
+        }
+      }
+    });
+
+    return totalFees.toFixed(2);
+  } catch (error) {
+    console.error('Error fetching mech fees:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
     const [
@@ -153,11 +190,13 @@ const fetchAllAgentMetrics = async () => {
       olasStakedResult,
       transactionsResult,
       ataTransactionsResult,
+      mechFeesResult,
     ] = await Promise.allSettled([
       fetchDailyAgentPerformance(),
       fetchTotalOlasStaked(),
       fetchTransactions(),
       fetchAtaTransactions(),
+      fetchMechFees(),
     ]);
 
     const metrics = {
@@ -165,6 +204,7 @@ const fetchAllAgentMetrics = async () => {
       olasStaked: null,
       transactions: null,
       ataTransactions: null,
+      mechFees: null,
     };
 
     // Process the results from Promise.allSettled
@@ -196,6 +236,12 @@ const fetchAllAgentMetrics = async () => {
         'Fetch ATA transactions failed:',
         ataTransactionsResult.reason,
       );
+    }
+
+    if (mechFeesResult.status === 'fulfilled') {
+      metrics.mechFees = mechFeesResult.value;
+    } else {
+      console.error('Fetch mech fees failed:', mechFeesResult.reason);
     }
 
     const data = {
