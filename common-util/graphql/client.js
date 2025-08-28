@@ -86,3 +86,18 @@ export const ATA_GRAPH_CLIENTS = {
     requestConfig,
   ),
 };
+
+export const MECH_FEES_GRAPH_CLIENTS = {
+  newMechGnosis: new GraphQLClient(
+    process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  newMechBase: new GraphQLClient(
+    process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  legacyMechGnosis: new GraphQLClient(
+    process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+    requestConfig,
+  ),
+};
