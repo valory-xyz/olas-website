@@ -1,7 +1,7 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-    legacyMechFeesQuery,
-    newMechFeesQuery,
+  legacyMechFeesQuery,
+  newMechFeesQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
