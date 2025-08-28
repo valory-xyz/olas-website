@@ -1,5 +1,5 @@
 import { getMainMetrics } from 'common-util/api';
-import { getFeeFlowMetrics, getTotalUniqueStakers } from 'common-util/api/dune';
+import { getTotalUniqueStakers } from 'common-util/api/dune';
 import {
   DUNE_AGENTS_QUERY_URL,
   DUNE_MMV2_URL,
@@ -16,10 +16,9 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, agents, feeMetrics] = await Promise.allSettled([
+  const [mainMetrics, agents] = await Promise.allSettled([
     getMainMetrics(),
     getTotalUniqueStakers(),
-    getFeeFlowMetrics(),
   ]);
 
   return {
@@ -40,7 +39,6 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.ataTransactions
         : null,
-    feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
     mechTurnover:
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.mechFees
@@ -206,7 +204,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ ataTransactions, feesCollected, mechTurnover }) => (
+const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
@@ -269,7 +267,6 @@ export const Activity = () => {
       agents: metrics.agents?.toLocaleString() || '--',
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
-      feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
       mechTurnover: metrics.mechTurnover || '--',
       ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
     };
@@ -349,7 +346,6 @@ export const Activity = () => {
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
             ataTransactions={processedMetrics?.ataTransactions}
-            feesCollected={processedMetrics?.feesCollected}
             mechTurnover={processedMetrics?.mechTurnover}
           />
           <div>
@@ -398,7 +394,6 @@ export const Activity = () => {
         />
         <AgentToAgentCard
           ataTransactions={processedMetrics?.ataTransactions}
-          feesCollected={processedMetrics?.feesCollected}
           mechTurnover={processedMetrics?.mechTurnover}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
