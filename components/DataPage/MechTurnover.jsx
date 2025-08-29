@@ -25,7 +25,7 @@ export const MechTurnoverInfo = () => {
         <p>The following queries aggregate mech fees from all three sources:</p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          New Mech Fees Query (Gnosis & Base)
+          New Mech Marketplace Fees Query
         </h3>
 
         <p className="text-purple-600">
