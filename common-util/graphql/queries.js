@@ -215,7 +215,7 @@ export const ataTransactionsQuery = gql`
 
 export const newMechFeesQuery = gql`
   query NewMechFees {
-    global(id: "1") {
+    global(id: "") {
       id
       totalFeesInUSD
     }
@@ -224,7 +224,7 @@ export const newMechFeesQuery = gql`
 
 export const legacyMechFeesQuery = gql`
   query LegacyMechFees {
-    global(id: "global") {
+    global(id: "") {
       id
       totalFeesIn
     }
