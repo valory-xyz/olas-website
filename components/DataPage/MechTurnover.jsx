@@ -46,7 +46,7 @@ export const MechTurnoverInfo = () => {
         <CodeSnippet>{newMechFeesQuery}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Legacy Mech Fees Query (Gnosis)
+          Legacy Mech Fees Query
         </h3>
 
         <p className="text-purple-600">
