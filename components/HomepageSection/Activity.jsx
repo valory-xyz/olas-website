@@ -246,14 +246,15 @@ const TransactionsCard = ({ transactions }) => (
 const AgentsGrid = () => (
   <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
     {agents.map((item) => (
-      <Image
-        key={item}
-        src={`/images/homepage/activity/${item}.png`}
-        alt={item}
-        width={62}
-        height={62}
-        className="hover:-translate-y-1 duration-150"
-      />
+      <Link key={item} href={`/agent-economies/${item}`}>
+        <Image
+          src={`/images/homepage/activity/${item}.png`}
+          alt={item}
+          width={62}
+          height={62}
+          className="hover:-translate-y-1 duration-150"
+        />
+      </Link>
     ))}
   </div>
 );
@@ -407,7 +408,7 @@ export const Activity = () => {
           height={202}
           className="mx-auto mb-12"
         />
-        <div className="mx-auto grid place-items-center">
+        <div className="mx-auto grid place-items-center z-10">
           <AgentsGrid />
           <div>
             As a result, <Link href="/agent-economies">Agent economies</Link>{' '}
