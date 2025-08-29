@@ -11,13 +11,14 @@ export const AtaTransactionsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks agent-to-agent transactions across Gnosis and Base networks.
-          This metric aggregates transaction data from multiple blockchain
-          sources to provide a comprehensive view of autonomous agent
-          interaction volume and cross-chain activity.
+          Tracks agent-to-agent transactions across Gnosis and Base networks
+          from multiple subgraph sources. This metric aggregates transaction
+          data from Mech Marketplace and Legacy Mech subgraphs to provide a
+          comprehensive view of autonomous agent interaction volume and
+          cross-chain activity.
         </p>
 
-        <p>The following query aggregates ATA transactions from both chains:</p>
+        <p>The following query aggregates ATA transactions from all sources:</p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
           ATA Transactions Query
@@ -26,13 +27,19 @@ export const AtaTransactionsInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_GNOSIS_ATA_SUBGRAPH_URL}
+            href={process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL}
             className="mr-2"
           >
-            Gnosis
+            Gnosis MM
           </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_ATA_SUBGRAPH_URL}>
-            Base
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Base MM
+          </ExternalLink>
+          <ExternalLink href={process.env.NEXT_PUBLIC_GNOSIS_LM_SUBGRAPH_URL}>
+            Gnosis LM
           </ExternalLink>
         </p>
         <CodeSnippet>{ataTransactionsQuery}</CodeSnippet>

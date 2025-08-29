@@ -25,7 +25,7 @@ export const MechTurnoverInfo = () => {
         <p>The following queries aggregate mech fees from all three sources:</p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          New Mech Fees Query (Gnosis & Base)
+          New Mech Marketplace Fees Query
         </h3>
 
         <p className="text-purple-600">
@@ -34,19 +34,19 @@ export const MechTurnoverInfo = () => {
             href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
             className="mr-2"
           >
-            New Mech Gnosis
+            Gnosis
           </ExternalLink>
           <ExternalLink
             href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
             className="mr-2"
           >
-            New Mech Base
+            Base
           </ExternalLink>
         </p>
         <CodeSnippet>{newMechFeesQuery}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Legacy Mech Fees Query (Gnosis)
+          Legacy Mech Fees Query
         </h3>
 
         <p className="text-purple-600">
@@ -54,7 +54,7 @@ export const MechTurnoverInfo = () => {
           <ExternalLink
             href={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}
           >
-            Legacy Mech Gnosis
+            Gnosis
           </ExternalLink>
         </p>
 

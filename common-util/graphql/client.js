@@ -78,26 +78,31 @@ export const predictAgentsGraphClient = new GraphQLClient(
 
 export const ATA_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(
-    process.env.NEXT_PUBLIC_GNOSIS_ATA_SUBGRAPH_URL,
+    process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL,
     requestConfig,
   ),
   base: new GraphQLClient(
-    process.env.NEXT_PUBLIC_BASE_ATA_SUBGRAPH_URL,
+    process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  legacyMech: new GraphQLClient(
+    process.env.NEXT_PUBLIC_GNOSIS_LM_SUBGRAPH_URL,
     requestConfig,
   ),
 };
 
 export const MECH_FEES_GRAPH_CLIENTS = {
-  newMechGnosis: new GraphQLClient(
+  gnosis: new GraphQLClient(
     process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
     requestConfig,
   ),
-  newMechBase: new GraphQLClient(
+  base: new GraphQLClient(
     process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL,
     requestConfig,
   ),
-  legacyMechGnosis: new GraphQLClient(
-    process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
-    requestConfig,
-  ),
 };
+
+export const legacyMechFeesGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+  requestConfig,
+);

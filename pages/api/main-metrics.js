@@ -1,5 +1,6 @@
 import {
   ATA_GRAPH_CLIENTS,
+  legacyMechFeesGraphClient,
   MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
@@ -161,6 +162,7 @@ const fetchAtaTransactions = async () => {
     const results = await Promise.allSettled([
       ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
       ATA_GRAPH_CLIENTS.base.request(ataTransactionsQuery),
+      ATA_GRAPH_CLIENTS.legacyMech.request(ataTransactionsQuery),
     ]);
 
     const ataTransactionsByChains = results
@@ -182,9 +184,9 @@ const fetchAtaTransactions = async () => {
 const fetchMechFees = async () => {
   try {
     const results = await Promise.allSettled([
-      MECH_FEES_GRAPH_CLIENTS.newMechGnosis.request(newMechFeesQuery),
-      MECH_FEES_GRAPH_CLIENTS.newMechBase.request(newMechFeesQuery),
-      MECH_FEES_GRAPH_CLIENTS.legacyMechGnosis.request(legacyMechFeesQuery),
+      MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
+      MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
+      legacyMechFeesGraphClient.request(legacyMechFeesQuery),
     ]);
 
     let totalFees = 0;
