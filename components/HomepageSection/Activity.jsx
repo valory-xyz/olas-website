@@ -1,10 +1,6 @@
 import { getMainMetrics } from 'common-util/api';
-import { getFeeFlowMetrics, getTotalUniqueStakers } from 'common-util/api/dune';
-import {
-  DUNE_AGENTS_QUERY_URL,
-  DUNE_MMV2_URL,
-  VALORY_GIT_URL,
-} from 'common-util/constants';
+import { getTotalUniqueStakers } from 'common-util/api/dune';
+import { DUNE_AGENTS_QUERY_URL, VALORY_GIT_URL } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -16,10 +12,9 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, agents, feeMetrics] = await Promise.allSettled([
+  const [mainMetrics, agents] = await Promise.allSettled([
     getMainMetrics(),
     getTotalUniqueStakers(),
-    getFeeFlowMetrics(),
   ]);
 
   return {
@@ -40,7 +35,14 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.ataTransactions
         : null,
-    feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
+    mechTurnover:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.mechFees
+        : null,
+    totalOperators:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.totalOperators
+        : null,
   };
 };
 
@@ -154,14 +156,15 @@ const ActivityCard = ({
   );
 };
 
-const UsersCard = ({ agents, olasStaked }) => (
+const UsersCard = ({ olasStaked, totalOperators }) => (
   <ActivityCard
     icon="users.png"
     text="Users"
     primary={{
-      value: agents,
-      text: 'agents deployed',
-      link: DUNE_AGENTS_QUERY_URL,
+      value: totalOperators,
+      text: 'Agents deployed',
+      link: '/data#operators',
+      isLinkExternal: false,
     }}
     secondary={{
       value: olasStaked,
@@ -202,7 +205,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ ataTransactions, feesCollected }) => (
+const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
@@ -214,9 +217,10 @@ const AgentToAgentCard = ({ ataTransactions, feesCollected }) => (
       isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(feesCollected).toLocaleString()}`,
+      value: `$${Number(mechTurnover).toLocaleString()}`,
       text: 'turnover',
-      link: DUNE_MMV2_URL,
+      link: '/data#mech-turnover',
+      isLinkExternal: false,
     }}
     tertiary={{
       value: '0%',
@@ -265,8 +269,9 @@ export const Activity = () => {
       agents: metrics.agents?.toLocaleString() || '--',
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
-      feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
+      mechTurnover: metrics.mechTurnover || '--',
       ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
+      totalOperators: metrics.totalOperators?.toLocaleString() || '--',
     };
   }, [metrics]);
 
@@ -302,6 +307,7 @@ export const Activity = () => {
           <UsersCard
             agents={processedMetrics?.agents}
             olasStaked={processedMetrics?.olasStaked}
+            totalOperators={processedMetrics?.totalOperators}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -344,7 +350,7 @@ export const Activity = () => {
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
             ataTransactions={processedMetrics?.ataTransactions}
-            feesCollected={processedMetrics?.feesCollected}
+            mechTurnover={processedMetrics?.mechTurnover}
           />
           <div>
             <Image
@@ -364,6 +370,7 @@ export const Activity = () => {
         <UsersCard
           agents={processedMetrics?.agents}
           olasStaked={processedMetrics?.olasStaked}
+          totalOperators={processedMetrics?.totalOperators}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}
@@ -392,7 +399,7 @@ export const Activity = () => {
         />
         <AgentToAgentCard
           ataTransactions={processedMetrics?.ataTransactions}
-          feesCollected={processedMetrics?.feesCollected}
+          mechTurnover={processedMetrics?.mechTurnover}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />

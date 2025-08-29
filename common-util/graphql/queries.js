@@ -204,11 +204,38 @@ export const registryGlobalsQuery = gql`
   }
 `;
 
+export const operatorGlobalsQuery = gql`
+  query OperatorGlobals {
+    globals {
+      id
+      totalOperators
+    }
+  }
+`;
+
 export const ataTransactionsQuery = gql`
   query AtaTransactions {
     globals(where: { id: "" }) {
       id
       totalAtaTransactions
+    }
+  }
+`;
+
+export const newMechFeesQuery = gql`
+  query NewMechFees {
+    global(id: "") {
+      id
+      totalFeesInUSD
+    }
+  }
+`;
+
+export const legacyMechFeesQuery = gql`
+  query LegacyMechFees {
+    global(id: "") {
+      id
+      totalFeesIn
     }
   }
 `;
