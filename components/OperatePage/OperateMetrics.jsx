@@ -1,11 +1,6 @@
-import {
-  get7DaysAvgActivity,
-  getTotalUniqueStakers,
-} from 'common-util/api/dune';
-import {
-  DUNE_DAAS_QUERY_URL,
-  DUNE_OPERATORS_QUERY_URL,
-} from 'common-util/constants';
+import { getMainMetrics } from 'common-util/api';
+import { get7DaysAvgActivity } from 'common-util/api/dune';
+import { DUNE_DAAS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -14,13 +9,13 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, totalUniqueStakers] = await Promise.allSettled([
+  const [dailyActiveAgents, mainMetrics] = await Promise.allSettled([
     get7DaysAvgActivity(),
-    getTotalUniqueStakers(),
+    getMainMetrics(),
   ]);
   return {
     dailyActiveAgents: dailyActiveAgents.value,
-    totalUniqueStakers: totalUniqueStakers.value,
+    totalOperators: mainMetrics.value?.data?.totalOperators,
   };
 };
 
@@ -37,8 +32,8 @@ export const OperateMetrics = () => {
         imageSrc: 'operators.png',
         labelText: 'Operators',
         subText: 'All-time unique agent Operators',
-        value: metrics?.totalUniqueStakers?.toLocaleString(),
-        source: DUNE_OPERATORS_QUERY_URL,
+        value: metrics?.totalOperators?.toLocaleString(),
+        source: '/data#operators',
       },
       {
         id: 'DAA',
