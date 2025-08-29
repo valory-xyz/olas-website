@@ -34,7 +34,7 @@ export const MechTurnoverInfo = () => {
             href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
             className="mr-2"
           >
-            New Mech Gnosis
+            Gnosis
           </ExternalLink>
           <ExternalLink
             href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
