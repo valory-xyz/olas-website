@@ -128,6 +128,7 @@ const fetchAtaTransactions = async () => {
     const results = await Promise.allSettled([
       ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
       ATA_GRAPH_CLIENTS.base.request(ataTransactionsQuery),
+      ATA_GRAPH_CLIENTS.legacyMech.request(ataTransactionsQuery),
     ]);
 
     const ataTransactionsByChains = results
