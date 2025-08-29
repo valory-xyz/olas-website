@@ -54,7 +54,7 @@ export const MechTurnoverInfo = () => {
           <ExternalLink
             href={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}
           >
-            Legacy Mech Gnosis
+            Gnosis
           </ExternalLink>
         </p>
 
