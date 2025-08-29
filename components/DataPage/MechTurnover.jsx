@@ -40,7 +40,7 @@ export const MechTurnoverInfo = () => {
             href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
             className="mr-2"
           >
-            New Mech Base
+            Base
           </ExternalLink>
         </p>
         <CodeSnippet>{newMechFeesQuery}</CodeSnippet>
