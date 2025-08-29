@@ -39,6 +39,10 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.mechFees
         : null,
+    totalOperators:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.totalOperators
+        : null,
   };
 };
 
@@ -152,14 +156,15 @@ const ActivityCard = ({
   );
 };
 
-const UsersCard = ({ agents, olasStaked }) => (
+const UsersCard = ({ olasStaked, totalOperators }) => (
   <ActivityCard
     icon="users.png"
     text="Users"
     primary={{
-      value: agents,
-      text: 'agents deployed',
-      link: DUNE_AGENTS_QUERY_URL,
+      value: totalOperators,
+      text: 'Agents deployed',
+      link: '/data#operators',
+      isLinkExternal: false,
     }}
     secondary={{
       value: olasStaked,
@@ -266,6 +271,7 @@ export const Activity = () => {
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       mechTurnover: metrics.mechTurnover || '--',
       ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
+      totalOperators: metrics.totalOperators?.toLocaleString() || '--',
     };
   }, [metrics]);
 
@@ -301,6 +307,7 @@ export const Activity = () => {
           <UsersCard
             agents={processedMetrics?.agents}
             olasStaked={processedMetrics?.olasStaked}
+            totalOperators={processedMetrics?.totalOperators}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -363,6 +370,7 @@ export const Activity = () => {
         <UsersCard
           agents={processedMetrics?.agents}
           olasStaked={processedMetrics?.olasStaked}
+          totalOperators={processedMetrics?.totalOperators}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}

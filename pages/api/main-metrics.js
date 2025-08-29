@@ -10,6 +10,7 @@ import {
   dailyAgentPerformancesQuery,
   legacyMechFeesQuery,
   newMechFeesQuery,
+  operatorGlobalsQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
@@ -127,6 +128,35 @@ const fetchTransactions = async () => {
   }
 };
 
+const fetchTotalOperators = async () => {
+  try {
+    const results = await Promise.allSettled([
+      REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.base.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.mode.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.optimism.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.celo.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.ethereum.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.polygon.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.arbitrum.request(operatorGlobalsQuery),
+    ]);
+
+    const operatorsByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value.globals?.[0]?.totalOperators ?? 0);
+
+    const totalOperators = operatorsByChains.reduce(
+      (sum, operatorsByChain) => sum + operatorsByChain,
+      0,
+    );
+
+    return totalOperators;
+  } catch (error) {
+    console.error('Error fetching total operators:', error);
+    return null;
+  }
+};
+
 const fetchAtaTransactions = async () => {
   try {
     const results = await Promise.allSettled([
@@ -193,12 +223,14 @@ const fetchAllAgentMetrics = async () => {
       transactionsResult,
       ataTransactionsResult,
       mechFeesResult,
+      totalOperatorsResult,
     ] = await Promise.allSettled([
       fetchDailyAgentPerformance(),
       fetchTotalOlasStaked(),
       fetchTransactions(),
       fetchAtaTransactions(),
       fetchMechFees(),
+      fetchTotalOperators(),
     ]);
 
     const metrics = {
@@ -207,6 +239,7 @@ const fetchAllAgentMetrics = async () => {
       transactions: null,
       ataTransactions: null,
       mechFees: null,
+      totalOperators: null,
     };
 
     // Process the results from Promise.allSettled
@@ -244,6 +277,15 @@ const fetchAllAgentMetrics = async () => {
       metrics.mechFees = mechFeesResult.value;
     } else {
       console.error('Fetch mech fees failed:', mechFeesResult.reason);
+    }
+
+    if (totalOperatorsResult.status === 'fulfilled') {
+      metrics.totalOperators = totalOperatorsResult.value;
+    } else {
+      console.error(
+        'Fetch total operators failed:',
+        totalOperatorsResult.reason,
+      );
     }
 
     const data = {

@@ -204,6 +204,15 @@ export const registryGlobalsQuery = gql`
   }
 `;
 
+export const operatorGlobalsQuery = gql`
+  query OperatorGlobals {
+    globals {
+      id
+      totalOperators
+    }
+  }
+`;
+
 export const ataTransactionsQuery = gql`
   query AtaTransactions {
     globals(where: { id: "" }) {
