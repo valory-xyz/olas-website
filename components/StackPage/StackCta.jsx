@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { DOCS_BASE_URL } from 'common-util/constants';
+import { STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 
@@ -22,7 +22,7 @@ export const StackCta = () => (
       <div className="flex flex-wrap gap-2 justify-center">
         <Button variant="default" size="xl" asChild isExternal>
           <a
-            href={`${DOCS_BASE_URL}/open-autonomy`}
+            href={`${STACK_URL}/open-autonomy`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -2,8 +2,8 @@
   {
     "id": "1701827e-54d4-4ba9-98b1-044217ccd85f",
     "title": "Docs",
-    "description": "Resource for all things technical",
-    "url": "https://docs.autonolas.network",
+    "description": "Resources on all things Olas",
+    "url": "https://docs.olas.network",
     "imageFilename": "docs.svg",
     "tags": ["bonds", "dev-rewards"]
   },
@@ -17,9 +17,9 @@
   },
   {
     "id": "36e2bab3-1ba7-48a5-9537-afa8516f72e1",
-    "title": "Dev Academy Videos",
-    "description": "The what, why and how of becoming an Olas developer",
-    "url": "https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl",
+    "title": "Stack",
+    "description": "The technical foundation of Olas",
+    "url": "https://stack.olas.network/",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["build"]
   },

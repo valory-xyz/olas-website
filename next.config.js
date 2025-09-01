@@ -40,6 +40,21 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/academy',
+        destination: '/404',
+        permanent: false,
+      },
+      {
+        source: '/protocol',
+        destination: '/stack',
+        permanent: true,
+      },
+      {
+        source: '/learn',
+        destination: '/agents',
+        permanent: true,
+      },
+      {
         source: '/brand-and-press-kit',
         destination:
           'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
