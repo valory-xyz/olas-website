@@ -138,7 +138,7 @@ export const TwoTypes = () => {
                   </p>
                   <p className="mb-3">
                     In Olas&apos; technical language, decentralized agents are
-                    referred to as &qout;autonomous services with multiple agent
+                    referred to as &quot;autonomous services with multiple agent
                     instances&quot;.
                   </p>
                   <p>
