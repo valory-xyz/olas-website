@@ -1,14 +1,11 @@
-import {
-  SCREEN_WIDTH_LG,
-  SUB_HEADER_CLASS,
-  TEXT_LARGE_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, TEXT_LARGE_CLASS } from 'common-util/classes';
 import {
   VALORY_GIT_URL,
   X_OLAS_URL,
   X_VALORY_AG_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import SectionHeading from 'components/SectionHeading';
 import Image from 'next/image';
 
 const audits = [
@@ -175,8 +172,14 @@ export const ProtocolAudits = () => (
     id="protocol-audits"
   >
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Protocol audits</h2>
-
+      <SectionHeading
+        size="max-sm:text-5xl"
+        color="text-gray-900"
+        weight="font-bold"
+        other="text-center mb-0"
+      >
+        Protocol Audits
+      </SectionHeading>
       {audits.map((audit) => (
         <div key={audit.category}>
           <p className={`${TEXT_LARGE_CLASS} font-bold my-4`}>

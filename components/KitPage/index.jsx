@@ -1,10 +1,9 @@
-import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import { STACK_URL } from 'common-util/constants';
 import kits from 'data/kits.json';
 import { BUTTON } from 'styles/globals';
-import { DOCS_BASE_URL } from 'common-util/constants';
 import Meta from '../Meta';
 
 export const KitPage = () => {
@@ -34,7 +33,7 @@ export const KitPage = () => {
             </a>
             <a
               className={BUTTON}
-              href={`${DOCS_BASE_URL}/product/${kit.id}kit`}
+              href={`${STACK_URL}/product/${kit.id}kit`}
               target={kit.liveLink.external ? '_blank' : '_self'}
               rel={kit.liveLink.external ? 'noopener noreferrer' : ''}
             >

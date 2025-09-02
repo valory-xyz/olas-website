@@ -150,6 +150,25 @@ const faqList = [
           </>
         ),
       },
+      {
+        id: 'multi-agent-systems',
+        title: 'Does Olas support multi-agent systems?',
+        desc: (
+          <>
+            <p className="mb-3">
+              Olas supports a wide variety of multi-agent systems, that is
+              systems of multiple interacting intelligent agents that solve
+              problems that are difficult for individual agents to solve.
+            </p>
+            <p>
+              Evidently, any agent economy is a multi-agent system. Moreover,
+              decentralized agents can be a multi-agent system when the
+              individual agent instances in the autonomous service take on
+              differentiated tasks.
+            </p>
+          </>
+        ),
+      },
     ],
   },
   {

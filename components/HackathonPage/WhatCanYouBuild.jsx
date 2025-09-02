@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { DOCS_BASE_URL } from 'common-util/constants';
+import { STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -13,7 +13,7 @@ const list = [
       <>
         <p className="mb-2">
           Use Mech agents in your projects via the{' '}
-          <ExternalLink href={`${DOCS_BASE_URL}/mech-client/`}>
+          <ExternalLink href={`${STACK_URL}/mech-client/`}>
             mech-client
           </ExternalLink>
           . Think of it as plugging powerful AI tools directly into your app or

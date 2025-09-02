@@ -82,7 +82,7 @@ export const NewToOlas = () => (
         </Card>
       ))}
 
-      <div className="mx-auto md:col-span-3 justify-center mt-8">
+      {/* <div className="mx-auto md:col-span-3 justify-center mt-8">
         <Button
           variant="default"
           size="xl"
@@ -93,7 +93,7 @@ export const NewToOlas = () => (
             Explore Valory&apos;s structured programs
           </a>
         </Button>
-      </div>
+      </div> */}
     </div>
   </SectionWrapper>
 );
