@@ -1,6 +1,6 @@
 import {
   BUILD_URL,
-  DOCS_BASE_URL,
+  STACK_URL,
   VALORY_GIT_URL,
   VALORY_URL,
 } from 'common-util/constants';
@@ -45,7 +45,7 @@ const resources = [
     description: 'Construct your own marketplace for AI tools',
     actions: [
       {
-        url: `${DOCS_BASE_URL}/product/mechkit/`,
+        url: `${STACK_URL}/product/mechkit/`,
         text: 'See the MechKit',
       },
     ],

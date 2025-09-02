@@ -1,6 +1,6 @@
 import {
   CORE_TECHNICAL_DOCUMENT,
-  DOCS_BASE_URL,
+  STACK_URL,
   WHITEPAPER_SUMMARY,
 } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
@@ -9,7 +9,7 @@ const list = [
   {
     title: 'Tokenomics Dev Documentation',
     urlName: 'Learn more',
-    url: `${DOCS_BASE_URL}/protocol/tokenomics/`,
+    url: `${STACK_URL}/protocol/tokenomics/`,
     isSubsite: true,
   },
   {
