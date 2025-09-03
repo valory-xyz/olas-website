@@ -1,8 +1,7 @@
-export const calculate7DayAverage = (performances) => {
-  if (performances.length === 0) return 0;
-  const total = performances.reduce(
-    (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
-    0,
-  );
+export const calculate7DayAverage = (items, key) => {
+  if (!items || items.length === 0) return 0;
+
+  const total = items.reduce((sum, item) => sum + Number(item?.[key] ?? 0), 0);
+
   return total / 7;
 };

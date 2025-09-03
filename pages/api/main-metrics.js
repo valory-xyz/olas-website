@@ -12,22 +12,9 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 
-const get7DaysPerformanceArray = (performanceArray) => {
-  const resultArray = performanceArray ?? [];
-  return [
-    ...resultArray,
-    ...Array(7 - resultArray.length).fill({ count: 0 }),
-  ].slice(0, 7);
-};
-
-const get7DaysAverage = (array) => {
-  const totalCount = array.reduce((sum, item) => sum + item.count, 0);
-  return totalCount / 7;
-};
-
 const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
   try {
     const results = await Promise.allSettled([
@@ -51,12 +38,11 @@ const fetchDailyAgentPerformance = async () => {
 
     const performanceByChains = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) =>
-        get7DaysPerformanceArray(result.value.dailyActiveMultisigs_collection),
-      );
+      .map((result) => result.value.dailyActiveMultisigs_collection ?? []);
 
     const totalAverage = performanceByChains.reduce(
-      (sum, performanceByChain) => sum + get7DaysAverage(performanceByChain),
+      (sum, performanceByChain) =>
+        sum + calculate7DayAverage(performanceByChain, 'count'),
       0,
     );
 

@@ -101,8 +101,14 @@ const fetchDailyAgentPerformance = async () => {
     const modePerformances = modeResult.dailyAgentPerformances ?? [];
     const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
 
-    const modeAverage = calculate7DayAverage(modePerformances);
-    const optimismAverage = calculate7DayAverage(optimismPerformances);
+    const modeAverage = calculate7DayAverage(
+      modePerformances,
+      'activeMultisigCount',
+    );
+    const optimismAverage = calculate7DayAverage(
+      optimismPerformances,
+      'activeMultisigCount',
+    );
 
     const average = modeAverage + optimismAverage;
 

@@ -24,8 +24,14 @@ const fetchDailyAgentPerformance = async () => {
     const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
     const basePerformances = baseResult.dailyAgentPerformances ?? [];
 
-    const gnosisAverage = calculate7DayAverage(gnosisPerformances);
-    const baseAverage = calculate7DayAverage(basePerformances);
+    const gnosisAverage = calculate7DayAverage(
+      gnosisPerformances,
+      'activeMultisigCount',
+    );
+    const baseAverage = calculate7DayAverage(
+      basePerformances,
+      'activeMultisigCount',
+    );
 
     const average = gnosisAverage + baseAverage;
 
