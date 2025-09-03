@@ -201,6 +201,20 @@ export const dailyPredictAgentsPerformancesQuery = gql`
   }
 `;
 
+export const predictAgentTxCountsQuery = gql`
+  query PredictAgentTxs($agentIds: [Int!]!) {
+    agentPerformances(
+      where: { id_in: $agentIds }
+      first: 1000
+      orderBy: id
+      orderDirection: asc
+    ) {
+      id
+      txCount
+    }
+  }
+`;
+
 export const dailyAgentPerformancesQuery = gql`
   query DailyActiveMultisigs($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyActiveMultisigs_collection(
