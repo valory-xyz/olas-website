@@ -1,12 +1,6 @@
 import { getMainMetrics, getPredictMetrics } from 'common-util/api';
-import {
-  getPredictionTxs,
-  getTotalPredictTransactions,
-} from 'common-util/api/dune';
-import {
-  DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-  OPERATE_URL,
-} from 'common-util/constants';
+import { getTotalPredictTransactions } from 'common-util/api/dune';
+import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -17,29 +11,36 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, transactions, total, performanceMetrics] =
-    await Promise.allSettled([
-      getMainMetrics(),
-      getPredictionTxs(),
-      getTotalPredictTransactions(),
-      getPredictMetrics(),
-    ]);
+  const [mainMetrics, total, performanceMetrics] = await Promise.allSettled([
+    getMainMetrics(),
+    getTotalPredictTransactions(),
+    getPredictMetrics(),
+  ]);
 
   const dailyActiveAgents =
     mainMetrics.status === 'fulfilled'
       ? (mainMetrics.value?.data?.predictDaa7dAvg ?? null)
       : null;
 
+  const predictTxsByType =
+    mainMetrics.status === 'fulfilled'
+      ? (mainMetrics.value?.data?.predictTxsByType ?? null)
+      : null;
+
+  const traderTxs = predictTxsByType
+    ? (predictTxsByType.valory_trader || 0) +
+      (predictTxsByType.other_trader || 0)
+    : null;
+  const mechTxs = predictTxsByType ? (predictTxsByType.mech ?? 0) : null;
+  const marketCreatorTxs = predictTxsByType
+    ? (predictTxsByType.market_maker ?? 0)
+    : null;
+
   return {
     dailyActiveAgents,
-    traderTxs:
-      transactions.status === 'fulfilled' ? transactions.value.traderTxs : null,
-    mechTxs:
-      transactions.status === 'fulfilled' ? transactions.value.mechTxs : null,
-    marketCreatorTxs:
-      transactions.status === 'fulfilled'
-        ? transactions.value.marketCreatorTxs
-        : null,
+    traderTxs,
+    mechTxs,
+    marketCreatorTxs,
     totalTxs: total.status === 'fulfilled' ? total.value : null,
     partialRoi:
       performanceMetrics.status === 'fulfilled'
@@ -139,8 +140,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
         ),
         value: metrics?.traderTxs ? metrics.traderTxs.toLocaleString() : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
       {
@@ -158,8 +159,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
         ),
         value: metrics?.mechTxs ? metrics.mechTxs.toLocaleString() : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
       {
@@ -186,8 +187,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
           ? metrics.marketCreatorTxs.toLocaleString()
           : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
     ],
