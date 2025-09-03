@@ -177,6 +177,30 @@ export const dailyMechAgentPerformancesQuery = gql`
   }
 `;
 
+export const dailyPredictAgentsPerformancesQuery = gql`
+  query DailyPredictPerformances(
+    $agentIds: [Int!]!
+    $timestamp_gt: Int!
+    $timestamp_lt: Int!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId_in: $agentIds }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: asc
+      first: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+    }
+  }
+`;
+
 export const dailyAgentPerformancesQuery = gql`
   query DailyActiveMultisigs($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyActiveMultisigs_collection(

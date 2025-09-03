@@ -1,12 +1,10 @@
-import { getPredictMetrics } from 'common-util/api';
+import { getMainMetrics, getPredictMetrics } from 'common-util/api';
 import {
-  get7DaysAvgActivityPredict,
   getPredictionTxs,
   getTotalPredictTransactions,
 } from 'common-util/api/dune';
 import {
   DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-  DUNE_PREDICT_DAA_QUERY_URL,
   OPERATE_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -19,17 +17,21 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, transactions, total, performanceMetrics] =
+  const [mainMetrics, transactions, total, performanceMetrics] =
     await Promise.allSettled([
-      get7DaysAvgActivityPredict(),
+      getMainMetrics(),
       getPredictionTxs(),
       getTotalPredictTransactions(),
       getPredictMetrics(),
     ]);
 
+  const dailyActiveAgents =
+    mainMetrics.status === 'fulfilled'
+      ? (mainMetrics.value?.data?.predictDaa7dAvg ?? null)
+      : null;
+
   return {
-    dailyActiveAgents:
-      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
+    dailyActiveAgents,
     traderTxs:
       transactions.status === 'fulfilled' ? transactions.value.traderTxs : null,
     mechTxs:
@@ -217,7 +219,7 @@ export const Activity = () => {
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={DUNE_PREDICT_DAA_QUERY_URL}
+              href="/data#predict-daily-active-agents"
               hideArrow
             >
               {metrics.dailyActiveAgents}

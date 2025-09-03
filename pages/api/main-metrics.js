@@ -8,6 +8,7 @@ import {
 import {
   ataTransactionsQuery,
   dailyAgentPerformancesQuery,
+  dailyPredictAgentsPerformancesQuery,
   legacyMechFeesQuery,
   newMechFeesQuery,
   operatorGlobalsQuery,
@@ -215,6 +216,49 @@ const fetchMechFees = async () => {
   }
 };
 
+const PREDICT_AGENT_IDS = [13, 14, 25, 9, 26, 29, 37, 36, 33, 44, 46, 45];
+
+const fetchPredictDaa7dAvg = async () => {
+  try {
+    const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+    const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+
+    const { dailyAgentPerformances: rows = [] } =
+      await REGISTRY_GRAPH_CLIENTS.gnosis.request(
+        dailyPredictAgentsPerformancesQuery,
+        {
+          agentIds: PREDICT_AGENT_IDS,
+          timestamp_gt,
+          timestamp_lt,
+        },
+      );
+
+    const totalsByDay = new Map();
+    rows.forEach((r) => {
+      const key = new Date(Number(r.dayTimestamp) * 1000)
+        .toISOString()
+        .slice(0, 10);
+      const prev = totalsByDay.get(key) || 0;
+      totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
+    });
+
+    const dayKeys = [];
+    for (let i = 7; i >= 1; i -= 1) {
+      const ts = timestamp_lt - i * 24 * 60 * 60;
+      dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
+    }
+
+    const total = dayKeys.reduce(
+      (acc, k) => acc + (totalsByDay.get(k) || 0),
+      0,
+    );
+    return Math.floor(total / 7);
+  } catch (error) {
+    console.error('Error fetching Predict DAA:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
     const [
@@ -224,6 +268,7 @@ const fetchAllAgentMetrics = async () => {
       ataTransactionsResult,
       mechFeesResult,
       totalOperatorsResult,
+      predictDaaResult,
     ] = await Promise.allSettled([
       fetchDailyAgentPerformance(),
       fetchTotalOlasStaked(),
@@ -231,6 +276,7 @@ const fetchAllAgentMetrics = async () => {
       fetchAtaTransactions(),
       fetchMechFees(),
       fetchTotalOperators(),
+      fetchPredictDaa7dAvg(),
     ]);
 
     const metrics = {
@@ -240,6 +286,7 @@ const fetchAllAgentMetrics = async () => {
       ataTransactions: null,
       mechFees: null,
       totalOperators: null,
+      predictDaa7dAvg: null,
     };
 
     // Process the results from Promise.allSettled
@@ -286,6 +333,12 @@ const fetchAllAgentMetrics = async () => {
         'Fetch total operators failed:',
         totalOperatorsResult.reason,
       );
+    }
+
+    if (predictDaaResult.status === 'fulfilled') {
+      metrics.predictDaa7dAvg = predictDaaResult.value;
+    } else {
+      console.error('Fetch Predict DAA failed:', predictDaaResult.reason);
     }
 
     const data = {
