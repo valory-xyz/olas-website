@@ -23,18 +23,12 @@ const fetchDailyAgentPerformance = async () => {
     const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
     const basePerformances = baseResult.dailyAgentPerformances ?? [];
 
-    const performances = [...gnosisPerformances, ...basePerformances];
+    const gnosisAverage = calculate7DayAverage(gnosisPerformances);
+    const baseAverage = calculate7DayAverage(basePerformances);
 
-    if (performances.length === 0) return 0;
+    const totalAverage = gnosisAverage + baseAverage;
 
-    const total = performances.reduce(
-      (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
-      0,
-    );
-
-    const average = total / performances.length;
-
-    return average;
+    return totalAverage;
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
     return null;
