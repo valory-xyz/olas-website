@@ -212,6 +212,25 @@ tr, th {
   padding-left: 16px;
 }
 
+.next-error-h1 {
+  display: inline-block;
+  margin: 0;
+  margin-right: 20px;
+  padding-right: 23px;
+  font-size: 24px;
+  font-weight: 500;
+  vertical-align: top;
+  line-height: 49px;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+}
+.next-error-desc {
+  display: inline-block;
+  text-align: left;
+  line-height: 49px;
+  height: 49px;
+  vertical-align: middle;
+}
+
 @font-face {
   font-family: 'Neue Machina';
   src: url('/fonts/neue-machina.woff2')format('woff2');
