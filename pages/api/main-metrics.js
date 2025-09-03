@@ -12,6 +12,7 @@ import {
   legacyMechFeesQuery,
   newMechFeesQuery,
   operatorGlobalsQuery,
+  predictAgentTxCountsQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
@@ -259,6 +260,46 @@ const fetchPredictDaa7dAvg = async () => {
   }
 };
 
+const PREDICT_CLASSIFICATION = {
+  market_maker: [13],
+  valory_trader: [14, 25],
+  mech: [9, 26, 29, 37, 36],
+  other_trader: [33, 44, 46, 45],
+};
+
+const fetchPredictTxsByAgentType = async () => {
+  try {
+    const agentIds = Object.values(PREDICT_CLASSIFICATION)
+      .flat()
+      .map((n) => Number(n));
+
+    const response = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
+      predictAgentTxCountsQuery,
+      { agentIds },
+    );
+
+    const rows = response?.agentPerformances || [];
+    const idToTx = new Map();
+    rows.forEach((row) => {
+      idToTx.set(String(row.id), BigInt(row.txCount || 0));
+    });
+
+    const result = {};
+    Object.entries(PREDICT_CLASSIFICATION).forEach(([category, ids]) => {
+      let sum = 0n;
+      ids.forEach((id) => {
+        sum += idToTx.get(String(Number(id))) || 0n;
+      });
+      result[category] = Number(sum);
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching Predict txs by agent type:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
     const [
@@ -269,6 +310,7 @@ const fetchAllAgentMetrics = async () => {
       mechFeesResult,
       totalOperatorsResult,
       predictDaaResult,
+      predictTxsByTypeResult,
     ] = await Promise.allSettled([
       fetchDailyAgentPerformance(),
       fetchTotalOlasStaked(),
@@ -277,6 +319,7 @@ const fetchAllAgentMetrics = async () => {
       fetchMechFees(),
       fetchTotalOperators(),
       fetchPredictDaa7dAvg(),
+      fetchPredictTxsByAgentType(),
     ]);
 
     const metrics = {
@@ -287,6 +330,7 @@ const fetchAllAgentMetrics = async () => {
       mechFees: null,
       totalOperators: null,
       predictDaa7dAvg: null,
+      predictTxsByType: null,
     };
 
     // Process the results from Promise.allSettled
@@ -339,6 +383,15 @@ const fetchAllAgentMetrics = async () => {
       metrics.predictDaa7dAvg = predictDaaResult.value;
     } else {
       console.error('Fetch Predict DAA failed:', predictDaaResult.reason);
+    }
+
+    if (predictTxsByTypeResult.status === 'fulfilled') {
+      metrics.predictTxsByType = predictTxsByTypeResult.value;
+    } else {
+      console.error(
+        'Fetch Predict txs by agent type failed:',
+        predictTxsByTypeResult.reason,
+      );
     }
 
     const data = {
