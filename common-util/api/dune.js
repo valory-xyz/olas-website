@@ -43,7 +43,6 @@ export const get7DaysAvgActivity = async () => {
   }
 };
 
-// Removed: Predict DAA now sourced from our subgraph via /api/main-metrics
 
 export const getTotalTransactionsCount = async () => {
   try {
@@ -74,7 +73,6 @@ export const getTotalTokenHolders = async () => {
   }
 };
 
-// Removed: Predict txs by agent type now sourced from our subgraph via /api/main-metrics
 
 export const getTotalPredictTransactions = async () => {
   try {
