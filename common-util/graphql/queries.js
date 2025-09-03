@@ -205,7 +205,6 @@ export const predictAgentTxCountsQuery = gql`
   query PredictAgentTxs($agentIds: [Int!]!) {
     agentPerformances(
       where: { id_in: $agentIds }
-      first: 1000
       orderBy: id
       orderDirection: asc
     ) {
