@@ -62,6 +62,21 @@ export const TransactionsInfo = () => {
             (Prediction Brokers), and Market Creators/Closers.
           </p>
 
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Classification used
+          </h3>
+          <div className="space-y-1">
+            <p>
+              <strong>market_maker</strong> agent IDs: 13
+            </p>
+            <p>
+              <strong>valory_trader</strong> agent IDs: 14, 25
+            </p>
+            <p>
+              <strong>mech</strong> agent IDs: 9, 26, 29, 37, 36
+            </p>
+          </div>
+
           <p>The following query is used to fetch per-agent tx counts:</p>
 
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
