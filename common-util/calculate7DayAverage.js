@@ -4,5 +4,5 @@ export const calculate7DayAverage = (performances) => {
     (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
     0,
   );
-  return total / performances.length;
+  return total / 7;
 };

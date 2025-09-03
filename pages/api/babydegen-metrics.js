@@ -104,9 +104,9 @@ const fetchDailyAgentPerformance = async () => {
     const modeAverage = calculate7DayAverage(modePerformances);
     const optimismAverage = calculate7DayAverage(optimismPerformances);
 
-    const totalAverage = modeAverage + optimismAverage;
+    const average = modeAverage + optimismAverage;
 
-    return totalAverage;
+    return average;
   } catch (error) {
     console.error('Error fetching babydegen daily agent performances:', error);
     return null;

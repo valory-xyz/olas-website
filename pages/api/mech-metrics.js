@@ -1,3 +1,4 @@
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { dailyMechAgentPerformancesQuery } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -26,9 +27,9 @@ const fetchDailyAgentPerformance = async () => {
     const gnosisAverage = calculate7DayAverage(gnosisPerformances);
     const baseAverage = calculate7DayAverage(basePerformances);
 
-    const totalAverage = gnosisAverage + baseAverage;
+    const average = gnosisAverage + baseAverage;
 
-    return totalAverage;
+    return average;
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
     return null;
