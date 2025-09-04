@@ -7,7 +7,7 @@ module.exports = {
 
   additionalPaths: () => {
     const agentsPaths = agentsData.map((agents) => ({
-      loc: `/agents/${service.slug}`,
+      loc: `/agents/${agents.slug}`,
       changefreq: 'weekly',
     }));
 

@@ -16,7 +16,9 @@ export const CTA = () => (
         <Link href={`${STACK_URL}/mech-client`}>Hire Mech Agents</Link>
       </Button>
       <Button variant="default" size="xl" asChild className="w-full md:w-auto">
-        <Link href={`${STACK_URL}/mech-tools-dev/`}>Put Your Agent to Work</Link>
+        <Link href={`${STACK_URL}/mech-tools-dev/`}>
+          Put Your Agent to Work
+        </Link>
       </Button>
     </div>
   </SectionWrapper>
