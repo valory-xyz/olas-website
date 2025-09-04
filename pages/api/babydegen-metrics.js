@@ -1,4 +1,5 @@
 import { Client } from '@gradio/client';
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
@@ -82,8 +83,8 @@ const fetchOlasApr = async () => {
 };
 
 const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
   try {
     const [modeResult, optimismResult] = await Promise.all([
@@ -100,16 +101,16 @@ const fetchDailyAgentPerformance = async () => {
     const modePerformances = modeResult.dailyAgentPerformances ?? [];
     const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
 
-    const performances = [...modePerformances, ...optimismPerformances];
-
-    if (performances.length === 0) return 0;
-
-    const total = performances.reduce(
-      (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
-      0,
+    const modeAverage = calculate7DayAverage(
+      modePerformances,
+      'activeMultisigCount',
+    );
+    const optimismAverage = calculate7DayAverage(
+      optimismPerformances,
+      'activeMultisigCount',
     );
 
-    const average = total / performances.length;
+    const average = modeAverage + optimismAverage;
 
     return average;
   } catch (error) {

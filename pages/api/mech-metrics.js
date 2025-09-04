@@ -1,3 +1,4 @@
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { dailyMechAgentPerformancesQuery } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -23,16 +24,16 @@ const fetchDailyAgentPerformance = async () => {
     const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
     const basePerformances = baseResult.dailyAgentPerformances ?? [];
 
-    const performances = [...gnosisPerformances, ...basePerformances];
-
-    if (performances.length === 0) return 0;
-
-    const total = performances.reduce(
-      (sum, p) => sum + Number(p.activeMultisigCount ?? 0),
-      0,
+    const gnosisAverage = calculate7DayAverage(
+      gnosisPerformances,
+      'activeMultisigCount',
+    );
+    const baseAverage = calculate7DayAverage(
+      basePerformances,
+      'activeMultisigCount',
     );
 
-    const average = total / performances.length;
+    const average = gnosisAverage + baseAverage;
 
     return average;
   } catch (error) {
