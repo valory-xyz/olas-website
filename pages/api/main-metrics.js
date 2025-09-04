@@ -1,9 +1,16 @@
 import {
+  ATA_GRAPH_CLIENTS,
+  legacyMechFeesGraphClient,
+  MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
+  ataTransactionsQuery,
   dailyAgentPerformancesQuery,
+  legacyMechFeesQuery,
+  newMechFeesQuery,
+  operatorGlobalsQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
@@ -107,38 +114,164 @@ const fetchTransactions = async () => {
   }
 };
 
+const fetchTotalOperators = async () => {
+  try {
+    const results = await Promise.allSettled([
+      REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.base.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.mode.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.optimism.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.celo.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.ethereum.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.polygon.request(operatorGlobalsQuery),
+      REGISTRY_GRAPH_CLIENTS.arbitrum.request(operatorGlobalsQuery),
+    ]);
+
+    const operatorsByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value.globals?.[0]?.totalOperators ?? 0);
+
+    const totalOperators = operatorsByChains.reduce(
+      (sum, operatorsByChain) => sum + operatorsByChain,
+      0,
+    );
+
+    return totalOperators;
+  } catch (error) {
+    console.error('Error fetching total operators:', error);
+    return null;
+  }
+};
+
+const fetchAtaTransactions = async () => {
+  try {
+    const results = await Promise.allSettled([
+      ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
+      ATA_GRAPH_CLIENTS.base.request(ataTransactionsQuery),
+      ATA_GRAPH_CLIENTS.legacyMech.request(ataTransactionsQuery),
+    ]);
+
+    const ataTransactionsByChains = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value?.globals?.[0]?.totalAtaTransactions || '0');
+
+    const totalAtaTransactions = ataTransactionsByChains.reduce(
+      (sum, ataTxByChain) => sum + BigInt(ataTxByChain),
+      BigInt(0),
+    );
+
+    return formatEthNumber(`${totalAtaTransactions}`, { notation: 'standard' });
+  } catch (error) {
+    console.error('Error fetching ATA transactions:', error);
+    return null;
+  }
+};
+
+const fetchMechFees = async () => {
+  try {
+    const results = await Promise.allSettled([
+      MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
+      MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
+      legacyMechFeesGraphClient.request(legacyMechFeesQuery),
+    ]);
+
+    let totalFees = 0;
+
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled' && result.value?.global) {
+        const feeValue = result.value.global;
+
+        if (index === 2) {
+          // Legacy mech fees (index 2) - convert from wei to XDAI
+          const weiValue = feeValue.totalFeesIn || '0';
+          const xdaiValue = Number(weiValue) / 10 ** 18;
+          totalFees += xdaiValue;
+        } else {
+          // New mech fees (indices 0, 1) - already in USD
+          const usdValue = Number(feeValue.totalFeesInUSD || '0');
+          totalFees += usdValue;
+        }
+      }
+    });
+
+    return totalFees.toFixed(2);
+  } catch (error) {
+    console.error('Error fetching mech fees:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
-    const [dailyActiveAgentsResult, olasStakedResult, transactionsResult] =
-      await Promise.allSettled([
-        fetchDailyAgentPerformance(),
-        fetchTotalOlasStaked(),
-        fetchTransactions(),
-      ]);
+    const [
+      dailyActiveAgentsResult,
+      olasStakedResult,
+      transactionsResult,
+      ataTransactionsResult,
+      mechFeesResult,
+      totalOperatorsResult,
+    ] = await Promise.allSettled([
+      fetchDailyAgentPerformance(),
+      fetchTotalOlasStaked(),
+      fetchTransactions(),
+      fetchAtaTransactions(),
+      fetchMechFees(),
+      fetchTotalOperators(),
+    ]);
 
     const metrics = {
       dailyActiveAgents: null,
       olasStaked: null,
       transactions: null,
+      ataTransactions: null,
+      mechFees: null,
+      totalOperators: null,
     };
 
     // Process the results from Promise.allSettled
     if (dailyActiveAgentsResult.status === 'fulfilled') {
       metrics.dailyActiveAgents = dailyActiveAgentsResult.value;
     } else {
-      console.error('Fetch daily active agents failed:', roiResult.reason);
+      console.error(
+        'Fetch daily active agents failed:',
+        dailyActiveAgentsResult.reason,
+      );
     }
 
     if (olasStakedResult.status === 'fulfilled') {
       metrics.olasStaked = olasStakedResult.value;
     } else {
-      console.error('Fetch OLAS staked failed:', aprResult.reason);
+      console.error('Fetch OLAS staked failed:', olasStakedResult.reason);
     }
 
     if (transactionsResult.status === 'fulfilled') {
       metrics.transactions = transactionsResult.value;
     } else {
-      console.error('Fetch transactions failed:', aprResult.reason);
+      console.error('Fetch transactions failed:', transactionsResult.reason);
+    }
+
+    if (ataTransactionsResult.status === 'fulfilled') {
+      metrics.ataTransactions = ataTransactionsResult.value;
+    } else {
+      console.error(
+        'Fetch ATA transactions failed:',
+        ataTransactionsResult.reason,
+      );
+    }
+
+    if (mechFeesResult.status === 'fulfilled') {
+      metrics.mechFees = mechFeesResult.value;
+    } else {
+      console.error('Fetch mech fees failed:', mechFeesResult.reason);
+    }
+
+    if (totalOperatorsResult.status === 'fulfilled') {
+      metrics.totalOperators = totalOperatorsResult.value;
+    } else {
+      console.error(
+        'Fetch total operators failed:',
+        totalOperatorsResult.reason,
+      );
     }
 
     const data = {

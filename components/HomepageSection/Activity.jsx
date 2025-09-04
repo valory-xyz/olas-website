@@ -1,15 +1,6 @@
 import { getMainMetrics } from 'common-util/api';
-import {
-  getA2ATransactions,
-  getFeeFlowMetrics,
-  getTotalUniqueStakers,
-} from 'common-util/api/dune';
-import {
-  DUNE_A2A_TRANSACTIONS_QUERY_URL,
-  DUNE_AGENTS_QUERY_URL,
-  DUNE_MMV2_URL,
-  VALORY_GIT_URL,
-} from 'common-util/constants';
+import { getTotalUniqueStakers } from 'common-util/api/dune';
+import { DUNE_AGENTS_QUERY_URL, VALORY_GIT_URL } from 'common-util/constants';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -21,13 +12,10 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, agents, a2aTransactions, feeMetrics] =
-    await Promise.allSettled([
-      getMainMetrics(),
-      getTotalUniqueStakers(),
-      getA2ATransactions(),
-      getFeeFlowMetrics(),
-    ]);
+  const [mainMetrics, agents] = await Promise.allSettled([
+    getMainMetrics(),
+    getTotalUniqueStakers(),
+  ]);
 
   return {
     transactions:
@@ -43,9 +31,18 @@ const fetchMetrics = async () => {
       mainMetrics.status === 'fulfilled'
         ? mainMetrics.value?.data?.dailyActiveAgents
         : null,
-    a2aTransactions:
-      a2aTransactions.status === 'fulfilled' ? a2aTransactions.value : null,
-    feeMetrics: feeMetrics.status == 'fulfilled' ? feeMetrics.value : null,
+    ataTransactions:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.ataTransactions
+        : null,
+    mechTurnover:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.mechFees
+        : null,
+    totalOperators:
+      mainMetrics.status === 'fulfilled'
+        ? mainMetrics.value?.data?.totalOperators
+        : null,
   };
 };
 
@@ -159,14 +156,15 @@ const ActivityCard = ({
   );
 };
 
-const UsersCard = ({ agents, olasStaked }) => (
+const UsersCard = ({ olasStaked, totalOperators }) => (
   <ActivityCard
     icon="users.png"
     text="Users"
     primary={{
-      value: agents,
-      text: 'agents deployed',
-      link: DUNE_AGENTS_QUERY_URL,
+      value: totalOperators,
+      text: 'Agents deployed',
+      link: '/data#operators',
+      isLinkExternal: false,
     }}
     secondary={{
       value: olasStaked,
@@ -207,20 +205,22 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ a2aTransactions, feesCollected }) => (
+const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
     iconWidth={104}
     iconHeight={36}
     primary={{
-      value: a2aTransactions,
+      value: ataTransactions,
       text: 'A2A txns',
-      link: DUNE_A2A_TRANSACTIONS_QUERY_URL,
+      link: '/data#ata-transactions',
+      isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(feesCollected).toLocaleString()}`,
+      value: `$${Number(mechTurnover).toLocaleString()}`,
       text: 'turnover',
-      link: DUNE_MMV2_URL,
+      link: '/data#mech-turnover',
+      isLinkExternal: false,
     }}
     tertiary={{
       value: '0%',
@@ -270,8 +270,9 @@ export const Activity = () => {
       agents: metrics.agents?.toLocaleString() || '--',
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
-      a2aTransactions: metrics.a2aTransactions?.toLocaleString() || '--',
-      feesCollected: metrics.feeMetrics?.totalFees?.toFixed(2) || '--',
+      mechTurnover: metrics.mechTurnover || '--',
+      ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
+      totalOperators: metrics.totalOperators?.toLocaleString() || '--',
     };
   }, [metrics]);
 
@@ -307,6 +308,7 @@ export const Activity = () => {
           <UsersCard
             agents={processedMetrics?.agents}
             olasStaked={processedMetrics?.olasStaked}
+            totalOperators={processedMetrics?.totalOperators}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -348,8 +350,8 @@ export const Activity = () => {
         </div>
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
-            a2aTransactions={processedMetrics?.a2aTransactions}
-            feesCollected={processedMetrics?.feesCollected}
+            ataTransactions={processedMetrics?.ataTransactions}
+            mechTurnover={processedMetrics?.mechTurnover}
           />
           <div>
             <Image
@@ -369,6 +371,7 @@ export const Activity = () => {
         <UsersCard
           agents={processedMetrics?.agents}
           olasStaked={processedMetrics?.olasStaked}
+          totalOperators={processedMetrics?.totalOperators}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}
@@ -396,8 +399,8 @@ export const Activity = () => {
           className="mx-auto mb-2"
         />
         <AgentToAgentCard
-          a2aTransactions={processedMetrics?.a2aTransactions}
-          feesCollected={processedMetrics?.feesCollected}
+          ataTransactions={processedMetrics?.ataTransactions}
+          mechTurnover={processedMetrics?.mechTurnover}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />
