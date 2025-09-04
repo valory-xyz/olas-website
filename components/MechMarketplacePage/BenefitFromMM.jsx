@@ -82,7 +82,7 @@ const list = [
     button: (
       <Button variant="default" size="lg" asChild className="w-full">
         <ExternalLink
-          href={`${STACK_URL}/mech-tool/`}
+          href={`${STACK_URL}/mech-tools-dev/`}
           hideArrow
           className="text-white hover:text-white"
         >
