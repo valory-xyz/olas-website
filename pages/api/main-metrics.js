@@ -1,3 +1,4 @@
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   ATA_GRAPH_CLIENTS,
   legacyMechFeesGraphClient,
