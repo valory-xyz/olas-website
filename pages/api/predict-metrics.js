@@ -1,14 +1,18 @@
 import {
   DEFAULT_MECH_FEE,
   GNOSIS_STAKING_CONTRACTS,
+  PREDICT_AGENT_CLASSIFICATION,
   PREDICT_MARKET_DURATION_DAYS,
 } from 'common-util/constants';
 import {
   mechGraphClient,
   predictAgentsGraphClient,
+  REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
+  agentTxCountsQuery,
+  dailyPredictAgentsPerformancesQuery,
   getClosedMarketsBetsQuery,
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -26,6 +30,78 @@ const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 const INVALID_ANSWER_HEX =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+const PREDICT_AGENT_IDS_FLAT = Object.values(PREDICT_AGENT_CLASSIFICATION)
+  .flat()
+  .map((n) => Number(n));
+
+const fetchPredictDaa7dAvg = async () => {
+  try {
+    const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+    const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+
+    const { dailyAgentPerformances: rows = [] } =
+      await REGISTRY_GRAPH_CLIENTS.gnosis.request(
+        dailyPredictAgentsPerformancesQuery,
+        {
+          agentIds: PREDICT_AGENT_IDS_FLAT,
+          timestamp_gt,
+          timestamp_lt,
+        },
+      );
+
+    const totalsByDay = new Map();
+    rows.forEach((r) => {
+      const key = new Date(Number(r.dayTimestamp) * 1000)
+        .toISOString()
+        .slice(0, 10);
+      const prev = totalsByDay.get(key) || 0;
+      totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
+    });
+
+    const dayKeys = [];
+    for (let i = 7; i >= 1; i -= 1) {
+      const ts = timestamp_lt - i * 24 * 60 * 60;
+      dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
+    }
+
+    const total = dayKeys.reduce(
+      (acc, k) => acc + (totalsByDay.get(k) || 0),
+      0,
+    );
+    return Math.floor(total / 7);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const fetchPredictTxsByAgentType = async () => {
+  try {
+    const response = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
+      agentTxCountsQuery,
+      { agentIds: PREDICT_AGENT_IDS_FLAT },
+    );
+
+    const rows = response?.agentPerformances || [];
+    const idToTx = new Map();
+    rows.forEach((row) => {
+      idToTx.set(String(row.id), BigInt(row.txCount || 0));
+    });
+
+    const result = {};
+    Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(([category, ids]) => {
+      let sum = 0n;
+      ids.forEach((id) => {
+        sum += idToTx.get(String(Number(id))) || 0n;
+      });
+      result[category] = Number(sum);
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const fetchRoi = async () => {
   try {
@@ -172,13 +248,27 @@ const fetchSuccessRate = async () => {
 
 const fetchAllAgentMetrics = async () => {
   try {
-    const [roiResult, aprResult, successRateResult] = await Promise.allSettled([
+    const [
+      roiResult,
+      aprResult,
+      successRateResult,
+      daaResult,
+      txsByTypeResult,
+    ] = await Promise.allSettled([
       fetchRoi(),
       fetchOlasApr(),
       fetchSuccessRate(),
+      fetchPredictDaa7dAvg(),
+      fetchPredictTxsByAgentType(),
     ]);
 
-    const metrics = { roi: null, apr: null, successRate: null };
+    const metrics = {
+      roi: null,
+      apr: null,
+      successRate: null,
+      dailyActiveAgents: null,
+      predictTxsByType: null,
+    };
 
     // Process the results from Promise.allSettled
     if (roiResult.status === 'fulfilled') {
@@ -197,6 +287,21 @@ const fetchAllAgentMetrics = async () => {
       metrics.successRate = successRateResult.value;
     } else {
       console.error('Fetch Success Rate for predict failed:', aprResult.reason);
+    }
+
+    if (daaResult.status === 'fulfilled') {
+      metrics.dailyActiveAgents = daaResult.value;
+    } else {
+      console.error('Fetch DAA for predict failed:', daaResult.reason);
+    }
+
+    if (txsByTypeResult.status === 'fulfilled') {
+      metrics.predictTxsByType = txsByTypeResult.value;
+    } else {
+      console.error(
+        'Fetch Predict txs by agent type failed:',
+        txsByTypeResult.reason,
+      );
     }
 
     const data = {
