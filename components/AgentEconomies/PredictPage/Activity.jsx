@@ -1,4 +1,4 @@
-import { getMainMetrics, getPredictMetrics } from 'common-util/api';
+import { getPredictMetrics } from 'common-util/api';
 import { getTotalPredictTransactions } from 'common-util/api/dune';
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -11,20 +11,19 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [mainMetrics, total, performanceMetrics] = await Promise.allSettled([
-    getMainMetrics(),
-    getTotalPredictTransactions(),
+  const [predictMetrics, total] = await Promise.allSettled([
     getPredictMetrics(),
+    getTotalPredictTransactions(),
   ]);
 
   const dailyActiveAgents =
-    mainMetrics.status === 'fulfilled'
-      ? (mainMetrics.value?.data?.predictDaa7dAvg ?? null)
+    predictMetrics.status === 'fulfilled'
+      ? (predictMetrics.value?.dailyActiveAgents ?? null)
       : null;
 
   const predictTxsByType =
-    mainMetrics.status === 'fulfilled'
-      ? (mainMetrics.value?.data?.predictTxsByType ?? null)
+    predictMetrics.status === 'fulfilled'
+      ? (predictMetrics.value?.predictTxsByType ?? null)
       : null;
 
   const traderTxs = predictTxsByType
@@ -43,20 +42,18 @@ const fetchMetrics = async () => {
     marketCreatorTxs,
     totalTxs: total.status === 'fulfilled' ? total.value : null,
     partialRoi:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.roi?.partialRoi
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.roi?.partialRoi
         : null,
     finalRoi:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.roi?.finalRoi
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.roi?.finalRoi
         : null,
     apr:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.apr
-        : null,
+      predictMetrics.status === 'fulfilled' ? predictMetrics.value?.apr : null,
     successRate:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.successRate
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.successRate
         : null,
   };
 };

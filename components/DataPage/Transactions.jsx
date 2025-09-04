@@ -1,6 +1,7 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { PREDICT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import {
-  predictAgentTxCountsQuery,
+  agentTxCountsQuery,
   registryGlobalsQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -67,14 +68,18 @@ export const TransactionsInfo = () => {
           </h3>
           <div className="space-y-1">
             <p>
-              <strong>market_maker</strong> agent IDs: 13
+              <strong>Market maker</strong> agent IDs:{' '}
+              {PREDICT_AGENT_CLASSIFICATION.market_maker.join(', ')}
             </p>
             <p>
-              <strong>valory_trader</strong> agent IDs: 14, 25
+              <strong>Valory trader</strong> agent IDs:{' '}
+              {PREDICT_AGENT_CLASSIFICATION.valory_trader.join(', ')}
             </p>
             <p>
-              <strong>mech</strong> agent IDs: 9, 26, 29, 37, 36
+              <strong>Mech</strong> agent IDs:{' '}
+              {PREDICT_AGENT_CLASSIFICATION.mech.join(', ')}
             </p>
+            {/* Other trader category intentionally excluded */}
           </div>
 
           <p>The following query is used to fetch per-agent tx counts:</p>
@@ -92,7 +97,7 @@ export const TransactionsInfo = () => {
               Gnosis
             </ExternalLink>
           </p>
-          <CodeSnippet>{predictAgentTxCountsQuery}</CodeSnippet>
+          <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>
