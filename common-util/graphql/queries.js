@@ -201,8 +201,8 @@ export const dailyPredictAgentsPerformancesQuery = gql`
   }
 `;
 
-export const predictAgentTxCountsQuery = gql`
-  query PredictAgentTxs($agentIds: [Int!]!) {
+export const agentTxCountsQuery = gql`
+  query AgentTxs($agentIds: [Int!]!) {
     agentPerformances(
       where: { id_in: $agentIds }
       orderBy: id
