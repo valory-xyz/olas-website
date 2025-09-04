@@ -8,11 +8,9 @@ import {
 import {
   ataTransactionsQuery,
   dailyAgentPerformancesQuery,
-  dailyPredictAgentsPerformancesQuery,
   legacyMechFeesQuery,
   newMechFeesQuery,
   operatorGlobalsQuery,
-  predictAgentTxCountsQuery,
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
@@ -182,7 +180,6 @@ const fetchAtaTransactions = async () => {
     return null;
   }
 };
-
 const fetchMechFees = async () => {
   try {
     const results = await Promise.allSettled([
@@ -217,89 +214,6 @@ const fetchMechFees = async () => {
   }
 };
 
-const PREDICT_AGENT_IDS = [13, 14, 25, 9, 26, 29, 37, 36, 33, 44, 46, 45];
-
-const fetchPredictDaa7dAvg = async () => {
-  try {
-    const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-    const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
-
-    const { dailyAgentPerformances: rows = [] } =
-      await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-        dailyPredictAgentsPerformancesQuery,
-        {
-          agentIds: PREDICT_AGENT_IDS,
-          timestamp_gt,
-          timestamp_lt,
-        },
-      );
-
-    const totalsByDay = new Map();
-    rows.forEach((r) => {
-      const key = new Date(Number(r.dayTimestamp) * 1000)
-        .toISOString()
-        .slice(0, 10);
-      const prev = totalsByDay.get(key) || 0;
-      totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
-    });
-
-    const dayKeys = [];
-    for (let i = 7; i >= 1; i -= 1) {
-      const ts = timestamp_lt - i * 24 * 60 * 60;
-      dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
-    }
-
-    const total = dayKeys.reduce(
-      (acc, k) => acc + (totalsByDay.get(k) || 0),
-      0,
-    );
-    return Math.floor(total / 7);
-  } catch (error) {
-    console.error('Error fetching Predict DAA:', error);
-    return null;
-  }
-};
-
-const PREDICT_CLASSIFICATION = {
-  market_maker: [13],
-  valory_trader: [14, 25],
-  mech: [9, 26, 29, 37, 36],
-  other_trader: [33, 44, 46, 45],
-};
-
-const fetchPredictTxsByAgentType = async () => {
-  try {
-    const agentIds = Object.values(PREDICT_CLASSIFICATION)
-      .flat()
-      .map((n) => Number(n));
-
-    const response = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-      predictAgentTxCountsQuery,
-      { agentIds },
-    );
-
-    const rows = response?.agentPerformances || [];
-    const idToTx = new Map();
-    rows.forEach((row) => {
-      idToTx.set(String(row.id), BigInt(row.txCount || 0));
-    });
-
-    const result = {};
-    Object.entries(PREDICT_CLASSIFICATION).forEach(([category, ids]) => {
-      let sum = 0n;
-      ids.forEach((id) => {
-        sum += idToTx.get(String(Number(id))) || 0n;
-      });
-      result[category] = Number(sum);
-    });
-
-    return result;
-  } catch (error) {
-    console.error('Error fetching Predict txs by agent type:', error);
-    return null;
-  }
-};
-
 const fetchAllAgentMetrics = async () => {
   try {
     const [
@@ -309,8 +223,6 @@ const fetchAllAgentMetrics = async () => {
       ataTransactionsResult,
       mechFeesResult,
       totalOperatorsResult,
-      predictDaaResult,
-      predictTxsByTypeResult,
     ] = await Promise.allSettled([
       fetchDailyAgentPerformance(),
       fetchTotalOlasStaked(),
@@ -318,8 +230,6 @@ const fetchAllAgentMetrics = async () => {
       fetchAtaTransactions(),
       fetchMechFees(),
       fetchTotalOperators(),
-      fetchPredictDaa7dAvg(),
-      fetchPredictTxsByAgentType(),
     ]);
 
     const metrics = {
@@ -379,20 +289,7 @@ const fetchAllAgentMetrics = async () => {
       );
     }
 
-    if (predictDaaResult.status === 'fulfilled') {
-      metrics.predictDaa7dAvg = predictDaaResult.value;
-    } else {
-      console.error('Fetch Predict DAA failed:', predictDaaResult.reason);
-    }
-
-    if (predictTxsByTypeResult.status === 'fulfilled') {
-      metrics.predictTxsByType = predictTxsByTypeResult.value;
-    } else {
-      console.error(
-        'Fetch Predict txs by agent type failed:',
-        predictTxsByTypeResult.reason,
-      );
-    }
+    // Predict metrics moved to /api/predict-metrics
 
     const data = {
       data: metrics,
