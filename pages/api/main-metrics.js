@@ -167,7 +167,6 @@ const fetchAtaTransactions = async () => {
     return null;
   }
 };
-
 const fetchMechFees = async () => {
   try {
     const results = await Promise.allSettled([

@@ -1,14 +1,6 @@
 import { getPredictMetrics } from 'common-util/api';
-import {
-  get7DaysAvgActivityPredict,
-  getPredictionTxs,
-  getTotalPredictTransactions,
-} from 'common-util/api/dune';
-import {
-  DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-  DUNE_PREDICT_DAA_QUERY_URL,
-  OPERATE_URL,
-} from 'common-util/constants';
+import { getTotalPredictTransactions } from 'common-util/api/dune';
+import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -19,41 +11,49 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, transactions, total, performanceMetrics] =
-    await Promise.allSettled([
-      get7DaysAvgActivityPredict(),
-      getPredictionTxs(),
-      getTotalPredictTransactions(),
-      getPredictMetrics(),
-    ]);
+  const [predictMetrics, total] = await Promise.allSettled([
+    getPredictMetrics(),
+    getTotalPredictTransactions(),
+  ]);
+
+  const dailyActiveAgents =
+    predictMetrics.status === 'fulfilled'
+      ? (predictMetrics.value?.dailyActiveAgents ?? null)
+      : null;
+
+  const predictTxsByType =
+    predictMetrics.status === 'fulfilled'
+      ? (predictMetrics.value?.predictTxsByType ?? null)
+      : null;
+
+  const traderTxs = predictTxsByType
+    ? (predictTxsByType.valory_trader || 0) +
+      (predictTxsByType.other_trader || 0)
+    : null;
+  const mechTxs = predictTxsByType ? (predictTxsByType.mech ?? 0) : null;
+  const marketCreatorTxs = predictTxsByType
+    ? (predictTxsByType.market_maker ?? 0)
+    : null;
 
   return {
-    dailyActiveAgents:
-      dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    traderTxs:
-      transactions.status === 'fulfilled' ? transactions.value.traderTxs : null,
-    mechTxs:
-      transactions.status === 'fulfilled' ? transactions.value.mechTxs : null,
-    marketCreatorTxs:
-      transactions.status === 'fulfilled'
-        ? transactions.value.marketCreatorTxs
-        : null,
+    dailyActiveAgents,
+    traderTxs,
+    mechTxs,
+    marketCreatorTxs,
     totalTxs: total.status === 'fulfilled' ? total.value : null,
     partialRoi:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.roi?.partialRoi
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.roi?.partialRoi
         : null,
     finalRoi:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.roi?.finalRoi
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.roi?.finalRoi
         : null,
     apr:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.apr
-        : null,
+      predictMetrics.status === 'fulfilled' ? predictMetrics.value?.apr : null,
     successRate:
-      performanceMetrics.status === 'fulfilled'
-        ? performanceMetrics.value?.successRate
+      predictMetrics.status === 'fulfilled'
+        ? predictMetrics.value?.successRate
         : null,
   };
 };
@@ -137,8 +137,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
         ),
         value: metrics?.traderTxs ? metrics.traderTxs.toLocaleString() : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
       {
@@ -156,8 +156,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
         ),
         value: metrics?.mechTxs ? metrics.mechTxs.toLocaleString() : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
       {
@@ -184,8 +184,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
           ? metrics.marketCreatorTxs.toLocaleString()
           : null,
         source: {
-          link: DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL,
-          isExternal: true,
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
         },
       },
     ],
@@ -217,7 +217,7 @@ export const Activity = () => {
           {metrics?.dailyActiveAgents ? (
             <ExternalLink
               className="font-extrabold text-6xl"
-              href={DUNE_PREDICT_DAA_QUERY_URL}
+              href="/data#predict-daily-active-agents"
               hideArrow
             >
               {metrics.dailyActiveAgents}

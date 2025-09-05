@@ -4,9 +4,7 @@ import {
   FEE_FLOW_QUERY_ID,
   MECH_TXS_QUERY_ID,
   OLAS_STAKED_QUERY_ID,
-  PREDICTION_DAA_QUERY_ID,
   PREDICTION_TOTAL_TXS_QUERY_ID,
-  PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
   TOTAL_MECH_TXS_ID,
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
@@ -45,18 +43,6 @@ export const get7DaysAvgActivity = async () => {
   }
 };
 
-export const get7DaysAvgActivityPredict = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: PREDICTION_DAA_QUERY_ID,
-    });
-    const average = get(json, 'result.rows[0].avg_7d_active_multisigs');
-    return Math.floor(average);
-  } catch (error) {
-    console.error('Error in get7DaysAvgActivityPredict: ', error);
-    return;
-  }
-};
 
 export const getTotalTransactionsCount = async () => {
   try {
@@ -87,20 +73,6 @@ export const getTotalTokenHolders = async () => {
   }
 };
 
-export const getPredictionTxs = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID,
-    });
-    const traderTxs = get(json, 'result.rows[0].transactions_number');
-    const mechTxs = get(json, 'result.rows[1].transactions_number');
-    const marketCreatorTxs = get(json, 'result.rows[2].transactions_number');
-    return { traderTxs, mechTxs, marketCreatorTxs };
-  } catch (error) {
-    console.error('Error in getPredictionTxs: ', error);
-    return;
-  }
-};
 
 export const getTotalPredictTransactions = async () => {
   try {

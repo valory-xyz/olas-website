@@ -95,6 +95,14 @@ export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
 
+// Predict agent classification used for transactions-by-type and DAA queries
+export const PREDICT_AGENT_CLASSIFICATION = {
+  market_maker: [13],
+  valory_trader: [14, 25],
+  mech: [9, 26, 29, 37, 36],
+  other_trader: [33, 44, 46, 45],
+};
+
 /**
  * List of staking contracts currently available for staking on different chains
  * Source: https://operate.olas.network/contracts
