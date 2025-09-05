@@ -286,7 +286,10 @@ const fetchAllAgentMetrics = async () => {
     if (successRateResult.status === 'fulfilled') {
       metrics.successRate = successRateResult.value;
     } else {
-      console.error('Fetch Success Rate for predict failed:', aprResult.reason);
+      console.error(
+        'Fetch Success Rate for predict failed:',
+        successRateResult.reason,
+      );
     }
 
     if (daaResult.status === 'fulfilled') {
