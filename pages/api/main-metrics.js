@@ -239,8 +239,6 @@ const fetchAllAgentMetrics = async () => {
       ataTransactions: null,
       mechFees: null,
       totalOperators: null,
-      predictDaa7dAvg: null,
-      predictTxsByType: null,
     };
 
     // Process the results from Promise.allSettled
@@ -288,8 +286,6 @@ const fetchAllAgentMetrics = async () => {
         totalOperatorsResult.reason,
       );
     }
-
-    // Predict metrics moved to /api/predict-metrics
 
     const data = {
       data: metrics,
