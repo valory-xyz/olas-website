@@ -1,6 +1,5 @@
 import { getPredictMetrics } from 'common-util/api';
 import { getTotalPredictTransactions } from 'common-util/api/dune';
-import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -99,8 +98,8 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
         subText: 'APR, OLAS - Via OLAS Staking',
         value: metrics?.apr ? `${metrics.apr}%` : null,
         source: {
-          link: OPERATE_URL,
-          isExternal: true,
+          link: '/data#predict-apr',
+          isExternal: false,
         },
       },
       {
@@ -221,7 +220,6 @@ export const Activity = () => {
               hideArrow
             >
               {metrics.dailyActiveAgents}
-              <span className="text-4xl">↗</span>
             </ExternalLink>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
