@@ -4,7 +4,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { ExternalLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -214,13 +214,13 @@ export const Activity = () => {
             Predict Agent Economy
           </div>
           {metrics?.dailyActiveAgents ? (
-            <ExternalLink
+            <Link
               className="font-extrabold text-6xl"
               href="/data#predict-daily-active-agents"
               hideArrow
             >
               {metrics.dailyActiveAgents}
-            </ExternalLink>
+            </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
           )}
