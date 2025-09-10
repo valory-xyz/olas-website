@@ -43,7 +43,6 @@ export const get7DaysAvgActivity = async () => {
   }
 };
 
-
 export const getTotalTransactionsCount = async () => {
   try {
     const json = await duneApiCall({
@@ -72,7 +71,6 @@ export const getTotalTokenHolders = async () => {
     return;
   }
 };
-
 
 export const getTotalPredictTransactions = async () => {
   try {

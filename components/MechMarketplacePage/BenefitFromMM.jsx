@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
-import { STACK_URL } from 'common-util/constants';
+import { BUILD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -43,7 +43,7 @@ const list = [
     button: (
       <Button variant="default" size="lg" asChild className="w-full">
         <ExternalLink
-          href={`${STACK_URL}/mech-client`}
+          href={`${BUILD_URL}/hire`}
           hideArrow
           className="text-white hover:text-white"
         >
@@ -82,7 +82,7 @@ const list = [
     button: (
       <Button variant="default" size="lg" asChild className="w-full">
         <ExternalLink
-          href={`${STACK_URL}/mech-tools-dev/`}
+          href={`${BUILD_URL}/monetize`}
           hideArrow
           className="text-white hover:text-white"
         >
