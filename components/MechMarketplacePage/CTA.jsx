@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { STACK_URL } from 'common-util/constants';
+import { BUILD_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
@@ -13,12 +13,10 @@ export const CTA = () => (
     </h2>
     <div className="place-content-center mx-auto flex max-sm:flex-col gap-4">
       <Button variant="default" size="xl" asChild className="w-full md:w-auto">
-        <Link href={`${STACK_URL}/mech-client`}>Hire Mech Agents</Link>
+        <Link href={`${BUILD_URL}/hire`}>Hire Mech Agents</Link>
       </Button>
       <Button variant="default" size="xl" asChild className="w-full md:w-auto">
-        <Link href={`${STACK_URL}/mech-tools-dev/`}>
-          Put Your Agent to Work
-        </Link>
+        <Link href={`${BUILD_URL}/monetize`}>Put Your Agent to Work</Link>
       </Button>
     </div>
   </SectionWrapper>

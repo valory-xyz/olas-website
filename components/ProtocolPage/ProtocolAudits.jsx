@@ -127,8 +127,9 @@ const audits = [
                 className="text-purple-600"
                 target="_blank"
               >
-                AI Registry Mech Security Audit, 01.25
+                AI Registry Mech Security Audit, 01.25{' '}
               </a>
+              ($50k)
             </li>
           </ul>
         ),
