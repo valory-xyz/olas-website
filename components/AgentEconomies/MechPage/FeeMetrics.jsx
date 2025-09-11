@@ -230,9 +230,12 @@ export const FeeMetrics = () => {
                       <Popover>{item.description}</Popover>
                     </div>
                   </div>
-                  <span className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto">
+                  <Link
+                    href="/data#mech-turnover"
+                    className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto text-purple-600"
+                  >
                     $ {Number(item.value.toFixed(2)).toLocaleString()}
-                  </span>
+                  </Link>
                 </div>
               );
             })}
