@@ -69,7 +69,7 @@ export const MechTurnoverInfo = () => {
         <CodeSnippet>{legacyMechFeesQuery}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-6`}>
-          Totals (In/Out) Queries Used by /api/mech-fees
+          Totals (In/Out) Queries Used by Mech fees
         </h3>
 
         <p>
