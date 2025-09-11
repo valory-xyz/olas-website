@@ -1,7 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
   legacyMechFeesQuery,
+  legacyMechFeesTotalsQuery,
   newMechFeesQuery,
+  newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -65,6 +67,44 @@ export const MechTurnoverInfo = () => {
         </p>
 
         <CodeSnippet>{legacyMechFeesQuery}</CodeSnippet>
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-6`}>
+          Totals (In/Out) Queries Used by /api/mech-fees
+        </h3>
+
+        <p>
+          These include both in and out totals to compute claimed and unclaimed
+          amounts in the API aggregator.
+        </p>
+
+        <h4 className="font-semibold">New Mech Fees Totals</h4>
+        <p className="text-purple-600">
+          Subgraph links:{' '}
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Gnosis
+          </ExternalLink>
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Base
+          </ExternalLink>
+        </p>
+        <CodeSnippet>{newMechFeesTotalsQuery}</CodeSnippet>
+
+        <h4 className="font-semibold">Legacy Mech Fees Totals</h4>
+        <p className="text-purple-600">
+          Subgraph link:{' '}
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}
+          >
+            Gnosis
+          </ExternalLink>
+        </p>
+        <CodeSnippet>{legacyMechFeesTotalsQuery}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
