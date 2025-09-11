@@ -6,6 +6,7 @@ import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import { OperatorsInfo } from 'components/DataPage/Operators';
 import { PredictAccuracyInfo } from 'components/DataPage/PredictAccuracy';
+import { PredictAprInfo } from 'components/DataPage/PredictAprInfo';
 import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
 import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -25,6 +26,7 @@ const DataVerifyPage = () => (
       <MechTurnoverInfo />
       <OlasStakedInfo />
       <PredictRoiInfo />
+      <PredictAprInfo />
       <PredictAccuracyInfo />
       <FeesInfo />
     </div>
