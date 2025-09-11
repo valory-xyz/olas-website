@@ -1,6 +1,4 @@
-import { getFeeFlowMetrics } from 'common-util/api/dune';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { DUNE_MMV2_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
 import { usePersistentSWR, useWindowWidth } from 'hooks';
@@ -10,16 +8,20 @@ import { Chart } from 'react-google-charts';
 
 const fetchMetrics = async () => {
   try {
-    const result = await getFeeFlowMetrics();
+    const res = await fetch('/api/mech-fees');
+    if (!res.ok) {
+      throw new Error('Failed to fetch mech fees');
+    }
+    const result = await res.json();
     if (!result) {
       throw new Error('Failed to fetch metrics');
     }
     return {
-      totalFees: result.totalFees,
-      claimedFees: result.claimedFees,
-      unclaimedFees: result.unclaimedFees,
-      recievedFees: result.recievedFees,
-      olasBurned: result.olasBurned,
+      totalFees: result.totalFees || 0,
+      claimedFees: result.claimedFees || 0,
+      unclaimedFees: result.unclaimedFees || 0,
+      recievedFees: result.recievedFees || 0,
+      olasBurned: result.olasBurned || 0,
     };
   } catch (error) {
     console.error('Error in fetchMetrics:', error);
@@ -228,14 +230,9 @@ export const FeeMetrics = () => {
                       <Popover>{item.description}</Popover>
                     </div>
                   </div>
-                  <Link
-                    href={DUNE_MMV2_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
-                  >
-                    $ {Number(item.value.toFixed(2)).toLocaleString()} ↗
-                  </Link>
+                  <span className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto">
+                    $ {Number(item.value.toFixed(2)).toLocaleString()}
+                  </span>
                 </div>
               );
             })}
