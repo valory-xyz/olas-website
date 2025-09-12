@@ -1,5 +1,5 @@
-import { getMechMetrics } from 'common-util/api';
-import { getMechTxs, getTotalMechTxs } from 'common-util/api/dune';
+import { getMechMetrics, getMechRequestsCount } from 'common-util/api';
+import { getMechTxs } from 'common-util/api/dune';
 import {
   DUNE_CLASSIFIED_REQUESTS_QUERY_URL,
   DUNE_TOTAL_TRANSACTIONS_QUERY_URL,
@@ -13,18 +13,20 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, totalTxs, result] = await Promise.allSettled([
+  const [dailyActiveAgents, totalRequests, result] = await Promise.allSettled([
     getMechMetrics(),
-    getTotalMechTxs(),
+    getMechRequestsCount(),
     getMechTxs(),
   ]);
 
   const mechTxs = result.status === 'fulfilled' ? result.value : null;
+  const totalTxsValue =
+    totalRequests.status === 'fulfilled' ? totalRequests.value?.total : null;
 
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value : null,
+    totalTxs: totalTxsValue,
     predictTxs: mechTxs?.predictTxs || null,
     contributeTxs: mechTxs?.contributeTxs || null,
     governatooorrTxs: mechTxs?.governatooorrTxs || null,
@@ -152,7 +154,7 @@ export const MechAgentMetrics = () => {
             href={DUNE_TOTAL_TRANSACTIONS_QUERY_URL}
             hideArrow
           >
-            {metrics?.totalTxs?.toLocaleString()}&nbsp;↗
+            {metrics?.totalTxs?.toLocaleString()}
           </ExternalLink>{' '}
           requests from other AI agent economies.
         </p>
@@ -175,7 +177,6 @@ export const MechAgentMetrics = () => {
                   hideArrow
                 >
                   {item.value}
-                  <span className="text-2xl">↗</span>
                 </ExternalLink>
               );
             };
