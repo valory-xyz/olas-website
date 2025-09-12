@@ -9,20 +9,18 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, totalRequests, result] = await Promise.allSettled([
+  const [dailyActiveAgents, totalTxs, result] = await Promise.allSettled([
     getMechMetrics(),
     getMechRequestsCount(),
     getMechTxs(),
   ]);
 
   const mechTxs = result.status === 'fulfilled' ? result.value : null;
-  const totalTxsValue =
-    totalRequests.status === 'fulfilled' ? totalRequests.value?.total : null;
 
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    totalTxs: totalTxsValue,
+    totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value?.total : null,
     predictTxs: mechTxs?.predictTxs || null,
     contributeTxs: mechTxs?.contributeTxs || null,
     governatooorrTxs: mechTxs?.governatooorrTxs || null,
@@ -132,7 +130,6 @@ export const MechAgentMetrics = () => {
               hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-              <span className="text-4xl">↗</span>
             </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
