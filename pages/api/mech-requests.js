@@ -8,40 +8,45 @@ import {
 
 const fetchMechRequestsFromSubgraphs = async () => {
   try {
-    const [mechRes, mmGnosisRes, mmBaseRes] = await Promise.allSettled([
-      ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
-      ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
-      ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-    ]);
+    const [legacyMechResult, marketplaceGnosisResult, marketplaceBaseResult] =
+      await Promise.allSettled([
+        ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
+        ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
+        ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
+      ]);
 
-    const mechTotal = (() => {
-      if (mechRes.status !== 'fulfilled') return 0;
-      const v = mechRes.value;
-      const fromGlobal = v?.global?.totalRequests;
-      const fromGlobals = v?.globals?.[0]?.totalRequests;
-      return Number(fromGlobal ?? fromGlobals ?? 0);
+    const legacyMechTotalRequests = (() => {
+      if (legacyMechResult.status !== 'fulfilled') return 0;
+      const response = legacyMechResult.value;
+      const globalTotalRequests = response?.global?.totalRequests;
+      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
+      return Number(globalTotalRequests ?? globalsTotalRequests ?? 0);
     })();
 
-    const mmGnosisTotal = (() => {
-      if (mmGnosisRes.status !== 'fulfilled') return 0;
-      const v = mmGnosisRes.value;
-      const fromGlobals = v?.globals?.[0]?.totalRequests;
-      const fromGlobal = v?.global?.totalRequests;
-      return Number(fromGlobals ?? fromGlobal ?? 0);
+    const marketplaceGnosisTotalRequests = (() => {
+      if (marketplaceGnosisResult.status !== 'fulfilled') return 0;
+      const response = marketplaceGnosisResult.value;
+      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
+      const globalTotalRequests = response?.global?.totalRequests;
+      return Number(globalsTotalRequests ?? globalTotalRequests ?? 0);
     })();
 
-    const mmBaseTotal = (() => {
-      if (mmBaseRes.status !== 'fulfilled') return 0;
-      const v = mmBaseRes.value;
-      const fromGlobals = v?.globals?.[0]?.totalRequests;
-      const fromGlobal = v?.global?.totalRequests;
-      return Number(fromGlobals ?? fromGlobal ?? 0);
+    const marketplaceBaseTotalRequests = (() => {
+      if (marketplaceBaseResult.status !== 'fulfilled') return 0;
+      const response = marketplaceBaseResult.value;
+      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
+      const globalTotalRequests = response?.global?.totalRequests;
+      return Number(globalsTotalRequests ?? globalTotalRequests ?? 0);
     })();
 
     return {
-      mech: mechTotal,
-      marketplace: mmGnosisTotal + mmBaseTotal,
-      total: mechTotal + mmGnosisTotal + mmBaseTotal,
+      mech: legacyMechTotalRequests,
+      marketplace:
+        marketplaceGnosisTotalRequests + marketplaceBaseTotalRequests,
+      total:
+        legacyMechTotalRequests +
+        marketplaceGnosisTotalRequests +
+        marketplaceBaseTotalRequests,
     };
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
