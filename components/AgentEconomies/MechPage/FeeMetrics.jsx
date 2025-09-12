@@ -1,3 +1,4 @@
+import { getFeeFlowMetrics } from 'common-util/api';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
@@ -8,11 +9,7 @@ import { Chart } from 'react-google-charts';
 
 const fetchMetrics = async () => {
   try {
-    const res = await fetch('/api/mech-fees');
-    if (!res.ok) {
-      throw new Error('Failed to fetch mech fees');
-    }
-    const result = await res.json();
+    const result = await getFeeFlowMetrics();
     if (!result) {
       throw new Error('Failed to fetch metrics');
     }
