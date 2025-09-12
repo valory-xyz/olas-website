@@ -1,3 +1,4 @@
+import { CACHE_DURATION_SECONDS } from 'common-util/constants';
 import {
   MECH_FEES_GRAPH_CLIENTS,
   legacyMechFeesGraphClient,
@@ -6,8 +7,6 @@ import {
   legacyMechFeesTotalsQuery,
   newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
-
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 
 const fetchMechFeesFromSubgraphs = async () => {
   try {
