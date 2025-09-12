@@ -1,13 +1,9 @@
 import { getMechMetrics, getMechRequestsCount } from 'common-util/api';
 import { getMechTxs } from 'common-util/api/dune';
-import {
-  DUNE_CLASSIFIED_REQUESTS_QUERY_URL,
-  DUNE_TOTAL_TRANSACTIONS_QUERY_URL,
-} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { ExternalLink, Link } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -149,13 +145,9 @@ export const MechAgentMetrics = () => {
         <p className="text-xl text-slate-700 mb-8 mx-auto mt-12">
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
-          <ExternalLink
-            className="font-bold"
-            href={DUNE_TOTAL_TRANSACTIONS_QUERY_URL}
-            hideArrow
-          >
+          <Link className="font-bold" href="/data#mech-requests" hideArrow>
             {metrics?.totalTxs?.toLocaleString()}
-          </ExternalLink>{' '}
+          </Link>{' '}
           requests from other AI agent economies.
         </p>
       </div>
@@ -172,12 +164,9 @@ export const MechAgentMetrics = () => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                <ExternalLink
-                  href={DUNE_CLASSIFIED_REQUESTS_QUERY_URL}
-                  hideArrow
-                >
+                <Link href="/data#mech-requests" hideArrow>
                   {item.value}
-                </ExternalLink>
+                </Link>
               );
             };
 
