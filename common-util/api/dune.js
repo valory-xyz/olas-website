@@ -159,31 +159,6 @@ export const getUniqueOperatorCount = async () => {
   }
 };
 
-export const getFeeFlowMetrics = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: FEE_FLOW_QUERY_ID,
-    });
-    const totalFees = get(json, 'result.rows[0].Total_Agent_Fees_Collected');
-    const claimedFees = get(json, 'result.rows[0].Claimed_Fees');
-    const unclaimedFees = get(json, 'result.rows[0].Unclaimed_Fees');
-    const recievedFees = get(json, 'result.rows[0].Recieved_Fees');
-    const protocolFees = get(json, 'result.rows[0].Protocol_fee_collected');
-    const olasBurned = get(json, 'result.rows[0].OLAS_Burned');
-    return {
-      totalFees,
-      claimedFees,
-      unclaimedFees,
-      recievedFees,
-      protocolFees,
-      olasBurned,
-    };
-  } catch (error) {
-    console.error('Error in getFeeFlowMetrics: ', error);
-    return;
-  }
-};
-
 export const getTotalOlasStaked = async () => {
   try {
     const json = await duneApiCall({
