@@ -10,7 +10,7 @@ export const MENU_DATA = [
 ];
 
 export const WHITEPAPER = '/documents/whitepaper/Whitepaper v1.0.pdf';
-export const WHITEPAPER_SUMMARY =
+export const WHITEPAPER_SUMMARY =c
   '/documents/whitepaper/Whitepaper Summary v1.0.pdf';
 export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
@@ -24,7 +24,6 @@ export const DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/54174
 export const DUNE_TOTAL_PREDICT_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5416224/8846038`;
 
 export const DUNE_AGENTS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
-export const DUNE_MMV2_URL = `${DUNE_QUERY_URL}/5166975`;
 export const DUNE_TOTAL_TRANSACTIONS_QUERY_URL = `${DUNE_QUERY_URL}/5194313/8548512`;
 export const DUNE_CLASSIFIED_REQUESTS_QUERY_URL = `${DUNE_QUERY_URL}/5195400`;
 export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
