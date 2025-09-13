@@ -1,6 +1,5 @@
-import { getFeeFlowMetrics } from 'common-util/api/dune';
+import { getFeeFlowMetrics } from 'common-util/api';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { DUNE_MMV2_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
 import { usePersistentSWR, useWindowWidth } from 'hooks';
@@ -15,11 +14,11 @@ const fetchMetrics = async () => {
       throw new Error('Failed to fetch metrics');
     }
     return {
-      totalFees: result.totalFees,
-      claimedFees: result.claimedFees,
-      unclaimedFees: result.unclaimedFees,
-      recievedFees: result.recievedFees,
-      olasBurned: result.olasBurned,
+      totalFees: result.totalFees || 0,
+      claimedFees: result.claimedFees || 0,
+      unclaimedFees: result.unclaimedFees || 0,
+      recievedFees: result.recievedFees || 0,
+      olasBurned: result.olasBurned || 0,
     };
   } catch (error) {
     console.error('Error in fetchMetrics:', error);
@@ -229,12 +228,10 @@ export const FeeMetrics = () => {
                     </div>
                   </div>
                   <Link
-                    href={DUNE_MMV2_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/data#mech-turnover"
                     className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
                   >
-                    $ {Number(item.value.toFixed(2)).toLocaleString()} ↗
+                    $ {Number(item.value.toFixed(2)).toLocaleString()}
                   </Link>
                 </div>
               );

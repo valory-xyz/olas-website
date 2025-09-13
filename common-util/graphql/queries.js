@@ -276,3 +276,21 @@ export const legacyMechFeesQuery = gql`
     }
   }
 `;
+
+export const newMechFeesTotalsQuery = gql`
+  query NewMechFeesTotals {
+    global(id: "") {
+      totalFeesInUSD
+      totalFeesOutUSD
+    }
+  }
+`;
+
+export const legacyMechFeesTotalsQuery = gql`
+  query LegacyMechFeesTotals {
+    global(id: "") {
+      totalFeesIn
+      totalFeesOut
+    }
+  }
+`;

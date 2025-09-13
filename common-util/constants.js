@@ -24,7 +24,6 @@ export const DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/54174
 export const DUNE_TOTAL_PREDICT_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5416224/8846038`;
 
 export const DUNE_AGENTS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
-export const DUNE_MMV2_URL = `${DUNE_QUERY_URL}/5166975`;
 export const DUNE_TOTAL_TRANSACTIONS_QUERY_URL = `${DUNE_QUERY_URL}/5194313/8548512`;
 export const DUNE_CLASSIFIED_REQUESTS_QUERY_URL = `${DUNE_QUERY_URL}/5195400`;
 export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
@@ -92,6 +91,7 @@ export const ETHERSCAN_URL = 'https://etherscan.io';
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
+export const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
 
