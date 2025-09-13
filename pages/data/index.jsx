@@ -2,6 +2,7 @@ import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
 import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
+import { MechRequestsInfo } from 'components/DataPage/MechRequests';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import { OperatorsInfo } from 'components/DataPage/Operators';
@@ -20,6 +21,7 @@ const DataVerifyPage = () => (
       className={`${SCREEN_WIDTH_XL} divide-y divide-dashed divide-gray-200`}
     >
       <DailyActiveAgentsInfo />
+      <MechRequestsInfo />
       <OperatorsInfo />
       <TransactionsInfo />
       <AtaTransactionsInfo />

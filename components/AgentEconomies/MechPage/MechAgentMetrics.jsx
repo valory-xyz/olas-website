@@ -1,13 +1,9 @@
-import { getMechMetrics } from 'common-util/api';
-import { getMechTxs, getTotalMechTxs } from 'common-util/api/dune';
-import {
-  DUNE_CLASSIFIED_REQUESTS_QUERY_URL,
-  DUNE_TOTAL_TRANSACTIONS_QUERY_URL,
-} from 'common-util/constants';
+import { getMechMetrics, getMechRequestsCount } from 'common-util/api';
+import { getMechTxs } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { ExternalLink, Link } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,7 +11,7 @@ import useSWR from 'swr';
 const fetchMetrics = async () => {
   const [dailyActiveAgents, totalTxs, result] = await Promise.allSettled([
     getMechMetrics(),
-    getTotalMechTxs(),
+    getMechRequestsCount(),
     getMechTxs(),
   ]);
 
@@ -24,7 +20,7 @@ const fetchMetrics = async () => {
   return {
     dailyActiveAgents:
       dailyActiveAgents.status === 'fulfilled' ? dailyActiveAgents.value : null,
-    totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value : null,
+    totalTxs: totalTxs.status === 'fulfilled' ? totalTxs.value?.total : null,
     predictTxs: mechTxs?.predictTxs || null,
     contributeTxs: mechTxs?.contributeTxs || null,
     governatooorrTxs: mechTxs?.governatooorrTxs || null,
@@ -134,7 +130,6 @@ export const MechAgentMetrics = () => {
               hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-              <span className="text-4xl">↗</span>
             </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
@@ -147,13 +142,9 @@ export const MechAgentMetrics = () => {
         <p className="text-xl text-slate-700 mb-8 mx-auto mt-12">
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
-          <ExternalLink
-            className="font-bold"
-            href={DUNE_TOTAL_TRANSACTIONS_QUERY_URL}
-            hideArrow
-          >
-            {metrics?.totalTxs?.toLocaleString()}&nbsp;↗
-          </ExternalLink>{' '}
+          <Link className="font-bold" href="/data#mech-requests" hideArrow>
+            {metrics?.totalTxs?.toLocaleString()}
+          </Link>{' '}
           requests from other AI agent economies.
         </p>
       </div>
@@ -170,13 +161,9 @@ export const MechAgentMetrics = () => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                <ExternalLink
-                  href={DUNE_CLASSIFIED_REQUESTS_QUERY_URL}
-                  hideArrow
-                >
+                <Link href="/data#mech-requests" hideArrow>
                   {item.value}
-                  <span className="text-2xl">↗</span>
-                </ExternalLink>
+                </Link>
               );
             };
 
