@@ -57,7 +57,7 @@ export const totalMechRequestsQuery = gql`
 
 export const mechMarketplaceTotalRequestsQuery = gql`
   query MechMarketplaceTotalRequests {
-    globals {
+    global(id: "") {
       totalRequests
     }
   }
@@ -65,7 +65,7 @@ export const mechMarketplaceTotalRequestsQuery = gql`
 
 export const mechGlobalsTotalRequestsQuery = gql`
   query MechGlobalsTotalRequests {
-    globals {
+    global(id: "") {
       totalRequests
     }
   }

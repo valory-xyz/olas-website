@@ -18,25 +18,19 @@ const fetchMechRequestsFromSubgraphs = async () => {
     const legacyMechTotalRequests = (() => {
       if (legacyMechResult.status !== 'fulfilled') return 0;
       const response = legacyMechResult.value;
-      const globalTotalRequests = response?.global?.totalRequests;
-      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
-      return Number(globalTotalRequests ?? globalsTotalRequests ?? 0);
+      return Number(response?.global?.totalRequests ?? 0);
     })();
 
     const marketplaceGnosisTotalRequests = (() => {
       if (marketplaceGnosisResult.status !== 'fulfilled') return 0;
       const response = marketplaceGnosisResult.value;
-      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
-      const globalTotalRequests = response?.global?.totalRequests;
-      return Number(globalsTotalRequests ?? globalTotalRequests ?? 0);
+      return Number(response?.global?.totalRequests ?? 0);
     })();
 
     const marketplaceBaseTotalRequests = (() => {
       if (marketplaceBaseResult.status !== 'fulfilled') return 0;
       const response = marketplaceBaseResult.value;
-      const globalsTotalRequests = response?.globals?.[0]?.totalRequests;
-      const globalTotalRequests = response?.global?.totalRequests;
-      return Number(globalsTotalRequests ?? globalTotalRequests ?? 0);
+      return Number(response?.global?.totalRequests ?? 0);
     })();
 
     return {
