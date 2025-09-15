@@ -164,20 +164,6 @@ export const getFeeFlowMetrics = async () => {
   }
 };
 
-export const getMechRequestsCount = async () => {
-  try {
-    const response = await fetch('/api/mech-requests');
-    if (!response.ok) {
-      throw new Error('Failed to fetch mech requests count');
-    }
-    const data = await response.json();
-    return data; // { mech, marketplace, total }
-  } catch (error) {
-    console.error('Error fetching mech requests count:', error);
-    return null;
-  }
-};
-
 // ----------- MAIN -----------
 export const getMainMetrics = async () => {
   try {
