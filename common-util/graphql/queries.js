@@ -55,6 +55,22 @@ export const totalMechRequestsQuery = gql`
   }
 `;
 
+export const mechMarketplaceTotalRequestsQuery = gql`
+  query MechMarketplaceTotalRequests {
+    global(id: "") {
+      totalRequests
+    }
+  }
+`;
+
+export const mechGlobalsTotalRequestsQuery = gql`
+  query MechGlobalsTotalRequests {
+    global(id: "") {
+      totalRequests
+    }
+  }
+`;
+
 export const getMechRequestsQuery = ({
   timestamp_gt,
   first,
