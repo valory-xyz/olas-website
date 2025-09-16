@@ -87,7 +87,7 @@ const Hero = () => (
     >
       <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
     </video>
-    <div className="absolute w-full h-full overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden">
       <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
     </div>
     <div className="absolute h-[500px] 2xl:h-[800px] place-content-center mx-auto text-center align-middle">
