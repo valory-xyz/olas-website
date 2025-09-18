@@ -104,7 +104,7 @@ const fetchCategorizedRequestTotals = async () => {
   try {
     const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
       await Promise.allSettled([
-        mechGraphClient.request(
+        ATA_GRAPH_CLIENTS.legacyMech.request(
           mechRequestsPerAgentOnchainsQuery(allIds.map(String)),
         ),
         ATA_GRAPH_CLIENTS.gnosis.request(
@@ -120,10 +120,18 @@ const fetchCategorizedRequestTotals = async () => {
     const addCounts = (items, idKey, countKey) => {
       if (!Array.isArray(items)) return;
       items.forEach((row) => {
-        const id = Number(row?.[idKey]);
-        if (!Number.isFinite(id)) return;
+        const rawId =
+          row?.[idKey] !== undefined ? row?.[idKey] : (row?.agentId ?? row?.id);
+        let idNum;
+        if (typeof rawId === 'number') {
+          idNum = rawId;
+        } else if (typeof rawId === 'string') {
+          const match = rawId.match(/\d+/);
+          idNum = match ? Number(match[0]) : NaN;
+        }
+        if (!Number.isFinite(idNum)) return;
         const count = Number(row?.[countKey] ?? 0);
-        combinedCounts.set(id, (combinedCounts.get(id) ?? 0) + count);
+        combinedCounts.set(idNum, (combinedCounts.get(idNum) ?? 0) + count);
       });
     };
 
@@ -131,26 +139,35 @@ const fetchCategorizedRequestTotals = async () => {
       addCounts(
         mechResult.value?.requestsPerAgentOnchains,
         'id',
-        'RequestsCount',
+        'requestsCount',
       );
     }
     if (marketplaceGnosisResult.status === 'fulfilled') {
       addCounts(
         marketplaceGnosisResult.value?.requestsPerAgents,
         'id',
-        'totalRequestsCount',
+        'requestsCount',
       );
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
       addCounts(
         marketplaceBaseResult.value?.requestsPerAgents,
         'id',
-        'totalRequestsCount',
+        'requestsCount',
       );
     }
 
     const sumFor = (ids) =>
       ids.reduce((acc, id) => acc + (combinedCounts.get(id) ?? 0), 0);
+
+    console.log(
+      'PredictTxs',
+      sumFor(predictTraderIds),
+      'ContributeTxs',
+      sumFor(contributeIds),
+      'GovernatooorrTxs',
+      sumFor(governatooorIds),
+    );
 
     return {
       predictTxs: sumFor(predictTraderIds),
