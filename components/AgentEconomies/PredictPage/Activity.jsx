@@ -104,7 +104,7 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
       },
       {
         id: 'accuracy',
-        subText: 'Prediction Accuracy - Average',
+        subText: 'Prediction Accuracy -  Average (Last 10K Bets)',
         value: metrics?.successRate ? `${metrics.successRate}%` : null,
         source: {
           link: '/data#predict-accuracy',
