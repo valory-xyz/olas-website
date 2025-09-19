@@ -2,7 +2,6 @@ import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { CACHE_DURATION_SECONDS } from 'common-util/constants';
 import {
   ATA_GRAPH_CLIENTS,
-  mechGraphClient,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
@@ -159,15 +158,6 @@ const fetchCategorizedRequestTotals = async () => {
 
     const sumFor = (ids) =>
       ids.reduce((acc, id) => acc + (combinedCounts.get(id) ?? 0), 0);
-
-    console.log(
-      'PredictTxs',
-      sumFor(predictTraderIds),
-      'ContributeTxs',
-      sumFor(contributeIds),
-      'GovernatooorrTxs',
-      sumFor(governatooorIds),
-    );
 
     return {
       predictTxs: sumFor(predictTraderIds),
