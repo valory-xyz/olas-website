@@ -116,21 +116,26 @@ const fetchCategorizedRequestTotals = async () => {
 
     const combinedCounts = new Map();
 
-    const addCounts = (items, idKey, countKey) => {
-      if (!Array.isArray(items)) return;
-      items.forEach((row) => {
-        const rawId =
-          row?.[idKey] !== undefined ? row?.[idKey] : (row?.agentId ?? row?.id);
-        let idNum;
-        if (typeof rawId === 'number') {
-          idNum = rawId;
-        } else if (typeof rawId === 'string') {
-          const match = rawId.match(/\d+/);
-          idNum = match ? Number(match[0]) : NaN;
+    const addCounts = (records, idFieldName, countFieldName) => {
+      if (!Array.isArray(records)) return;
+      records.forEach((item) => {
+        const rawAgentId =
+          item?.[idFieldName] !== undefined
+            ? item?.[idFieldName]
+            : (item?.agentId ?? item?.id);
+        let agentId;
+        if (typeof rawAgentId === 'number') {
+          agentId = rawAgentId;
+        } else if (typeof rawAgentId === 'string') {
+          const match = rawAgentId.match(/\d+/);
+          agentId = match ? Number(match[0]) : NaN;
         }
-        if (!Number.isFinite(idNum)) return;
-        const count = Number(row?.[countKey] ?? 0);
-        combinedCounts.set(idNum, (combinedCounts.get(idNum) ?? 0) + count);
+        if (!Number.isFinite(agentId)) return;
+        const requestCount = Number(item?.[countFieldName] ?? 0);
+        combinedCounts.set(
+          agentId,
+          (combinedCounts.get(agentId) ?? 0) + requestCount,
+        );
       });
     };
 
@@ -156,13 +161,16 @@ const fetchCategorizedRequestTotals = async () => {
       );
     }
 
-    const sumFor = (ids) =>
-      ids.reduce((acc, id) => acc + (combinedCounts.get(id) ?? 0), 0);
+    const sumCountsForAgentIds = (agentIds) =>
+      agentIds.reduce(
+        (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
+        0,
+      );
 
     return {
-      predictTxs: sumFor(predictTraderIds),
-      contributeTxs: sumFor(contributeIds),
-      governatooorrTxs: sumFor(governatooorIds),
+      predictTxs: sumCountsForAgentIds(predictTraderIds),
+      contributeTxs: sumCountsForAgentIds(contributeIds),
+      governatooorrTxs: sumCountsForAgentIds(governatooorIds),
     };
   } catch (error) {
     console.error('Error fetching categorized mech requests:', error);
