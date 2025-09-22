@@ -1,5 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
+import {
+  mechMarketplaceRequestsPerAgentsQuery,
+  mechRequestsPerAgentOnchainsQuery,
+} from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
@@ -9,21 +13,10 @@ const allMechIds = [
   ...MECH_AGENT_CLASSIFICATION.contribute,
   ...MECH_AGENT_CLASSIFICATION.governatooor,
 ];
-const IDS_LIST = JSON.stringify(allMechIds.map(String));
 
-const ONCHAIN_QUERY = `query {
-  requestsPerAgentOnchains(where: { id_in: ${IDS_LIST} }) {
-    id
-    requestsCount
-  }
-}`;
+const ONCHAIN_QUERY = mechRequestsPerAgentOnchainsQuery(allMechIds);
 
-const MARKETPLACE_QUERY = `query {
-  requestsPerAgents(where: { id_in: ${IDS_LIST} }) {
-    id
-    requestsCount
-  }
-}`;
+const MARKETPLACE_QUERY = mechMarketplaceRequestsPerAgentsQuery(allMechIds);
 
 export const MechCategorizedRequestsInfo = () => (
   <SectionWrapper id="mech-requests-categorized">
