@@ -1,5 +1,8 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
-import { CACHE_DURATION_SECONDS } from 'common-util/constants';
+import {
+  CACHE_DURATION_SECONDS,
+  MECH_AGENT_CLASSIFICATION,
+} from 'common-util/constants';
 import {
   ATA_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
@@ -94,10 +97,9 @@ const fetchMechRequestsFromSubgraphs = async () => {
 
 // Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
 const fetchCategorizedRequestTotals = async () => {
-  // Agent IDs by category (from SQL classification)
-  const predictTraderIds = [14, 25, 13];
-  const contributeIds = [6];
-  const governatooorIds = [5];
+  const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
+  const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
+  const governatooorIds = MECH_AGENT_CLASSIFICATION.governatooor;
   const allIds = [...predictTraderIds, ...contributeIds, ...governatooorIds];
 
   try {
@@ -116,13 +118,10 @@ const fetchCategorizedRequestTotals = async () => {
 
     const combinedCounts = new Map();
 
-    const addCounts = (records, idFieldName, countFieldName) => {
+    const addCounts = (records) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
-        const rawAgentId =
-          item?.[idFieldName] !== undefined
-            ? item?.[idFieldName]
-            : (item?.agentId ?? item?.id);
+        const rawAgentId = item?.agentId ?? item?.id;
         let agentId;
         if (typeof rawAgentId === 'number') {
           agentId = rawAgentId;
@@ -131,7 +130,7 @@ const fetchCategorizedRequestTotals = async () => {
           agentId = match ? Number(match[0]) : NaN;
         }
         if (!Number.isFinite(agentId)) return;
-        const requestCount = Number(item?.[countFieldName] ?? 0);
+        const requestCount = Number(item?.requestsCount ?? 0);
         combinedCounts.set(
           agentId,
           (combinedCounts.get(agentId) ?? 0) + requestCount,
@@ -140,25 +139,13 @@ const fetchCategorizedRequestTotals = async () => {
     };
 
     if (mechResult.status === 'fulfilled') {
-      addCounts(
-        mechResult.value?.requestsPerAgentOnchains,
-        'id',
-        'requestsCount',
-      );
+      addCounts(mechResult.value?.requestsPerAgentOnchains);
     }
     if (marketplaceGnosisResult.status === 'fulfilled') {
-      addCounts(
-        marketplaceGnosisResult.value?.requestsPerAgents,
-        'id',
-        'requestsCount',
-      );
+      addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
-      addCounts(
-        marketplaceBaseResult.value?.requestsPerAgents,
-        'id',
-        'requestsCount',
-      );
+      addCounts(marketplaceBaseResult.value?.requestsPerAgents);
     }
 
     const sumCountsForAgentIds = (agentIds) =>
