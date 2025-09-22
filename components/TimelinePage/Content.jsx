@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from 'react';
 const categories = [
   {
     name: 'Products',
-    items: ['Pearl', 'Mech Marketplace'],
+    items: ['Pearl', 'Marketplace'],
   },
   {
     name: 'DAO',
