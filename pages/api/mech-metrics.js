@@ -121,14 +121,8 @@ const fetchCategorizedRequestTotals = async () => {
     const addCounts = (records) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
-        const rawAgentId = item?.id;
-        let agentId;
-        if (typeof rawAgentId === 'number') {
-          agentId = rawAgentId;
-        } else if (typeof rawAgentId === 'string') {
-          const match = rawAgentId.match(/\d+/);
-          agentId = match ? Number(match[0]) : NaN;
-        }
+        if (!item?.id) return;
+        const agentId = Number(item.id);
         if (!Number.isFinite(agentId)) return;
         const requestCount = Number(item?.requestsCount ?? 0);
         combinedCounts.set(
