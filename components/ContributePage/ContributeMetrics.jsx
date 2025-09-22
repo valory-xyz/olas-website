@@ -1,4 +1,4 @@
-import { getTotalOlasContributors } from 'common-util/api';
+import { getContributeMetrics } from 'common-util/api';
 import { get7DayAvgDailyActiveContributors } from 'common-util/api/dune';
 import { CONTRIBUTE_URL, DUNE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -7,7 +7,7 @@ import { usePersistentSWR } from 'hooks';
 
 export const ContributeMetrics = () => {
   const { data: metrics } = usePersistentSWR('contributeMetrics', () =>
-    fetchMetrics([getTotalOlasContributors, get7DayAvgDailyActiveContributors]),
+    fetchMetrics([getContributeMetrics, get7DayAvgDailyActiveContributors]),
   );
 
   if (!metrics) {
@@ -23,7 +23,7 @@ export const ContributeMetrics = () => {
           imageSrc: 'contributors.png',
           labelText: 'Total Olas Contributors',
           source: CONTRIBUTE_URL,
-          metric: metrics[0],
+          metric: metrics[0]?.data?.totalOlasContributors,
         },
         {
           key: 'DailyContribute',
