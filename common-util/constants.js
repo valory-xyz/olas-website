@@ -100,6 +100,13 @@ export const PREDICT_AGENT_CLASSIFICATION = {
   other_trader: [33, 44, 46, 45],
 };
 
+// Mech agent classification used for categorized request counts
+export const MECH_AGENT_CLASSIFICATION = {
+  predict: [14, 25, 13],
+  contribute: [6],
+  governatooor: [5],
+};
+
 /**
  * List of staking contracts currently available for staking on different chains
  * Source: https://operate.olas.network/contracts
