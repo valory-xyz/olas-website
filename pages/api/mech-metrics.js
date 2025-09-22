@@ -121,7 +121,7 @@ const fetchCategorizedRequestTotals = async () => {
     const addCounts = (records) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
-        const rawAgentId = item?.agentId ?? item?.id;
+        const rawAgentId = item?.id;
         let agentId;
         if (typeof rawAgentId === 'number') {
           agentId = rawAgentId;
