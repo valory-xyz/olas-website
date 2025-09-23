@@ -310,3 +310,23 @@ export const legacyMechFeesTotalsQuery = gql`
     }
   }
 `;
+
+// Mech subgraph: per-agent onchain requests
+export const mechRequestsPerAgentOnchainsQuery = (ids) => gql`
+  query MechRequestsPerAgentOnchains {
+    requestsPerAgentOnchains(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
+      id
+      requestsCount
+    }
+  }
+`;
+
+// Mech-Marketplace subgraphs: per-agent total requests
+export const mechMarketplaceRequestsPerAgentsQuery = (ids) => gql`
+  query MechMarketplaceRequestsPerAgents {
+    requestsPerAgents(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
+      id
+      requestsCount
+    }
+  }
+`;

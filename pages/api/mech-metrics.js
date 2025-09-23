@@ -1,16 +1,20 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
+  CACHE_DURATION_SECONDS,
+  MECH_AGENT_CLASSIFICATION,
+} from 'common-util/constants';
+import {
   ATA_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
   dailyMechAgentPerformancesQuery,
   mechGlobalsTotalRequestsQuery,
+  mechMarketplaceRequestsPerAgentsQuery,
   mechMarketplaceTotalRequestsQuery,
+  mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 
 const fetchDailyAgentPerformance = async () => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
@@ -91,6 +95,70 @@ const fetchMechRequestsFromSubgraphs = async () => {
   }
 };
 
+// Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
+const fetchCategorizedRequestTotals = async () => {
+  const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
+  const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
+  const governatooorIds = MECH_AGENT_CLASSIFICATION.governatooor;
+  const allIds = [...predictTraderIds, ...contributeIds, ...governatooorIds];
+
+  try {
+    const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
+      await Promise.allSettled([
+        ATA_GRAPH_CLIENTS.legacyMech.request(
+          mechRequestsPerAgentOnchainsQuery(allIds.map(String)),
+        ),
+        ATA_GRAPH_CLIENTS.gnosis.request(
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
+        ),
+        ATA_GRAPH_CLIENTS.base.request(
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
+        ),
+      ]);
+
+    const combinedCounts = new Map();
+
+    const addCounts = (records) => {
+      if (!Array.isArray(records)) return;
+      records.forEach((item) => {
+        if (!item?.id) return;
+        const agentId = Number(item.id);
+        if (!Number.isFinite(agentId)) return;
+        const requestCount = Number(item?.requestsCount ?? 0);
+        combinedCounts.set(
+          agentId,
+          (combinedCounts.get(agentId) ?? 0) + requestCount,
+        );
+      });
+    };
+
+    if (mechResult.status === 'fulfilled') {
+      addCounts(mechResult.value?.requestsPerAgentOnchains);
+    }
+    if (marketplaceGnosisResult.status === 'fulfilled') {
+      addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
+    }
+    if (marketplaceBaseResult.status === 'fulfilled') {
+      addCounts(marketplaceBaseResult.value?.requestsPerAgents);
+    }
+
+    const sumCountsForAgentIds = (agentIds) =>
+      agentIds.reduce(
+        (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
+        0,
+      );
+
+    return {
+      predictTxs: sumCountsForAgentIds(predictTraderIds),
+      contributeTxs: sumCountsForAgentIds(contributeIds),
+      governatooorrTxs: sumCountsForAgentIds(governatooorIds),
+    };
+  } catch (error) {
+    console.error('Error fetching categorized mech requests:', error);
+    return null;
+  }
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -107,15 +175,28 @@ export default async function handler(req, res) {
   );
 
   try {
-    const [dailyActiveAgents, requests] = await Promise.all([
+    const [dailyActiveAgents, requests, categorized] = await Promise.all([
       fetchDailyAgentPerformance(),
       fetchMechRequestsFromSubgraphs(),
+      fetchCategorizedRequestTotals(),
     ]);
 
     if (dailyActiveAgents !== null && requests !== null) {
+      let typeTotals = {
+        predictTxs: null,
+        contributeTxs: null,
+        governatooorrTxs: null,
+        otherTxs: null,
+      };
+      if (categorized) {
+        const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
+        const known = predictTxs + contributeTxs + governatooorrTxs;
+        const otherTxs = Math.max(0, Number(requests?.total ?? 0) - known);
+        typeTotals = { predictTxs, contributeTxs, governatooorrTxs, otherTxs };
+      }
       return res
         .status(200)
-        .json({ dailyActiveAgents, totalRequests: requests });
+        .json({ dailyActiveAgents, totalRequests: requests, ...typeTotals });
     }
 
     return res.status(404).json({ error: 'Error fetching mech metrics.' });

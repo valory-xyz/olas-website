@@ -1,5 +1,4 @@
 import { getMechMetrics } from 'common-util/api';
-import { getMechTxs } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -9,26 +8,14 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 const fetchMetrics = async () => {
-  const [mechMetrics, result] = await Promise.allSettled([
-    getMechMetrics(),
-    getMechTxs(),
-  ]);
-
-  const mechTxs = result.status === 'fulfilled' ? result.value : null;
-
+  const result = await getMechMetrics();
   return {
-    dailyActiveAgents:
-      mechMetrics.status === 'fulfilled'
-        ? mechMetrics.value?.dailyActiveAgents
-        : null,
-    totalTxs:
-      mechMetrics.status === 'fulfilled'
-        ? mechMetrics.value?.totalRequests?.total
-        : null,
-    predictTxs: mechTxs?.predictTxs || null,
-    contributeTxs: mechTxs?.contributeTxs || null,
-    governatooorrTxs: mechTxs?.governatooorrTxs || null,
-    otherTxs: mechTxs?.otherTxs || null,
+    dailyActiveAgents: result?.dailyActiveAgents ?? null,
+    totalTxs: result?.totalRequests?.total ?? null,
+    predictTxs: result?.predictTxs ?? null,
+    contributeTxs: result?.contributeTxs ?? null,
+    governatooorrTxs: result?.governatooorrTxs ?? null,
+    otherTxs: result?.otherTxs ?? null,
   };
 };
 
@@ -147,7 +134,11 @@ export const MechAgentMetrics = () => {
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
           {typeof metrics?.totalTxs === 'number' ? (
-            <Link className="font-bold" href="/data#mech-requests" hideArrow>
+            <Link
+              className="font-bold"
+              href="/data#mech-requests-categorized"
+              hideArrow
+            >
               {metrics.totalTxs.toLocaleString()}
             </Link>
           ) : (
@@ -169,7 +160,7 @@ export const MechAgentMetrics = () => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                <Link href="/data#mech-requests" hideArrow>
+                <Link href="/data#mech-requests-categorized" hideArrow>
                   {item.value}
                 </Link>
               );
