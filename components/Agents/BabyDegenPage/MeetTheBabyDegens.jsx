@@ -75,6 +75,12 @@ const ModiusAgent = () => (
       className="mb-auto"
     />
     <div className="flex flex-col gap-4">
+      <Image
+        src="/images/under-construction.svg"
+        alt="Under Construction"
+        width={186}
+        height={32}
+      />
       <div className={TEXT_MEDIUM_LIGHT_CLASS}>MODIUS AGENT</div>
       <h2 className={SUB_HEADER_LG_CLASS}>
         Your Personal AI Portfolio Manager
@@ -96,14 +102,14 @@ const ModiusAgent = () => (
         </ul>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      {/* <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
           <Link href="/pearl#download">Run via Pearl</Link>
         </Button>
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>
-      </div>
+      </div> */}
     </div>
   </div>
 );
