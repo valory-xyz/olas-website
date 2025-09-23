@@ -19,7 +19,7 @@
     "id": "36e2bab3-1ba7-48a5-9537-afa8516f72e1",
     "title": "Stack",
     "description": "The technical foundation of Olas",
-    "url": "https://stack.olas.network/",
+    "url": "/stack",
     "imageFilename": "awesome-autonolas.svg",
     "tags": ["build"]
   },

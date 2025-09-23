@@ -108,6 +108,14 @@ const RESOURCES_LINKS = [
     title: 'Roadmap',
     link: '/roadmap',
   },
+  {
+    title: 'Timeline',
+    link: '/timeline',
+  },
+  {
+    title: 'Stack',
+    link: '/stack',
+  },
 ];
 
 const MORE_LINKS = [
