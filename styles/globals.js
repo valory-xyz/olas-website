@@ -24,7 +24,10 @@ export const markdownComponents = {
   // Apply tailwind classes to style lists
   ul: ({ node, ...props }) => (
     <>
-      <ul className="list-disc list-inside ml-4 inline-block" {...props} />
+      <ul
+        className="list-disc list-inside ml-4 inline-block w-full"
+        {...props}
+      />
       <br />
     </>
   ),
