@@ -90,9 +90,9 @@ const WhatIsOlasContributeService = () => (
       <div className="lg:mt-0 lg:col-span-6 lg:flex">
         <Image
           alt="OLAS Utility"
-          src="/images/contribute-page/leaderboard.png"
-          width={615}
-          height={405}
+          src="/images/contribute-page/contribute-service.png"
+          width={600}
+          height={426}
         />
       </div>
     </div>

@@ -22,10 +22,10 @@ export const GetOlas = () => (
 
     <div className="mb-2 mt-6 lg:mt-8">
       <Image
-        src="/images/contribute-page/get-olas.png"
+        src="/images/contribute-page/contribute-sc.png"
         alt="contribute"
-        width={1180}
-        height={348}
+        width={1096}
+        height={509}
         className="mx-auto"
         unoptimized
       />
