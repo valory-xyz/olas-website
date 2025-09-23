@@ -44,7 +44,13 @@ const formatNumber = (num) => {
   return `${numTo1dp}%`;
 };
 
-const BabydegenMetricsBubble = ({ metrics, sourceUrl, image, title }) => {
+const BabydegenMetricsBubble = ({
+  isUnderConstruction = false,
+  metrics,
+  sourceUrl,
+  image,
+  title,
+}) => {
   const data = useMemo(
     () => [
       {
@@ -82,7 +88,14 @@ const BabydegenMetricsBubble = ({ metrics, sourceUrl, image, title }) => {
     [metrics, sourceUrl],
   );
 
-  return <MetricsBubble metrics={data} image={image} title={title} />;
+  return (
+    <MetricsBubble
+      isUnderConstruction={isUnderConstruction}
+      metrics={data}
+      image={image}
+      title={title}
+    />
+  );
 };
 
 export const BabydegenMetrics = () => {
@@ -120,6 +133,7 @@ export const BabydegenMetrics = () => {
           </div>
         </Card>
         <BabydegenMetricsBubble
+          isUnderConstruction
           title="Modius Agent Economy"
           image="/images/babydegen-econ-page/modius.png"
           metrics={metrics?.modius}

@@ -15,13 +15,13 @@ const HeroImage = () => (
 
 const RunAnAgent = () => (
   <Button variant="default" size="xl" asChild className="grow max-md:w-full">
-    <a href="#get-started">Run an Agent</a>
+    <Link href="/pearl#download">Run an Agent</Link>
   </Button>
 );
 
 const LearnHowItWorks = () => (
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
-    <Link href="#how-it-works">Learn How it Works</Link>
+    <Link href="#about">Learn How it Works</Link>
   </Button>
 );
 

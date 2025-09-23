@@ -8,6 +8,7 @@ const babydegens = [
   {
     id: 'modius-economy',
     src: '/images/babydegen-econ-page/modius.png',
+    isUnderConstruction: true,
     title: 'The Modius Economy',
     desc: (
       <>
@@ -86,21 +87,32 @@ const AgentTypes = () => (
           key={item.id}
           className="flex flex-col p-8 max-sm:w-auto w-[424px] rounded-xl mx-auto"
         >
-          <Image
-            alt={item.title}
-            src={item.src}
-            width="64"
-            height="64"
-            className="mb-6"
-          />
-          <span className="text-2xl font-bold text-black mb-4">
-            {item.title}
-          </span>
-          <div className="mb-4">{item.desc}</div>
+          {item.isUnderConstruction && (
+            <Image
+              src="/images/under-construction.svg"
+              alt="Under Construction"
+              width={186}
+              height={32}
+              className="mb-4"
+            />
+          )}
+          <div className="mt-auto flex flex-col lg:h-[400px]">
+            <Image
+              alt={item.title}
+              src={item.src}
+              width="64"
+              height="64"
+              className="mb-6"
+            />
+            <span className="text-2xl font-bold text-black mb-4">
+              {item.title}
+            </span>
+            <div className="mb-4">{item.desc}</div>
 
-          <Link href={item.link} className="mt-auto text-purple-600">
-            Find out more
-          </Link>
+            <Link href={item.link} className="mt-auto text-purple-600">
+              Find out more
+            </Link>
+          </div>
         </Card>
       ))}
     </div>
