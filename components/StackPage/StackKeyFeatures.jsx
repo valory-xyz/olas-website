@@ -36,17 +36,17 @@ const list = [
 ];
 
 export const StackKeyFeatures = () => (
-  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="key-features">
+  <SectionWrapper customClasses="xl:p-24 px-4 py-12 border-y" id="key-features">
     <div className="max-w-[872px] mx-auto flex flex-col gap-5">
       <p>
         The Olas Stack is the technical foundation of Olas. It consists of four
         core innovations:
       </p>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {list.map((item) => (
           <Link key={item.title} href={item.url}>
-            <Card className="p-4 flex gap-4 w-full h-[100px] hover:bg-slate-100 duration-100 ease-in">
+            <Card className="p-4 flex gap-4 w-full h-full lg:h-[100px] hover:bg-slate-100 duration-100 ease-in">
               <Image
                 src={`/images/stack-page/${item.imgUrl}`}
                 alt={item.title}
