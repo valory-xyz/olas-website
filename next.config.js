@@ -40,6 +40,46 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/bottle',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/ea-agentsfun',
+        destination: '/pearl',
+        permanent: true,
+      },
+      {
+        source: '/ea-all',
+        destination: '/pearl',
+        permanent: true,
+      },
+      {
+        source: '/ea-modius',
+        destination: '/pearl',
+        permanent: true,
+      },
+      {
+        source: '/agents/predict',
+        destination: '/agents/prediction-agents',
+        permanent: true,
+      },
+      {
+        source: '/agents/optimus',
+        destination: '/agents/babydegen',
+        permanent: true,
+      },
+      {
+        source: '/agents/optimus-agent',
+        destination: '/agents/babydegen',
+        permanent: true,
+      },
+      {
+        source: '/agents/modius-agent',
+        destination: '/agents/babydegen',
+        permanent: true,
+      },
+      {
         source: '/academy',
         destination: '/404',
         permanent: false,
