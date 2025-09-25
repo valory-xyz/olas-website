@@ -158,20 +158,6 @@
     "builder": "Valory"
   },
   {
-    "id": "2656269f-cf50-4fa4-b5f9-03550ef0ead2",
-    "name": "Predict",
-    "slug": "predict",
-    "serviceCategory": "AI",
-    "description": "",
-    "appUrl": "",
-    "marketingUrl": "",
-    "buildUrl": "",
-    "iconFilename": "predict.png",
-    "demo": false,
-    "builder": "Valory",
-    "path": "/agent-economies/predict"
-  },
-  {
     "id": "b3c4a7e8-d14f-4d6e-9c1c-55c72d02f3b9",
     "name": "Optimus",
     "slug": "optimus",
@@ -182,6 +168,7 @@
     "buildUrl": "",
     "iconFilename": "optimus.svg",
     "demo": false,
+    "removePage": true,
     "builder": "Valory",
     "path": "/agent-economies/babydegen#sub-economies"
   },
@@ -210,6 +197,7 @@
     "buildUrl": "",
     "iconFilename": "optimus-agent.png",
     "demo": false,
+    "removePage": true,
     "builder": "Valory",
     "path": "/agents/babydegen#optimus-agent"
   },
@@ -224,6 +212,7 @@
     "buildUrl": "",
     "iconFilename": "modius-agent.png",
     "demo": false,
+    "removePage": true,
     "builder": "Valory",
     "path": "/agents/babydegen#modius-agent"
   },

@@ -147,7 +147,9 @@ export default ServiceDetail;
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
-  const matchedService = servicesData.find((item) => item.slug === slug);
+  const matchedService = servicesData.find(
+    (item) => item.slug === slug && !item.removePage,
+  );
   if (!matchedService) {
     return {
       notFound: true,

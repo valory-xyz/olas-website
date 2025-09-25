@@ -90,7 +90,7 @@
   {
     "id": "3f9c2d86-42a0-4b1e-a7a7-8b3c4c6b4b1d",
     "title": "Staking",
-    "description": "Mechanism for staking OLAS to power AI agents",
+    "description": "Mechanism for staking OLAS to coordinate AI agent economies",
     "url": "/staking",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []

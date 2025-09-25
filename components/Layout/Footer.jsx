@@ -2,7 +2,6 @@ import {
   COINGECKO_URL,
   DISCORD_INVITE_URL,
   DOCS_BASE_URL,
-  MECH_MARKETPLACE_URL,
   WHITEPAPER,
   X_OLAS_URL,
 } from 'common-util/constants';
@@ -62,7 +61,6 @@ const DAO_LINKS = [
   { title: 'Operate', link: '/operate' },
   { title: 'Bond', link: '/bond' },
   { title: 'Govern', link: '/govern' },
-  { title: 'Mech Marketplace', link: MECH_MARKETPLACE_URL },
   {
     title: 'Constitution',
     link: 'https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u',
@@ -90,11 +88,6 @@ const RESOURCES_LINKS = [
   {
     title: 'Agents Unleashed',
     link: '/agents-unleashed',
-  },
-  {
-    title: 'Dev Academy Videos',
-    link: 'https://www.youtube.com/playlist?list=PLXztsZv11CTfXiQK9OJhMwBkfgf4ETZkl',
-    isExternal: true,
   },
   {
     title: 'Videos & Podcasts',
