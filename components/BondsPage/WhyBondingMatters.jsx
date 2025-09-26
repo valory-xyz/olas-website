@@ -1,8 +1,4 @@
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
@@ -15,27 +11,25 @@ export const WhyBondingMatters = () => (
       background: 'linear-gradient(180deg, #F8F9FC 0%, #E7EAF4 100%)',
     }}
   >
-    <div className={`${SCREEN_WIDTH_LG} px-0lg:px-12`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
-        Why bonding matters to Olas
+    <div className="mx-auto flex flex-col max-w-[648px] px-0lg:px-12">
+      <h2 className={`${SUB_HEADER_CLASS} mb-12`}>
+        Why Bonding Matters to Olas
       </h2>
+
+      <Image
+        src="/images/bonds-page/bonding-matters.png"
+        alt="Why bonding matters"
+        height={173}
+        width={541}
+        className="mb-12 mx-auto"
+      />
 
       <p>
         Bonding provides crucial capital, called protocol-owned liquidity, that
         helps sustain the Olas protocol. This capital generates returns, which
         can eventually reduce or replace the need for new OLAS emissions,
-        benefiting both Builders and Bonders.
+        benefiting all OLAS token holders.
       </p>
-    </div>
-
-    <div className="max-w-screen-lg mx-auto">
-      <Image
-        src="/images/bonds-page/network-role.svg"
-        alt="Network Role"
-        width={1200}
-        height={300}
-        className="mt-12 w-full"
-      />
     </div>
   </SectionWrapper>
 );
