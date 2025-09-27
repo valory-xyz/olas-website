@@ -103,7 +103,7 @@ const ways = [
         Learn more about Dev Rewards
       </a>
     ),
-    tip: '*Dev Rewards program is temporary not available.',
+    tip: '*Dev Rewards program is temporarily not available.',
   },
 ];
 
