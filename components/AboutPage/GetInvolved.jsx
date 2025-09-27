@@ -18,7 +18,8 @@ const cards = [
     image: '/images/about/mech-marketplace.png',
     title: (
       <>
-        Monetize Your Agent with <br /> Mech Marketplace
+        Hire or Monetize AI Agents <br />
+        with Mech Marketplace
       </>
     ),
     link: '/mech-marketplace',
