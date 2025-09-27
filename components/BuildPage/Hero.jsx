@@ -1,9 +1,7 @@
 import Image from 'next/image';
 
-import { MECH_MARKETPLACE_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
-import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -16,16 +14,8 @@ const HeroImage = () => (
 );
 
 const GetStarted = () => (
-  <Button variant="default" size="xl" asChild className="grow">
-    <a href="#get-started">Get started</a>
-  </Button>
-);
-
-const Explore = () => (
-  <Button variant="ghostPrimary" size="xl" asChild className="grow">
-    <SubsiteLink href={`${MECH_MARKETPLACE_URL}/ethereum/agent-blueprints`}>
-      Explore minted agent blueprints
-    </SubsiteLink>
+  <Button variant="default" size="xl" asChild>
+    <a href="#why-build">Get started</a>
   </Button>
 );
 
@@ -44,6 +34,5 @@ export const Hero = () => (
     title={BuildAgents}
     description="Build on the Olas protocol and earn Dev Rewards, or get paid by contributing to external projects."
     PrimaryButton={GetStarted}
-    SecondaryButton={Explore}
   />
 );

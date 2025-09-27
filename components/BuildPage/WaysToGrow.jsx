@@ -1,5 +1,5 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
-import { MECH_MARKETPLACE_URL, STACK_URL } from 'common-util/constants';
+import { BUILD_URL, STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
 import { SubsiteLink } from 'components/ui/typography';
@@ -11,17 +11,17 @@ import Content from './Content';
 const ways = [
   {
     title: 'Hire an Agent on Marketplace',
-    imageSrc: '/images/build-page/mm.png',
+    imageSrc: '/images/build-page/hire.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
-      <SubsiteLink href={MECH_MARKETPLACE_URL} className="mt-4">
-        View available AI Agents
+      <SubsiteLink href={`${BUILD_URL}/hire`} className="mt-4">
+        Hire an agent
       </SubsiteLink>
     ),
   },
   {
     title: "Offer your agent's services on Marketplace",
-    imageSrc: '/images/build-page/mm.png',
+    imageSrc: '/images/build-page/offer.png',
     description: (
       <>
         <p>Try your hand at making your own AI Agent. You can either:</p>
@@ -41,11 +41,8 @@ const ways = [
       </>
     ),
     link: (
-      <Link
-        href={`${STACK_URL}/mech-tools-dev`}
-        className="text-purple-600 mt-auto"
-      >
-        Build your own AI Agent
+      <Link href={`${BUILD_URL}/monetize`} className="text-purple-600 mt-auto">
+        Monetize your agent
       </Link>
     ),
   },
@@ -106,6 +103,7 @@ const ways = [
         Learn more about Dev Rewards
       </a>
     ),
+    tip: '*Dev Rewards program is temporarily not available.',
   },
 ];
 
@@ -126,7 +124,7 @@ export const WaysToGrow = () => {
         Olas ecosystem.
       </p>
 
-      <div className="grid md:grid-cols-4 gap-x-10 md:gap-x-6 gap-y-4 max-w-7xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-4xl mx-auto">
         {ways.map((item) => (
           <Card
             className="flex flex-col overflow-hidden border rounded-xl"
@@ -175,6 +173,9 @@ export const WaysToGrow = () => {
                 </>
               )}
               <div className="mt-auto">{item.link}</div>
+              {item.tip && (
+                <div className="text-sm text-[#606F85] mt-2">{item.tip}</div>
+              )}
             </div>
           </Card>
         ))}
