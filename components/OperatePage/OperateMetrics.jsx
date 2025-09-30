@@ -1,6 +1,4 @@
 import { getMainMetrics } from 'common-util/api';
-import { get7DaysAvgActivity } from 'common-util/api/dune';
-import { DUNE_DAAS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
@@ -9,13 +7,19 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const fetchMetrics = async () => {
-  const [dailyActiveAgents, mainMetrics] = await Promise.allSettled([
-    get7DaysAvgActivity(),
-    getMainMetrics(),
-  ]);
+  const mainMetrics = await getMainMetrics();
+  const data = mainMetrics?.data;
+
+  if (!data) {
+    return {
+      dailyActiveAgents: null,
+      totalOperators: null,
+    };
+  }
+
   return {
-    dailyActiveAgents: dailyActiveAgents.value,
-    totalOperators: mainMetrics.value?.data?.totalOperators,
+    dailyActiveAgents: data.dailyActiveAgents ?? null,
+    totalOperators: data.totalOperators ?? null,
   };
 };
 
@@ -41,7 +45,7 @@ export const OperateMetrics = () => {
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
         value: metrics?.dailyActiveAgents?.toLocaleString(),
-        source: DUNE_DAAS_QUERY_URL,
+        source: '/data#daily-active-agents',
       },
     ],
     [metrics],
@@ -65,7 +69,6 @@ export const OperateMetrics = () => {
             return (
               <ExternalLink href={item.source} hideArrow>
                 {item.value}
-                <span className="text-2xl">↗</span>
               </ExternalLink>
             );
           };
