@@ -15,9 +15,9 @@ export const GovernVeOlasInfo = () => (
 
       <div>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Subgraph</h3>
-        <p className="text-purple-600">
-          {process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL}
-        </p>
+        <ul className="list-disc list-inside text-sm text-slate-500">
+          <li>Ethereum tokenomics subgraph</li>
+        </ul>
       </div>
 
       <div>
@@ -41,6 +41,21 @@ export const GovernVeOlasInfo = () => (
   ) {
     id
     unlockTimestamp
+  }
+}`}
+        </CodeSnippet>
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+          veOLAS token balance
+        </h3>
+        <p className="text-sm text-slate-500">
+          The locked OLAS amount is read directly from the veOLAS token entry in
+          the same subgraph.
+        </p>
+        <CodeSnippet>
+          {`query VeOlasLockedBalance {
+  token(id: "0x7e01a500805f8a52fad229b3015ad130a332b7b3") {
+    balance
   }
 }`}
         </CodeSnippet>

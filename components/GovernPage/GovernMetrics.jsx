@@ -1,6 +1,7 @@
-import { getVeOlasCirculatingSupply } from 'common-util/api/dune';
-import { getActiveVeOlasHolders } from 'common-util/api/tokenomics';
-import { DUNE_OLAS_LOCKED_URL } from 'common-util/constants';
+import {
+  getActiveVeOlasHolders,
+  getVeOlasLockedBalance,
+} from 'common-util/api/tokenomics';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics } from 'components/MetricsCard';
 import { Card } from 'components/ui/card';
@@ -10,7 +11,7 @@ import Image from 'next/image';
 
 export const GovernMetrics = () => {
   const { data: metrics } = usePersistentSWR('governMetrics', () =>
-    fetchMetrics([getVeOlasCirculatingSupply, getActiveVeOlasHolders]),
+    fetchMetrics([getVeOlasLockedBalance, getActiveVeOlasHolders]),
   );
 
   if (!metrics) {
@@ -22,9 +23,9 @@ export const GovernMetrics = () => {
       key: 'lockedOlas',
       image: 'locked-olas.png',
       label: 'OLAS locked in veOLAS',
-      value: Math.round(metrics[0]),
-      href: DUNE_OLAS_LOCKED_URL,
-      isExternal: true,
+      value: Number(metrics[0]) || 0,
+      href: '/data#govern-veolas',
+      isExternal: false,
     },
     {
       key: 'veOlasHolders',
