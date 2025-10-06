@@ -28,7 +28,7 @@ const incentives = [
       <>
         Incentivize Operators to run AI agents in dedicated agent economies as
         defined by Launchers. Agents are coordinated and rewarded for their
-        active contributions to specific use cases, usually mediated by the
+        active contributions to specific use cases, usually mediated by the{' '}
         <Link href="/mech-marketplace">Marketplace</Link>. The protocol benefits
         through the Marketplace which can collect fees as a percentage of
         turnover.
@@ -83,60 +83,60 @@ export const OlasProtocol = () => (
               Software Registries (Component & Agent Blueprint Registry)
             </strong>{' '}
             <br />
-            Register agent systems and the components they are composed from as
-            NFTs.
+            Register agent software and the software components they are made up
+            from as ERC-721 NFTs.
           </li>
           <li>
             <strong>AI Agent Registry</strong>
             <br />
-            Maintain and secure sovereign and decentralized AI agent systems,
+            Maintain and secure sovereign and decentralized{' '}
+            <Link href="/agents">AI agents</Link> registered as ERC-721 NFTs,
             and coordinate their operators.
           </li>
         </ul>
       </div>
 
-      <p className="mb-3">
-        The protocol provides a number of core incentive mechanisms:
-      </p>
-      <div className="grid md:grid-cols-2 gap-4">
-        {incentives.map((item, index) => (
-          <Card
-            key={item.title}
-            className={`p-6 ${
-              incentives.length % 2 !== 0 && index === incentives.length - 1
-                ? 'md:col-span-2'
-                : ''
-            }`}
-          >
-            <Image
-              src={`/images/olas-token-page/${item.imgSrc}`}
-              alt={item.title}
-              width={181}
-              height={48}
-              className="mb-6"
-            />
-            <p className="text-lg font-medium mb-3">{item.title}</p>
-            <p className="mb-4 text-[#4D596A]">{item.description}</p>
-            <div className="flex max-md:flex-col gap-2">
-              <Link href={item.link}>{item.linkText}</Link>
-              {item.secondaryLink && (
-                <span>
-                  {' '}
-                  ·{' '}
-                  <Link href={item.secondaryLink}>
-                    {item.secondaryLinkText}
-                  </Link>
-                </span>
-              )}
-            </div>
-          </Card>
-        ))}
+      <div className="flex flex-col gap-4">
+        <p>The protocol provides a number of core incentive mechanisms:</p>
+        <div className="grid md:grid-cols-2 gap-4">
+          {incentives.map((item, index) => (
+            <Card
+              key={item.title}
+              className={`p-6 ${
+                incentives.length % 2 !== 0 && index === incentives.length - 1
+                  ? 'md:col-span-2'
+                  : ''
+              }`}
+            >
+              <Image
+                src={`/images/olas-token-page/${item.imgSrc}`}
+                alt={item.title}
+                width={181}
+                height={48}
+                className="mb-6"
+              />
+              <p className="text-lg font-medium mb-3">{item.title}</p>
+              <p className="mb-4 text-[#4D596A]">{item.description}</p>
+              <div className="flex max-md:flex-col gap-2">
+                <Link href={item.link}>{item.linkText}</Link>
+                {item.secondaryLink && (
+                  <span>
+                    {' '}
+                    ·{' '}
+                    <Link href={item.secondaryLink}>
+                      {item.secondaryLinkText}
+                    </Link>
+                  </span>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+        <p>
+          Collectively, these three mechanisms support the growth of a
+          decentralised ecosystem of AI agents.
+        </p>
       </div>
-
-      <p className="mb-3">
-        Collectively, these three mechanisms support the growth of a
-        decentralised ecosystem of AI agents.
-      </p>
 
       <div>
         <Image
@@ -148,8 +148,9 @@ export const OlasProtocol = () => (
         />
         <p className="mb-3">
           Finally, to coordinate all mechanisms, the protocol is governed via a
-          set of governance mechanisms. Governors are those holders of OLAS that
-          lock their OLAS in a vote-escrow version of OLAS, called veOLAS.
+          set of governance mechanisms. <Link href="/govern">Governors</Link>{' '}
+          are those holders of OLAS that lock their OLAS in a vote-escrow
+          version of OLAS, called veOLAS.
         </p>
         <p className="mb-3">
           Olas Protocol is currently deployed on multiple blockchains, with
