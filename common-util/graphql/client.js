@@ -7,10 +7,29 @@ const requestConfig = {
   },
 };
 
+const createClient = (url) =>
+  url ? new GraphQLClient(url, requestConfig) : null;
+
 export const tokenomicsGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_GRAPH_ENDPOINT_MAINNET,
   requestConfig,
 );
+
+export const TOKENOMICS_GRAPH_CLIENTS = {
+  ethereum: createClient(process.env.NEXT_PUBLIC_GRAPH_ENDPOINT_MAINNET),
+  arbitrum: createClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+  ),
+  base: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL),
+  celo: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL),
+  gnosis: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL),
+  optimism: createClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+  ),
+  polygon: createClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+  ),
+};
 
 export const STAKING_GRAPH_CLIENTS = {
   mode: new GraphQLClient(
