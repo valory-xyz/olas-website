@@ -356,3 +356,11 @@ export const activeVeOlasDepositorsQuery = gql`
     }
   }
 `;
+
+export const veOlasLockedBalanceQuery = gql`
+  query VeOlasLockedBalance($tokenId: ID!) {
+    token(id: $tokenId) {
+      balance
+    }
+  }
+`;
