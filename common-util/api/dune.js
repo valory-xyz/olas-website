@@ -7,7 +7,6 @@ import {
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
   TOTAL_SERVICE_TRANSACTIONS_QUERY_ID,
-  TOTAL_TOKEN_HOLDERS_ID,
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
   VEOLAS_CIRCULATING_SUPPLY_ID,
@@ -50,22 +49,6 @@ export const getTotalTransactionsCount = async () => {
     return totalTxs;
   } catch (error) {
     console.error('Error in getTotalTransactionsCount: ', error);
-    return;
-  }
-};
-
-export const getTotalTokenHolders = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: TOTAL_TOKEN_HOLDERS_ID,
-    });
-    const tokenHolders = get(
-      json,
-      'result.rows[0].Num_OLAS_holders_across_chains',
-    );
-    return tokenHolders;
-  } catch (error) {
-    console.error('Error in getTotalTokenHolders: ', error);
     return;
   }
 };
