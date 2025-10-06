@@ -1,7 +1,9 @@
+import { VEOLAS_TOKEN_ID } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   activeVeOlasDepositorsQuery,
   holderCountsQuery,
+  veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
 
 const HOLDER_NETWORKS = [
@@ -94,4 +96,29 @@ export const getActiveVeOlasHolders = async () => {
   }
 
   return total;
+};
+
+export const getVeOlasLockedBalance = async () => {
+  const client = TOKENOMICS_GRAPH_CLIENTS.ethereum;
+  if (!client) {
+    return 0;
+  }
+
+  try {
+    const response = await client.request(veOlasLockedBalanceQuery, {
+      tokenId: VEOLAS_TOKEN_ID.toLowerCase(),
+    });
+    const balance = response?.token?.balance;
+    if (!balance) {
+      return 0;
+    }
+    const numeric = Number(balance);
+    if (!Number.isFinite(numeric)) {
+      return 0;
+    }
+    return numeric / 1e18;
+  } catch (error) {
+    console.error('Failed to fetch veOLAS locked balance:', error);
+    return 0;
+  }
 };
