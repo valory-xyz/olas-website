@@ -338,3 +338,21 @@ export const holderCountsQuery = gql`
     }
   }
 `;
+
+export const activeVeOlasDepositorsQuery = gql`
+  query ActiveVeOlasDepositors(
+    $first: Int!
+    $skip: Int!
+    $unlockAfter: BigInt!
+  ) {
+    veolasDepositors(
+      first: $first
+      skip: $skip
+      where: { unlockTimestamp_gt: $unlockAfter }
+      orderBy: unlockTimestamp
+      orderDirection: asc
+    ) {
+      id
+    }
+  }
+`;
