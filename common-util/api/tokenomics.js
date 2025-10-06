@@ -1,5 +1,8 @@
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { holderCountsQuery } from 'common-util/graphql/queries';
+import {
+  activeVeOlasDepositorsQuery,
+  holderCountsQuery,
+} from 'common-util/graphql/queries';
 
 const HOLDER_NETWORKS = [
   { key: 'ethereum', token: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0' },
@@ -42,4 +45,53 @@ const sumHolderCounts = (results) =>
 export const getTotalTokenHolders = async () => {
   const results = await collectHolderCounts();
   return sumHolderCounts(results);
+};
+
+const PAGE_SIZE = 1000;
+
+const fetchActiveVeOlasDepositorsPage = async ({ skip, unlockAfter }) => {
+  const client = TOKENOMICS_GRAPH_CLIENTS.ethereum;
+  if (!client) {
+    return [];
+  }
+
+  try {
+    const response = await client.request(activeVeOlasDepositorsQuery, {
+      first: PAGE_SIZE,
+      skip,
+      unlockAfter,
+    });
+    return response?.veolasDepositors ?? [];
+  } catch (error) {
+    console.error('Failed to fetch veOLAS depositors page:', error);
+    return [];
+  }
+};
+
+export const getActiveVeOlasHolders = async () => {
+  const unlockAfter = Math.floor(Date.now() / 1000).toString();
+
+  let skip = 0;
+  let total = 0;
+
+  while (true) {
+    const depositors = await fetchActiveVeOlasDepositorsPage({
+      skip,
+      unlockAfter,
+    });
+
+    if (depositors.length === 0) {
+      break;
+    }
+
+    total += depositors.length;
+
+    if (depositors.length < PAGE_SIZE) {
+      break;
+    }
+
+    skip += PAGE_SIZE;
+  }
+
+  return total;
 };
