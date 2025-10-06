@@ -1,51 +1,97 @@
-import {
-  getVeOlasCirculatingSupply,
-  getVeOlasHolders,
-} from 'common-util/api/dune';
-import {
-  DUNE_OLAS_LOCKED_URL,
-  DUNE_VEOLAS_HOLDERS_URL,
-} from 'common-util/constants';
+import { getVeOlasCirculatingSupply } from 'common-util/api/dune';
+import { getActiveVeOlasHolders } from 'common-util/api/tokenomics';
+import { DUNE_OLAS_LOCKED_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
+import { fetchMetrics } from 'components/MetricsCard';
+import { Card } from 'components/ui/card';
+import { ExternalLink, Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
+import Image from 'next/image';
 
 export const GovernMetrics = () => {
   const { data: metrics } = usePersistentSWR('governMetrics', () =>
-    fetchMetrics([getVeOlasCirculatingSupply, getVeOlasHolders]),
+    fetchMetrics([getVeOlasCirculatingSupply, getActiveVeOlasHolders]),
   );
 
   if (!metrics) {
     return null;
   }
 
-  const governData = [
+  const items = [
     {
-      role: 'govern',
-      displayMetrics: [
-        {
-          key: 'lockedOlas',
-          imageSrc: 'locked-olas.png',
-          labelText: 'OLAS locked in veOLAS',
-          source: DUNE_OLAS_LOCKED_URL,
-          metric: Math.round(metrics[0]),
-        },
-        {
-          key: 'veOlasHolders',
-          imageSrc: 'veolas-holders.png',
-          labelText: 'Total veOLAS holders',
-          source: DUNE_VEOLAS_HOLDERS_URL,
-          metric: metrics[1],
-        },
-      ],
+      key: 'lockedOlas',
+      image: 'locked-olas.png',
+      label: 'OLAS locked in veOLAS',
+      value: Math.round(metrics[0]),
+      href: DUNE_OLAS_LOCKED_URL,
+      isExternal: true,
+    },
+    {
+      key: 'veOlasHolders',
+      image: 'veolas-holders.png',
+      label: 'Total veOLAS holders',
+      value: metrics[1],
+      href: '/data#govern-veolas',
+      isExternal: false,
     },
   ];
 
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
-      {governData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
-      ))}
+      <Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
+        {items.map((item, index) => (
+          <div
+            key={item.key}
+            className={`mx-auto p-3 pb-5 md:p-8 md:pb-10 gap-6 flex flex-col items-center ${
+              items.length > 1 && index === 0
+                ? 'max-lg:border-b-1.5 lg:border-r-1.5 border-purple-200'
+                : ''
+            }`}
+          >
+            <div className="flex items-center">
+              <Image
+                alt={item.label}
+                src={`/images/govern-page/${item.image}`}
+                width={35}
+                height={35}
+                className="mr-4"
+              />
+              {item.label}
+            </div>
+            {renderValue(item)}
+          </div>
+        ))}
+      </Card>
     </SectionWrapper>
+  );
+};
+
+const renderValue = ({ value, href, isExternal }) => {
+  if (!Number.isFinite(Number(value))) {
+    return <span className="text-purple-600 text-6xl">--</span>;
+  }
+
+  const formatted = Number(value).toLocaleString();
+
+  if (!href) {
+    return (
+      <span className="font-extrabold max-sm:text-4xl text-6xl">
+        {formatted}
+      </span>
+    );
+  }
+
+  const linkProps = {
+    className: 'font-extrabold max-sm:text-4xl text-6xl',
+  };
+
+  return isExternal ? (
+    <ExternalLink {...linkProps} href={href} target="_blank" hideArrow>
+      {formatted}
+    </ExternalLink>
+  ) : (
+    <Link {...linkProps} href={href} hideArrow>
+      {formatted}
+    </Link>
   );
 };
