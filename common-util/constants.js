@@ -87,6 +87,7 @@ export const TOKEN_HOLDER_NETWORKS = [
   { key: 'gnosis', token: '0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f' },
   { key: 'optimism', token: '0xFC2E6e6BCbd49ccf3A5f029c79984372DcBFE527' },
   { key: 'polygon', token: '0xFEF5d947472e72Efbb2E388c730B7428406F2F95' },
+  { key: 'mode', token: '0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9' },
 ];
 
 export const TOKENOMICS_SUBGRAPH_URLS = [
@@ -97,6 +98,7 @@ export const TOKENOMICS_SUBGRAPH_URLS = [
   process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
   process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
   process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+  process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
 ];
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';

@@ -7,24 +7,38 @@ const requestConfig = {
   },
 };
 
-const createClient = (url) =>
-  url ? new GraphQLClient(url, requestConfig) : null;
-
 export const TOKENOMICS_GRAPH_CLIENTS = {
-  ethereum: createClient(
+  ethereum: new GraphQLClient(
     process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
+    requestConfig,
   ),
-  arbitrum: createClient(
+  arbitrum: new GraphQLClient(
     process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+    requestConfig,
   ),
-  base: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL),
-  celo: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL),
-  gnosis: createClient(process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL),
-  optimism: createClient(
+  base: new GraphQLClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  celo: new GraphQLClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  gnosis: new GraphQLClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  optimism: new GraphQLClient(
     process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+    requestConfig,
   ),
-  polygon: createClient(
+  polygon: new GraphQLClient(
     process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+    requestConfig,
+  ),
+  mode: new GraphQLClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
+    requestConfig,
   ),
 };
 
