@@ -14,7 +14,7 @@ const PearlPage = () => {
   return (
     <PageWrapper>
       <Meta
-        pageTitle="Run & own AI Agents with Olas"
+        pageTitle="Pearl"
         description="Pearl brings you the ultimate collection of AI agents in one app."
         siteImageUrl={image}
       />
