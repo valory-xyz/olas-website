@@ -1,20 +1,11 @@
 import { VEOLAS_TOKEN_ID } from 'common-util/constants';
+import { TOKEN_HOLDER_NETWORKS } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   activeVeOlasDepositorsQuery,
   holderCountsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
-
-const HOLDER_NETWORKS = [
-  { key: 'ethereum', token: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0' },
-  { key: 'arbitrum', token: '0x064F8B858C2A603e1b106a2039F5446D32dc81c1' },
-  { key: 'base', token: '0x54330d28ca3357F294334BDC454a032e7f353416' },
-  { key: 'celo', token: '0xaCFfAe8e57Ec6E394Eb1b41939A8CF7892DbDc51' },
-  { key: 'gnosis', token: '0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f' },
-  { key: 'optimism', token: '0xFC2E6e6BCbd49ccf3A5f029c79984372DcBFE527' },
-  { key: 'polygon', token: '0xFEF5d947472e72Efbb2E388c730B7428406F2F95' },
-];
 
 const toLowerCaseAddress = (address) => address.toLowerCase();
 
@@ -31,7 +22,7 @@ const fetchHolderCount = ({ key, token }) => {
 
 const collectHolderCounts = () =>
   Promise.allSettled(
-    HOLDER_NETWORKS.map((network) => fetchHolderCount(network)),
+    TOKEN_HOLDER_NETWORKS.map((network) => fetchHolderCount(network)),
   );
 
 const sumHolderCounts = (results) =>

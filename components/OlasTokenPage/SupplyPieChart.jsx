@@ -61,36 +61,6 @@ function getAddressPrefix(address) {
   return address.slice(0, 6);
 }
 
-const toBigInt = (value) => {
-  if (value === null || value === undefined) return 0n;
-  if (typeof value === 'bigint') return value;
-
-  const stringValue = String(value).trim();
-
-  if (!stringValue) return 0n;
-
-  try {
-    return BigInt(stringValue);
-  } catch (error) {
-    console.error('Failed to convert value to BigInt:', error);
-    return 0n;
-  }
-};
-
-const getSettledValue = (result) =>
-  result?.status === 'fulfilled' ? result.value : null;
-
-const parseJson = async (response) => {
-  if (!response) return null;
-
-  try {
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to parse total supply response:', error);
-    return null;
-  }
-};
-
 const LegendItem = ({ label, color, address, value }) => (
   <div className="flex gap-2 items-center w-full">
     <div className={`${color} px-3 py-1 rounded-sm`} />
@@ -120,11 +90,9 @@ LegendItem.propTypes = {
 LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
-  <div className="flex flex-col gap-2 text-base max-w-md">
-    <span className="font-semibold mb-2">
-      How is the Total Supply calculated?
-    </span>
-    <span className="italic">
+  <div class="flex flex-col gap-2 text-base max-w-md">
+    <span class="font-semibold mb-2">How is the Total Supply calculated?</span>
+    <span class="italic">
       <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
       <span className="font-semibold">buOLAS</span> value
     </span>
@@ -185,68 +153,44 @@ export const SupplyPieChart = () => {
           ),
         ];
 
-        const results = await Promise.allSettled(promises);
-        const totalSupplyResponse = getSettledValue(results[0]);
-        const totalSupplyJson = await parseJson(totalSupplyResponse);
+        const result = await Promise.allSettled(promises);
+        const totalSupplyResult = await result[0].value.json();
 
-        if (!totalSupplyJson?.data?.totalSupply) {
-          setData([]);
-          setTotalSupply(undefined);
-          return;
-        }
+        const totalSupply = BigInt(totalSupplyResult.data.totalSupply);
+        const distributions = result
+          .slice(1, result.length)
+          .map((item) => item.value || 0);
 
-        const totalSupplyWei = toBigInt(totalSupplyJson.data.totalSupply);
-        const distributionsWei = results
-          .slice(1)
-          .map((settled) => toBigInt(getSettledValue(settled)));
+        const circulatingSupply =
+          totalSupply > 0
+            ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
+            : 0;
 
-        const circulatingSupplyWei =
-          totalSupplyWei > 0n
-            ? totalSupplyWei -
-              distributionsWei.reduce((sum, amount) => sum + amount, 0n)
-            : 0n;
-
-        setTotalSupply(formatEthers(totalSupplyWei));
+        setTotalSupply(formatEthers(totalSupply));
         setData([
-          ...distributionsWei.map((amount, index) => ({
+          ...distributions.map((item, index) => ({
             id: IDS[index],
             label: LABELS[index],
             address: ADDRESSES[index],
             color: TAILWIND_COLORS[index],
-            value: formatEthers(amount),
+            value: formatEthers(item),
           })),
           {
             id: IDS[CIRCULATING_SUPPLY_INDEX],
             label: LABELS[CIRCULATING_SUPPLY_INDEX],
             color: TAILWIND_COLORS[CIRCULATING_SUPPLY_INDEX],
-            value: formatEthers(circulatingSupplyWei),
+            value: formatEthers(circulatingSupply),
           },
         ]);
+
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setData([]);
-        setTotalSupply(undefined);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
-
-  const totalSupplyDisplay =
-    loading || typeof totalSupply === 'undefined'
-      ? '--'
-      : formatNumber(totalSupply);
-
-  const circulatingSupplyEntry = data.find(
-    (item) => item.id === IDS[CIRCULATING_SUPPLY_INDEX],
-  );
-
-  const circulatingSupplyDisplay =
-    loading || !circulatingSupplyEntry
-      ? '--'
-      : formatNumber(circulatingSupplyEntry.value);
 
   return (
     <>
@@ -256,7 +200,7 @@ export const SupplyPieChart = () => {
             Total Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {totalSupplyDisplay}
+            {loading ? '--' : formatNumber(totalSupply)}
           </div>
           <div className="mb-4">
             <Popover
@@ -274,7 +218,7 @@ export const SupplyPieChart = () => {
             Circulating Supply
           </h2>
           <div className="text-gradient text-4xl font-extrabold">
-            {circulatingSupplyDisplay}
+            {loading ? '--' : formatNumber(data[data.length - 1].value)}
           </div>
           <div className="mb-4">
             <Verify url={`${COINGECKO_URL}/en/coins/autonolas`} />

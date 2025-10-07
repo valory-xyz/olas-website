@@ -6,6 +6,7 @@ import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
 import {
   STAKING_GRAPH_CLIENTS,
   TOKENOMICS_GRAPH_CLIENTS,
+  TOKENOMICS_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
