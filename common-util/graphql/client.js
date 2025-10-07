@@ -10,13 +10,10 @@ const requestConfig = {
 const createClient = (url) =>
   url ? new GraphQLClient(url, requestConfig) : null;
 
-export const tokenomicsGraphClient = new GraphQLClient(
-  process.env.NEXT_PUBLIC_GRAPH_ENDPOINT_MAINNET,
-  requestConfig,
-);
-
 export const TOKENOMICS_GRAPH_CLIENTS = {
-  ethereum: createClient(process.env.NEXT_PUBLIC_GRAPH_ENDPOINT_MAINNET),
+  ethereum: createClient(
+    process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
+  ),
   arbitrum: createClient(
     process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
   ),
