@@ -23,7 +23,7 @@ const incentives = [
   },
   {
     title: 'Staking Emissions',
-    imgSrc: `builders.png`,
+    imgSrc: `stakers.png`,
     description: (
       <>
         Incentivize Operators to run AI agents in dedicated agent economies as
