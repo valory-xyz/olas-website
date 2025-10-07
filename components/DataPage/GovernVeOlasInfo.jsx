@@ -1,4 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { CodeSnippet } from './CodeSnippet';
 
@@ -16,7 +17,20 @@ export const GovernVeOlasInfo = () => (
       <div>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Subgraph</h3>
         <ul className="list-disc list-inside text-sm text-slate-500">
-          <li>Ethereum tokenomics subgraph</li>
+          <li>
+            {TOKENOMICS_SUBGRAPH_URLS[0] ? (
+              <a
+                href={TOKENOMICS_SUBGRAPH_URLS[0]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600"
+              >
+                Ethereum tokenomics subgraph
+              </a>
+            ) : (
+              'Ethereum tokenomics subgraph'
+            )}
+          </li>
         </ul>
       </div>
 
