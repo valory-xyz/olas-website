@@ -80,14 +80,29 @@ export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
 export const TOKENOMICS_SUBGRAPH_URLS = [
-  process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
+  {
+    key: 'ethereum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
+  },
+  {
+    key: 'arbitrum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+  },
+  { key: 'base', url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL },
+  { key: 'celo', url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL },
+  {
+    key: 'gnosis',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
+  },
+  {
+    key: 'optimism',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+  },
+  {
+    key: 'polygon',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+  },
+  { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
 ];
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
