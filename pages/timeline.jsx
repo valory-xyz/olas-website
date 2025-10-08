@@ -6,7 +6,7 @@ import { Header } from 'components/TimelinePage/Header';
 const TimelinePage = () => (
   <PageWrapper>
     <Meta
-      PageTitle="Timeline"
+      pageTitle="Timeline"
       description="Discover key milestones, product launches, and governance updates in the Olas timeline — a complete history from inception to today."
     />
     <Header />
