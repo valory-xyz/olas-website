@@ -11,7 +11,7 @@ import { OperatorsInfo } from 'components/DataPage/Operators';
 import { PredictAccuracyInfo } from 'components/DataPage/PredictAccuracy';
 import { PredictAprInfo } from 'components/DataPage/PredictAprInfo';
 import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
-import { TokenHoldersInfo } from 'components/DataPage/TokenHoldersInfo';
+import { TokenHolders } from 'components/DataPage/TokenHolders';
 import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
 
@@ -26,7 +26,7 @@ const DataVerifyPage = () => (
       <DailyActiveAgentsInfo />
       <MechRequestsInfo />
       <MechCategorizedRequestsInfo />
-      <TokenHoldersInfo />
+      <TokenHolders />
       <GovernVeOlasInfo />
       <OperatorsInfo />
       <TransactionsInfo />

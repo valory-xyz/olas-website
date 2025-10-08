@@ -1,9 +1,9 @@
+import { getTotalTokenHolders } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
-import { getTotalTokenHolders } from './tokenMetrics';
 
 const fetchMetrics = async () => {
   try {

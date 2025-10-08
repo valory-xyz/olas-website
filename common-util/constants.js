@@ -77,26 +77,30 @@ export const ACCELERATOR_APPLY_URL =
 export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
-export const TOKEN_HOLDER_NETWORKS = [
-  { key: 'ethereum', token: '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0' },
-  { key: 'arbitrum', token: '0x064F8B858C2A603e1b106a2039F5446D32dc81c1' },
-  { key: 'base', token: '0x54330d28ca3357F294334BDC454a032e7f353416' },
-  { key: 'celo', token: '0xaCFfAe8e57Ec6E394Eb1b41939A8CF7892DbDc51' },
-  { key: 'gnosis', token: '0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f' },
-  { key: 'optimism', token: '0xFC2E6e6BCbd49ccf3A5f029c79984372DcBFE527' },
-  { key: 'polygon', token: '0xFEF5d947472e72Efbb2E388c730B7428406F2F95' },
-  { key: 'mode', token: '0xcfD1D50ce23C46D3Cf6407487B2F8934e96DC8f9' },
-];
-
 export const TOKENOMICS_SUBGRAPH_URLS = [
-  process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
-  process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
+  {
+    key: 'ethereum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
+  },
+  {
+    key: 'arbitrum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+  },
+  { key: 'base', url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL },
+  { key: 'celo', url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL },
+  {
+    key: 'gnosis',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
+  },
+  {
+    key: 'optimism',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+  },
+  {
+    key: 'polygon',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+  },
+  { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
 ];
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
