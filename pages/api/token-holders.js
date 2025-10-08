@@ -1,20 +1,10 @@
+import {
+  CACHE_DURATION_SECONDS,
+  TOKEN_NETWORK_NAME_TO_KEY,
+} from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import tokens from 'data/tokens.json';
-
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
-
-const TOKEN_HOLDER_NAME_MAP = {
-  ethereum: 'Ethereum',
-  arbitrum: 'Arbitrum',
-  base: 'Base',
-  celo: 'Celo',
-  gnosis: 'Gnosis',
-  optimism: 'Optimism',
-  polygon: 'Polygon PoS',
-  mode: 'Mode',
-};
-
 const fetchHolderCount = async ({ key, token }) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
@@ -48,20 +38,20 @@ export default async function handler(req, res) {
   );
 
   try {
-    const lookup = tokens.reduce((map, { name, address }) => {
-      map[name] = address;
-      return map;
-    }, {});
+    const networks = tokens
+      .map(({ name, address }) => {
+        const key = TOKEN_NETWORK_NAME_TO_KEY[name];
+        if (!key) {
+          return null;
+        }
 
-    const networks = Object.entries(TOKEN_HOLDER_NAME_MAP).map(
-      ([key, name]) => {
-        const token = lookup[name];
-        if (!token) {
+        if (!address) {
           throw new Error(`Missing token address for ${name}`);
         }
-        return { key, token };
-      },
-    );
+
+        return { key, token: address };
+      })
+      .filter(Boolean);
 
     const counts = await Promise.all(
       networks.map((network) => fetchHolderCount(network)),
