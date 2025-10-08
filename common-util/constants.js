@@ -90,17 +90,6 @@ export const TOKENOMICS_SUBGRAPH_URLS = [
   process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
 ];
 
-export const TOKEN_NETWORK_NAME_TO_KEY = {
-  Ethereum: 'ethereum',
-  Arbitrum: 'arbitrum',
-  Base: 'base',
-  Celo: 'celo',
-  Gnosis: 'gnosis',
-  Optimism: 'optimism',
-  'Polygon PoS': 'polygon',
-  Mode: 'mode',
-};
-
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
 
 export const COINGECKO_URL = 'https://www.coingecko.com';
