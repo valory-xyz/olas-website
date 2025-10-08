@@ -1,4 +1,4 @@
-import { getTotalTokenHolders } from 'common-util/api/tokenomics';
+import { getTotalTokenHolders } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Link } from 'components/ui/typography';
