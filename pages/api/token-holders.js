@@ -1,10 +1,9 @@
-import {
-  CACHE_DURATION_SECONDS,
-  TOKEN_NETWORK_NAME_TO_KEY,
-} from 'common-util/constants';
+import { CACHE_DURATION_SECONDS } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import tokens from 'data/tokens.json';
+import { sum } from 'lodash';
+
 const fetchHolderCount = async ({ key, token }) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
@@ -22,6 +21,27 @@ const fetchHolderCount = async ({ key, token }) => {
   }
 };
 
+const buildTokenHolderNetworks = () => {
+  const networks = [];
+
+  tokens.forEach(({ key, name, address }) => {
+    if (!key) {
+      return;
+    }
+
+    if (!address) {
+      throw new Error(`Missing token address for ${name || key}`);
+    }
+
+    networks.push({ key, token: address });
+  });
+
+  return networks;
+};
+
+const getHolderCounts = (networks) =>
+  Promise.all(networks.map((network) => fetchHolderCount(network)));
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -38,28 +58,9 @@ export default async function handler(req, res) {
   );
 
   try {
-    const networks = tokens
-      .map(({ name, address }) => {
-        const key = TOKEN_NETWORK_NAME_TO_KEY[name];
-        if (!key) {
-          return null;
-        }
-
-        if (!address) {
-          throw new Error(`Missing token address for ${name}`);
-        }
-
-        return { key, token: address };
-      })
-      .filter(Boolean);
-
-    const counts = await Promise.all(
-      networks.map((network) => fetchHolderCount(network)),
-    );
-
-    const totalTokenHolders = counts.reduce((total, value) => {
-      return Number.isFinite(value) ? total + value : total;
-    }, 0);
+    const networks = buildTokenHolderNetworks();
+    const counts = await getHolderCounts(networks);
+    const totalTokenHolders = sum(counts);
 
     return res.status(200).json({ totalTokenHolders });
   } catch (error) {
