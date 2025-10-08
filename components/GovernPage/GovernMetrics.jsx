@@ -1,41 +1,45 @@
 import {
   getActiveVeOlasHolders,
   getVeOlasLockedBalance,
-} from 'common-util/api/tokenomics';
+} from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics } from 'components/MetricsCard';
 import { Card } from 'components/ui/card';
 import { ExternalLink, Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
+import { useMemo } from 'react';
 
 export const GovernMetrics = () => {
   const { data: metrics } = usePersistentSWR('governMetrics', () =>
     fetchMetrics([getVeOlasLockedBalance, getActiveVeOlasHolders]),
   );
 
+  const items = useMemo(
+    () => [
+      {
+        key: 'lockedOlas',
+        image: 'locked-olas.png',
+        label: 'OLAS locked in veOLAS',
+        value: Number(metrics?.[0]) || 0,
+        href: '/data#govern-veolas',
+        isExternal: false,
+      },
+      {
+        key: 'veOlasHolders',
+        image: 'veolas-holders.png',
+        label: 'Total veOLAS holders',
+        value: metrics?.[1],
+        href: '/data#govern-veolas',
+        isExternal: false,
+      },
+    ],
+    [metrics],
+  );
+
   if (!metrics) {
     return null;
   }
-
-  const items = [
-    {
-      key: 'lockedOlas',
-      image: 'locked-olas.png',
-      label: 'OLAS locked in veOLAS',
-      value: Number(metrics[0]) || 0,
-      href: '/data#govern-veolas',
-      isExternal: false,
-    },
-    {
-      key: 'veOlasHolders',
-      image: 'veolas-holders.png',
-      label: 'Total veOLAS holders',
-      value: metrics[1],
-      href: '/data#govern-veolas',
-      isExternal: false,
-    },
-  ];
 
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
@@ -68,6 +72,8 @@ export const GovernMetrics = () => {
 };
 
 const renderValue = ({ value, href, isExternal }) => {
+  const valueClassName = 'font-extrabold max-sm:text-4xl text-6xl';
+
   if (!Number.isFinite(Number(value))) {
     return <span className="text-purple-600 text-6xl">--</span>;
   }
@@ -75,23 +81,20 @@ const renderValue = ({ value, href, isExternal }) => {
   const formatted = Number(value).toLocaleString();
 
   if (!href) {
-    return (
-      <span className="font-extrabold max-sm:text-4xl text-6xl">
-        {formatted}
-      </span>
-    );
+    return <span className={valueClassName}>{formatted}</span>;
   }
 
-  const linkProps = {
-    className: 'font-extrabold max-sm:text-4xl text-6xl',
-  };
-
   return isExternal ? (
-    <ExternalLink {...linkProps} href={href} target="_blank" hideArrow>
+    <ExternalLink
+      className={valueClassName}
+      href={href}
+      target="_blank"
+      hideArrow
+    >
       {formatted}
     </ExternalLink>
   ) : (
-    <Link {...linkProps} href={href} hideArrow>
+    <Link className={valueClassName} href={href} hideArrow>
       {formatted}
     </Link>
   );

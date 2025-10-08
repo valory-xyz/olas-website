@@ -10,7 +10,7 @@ export const GovernVeOlasInfo = () => (
     <div className="space-y-6 mt-4">
       <p>
         Counts the number of wallets with an active veOLAS lock on Ethereum. The
-        metric sums all veolasDepositors where <code>unlockTimestamp</code> is
+        metric sums all veOLAS depositors where <code>unlockTimestamp</code> is
         in the future, using the tokenomics subgraph.
       </p>
 
