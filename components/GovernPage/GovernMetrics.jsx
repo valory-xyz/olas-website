@@ -23,7 +23,7 @@ export const GovernMetrics = () => {
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
           source: '/data#govern-veolas',
-          metric: metrics[0],
+          metric: Math.round(metrics[0]),
           isExternal: false,
         },
         {
