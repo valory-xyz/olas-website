@@ -13,10 +13,12 @@ const TokenHoldersQuerySnippet = () => (
 );
 
 const toNetworkEntry = ({ key, name, address }) =>
-  key && address ? { key, name, token: address } : null;
+  key && address ? { key, name, tokenAddress: address } : null;
 
 const selectTokenHolderNetworks = () =>
-  tokens.map(toNetworkEntry).filter((entry) => entry?.key && entry?.token);
+  tokens
+    .map(toNetworkEntry)
+    .filter((entry) => entry?.key && entry?.tokenAddress);
 
 export const TokenHolders = () => {
   const tokenNetworks = useMemo(selectTokenHolderNetworks, []);
@@ -53,10 +55,10 @@ export const TokenHolders = () => {
         <div>
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Token addresses</h3>
           <ul className="list-disc list-inside text-sm text-slate-500">
-            {tokenNetworks.map(({ key, token, name }) => (
+            {tokenNetworks.map(({ key, tokenAddress, name }) => (
               <li key={key}>
                 <span className="font-semibold">{name}</span>:{' '}
-                <code>{token}</code>
+                <code>{tokenAddress}</code>
               </li>
             ))}
           </ul>
@@ -68,8 +70,7 @@ export const TokenHolders = () => {
           </h3>
           <p className="text-sm text-slate-500">
             The same query is executed against each tokenomics subgraph with the
-            network&apos;s token address (lowercase) to retrieve the holder
-            count.
+            network&apos;s token address to retrieve the holder count.
           </p>
           <TokenHoldersQuerySnippet />
         </div>

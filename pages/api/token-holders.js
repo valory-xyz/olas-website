@@ -4,7 +4,7 @@ import { holderCountsQuery } from 'common-util/graphql/queries';
 import tokens from 'data/tokens.json';
 import { sum } from 'lodash';
 
-const fetchHolderCount = async ({ key, token }) => {
+const fetchHolderCount = async ({ key, tokenAddress }) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
     return 0;
@@ -12,7 +12,7 @@ const fetchHolderCount = async ({ key, token }) => {
 
   try {
     const response = await client.request(holderCountsQuery, {
-      tokenId: token.toLowerCase(),
+      tokenId: tokenAddress,
     });
     return Number(response?.token?.holderCount ?? 0);
   } catch (error) {
@@ -33,7 +33,7 @@ const buildTokenHolderNetworks = () => {
       throw new Error(`Missing token address for ${name || key}`);
     }
 
-    networks.push({ key, token: address });
+    networks.push({ key, tokenAddress: address });
   });
 
   return networks;
@@ -59,8 +59,8 @@ export default async function handler(req, res) {
 
   try {
     const networks = buildTokenHolderNetworks();
-    const counts = await getHolderCounts(networks);
-    const totalTokenHolders = sum(counts);
+    const holderCounts = await getHolderCounts(networks);
+    const totalTokenHolders = sum(holderCounts);
 
     return res.status(200).json({ totalTokenHolders });
   } catch (error) {
