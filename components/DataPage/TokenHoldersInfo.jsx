@@ -1,8 +1,6 @@
+import { TOKEN_HOLDER_NETWORKS } from 'common-util/api/tokenomics';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import {
-  TOKEN_HOLDER_NETWORKS,
-  TOKENOMICS_SUBGRAPH_URLS,
-} from 'common-util/constants';
+import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/constants';
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { CodeSnippet } from './CodeSnippet';
