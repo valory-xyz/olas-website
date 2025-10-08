@@ -191,3 +191,39 @@ export const getTotalTokenHolders = async () => {
     return null;
   }
 };
+
+let veOlasMetricsPromise = null;
+
+const fetchVeOlasMetrics = async () => {
+  if (!veOlasMetricsPromise) {
+    veOlasMetricsPromise = (async () => {
+      try {
+        const response = await fetch('/api/govern-metrics');
+        if (!response.ok) {
+          throw new Error('Failed to fetch govern metrics');
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching govern metrics:', error);
+        return null;
+      } finally {
+        veOlasMetricsPromise = null;
+      }
+    })();
+  }
+
+  return veOlasMetricsPromise;
+};
+
+export const getVeOlasLockedBalance = async () => {
+  const metrics = await fetchVeOlasMetrics();
+  return metrics?.lockedOlas ?? null;
+};
+
+export const getActiveVeOlasHolders = async () => {
+  const metrics = await fetchVeOlasMetrics();
+  return metrics?.activeHolders ?? null;
+};
+
+// ----------- GOVERN (veOLAS) -----------
