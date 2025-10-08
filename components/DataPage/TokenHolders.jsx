@@ -1,8 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import {
-  TOKEN_NETWORK_NAME_TO_KEY,
-  TOKENOMICS_SUBGRAPH_URLS,
-} from 'common-util/constants';
+import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/constants';
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import tokens from 'data/tokens.json';
@@ -15,15 +12,13 @@ const TokenHoldersQuerySnippet = () => (
   </CodeSnippet>
 );
 
-const selectTokenHolderNetworks = () =>
-  tokens
-    .map((token) => {
-      const key = TOKEN_NETWORK_NAME_TO_KEY[token.name];
-      return key ? { key, token: token.address } : null;
-    })
-    .filter(Boolean);
+const toNetworkEntry = ({ key, name, address }) =>
+  key && address ? { key, name, token: address } : null;
 
-export const TokenHoldersInfo = () => {
+const selectTokenHolderNetworks = () =>
+  tokens.map(toNetworkEntry).filter((entry) => entry?.key && entry?.token);
+
+export const TokenHolders = () => {
   const tokenNetworks = useMemo(selectTokenHolderNetworks, []);
 
   return (
@@ -56,9 +51,9 @@ export const TokenHoldersInfo = () => {
         <div>
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Token addresses</h3>
           <ul className="list-disc list-inside text-sm text-slate-500">
-            {tokenNetworks.map(({ key, token }) => (
+            {tokenNetworks.map(({ key, token, name }) => (
               <li key={key}>
-                <span className="font-semibold capitalize">{key}</span>:{' '}
+                <span className="font-semibold">{name}</span>:{' '}
                 <code>{token}</code>
               </li>
             ))}
