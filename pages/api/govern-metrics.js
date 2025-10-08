@@ -4,7 +4,6 @@ import {
   activeVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
-import { formatWeiNumber } from 'common-util/numberFormatter';
 
 const PAGE_SIZE = 1000;
 const BUFFER_SECONDS = 60;
@@ -79,9 +78,7 @@ const getVeOlasMetrics = async () => {
   ]);
 
   return {
-    lockedOlas: lockedBalance
-      ? formatWeiNumber(lockedBalance, { notation: 'standard' })
-      : null,
+    lockedOlas: lockedBalance ? Number(lockedBalance) / 1e18 : null,
     activeHolders,
   };
 };

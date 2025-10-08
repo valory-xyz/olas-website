@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 import { Card } from './ui/card';
-import { ExternalLink } from './ui/typography';
+import { ExternalLink, Link } from './ui/typography';
 
 export const fetchMetrics = async (fetchFunctions) => {
   try {
@@ -39,20 +39,7 @@ export const MetricsCard = ({ metrics }) => {
               />
               {metric.labelText}
             </div>
-            {metric.metric ? (
-              <ExternalLink
-                className="font-extrabold max-sm:text-4xl text-6xl"
-                href={metric.source}
-                target="_blank"
-                hideArrow
-              >
-                {metric.isMoney && <span>$</span>}
-                {metric.metric.toLocaleString()}
-                <span className="text-4xl">↗</span>
-              </ExternalLink>
-            ) : (
-              <span className="text-purple-600 text-6xl">--</span>
-            )}
+            {renderMetricValue(metric)}
             {metric.subText && (
               <div className="flex gap-2">{metric.subText}</div>
             )}
@@ -60,6 +47,44 @@ export const MetricsCard = ({ metrics }) => {
         );
       })}
     </Card>
+  );
+};
+
+const renderMetricValue = (metric) => {
+  const valueClassName = 'font-extrabold max-sm:text-4xl text-6xl';
+
+  if (!metric.metric && metric.metric !== 0) {
+    return <span className="text-purple-600 text-6xl">--</span>;
+  }
+
+  const formatted = Number(metric.metric).toLocaleString('en-US');
+  const isExternal = metric.isExternal !== false;
+
+  if (!metric.source) {
+    return (
+      <span className={valueClassName}>
+        {metric.isMoney && <span>$</span>}
+        {formatted}
+      </span>
+    );
+  }
+
+  return isExternal ? (
+    <ExternalLink
+      className={valueClassName}
+      href={metric.source}
+      target="_blank"
+      hideArrow
+    >
+      {metric.isMoney && <span>$</span>}
+      {formatted}
+      <span className="text-4xl">↗</span>
+    </ExternalLink>
+  ) : (
+    <Link className={valueClassName} href={metric.source} hideArrow>
+      {metric.isMoney && <span>$</span>}
+      {formatted}
+    </Link>
   );
 };
 
@@ -71,9 +96,10 @@ MetricsCard.propTypes = {
         key: PropTypes.string.isRequired,
         imageSrc: PropTypes.string.isRequired,
         labelText: PropTypes.string.isRequired,
-        source: PropTypes.string.isRequired,
-        metric: PropTypes.string,
+        source: PropTypes.string,
+        metric: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         isMoney: PropTypes.bool,
+        isExternal: PropTypes.bool,
         subText: PropTypes.string,
         imageWidth: PropTypes.number,
       }),
