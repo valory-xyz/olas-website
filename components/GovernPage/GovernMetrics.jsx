@@ -1,16 +1,11 @@
-import {
-  getActiveVeOlasHolders,
-  getVeOlasLockedBalance,
-} from 'common-util/api';
+import { getGovernMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
+import { MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 import { useMemo } from 'react';
 
 export const GovernMetrics = () => {
-  const { data: metrics } = usePersistentSWR('governMetrics', () =>
-    fetchMetrics([getVeOlasLockedBalance, getActiveVeOlasHolders]),
-  );
+  const { data: metrics } = usePersistentSWR('governMetrics', getGovernMetrics);
 
   const governData = useMemo(() => {
     if (!metrics) return null;
@@ -23,7 +18,7 @@ export const GovernMetrics = () => {
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
           source: '/data#govern-veolas',
-          metric: Math.round(metrics[0]),
+          metric: Math.round(metrics.lockedOlas),
           isExternal: false,
         },
         {
@@ -31,7 +26,7 @@ export const GovernMetrics = () => {
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
           source: '/data#govern-veolas',
-          metric: metrics[1],
+          metric: metrics.activeHolders,
           isExternal: false,
         },
       ],
