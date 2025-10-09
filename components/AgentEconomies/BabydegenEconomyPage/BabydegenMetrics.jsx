@@ -51,6 +51,13 @@ const BabydegenMetricsBubble = ({
   title,
 }) => {
   const data = useMemo(() => {
+    const baseSource = sourceUrl
+      ? { link: sourceUrl, isExternal: !sourceUrl.startsWith('/') }
+      : undefined;
+    const olasSource = sourceUrl?.startsWith('/')
+      ? baseSource
+      : { link: OPERATE_URL, isExternal: true };
+
     const baseMetrics = [
       {
         id: 'toUSDC',
@@ -58,10 +65,7 @@ const BabydegenMetricsBubble = ({
         value: metrics?.latestEthApr
           ? formatNumber(metrics.latestEthApr)
           : null,
-        source: {
-          link: sourceUrl,
-          isExternal: true,
-        },
+        source: baseSource,
       },
       {
         id: 'toETH',
@@ -69,10 +73,7 @@ const BabydegenMetricsBubble = ({
         value: metrics?.latestAvgApr
           ? formatNumber(metrics.latestAvgApr)
           : null,
-        source: {
-          link: sourceUrl,
-          isExternal: true,
-        },
+        source: baseSource,
       },
       {
         id: 'olasApr',
@@ -84,10 +85,7 @@ const BabydegenMetricsBubble = ({
             : metrics?.maxOlasApr
               ? formatNumber(metrics.maxOlasApr)
               : null,
-        source: {
-          link: OPERATE_URL,
-          isExternal: true,
-        },
+        source: olasSource,
       },
     ];
 
