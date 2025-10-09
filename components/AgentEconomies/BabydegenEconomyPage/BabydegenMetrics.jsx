@@ -46,7 +46,7 @@ const formatNumber = (num) => {
 const BabydegenMetricsBubble = ({
   isUnderConstruction = false,
   metrics,
-  sourceUrl = OPERATE_URL,
+  sourceUrl = '/data#babydegen-metrics',
   image,
   title,
 }) => {
@@ -128,7 +128,6 @@ export const BabydegenMetrics = () => {
               hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-              <span className="text-4xl">↗</span>
             </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
