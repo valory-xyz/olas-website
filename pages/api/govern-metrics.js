@@ -1,11 +1,12 @@
 import { CACHE_DURATION_SECONDS, VEOLAS_TOKEN_ID } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
-  activeVeOlasDepositorsQuery,
+  getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
 
-const PAGE_SIZE = 1000;
+const LIMIT = 1000;
+const PAGES = 5;
 const BUFFER_SECONDS = 60;
 
 const fetchLockedBalance = async () => {
@@ -26,6 +27,7 @@ const fetchLockedBalance = async () => {
 };
 
 const buildVeOlasNetworks = () => [{ key: 'ethereum' }];
+
 const fetchActiveDepositorCount = async ({ key }, unlockAfter) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
@@ -33,29 +35,40 @@ const fetchActiveDepositorCount = async ({ key }, unlockAfter) => {
   }
 
   let skip = 0;
-  let total = 0;
+  let allDepositors = [];
 
   try {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const result = await client.request(activeVeOlasDepositorsQuery, {
-        first: PAGE_SIZE,
-        skip,
-        unlockAfter,
-      });
-      const page = result?.veolasDepositors ?? [];
-      total += page.length;
-      if (page.length < PAGE_SIZE) {
+      const response = await client.request(
+        getActiveVeOlasDepositorsQuery({
+          first: LIMIT,
+          skip,
+          pages: PAGES,
+          unlockAfter,
+        }),
+      );
+
+      const pageData = Object.values(response).flat();
+
+      allDepositors = allDepositors.concat(pageData);
+      skip += LIMIT * PAGES;
+
+      // If the returned page is empty, or the amount of items is less
+      // than the limit, we're on the last page
+      if (
+        !Array.isArray(pageData) ||
+        pageData.length === 0 ||
+        pageData.length < LIMIT * PAGES
+      ) {
         break;
       }
-      skip += PAGE_SIZE;
     }
-
-    return total;
-  } catch (error) {
-    console.error(`Error fetching active veOLAS depositors for ${key}:`, error);
-    return 0;
+  } catch (e) {
+    console.error("Couldn't fetch all depositors", e);
   }
+
+  return allDepositors.length;
 };
 
 const getActiveDepositorCounts = (networks, unlockAfter) =>
