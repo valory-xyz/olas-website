@@ -18,7 +18,6 @@ export const CORE_TECHNICAL_DOCUMENT =
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
 export const DUNE_DAAS_QUERY_URL = `${DUNE_QUERY_URL}/4915321/8136719`;
 export const DUNE_TOTAL_SERVICE_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/4915404/8136824`;
-export const DUNE_TOTAL_TOKEN_HOLDERS_URL = `${DUNE_QUERY_URL}/4957109/8202489`;
 export const DUNE_PREDICT_DAA_QUERY_URL = `${DUNE_QUERY_URL}/5417479/8846100`;
 export const DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5417451/8846057`;
 export const DUNE_TOTAL_PREDICT_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5416224/8846038`;
@@ -33,7 +32,6 @@ export const DUNE_TOTAL_PROTOCOL_REVENUE_URL = `${DUNE_QUERY_URL}/5409446/883641
 
 export const DAA_QUERY_ID = '4915321';
 export const TOTAL_SERVICE_TRANSACTIONS_QUERY_ID = '4915404';
-export const TOTAL_TOKEN_HOLDERS_ID = '4957109';
 export const PREDICTION_DAA_QUERY_ID = '5417479';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '5417451';
 export const PREDICTION_TOTAL_TXS_QUERY_ID = '5416224';
@@ -80,6 +78,32 @@ export const ACCELERATOR_APPLY_URL =
 
 export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
+
+export const TOKENOMICS_SUBGRAPH_URLS = [
+  {
+    key: 'ethereum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
+  },
+  {
+    key: 'arbitrum',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+  },
+  { key: 'base', url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL },
+  { key: 'celo', url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL },
+  {
+    key: 'gnosis',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
+  },
+  {
+    key: 'optimism',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+  },
+  {
+    key: 'polygon',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+  },
+  { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
+];
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
 

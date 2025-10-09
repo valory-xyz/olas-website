@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
 import {
   STAKING_GRAPH_CLIENTS,
-  tokenomicsGraphClient,
+  TOKENOMICS_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
@@ -110,7 +110,7 @@ const Supply = () => {
 
         // emissions
         const emissionsData =
-          await tokenomicsGraphClient.request(emissionsQuery);
+          await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(emissionsQuery);
 
         // Fetch rewards updates from all staking subgraphs
         const stakingRewardsPromises = Object.entries(
@@ -160,10 +160,10 @@ const Supply = () => {
         });
 
         setEmissions(emissions);
-
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 

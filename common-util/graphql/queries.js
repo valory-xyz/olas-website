@@ -330,3 +330,11 @@ export const mechMarketplaceRequestsPerAgentsQuery = (ids) => gql`
     }
   }
 `;
+
+export const holderCountsQuery = gql`
+  query HolderCounts($tokenId: ID!) {
+    token(id: $tokenId) {
+      holderCount
+    }
+  }
+`;

@@ -1,8 +1,7 @@
-import { getTotalTokenHolders } from 'common-util/api/dune';
-import { DUNE_TOTAL_TOKEN_HOLDERS_URL } from 'common-util/constants';
+import { getTotalTokenHolders } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 
@@ -36,15 +35,13 @@ export const TokenHoldersMetric = () => {
           The OLAS Token is widely supported by the community
         </div>
         {metrics?.totalTokenHolders ? (
-          <ExternalLink
-            className="font-extrabold text-6xl"
-            href={DUNE_TOTAL_TOKEN_HOLDERS_URL}
-            target="_blank"
+          <Link
+            href="/data#token-holders"
+            className="font-extrabold text-6xl text-purple-600"
             hideArrow
           >
             {metrics?.totalTokenHolders?.toLocaleString()}
-            <span className="text-4xl">↗</span>
-          </ExternalLink>
+          </Link>
         ) : (
           <span className="text-purple-600 text-6xl">--</span>
         )}

@@ -176,3 +176,18 @@ export const getMainMetrics = async () => {
     return null;
   }
 };
+
+export const getTotalTokenHolders = async () => {
+  try {
+    const response = await fetch('/api/token-holders');
+    if (!response.ok) {
+      throw new Error('Failed to fetch total token holders');
+    }
+
+    const { totalTokenHolders } = await response.json();
+    return Number.isFinite(totalTokenHolders) ? totalTokenHolders : null;
+  } catch (error) {
+    console.error('Error fetching total token holders:', error);
+    return null;
+  }
+};
