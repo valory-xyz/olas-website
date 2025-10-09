@@ -12,9 +12,6 @@ import Image from 'next/image';
 
 const MODIUS_HUGGINGFACE_URL =
   'https://huggingface.co/spaces/valory/Modius-Agent-Performance';
-const OPTIMUS_HUGGINGFACE_URL =
-  'https://huggingface.co/spaces/valory/Optimus-Agent-Performance';
-
 const fetchMetrics = async () => {
   try {
     const babydegenMetrics = await getBabydegenMetrics();
@@ -29,6 +26,8 @@ const fetchMetrics = async () => {
         latestAvgApr: babydegenMetrics?.optimus?.latestAvgApr || null,
         latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
         maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
+        stakingAprCalculated:
+          babydegenMetrics?.optimus?.stakingAprCalculated ?? null,
       },
       dailyActiveAgents: babydegenMetrics?.dailyActiveAgents || null,
     };
@@ -47,12 +46,12 @@ const formatNumber = (num) => {
 const BabydegenMetricsBubble = ({
   isUnderConstruction = false,
   metrics,
-  sourceUrl,
+  sourceUrl = OPERATE_URL,
   image,
   title,
 }) => {
-  const data = useMemo(
-    () => [
+  const data = useMemo(() => {
+    const baseMetrics = [
       {
         id: 'toUSDC',
         subText: 'APR, Relative to USDC - Moving Average 7D',
@@ -78,15 +77,22 @@ const BabydegenMetricsBubble = ({
       {
         id: 'olasApr',
         subText: 'APR, OLAS - Via OLAS Staking',
-        value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
+        value:
+          metrics?.stakingAprCalculated !== null &&
+          metrics?.stakingAprCalculated !== undefined
+            ? formatNumber(metrics.stakingAprCalculated)
+            : metrics?.maxOlasApr
+              ? formatNumber(metrics.maxOlasApr)
+              : null,
         source: {
           link: OPERATE_URL,
           isExternal: true,
         },
       },
-    ],
-    [metrics, sourceUrl],
-  );
+    ];
+
+    return baseMetrics;
+  }, [metrics, sourceUrl]);
 
   return (
     <MetricsBubble
@@ -143,7 +149,6 @@ export const BabydegenMetrics = () => {
           title="Optimus Agent Economy"
           image="/images/babydegen-econ-page/optimus.png"
           metrics={metrics?.optimus}
-          sourceUrl={OPTIMUS_HUGGINGFACE_URL}
         />
       </div>
     </SectionWrapper>
