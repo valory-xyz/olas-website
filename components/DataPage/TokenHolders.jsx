@@ -37,19 +37,17 @@ export const TokenHolders = () => {
 
         <p className="text-purple-600">
           Subgraph links:{' '}
-          {TOKENOMICS_SUBGRAPH_URLS.filter(({ url }) => url).map(
-            ({ key, url }, index) => (
-              <a
-                key={key}
-                href={url}
-                className="mr-2"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {index + 1}
-              </a>
-            ),
-          )}
+          {TOKENOMICS_SUBGRAPH_URLS.map(({ key, url }, index) => (
+            <a
+              key={key}
+              href={url}
+              className="mr-2"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {index + 1}
+            </a>
+          ))}
         </p>
 
         <div>
