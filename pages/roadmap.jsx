@@ -4,7 +4,7 @@ import { Roadmap } from 'components/RoadmapPage';
 
 const RoadmapPage = () => (
   <PageWrapper>
-    <Meta />
+    <Meta pageTitle="Roadmap" />
     <Roadmap />
   </PageWrapper>
 );

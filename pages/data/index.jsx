@@ -27,7 +27,6 @@ const DataVerifyPage = () => (
       <MechRequestsInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />
-      <GovernVeOlasInfo />
       <OperatorsInfo />
       <TransactionsInfo />
       <AtaTransactionsInfo />

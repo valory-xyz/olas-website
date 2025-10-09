@@ -110,7 +110,7 @@ const Supply = () => {
 
         // emissions
         const emissionsData =
-          await TOKENOMICS_GRAPH_CLIENTS.ethereum.request(emissionsQuery);
+          await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(emissionsQuery);
 
         // Fetch rewards updates from all staking subgraphs
         const stakingRewardsPromises = Object.entries(

@@ -5,7 +5,7 @@ import Meta from 'components/Meta';
 const HackathonPage = () => (
   <PageWrapper>
     <Meta
-      pageTitle="Hackathon"
+      pageTitle="Hackathons"
       description="Hackathons to push forward the use of decentralized autonomous agents and AI in prediction markets."
     />
     <Hackathon />
