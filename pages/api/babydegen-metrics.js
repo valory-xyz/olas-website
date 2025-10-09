@@ -143,17 +143,18 @@ const fetchOptimusMetrics = async () => {
   }
 
   const populationMetrics = populationResult.value;
+  const defaultMetrics = {
+    latestAvgApr: null,
+    latestEthApr: null,
+    stakingAprCalculated: null,
+  };
+
   if (!populationMetrics || populationMetrics.length === 0) {
-    return {
-      latestAvgApr: null,
-      latestEthApr: null,
-      stakingAprCalculated: null,
-    };
+    return defaultMetrics;
   }
 
   const latest = populationMetrics[populationMetrics.length - 1];
-
-  const optimusMetrics = {
+  const baseMetrics = {
     latestAvgApr: toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL),
     latestEthApr: toNumber(latest?.sma7dProjectedUnrealisedPnL),
     stakingAprCalculated: null,
@@ -164,20 +165,12 @@ const fetchOptimusMetrics = async () => {
       'Optimism staking snapshots fetch failed:',
       stakingResult.reason,
     );
-    return {
-      latestAvgApr: optimusMetrics.latestAvgApr,
-      latestEthApr: optimusMetrics.latestEthApr,
-      stakingAprCalculated: null,
-    };
+    return baseMetrics;
   }
 
   const stakingSnapshots = stakingResult.value;
   if (!stakingSnapshots || stakingSnapshots.length === 0) {
-    return {
-      latestAvgApr: optimusMetrics.latestAvgApr,
-      latestEthApr: optimusMetrics.latestEthApr,
-      stakingAprCalculated: null,
-    };
+    return baseMetrics;
   }
 
   const olasUsdPrice =
@@ -193,8 +186,7 @@ const fetchOptimusMetrics = async () => {
   });
 
   return {
-    latestAvgApr: optimusMetrics.latestAvgApr,
-    latestEthApr: optimusMetrics.latestEthApr,
+    ...baseMetrics,
     stakingAprCalculated: Number.isFinite(stakingApr) ? stakingApr : null,
   };
 };
@@ -220,6 +212,21 @@ const toNumber = (value) => {
   return Number.isFinite(num) ? num : 0;
 };
 
+const calculateDailyRoi = (metric, current, previous, olasUsdPrice) => {
+  const currentTotal = BigInt(current?.totalRewards ?? 0);
+  const previousTotal = BigInt(previous?.totalRewards ?? 0);
+  if (currentTotal < previousTotal) return null;
+
+  const cumulativeOlas = Number(currentTotal) / 1e18;
+  const cumulativeUsd = cumulativeOlas * olasUsdPrice;
+  const fundedAumUsd = toNumber(metric?.totalFundedAUM);
+  const agentRoi = toNumber(metric?.medianUnrealisedPnL);
+  const stakingRoi =
+    fundedAumUsd > 0 ? (cumulativeUsd / fundedAumUsd) * 100 : 0;
+
+  return agentRoi + stakingRoi;
+};
+
 const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
   if (!metrics || !stakingSnapshots) return null;
   const startIndex = stakingSnapshots.length - metrics.length - 1;
@@ -229,18 +236,15 @@ const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
   for (let index = 0; index < metrics.length; index += 1) {
     const current = stakingSnapshots[startIndex + index + 1];
     const previous = stakingSnapshots[startIndex + index];
-    const currentTotal = BigInt(current?.totalRewards ?? 0);
-    const previousTotal = BigInt(previous?.totalRewards ?? 0);
-    if (currentTotal < previousTotal) return null;
+    const dailyRoi = calculateDailyRoi(
+      metrics[index],
+      current,
+      previous,
+      olasUsdPrice,
+    );
+    if (dailyRoi === null) return null;
 
-    const cumulativeOlas = Number(currentTotal) / 1e18;
-    const cumulativeUsd = cumulativeOlas * olasUsdPrice;
-    const fundedAumUsd = toNumber(metrics[index]?.totalFundedAUM);
-    const agentRoi = toNumber(metrics[index]?.medianUnrealisedPnL);
-    const stakingRoi =
-      fundedAumUsd > 0 ? (cumulativeUsd / fundedAumUsd) * 100 : 0;
-
-    combined.push(agentRoi + stakingRoi);
+    combined.push(dailyRoi);
   }
 
   return combined;
@@ -259,6 +263,7 @@ const calculateOptimusStakingApr = ({
   olasUsdPrice,
 }) => {
   if (!metrics || !stakingSnapshots || !olasUsdPrice) return null;
+
   const combined = computeCombinedRois(metrics, stakingSnapshots, olasUsdPrice);
   if (!combined) return null;
 
@@ -267,8 +272,9 @@ const calculateOptimusStakingApr = ({
 
   const latestMetric = metrics[metrics.length - 1];
   const averageAge = toNumber(latestMetric?.averageAgentDaysActive);
-  if (averageAge <= 0) return sma * 365;
-  return (sma / averageAge) * 365;
+  const annualizationFactor = averageAge > 0 ? sma / averageAge : sma;
+
+  return annualizationFactor * 365;
 };
 
 const fetchDailyAgentPerformance = async () => {
