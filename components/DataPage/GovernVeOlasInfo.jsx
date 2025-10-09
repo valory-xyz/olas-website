@@ -1,11 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/constants';
 import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
 
 export const GovernVeOlasInfo = () => {
@@ -28,39 +26,35 @@ export const GovernVeOlasInfo = () => {
           subgraph.
         </p>
 
-        <div>
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Subgraph</h3>
-          <p className="text-purple-600">
-            <ExternalLink
-              href={
-                TOKENOMICS_SUBGRAPH_URLS.find((s) => s.key === 'ethereum')?.url
-              }
-            >
-              Ethereum tokenomics subgraph
-            </ExternalLink>
-          </p>
-        </div>
+        <p className="text-sm text-slate-500">
+          The following queries power the veOLAS metrics shown on the Govern
+          page:
+        </p>
 
-        <div>
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Active veOLAS depositors query
-          </h3>
-          <p className="text-sm text-slate-500">
-            Fetches multiple pages (5 pages of 1000 records = 5,000 per request)
-            in a single GraphQL request for optimal performance. The{' '}
-            <code>$unlockAfter</code> variable is set to the current UTC
-            timestamp (seconds). Note: subgraph limits skip to 5000 max.
-          </p>
-          <CodeSnippet>{sampleQuery.loc.source.body}</CodeSnippet>
+        <div className="space-y-6">
+          <div>
+            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+              1) Active veOLAS depositors query
+            </h3>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            veOLAS token balance
-          </h3>
-          <p className="text-sm text-slate-500">
-            The locked OLAS amount is read directly from the veOLAS token entry
-            in the same subgraph.
-          </p>
-          <CodeSnippet>{veOlasLockedBalanceQuery.loc.source.body}</CodeSnippet>
+            <p className="text-sm text-slate-500">
+              Used for counting wallets with active veOLAS locks where
+              <code className="mx-1">unlockTimestamp</code> is in the future.
+            </p>
+
+            <CodeSnippet>{sampleQuery}</CodeSnippet>
+          </div>
+
+          <div>
+            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+              2) veOLAS token balance
+            </h3>
+            <p className="text-sm text-slate-500">
+              Reads the locked OLAS amount directly from the veOLAS token entry
+              in the same subgraph.
+            </p>
+            <CodeSnippet>{veOlasLockedBalanceQuery}</CodeSnippet>
+          </div>
         </div>
       </div>
     </SectionWrapper>
