@@ -1,7 +1,7 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  dailyBabydegenPopulationMetricsQuery,
-  dailyStakingGlobalsSnapshotsQuery,
+  dailyBabydegenPopulationMetricsLatest7Query,
+  dailyStakingGlobalsLatest8Query,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -70,7 +70,7 @@ export const BabydegenMetricsInfo = () => {
             <span>Unavailable</span>
           )}
         </p>
-        <CodeSnippet>{dailyBabydegenPopulationMetricsQuery}</CodeSnippet>
+        <CodeSnippet>{dailyBabydegenPopulationMetricsLatest7Query}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
           Optimism Staking Snapshots Query
@@ -87,7 +87,7 @@ export const BabydegenMetricsInfo = () => {
             <span>Unavailable</span>
           )}
         </p>
-        <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery}</CodeSnippet>
+        <CodeSnippet>{dailyStakingGlobalsLatest8Query}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
