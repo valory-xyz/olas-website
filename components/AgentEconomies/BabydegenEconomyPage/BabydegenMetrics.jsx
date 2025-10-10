@@ -23,7 +23,7 @@ const fetchMetrics = async () => {
         maxOlasApr: babydegenMetrics?.modius?.maxOlasApr || null,
       },
       optimus: {
-        latestAvgApr: babydegenMetrics?.optimus?.latestAvgApr || null,
+        latestUsdcApr: babydegenMetrics?.optimus?.latestUsdcApr || null,
         latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
         maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
         stakingAprCalculated:
@@ -62,16 +62,16 @@ const BabydegenMetricsBubble = ({
       {
         id: 'toUSDC',
         subText: 'APR, Relative to USDC - Moving Average 7D',
-        value: metrics?.latestEthApr
-          ? formatNumber(metrics.latestEthApr)
+        value: metrics?.latestUsdcApr
+          ? formatNumber(metrics.latestUsdcApr)
           : null,
         source: baseSource,
       },
       {
         id: 'toETH',
         subText: 'APR, Relative to ETH - Moving Average 7D',
-        value: metrics?.latestAvgApr
-          ? formatNumber(metrics.latestAvgApr)
+        value: metrics?.latestEthApr
+          ? formatNumber(metrics.latestEthApr)
           : null,
         source: baseSource,
       },
@@ -85,7 +85,11 @@ const BabydegenMetricsBubble = ({
             : metrics?.maxOlasApr
               ? formatNumber(metrics.maxOlasApr)
               : null,
-        source: olasSource,
+        source:
+          metrics?.stakingAprCalculated !== null &&
+          metrics?.stakingAprCalculated !== undefined
+            ? olasSource
+            : undefined,
       },
     ];
 
