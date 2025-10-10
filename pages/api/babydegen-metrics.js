@@ -13,7 +13,7 @@ import {
 import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsLatest7Query,
-  dailyStakingGlobalsLatest8Query,
+  dailyStakingGlobalsSnapshotsQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
@@ -212,7 +212,7 @@ const fetchOptimusMetrics = async () => {
 const fetchOptimismStakingSnapshots = async () => {
   try {
     const result = await STAKING_GRAPH_CLIENTS.optimism.request(
-      dailyStakingGlobalsLatest8Query,
+      dailyStakingGlobalsSnapshotsQuery,
     );
     const rows = Array.isArray(result?.dailyStakingGlobals)
       ? result.dailyStakingGlobals

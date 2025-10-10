@@ -135,7 +135,7 @@ export const dailyBabydegenPopulationMetricsLatest7Query = gql`
   }
 `;
 
-export const dailyStakingGlobalsLatest8Query = gql`
+export const dailyStakingGlobalsSnapshotsQuery = gql`
   {
     dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
       timestamp

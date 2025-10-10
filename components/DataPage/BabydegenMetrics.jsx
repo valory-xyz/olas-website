@@ -1,7 +1,7 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
   dailyBabydegenPopulationMetricsLatest7Query,
-  dailyStakingGlobalsLatest8Query,
+  dailyStakingGlobalsSnapshotsQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -87,7 +87,7 @@ export const BabydegenMetricsInfo = () => {
             <span>Unavailable</span>
           )}
         </p>
-        <CodeSnippet>{dailyStakingGlobalsLatest8Query}</CodeSnippet>
+        <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
