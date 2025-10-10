@@ -4,7 +4,7 @@ import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
-
+import { sum } from 'lodash';
 const LIMIT = 1000;
 const PAGES = 5;
 const BUFFER_SECONDS = 60;
@@ -77,11 +77,13 @@ const getActiveDepositorCounts = (networks, unlockAfter) =>
   );
 
 const countActiveDepositors = async () => {
+  // Unlocks after the specified time.
+  // If BUFFER_SECONDS = 60, the unlock will occur after 1 minute.
   const unlockAfter = `${Math.floor(Date.now() / 1000) + BUFFER_SECONDS}`;
 
   const networks = buildVeOlasNetworks();
   const counts = await getActiveDepositorCounts(networks, unlockAfter);
-  return counts.reduce((sum, count) => sum + count, 0);
+  return sum(counts);
 };
 
 const getVeOlasMetrics = async () => {

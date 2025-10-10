@@ -383,7 +383,7 @@ export const getActiveVeOlasDepositorsQuery = ({
             unlockTimestamp
           }
         `;
-      })
+    })
     .join('\n')}
   }
 `;
