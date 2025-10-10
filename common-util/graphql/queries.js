@@ -338,3 +338,38 @@ export const holderCountsQuery = gql`
     }
   }
 `;
+
+export const getActiveVeOlasDepositorsQuery = ({
+  first,
+  skip,
+  pages,
+  unlockAfter,
+}) => gql`
+  query ActiveVeOlasDepositors {
+    ${Array.from({ length: pages })
+    .map((_, i) => {
+      const _skip = i * first + skip;
+      return `
+          _page${i + 1}: veolasDepositors(
+            first: ${first}
+            skip: ${_skip}
+            where: { unlockTimestamp_gt: ${unlockAfter} }
+            orderBy: unlockTimestamp
+            orderDirection: asc
+          ) {
+            id
+            unlockTimestamp
+          }
+        `;
+    })
+    .join('\n')}
+  }
+`;
+
+export const veOlasLockedBalanceQuery = gql`
+  query VeOlasLockedBalance($tokenId: ID!) {
+    token(id: $tokenId) {
+      balance
+    }
+  }
+`;

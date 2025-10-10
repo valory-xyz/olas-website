@@ -2,6 +2,7 @@ import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
 import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
+import { GovernVeOlasInfo } from 'components/DataPage/GovernVeOlasInfo';
 import { MechCategorizedRequestsInfo } from 'components/DataPage/MechCategorizedRequests';
 import { MechRequestsInfo } from 'components/DataPage/MechRequests';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
@@ -26,6 +27,7 @@ const DataVerifyPage = () => (
       <MechRequestsInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />
+      <GovernVeOlasInfo />
       <OperatorsInfo />
       <TransactionsInfo />
       <AtaTransactionsInfo />

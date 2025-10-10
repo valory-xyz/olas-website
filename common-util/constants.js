@@ -25,8 +25,6 @@ export const DUNE_TOTAL_PREDICT_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5416224/88
 export const DUNE_AGENTS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
 export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
 export const DUNE_OLAS_STAKED_URL = `${DUNE_QUERY_URL}/5344501/8755325`;
-export const DUNE_OLAS_LOCKED_URL = `${DUNE_QUERY_URL}/5376597/8799234`;
-export const DUNE_VEOLAS_HOLDERS_URL = `${DUNE_QUERY_URL}/5376793/8799111`;
 export const DUNE_TOTAL_LIQUIDITY_URL = `${DUNE_QUERY_URL}/5383248/8807520`;
 export const DUNE_TOTAL_PROTOCOL_REVENUE_URL = `${DUNE_QUERY_URL}/5409446/8836411`;
 
@@ -36,7 +34,6 @@ export const PREDICTION_DAA_QUERY_ID = '5417479';
 export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '5417451';
 export const PREDICTION_TOTAL_TXS_QUERY_ID = '5416224';
 export const VEOLAS_CIRCULATING_SUPPLY_ID = '5376597';
-export const VEOLAS_HOLDERS_ID = '5376793';
 export const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID = '5383248';
 export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
 export const PROTOCOL_EARNED_FEES_ID = '3511561';
@@ -68,6 +65,7 @@ export const STACK_URL = 'https://stack.olas.network';
 
 export const BONDING_PROGRAMS_URL = `${BOND_URL}/bonding-products`;
 export const VEOLAS_URL = `${GOVERN_URL}/veolas`;
+export const VEOLAS_TOKEN_ID = '0x7e01a500805f8a52fad229b3015ad130a332b7b3';
 export const OPERATE_AGENTS_URL = `${OPERATE_URL}/agents`;
 export const DEV_REWARDS_URL = `${BUILD_URL}/dev-incentives`;
 export const BUILD_MECH_TOOL_URL = `${BUILD_URL}/paths/prediction-agents-mechs-ai-tool`;

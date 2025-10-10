@@ -1,51 +1,45 @@
-import {
-  getVeOlasCirculatingSupply,
-  getVeOlasHolders,
-} from 'common-util/api/dune';
-import {
-  DUNE_OLAS_LOCKED_URL,
-  DUNE_VEOLAS_HOLDERS_URL,
-} from 'common-util/constants';
+import { getGovernMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
+import { MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
+import { useMemo } from 'react';
 
 export const GovernMetrics = () => {
-  const { data: metrics } = usePersistentSWR('governMetrics', () =>
-    fetchMetrics([getVeOlasCirculatingSupply, getVeOlasHolders]),
-  );
+  const { data: metrics } = usePersistentSWR('governMetrics', getGovernMetrics);
 
-  if (!metrics) {
-    return null;
-  }
+  const governData = useMemo(() => {
+    if (!metrics) return null;
 
-  const governData = [
-    {
+    return {
       role: 'govern',
       displayMetrics: [
         {
           key: 'lockedOlas',
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
-          source: DUNE_OLAS_LOCKED_URL,
-          metric: Math.round(metrics[0]),
+          source: '/data#govern-veolas',
+          metric: Math.round(metrics.lockedOlas),
+          isExternal: false,
         },
         {
           key: 'veOlasHolders',
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
-          source: DUNE_VEOLAS_HOLDERS_URL,
-          metric: metrics[1],
+          source: '/data#govern-veolas',
+          metric: metrics.activeHolders,
+          isExternal: false,
         },
       ],
-    },
-  ];
+    };
+  }, [metrics]);
+
+  if (!governData) {
+    return null;
+  }
 
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
-      {governData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
-      ))}
+      <MetricsCard metrics={governData} />
     </SectionWrapper>
   );
 };

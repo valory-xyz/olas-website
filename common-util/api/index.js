@@ -191,3 +191,18 @@ export const getTotalTokenHolders = async () => {
     return null;
   }
 };
+
+// ----------- GOVERN -----------
+export const getGovernMetrics = async () => {
+  try {
+    const response = await fetch('/api/govern-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch govern metrics');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching govern metrics:', error);
+    return null;
+  }
+};

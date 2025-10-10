@@ -10,7 +10,6 @@ import {
   UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
   VEOLAS_CIRCULATING_SUPPLY_ID,
-  VEOLAS_HOLDERS_ID,
 } from 'common-util/constants';
 import get from 'lodash/get';
 
@@ -149,19 +148,6 @@ export const getVeOlasCirculatingSupply = async () => {
     return olasLocked;
   } catch (error) {
     console.error('Error in getVeOlasCirculatingSupply: ', error);
-    return;
-  }
-};
-
-export const getVeOlasHolders = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: VEOLAS_HOLDERS_ID,
-    });
-    const olasHolders = get(json, 'result.rows[0].veOLAS_holders');
-    return olasHolders;
-  } catch (error) {
-    console.error('Error in getVeOlasHolders: ', error);
     return;
   }
 };
