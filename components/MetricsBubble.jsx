@@ -37,17 +37,16 @@ export const MetricsBubble = ({
         <div className="flex flex-col gap-8">
           {metrics.map((item) => {
             const value = !metrics || item.value === null ? '--' : item.value;
+            const SourceTag = item.source
+              ? item.source.isExternal
+                ? ExternalLink
+                : Link
+              : 'span';
             const source =
               item.source && value !== '--' ? (
-                item.source.isExternal ? (
-                  <ExternalLink href={item.source.link} hideArrow>
-                    {value}
-                  </ExternalLink>
-                ) : (
-                  <Link href={item.source.link} hideArrow>
-                    {value}
-                  </Link>
-                )
+                <SourceTag href={item.source.link} hideArrow>
+                  {value}
+                </SourceTag>
               ) : (
                 value
               );
