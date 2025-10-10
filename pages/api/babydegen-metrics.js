@@ -168,27 +168,9 @@ const fetchOptimusMetrics = async () => {
     return baseMetrics;
   }
 
-  const stakingSnapshotsRaw = stakingResult.value;
-  if (!stakingSnapshotsRaw || stakingSnapshotsRaw.length === 0) {
+  const stakingSnapshots = stakingResult.value;
+  if (!stakingSnapshots || stakingSnapshots.length === 0) {
     return baseMetrics;
-  }
-
-  // Ensure we have at least 8 days by padding missing days with previous totals (0 delta)
-  const stakingSnapshots = stakingSnapshotsRaw
-    .slice()
-    .reverse()
-    .slice(-8)
-    .map((s) => ({
-      timestamp: Number(s.timestamp),
-      totalRewards: s.totalRewards,
-    }))
-    .sort((a, b) => a.timestamp - b.timestamp);
-  while (stakingSnapshots.length < 8) {
-    const last = stakingSnapshots[stakingSnapshots.length - 1];
-    stakingSnapshots.push({
-      timestamp: last ? last.timestamp + 86400 : 0,
-      totalRewards: last ? last.totalRewards : '0',
-    });
   }
 
   const olasUsdPrice =
@@ -217,8 +199,21 @@ const fetchOptimismStakingSnapshots = async () => {
     const rows = Array.isArray(result?.dailyStakingGlobals)
       ? result.dailyStakingGlobals
       : [];
-    if (rows.length < 8) return null;
-    return rows.slice().reverse();
+
+    if (rows.length === 0) return null;
+
+    const reversed = rows.slice().reverse();
+
+    // Pad with last known value if we have fewer than 8 snapshots
+    while (reversed.length < 8) {
+      const last = reversed[reversed.length - 1];
+      reversed.push({
+        timestamp: String(Number(last.timestamp) + 86400),
+        totalRewards: last.totalRewards,
+      });
+    }
+
+    return reversed;
   } catch (error) {
     console.error('Error fetching Optimism staking snapshots:', error);
     return null;
