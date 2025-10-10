@@ -1,5 +1,6 @@
 import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
 import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
+import { BabydegenMetricsInfo } from 'components/DataPage/BabydegenMetrics';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
 import { GovernVeOlasInfo } from 'components/DataPage/GovernVeOlasInfo';
@@ -24,6 +25,7 @@ const DataVerifyPage = () => (
       className={`${SCREEN_WIDTH_XL} divide-y divide-dashed divide-gray-200`}
     >
       <DailyActiveAgentsInfo />
+      <BabydegenMetricsInfo />
       <MechRequestsInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />

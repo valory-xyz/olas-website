@@ -121,6 +121,13 @@ export const ATA_GRAPH_CLIENTS = {
   ),
 };
 
+export const BABYDEGEN_GRAPH_CLIENTS = {
+  optimism: new GraphQLClient(
+    process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
+    requestConfig,
+  ),
+};
+
 export const MECH_FEES_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(
     process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,

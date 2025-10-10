@@ -122,6 +122,28 @@ export const stakingGlobalsQuery = gql`
   }
 `;
 
+export const dailyBabydegenPopulationMetricsLatest7Query = gql`
+  {
+    dailyPopulationMetrics(first: 7, orderBy: timestamp, orderDirection: desc) {
+      timestamp
+      totalFundedAUM
+      medianUnrealisedPnL
+      averageAgentDaysActive
+      sma7dProjectedUnrealisedPnL
+      sma7dEthAdjustedProjectedUnrealisedPnL
+    }
+  }
+`;
+
+export const dailyStakingGlobalsSnapshotsQuery = gql`
+  {
+    dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
+      timestamp
+      totalRewards
+    }
+  }
+`;
+
 export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
   query ClosedMarketsBets {
     ${Array.from({ length: pages })

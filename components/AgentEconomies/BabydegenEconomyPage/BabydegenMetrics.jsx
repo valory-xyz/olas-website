@@ -12,9 +12,6 @@ import Image from 'next/image';
 
 const MODIUS_HUGGINGFACE_URL =
   'https://huggingface.co/spaces/valory/Modius-Agent-Performance';
-const OPTIMUS_HUGGINGFACE_URL =
-  'https://huggingface.co/spaces/valory/Optimus-Agent-Performance';
-
 const fetchMetrics = async () => {
   try {
     const babydegenMetrics = await getBabydegenMetrics();
@@ -26,9 +23,11 @@ const fetchMetrics = async () => {
         maxOlasApr: babydegenMetrics?.modius?.maxOlasApr || null,
       },
       optimus: {
-        latestAvgApr: babydegenMetrics?.optimus?.latestAvgApr || null,
+        latestUsdcApr: babydegenMetrics?.optimus?.latestUsdcApr || null,
         latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
         maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
+        stakingAprCalculated:
+          babydegenMetrics?.optimus?.stakingAprCalculated ?? null,
       },
       dailyActiveAgents: babydegenMetrics?.dailyActiveAgents || null,
     };
@@ -47,46 +46,55 @@ const formatNumber = (num) => {
 const BabydegenMetricsBubble = ({
   isUnderConstruction = false,
   metrics,
-  sourceUrl,
+  sourceUrl = '/data#babydegen-metrics',
   image,
   title,
 }) => {
-  const data = useMemo(
-    () => [
+  const data = useMemo(() => {
+    const baseSource = sourceUrl
+      ? { link: sourceUrl, isExternal: !sourceUrl.startsWith('/') }
+      : undefined;
+    const olasSource = sourceUrl?.startsWith('/')
+      ? baseSource
+      : { link: OPERATE_URL, isExternal: true };
+
+    const baseMetrics = [
       {
         id: 'toUSDC',
         subText: 'APR, Relative to USDC - Moving Average 7D',
-        value: metrics?.latestEthApr
-          ? formatNumber(metrics.latestEthApr)
+        value: metrics?.latestUsdcApr
+          ? formatNumber(metrics.latestUsdcApr)
           : null,
-        source: {
-          link: sourceUrl,
-          isExternal: true,
-        },
+        source: baseSource,
       },
       {
         id: 'toETH',
         subText: 'APR, Relative to ETH - Moving Average 7D',
-        value: metrics?.latestAvgApr
-          ? formatNumber(metrics.latestAvgApr)
+        value: metrics?.latestEthApr
+          ? formatNumber(metrics.latestEthApr)
           : null,
-        source: {
-          link: sourceUrl,
-          isExternal: true,
-        },
+        source: baseSource,
       },
       {
         id: 'olasApr',
         subText: 'APR, OLAS - Via OLAS Staking',
-        value: metrics?.maxOlasApr ? formatNumber(metrics.maxOlasApr) : null,
-        source: {
-          link: OPERATE_URL,
-          isExternal: true,
-        },
+        value:
+          metrics?.stakingAprCalculated !== null &&
+          metrics?.stakingAprCalculated !== undefined
+            ? formatNumber(metrics.stakingAprCalculated)
+            : metrics?.maxOlasApr
+              ? formatNumber(metrics.maxOlasApr)
+              : null,
+        source:
+          metrics?.stakingAprCalculated !== null &&
+          metrics?.stakingAprCalculated !== undefined
+            ? olasSource
+            : undefined,
       },
-    ],
-    [metrics, sourceUrl],
-  );
+    ];
+
+    return baseMetrics;
+  }, [metrics, sourceUrl]);
 
   return (
     <MetricsBubble
@@ -122,7 +130,6 @@ export const BabydegenMetrics = () => {
               hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-              <span className="text-4xl">↗</span>
             </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
@@ -143,7 +150,6 @@ export const BabydegenMetrics = () => {
           title="Optimus Agent Economy"
           image="/images/babydegen-econ-page/optimus.png"
           metrics={metrics?.optimus}
-          sourceUrl={OPTIMUS_HUGGINGFACE_URL}
         />
       </div>
     </SectionWrapper>
