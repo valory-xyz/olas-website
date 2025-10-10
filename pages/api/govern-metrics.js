@@ -81,7 +81,7 @@ const countActiveDepositors = async () => {
 
   const networks = buildVeOlasNetworks();
   const counts = await getActiveDepositorCounts(networks, unlockAfter);
-  return counts.reduce((sum, count) => sum + count, 0);
+  return sum(counts);
 };
 
 const getVeOlasMetrics = async () => {
