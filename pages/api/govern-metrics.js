@@ -4,7 +4,7 @@ import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
 } from 'common-util/graphql/queries';
-
+import { sum } from 'lodash';
 const LIMIT = 1000;
 const PAGES = 5;
 const BUFFER_SECONDS = 60;
