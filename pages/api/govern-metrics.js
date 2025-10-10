@@ -77,6 +77,8 @@ const getActiveDepositorCounts = (networks, unlockAfter) =>
   );
 
 const countActiveDepositors = async () => {
+  // Unlocks after the specified time.
+  // If BUFFER_SECONDS = 60, the unlock will occur after 1 minute.
   const unlockAfter = `${Math.floor(Date.now() / 1000) + BUFFER_SECONDS}`;
 
   const networks = buildVeOlasNetworks();
