@@ -12,8 +12,8 @@ import {
 } from 'common-util/graphql/client';
 import {
   dailyBabydegenPerformancesQuery,
-  dailyBabydegenPopulationMetricsQuery,
-  dailyStakingGlobalsSnapshotsQuery,
+  dailyBabydegenPopulationMetricsLatest7Query,
+  dailyStakingGlobalsLatest8Query,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
@@ -113,7 +113,7 @@ const fetchOlasUsdPrice = async () => {
 const fetchOptimusPopulationMetrics = async () => {
   try {
     const result = await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
-      dailyBabydegenPopulationMetricsQuery,
+      dailyBabydegenPopulationMetricsLatest7Query,
     );
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
@@ -144,7 +144,7 @@ const fetchOptimusMetrics = async () => {
 
   const populationMetrics = populationResult.value;
   const defaultMetrics = {
-    latestAvgApr: null,
+    latestUsdcApr: null,
     latestEthApr: null,
     stakingAprCalculated: null,
   };
@@ -155,8 +155,8 @@ const fetchOptimusMetrics = async () => {
 
   const latest = populationMetrics[populationMetrics.length - 1];
   const baseMetrics = {
-    latestAvgApr: toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL),
-    latestEthApr: toNumber(latest?.sma7dProjectedUnrealisedPnL),
+    latestUsdcApr: toNumber(latest?.sma7dProjectedUnrealisedPnL),
+    latestEthApr: toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL),
     stakingAprCalculated: null,
   };
 
@@ -168,9 +168,27 @@ const fetchOptimusMetrics = async () => {
     return baseMetrics;
   }
 
-  const stakingSnapshots = stakingResult.value;
-  if (!stakingSnapshots || stakingSnapshots.length === 0) {
+  const stakingSnapshotsRaw = stakingResult.value;
+  if (!stakingSnapshotsRaw || stakingSnapshotsRaw.length === 0) {
     return baseMetrics;
+  }
+
+  // Ensure we have at least 8 days by padding missing days with previous totals (0 delta)
+  const stakingSnapshots = stakingSnapshotsRaw
+    .slice()
+    .reverse()
+    .slice(-8)
+    .map((s) => ({
+      timestamp: Number(s.timestamp),
+      totalRewards: s.totalRewards,
+    }))
+    .sort((a, b) => a.timestamp - b.timestamp);
+  while (stakingSnapshots.length < 8) {
+    const last = stakingSnapshots[stakingSnapshots.length - 1];
+    stakingSnapshots.push({
+      timestamp: last ? last.timestamp + 86400 : 0,
+      totalRewards: last ? last.totalRewards : '0',
+    });
   }
 
   const olasUsdPrice =
@@ -194,7 +212,7 @@ const fetchOptimusMetrics = async () => {
 const fetchOptimismStakingSnapshots = async () => {
   try {
     const result = await STAKING_GRAPH_CLIENTS.optimism.request(
-      dailyStakingGlobalsSnapshotsQuery,
+      dailyStakingGlobalsLatest8Query,
     );
     const rows = Array.isArray(result?.dailyStakingGlobals)
       ? result.dailyStakingGlobals
