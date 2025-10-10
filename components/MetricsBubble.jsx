@@ -41,11 +41,14 @@ export const MetricsBubble = ({
               ? item.source.isExternal
                 ? ExternalLink
                 : Link
-              : 'span';
+              : 'div';
             const source =
               item.source && value !== '--' ? (
                 <SourceTag href={item.source.link} hideArrow>
                   {value}
+                  {item.source.isExternal && (
+                    <span className="text-2xl">↗</span>
+                  )}
                 </SourceTag>
               ) : (
                 value
