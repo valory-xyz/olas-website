@@ -122,7 +122,7 @@ export const stakingGlobalsQuery = gql`
   }
 `;
 
-export const dailyBabydegenPopulationMetricsQuery = gql`
+export const dailyBabydegenPopulationMetricsLatest7Query = gql`
   {
     dailyPopulationMetrics(first: 7, orderBy: timestamp, orderDirection: desc) {
       timestamp
@@ -135,7 +135,7 @@ export const dailyBabydegenPopulationMetricsQuery = gql`
   }
 `;
 
-export const dailyStakingGlobalsSnapshotsQuery = gql`
+export const dailyStakingGlobalsLatest8Query = gql`
   {
     dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
       timestamp
