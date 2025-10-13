@@ -143,7 +143,7 @@ const Timeline = ({ filters, setFilters }) => {
                         <Accordion
                           titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
                           dropdownClass="border-none"
-                          label={topic.topic}
+                          label={<Markdown>{topic.topic}</Markdown>}
                           defaultOpen={false}
                         >
                           <Markdown>{topic.content}</Markdown>

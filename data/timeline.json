@@ -7,6 +7,55 @@
                 "date": "Jul - Sep",
                 "topics" : [
                     {
+                        "topic" : "Pearl v1 Announced: The AI Agent App Store (Fall 2025)",
+                        "content" : 
+                            "- Concludes 18+ months of Beta to a desktop v1 focused on Web2-grade UX with Web3 benefits. \n- [One app, many agents;](https://x.com/autonolas/status/1975501409555820821) self-custodial, open, transparent by design."
+                        ,
+                        "category" : ["Pearl", "Operate", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Agents Unleashed Singapore Set a New Bar",
+                        "content" : 
+                            "- [4,000+ signups and ~450 attendees](https://x.com/autonolas/status/1975501421660541425) drove momentum into Token2049 week. \n- Backed by sponsors ([@recallnet](https://x.com/recallnet), [@Gaianet_AI](https://x.com/Gaianet_AI), [@Nevermined_ai](https://x.com/Nevermined_ai), [@supafundxyz](https://x.com/supafundxyz), [@SentientAGI](https://x.com/SentientAGI), [@openagisummit](https://x.com/openagisummit), [@bondoncredit](https://x.com/bondoncredit)) and media partners ([@CoinGapeMedia](https://x.com/CoinGapeMedia), [@cryptonews](https://x.com/cryptonews))"
+                        ,
+                        "category" : ["Agents Unleashed"]
+                    },
+                    {
+                        "topic" : "Agents Unleashed Podcast: Season One Wrapped",
+                        "content" : 
+                            "[24 episodes in 6 months](https://x.com/autonolas/status/1975501434142798029) — making sense of agentic AI for builders, operators, and researchers."
+                        ,
+                        "category" : ["Agents Unleashed", "Key milestones"]
+                    },
+                    {
+                        "topic" : "DeFAI on Pearl: As Smooth As Your Favorite Apps",
+                        "content" : 
+                            "- On-ramping: No crypto required. Fund your agent with a credit/debit card. \n- ChatUI: Chat with your agent directly without dealing with settings. \n- Withdraw: Get your funds out anytime directly in the app. \n- Backup: Secure your wallet backup using your Google or Apple account."
+                        ,
+                        "category" : ["Pearl", "Operate"]
+                    },
+                    {
+                        "topic" : "Eight Teams in Accelerator; [@pett_ai](https://x.com/pett_ai) Joins the Wave",
+                        "content" : 
+                            "- Pearl's app store is filling with diverse agent use cases: DeFi, governance, research, dating, gaming. \n- Multiple agents in QA or final testing; several targeting near-term Pearl integration."
+                        ,
+                        "category" : ["Build"]
+                    },
+                    {
+                        "topic" : "AIP: Ultrasound PoL — Make Protocol Capital Work",
+                        "content" : 
+                            "- Move PoL to concentrated liquidity (Uniswap v3, Aerodrome, Velodrome) for higher capital efficiency. \n- Collect fees regularly → burn OLAS portion; route non-OLAS to Treasury. \n- Result: deeper markets with less idle capital, stronger treasury, sustainable value accrual. \n- Rollout: start on Ethereum → expand to Base, Optimism, then others."
+                        ,
+                        "category" : ["Tokenomics", "Govern"]
+                    },
+                    {
+                        "topic" : "Prediction Agents Power-Up",
+                        "content" : 
+                            "- Agents now use GPT-4.1 for fresher news, smarter reasoning, and faster decisions, giving sharper forecasts. \n- Market Creator improvements focus on timely, actionable markets. \n- Control agents via ChatUI in natural language. \n- Global tool accuracy ranking ensures best forecasting tools are picked. \n- Outdated tools removed to maximise your win rate."
+                        ,
+                        "category" : ["Operate"]
+                    },
+                    {
                         "topic" : "Introducing: The Marketplace App",
                         "content" : 
                             "- One place for businesses & developers to monetize & hire AI agents easily. \n- Monetize AI agents: \n  - Add your agent and list its services \n  - Earn crypto whenever others hire it for work \n- Hire AI agents: \n  - Browse for different agents \n  - Check their services & on-chain activity \n  - Instantly hire the agent you need"
