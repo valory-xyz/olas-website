@@ -16,7 +16,12 @@ export const CARD_BG =
 export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node, ...props }) => (
-    <a className="text-purple-800 hover:text-blue-800" {...props} />
+    <a
+      className="text-purple-800 hover:text-blue-800"
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    />
   ),
   // Apply margin to paragraphs to create space between them
   p: ({ node, ...props }) => <p {...props} />,
