@@ -225,6 +225,11 @@ const toNumber = (value) => {
   return Number.isFinite(num) ? num : 0;
 };
 
+/**
+ * Calculates the daily ROI by combining agent trading performance with staking rewards.
+ * Formula: agentRoi + stakingRoi
+ * where stakingRoi = (cumulativeStakingRewardsInUSD / totalFundedAUM) * 100
+ */
 const calculateDailyRoi = (metric, current, previous, olasUsdPrice) => {
   const currentTotal = BigInt(current?.totalRewards ?? 0);
   const previousTotal = BigInt(previous?.totalRewards ?? 0);
@@ -240,6 +245,11 @@ const calculateDailyRoi = (metric, current, previous, olasUsdPrice) => {
   return agentRoi + stakingRoi;
 };
 
+/**
+ * Computes combined ROIs for each day by pairing population metrics with staking snapshots.
+ * Uses an 8-day staking window to calculate 7 days of ROI deltas.
+ * Returns array of daily combined ROI values (agent performance + staking rewards).
+ */
 const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
   if (!metrics || !stakingSnapshots) return null;
   const startIndex = stakingSnapshots.length - metrics.length - 1;
@@ -263,6 +273,10 @@ const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
   return combined;
 };
 
+/**
+ * Calculates Simple Moving Average (SMA) over a specified window.
+ * Takes the most recent 'window' values and returns their average.
+ */
 const calculateSma = (values, window = 7) => {
   if (!Array.isArray(values) || values.length < window) return null;
   const subset = values.slice(-window);
@@ -270,6 +284,15 @@ const calculateSma = (values, window = 7) => {
   return sum / window;
 };
 
+/**
+ * Calculates annualized APR for Optimus staking by combining agent performance and staking rewards.
+ * Process:
+ * 1. Compute daily combined ROIs (agent trading + staking rewards)
+ * 2. Calculate 7-day SMA of those ROIs
+ * 3. Normalize by average agent age (days active)
+ * 4. Annualize by multiplying by 365
+ * Returns the final APR percentage.
+ */
 const calculateOptimusStakingApr = ({
   metrics,
   stakingSnapshots,
