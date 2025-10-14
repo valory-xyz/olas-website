@@ -8,6 +8,7 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
+import { isNil } from 'lodash';
 import Image from 'next/image';
 
 const MODIUS_HUGGINGFACE_URL =
@@ -18,18 +19,18 @@ const fetchMetrics = async () => {
 
     return {
       modius: {
-        latestAvgApr: babydegenMetrics?.modius?.latestAvgApr || null,
-        latestEthApr: babydegenMetrics?.modius?.latestEthApr || null,
-        maxOlasApr: babydegenMetrics?.modius?.maxOlasApr || null,
+        latestAvgApr: babydegenMetrics?.modius?.latestAvgApr ?? null,
+        latestEthApr: babydegenMetrics?.modius?.latestEthApr ?? null,
+        maxOlasApr: babydegenMetrics?.modius?.maxOlasApr ?? null,
       },
       optimus: {
-        latestUsdcApr: babydegenMetrics?.optimus?.latestUsdcApr || null,
-        latestEthApr: babydegenMetrics?.optimus?.latestEthApr || null,
-        maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr || null,
+        latestUsdcApr: babydegenMetrics?.optimus?.latestUsdcApr ?? null,
+        latestEthApr: babydegenMetrics?.optimus?.latestEthApr ?? null,
+        maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr ?? null,
         stakingAprCalculated:
           babydegenMetrics?.optimus?.stakingAprCalculated ?? null,
       },
-      dailyActiveAgents: babydegenMetrics?.dailyActiveAgents || null,
+      dailyActiveAgents: babydegenMetrics?.dailyActiveAgents ?? null,
     };
   } catch (error) {
     console.error('Error fetching average Aprs:', error);
@@ -78,18 +79,12 @@ const BabydegenMetricsBubble = ({
       {
         id: 'olasApr',
         subText: 'APR, OLAS - Via OLAS Staking',
-        value:
-          metrics?.stakingAprCalculated !== null &&
-          metrics?.stakingAprCalculated !== undefined
-            ? formatNumber(metrics.stakingAprCalculated)
-            : metrics?.maxOlasApr
-              ? formatNumber(metrics.maxOlasApr)
-              : null,
-        source:
-          metrics?.stakingAprCalculated !== null &&
-          metrics?.stakingAprCalculated !== undefined
-            ? olasSource
-            : undefined,
+        value: !isNil(metrics?.stakingAprCalculated)
+          ? formatNumber(metrics.stakingAprCalculated)
+          : metrics?.maxOlasApr
+            ? formatNumber(metrics.maxOlasApr)
+            : null,
+        source: !isNil(metrics?.stakingAprCalculated) ? olasSource : undefined,
       },
     ];
 
