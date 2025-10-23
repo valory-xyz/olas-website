@@ -12,6 +12,8 @@ const list = [
     location: 'Singapore, Token2049',
     date: "Oct 1 '25",
     eventLink: 'https://lu.ma/h0zgn96s',
+    replayLink:
+      'https://www.youtube.com/playlist?list=PLoP4p0r-X94r0Bgrt7PPQIR6vlzOIkg0N',
   },
   ,
   {
