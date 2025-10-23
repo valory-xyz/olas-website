@@ -17,11 +17,11 @@ const data = [
   },
   {
     title: 'Speakers',
-    value: 77,
+    value: 84,
   },
   {
     title: 'Attendees',
-    value: '3600+',
+    value: '4050+',
   },
 ];
 
