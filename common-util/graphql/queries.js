@@ -124,22 +124,32 @@ export const stakingGlobalsQuery = gql`
 
 export const dailyBabydegenPopulationMetricsLatest7Query = gql`
   {
-    dailyPopulationMetrics(first: 7, orderBy: timestamp, orderDirection: desc) {
+    dailyPopulationMetrics(
+      first: 10
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
       timestamp
       totalFundedAUM
       medianUnrealisedPnL
       averageAgentDaysActive
       sma7dProjectedUnrealisedPnL
       sma7dEthAdjustedProjectedUnrealisedPnL
+      medianAUM
     }
   }
 `;
 
 export const dailyStakingGlobalsSnapshotsQuery = gql`
   {
-    dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
+    cumulativeDailyStakingGlobals(
+      first: 10
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
       timestamp
-      totalRewards
+      medianCumulativeRewards
+      numServices
     }
   }
 `;

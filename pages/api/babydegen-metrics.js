@@ -25,9 +25,54 @@ const MIN_TOTAL_TRACES = 2;
 const OLAS_ADDRESS = tokens
   .find((item) => item.key === 'optimism')
   ?.address?.toLowerCase();
+const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
 const COINGECKO_OLAS_IN_USD_PRICE_URL = OLAS_ADDRESS
-  ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`
+  ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd${COINGECKO_API_KEY ? `&x_cg_demo_api_key=${COINGECKO_API_KEY}` : ''}`
   : null;
+
+// Cache for historical OLAS prices
+const priceCache = new Map();
+
+const formatDateForCoingecko = (timestamp) => {
+  const date = new Date(Number(timestamp) * 1000);
+  return date.toLocaleDateString('en-GB').replace(/\//g, '-');
+};
+
+const fetchPriceWithRetry = async (url, dateStr) => {
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.status?.error_code === 429) {
+    console.warn(`[${dateStr}] Rate limited, waiting 30 seconds...`);
+    await new Promise((resolve) => setTimeout(resolve, 30000));
+    return fetchPriceWithRetry(url, dateStr);
+  }
+
+  return data.market_data?.current_price?.usd;
+};
+
+const fetchOlasPriceForDate = async (timestamp) => {
+  if (priceCache.has(timestamp)) {
+    return priceCache.get(timestamp);
+  }
+
+  const dateStr = formatDateForCoingecko(timestamp);
+  const url = `https://api.coingecko.com/api/v3/coins/autonolas/history?date=${dateStr}&localization=false${COINGECKO_API_KEY ? `&x_cg_demo_api_key=${COINGECKO_API_KEY}` : ''}`;
+
+  try {
+    const price = await fetchPriceWithRetry(url, dateStr);
+    if (price !== undefined && price !== null && !isNaN(price)) {
+      priceCache.set(timestamp, price);
+      return price;
+    }
+  } catch (error) {
+    console.warn(`[${dateStr}] Error fetching price:`, error.message);
+  }
+
+  const fallback = await fetchOlasUsdPrice();
+  priceCache.set(timestamp, fallback);
+  return fallback;
+};
 
 const fetchModiusPerformance = async () => {
   const agentName = 'Modius';
@@ -118,8 +163,20 @@ const fetchOptimusPopulationMetrics = async () => {
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
-    if (rows.length < 7) return null;
-    return rows.slice().reverse();
+    if (rows.length === 0) return null;
+
+    // Exclude today (UTC) - same logic as the script
+    const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
+    const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+    if (filtered.length < 7) return null;
+
+    // Map medianAUM to medianFundedAUM
+    const processedRows = filtered.slice(0, 7).map((row) => ({
+      ...row,
+      medianFundedAUM: toNumber(row.medianAUM),
+    }));
+
+    return processedRows.reverse();
   } catch (error) {
     console.error('Error fetching Optimus population metrics:', error);
     return null;
@@ -179,10 +236,9 @@ const fetchOptimusMetrics = async () => {
     console.error('OLAS USD price fetch failed:', olasUsdPriceResult.reason);
   }
 
-  const stakingApr = calculateOptimusStakingApr({
+  const stakingApr = await calculateOptimusStakingApr({
     metrics: populationMetrics,
     stakingSnapshots,
-    olasUsdPrice,
   });
 
   return {
@@ -196,20 +252,26 @@ const fetchOptimismStakingSnapshots = async () => {
     const result = await STAKING_GRAPH_CLIENTS.optimism.request(
       dailyStakingGlobalsSnapshotsQuery,
     );
-    const rows = Array.isArray(result?.dailyStakingGlobals)
-      ? result.dailyStakingGlobals
+    const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
+      ? result.cumulativeDailyStakingGlobals
       : [];
 
     if (rows.length === 0) return null;
 
-    const reversed = rows.slice().reverse();
+    // Exclude today (UTC) - same logic as the script
+    const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
+    const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+    if (filtered.length < 7) return null;
 
-    // Pad with last known value if we have fewer than 8 snapshots
+    const reversed = filtered.slice(0, 7).reverse();
+
+    // Pad with last known value if we have fewer than 8 snapshots (for delta calculation)
     while (reversed.length < 8) {
       const last = reversed[reversed.length - 1];
       reversed.push({
         timestamp: String(Number(last.timestamp) + 86400),
-        totalRewards: last.totalRewards,
+        medianCumulativeRewards: last.medianCumulativeRewards,
+        numServices: last.numServices,
       });
     }
 
@@ -226,51 +288,45 @@ const toNumber = (value) => {
 };
 
 /**
- * Calculates the daily ROI by combining agent trading performance with staking rewards.
- * Formula: agentRoi + stakingRoi
- * where stakingRoi = (cumulativeStakingRewardsInUSD / totalFundedAUM) * 100
- */
-const calculateDailyRoi = (metric, current, previous, olasUsdPrice) => {
-  const currentTotal = BigInt(current?.totalRewards ?? 0);
-  const previousTotal = BigInt(previous?.totalRewards ?? 0);
-  if (currentTotal < previousTotal) return null;
-
-  const cumulativeOlas = Number(currentTotal) / 1e18;
-  const cumulativeUsd = cumulativeOlas * olasUsdPrice;
-  const fundedAumUsd = toNumber(metric?.totalFundedAUM);
-  const agentRoi = toNumber(metric?.medianUnrealisedPnL);
-  const stakingRoi =
-    fundedAumUsd > 0 ? (cumulativeUsd / fundedAumUsd) * 100 : 0;
-
-  return agentRoi + stakingRoi;
-};
-
-/**
- * Computes combined ROIs for each day by pairing population metrics with staking snapshots.
- * Uses an 8-day staking window to calculate 7 days of ROI deltas.
+ * Calculates combined daily ROIs by combining agent performance with staking rewards.
+ * Uses cumulative staking rewards with historical OLAS prices.
  * Returns array of daily combined ROI values (agent performance + staking rewards).
  */
-const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
-  if (!metrics || !stakingSnapshots) return null;
-  const startIndex = stakingSnapshots.length - metrics.length - 1;
-  if (startIndex < 0) return null;
+const calculateCombinedDailyROIs = async (metrics, stakingTotals) => {
+  const stakingByTimestamp = new Map();
+  stakingTotals.forEach((staking) => {
+    stakingByTimestamp.set(staking.timestamp, staking);
+  });
 
-  const combined = [];
-  for (let index = 0; index < metrics.length; index += 1) {
-    const current = stakingSnapshots[startIndex + index + 1];
-    const previous = stakingSnapshots[startIndex + index];
-    const dailyRoi = calculateDailyRoi(
-      metrics[index],
-      current,
-      previous,
-      olasUsdPrice,
-    );
-    if (dailyRoi === null) return null;
+  const combinedRois = [];
+  let lastStakingRoi = 0;
 
-    combined.push(dailyRoi);
+  for (let dayIndex = 0; dayIndex < metrics.length; dayIndex += 1) {
+    const metric = metrics[dayIndex];
+    const staking = stakingByTimestamp.get(metric.timestamp);
+
+    let stakingRoi = lastStakingRoi;
+
+    if (staking) {
+      // Fetch historical price for this specific day
+      const historicalPrice = await fetchOlasPriceForDate(metric.timestamp);
+
+      const medianRewardsOlas =
+        Number(BigInt(staking.medianCumulativeRewards)) / 1e18;
+      const medianRewardsUsd = medianRewardsOlas * historicalPrice;
+      const medianFundedAum = toNumber(metric.medianFundedAUM);
+
+      stakingRoi =
+        medianFundedAum > 0 ? (medianRewardsUsd / medianFundedAum) * 100 : 0;
+      lastStakingRoi = stakingRoi;
+    }
+
+    const agentRoi = toNumber(metric.medianUnrealisedPnL);
+    const combinedRoi = agentRoi + stakingRoi;
+    combinedRois.push(combinedRoi);
   }
 
-  return combined;
+  return combinedRois;
 };
 
 /**
@@ -287,20 +343,16 @@ const calculateSma = (values, window = 7) => {
 /**
  * Calculates annualized APR for Optimus staking by combining agent performance and staking rewards.
  * Process:
- * 1. Compute daily combined ROIs (agent trading + staking rewards)
+ * 1. Compute daily combined ROIs (agent trading + staking rewards) using historical prices
  * 2. Calculate 7-day SMA of those ROIs
  * 3. Normalize by average agent age (days active)
  * 4. Annualize by multiplying by 365
  * Returns the final APR percentage.
  */
-const calculateOptimusStakingApr = ({
-  metrics,
-  stakingSnapshots,
-  olasUsdPrice,
-}) => {
-  if (!metrics || !stakingSnapshots || !olasUsdPrice) return null;
+const calculateOptimusStakingApr = async ({ metrics, stakingSnapshots }) => {
+  if (!metrics || !stakingSnapshots) return null;
 
-  const combined = computeCombinedRois(metrics, stakingSnapshots, olasUsdPrice);
+  const combined = await calculateCombinedDailyROIs(metrics, stakingSnapshots);
   if (!combined) return null;
 
   const sma = calculateSma(combined, 7);
@@ -308,7 +360,7 @@ const calculateOptimusStakingApr = ({
 
   const latestMetric = metrics[metrics.length - 1];
   const averageAge = toNumber(latestMetric?.averageAgentDaysActive);
-  const annualizationFactor = averageAge > 0 ? sma / averageAge : sma;
+  const annualizationFactor = averageAge > 0 ? sma / averageAge : 0;
 
   return annualizationFactor * 365;
 };
