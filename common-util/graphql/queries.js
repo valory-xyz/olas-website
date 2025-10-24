@@ -369,9 +369,9 @@ export const getActiveVeOlasDepositorsQuery = ({
 }) => gql`
   query ActiveVeOlasDepositors {
     ${Array.from({ length: pages })
-    .map((_, i) => {
-      const _skip = i * first + skip;
-      return `
+      .map((_, i) => {
+        const _skip = i * first + skip;
+        return `
           _page${i + 1}: veolasDepositors(
             first: ${first}
             skip: ${_skip}
@@ -383,8 +383,8 @@ export const getActiveVeOlasDepositorsQuery = ({
             unlockTimestamp
           }
         `;
-    })
-    .join('\n')}
+      })
+      .join('\n')}
   }
 `;
 
