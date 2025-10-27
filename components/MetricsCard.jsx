@@ -39,9 +39,7 @@ export const MetricsCard = ({ metrics }) => {
                   className="mr-4"
                 />
               )}
-              {metric.emoji && (
-                <span className="text-4xl mr-4">{metric.emoji}</span>
-              )}
+              {metric.image && <span className="mr-4">{metric.image}</span>}
               {metric.labelText}
             </div>
             {renderMetricValue(metric)}

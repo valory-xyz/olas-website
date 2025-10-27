@@ -2,6 +2,7 @@ import { getMarketplaceMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
+import Image from 'next/image';
 import { useMemo } from 'react';
 
 export const MarketplaceMetrics = () => {
@@ -23,7 +24,14 @@ export const MarketplaceMetrics = () => {
               : null,
             isMoney: true,
             source: '/data#mech-turnover',
-            emoji: '💰',
+            image: (
+              <Image
+                src="/images/marketplace-page/money-bag.png"
+                alt="A2A"
+                width={24}
+                height={24}
+              />
+            ),
           },
           {
             key: 'ataTransactions',
@@ -31,7 +39,14 @@ export const MarketplaceMetrics = () => {
             metric: metrics?.ataTransactions,
             isMoney: false,
             source: '/data#ata-transactions',
-            emoji: '🤖 🤝 🤖',
+            image: (
+              <Image
+                src="/images/marketplace-page/agent-to-agent.png"
+                alt="A2A"
+                width={80}
+                height={48}
+              />
+            ),
           },
         ],
       },
