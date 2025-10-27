@@ -24,6 +24,7 @@ export const MarketplaceMetrics = () => {
               : null,
             isMoney: true,
             source: '/data#mech-turnover',
+            isExternal: false,
             image: (
               <Image
                 src="/images/marketplace-page/money-bag.png"
@@ -39,6 +40,7 @@ export const MarketplaceMetrics = () => {
             metric: metrics?.ataTransactions,
             isMoney: false,
             source: '/data#ata-transactions',
+            isExternal: false,
             image: (
               <Image
                 src="/images/marketplace-page/agent-to-agent.png"
