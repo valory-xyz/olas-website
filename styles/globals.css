@@ -146,6 +146,14 @@ video {
   z-index: 0;
 }
 
+.benefit-card-bg {
+  background-image: url('/images/pearl-page/benefit-card-bg.svg');
+  background-repeat: repeat;
+  width: 100%;
+  background-position: center;
+  z-index: 0;
+}
+
 .transparent-gradient { 
   background: radial-gradient(47.41% 45.97% at 50.57% 48.91%, rgba(255, 255, 255, 0.00) 65%, #ffffff 85%); 
 }
@@ -184,22 +192,6 @@ video {
 
 .selected-button {
   background: rgba(255, 255, 255, 0.50);
-}
-
-.card-purple {
-  @apply bg-gradient-to-t from-white to-purple-50 border-purple-200;
-}
-
-.card-lime {
-  @apply bg-gradient-to-t from-white to-lime-100 border-slate-200;
-}
-
-.card-rose {
-  @apply bg-gradient-to-t from-white to-rose-50 border-rose-200;
-}
-
-.card-rainbow {
-  background: url("/images/pearl-page/agentsfun-bg.png") white center center / cover no-repeat;
 }
 
 td, th {

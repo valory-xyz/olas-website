@@ -8,7 +8,8 @@ export const WantToBuild = () => (
       </h2>
       <p className="mb-4">
         Apply to the Olas Accelerator — a $1,000,000 grant program designed to
-        support top builders launching agents on Pearl: The AI Agent App Store.
+        support top builders launching agents on Pearl: The &quot;AI Agent App
+        Store&quot;.
       </p>
       <Link href="/accelerator" className="text-purple-600">
         Learn more
