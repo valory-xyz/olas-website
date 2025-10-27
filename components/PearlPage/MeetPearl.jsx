@@ -4,7 +4,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from './utils';
 
 export const MeetPearlContent = () => (
-  <div className="h-[540px] max-w-[1096px] sm:h-auto mt-10 mx-auto flex flex-col lg:flex-row justify-between">
+  <div className="h-[540px] max-w-[1096px] sm:h-auto mt-10 mx-auto flex flex-col lg:flex-row gap-8 justify-between">
     <div className="lg:max-w-[410px] lg:text-left">
       <h2
         className={`${SUB_HEADER_CLASS} mb-4 font-semibold lg:mb-6 flex gap-3 items-center`}
@@ -34,12 +34,16 @@ export const MeetPearlContent = () => (
       src="/images/pearl-page/select-your-agent.png"
       width={630}
       height={489}
+      className="mx-auto"
     />
   </div>
 );
 
 export const MeetPearl = () => (
-  <SectionWrapper id="about" customClasses={`${SECTION_BOX_CLASS}`}>
+  <SectionWrapper
+    id="about"
+    customClasses={`${SECTION_BOX_CLASS} max-md:mb-12`}
+  >
     <MeetPearlContent />
   </SectionWrapper>
 );
