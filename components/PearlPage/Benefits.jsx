@@ -40,7 +40,7 @@ export const Benefits = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-14`}>
       Ease of Web2 UX, <span className="text-purple-700">Benefits of Web3</span>
     </h2>
-    <div className="grid grid-cols-3 max-w-[1320px] mx-h-[1016px] mx-auto gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 max-w-[1320px] mx-h-[1016px] mx-auto gap-6">
       {benefits.map((benefit, index) => {
         const colClass = benefit.colClass ? benefit.colClass : 'col-span-1';
         const rowClass = benefit.rowClass ? benefit.rowClass : 'row-span-1';
@@ -48,7 +48,7 @@ export const Benefits = () => (
         return (
           <Card
             key={`benefit-${index}`}
-            className={`${rowClass} ${colClass} text-left`}
+            className={`md:${rowClass} md:${colClass} text-left overflow-hidden`}
           >
             <Image
               src={benefit.imgSrc}
@@ -57,7 +57,7 @@ export const Benefits = () => (
               height={benefit.imgHeight ? benefit.imgHeight : 350}
               className="border-b-1.5"
             />
-            <div className="benefit-card-bg p-6 pt-4">
+            <div className="benefit-card-bg p-6 pt-4 h-full">
               <p className="text-lg font-bold mb-[6px]">{benefit.label}</p>
               <p className="text-slate-600">{benefit.description}</p>
             </div>

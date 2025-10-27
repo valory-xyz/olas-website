@@ -21,10 +21,10 @@ const TryPearlNow = () => (
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="xl:min-h-[1207px] flex justify-center text-center relative"
+    customClasses="h-[550px] md:h-[1000px] xl:min-h-[1207px] flex justify-center text-center relative"
     backgroundType="GRAY_GRADIENT"
   >
-    <div className="flex flex-col gap-6 w-[648px] md:mt-[120px] mx-auto">
+    <div className="flex flex-col gap-6 w-[648px] md:mt-[120px] mx-auto max-md:max-w-[300px]">
       <div>
         <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 max-sm:text-base`}>
           OLAS PEARL
@@ -43,7 +43,7 @@ const Hero = () => (
       alt="Pearl App Preview"
       width={1312}
       height={887}
-      className="absolute top-[850px] left-1/2 -translate-x-1/2 -translate-y-1/2"
+      className="absolute top-[420px] md:top-[650px] lg:top-[750px] xl:top-[850px] left-1/2 -translate-x-1/2 -translate-y-1/2 max-sm:max-w-[300px] max-md:max-w-[400px]"
     />
   </SectionWrapper>
 );

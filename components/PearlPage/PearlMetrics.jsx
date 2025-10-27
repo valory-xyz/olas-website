@@ -29,9 +29,9 @@ export const PearlMetrics = () => {
   );
 
   return (
-    <SectionWrapper id="daas" customClasses="mt-[200px] max-sm:mx-4">
+    <SectionWrapper id="daas" customClasses="mt-20 lg:mt-[200px] max-sm:mx-4">
       <h2
-        className={`${SUB_HEADER_CLASS} font-semibold text-center w-[632px] mx-auto mb-14`}
+        className={`${SUB_HEADER_CLASS} font-semibold text-center max-w-[632px] mx-auto mb-14`}
       >
         Join Hundreds of People Like You Already Owning AI Agents!
       </h2>
