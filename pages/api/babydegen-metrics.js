@@ -25,54 +25,11 @@ const MIN_TOTAL_TRACES = 2;
 const OLAS_ADDRESS = tokens
   .find((item) => item.key === 'optimism')
   ?.address?.toLowerCase();
-const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
 const COINGECKO_OLAS_IN_USD_PRICE_URL = OLAS_ADDRESS
-  ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd${COINGECKO_API_KEY ? `&x_cg_demo_api_key=${COINGECKO_API_KEY}` : ''}`
+  ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`
   : null;
 
-// Cache for historical OLAS prices
-const priceCache = new Map();
-
-const formatDateForCoingecko = (timestamp) => {
-  const date = new Date(Number(timestamp) * 1000);
-  return date.toLocaleDateString('en-GB').replace(/\//g, '-');
-};
-
-const fetchPriceWithRetry = async (url, dateStr) => {
-  const response = await fetch(url);
-  const data = await response.json();
-
-  if (data.status?.error_code === 429) {
-    console.warn(`[${dateStr}] Rate limited, waiting 30 seconds...`);
-    await new Promise((resolve) => setTimeout(resolve, 30000));
-    return fetchPriceWithRetry(url, dateStr);
-  }
-
-  return data.market_data?.current_price?.usd;
-};
-
-const fetchOlasPriceForDate = async (timestamp) => {
-  if (priceCache.has(timestamp)) {
-    return priceCache.get(timestamp);
-  }
-
-  const dateStr = formatDateForCoingecko(timestamp);
-  const url = `https://api.coingecko.com/api/v3/coins/autonolas/history?date=${dateStr}&localization=false${COINGECKO_API_KEY ? `&x_cg_demo_api_key=${COINGECKO_API_KEY}` : ''}`;
-
-  try {
-    const price = await fetchPriceWithRetry(url, dateStr);
-    if (price !== undefined && price !== null && !isNaN(price)) {
-      priceCache.set(timestamp, price);
-      return price;
-    }
-  } catch (error) {
-    console.warn(`[${dateStr}] Error fetching price:`, error.message);
-  }
-
-  const fallback = await fetchOlasUsdPrice();
-  priceCache.set(timestamp, fallback);
-  return fallback;
-};
+// Removed historical price helpers in favor of single-price fetch
 
 const fetchModiusPerformance = async () => {
   const agentName = 'Modius';
@@ -236,9 +193,10 @@ const fetchOptimusMetrics = async () => {
     console.error('OLAS USD price fetch failed:', olasUsdPriceResult.reason);
   }
 
-  const stakingApr = await calculateOptimusStakingApr({
+  const stakingApr = calculateOptimusStakingApr({
     metrics: populationMetrics,
     stakingSnapshots,
+    olasUsdPrice,
   });
 
   return {
@@ -289,10 +247,13 @@ const toNumber = (value) => {
 
 /**
  * Calculates combined daily ROIs by combining agent performance with staking rewards.
- * Uses cumulative staking rewards with historical OLAS prices.
+ * Uses a single OLAS USD price snapshot for all staking reward conversions.
  * Returns array of daily combined ROI values (agent performance + staking rewards).
  */
-const calculateCombinedDailyROIs = async (metrics, stakingTotals) => {
+const calculateCombinedDailyROIs = (metrics, stakingTotals, olasUsdPrice) => {
+  if (!Array.isArray(metrics) || metrics.length === 0) return null;
+  if (!Array.isArray(stakingTotals) || stakingTotals.length === 0) return null;
+
   const stakingByTimestamp = new Map();
   stakingTotals.forEach((staking) => {
     stakingByTimestamp.set(staking.timestamp, staking);
@@ -301,19 +262,14 @@ const calculateCombinedDailyROIs = async (metrics, stakingTotals) => {
   const combinedRois = [];
   let lastStakingRoi = 0;
 
-  for (let dayIndex = 0; dayIndex < metrics.length; dayIndex += 1) {
-    const metric = metrics[dayIndex];
+  metrics.forEach((metric) => {
     const staking = stakingByTimestamp.get(metric.timestamp);
-
     let stakingRoi = lastStakingRoi;
 
-    if (staking) {
-      // Fetch historical price for this specific day
-      const historicalPrice = await fetchOlasPriceForDate(metric.timestamp);
-
+    if (staking && olasUsdPrice > 0) {
       const medianRewardsOlas =
         Number(BigInt(staking.medianCumulativeRewards)) / 1e18;
-      const medianRewardsUsd = medianRewardsOlas * historicalPrice;
+      const medianRewardsUsd = medianRewardsOlas * olasUsdPrice;
       const medianFundedAum = toNumber(metric.medianFundedAUM);
 
       stakingRoi =
@@ -322,9 +278,8 @@ const calculateCombinedDailyROIs = async (metrics, stakingTotals) => {
     }
 
     const agentRoi = toNumber(metric.medianUnrealisedPnL);
-    const combinedRoi = agentRoi + stakingRoi;
-    combinedRois.push(combinedRoi);
-  }
+    combinedRois.push(agentRoi + stakingRoi);
+  });
 
   return combinedRois;
 };
@@ -343,16 +298,24 @@ const calculateSma = (values, window = 7) => {
 /**
  * Calculates annualized APR for Optimus staking by combining agent performance and staking rewards.
  * Process:
- * 1. Compute daily combined ROIs (agent trading + staking rewards) using historical prices
+ * 1. Compute daily combined ROIs (agent trading + staking rewards) using the shared OLAS USD price snapshot
  * 2. Calculate 7-day SMA of those ROIs
  * 3. Normalize by average agent age (days active)
  * 4. Annualize by multiplying by 365
  * Returns the final APR percentage.
  */
-const calculateOptimusStakingApr = async ({ metrics, stakingSnapshots }) => {
+const calculateOptimusStakingApr = ({
+  metrics,
+  stakingSnapshots,
+  olasUsdPrice,
+}) => {
   if (!metrics || !stakingSnapshots) return null;
 
-  const combined = await calculateCombinedDailyROIs(metrics, stakingSnapshots);
+  const combined = calculateCombinedDailyROIs(
+    metrics,
+    stakingSnapshots,
+    olasUsdPrice,
+  );
   if (!combined) return null;
 
   const sma = calculateSma(combined, 7);
