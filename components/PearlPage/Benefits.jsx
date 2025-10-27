@@ -22,14 +22,12 @@ const benefits = [
     label: 'Many Agents, One App Store',
     description:
       'From DeFi to prediction markets — browse, launch, and manage multiple AI agents, all in one place.',
-    rowClass: 'row-span-2',
   },
   {
     imgSrc: '/images/pearl-page/modes.png',
     imgWidth: '872',
     label: 'Co-Pilot Mode <-> Autonomous Mode',
     description: "Define your agent's goals, then let it operate autonomously.",
-    colClass: 'col-span-2',
   },
 ];
 
@@ -40,21 +38,32 @@ export const Benefits = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-14`}>
       Ease of Web2 UX, <span className="text-purple-700">Benefits of Web3</span>
     </h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 max-w-[1320px] mx-h-[1016px] mx-auto gap-6">
+
+    <div className="grid grid-cols-1 md:grid-cols-3 md:auto-rows-auto gap-6 max-w-[1320px] mx-auto">
       {benefits.map((benefit, index) => {
-        const colClass = benefit.colClass ? benefit.colClass : 'col-span-1';
-        const rowClass = benefit.rowClass ? benefit.rowClass : 'row-span-1';
+        let colClass = 'col-span-1';
+        let rowClass = 'row-span-1';
+        let positionClass = '';
+
+        if (index === 2) {
+          colClass = '';
+          positionClass = 'md:col-start-3 md:row-start-1 md:row-end-3';
+        }
+        if (index === 3) {
+          colClass = 'col-span-2';
+          positionClass = 'md:row-start-2';
+        }
 
         return (
           <Card
             key={`benefit-${index}`}
-            className={`md:${rowClass} md:${colClass} text-left overflow-hidden`}
+            className={`md:${colClass} ${rowClass ? `md:${rowClass}` : ''} ${positionClass} text-left overflow-hidden`}
           >
             <Image
               src={benefit.imgSrc}
               alt={benefit.label}
-              width={benefit.imgWidth ? benefit.imgWidth : 424}
-              height={benefit.imgHeight ? benefit.imgHeight : 350}
+              width={benefit.imgWidth ?? 424}
+              height={benefit.imgHeight ?? 350}
               className="border-b-1.5"
             />
             <div className="benefit-card-bg p-6 pt-4 h-full">
