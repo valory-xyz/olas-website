@@ -14,7 +14,7 @@ export const Accordion = ({
   const [accordionOpen, setAccordionOpen] = useState(false);
   const buttonClass =
     titleClass ||
-    'flex items-center justify-between w-full px-6 py-4 font-medium bg-gray-100 border border-gray-200 lg:text-center hover:bg-gray-100';
+    'flex gap-3 items-center justify-between w-full px-6 py-4 font-medium bg-gray-100 border border-gray-200 hover:bg-gray-100';
   const divClass =
     dropdownClass ||
     'px-6 bg-white border border-gray-200 rounded-xl rounded-t-none';
