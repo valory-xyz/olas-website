@@ -154,13 +154,12 @@ export const DailyActiveAgentsInfo = () => {
         <div className="space-y-6 mt-4">
           <p>
             Tracks how many unique multisigs were active each day for Pearl
-            prediction agents on Gnosis and Optimus (Babydegen) networks. This
-            combines both Pearl staking program agents and Optimus Babydegen
-            agents to provide a comprehensive view of prediction agent activity
-            across both platforms. The <strong>active multisig count</strong>{' '}
-            reflects the number of unique multisigs that performed at least one
-            on-chain interaction attributed to prediction agents within the UTC
-            day window.
+            agents on Gnosis and Optimus (Babydegen) networks. This combines
+            both Pearl staking program agents and Optimus Babydegen agents to
+            provide a comprehensive view of agent activity across both
+            platforms. The <strong>active multisig count</strong> reflects the
+            number of unique multisigs that performed at least one on-chain
+            interaction attributed to these agents within the UTC day window.
           </p>
 
           <p>
