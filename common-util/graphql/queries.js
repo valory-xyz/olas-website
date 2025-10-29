@@ -183,6 +183,7 @@ export const dailyBabydegenPerformancesQuery = gql`
       orderDirection: desc
     ) {
       id
+      dayTimestamp
       activeMultisigCount
     }
   }
@@ -239,8 +240,8 @@ export const dailyPredictAgentsPerformancesQuery = gql`
   }
 `;
 
-export const predictDailyAgentPerformancesQuery = gql`
-  query PredictDailyAgentPerformances(
+export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
+  query DailyPredictAgentPerformancesWithMultisigs(
     $agentId_in: [Int!]!
     $dayTimestamp_gte: Int!
     $dayTimestamp_lte: Int!
