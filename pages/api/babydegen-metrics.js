@@ -89,8 +89,6 @@ const fetchOlasUsdPrice = async () => {
 };
 
 const fetchModiusPopulationMetrics = async () => {
-  if (!BABYDEGEN_GRAPH_CLIENTS.mode) return null;
-
   try {
     const result = await BABYDEGEN_GRAPH_CLIENTS.mode.request(
       dailyBabydegenPopulationMetricsQuery({
