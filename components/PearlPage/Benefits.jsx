@@ -6,18 +6,23 @@ import Image from 'next/image';
 const benefits = [
   {
     imgSrc: '/images/pearl-page/buy-with-fiat.png',
+    imgWidth: 424,
+    imageHeight: 350,
     label: 'Buy with Fiat – Fast, Easy Setup',
     description:
       'No crypto needed. Fund your agent instantly using a credit/debit card via built-in onramp and get started quickly and easily.',
   },
   {
     imgSrc: '/images/pearl-page/earn-while-you-sleep.png',
+    imgWidth: 424,
+    imageHeight: 350,
     label: 'Earn While You Sleep',
     description:
       'Stake OLAS, let your agent run autonomously for you and collect potential rewards without lifting a finger.',
   },
   {
     imgSrc: '/images/pearl-page/app-store.png',
+    imgWidth: 424,
     imgHeight: 822,
     label: 'Many Agents, One App Store',
     description:
@@ -26,6 +31,7 @@ const benefits = [
   {
     imgSrc: '/images/pearl-page/modes.png',
     imgWidth: '872',
+    imgHeight: 350,
     label: 'Co-Pilot Mode <-> Autonomous Mode',
     description: "Define your agent's goals, then let it operate autonomously.",
   },

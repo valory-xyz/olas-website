@@ -21,7 +21,7 @@ const TryPearlNow = () => (
 
 const Hero = () => (
   <SectionWrapper
-    customClasses="h-[550px] md:h-[1000px] xl:min-h-[1207px] flex justify-center text-center relative"
+    customClasses="h-[650px] md:h-[1000px] xl:min-h-[1207px] flex justify-center text-center relative"
     backgroundType="GRAY_GRADIENT"
   >
     <div className="flex flex-col gap-6 w-[648px] md:mt-[120px] mx-auto max-md:max-w-[300px]">
