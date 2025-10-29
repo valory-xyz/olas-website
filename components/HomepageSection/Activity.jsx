@@ -1,6 +1,7 @@
 import { getMainMetrics } from 'common-util/api';
 import { getTotalUniqueStakers } from 'common-util/api/dune';
-import { DUNE_AGENTS_QUERY_URL, VALORY_GIT_URL } from 'common-util/constants';
+import { VALORY_GIT_URL } from 'common-util/constants';
+import { formatEthNumber } from 'common-util/numberFormatter';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -211,7 +212,7 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
     iconWidth={104}
     iconHeight={36}
     primary={{
-      value: ataTransactions,
+      value: formatEthNumber(ataTransactions, { notation: 'standard' }),
       text: 'A2A txns',
       link: '/data#ata-transactions',
       isLinkExternal: false,
