@@ -1,3 +1,4 @@
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   CACHE_DURATION_SECONDS,
   PREDICT_AGENT_CLASSIFICATION,
@@ -10,7 +11,7 @@ import {
 import {
   checkpointsQuery,
   dailyBabydegenPerformancesQuery,
-  predictDailyAgentPerformancesQuery,
+  dailyPredictAgentPerformancesWithMultisigsQuery,
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -27,22 +28,20 @@ const getContractsToServiceId = (checkpoints) => {
 };
 
 const getPerformanceByAgentId = async () => {
-  // Only use valory_trader agent IDs
-  const traderAgentIds = PREDICT_AGENT_CLASSIFICATION.valory_trader.map((n) =>
-    Number(n),
-  );
+  // Only use valory_trader agent IDs (14, 25)
+  const traderAgentIds = PREDICT_AGENT_CLASSIFICATION.valory_trader;
 
-  // Fetch 8 days of data (7 + 1 buffer day for completeness)
-  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  // Fetch last 7 complete days: gte 7 days ago, lte 1 day ago (yesterday)
+  const timestamp_lte = getMidnightUtcTimestampDaysAgo(1); // Up to and including yesterday
+  const timestamp_gte = getMidnightUtcTimestampDaysAgo(7); // From 7 days ago
 
   try {
     const performance = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-      predictDailyAgentPerformancesQuery,
+      dailyPredictAgentPerformancesWithMultisigsQuery,
       {
         agentId_in: traderAgentIds,
-        dayTimestamp_gte: timestamp_gt,
-        dayTimestamp_lte: timestamp_lt,
+        dayTimestamp_gte: timestamp_gte,
+        dayTimestamp_lte: timestamp_lte,
       },
     );
 
@@ -53,22 +52,20 @@ const getPerformanceByAgentId = async () => {
   }
 };
 
-const groupServicesByDays = (activeServices, pearlServiceIds) => {
+const groupServicesByDays = (activeServices, predictServiceIds) => {
   const servicesByDays = {};
 
   for (const service of activeServices) {
-    const date = new Date(Number(service.dayTimestamp) * 1000)
-      .toISOString()
-      .slice(0, 10);
+    const timestamp = service.dayTimestamp;
 
-    if (!servicesByDays[date]) {
-      servicesByDays[date] = new Set();
+    if (!servicesByDays[timestamp]) {
+      servicesByDays[timestamp] = new Set();
     }
 
     for (const multisig of service.multisigs) {
       const serviceId = Number(multisig.multisig.serviceId);
-      if (pearlServiceIds.has(serviceId)) {
-        servicesByDays[date].add(multisig.multisig.id);
+      if (predictServiceIds.has(serviceId)) {
+        servicesByDays[timestamp].add(multisig.multisig.id);
       }
     }
   }
@@ -76,9 +73,9 @@ const groupServicesByDays = (activeServices, pearlServiceIds) => {
   return servicesByDays;
 };
 
-const getOptimusDailyCounts = async () => {
+const getBabydegenOptimusDailyCounts = async () => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(7);
 
   try {
     const result = await REGISTRY_GRAPH_CLIENTS.optimism.request(
@@ -90,20 +87,13 @@ const getOptimusDailyCounts = async () => {
     );
 
     const performances = result.dailyAgentPerformances ?? [];
-
     const dailyCounts = {};
 
     performances.forEach((perf) => {
-      // Extract timestamp from id: "day-{timestamp}-agent-40"
-      const timestampMatch = perf.id.match(/day-(\d+)-agent-40/);
-      if (!timestampMatch) {
-        console.error('Invalid id format:', perf.id);
-        return;
-      }
-      const timestamp = Number(timestampMatch[1]);
-      const date = new Date(timestamp * 1000).toISOString().slice(0, 10);
-      dailyCounts[date] = Number(perf.activeMultisigCount);
+      const timestamp = perf.dayTimestamp;
+      dailyCounts[timestamp] = perf.activeMultisigCount;
     });
+
     return dailyCounts;
   } catch (error) {
     console.error('Error fetching Optimism DAAs:', error);
@@ -111,44 +101,48 @@ const getOptimusDailyCounts = async () => {
   }
 };
 
-const calculate7DayTrailingAverage = (dailyCounts) => {
-  if (dailyCounts.length < 7) {
-    return 0;
-  }
-
-  const sum = dailyCounts.reduce((acc, count) => acc + count, 0);
-  return sum / 7;
-};
-
 const getCombinedPearlDAAs = async () => {
-  const [pearlDailyCounts, optimusDailyCounts] = await Promise.all([
-    getPearlDailyCounts(),
-    getOptimusDailyCounts(),
+  const [predictResult, babydegenResult] = await Promise.allSettled([
+    getPredictDailyCounts(),
+    getBabydegenOptimusDailyCounts(),
   ]);
 
-  const allDates = new Set([
-    ...Object.keys(pearlDailyCounts),
-    ...Object.keys(optimusDailyCounts),
+  const predictDailyCounts =
+    predictResult.status === 'fulfilled' ? predictResult.value : {};
+  const babydegenDailyCounts =
+    babydegenResult.status === 'fulfilled' ? babydegenResult.value : {};
+
+  const allTimestamps = new Set([
+    ...Object.keys(predictDailyCounts),
+    ...Object.keys(babydegenDailyCounts),
   ]);
 
-  const sortedDates = Array.from(allDates).sort().slice(-7);
+  const sortedTimestamps = Array.from(allTimestamps).sort(
+    (a, b) => Number(a) - Number(b),
+  );
 
   const combinedCounts = {};
   const dailyCountsArray = [];
 
-  sortedDates.forEach((date) => {
-    const pearlCount = pearlDailyCounts[date] || 0;
-    const optimusCount = optimusDailyCounts[date] || 0;
-    const combined = pearlCount + optimusCount;
-    combinedCounts[date] = {
-      pearl: pearlCount,
-      optimus: optimusCount,
+  sortedTimestamps.forEach((timestamp) => {
+    const predictCount = predictDailyCounts[timestamp] || 0;
+    const babydegenCount = babydegenDailyCounts[timestamp] || 0;
+    const combined = predictCount + babydegenCount;
+
+    // Convert to date string for output readability
+    const dateString = new Date(Number(timestamp) * 1000)
+      .toISOString()
+      .slice(0, 10);
+
+    combinedCounts[dateString] = {
+      predict: predictCount,
+      babydegen: babydegenCount,
       total: combined,
     };
-    dailyCountsArray.push(combined);
+    dailyCountsArray.push({ count: combined });
   });
 
-  const averageDAAs = calculate7DayTrailingAverage(dailyCountsArray);
+  const averageDAAs = calculate7DayAverage(dailyCountsArray, 'count');
 
   return {
     dailyActiveAgents: Math.floor(averageDAAs),
@@ -156,29 +150,33 @@ const getCombinedPearlDAAs = async () => {
   };
 };
 
-const getPearlDailyCounts = async () => {
-  const pearlStakingContracts = Object.values(PREDICT_STAKING_PROGRAMS_PEARL);
+const getPredictDailyCounts = async () => {
+  const predictStakingContracts = Object.values(PREDICT_STAKING_PROGRAMS_PEARL);
 
-  const pearlCheckpoints = await STAKING_GRAPH_CLIENTS.gnosis.request(
-    checkpointsQuery,
-    {
-      contractAddress_in: pearlStakingContracts,
+  const [checkpointsResult, performanceResult] = await Promise.allSettled([
+    STAKING_GRAPH_CLIENTS.gnosis.request(checkpointsQuery, {
+      contractAddress_in: predictStakingContracts,
       blockTimestamp_lte: Math.floor(Date.now() / 1000),
-    },
+    }),
+    getPerformanceByAgentId(),
+  ]);
+
+  const checkpoints =
+    checkpointsResult.status === 'fulfilled' ? checkpointsResult.value : null;
+  const activeServices =
+    performanceResult.status === 'fulfilled' ? performanceResult.value : [];
+
+  const predictContractsToServiceId = getContractsToServiceId(
+    checkpoints?.checkpoints ?? [],
+  );
+  const predictServiceIds = new Set(
+    Object.keys(predictContractsToServiceId).map(Number),
   );
 
-  const pearlContractsToServiceId = getContractsToServiceId(
-    pearlCheckpoints?.checkpoints ?? [],
-  );
-  const pearlServiceIds = new Set(
-    Object.keys(pearlContractsToServiceId).map(Number),
-  );
-
-  const activeServices = await getPerformanceByAgentId();
-  const servicesByDays = groupServicesByDays(activeServices, pearlServiceIds);
+  const servicesByDays = groupServicesByDays(activeServices, predictServiceIds);
   const dailyCounts = {};
-  Object.keys(servicesByDays).forEach((date) => {
-    dailyCounts[date] = servicesByDays[date].size;
+  Object.keys(servicesByDays).forEach((timestamp) => {
+    dailyCounts[timestamp] = servicesByDays[timestamp].size;
   });
 
   return dailyCounts;
