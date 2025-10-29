@@ -133,6 +133,21 @@ export const getPredictMetrics = async () => {
   }
 };
 
+// ----------- PEARL DAAS -----------
+export const getPredictDAAs = async () => {
+  try {
+    const response = await fetch('/api/pearl-daa');
+    if (!response.ok) {
+      throw new Error('Failed to fetch pearl DAAs');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching pearl DAAs:', error);
+    return null;
+  }
+};
+
 // ----------- MECH -----------
 export const getMechMetrics = async () => {
   try {
