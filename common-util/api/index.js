@@ -206,18 +206,3 @@ export const getGovernMetrics = async () => {
     return null;
   }
 };
-
-// ----------- MARKETPLACE -----------
-export const getMarketplaceMetrics = async () => {
-  try {
-    const response = await fetch('/api/marketplace-metrics');
-    if (!response.ok) {
-      throw new Error('Failed to fetch marketplace metrics');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching marketplace metrics:', error);
-    return null;
-  }
-};
