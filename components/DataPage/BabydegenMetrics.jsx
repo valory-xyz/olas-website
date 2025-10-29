@@ -1,11 +1,24 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  dailyBabydegenPopulationMetricsLatest7Query,
+  dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
+
+const docToString = (doc) => {
+  if (typeof doc === 'string') return doc;
+  return doc?.loc?.source?.body ?? '';
+};
+
+const OPTIMISM_POPULATION_QUERY_STRING = docToString(
+  dailyBabydegenPopulationMetricsQuery({ first: 10 }),
+);
+
+const OPTIMISM_STAKING_QUERY_STRING = docToString(
+  dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
+);
 
 export const BabydegenMetricsInfo = () => {
   const babydegenSubgraphLinks = [
@@ -70,7 +83,7 @@ export const BabydegenMetricsInfo = () => {
             <span>Unavailable</span>
           )}
         </p>
-        <CodeSnippet>{dailyBabydegenPopulationMetricsLatest7Query}</CodeSnippet>
+        <CodeSnippet>{OPTIMISM_POPULATION_QUERY_STRING}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
           Optimism Staking Snapshots Query
@@ -87,7 +100,7 @@ export const BabydegenMetricsInfo = () => {
             <span>Unavailable</span>
           )}
         </p>
-        <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery}</CodeSnippet>
+        <CodeSnippet>{OPTIMISM_STAKING_QUERY_STRING}</CodeSnippet>
       </div>
     </SectionWrapper>
   );

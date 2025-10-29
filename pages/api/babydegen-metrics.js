@@ -153,7 +153,7 @@ const fetchOptimusPopulationMetrics = async () => {
       : [];
     if (rows.length === 0) return null;
 
-    // Exclude today (UTC) - same logic as the script
+    // Exclude today (UTC) 
     const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
     const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
     if (filtered.length < 7) return null;
@@ -265,7 +265,7 @@ const fetchOptimismStakingSnapshots = async () => {
 
     if (rows.length === 0) return null;
 
-    // Exclude today (UTC) - same logic as the script
+    // Exclude today (UTC) 
     const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
     const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
     if (filtered.length < 7) return null;
