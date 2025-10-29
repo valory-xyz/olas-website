@@ -147,6 +147,59 @@ export const DailyActiveAgentsInfo = () => {
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
+
+      <SectionWrapper id="pearl-daily-active-agents">
+        <h2 className={SUB_HEADER_LG_CLASS}>Pearl Daily Active Agents</h2>
+
+        <div className="space-y-6 mt-4">
+          <p>
+            Tracks how many unique multisigs were active each day for Pearl
+            prediction agents on Gnosis and Optimus (Babydegen) networks. This
+            combines both Pearl staking program agents and Optimus Babydegen
+            agents to provide a comprehensive view of prediction agent activity
+            across both platforms. The <strong>active multisig count</strong>{' '}
+            reflects the number of unique multisigs that performed at least one
+            on-chain interaction attributed to prediction agents within the UTC
+            day window.
+          </p>
+
+          <p>
+            The following queries are used to compute Pearl daily active agents:
+          </p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Pearl Prediction Agents Query
+          </h3>
+
+          <p className="text-purple-600">
+            Subgraph links:{' '}
+            {[process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL].map(
+              (link, index) => (
+                <ExternalLink key={index} href={link} className="mr-2">
+                  {index + 1}
+                </ExternalLink>
+              ),
+            )}
+          </p>
+          <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Optimus Babydegen Query
+          </h3>
+
+          <p className="text-purple-600">
+            Subgraph links:{' '}
+            {[process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL].map(
+              (link, index) => (
+                <ExternalLink key={index} href={link} className="mr-2">
+                  {index + 1}
+                </ExternalLink>
+              ),
+            )}
+          </p>
+          <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
+        </div>
+      </SectionWrapper>
     </>
   );
 };
