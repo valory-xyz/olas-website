@@ -121,8 +121,6 @@ const fetchModiusPopulationMetrics = async () => {
 };
 
 const fetchModeStakingSnapshots = async () => {
-  if (!STAKING_GRAPH_CLIENTS.mode) return null;
-
   try {
     const result = await STAKING_GRAPH_CLIENTS.mode.request(
       dailyStakingGlobalsSnapshotsQuery({
