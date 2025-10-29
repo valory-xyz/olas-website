@@ -31,9 +31,9 @@ const getPerformanceByAgentId = async () => {
     .flat()
     .map((n) => Number(n));
 
-  // Fetch 14 days of data to ensure completeness (like reference implementation)
+  // Fetch 8 days of data (7 + 1 buffer day for completeness)
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(14);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
   try {
     const performance = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
