@@ -189,10 +189,7 @@ const fetchAllAgentMetrics = async () => {
     }
 
     if (ataTransactionsResult.status === 'fulfilled') {
-      metrics.ataTransactions = formatEthNumber(
-        `${ataTransactionsResult.value}`,
-        { notation: 'standard' },
-      );
+      metrics.ataTransactions = ataTransactionsResult.value;
     } else {
       console.error(
         'Fetch ATA transactions failed:',
