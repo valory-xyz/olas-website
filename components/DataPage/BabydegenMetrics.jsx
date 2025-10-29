@@ -20,6 +20,24 @@ const OPTIMISM_STAKING_QUERY_STRING = docToString(
   dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
 );
 
+const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
+  new Date('2025-09-18T00:00:00Z').getTime() / 1000,
+);
+
+const MODIUS_POPULATION_QUERY_STRING = docToString(
+  dailyBabydegenPopulationMetricsQuery({
+    first: 7,
+    timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+  }),
+);
+
+const MODIUS_STAKING_QUERY_STRING = docToString(
+  dailyStakingGlobalsSnapshotsQuery({
+    first: 7,
+    timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+  }),
+);
+
 export const BabydegenMetricsInfo = () => {
   const babydegenSubgraphLinks = [
     process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
@@ -29,9 +47,17 @@ export const BabydegenMetricsInfo = () => {
     process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL,
   ].filter(Boolean);
 
+  const babydegenModeSubgraphLinks = [
+    process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL,
+  ].filter(Boolean);
+
+  const stakingModeSubgraphLinks = [
+    process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL,
+  ].filter(Boolean);
+
   return (
     <SectionWrapper id="babydegen-metrics">
-      <h2 className={SUB_HEADER_LG_CLASS}>BabyDegen Optimus Metrics</h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>BabyDegen Metrics</h2>
 
       <div className="space-y-6 mt-4">
         <p>
@@ -101,6 +127,40 @@ export const BabydegenMetricsInfo = () => {
           )}
         </p>
         <CodeSnippet>{OPTIMISM_STAKING_QUERY_STRING}</CodeSnippet>
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>
+          Modius Population Metrics Query
+        </h3>
+        <p className="text-purple-600">
+          Subgraph link{' '}
+          {babydegenModeSubgraphLinks.length > 0 ? (
+            babydegenModeSubgraphLinks.map((link, index) => (
+              <ExternalLink key={link} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))
+          ) : (
+            <span>Unavailable</span>
+          )}
+        </p>
+        <CodeSnippet>{MODIUS_POPULATION_QUERY_STRING}</CodeSnippet>
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+          Modius Staking Snapshots Query
+        </h3>
+        <p className="text-purple-600">
+          Subgraph link{' '}
+          {stakingModeSubgraphLinks.length > 0 ? (
+            stakingModeSubgraphLinks.map((link, index) => (
+              <ExternalLink key={link} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))
+          ) : (
+            <span>Unavailable</span>
+          )}
+        </p>
+        <CodeSnippet>{MODIUS_STAKING_QUERY_STRING}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
