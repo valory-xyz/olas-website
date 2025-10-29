@@ -7,6 +7,14 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'The AI Ownership Era',
+    imageSrc: 'ai-ownership.png',
+    location: 'Buenos Aires, Devconnect',
+    date: "Nov 18 '25",
+    eventLink: 'https://luma.com/rnj5dc2b',
+  },
+  ,
+  {
     title: 'The Next Wave',
     imageSrc: 'token2049.png',
     location: 'Singapore, Token2049',
