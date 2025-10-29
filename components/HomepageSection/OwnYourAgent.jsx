@@ -48,13 +48,15 @@ export const OwnYourAgent = () => (
       </div>
     </div>
 
-    <Image
-      src="/images/homepage/own-your-agent.png"
-      alt="Pearl Diagram"
-      width={860}
-      height={422}
-      className="mx-auto py-4"
-    />
+    <div className="relative mx-auto shadow-overlay w-fit">
+      <Image
+        src="/images/homepage/pearl-v1.png"
+        alt="Pearl v1"
+        width={864}
+        height={474}
+        className="mx-auto purple-outline"
+      />
+    </div>
 
     <div className="w-fit mt-14 mx-auto">
       <Button variant="default" size="xl" asChild>
