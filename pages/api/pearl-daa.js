@@ -27,9 +27,10 @@ const getContractsToServiceId = (checkpoints) => {
 };
 
 const getPerformanceByAgentId = async () => {
-  const predictAgentIds = Object.values(PREDICT_AGENT_CLASSIFICATION)
-    .flat()
-    .map((n) => Number(n));
+  // Only use valory_trader agent IDs
+  const traderAgentIds = PREDICT_AGENT_CLASSIFICATION.valory_trader.map((n) =>
+    Number(n),
+  );
 
   // Fetch 8 days of data (7 + 1 buffer day for completeness)
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
@@ -39,7 +40,7 @@ const getPerformanceByAgentId = async () => {
     const performance = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
       predictDailyAgentPerformancesQuery,
       {
-        agentId_in: predictAgentIds,
+        agentId_in: traderAgentIds,
         dayTimestamp_gte: timestamp_gt,
         dayTimestamp_lte: timestamp_lt,
       },
