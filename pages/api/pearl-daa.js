@@ -101,26 +101,6 @@ const getPearlServiceIds = async () => {
   return new Set(Object.keys(contractsToServiceId).map(Number));
 };
 
-const combineDailyCounts = (predictPerformances, babydegenPerformances) => {
-  const dailyCountsMap = {};
-
-  predictPerformances.forEach((perf) => {
-    const timestamp = perf.dayTimestamp;
-    dailyCountsMap[timestamp] = {
-      count: (dailyCountsMap[timestamp]?.count || 0) + perf.activeMultisigCount,
-    };
-  });
-
-  babydegenPerformances.forEach((perf) => {
-    const timestamp = perf.dayTimestamp;
-    dailyCountsMap[timestamp] = {
-      count: (dailyCountsMap[timestamp]?.count || 0) + perf.activeMultisigCount,
-    };
-  });
-
-  return Object.values(dailyCountsMap);
-};
-
 const getCombinedPearlDAAs = async () => {
   const [pearlServiceIdsResult, predictResult, babydegenResult] =
     await Promise.allSettled([
@@ -143,12 +123,16 @@ const getCombinedPearlDAAs = async () => {
     pearlServiceIds,
   );
 
-  const combinedDailyCounts = combineDailyCounts(
-    filteredPredictPerformances,
+  const babydegenAverage = calculate7DayAverage(
     babydegenPerformances,
+    'activeMultisigCount',
+  );
+  const predictAverage = calculate7DayAverage(
+    filteredPredictPerformances,
+    'activeMultisigCount',
   );
 
-  const averageDAAs = calculate7DayAverage(combinedDailyCounts, 'count');
+  const averageDAAs = babydegenAverage + predictAverage;
 
   return Math.floor(averageDAAs);
 };
