@@ -9,6 +9,55 @@ import Header from 'components/Layout/Header';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 
+const ImageCarousel = ({
+  images,
+  intervalMs = 5000,
+  sizes = '(max-width: 1024px) 100vw, 920px',
+  index,
+  onIndexChange,
+}) => {
+  const isControlled =
+    typeof index === 'number' && typeof onIndexChange === 'function';
+  const [internalIndex, setInternalIndex] = useState(0);
+  const activeIndex = isControlled ? index : internalIndex;
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      if (isControlled) {
+        onIndexChange((p) => (p + 1) % images.length);
+      } else {
+        setInternalIndex((p) => (p + 1) % images.length);
+      }
+    }, intervalMs);
+    return () => clearInterval(id);
+  }, [paused, images.length, intervalMs, isControlled, onIndexChange]);
+
+  return (
+    <div
+      className="relative w-full aspect-[1200/630] bg-gradient-to-b from-white to-[#EEF3FA] overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {images.map((src, i) => (
+        <Image
+          key={src}
+          src={src}
+          alt="Olas community card"
+          fill
+          sizes={sizes}
+          className={
+            'object-cover absolute inset-0 will-change-opacity transition-opacity duration-1000 ease-out ' +
+            (i === activeIndex ? 'opacity-100' : 'opacity-0')
+          }
+          priority={i === 0}
+        />
+      ))}
+    </div>
+  );
+};
+
 const IMAGE_PATHS = [
   '/images/community-card/archer-pearl.png',
   '/images/community-card/pearl-fighting-ai-corp.png',
@@ -38,12 +87,15 @@ const StepLabel = ({ label }) => {
 };
 
 const CommunityCardClient = () => {
-  const [imageIndex, setImageIndex] = useState(0);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
-  const currentImage = useMemo(() => IMAGE_PATHS[imageIndex], [imageIndex]);
+  const currentImage = useMemo(
+    () => IMAGE_PATHS[carouselIndex],
+    [carouselIndex],
+  );
 
   const shuffle = useCallback(() => {
-    setImageIndex((p) => (p + 1) % IMAGE_PATHS.length);
+    setCarouselIndex((p) => (p + 1) % IMAGE_PATHS.length);
   }, []);
 
   const download = useCallback(() => {
@@ -67,13 +119,6 @@ const CommunityCardClient = () => {
     return intent.toString();
   }, [shareText]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % IMAGE_PATHS.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
-
   return (
     <section className="relative isolate px-4 lg:px-6 top-0 top-[-120px] md:top-[-200px]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 z-0" />
@@ -81,16 +126,12 @@ const CommunityCardClient = () => {
         <div className="flex flex-col items-center">
           <div className="mt-6 md:mt-8 w-full max-w-[920px]">
             <div className="rounded-xl overflow-hidden shadow-xl ring-1 ring-black/5 bg-white relative z-10">
-              <div className="relative w-full aspect-[1200/630] bg-white">
-                <Image
-                  src={currentImage}
-                  alt="Olas community card preview"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 920px"
-                  className="object-cover"
-                  priority
-                />
-              </div>
+              <ImageCarousel
+                images={IMAGE_PATHS}
+                index={carouselIndex}
+                onIndexChange={setCarouselIndex}
+                sizes="(max-width: 1024px) 100vw, 920px"
+              />
             </div>
           </div>
 
