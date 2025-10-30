@@ -153,8 +153,8 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for all agents 
-            in Pearl app. The <strong>active multisig count</strong> reflects the
+            Tracks how many unique multisigs were active each day for all agents
+            in Pearl app. The <strong>active multisig count</strong> reflects
             number of unique multisigs that performed at least one on-chain
             interaction attributed to these agents within the UTC day window.
           </p>
