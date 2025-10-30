@@ -2,7 +2,7 @@ import { Download, Repeat2, Shuffle } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image.js';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import Footer from 'components/Layout/Footer';
 import Header from 'components/Layout/Header';
@@ -11,35 +11,13 @@ import { Card } from 'components/ui/card';
 
 const ImageCarousel = ({
   images,
-  intervalMs = 5000,
   sizes = '(max-width: 1024px) 100vw, 920px',
   index,
-  onIndexChange,
 }) => {
-  const isControlled =
-    typeof index === 'number' && typeof onIndexChange === 'function';
-  const [internalIndex, setInternalIndex] = useState(0);
-  const activeIndex = isControlled ? index : internalIndex;
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => {
-      if (isControlled) {
-        onIndexChange((p) => (p + 1) % images.length);
-      } else {
-        setInternalIndex((p) => (p + 1) % images.length);
-      }
-    }, intervalMs);
-    return () => clearInterval(id);
-  }, [paused, images.length, intervalMs, isControlled, onIndexChange]);
+  const activeIndex = index ?? 0;
 
   return (
-    <div
-      className="relative w-full aspect-[1200/630] bg-gradient-to-b from-white to-[#EEF3FA] overflow-hidden"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    <div className="relative w-full aspect-[16/9] bg-gradient-to-b from-white to-[#EEF3FA] overflow-hidden">
       {images.map((src, i) => (
         <Image
           key={src}
@@ -78,7 +56,7 @@ Own your AI 👉 https://olas.network/pearl`,
 const StepLabel = ({ label }) => {
   return (
     <div
-      className="mb-3 inline-flex items-center rounded px-2 py-0.5 text-xs font-medium text-slate-600"
+      className="mb-3 inline-flex items-center rounded px-2 py-0.5 text-sm font-medium text-slate-600"
       style={{ backgroundColor: '#F2F4F9' }}
     >
       {label}
@@ -129,7 +107,6 @@ const CommunityCardClient = () => {
               <ImageCarousel
                 images={IMAGE_PATHS}
                 index={carouselIndex}
-                onIndexChange={setCarouselIndex}
                 sizes="(max-width: 1024px) 100vw, 920px"
               />
             </div>
@@ -138,7 +115,7 @@ const CommunityCardClient = () => {
           <div className="relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px]">
             <Card className="p-4 border-none shadow-none">
               <StepLabel label="Step 1" />
-              <div className="text-sm">Generate the card you like.</div>
+              <div className="text-base">Generate the card you like.</div>
               <div className="mt-4 md:mt-6">
                 <Button onClick={shuffle} variant="outline">
                   <Shuffle className="mr-2 h-4 w-4" />
@@ -148,7 +125,7 @@ const CommunityCardClient = () => {
             </Card>
             <Card className="p-4 border-none shadow-none">
               <StepLabel label="Step 2 — Optional" />
-              <div className="text-sm">Download the card.</div>
+              <div className="text-base">Download the card.</div>
               <div className="mt-6">
                 <Button onClick={download} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
@@ -158,7 +135,7 @@ const CommunityCardClient = () => {
             </Card>
             <Card className="p-4 border-none shadow-none">
               <StepLabel label="Step 3" />
-              <div className="text-sm">Share your excitement on X!</div>
+              <div className="text-base">Share your excitement on X!</div>
               <div className="mt-6">
                 <Button asChild>
                   <Link
@@ -200,22 +177,17 @@ export default function CommunityCardPage() {
           <div className="mx-auto max-w-screen-xl text-center flex flex-col items-center">
             <h1 className="text-4xl sm:text-3xl md:text-5xl leading-[160%] md:leading-[120%] font-semibold tracking-tight flex flex-wrap items-center justify-center">
               Olas Community Celebrates{' '}
-              <Image
-                src="/images/community-card/operate-logo.png"
-                width={48}
-                height={48}
-                alt="Operate Logo"
-                className="mx-4"
-              />
+              <div className="w-[48px] h-[48px] mx-4 bg-white rounded-xl border flex items-center justify-center">
+                <Image
+                  src="/images/pearl-page/operate-logo.svg"
+                  width={36}
+                  height={36}
+                  alt="Pearl Logo"
+                  className="mx-4"
+                />
+              </div>
               Pearl
-              <span
-                className="text-xl sm:text-2xl md:text-2xl rounded-xl border flex items-center justify-center mx-4"
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  background: 'linear-gradient(180deg, #FFF 0%, #EAEFF6 100%)',
-                }}
-              >
+              <span className="bg-white w-[48px] h-[48px] text-xl sm:text-2xl md:text-2xl rounded-xl border flex items-center justify-center mx-4">
                 v1
               </span>
             </h1>
