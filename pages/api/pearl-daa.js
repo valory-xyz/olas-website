@@ -27,21 +27,20 @@ const getContractsToServiceId = (checkpoints) => {
   }, {});
 };
 
-const getPerformanceByAgentId = async () => {
-  // Only use valory_trader agent IDs (14, 25)
+const getPredictPerformances = async () => {
   const traderAgentIds = PREDICT_AGENT_CLASSIFICATION.valory_trader;
 
-  // Fetch last 7 complete days: gte 7 days ago, lte 1 day ago (yesterday)
-  const timestamp_lte = getMidnightUtcTimestampDaysAgo(1); // Up to and including yesterday
-  const timestamp_gte = getMidnightUtcTimestampDaysAgo(7); // From 7 days ago
+  // Fetch last 7 complete days: gt 8 days ago, lt today
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
   try {
     const performance = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
       dailyPredictAgentPerformancesWithMultisigsQuery,
       {
         agentId_in: traderAgentIds,
-        dayTimestamp_gte: timestamp_gte,
-        dayTimestamp_lte: timestamp_lte,
+        dayTimestamp_gte: timestamp_gt,
+        dayTimestamp_lte: timestamp_lt,
       },
     );
 
@@ -52,30 +51,22 @@ const getPerformanceByAgentId = async () => {
   }
 };
 
-const groupServicesByDays = (activeServices, predictServiceIds) => {
-  const servicesByDays = {};
-
-  for (const service of activeServices) {
-    const timestamp = service.dayTimestamp;
-
-    if (!servicesByDays[timestamp]) {
-      servicesByDays[timestamp] = new Set();
-    }
-
-    for (const multisig of service.multisigs) {
-      const serviceId = Number(multisig.multisig.serviceId);
-      if (predictServiceIds.has(serviceId)) {
-        servicesByDays[timestamp].add(multisig.multisig.id);
-      }
-    }
-  }
-
-  return servicesByDays;
+const filterPearlPerformances = (performances, pearlServiceIds) => {
+  return performances.map((perf) => {
+    const pearlMultisigs = perf.multisigs.filter((m) =>
+      pearlServiceIds.has(Number(m.multisig.serviceId)),
+    );
+    return {
+      ...perf,
+      activeMultisigCount: new Set(pearlMultisigs.map((m) => m.multisig.id))
+        .size,
+    };
+  });
 };
 
-const getBabydegenOptimusDailyCounts = async () => {
+const getBabydegenPerformances = async () => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(7);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
   try {
     const result = await REGISTRY_GRAPH_CLIENTS.optimism.request(
@@ -86,100 +77,64 @@ const getBabydegenOptimusDailyCounts = async () => {
       },
     );
 
-    const performances = result.dailyAgentPerformances ?? [];
-    const dailyCounts = {};
-
-    performances.forEach((perf) => {
-      const timestamp = perf.dayTimestamp;
-      dailyCounts[timestamp] = perf.activeMultisigCount;
-    });
-
-    return dailyCounts;
+    return result.dailyAgentPerformances ?? [];
   } catch (error) {
     console.error('Error fetching Optimism DAAs:', error);
-    return {};
+    return [];
   }
 };
 
-const getCombinedPearlDAAs = async () => {
-  const [predictResult, babydegenResult] = await Promise.allSettled([
-    getPredictDailyCounts(),
-    getBabydegenOptimusDailyCounts(),
-  ]);
-
-  const predictDailyCounts =
-    predictResult.status === 'fulfilled' ? predictResult.value : {};
-  const babydegenDailyCounts =
-    babydegenResult.status === 'fulfilled' ? babydegenResult.value : {};
-
-  const allTimestamps = new Set([
-    ...Object.keys(predictDailyCounts),
-    ...Object.keys(babydegenDailyCounts),
-  ]);
-
-  const sortedTimestamps = Array.from(allTimestamps).sort(
-    (a, b) => Number(a) - Number(b),
-  );
-
-  const combinedCounts = {};
-  const dailyCountsArray = [];
-
-  sortedTimestamps.forEach((timestamp) => {
-    const predictCount = predictDailyCounts[timestamp] || 0;
-    const babydegenCount = babydegenDailyCounts[timestamp] || 0;
-    const combined = predictCount + babydegenCount;
-
-    // Convert to date string for output readability
-    const dateString = new Date(Number(timestamp) * 1000)
-      .toISOString()
-      .slice(0, 10);
-
-    combinedCounts[dateString] = {
-      predict: predictCount,
-      babydegen: babydegenCount,
-      total: combined,
-    };
-    dailyCountsArray.push({ count: combined });
-  });
-
-  const averageDAAs = calculate7DayAverage(dailyCountsArray, 'count');
-
-  return {
-    dailyActiveAgents: Math.floor(averageDAAs),
-    dailyCounts: combinedCounts,
-  };
-};
-
-const getPredictDailyCounts = async () => {
+const getPearlServiceIds = async () => {
   const predictStakingContracts = Object.values(PREDICT_STAKING_PROGRAMS_PEARL);
 
-  const [checkpointsResult, performanceResult] = await Promise.allSettled([
-    STAKING_GRAPH_CLIENTS.gnosis.request(checkpointsQuery, {
+  const checkpoints = await STAKING_GRAPH_CLIENTS.gnosis.request(
+    checkpointsQuery,
+    {
       contractAddress_in: predictStakingContracts,
       blockTimestamp_lte: Math.floor(Date.now() / 1000),
-    }),
-    getPerformanceByAgentId(),
-  ]);
+    },
+  );
 
-  const checkpoints =
-    checkpointsResult.status === 'fulfilled' ? checkpointsResult.value : null;
-  const activeServices =
-    performanceResult.status === 'fulfilled' ? performanceResult.value : [];
-
-  const predictContractsToServiceId = getContractsToServiceId(
+  const contractsToServiceId = getContractsToServiceId(
     checkpoints?.checkpoints ?? [],
   );
-  const predictServiceIds = new Set(
-    Object.keys(predictContractsToServiceId).map(Number),
+  return new Set(Object.keys(contractsToServiceId).map(Number));
+};
+
+const getCombinedPearlDAAs = async () => {
+  const [pearlServiceIdsResult, predictResult, babydegenResult] =
+    await Promise.allSettled([
+      getPearlServiceIds(),
+      getPredictPerformances(),
+      getBabydegenPerformances(),
+    ]);
+
+  const pearlServiceIds =
+    pearlServiceIdsResult.status === 'fulfilled'
+      ? pearlServiceIdsResult.value
+      : new Set();
+  const predictPerformances =
+    predictResult.status === 'fulfilled' ? predictResult.value : [];
+  const babydegenPerformances =
+    babydegenResult.status === 'fulfilled' ? babydegenResult.value : [];
+
+  const filteredPredictPerformances = filterPearlPerformances(
+    predictPerformances,
+    pearlServiceIds,
   );
 
-  const servicesByDays = groupServicesByDays(activeServices, predictServiceIds);
-  const dailyCounts = {};
-  Object.keys(servicesByDays).forEach((timestamp) => {
-    dailyCounts[timestamp] = servicesByDays[timestamp].size;
-  });
+  const babydegenAverage = calculate7DayAverage(
+    babydegenPerformances,
+    'activeMultisigCount',
+  );
+  const predictAverage = calculate7DayAverage(
+    filteredPredictPerformances,
+    'activeMultisigCount',
+  );
 
-  return dailyCounts;
+  const averageDAAs = babydegenAverage + predictAverage;
+
+  return Math.floor(averageDAAs);
 };
 
 export default async function handler(req, res) {
@@ -198,15 +153,12 @@ export default async function handler(req, res) {
   );
 
   try {
-    const combinedDAAs = await getCombinedPearlDAAs();
+    const dailyActiveAgents = await getCombinedPearlDAAs();
 
-    const result = {
-      dailyActiveAgents: combinedDAAs.dailyActiveAgents,
-      dailyCounts: combinedDAAs.dailyCounts,
+    return res.status(200).json({
+      dailyActiveAgents,
       timestamp: Date.now(),
-    };
-
-    return res.status(200).json(result);
+    });
   } catch (error) {
     console.error('Error fetching Pearl DAAs:', error);
     return res.status(500).json({ error: 'Failed to fetch Pearl DAAs.' });
