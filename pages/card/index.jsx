@@ -9,12 +9,32 @@ import Header from 'components/Layout/Header';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#F9FAFB" offset="20%" />
+      <stop stop-color="#F3F4F6" offset="50%" />
+      <stop stop-color="#F9FAFB" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#FAFBFC" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str) =>
+  typeof window === 'undefined'
+    ? Buffer.from(str).toString('base64')
+    : window.btoa(str);
+
 const ImageCarousel = ({
   images,
   sizes = '(max-width: 1024px) 100vw, 920px',
   index,
 }) => {
   const activeIndex = index ?? 0;
+  const placeholder = `data:image/svg+xml;base64,${toBase64(shimmer(920, 518))}`;
 
   return (
     <div className="relative w-full aspect-[16/9] bg-gradient-to-b from-white to-[#EEF3FA] overflow-hidden">
@@ -25,6 +45,7 @@ const ImageCarousel = ({
           alt="Olas community card"
           fill
           sizes={sizes}
+          placeholder={placeholder}
           className={
             'object-cover absolute inset-0 will-change-opacity transition-opacity duration-1000 ease-out ' +
             (i === activeIndex ? 'opacity-100' : 'opacity-0')
