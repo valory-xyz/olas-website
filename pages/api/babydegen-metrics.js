@@ -1,7 +1,8 @@
-import { Client } from '@gradio/client';
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   CACHE_DURATION_SECONDS,
+  MODIUS_FIXED_END_DATE_UTC,
+  MODIUS_FIXED_OLAS_PRICE_USD,
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
 } from 'common-util/constants';
@@ -12,15 +13,13 @@ import {
 } from 'common-util/graphql/client';
 import {
   dailyBabydegenPerformancesQuery,
-  dailyBabydegenPopulationMetricsLatest7Query,
+  dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import tokens from 'data/tokens.json';
-
-const MIN_TOTAL_TRACES = 2;
 
 const OLAS_ADDRESS = tokens
   .find((item) => item.key === 'optimism')
@@ -29,35 +28,13 @@ const COINGECKO_OLAS_IN_USD_PRICE_URL = OLAS_ADDRESS
   ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`
   : null;
 
-const fetchModiusPerformance = async () => {
-  const agentName = 'Modius';
-  try {
-    const client = await Client.connect(
-      `valory/${agentName}-Agent-Performance`,
-    );
-    const result = await client.predict('/refresh_apr_data', {});
-
-    const plotString = result.data[0].plot;
-    const plotData = JSON.parse(plotString);
-
-    const traces = plotData.data;
-    const totalTraces = traces.length;
-
-    if (totalTraces < MIN_TOTAL_TRACES) {
-      throw new Error(`Not enough data traces found for ${agentName}`);
-    }
-
-    const avgApr = traces[totalTraces - 1]?.y;
-    const ethAdjustedApr = traces[totalTraces - 2]?.y;
-
-    const latestEthApr = ethAdjustedApr[ethAdjustedApr.length - 1];
-    const latestAvgApr = avgApr[avgApr.length - 1];
-
-    return { latestAvgApr, latestEthApr };
-  } catch (error) {
-    console.error(`Error fetching APR values for ${agentName}:`, error);
-    return null;
-  }
+const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
+  new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000,
+);
+const EMPTY_APR_METRICS = {
+  latestUsdcApr: null,
+  latestEthApr: null,
+  stakingAprCalculated: null,
 };
 
 const fetchOlasApr = async () => {
@@ -110,28 +87,95 @@ const fetchOlasUsdPrice = async () => {
   }
 };
 
-const fetchOptimusPopulationMetrics = async () => {
+const fetchModiusPopulationMetrics = async () => {
   try {
-    const result = await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
-      dailyBabydegenPopulationMetricsLatest7Query,
+    const result = await BABYDEGEN_GRAPH_CLIENTS.mode.request(
+      dailyBabydegenPopulationMetricsQuery({
+        first: 7,
+        timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+      }),
     );
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
-    if (rows.length < 7) return null;
-    return rows.slice().reverse();
+    if (rows.length === 0) return null;
+
+    if (rows.length < 7) {
+      console.error('Not enough Modius population snapshots before cutoff.');
+      return null;
+    }
+
+    const processed = rows.map((row) => ({
+      ...row,
+      medianFundedAUM: toNumber(row.medianAUM),
+    }));
+
+    return processed.reverse();
+  } catch (error) {
+    console.error('Error fetching Modius population metrics:', error);
+    return null;
+  }
+};
+
+const fetchModeStakingSnapshots = async () => {
+  try {
+    const result = await STAKING_GRAPH_CLIENTS.mode.request(
+      dailyStakingGlobalsSnapshotsQuery({
+        first: 7,
+        timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+      }),
+    );
+    const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
+      ? result.cumulativeDailyStakingGlobals
+      : [];
+    if (rows.length === 0) return null;
+
+    if (rows.length < 7) {
+      console.error('Not enough Modius staking snapshots before cutoff.');
+      return null;
+    }
+
+    return rows.reverse();
+  } catch (error) {
+    console.error('Error fetching Modius staking snapshots:', error);
+    return null;
+  }
+};
+
+const fetchOptimusPopulationMetrics = async () => {
+  try {
+    const result = await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
+      dailyBabydegenPopulationMetricsQuery({ first: 10 }),
+    );
+    const rows = Array.isArray(result?.dailyPopulationMetrics)
+      ? result.dailyPopulationMetrics
+      : [];
+    if (rows.length === 0) return null;
+
+    // Exclude today (UTC)
+    const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
+    const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+    if (filtered.length < 7) return null;
+
+    // Map medianAUM to medianFundedAUM
+    const processedRows = filtered.slice(0, 7).map((row) => ({
+      ...row,
+      medianFundedAUM: toNumber(row.medianAUM),
+    }));
+
+    return processedRows.reverse();
   } catch (error) {
     console.error('Error fetching Optimus population metrics:', error);
     return null;
   }
 };
 
-const fetchOptimusMetrics = async () => {
+const fetchOptimusMetrics = async (olasUsdPricePromise) => {
   const [populationResult, stakingResult, olasUsdPriceResult] =
     await Promise.allSettled([
       fetchOptimusPopulationMetrics(),
       fetchOptimismStakingSnapshots(),
-      fetchOlasUsdPrice(),
+      olasUsdPricePromise ?? fetchOlasUsdPrice(),
     ]);
 
   if (populationResult.status !== 'fulfilled') {
@@ -143,73 +187,96 @@ const fetchOptimusMetrics = async () => {
   }
 
   const populationMetrics = populationResult.value;
-  const defaultMetrics = {
-    latestUsdcApr: null,
-    latestEthApr: null,
-    stakingAprCalculated: null,
-  };
-
-  if (!populationMetrics || populationMetrics.length === 0) {
-    return defaultMetrics;
-  }
-
-  const latest = populationMetrics[populationMetrics.length - 1];
-  const baseMetrics = {
-    latestUsdcApr: toNumber(latest?.sma7dProjectedUnrealisedPnL),
-    latestEthApr: toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL),
-    stakingAprCalculated: null,
-  };
-
-  if (stakingResult.status !== 'fulfilled') {
-    console.error(
-      'Optimism staking snapshots fetch failed:',
-      stakingResult.reason,
-    );
-    return baseMetrics;
-  }
-
-  const stakingSnapshots = stakingResult.value;
-  if (!stakingSnapshots || stakingSnapshots.length === 0) {
-    return baseMetrics;
-  }
-
   const olasUsdPrice =
     olasUsdPriceResult.status === 'fulfilled' ? olasUsdPriceResult.value : 0;
   if (olasUsdPriceResult.status !== 'fulfilled') {
     console.error('OLAS USD price fetch failed:', olasUsdPriceResult.reason);
   }
 
-  const stakingApr = calculateOptimusStakingApr({
-    metrics: populationMetrics,
+  const stakingSnapshots =
+    stakingResult.status === 'fulfilled' ? stakingResult.value : null;
+  if (stakingResult.status !== 'fulfilled') {
+    console.error(
+      'Optimism staking snapshots fetch failed:',
+      stakingResult.reason,
+    );
+  }
+
+  const metrics = buildAprMetrics({
+    populationMetrics,
     stakingSnapshots,
     olasUsdPrice,
   });
 
+  return metrics ?? { ...EMPTY_APR_METRICS };
+};
+
+const fetchModiusMetrics = async () => {
+  const [populationResult, stakingResult] = await Promise.allSettled([
+    fetchModiusPopulationMetrics(),
+    fetchModeStakingSnapshots(),
+  ]);
+
+  if (populationResult.status !== 'fulfilled') {
+    console.error(
+      'Modius population metrics fetch failed:',
+      populationResult.reason,
+    );
+    return null;
+  }
+
+  const populationMetrics = populationResult.value;
+
+  const stakingSnapshots =
+    stakingResult.status === 'fulfilled' ? stakingResult.value : null;
+  if (stakingResult.status !== 'fulfilled') {
+    console.error('Mode staking snapshots fetch failed:', stakingResult.reason);
+  }
+
+  const aprMetrics = buildAprMetrics({
+    populationMetrics,
+    stakingSnapshots,
+    olasUsdPrice: MODIUS_FIXED_OLAS_PRICE_USD,
+  });
+
+  if (!aprMetrics) {
+    return {
+      ...EMPTY_APR_METRICS,
+      latestAvgApr: null,
+    };
+  }
+
   return {
-    ...baseMetrics,
-    stakingAprCalculated: Number.isFinite(stakingApr) ? stakingApr : null,
+    ...aprMetrics,
+    latestAvgApr: aprMetrics.latestUsdcApr,
   };
 };
 
 const fetchOptimismStakingSnapshots = async () => {
   try {
     const result = await STAKING_GRAPH_CLIENTS.optimism.request(
-      dailyStakingGlobalsSnapshotsQuery,
+      dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
     );
-    const rows = Array.isArray(result?.dailyStakingGlobals)
-      ? result.dailyStakingGlobals
+    const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
+      ? result.cumulativeDailyStakingGlobals
       : [];
 
     if (rows.length === 0) return null;
 
-    const reversed = rows.slice().reverse();
+    // Exclude today (UTC)
+    const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
+    const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+    if (filtered.length < 7) return null;
 
-    // Pad with last known value if we have fewer than 8 snapshots
+    const reversed = filtered.slice(0, 7).reverse();
+
+    // Pad with last known value if we have fewer than 8 snapshots (for delta calculation)
     while (reversed.length < 8) {
       const last = reversed[reversed.length - 1];
       reversed.push({
         timestamp: String(Number(last.timestamp) + 86400),
-        totalRewards: last.totalRewards,
+        medianCumulativeRewards: last.medianCumulativeRewards,
+        numServices: last.numServices,
       });
     }
 
@@ -226,51 +293,42 @@ const toNumber = (value) => {
 };
 
 /**
- * Calculates the daily ROI by combining agent trading performance with staking rewards.
- * Formula: agentRoi + stakingRoi
- * where stakingRoi = (cumulativeStakingRewardsInUSD / totalFundedAUM) * 100
- */
-const calculateDailyRoi = (metric, current, previous, olasUsdPrice) => {
-  const currentTotal = BigInt(current?.totalRewards ?? 0);
-  const previousTotal = BigInt(previous?.totalRewards ?? 0);
-  if (currentTotal < previousTotal) return null;
-
-  const cumulativeOlas = Number(currentTotal) / 1e18;
-  const cumulativeUsd = cumulativeOlas * olasUsdPrice;
-  const fundedAumUsd = toNumber(metric?.totalFundedAUM);
-  const agentRoi = toNumber(metric?.medianUnrealisedPnL);
-  const stakingRoi =
-    fundedAumUsd > 0 ? (cumulativeUsd / fundedAumUsd) * 100 : 0;
-
-  return agentRoi + stakingRoi;
-};
-
-/**
- * Computes combined ROIs for each day by pairing population metrics with staking snapshots.
- * Uses an 8-day staking window to calculate 7 days of ROI deltas.
+ * Calculates combined daily ROIs by combining agent performance with staking rewards.
+ * Uses a single OLAS USD price snapshot for all staking reward conversions.
  * Returns array of daily combined ROI values (agent performance + staking rewards).
  */
-const computeCombinedRois = (metrics, stakingSnapshots, olasUsdPrice) => {
-  if (!metrics || !stakingSnapshots) return null;
-  const startIndex = stakingSnapshots.length - metrics.length - 1;
-  if (startIndex < 0) return null;
+const calculateCombinedDailyROIs = (metrics, stakingTotals, olasUsdPrice) => {
+  if (!Array.isArray(metrics) || metrics.length === 0) return null;
+  if (!Array.isArray(stakingTotals) || stakingTotals.length === 0) return null;
 
-  const combined = [];
-  for (let index = 0; index < metrics.length; index += 1) {
-    const current = stakingSnapshots[startIndex + index + 1];
-    const previous = stakingSnapshots[startIndex + index];
-    const dailyRoi = calculateDailyRoi(
-      metrics[index],
-      current,
-      previous,
-      olasUsdPrice,
-    );
-    if (dailyRoi === null) return null;
+  const stakingByTimestamp = new Map();
+  stakingTotals.forEach((staking) => {
+    stakingByTimestamp.set(staking.timestamp, staking);
+  });
 
-    combined.push(dailyRoi);
-  }
+  const combinedRois = [];
+  let lastStakingRoi = 0;
 
-  return combined;
+  metrics.forEach((metric) => {
+    const staking = stakingByTimestamp.get(metric.timestamp);
+    let stakingRoi = lastStakingRoi;
+
+    if (staking && olasUsdPrice > 0) {
+      const medianRewardsOlas =
+        Number(BigInt(staking.medianCumulativeRewards)) / 1e18;
+      const medianRewardsUsd = medianRewardsOlas * olasUsdPrice;
+      const medianFundedAum = toNumber(metric.medianFundedAUM);
+
+      stakingRoi =
+        medianFundedAum > 0 ? (medianRewardsUsd / medianFundedAum) * 100 : 0;
+      lastStakingRoi = stakingRoi;
+    }
+
+    const agentRoi = toNumber(metric.medianUnrealisedPnL);
+    combinedRois.push(agentRoi + stakingRoi);
+  });
+
+  return combinedRois;
 };
 
 /**
@@ -285,22 +343,22 @@ const calculateSma = (values, window = 7) => {
 };
 
 /**
- * Calculates annualized APR for Optimus staking by combining agent performance and staking rewards.
+ * Calculates annualized APR by combining agent performance and staking rewards.
  * Process:
- * 1. Compute daily combined ROIs (agent trading + staking rewards)
+ * 1. Compute daily combined ROIs (agent trading + staking rewards) using the shared OLAS USD price snapshot
  * 2. Calculate 7-day SMA of those ROIs
  * 3. Normalize by average agent age (days active)
  * 4. Annualize by multiplying by 365
  * Returns the final APR percentage.
  */
-const calculateOptimusStakingApr = ({
-  metrics,
-  stakingSnapshots,
-  olasUsdPrice,
-}) => {
-  if (!metrics || !stakingSnapshots || !olasUsdPrice) return null;
+const calculateStakingApr = ({ metrics, stakingSnapshots, olasUsdPrice }) => {
+  if (!metrics || !stakingSnapshots) return null;
 
-  const combined = computeCombinedRois(metrics, stakingSnapshots, olasUsdPrice);
+  const combined = calculateCombinedDailyROIs(
+    metrics,
+    stakingSnapshots,
+    olasUsdPrice,
+  );
   if (!combined) return null;
 
   const sma = calculateSma(combined, 7);
@@ -308,9 +366,43 @@ const calculateOptimusStakingApr = ({
 
   const latestMetric = metrics[metrics.length - 1];
   const averageAge = toNumber(latestMetric?.averageAgentDaysActive);
-  const annualizationFactor = averageAge > 0 ? sma / averageAge : sma;
+  const annualizationFactor = averageAge > 0 ? sma / averageAge : 0;
 
   return annualizationFactor * 365;
+};
+
+const buildAprMetrics = ({
+  populationMetrics,
+  stakingSnapshots,
+  olasUsdPrice,
+}) => {
+  if (!Array.isArray(populationMetrics) || populationMetrics.length === 0) {
+    return null;
+  }
+
+  const latest = populationMetrics[populationMetrics.length - 1];
+  const latestUsdcApr = toNumber(latest?.sma7dProjectedUnrealisedPnL);
+  const latestEthApr = toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL);
+
+  if (!Array.isArray(stakingSnapshots) || stakingSnapshots.length === 0) {
+    return {
+      latestUsdcApr,
+      latestEthApr,
+      stakingAprCalculated: null,
+    };
+  }
+
+  const stakingApr = calculateStakingApr({
+    metrics: populationMetrics,
+    stakingSnapshots,
+    olasUsdPrice,
+  });
+
+  return {
+    latestUsdcApr,
+    latestEthApr,
+    stakingAprCalculated: Number.isFinite(stakingApr) ? stakingApr : null,
+  };
 };
 
 const fetchDailyAgentPerformance = async () => {
@@ -352,14 +444,15 @@ const fetchDailyAgentPerformance = async () => {
 
 const fetchAllAgentMetrics = async () => {
   try {
+    const olasUsdPricePromise = fetchOlasUsdPrice();
     const [
-      modiusPerformanceResult,
+      modiusMetricsResult,
       optimusMetricsResult,
       olasAprResult,
       dailyActiveAgentsResult,
     ] = await Promise.allSettled([
-      fetchModiusPerformance(),
-      fetchOptimusMetrics(),
+      fetchModiusMetrics(),
+      fetchOptimusMetrics(olasUsdPricePromise),
       fetchOlasApr(),
       fetchDailyAgentPerformance(),
     ]);
@@ -368,13 +461,10 @@ const fetchAllAgentMetrics = async () => {
     let modiusData = null;
     let dailyActiveAgentsData = null;
 
-    if (modiusPerformanceResult.status === 'fulfilled') {
-      modiusData = modiusPerformanceResult.value;
+    if (modiusMetricsResult.status === 'fulfilled') {
+      modiusData = modiusMetricsResult.value;
     } else {
-      console.error(
-        'Modius data fetch failed:',
-        modiusPerformanceResult.reason,
-      );
+      console.error('Modius data fetch failed:', modiusMetricsResult.reason);
     }
 
     if (optimusMetricsResult.status === 'fulfilled') {

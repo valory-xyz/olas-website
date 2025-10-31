@@ -122,27 +122,59 @@ export const stakingGlobalsQuery = gql`
   }
 `;
 
-export const dailyBabydegenPopulationMetricsLatest7Query = gql`
-  {
-    dailyPopulationMetrics(first: 7, orderBy: timestamp, orderDirection: desc) {
-      timestamp
-      totalFundedAUM
-      medianUnrealisedPnL
-      averageAgentDaysActive
-      sma7dProjectedUnrealisedPnL
-      sma7dEthAdjustedProjectedUnrealisedPnL
-    }
-  }
-`;
+export const dailyBabydegenPopulationMetricsQuery = ({
+  first = 10,
+  timestampLte,
+} = {}) => {
+  const whereClause =
+    typeof timestampLte === 'number'
+      ? `where: { timestamp_lte: ${timestampLte} }`
+      : '';
 
-export const dailyStakingGlobalsSnapshotsQuery = gql`
-  {
-    dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
-      timestamp
-      totalRewards
+  return gql`
+    {
+      dailyPopulationMetrics(
+        first: ${first}
+        orderBy: timestamp
+        orderDirection: desc
+        ${whereClause}
+      ) {
+        timestamp
+        totalFundedAUM
+        medianUnrealisedPnL
+        averageAgentDaysActive
+        sma7dProjectedUnrealisedPnL
+        sma7dEthAdjustedProjectedUnrealisedPnL
+        medianAUM
+      }
     }
-  }
-`;
+  `;
+};
+
+export const dailyStakingGlobalsSnapshotsQuery = ({
+  first = 10,
+  timestampLte,
+} = {}) => {
+  const whereClause =
+    typeof timestampLte === 'number'
+      ? `where: { timestamp_lte: ${timestampLte} }`
+      : '';
+
+  return gql`
+    {
+      cumulativeDailyStakingGlobals(
+        first: ${first}
+        orderBy: timestamp
+        orderDirection: desc
+        ${whereClause}
+      ) {
+        timestamp
+        medianCumulativeRewards
+        numServices
+      }
+    }
+  `;
+};
 
 export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
   query ClosedMarketsBets {
