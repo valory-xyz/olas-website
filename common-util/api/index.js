@@ -134,7 +134,7 @@ export const getPredictMetrics = async () => {
 };
 
 // ----------- PEARL DAAS -----------
-export const getPredictDAAs = async () => {
+export const getPearlDAAs = async () => {
   try {
     const response = await fetch('/api/pearl-daa');
     if (!response.ok) {
