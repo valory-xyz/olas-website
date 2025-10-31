@@ -183,6 +183,7 @@ export const dailyBabydegenPerformancesQuery = gql`
       orderDirection: desc
     ) {
       id
+      dayTimestamp
       activeMultisigCount
     }
   }
@@ -235,6 +236,57 @@ export const dailyPredictAgentsPerformancesQuery = gql`
     ) {
       dayTimestamp
       activeMultisigCount
+    }
+  }
+`;
+
+export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
+  query DailyPredictAgentPerformancesWithMultisigs(
+    $agentId_in: [Int!]!
+    $dayTimestamp_gte: Int!
+    $dayTimestamp_lte: Int!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId_in: $agentId_in }
+          { dayTimestamp_gte: $dayTimestamp_gte }
+          { dayTimestamp_lte: $dayTimestamp_lte }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: asc
+      first: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+      multisigs(first: 1000) {
+        multisig {
+          id
+          serviceId
+        }
+      }
+    }
+  }
+`;
+
+export const checkpointsQuery = gql`
+  query Checkpoints(
+    $contractAddress_in: [String!]!
+    $blockTimestamp_lte: Int!
+  ) {
+    checkpoints(
+      where: {
+        contractAddress_in: $contractAddress_in
+        blockTimestamp_lte: $blockTimestamp_lte
+      }
+      orderBy: blockTimestamp
+      orderDirection: desc
+      first: 1000
+    ) {
+      contractAddress
+      serviceIds
+      blockTimestamp
     }
   }
 `;

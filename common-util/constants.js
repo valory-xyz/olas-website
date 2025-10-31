@@ -191,3 +191,18 @@ export const GNOSIS_STAKING_CONTRACTS = [
   '0xaaEcdf4d0CBd6Ca0622892Ac6044472f3912A5f3',
   '0x168aED532a0CD8868c22Fc77937Af78b363652B1',
 ];
+
+export const PREDICT_STAKING_PROGRAMS_PEARL = {
+  pearl_alpha: '0xEE9F19b5DF06c7E8Bfc7B28745dcf944C504198A',
+  pearl_beta: '0xeF44Fb0842DDeF59D37f85D61A1eF492bbA6135d',
+  pearl_beta_2: '0x1c2F82413666d2a3fD8bC337b0268e62dDF67434',
+  pearl_beta_3: '0xBd59Ff0522aA773cB6074ce83cD1e4a05A457bc1',
+  pearl_beta_4: '0x3052451e1eAee78e62E169AfdF6288F8791F2918',
+  pearl_beta_5: '0x4Abe376Fda28c2F43b84884E5f822eA775DeA9F4',
+  pearl_beta_6: '0x6C6D01e8eA8f806eF0c22F0ef7ed81D868C1aB39',
+  pearl_beta_mech_marketplace: '0xDaF34eC46298b53a3d24CBCb431E84eBd23927dA',
+  'pearl_beta-mech_marketplace': '0xAb10188207Ea030555f53C8A84339A92f473aa5e',
+  pearl_beta_mech_marketplace_2: '0x8d7bE092d154b01d404f1aCCFA22Cef98C613B5D',
+  pearl_beta_mech_marketplace_3: '0x9d00a0551f20979080d3762005c9b74d7aa77b85',
+  pearl_beta_mech_marketplace_4: '0xE2f80659dB1069f3B6a08af1A62064190c119543',
+};
