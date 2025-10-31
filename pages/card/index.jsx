@@ -36,19 +36,67 @@ const ImageCarousel = ({
   );
 };
 
-const IMAGE_PATHS = [
-  '/images/community-card/archer-pearl.png',
-  '/images/community-card/pearl-fighting-ai-corp.png',
-  '/images/community-card/seven-sleep.png',
-];
+function generateShuffledIndices(length, excludeFirstIndex) {
+  const indices = Array.from({ length }, (_, i) => i);
+  // Fisher-Yates shuffle
+  for (let i = length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = indices[i];
+    indices[i] = indices[j];
+    indices[j] = tmp;
+  }
+  if (
+    length > 1 &&
+    typeof excludeFirstIndex === 'number' &&
+    indices[0] === excludeFirstIndex
+  ) {
+    // Ensure first pick is not the excluded one to avoid immediate repeat
+    const swapWith = 1;
+    const tmp = indices[0];
+    indices[0] = indices[swapWith];
+    indices[swapWith] = tmp;
+  }
+  return indices;
+}
+
+const IMAGE_TO_TWITTER_URL = {
+  '/images/community-card/David vs Goliath - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/David vs Goliath - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Gladiator - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Gladiator - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Gladiator - Pearl v1_ the Dawn of AI Ownership.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Renaissance - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Renaissance - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Robin Hood - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Robin Hood - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Seven Sleep - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Seven Sleep - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Superman - I Own My AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+  '/images/community-card/Superman - Own Your AI with Pearl v1.webp':
+    'pic.twitter.com/ji4IimxG8s',
+};
+
+const IMAGE_PATHS = Object.keys(IMAGE_TO_TWITTER_URL);
 
 const TWEET_TEXT = [
   `Your AI no longer needs to be owned or controlled by Big Tech. 🙇
-Pearl v1 — the “AI agent app store” by @autonolas — is now live for everyone. 🔥
+Pearl v1 — the "AI agent app store" by @autonolas — is now live for everyone. 🔥
 Web3's self-custody meets Web2 simplicity.
 Download Pearl → https://olas.network/pearl`,
   `Big Tech shouldn't own your AI. You should. 🦾
-Pearl v1 by @autonolas is live — the “AI agent app store” that lets you truly own and control your AI agent. 🫡
+Pearl v1 by @autonolas is live — the "AI agent app store" that lets you truly own and control your AI agent. 🫡
 Built on Web3 foundations, wrapped in a Web2-smooth experience.
 Own your AI 👉 https://olas.network/pearl`,
 ];
@@ -66,6 +114,10 @@ const StepLabel = ({ label }) => {
 
 const CommunityCardClient = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [order, setOrder] = useState(() =>
+    generateShuffledIndices(IMAGE_PATHS.length, 0),
+  );
+  const [orderPos, setOrderPos] = useState(0);
 
   const currentImage = useMemo(
     () => IMAGE_PATHS[carouselIndex],
@@ -73,8 +125,22 @@ const CommunityCardClient = () => {
   );
 
   const shuffle = useCallback(() => {
-    setCarouselIndex((p) => (p + 1) % IMAGE_PATHS.length);
-  }, []);
+    const needsNewOrder = orderPos >= order.length;
+    const activeIndex = carouselIndex;
+
+    if (needsNewOrder) {
+      const nextOrder = generateShuffledIndices(
+        IMAGE_PATHS.length,
+        activeIndex,
+      );
+      setOrder(nextOrder);
+      setOrderPos(1);
+      setCarouselIndex(nextOrder[0] ?? activeIndex);
+    } else {
+      setOrderPos((prevPos) => prevPos + 1);
+      setCarouselIndex(order[orderPos] ?? activeIndex);
+    }
+  }, [carouselIndex, order, orderPos]);
 
   const download = useCallback(() => {
     const link = document.createElement('a');
@@ -88,8 +154,11 @@ const CommunityCardClient = () => {
 
   const shareText = useMemo(() => {
     const index = Math.floor(Math.random() * TWEET_TEXT.length);
-    return TWEET_TEXT[index];
-  }, []);
+    const baseText = TWEET_TEXT[index];
+    const twitterImageUrl = IMAGE_TO_TWITTER_URL[currentImage] || '';
+    const olasUrlRegex = /(https:\/\/olas\.network\/pearl)/;
+    return baseText.replace(olasUrlRegex, `${twitterImageUrl} $1`);
+  }, [currentImage]);
 
   const shareUrl = useMemo(() => {
     const intent = new URL('https://x.com/intent/tweet');
