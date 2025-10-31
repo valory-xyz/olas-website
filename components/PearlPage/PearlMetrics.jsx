@@ -1,4 +1,4 @@
-import { getPredictDAAs } from 'common-util/api/index';
+import { getPearlDAAs } from 'common-util/api/index';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 export const PearlMetrics = () => {
-  const { data: predictDAAs } = usePersistentSWR('predictDAAs', getPredictDAAs);
+  const { data: pearlDAAs } = usePersistentSWR('pearlDAAs', getPearlDAAs);
 
   const data = useMemo(
     () => [
@@ -17,11 +17,11 @@ export const PearlMetrics = () => {
         imageSrc: 'DAA.png',
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
-        value: predictDAAs?.dailyActiveAgents?.toLocaleString(),
+        value: pearlDAAs?.dailyActiveAgents?.toLocaleString(),
         source: '/data#pearl-daily-active-agents',
       },
     ],
-    [predictDAAs],
+    [pearlDAAs],
   );
 
   return (
