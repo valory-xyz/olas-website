@@ -1,6 +1,8 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   CACHE_DURATION_SECONDS,
+  MODIUS_FIXED_END_DATE_UTC,
+  MODIUS_FIXED_OLAS_PRICE_USD,
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
 } from 'common-util/constants';
@@ -26,12 +28,9 @@ const COINGECKO_OLAS_IN_USD_PRICE_URL = OLAS_ADDRESS
   ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`
   : null;
 
-// Hardcoded values for Modius , suggested by Babydegen team
-const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';
 const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
   new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000,
 );
-const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09-18
 const EMPTY_APR_METRICS = {
   latestUsdcApr: null,
   latestEthApr: null,
@@ -154,7 +153,7 @@ const fetchOptimusPopulationMetrics = async () => {
     if (rows.length === 0) return null;
 
     // Exclude today (UTC)
-    const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
+    const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
     const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
     if (filtered.length < 7) return null;
 
@@ -227,7 +226,6 @@ const fetchModiusMetrics = async () => {
   }
 
   const populationMetrics = populationResult.value;
-  const olasUsdPrice = MODIUS_FIXED_OLAS_PRICE_USD;
 
   const stakingSnapshots =
     stakingResult.status === 'fulfilled' ? stakingResult.value : null;
@@ -238,7 +236,7 @@ const fetchModiusMetrics = async () => {
   const aprMetrics = buildAprMetrics({
     populationMetrics,
     stakingSnapshots,
-    olasUsdPrice,
+    olasUsdPrice: MODIUS_FIXED_OLAS_PRICE_USD,
   });
 
   if (!aprMetrics) {
@@ -266,7 +264,7 @@ const fetchOptimismStakingSnapshots = async () => {
     if (rows.length === 0) return null;
 
     // Exclude today (UTC)
-    const todayMidnightUtc = Math.floor(Date.now() / 1000 / 86400) * 86400;
+    const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
     const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
     if (filtered.length < 7) return null;
 
