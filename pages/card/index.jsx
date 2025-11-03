@@ -175,7 +175,7 @@ const CommunityCardClient = () => {
 
   const shareText = useMemo(() => {
     const index = Math.floor(Math.random() * TWEET_TEXT.length);
-    const baseText = TWEET_TEXT[index];
+    const baseText = TWEET_TEXT[1];
     const twitterImageUrl = IMAGE_TO_TWITTER_URL[currentImage] || '';
     const olasUrlRegex = /(https:\/\/olas\.network\/pearl)/;
     return baseText.replace(olasUrlRegex, `$1 ${twitterImageUrl}`);
@@ -184,6 +184,12 @@ const CommunityCardClient = () => {
   const shareUrl = useMemo(() => {
     const intent = new URL('https://x.com/intent/tweet');
     intent.searchParams.set('text', shareText);
+
+    const quoteTweetUrl = process.env.NEXT_PUBLIC_QUOTE_TWEET_URL;
+    if (quoteTweetUrl) {
+      intent.searchParams.set('url', quoteTweetUrl);
+    }
+
     return intent.toString();
   }, [shareText]);
 
