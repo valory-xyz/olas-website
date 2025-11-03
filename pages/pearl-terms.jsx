@@ -1,85 +1,325 @@
-/* eslint-disable react/no-unescaped-entities */
-import { AlertTriangle } from 'lucide-react';
-import Link from 'next/link';
+import { AlertTriangle, Link } from 'lucide-react';
 
-import { VALORY_URL } from 'common-util/constants';
+import { DISCORD_INVITE_URL, VALORY_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import SectionHeading from 'components/SectionHeading';
 import { ExternalLink } from 'components/ui/typography';
+import { useRouter } from 'next/router';
 
-const linkClass = 'text-purple-600 hover:text-purple-800';
+// Note: All links on this page must be external because
+// the page is also rendered inside the Pearl app
+const PearlTerms = () => {
+  const router = useRouter();
+  const hideLayout = router?.query?.hideLayout === 'true';
+  const Layout = hideLayout ? 'div' : PageWrapper;
+  return (
+    <Layout>
+      <Meta pageTitle="Pearl Terms" />
+      <SectionWrapper backgroundType="SUBTLE_GRADIENT">
+        <article className="max-w-[800px] mx-auto">
+          <SectionHeading color="text-purple-950">Pearl Terms</SectionHeading>
+          <div className="text-xl text-gray-600 space-y-6">
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                1. Introduction and Scope
+              </h4>
+              <p className="mt-2">
+                Valory AG (“Valory” as defined in{' '}
+                <ExternalLink href={`${VALORY_URL}/terms`}>
+                  Valory Terms
+                </ExternalLink>
+                ) develops and provides tools built on emerging technologies,
+                including the open-source Pearl Application (“Pearl”), which is
+                developed and maintained by Valory.
+              </p>
+              <p className="mt-2">
+                Pearl is a desktop application available for download on the{' '}
+                <ExternalLink href="https://olas.network/pearl" hideArrow>
+                  Olas Site
+                </ExternalLink>{' '}
+                therefore is subject to these Pearl Terms, the Valory Terms, and
+                the{' '}
+                <ExternalLink href="https://olas.network/disclaimer" hideArrow>
+                  Olas Disclaimer & Privacy Policy
+                </ExternalLink>{' '}
+                (collectively known as the “Conditions”). In case of conflict
+                between these Pearl Terms, the Olas Disclaimer & Privacy Policy,
+                the Transak Terms of Service and Privacy Policy, the Web3Auth
+                Terms of Use, and the Valory Terms, the Valory Terms prevail.
+                Nothing in these Pearl Terms shall be construed to waive or
+                limit any rights, remedies, or limitations of liability that
+                Valory (or its affiliates) retain under the Valory Terms.
+              </p>
+            </section>
 
-const PearlTerms = () => (
-  <PageWrapper>
-    <Meta pageTitle="Disclaimer" />
-    <SectionWrapper backgroundType="SUBTLE_GRADIENT">
-      <article className="max-w-[800px] mx-auto">
-        <SectionHeading size="text-4xl lg:text-2xl" color="text-purple-950">
-          Pearl Terms
-        </SectionHeading>
-        <div className="text-xl text-gray-600">
-          <ol className="list-disc">
-            <li>
-              The Pearl Application (“Application”) is the desktop application
-              available for download on the{' '}
-              <Link href="/" className={linkClass}>
-                Olas Site
-              </Link>
-              , therefore is subject to the “
-              <Link href="/disclaimer" className={linkClass}>
-                Olas Disclaimer & Privacy Policy
-              </Link>
-              ”.
-            </li>
-            <li>
-              Both the Application and brand “Pearl” or “Olas Pearl” and
-              associated Marks are part of Valory AG&apos;s “Offerings”, thus
-              are subject to the “
-              <ExternalLink
-                href={`${VALORY_URL}/terms`}
-                hideArrow
-                className={linkClass}
-              >
-                Valory Terms
-              </ExternalLink>
-              ” and related definitions therein.
-            </li>
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                2. What are Pearl and Olas
+              </h4>
+              <p className="mt-2">
+                Pearl enables users to run autonomous agents locally, on their
+                own devices. These agents interact with the{' '}
+                <ExternalLink href="https://olas.network/protocol" hideArrow>
+                  Olas Protocol
+                </ExternalLink>
+                , a decentralized platform for owning AI agents and other
+                protocols. Users access Pearl through the{' '}
+                <ExternalLink href="https://olas.network/" hideArrow>
+                  Olas Site
+                </ExternalLink>
+                , which is a website owned by the Olas DAO, a decentralized
+                autonomous organization that manages the Olas Protocol, of which
+                Valory is a member. Valory is an independent legal entity and is
+                not responsible for the actions or omissions of the DAO or its
+                participants. Valory is not responsible for the content,
+                functionality, or data processing on the Olas Site. Both the
+                Pearl Application and brand “Pearl” or “Olas Pearl” and
+                associated Marks are part of Valory&apos;s “Offerings” and
+                governed by the Valory Terms. All trademarks, logos, and
+                branding associated with Pearl are owned or licensed by Valory.
+              </p>
+            </section>
 
-            <li>
-              Together, the Valory Terms and the Olas Disclaimer are known as
-              the “Conditions”, and where there is doubt between the two texts,
-              the Valory Terms shall control.
-            </li>
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                3. Acceptance of the terms and risks
+              </h4>
+              <p className="mt-2">
+                By downloading, installing, or using Pearl, you acknowledge and
+                agree to be bound by these Pearl Terms, the Conditions, and the
+                terms and privacy policies of third-party services with which
+                Pearl integrates, such as Transak and Web3Auth. If you do not
+                agree, you should not download Pearl, or, if you already have,
+                you should stop using it.
+              </p>
+              <p className="mt-2">
+                The Conditions explain the risks involved in using Offerings
+                like Pearl, which are based on emerging technologies (such as
+                blockchain). Nothing in Pearl or related materials constitutes
+                investment advice, a financial promotion, or an offer to manage
+                assets. You remain solely responsible for your financial
+                decisions and blockchain transactions, and for understanding any
+                legal, tax, or regulatory obligations that may apply.
+              </p>
+              <p className="mt-2">
+                Whilst using Pearl, users may interact with or receive{' '}
+                <ExternalLink href="https://olas.network/olas-token" hideArrow>
+                  Olas tokens
+                </ExternalLink>
+                , a digital asset associated with the Olas Protocol
+                (specifically its native token), via the Olas Protocol. Any
+                issuance, distribution or receipt of Olas tokens is governed by
+                the Olas Protocol (and not Pearl or Valory, since the Olas
+                Protocol is governed by the Olas DAO) and is not guaranteed.
+                Users assume all risks associated with acquiring, holding, or
+                transacting with Olas tokens, including potential loss of value,
+                irretrievability, or tax or regulatory obligations.
+              </p>
+            </section>
 
-            <li>
-              The information on this page is simply for convenience and shall
-              never override the Conditions.
-            </li>
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                4. Limitation of liability
+              </h4>
+              <p className="mt-2">
+                <AlertTriangle size={18} className="inline-block mb-1" />{' '}
+                Warning: Pearl is experimental open-source software that is
+                provided “as is”, without any representation that it has been
+                fully audited, tested, or secured. If you choose to use Pearl,
+                you do so at your own risk. To the maximum extent permitted by
+                law, and except where mandatory consumer protections apply,
+                Valory is not liable and responsible for any delays, losses,
+                damages, or issues resulting from or arising out of using Pearl
+                or related integrations, nor for paying any costs related to the
+                same.
+              </p>
+            </section>
 
-            <li>
-              Please note that, per the Conditions, your use of this Site and
-              these Offerings triggers your acceptance of the Conditions,
-              including but not limited to the risks involved in the Offerings
-              including but not limited to such emerging technologies as
-              blockchain.
-            </li>
-          </ol>
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                5. Non-custodial nature & data handling
+              </h4>
+              <p className="mt-2">
+                Pearl is a non-custodial software interface developed by Valory.
+                Valory does not ever take custody of user funds, access wallets,
+                or act as a financial intermediary or data processor on behalf
+                of users. Valory does not sell, nor rent, nor share personal
+                data, nor collect personal data via Pearl. Any technical data
+                generated by Pearl is processed locally on your device solely to
+                enable the software&apos;s functionality and is never shared
+                with Valory. All wallet keys, configurations, and operational
+                data remain local to your device.
+              </p>
+            </section>
 
-          <h4 className="text-xl mt-16 flex items-center">
-            <AlertTriangle size={18} className="inline-block mr-2" />
-            Warning
-          </h4>
-          <p className="mt-2">
-            The code within this Application is provided without any warranties.
-            It is important to note that the code has not been audited for
-            potential security vulnerabilities.
-          </p>
-        </div>
-      </article>
-    </SectionWrapper>
-  </PageWrapper>
-);
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                6. Third Party Integrations
+              </h4>
+              <p className="mt-2">
+                Pearl integrates third-party services, such as Transak and
+                Web3Auth. Valory is not responsible for any third-party
+                services; you use them at your own risk and must comply with
+                their terms. To the fullest extent permitted by law, Valory
+                shall not be liable for any indirect, incidental, or
+                consequential damages arising from the use of Pearl or any
+                third-party services.
+              </p>
+              <p className="mt-2">
+                Any interaction with the Olas Protocol or the Olas DAO through
+                Pearl, including earning or transferring Olas tokens, is solely
+                at the user&apos;s risk and subject to the rules, risks, and
+                discretion of the Olas DAO.
+              </p>
+              <div className="space-y-4 mt-4 ml-8">
+                <div>
+                  <h5
+                    className="text-lg text-black font-semibold"
+                    id="transak-terms"
+                  >
+                    <Link size={18} className="inline-block mb-1" /> 6.1 Transak
+                  </h5>
+                  <p className="mt-2">
+                    Transak is a regulated Virtual Asset Service Provider (VASP)
+                    that enables fiat-to-crypto purchases. Although this service
+                    is technically accessed via a non-transactional proxy (for
+                    software compatibility only) operated by Valory, your
+                    transaction remains exclusively with Transak. This
+                    integration is offered for your convenience, and all onramp
+                    services are clearly branded and operated by Transak. When
+                    accessing Transak through Pearl, users are redirected to
+                    Transak&nbsp;s interface and contract directly with Transak
+                    under its own{' '}
+                    <ExternalLink href="https://transak.com/terms-of-service">
+                      Terms of Service
+                    </ExternalLink>{' '}
+                    and{' '}
+                    <ExternalLink href="https://transak.com/privacy-policy">
+                      Privacy Policy
+                    </ExternalLink>
+                    .
+                  </p>
+                  <p className="mt-2">
+                    For the avoidance of doubt, Valory does not process or store
+                    user payment or any data, perform KYC/AML checks, or hold,
+                    custody or transfer of fiat or crypto funds: any processing
+                    or storage of user payments or user data, KYC/AML checks, or
+                    holding, custody or transfer of funds taking place in the
+                    process of fiat-to-crypto onboarding within Pearl is
+                    performed solely by Transak. Valory is not an intermediary,
+                    counterparty or payment processor in any onramp transaction.
+                  </p>
+                </div>
+                <div>
+                  <h5
+                    className="text-lg text-black font-semibold"
+                    id="web3auth-terms"
+                  >
+                    <Link size={18} className="inline-block mb-1" /> 6.2
+                    Web3Auth
+                  </h5>
+                  <p className="mt-2">
+                    Web3Auth is a third-party authentication and wallet backup
+                    service that uses multi-party computation (MPC) technology.
+                    Web3Auth enables users to create a backup wallet to aid
+                    recovery of your main wallet used in Pearl using a social
+                    login, e.g. an email account. Part of the private key of
+                    said backup wallet is securely backed up via their chosen
+                    login method, and the other part is held by Web3Auth&apos;s
+                    infrastructure. Web3Auth acts as an independent service
+                    provider and may process limited personal data (e.g.,
+                    identifiers tied to your Authentication Provider) in
+                    accordance with its own privacy policies. Neither Valory nor
+                    Web3Auth ever hold your full private key. Valory never
+                    accesses or stores keys or parts of keys or login
+                    credentials. You contract directly with Web3Auth under its
+                    own{' '}
+                    <ExternalLink href="https://web3auth.io/docs/legal/terms-and-conditions">
+                      Terms of Service
+                    </ExternalLink>{' '}
+                    and{' '}
+                    <ExternalLink href="https://web3auth.io/docs/legal/privacy-policy">
+                      Privacy Policy
+                    </ExternalLink>
+                    . Users are solely responsible for maintaining access to
+                    their authentication accounts via Web3Auth. Valory assumes
+                    no responsibility or liability for the performance,
+                    security, or data handling of Web3Auth nor its integration,
+                    except to the extent such liability cannot lawfully be
+                    excluded.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                7. User responsibilities and prohibited uses
+              </h4>
+              <p className="mt-2">
+                By agreeing to the Conditions, you acknowledge and accept all
+                risks associated with the use of Pearl or other Offerings and
+                integrated third-party services, and you bear full
+                responsibility for all such risks that may include potential
+                loss of digital assets, data exposure, tax or regulatory
+                implications and reporting, or unexpected software behaviour.
+                You may not use Pearl to violate laws, infringe IP, introduce
+                malware, reverse-engineer, or interfere with networks. Valory
+                may suspend or terminate access to Pearl at any time for
+                violation of these Pearl Terms or prohibited use, without any
+                obligation to compensate you or any third party for resulting
+                losses. Pearl may include or rely on open-source libraries,
+                which are subject to their respective licenses; you agree to
+                comply with such licenses, and Valory makes no warranties
+                regarding third-party open-source components.
+              </p>
+              <p className="mt-2">
+                Users acknowledge that Valory does not issue, guarantee, or
+                manage Olas tokens and is not responsible for any token-related
+                losses, account balances, or third-party token activities.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                8. Updates, governing law and dispute resolution
+              </h4>
+              <p className="mt-2">
+                Valory may update these Pearl Terms from time to time to reflect
+                changes in the product or legal requirements. Updates will be
+                effective when posted on the Olas Site or within Pearl, and
+                continued use after posting constitutes acceptance. Continued
+                use of Pearl after such updates constitutes acceptance of the
+                revised terms. If you do not agree to the Conditions your sole
+                remedy is to discontinue your use of Pearl.
+              </p>
+              <p className="mt-2">
+                These Pearl Terms are governed by and constructed in accordance
+                with the laws of Switzerland, and any disputes shall be resolved
+                in accordance with the dispute resolution provisions of the
+                Valory Terms.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="text-xl text-black font-semibold mt-8">
+                9. Support
+              </h4>
+              <p className="mt-2">
+                If you encounter a problem/question, some support is available{' '}
+                <ExternalLink href={DISCORD_INVITE_URL}>
+                  in the Olas Discord server
+                </ExternalLink>
+                .
+              </p>
+            </section>
+          </div>
+        </article>
+      </SectionWrapper>
+    </Layout>
+  );
+};
 
 export default PearlTerms;
