@@ -112,14 +112,14 @@ const IMAGE_TO_TWITTER_URL = {
 const IMAGE_PATHS = Object.keys(IMAGE_TO_TWITTER_URL);
 
 const TWEET_TEXT = [
-  `Your AI no longer needs to be owned or controlled by Big Tech. 🙇
-Pearl v1 — the "AI agent app store" by @autonolas — is now live for everyone. 🔥
+  `Your AI no longer needs to be owned or controlled by Big Tech.
+Pearl v1 — the "AI agent app store" by @autonolas — is now live for everyone.
 Web3's self-custody meets Web2 simplicity.
 Download Pearl → https://olas.network/pearl`,
-  `Big Tech shouldn't own your AI. You should. 🦾
-Pearl v1 by @autonolas is live — the "AI agent app store" that lets you truly own your AI agent. 🫡
-Built on Web3 foundations, wrapped in a Web2-smooth experience.
-Own your AI 👉 https://olas.network/pearl`,
+  `Big Tech had its turn owning your AI. Now it's yours.
+Pearl v1: the “AI agent app store” by @autonolas lets you truly own your AI.
+Own your agents. Live your life.
+Download Pearl → https://olas.network/pearl`,
 ];
 
 const StepLabel = ({ label }) => {
@@ -175,7 +175,7 @@ const CommunityCardClient = () => {
 
   const shareText = useMemo(() => {
     const index = Math.floor(Math.random() * TWEET_TEXT.length);
-    const baseText = TWEET_TEXT[1];
+    const baseText = TWEET_TEXT[index];
     const twitterImageUrl = IMAGE_TO_TWITTER_URL[currentImage] || '';
     const olasUrlRegex = /(https:\/\/olas\.network\/pearl)/;
     return baseText.replace(olasUrlRegex, `$1 ${twitterImageUrl}`);
