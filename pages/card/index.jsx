@@ -82,31 +82,31 @@ function generateShuffledIndices(length, excludeFirstIndex) {
 
 const IMAGE_TO_TWITTER_URL = {
   '/images/community-card/David vs Goliath - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/KThCetoKuM',
   '/images/community-card/David vs Goliath - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/n9baRwwC1d',
   '/images/community-card/Gladiator - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/uZZgeeOLA7',
   '/images/community-card/Gladiator - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/y3oynJjLaB',
   '/images/community-card/Gladiator - Pearl v1_ the Dawn of AI Ownership.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/7hDSabYoXY',
   '/images/community-card/Renaissance - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/GfOqd5Fyck',
   '/images/community-card/Renaissance - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/43tUCBOoED',
   '/images/community-card/Robin Hood - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/yADMBf1Ew3',
   '/images/community-card/Robin Hood - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/4sNauCqOKw',
   '/images/community-card/Seven Sleep - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/YZmhPpfjmc',
   '/images/community-card/Seven Sleep - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/NHQXfgKrLI',
   '/images/community-card/Superman - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/hOp8SSZgjS',
   '/images/community-card/Superman - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/ji4IimxG8s',
+    'pic.twitter.com/CGL8JG1EXu',
 };
 
 const IMAGE_PATHS = Object.keys(IMAGE_TO_TWITTER_URL);
@@ -117,7 +117,7 @@ Pearl v1 — the "AI agent app store" by @autonolas — is now live for everyone
 Web3's self-custody meets Web2 simplicity.
 Download Pearl → https://olas.network/pearl`,
   `Big Tech shouldn't own your AI. You should. 🦾
-Pearl v1 by @autonolas is live — the "AI agent app store" that lets you truly own and control your AI agent. 🫡
+Pearl v1 by @autonolas is live — the "AI agent app store" that lets you truly own your AI agent. 🫡
 Built on Web3 foundations, wrapped in a Web2-smooth experience.
 Own your AI 👉 https://olas.network/pearl`,
 ];
@@ -178,7 +178,7 @@ const CommunityCardClient = () => {
     const baseText = TWEET_TEXT[index];
     const twitterImageUrl = IMAGE_TO_TWITTER_URL[currentImage] || '';
     const olasUrlRegex = /(https:\/\/olas\.network\/pearl)/;
-    return baseText.replace(olasUrlRegex, `${twitterImageUrl} $1`);
+    return baseText.replace(olasUrlRegex, `$1 ${twitterImageUrl}`);
   }, [currentImage]);
 
   const shareUrl = useMemo(() => {
