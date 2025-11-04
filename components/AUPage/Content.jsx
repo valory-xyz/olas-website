@@ -1,195 +1,102 @@
 import { VALORY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
+import AuSponsors from 'data/au-sponsors.json';
 import Image from 'next/image';
 
 const ACTUAL_BLOG_POST_URL = `${VALORY_URL}/post/co-owned-ai`;
 
-const largeIcons = [
-  {
-    name: 'Olas',
-    iconFileName: '/olas-logo.svg',
-  },
-  {
-    name: 'Near',
-    iconFileName: '/au-page/icons/near.png',
-  },
-  {
-    name: 'Almanak',
-    iconFileName: '/au-page/icons/almanak.png',
-  },
-  {
-    name: 'Flock',
-    iconFileName: '/friends/flock.svg',
-  },
-  {
-    name: 'Kryptoplanet',
-    iconFileName: '/au-page/icons/kryptoplanet.png',
-  },
-  {
-    name: 'Polywrap',
-    iconFileName: '/au-page/icons/polywrap.png',
-  },
-];
+const chunkArrays = (array, sizes) => {
+  const result = [];
+  let index = 0;
 
-const mediumIcons = [
-  {
-    name: 'Vana',
-    iconFileName: '/au-page/icons/vana.svg',
-  },
-  {
-    name: 'Myshell',
-    iconFileName: '/au-page/icons/myshell.png',
-  },
-  {
-    name: 'Capx',
-    iconFileName: '/au-page/icons/capx.svg',
-  },
-  {
-    name: 'Agentcoin',
-    iconFileName: '/au-page/icons/agentcoin.svg',
-  },
-  {
-    name: 'Layer',
-    iconFileName: '/au-page/icons/layer.svg',
-  },
-  {
-    name: 'Phala',
-    iconFileName: '/au-page/icons/phala.svg',
-  },
-  {
-    name: 'Creator',
-    iconFileName: '/au-page/icons/creator.png',
-  },
-  {
-    name: 'Gensyn',
-    iconFileName: '/au-page/icons/gensyn.svg',
-  },
-  {
-    name: 'Spectral',
-    iconFileName: '/au-page/icons/spectral.png',
-  },
-  {
-    name: 'Edge Network',
-    iconFileName: '/au-page/icons/edge-network.png',
-  },
-  {
-    name: 'Agentops',
-    iconFileName: '/au-page/icons/agentops.png',
-  },
-];
+  const sizeArr = Array.isArray(sizes) ? sizes : [sizes];
 
-const smallIcons = [
-  {
-    name: 'Nevermined',
-    iconFileName: '/builders/nevermined.png',
-  },
-  {
-    name: 'Signature Ventures',
-    iconFileName: '/au-page/icons/signature-ventures.png',
-  },
-  {
-    name: 'Keyko',
-    iconFileName: '/au-page/icons/keyko.png',
-  },
-  {
-    name: 'The Indexing Company',
-    iconFileName: '/au-page/icons/indexing-company.png',
-  },
-  {
-    name: 'Naptha AI',
-    iconFileName: '/builders/naptha-ai.png',
-  },
-  {
-    name: 'Wayfinder',
-    iconFileName: '/au-page/icons/wayfinder.png',
-  },
-  {
-    name: 'Mode',
-    iconFileName: '/chains/mode.svg',
-  },
-  {
-    name: 'Biconomy',
-    iconFileName: '/au-page/icons/biconomy.png',
-  },
-  {
-    name: 'Newcoin',
-    iconFileName: '/au-page/icons/newcoin.png',
-  },
-  {
-    name: 'Kaito',
-    iconFileName: '/au-page/icons/kaito.png',
-  },
-  {
-    name: 'Coophive',
-    iconFileName: '/au-page/icons/coophive.png',
-  },
-  {
-    name: 'Voiceflow',
-    iconFileName: '/au-page/icons/voiceflow.png',
-  },
-  {
-    name: 'Story',
-    iconFileName: '/au-page/icons/story.png',
-  },
-];
+  for (let size of sizeArr) {
+    result.push(array.slice(index, index + size));
+    index += size;
+  }
+
+  if (index < array.length) result.push(array.slice(index));
+  return result;
+};
+
+const mediumRows = chunkArrays(AuSponsors[0].mediumIcons, 6);
+const smallRows = chunkArrays(AuSponsors[0].smallIcons, [6, 5, 4]);
 
 const Sponsors = () => (
-  <div className="md:mx-auto max-w-[1000px]">
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 md:gap-x-24 gap-y-4 mb-12 lg:mb-20">
-      {largeIcons.map((icon, index) => {
-        const { id, name, iconFileName } = icon;
+  <div className="md:mx-auto max-w-[1000px] px-4 md:px-0">
+    <div className="grid grid-cols-2 sm:grid-cols-3 max-md:gap-x-4 max-md:gap-y-8 gap-y-12 mb-12 lg:mb-20">
+      {AuSponsors[0].largeIcons.map((icon, index) => {
+        const { name, iconFileName, width, height } = icon;
         return (
           <div
-            key={id}
-            className={`grayscale flex max-w-[200px] justify-center items-center ${
-              (index + 1) % 3 === 2 ? 'justify-self-center' : ''
-            } ${(index + 1) % 3 === 0 ? 'justify-self-end' : ''}`}
+            key={name}
+            className={`grayscale flex items-center max-md:justify-center ${
+              (index + 1) % 3 === 2 ? 'md:justify-self-center' : ''
+            } ${(index + 1) % 3 === 0 ? 'md:justify-self-end' : ''}`}
           >
             <Image
-              src={`/images${iconFileName}`}
+              src={`/images/${iconFileName}`}
               alt={name}
-              width={200}
-              height={45}
-              className="object-contain"
+              width={width}
+              height={height}
             />
           </div>
         );
       })}
     </div>
 
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 md:gap-x-6 mb-12 lg:mb-20">
-      {mediumIcons.map((icon) => {
-        const { id, name, iconFileName } = icon;
-        return (
-          <div key={id} className="grayscale flex mx-auto ">
-            <Image
-              src={`/images${iconFileName}`}
-              alt={name}
-              width={150}
-              height={25}
-              className="object-contain"
-            />
-          </div>
-        );
-      })}
+    <div className="space-y-8 mb-12 lg:mb-20">
+      {mediumRows.map((row, rowIndex) => (
+        <div
+          key={rowIndex}
+          className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:items-center gap-4 md:gap-0"
+        >
+          {row.map((icon) => {
+            const { name, iconFileName, width, height } = icon;
+            return (
+              <div
+                key={name}
+                className="grayscale flex items-center justify-center md:mb-4"
+              >
+                <Image
+                  src={`/images/${iconFileName}`}
+                  alt={name}
+                  width={width}
+                  height={height}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
 
-    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 md:gap-x-8 mb-12 lg:mb-20">
-      {smallIcons.map((icon) => {
-        const { name, iconFileName } = icon;
-        return (
-          <div key={name} className="grayscale flex mx-auto">
-            <Image
-              src={`/images${iconFileName}`}
-              alt={name}
-              width={100}
-              height={20}
-              className="object-contain max-h-[50px]"
-            />
-          </div>
-        );
-      })}
+    <div className="space-y-8 mb-12 lg:mb-20">
+      {smallRows.map((row, rowIndex) => (
+        <div
+          key={rowIndex}
+          className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between gap-4 md:gap-x-6 md:gap-y-4"
+        >
+          {row.map((icon) => {
+            const { name, iconFileName, width, height } = icon;
+            return (
+              <div
+                key={name}
+                className="grayscale flex items-center justify-center"
+              >
+                <Image
+                  src={`/images/${iconFileName}`}
+                  alt={name}
+                  width={width}
+                  height={height}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   </div>
 );
@@ -197,7 +104,7 @@ const Sponsors = () => (
 export const Content = () => (
   <SectionWrapper>
     <Sponsors />
-    <div className="max-w-[1000px] mx-auto">
+    <div className="max-w-[1000px] mx-auto px-4 md:px-0">
       <Image
         src={`/images/au-page/au-image.png`}
         alt="Agents Unleashed"
