@@ -133,7 +133,7 @@ Download Pearl 👉 https://olas.network/pearl
 const StepLabel = ({ label }) => {
   return (
     <div
-      className="mb-3 inline-flex items-center rounded px-2 py-0.5 text-sm font-medium text-slate-600"
+      className="mb-3 inline-flex items-center rounded px-2 py-0.5 text-sm font-medium text-slate-600 w-fit"
       style={{ backgroundColor: '#F2F4F9' }}
     >
       {label}
@@ -215,30 +215,32 @@ const CommunityCardClient = () => {
           </div>
 
           <div className="relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px]">
-            <Card className="p-4 border-none shadow-none">
+            <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
-              <div className="mt-4 md:mt-6">
+              <div className="mt-auto pt-4 md:pt-6">
                 <Button onClick={shuffle} variant="outline">
                   <Shuffle className="mr-2 h-4 w-4" />
                   Shuffle Card
                 </Button>
               </div>
             </Card>
-            <Card className="p-4 border-none shadow-none">
-              <StepLabel label="Step 2 — Optional" />
-              <div className="text-base">Download the card.</div>
-              <div className="mt-6">
+            <Card className="p-4 border-none shadow-none h-full flex flex-col">
+              <StepLabel label="Step 2" />
+              <div className="text-base">Download your card.</div>
+              <div className="mt-auto pt-6">
                 <Button onClick={download} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
                   Download Card
                 </Button>
               </div>
             </Card>
-            <Card className="p-4 border-none shadow-none">
+            <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 3" />
-              <div className="text-base">Share your excitement on X!</div>
-              <div className="mt-6">
+              <div className="text-base w-1/2 md:w-full">
+                Share on X and attach your downloaded card.
+              </div>
+              <div className="mt-auto pt-6">
                 <Button asChild>
                   <Link
                     href={shareUrl}
