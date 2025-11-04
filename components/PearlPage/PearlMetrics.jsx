@@ -25,9 +25,11 @@ export const PearlMetrics = () => {
   );
 
   return (
-    <SectionWrapper id="daas" customClasses="mt-16 max-sm:mx-4">
-      <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center mb-12`}>
-        Join Hundreds Already Owning AI Agents
+    <SectionWrapper id="daas" customClasses="mt-20 lg:mt-[200px] max-sm:mx-4">
+      <h2
+        className={`${SUB_HEADER_CLASS} font-semibold text-center max-w-[632px] mx-auto mb-14`}
+      >
+        Join Hundreds of People Like You Already Owning AI Agents!
       </h2>
       <Card className="p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item) => {
