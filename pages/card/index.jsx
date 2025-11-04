@@ -18,7 +18,7 @@ import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 
 const TOAST_MESSAGES = {
-  SUCCESS: 'Image copied to clipboard!',
+  SUCCESS: 'Card copied to clipboard!',
   ERROR: 'Copying to the clipboard failed, please download the card.',
 };
 
