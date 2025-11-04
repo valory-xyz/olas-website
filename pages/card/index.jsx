@@ -269,7 +269,6 @@ const CommunityCardClient = () => {
         return;
       }
 
-      // Load the image
       const img = await new Promise((resolve, reject) => {
         const image = new window.Image();
         image.crossOrigin = 'anonymous';
@@ -278,7 +277,6 @@ const CommunityCardClient = () => {
         image.src = currentImage;
       });
 
-      // Draw to canvas and convert to PNG (more compatible than WEBP)
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || img.width;
       canvas.height = img.naturalHeight || img.height;
@@ -293,7 +291,6 @@ const CommunityCardClient = () => {
 
       ctx.drawImage(img, 0, 0);
 
-      // Convert to PNG blob
       const pngBlob = await new Promise((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
@@ -308,7 +305,6 @@ const CommunityCardClient = () => {
         );
       });
 
-      // Copy PNG to clipboard (PNG is more widely supported)
       const item = new window.ClipboardItem({ 'image/png': pngBlob });
       await navigator.clipboard.write([item]);
       setToast({
