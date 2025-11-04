@@ -411,7 +411,7 @@ export default function CommunityCardPage() {
               Olas Community Celebrates{' '}
               <div className="w-[48px] h-[48px] mx-4 bg-white rounded-xl border flex items-center justify-center">
                 <Image
-                  src="/images/pearl-page/operate-logo.svg"
+                  src="/images/community-card/operate-logo.svg"
                   width={36}
                   height={36}
                   alt="Pearl Logo"
