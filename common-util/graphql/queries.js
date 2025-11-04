@@ -122,27 +122,59 @@ export const stakingGlobalsQuery = gql`
   }
 `;
 
-export const dailyBabydegenPopulationMetricsLatest7Query = gql`
-  {
-    dailyPopulationMetrics(first: 7, orderBy: timestamp, orderDirection: desc) {
-      timestamp
-      totalFundedAUM
-      medianUnrealisedPnL
-      averageAgentDaysActive
-      sma7dProjectedUnrealisedPnL
-      sma7dEthAdjustedProjectedUnrealisedPnL
-    }
-  }
-`;
+export const dailyBabydegenPopulationMetricsQuery = ({
+  first = 10,
+  timestampLte,
+} = {}) => {
+  const whereClause =
+    typeof timestampLte === 'number'
+      ? `where: { timestamp_lte: ${timestampLte} }`
+      : '';
 
-export const dailyStakingGlobalsSnapshotsQuery = gql`
-  {
-    dailyStakingGlobals(first: 8, orderBy: timestamp, orderDirection: desc) {
-      timestamp
-      totalRewards
+  return gql`
+    {
+      dailyPopulationMetrics(
+        first: ${first}
+        orderBy: timestamp
+        orderDirection: desc
+        ${whereClause}
+      ) {
+        timestamp
+        totalFundedAUM
+        medianUnrealisedPnL
+        averageAgentDaysActive
+        sma7dProjectedUnrealisedPnL
+        sma7dEthAdjustedProjectedUnrealisedPnL
+        medianAUM
+      }
     }
-  }
-`;
+  `;
+};
+
+export const dailyStakingGlobalsSnapshotsQuery = ({
+  first = 10,
+  timestampLte,
+} = {}) => {
+  const whereClause =
+    typeof timestampLte === 'number'
+      ? `where: { timestamp_lte: ${timestampLte} }`
+      : '';
+
+  return gql`
+    {
+      cumulativeDailyStakingGlobals(
+        first: ${first}
+        orderBy: timestamp
+        orderDirection: desc
+        ${whereClause}
+      ) {
+        timestamp
+        medianCumulativeRewards
+        numServices
+      }
+    }
+  `;
+};
 
 export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
   query ClosedMarketsBets {
@@ -183,6 +215,7 @@ export const dailyBabydegenPerformancesQuery = gql`
       orderDirection: desc
     ) {
       id
+      dayTimestamp
       activeMultisigCount
     }
   }
@@ -235,6 +268,57 @@ export const dailyPredictAgentsPerformancesQuery = gql`
     ) {
       dayTimestamp
       activeMultisigCount
+    }
+  }
+`;
+
+export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
+  query DailyPredictAgentPerformancesWithMultisigs(
+    $agentId_in: [Int!]!
+    $dayTimestamp_gte: Int!
+    $dayTimestamp_lte: Int!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId_in: $agentId_in }
+          { dayTimestamp_gte: $dayTimestamp_gte }
+          { dayTimestamp_lte: $dayTimestamp_lte }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: asc
+      first: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+      multisigs(first: 1000) {
+        multisig {
+          id
+          serviceId
+        }
+      }
+    }
+  }
+`;
+
+export const checkpointsQuery = gql`
+  query Checkpoints(
+    $contractAddress_in: [String!]!
+    $blockTimestamp_lte: Int!
+  ) {
+    checkpoints(
+      where: {
+        contractAddress_in: $contractAddress_in
+        blockTimestamp_lte: $blockTimestamp_lte
+      }
+      orderBy: blockTimestamp
+      orderDirection: desc
+      first: 1000
+    ) {
+      contractAddress
+      serviceIds
+      blockTimestamp
     }
   }
 `;

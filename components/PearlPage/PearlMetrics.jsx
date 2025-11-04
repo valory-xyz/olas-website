@@ -1,18 +1,14 @@
-import { get7DaysAvgActivity } from 'common-util/api/dune';
+import { getPearlDAAs } from 'common-util/api/index';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { DUNE_DAAS_QUERY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics } from 'components/MetricsCard';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { Link } from 'components/ui/typography';
 import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
 export const PearlMetrics = () => {
-  const { data: metrics } = usePersistentSWR('pearlActivityMetrics', () =>
-    fetchMetrics([get7DaysAvgActivity]),
-  );
+  const { data: pearlDAAs } = usePersistentSWR('pearlDAAs', getPearlDAAs);
 
   const data = useMemo(
     () => [
@@ -20,12 +16,12 @@ export const PearlMetrics = () => {
         id: 'DAA',
         imageSrc: 'DAA.png',
         labelText: 'Daily Active Agents (DAAs)',
-        subText: '7-day average',
-        value: metrics?.toLocaleString(),
-        source: DUNE_DAAS_QUERY_URL,
+        subText: 'Agents running daily, averaged over 7 days',
+        value: pearlDAAs?.dailyActiveAgents?.toLocaleString(),
+        source: '/data#pearl-daily-active-agents',
       },
     ],
-    [metrics],
+    [pearlDAAs],
   );
 
   return (
@@ -40,10 +36,9 @@ export const PearlMetrics = () => {
           const getValue = () => {
             if (!item.value) return '--';
             return (
-              <ExternalLink href={item.source} hideArrow>
+              <Link href={item.source} hideArrow>
                 {item.value}
-                <span className="text-2xl">↗</span>
-              </ExternalLink>
+              </Link>
             );
           };
 

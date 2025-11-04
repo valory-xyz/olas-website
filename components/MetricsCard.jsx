@@ -30,13 +30,16 @@ export const MetricsCard = ({ metrics }) => {
             className={`mx-auto p-3 pb-5 md:p-8 md:pb-10 gap-6 flex flex-col items-center ${borderClassName}`}
           >
             <div className="flex items-center">
-              <Image
-                alt={metric.role}
-                src={`/images/${metrics.role}-page/${metric.imageSrc}`}
-                width={metric.imageWidth ?? 35}
-                height={35}
-                className="mr-4"
-              />
+              {metric.imageSrc && (
+                <Image
+                  alt={metric.role}
+                  src={`/images/${metrics.role}-page/${metric.imageSrc}`}
+                  width={metric.imageWidth ?? 35}
+                  height={35}
+                  className="mr-4"
+                />
+              )}
+              {metric.image && <span className="mr-4">{metric.image}</span>}
               {metric.labelText}
             </div>
             {renderMetricValue(metric)}

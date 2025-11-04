@@ -11,16 +11,17 @@ import { usePersistentSWR } from 'hooks';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 
-const MODIUS_HUGGINGFACE_URL =
-  'https://huggingface.co/spaces/valory/Modius-Agent-Performance';
 const fetchMetrics = async () => {
   try {
     const babydegenMetrics = await getBabydegenMetrics();
 
     return {
       modius: {
+        latestUsdcApr: babydegenMetrics?.modius?.latestUsdcApr ?? null,
         latestAvgApr: babydegenMetrics?.modius?.latestAvgApr ?? null,
         latestEthApr: babydegenMetrics?.modius?.latestEthApr ?? null,
+        stakingAprCalculated:
+          babydegenMetrics?.modius?.stakingAprCalculated ?? null,
         maxOlasApr: babydegenMetrics?.modius?.maxOlasApr ?? null,
       },
       optimus: {
@@ -139,7 +140,6 @@ export const BabydegenMetrics = () => {
           title="Modius Agent Economy"
           image="/images/babydegen-econ-page/modius.png"
           metrics={metrics?.modius}
-          sourceUrl={MODIUS_HUGGINGFACE_URL}
         />
         <BabydegenMetricsBubble
           title="Optimus Agent Economy"

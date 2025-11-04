@@ -126,6 +126,10 @@ export const BABYDEGEN_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
     requestConfig,
   ),
+  mode: new GraphQLClient(
+    process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL,
+    requestConfig,
+  ),
 };
 
 export const MECH_FEES_GRAPH_CLIENTS = {

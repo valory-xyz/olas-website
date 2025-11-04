@@ -134,6 +134,21 @@ const faqList = [
         ),
       },
       {
+        title: `Why does my Mac show a warning that "Pearl is an app downloaded from the Internet" and ask if I'm sure I want to open it?`,
+        desc: (
+          <>
+            This is a standard security measure implemented by macOS for{' '}
+            <strong>
+              all applications downloaded outside of the official Apple App
+              Store.
+            </strong>{' '}
+            It does not mean Pearl is unsafe; it simply means Apple has not
+            formally verified the software through its own distribution
+            channels.
+          </>
+        ),
+      },
+      {
         title: "How can I optimize my AI agent's performance?",
         desc: (
           <>
