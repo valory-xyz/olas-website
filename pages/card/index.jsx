@@ -324,17 +324,17 @@ const CommunityCardClient = () => {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 z-0" />
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center">
-          <div className="mt-6 md:mt-8 w-full max-w-[920px]">
+          <div className="mt-6 md:mt-8 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px] 2xl:max-w-[920px]">
             <div className="rounded-xl overflow-hidden shadow-xl ring-1 ring-black/5 bg-white relative z-10">
               <ImageCarousel
                 images={IMAGE_PATHS}
                 index={carouselIndex}
-                sizes="(max-width: 1024px) 100vw, 920px"
+                sizes="(max-width: 1024px) 100vw, (max-width: 1480px) 720px, 920px"
               />
             </div>
           </div>
 
-          <div className="relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px]">
+          <div className="relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px]">
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
