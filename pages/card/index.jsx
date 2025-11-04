@@ -1,8 +1,16 @@
-import { Download, Repeat2, Shuffle } from 'lucide-react';
+import {
+  CheckCircle2,
+  Download,
+  LucideCopy,
+  Repeat2,
+  Shuffle,
+  X,
+  XCircle,
+} from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image.js';
 import Link from 'next/link';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Footer from 'components/Layout/Footer';
 import Header from 'components/Layout/Header';
@@ -141,12 +149,46 @@ const StepLabel = ({ label }) => {
   );
 };
 
+const Toast = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const isSuccess = type === 'success';
+  const bgColor = isSuccess ? 'bg-green-50' : 'bg-red-50';
+  const borderColor = isSuccess ? 'border-green-300' : 'border-red-300';
+  const textColor = isSuccess ? 'text-green-800' : 'text-red-800';
+  const Icon = isSuccess ? CheckCircle2 : XCircle;
+
+  return (
+    <div
+      className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 ${bgColor} ${borderColor} ${textColor} border rounded-lg shadow-lg px-4 py-3 flex items-center gap-2 min-w-[280px] max-w-[90vw] animate-in slide-in-from-bottom-5`}
+      role="alert"
+    >
+      <Icon className="h-5 w-5 flex-shrink-0" />
+      <span className="text-sm font-medium flex-1">{message}</span>
+      <button
+        onClick={onClose}
+        className="ml-2 text-gray-500 hover:text-gray-700 flex-shrink-0"
+        aria-label="Close"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  );
+};
+
 const CommunityCardClient = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [order, setOrder] = useState(() =>
     generateShuffledIndices(IMAGE_PATHS.length, 0),
   );
   const [orderPos, setOrderPos] = useState(0);
+  const [toast, setToast] = useState(null);
 
   const currentImage = useMemo(
     () => IMAGE_PATHS[carouselIndex],
@@ -181,10 +223,11 @@ const CommunityCardClient = () => {
     document.body.removeChild(link);
   }, [currentImage]);
 
-  const shareText = useMemo(() => {
+  const [shareText, setShareText] = useState('');
+
+  useEffect(() => {
     const index = Math.floor(Math.random() * TWEET_TEXT.length);
-    const baseText = TWEET_TEXT[index];
-    return baseText;
+    setShareText(TWEET_TEXT[index] ?? '');
   }, []);
 
   const shareUrl = useMemo(() => {
@@ -199,8 +242,85 @@ const CommunityCardClient = () => {
     return intent.toString();
   }, [shareText]);
 
+  const copyImageToClipboard = useCallback(async () => {
+    try {
+      if (
+        typeof navigator === 'undefined' ||
+        !navigator.clipboard ||
+        typeof window === 'undefined' ||
+        !('ClipboardItem' in window)
+      ) {
+        setToast({
+          message: 'Copying to the clipboard failed, please download the card.',
+          type: 'error',
+        });
+        return;
+      }
+
+      // Load the image
+      const img = await new Promise((resolve, reject) => {
+        const image = new window.Image();
+        image.crossOrigin = 'anonymous';
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = currentImage;
+      });
+
+      // Draw to canvas and convert to PNG (more compatible than WEBP)
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        setToast({
+          message: 'Copying to the clipboard failed, please download the card.',
+          type: 'error',
+        });
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0);
+
+      // Convert to PNG blob
+      const pngBlob = await new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Failed to convert canvas to blob'));
+            }
+          },
+          'image/png',
+          1.0,
+        );
+      });
+
+      // Copy PNG to clipboard (PNG is more widely supported)
+      const item = new window.ClipboardItem({ 'image/png': pngBlob });
+      await navigator.clipboard.write([item]);
+      setToast({
+        message: 'Image copied to clipboard!',
+        type: 'success',
+      });
+    } catch (e) {
+      console.error('Failed to copy image to clipboard:', e);
+      setToast({
+        message: 'Copying to the clipboard failed, please download the card.',
+        type: 'error',
+      });
+    }
+  }, [currentImage]);
+
   return (
     <section className="relative isolate px-4 lg:px-6 top-0 top-[-120px] md:top-[-200px]">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 z-0" />
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center">
@@ -227,18 +347,26 @@ const CommunityCardClient = () => {
             </Card>
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 2" />
-              <div className="text-base">Download your card.</div>
+              <div className="text-base">
+                Copy to clipboard or download your card.
+              </div>
               <div className="mt-auto pt-6">
-                <Button onClick={download} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Card
-                </Button>
+                <div className="flex flex-row gap-2">
+                  <Button onClick={copyImageToClipboard} variant="outline">
+                    <LucideCopy className="mr-2 h-4 w-4" />
+                    Copy
+                  </Button>
+                  <Button onClick={download} variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </div>
               </div>
             </Card>
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 3" />
               <div className="text-base w-1/2 md:w-full">
-                Share on X and attach your downloaded card.
+                Share on X and attach your card.
               </div>
               <div className="mt-auto pt-6">
                 <Button asChild>
