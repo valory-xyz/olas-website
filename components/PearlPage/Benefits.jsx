@@ -70,7 +70,7 @@ export const Benefits = () => (
               alt={benefit.label}
               width={benefit.imgWidth ?? 424}
               height={benefit.imgHeight ?? 350}
-              className="border-b-1.5"
+              className="border-b-1.5 max-md:object-fit max-md:w-full"
             />
             <div className="benefit-card-bg p-6 pt-4 h-full">
               <p className="text-lg font-bold mb-[6px]">{benefit.label}</p>
