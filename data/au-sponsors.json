@@ -1,0 +1,227 @@
+[
+    {
+      "largeIcons": [
+        {
+          "name": "Olas",
+          "iconFileName": "olas-logo.svg",
+          "width": 127,
+          "height": 32
+        },
+        {
+          "name": "Recall",
+          "iconFileName": "au-page/icons/recall.svg",
+          "width": 122,
+          "height": 30
+        },
+        {
+          "name": "Almanak",
+          "iconFileName": "au-page/icons/almanak.png",
+          "width": 180,
+          "height": 26
+        },
+        {
+          "name": "Flock",
+          "iconFileName": "friends/flock.svg",
+          "width": 144,
+          "height": 37
+        },
+        {
+          "name": "Kryptoplanet",
+          "iconFileName": "au-page/icons/kryptoplanet.png",
+          "width": 215,
+          "height": 32
+        },
+        {
+          "name": "Polywrap",
+          "iconFileName": "au-page/icons/polywrap.png",
+          "width": 202,
+          "height": 45
+        },
+        {
+          "name": "Gaia",
+          "iconFileName": "au-page/icons/gaia.svg",
+          "width": 111,
+          "height": 44
+        },
+        {
+          "name": "Near",
+          "iconFileName": "au-page/icons/near.png",
+          "width": 153,
+          "height": 39
+        },
+        {
+          "name": "Giza",
+          "iconFileName": "au-page/icons/giza.svg",
+          "width": 137,
+          "height": 48
+        }
+      ],
+      "mediumIcons": [
+        {
+          "name": "Creator",
+          "iconFileName": "au-page/icons/creator.png",
+          "width": 134,
+          "height": 27
+        },
+        {
+          "name": "Myshell",
+          "iconFileName": "au-page/icons/myshell.png",
+          "width": 113,
+          "height": 25
+        },
+        {
+          "name": "Capx",
+          "iconFileName": "au-page/icons/capx.svg",
+          "width": 74,
+          "height": 28
+        },
+        {
+          "name": "Agentcoin",
+          "iconFileName": "au-page/icons/agentcoin.svg",
+          "width": 117,
+          "height": 30
+        },
+        {
+          "name": "Layer",
+          "iconFileName": "au-page/icons/layer.svg",
+          "width": 100,
+          "height": 22
+        },
+        {
+          "name": "Phala",
+          "iconFileName": "au-page/icons/phala.svg",
+          "width": 90,
+          "height": 22
+        },
+        {
+          "name": "Vana",
+          "iconFileName": "au-page/icons/vana.svg",
+          "width": 66,
+          "height": 17
+        },
+        {
+          "name": "Gensyn",
+          "iconFileName": "au-page/icons/gensyn.svg",
+          "width": 88,
+          "height": 32
+        },
+        {
+          "name": "Spectral",
+          "iconFileName": "au-page/icons/spectral.png",
+          "width": 136,
+          "height": 25
+        },
+        {
+          "name": "Edge Network",
+          "iconFileName": "au-page/icons/edge-network.png",
+          "width": 149,
+          "height": 35
+        },
+        {
+          "name": "Agentops",
+          "iconFileName": "au-page/icons/agentops.png",
+          "width": 136,
+          "height": 28
+        },
+        {
+          "name": "Sentient",
+          "iconFileName": "au-page/icons/sentient.png",
+          "width": 107,
+          "height": 20
+        }
+      ],
+      "smallIcons": [
+        {
+          "name": "Nevermined",
+          "iconFileName": "builders/nevermined.png",
+          "width": 83,
+          "height": 13
+        },
+        {
+          "name": "Signature Ventures",
+          "iconFileName": "au-page/icons/signature-ventures.png",
+          "width": 75,
+          "height": 23
+        },
+        {
+          "name": "Keyko",
+          "iconFileName": "au-page/icons/keyko.png",
+          "width": 25,
+          "height": 36
+        },
+        {
+          "name": "The Indexing Company",
+          "iconFileName": "au-page/icons/indexing-company.png",
+          "width": 53,
+          "height": 22
+        },
+        {
+          "name": "Naptha AI",
+          "iconFileName": "builders/naptha-ai.png",
+          "width": 87,
+          "height": 22
+        },
+        {
+          "name": "Wayfinder",
+          "iconFileName": "au-page/icons/wayfinder.png",
+          "width": 87,
+          "height": 15
+        },
+        {
+          "name": "Biconomy",
+          "iconFileName": "au-page/icons/biconomy.png",
+          "width": 63,
+          "height": 16
+        },
+        {
+          "name": "Newcoin",
+          "iconFileName": "au-page/icons/newcoin.png",
+          "width": 72,
+          "height": 15
+        },
+        {
+          "name": "Kaito",
+          "iconFileName": "au-page/icons/kaito.png",
+          "width": 47,
+          "height": 21
+        },
+        {
+          "name": "Coophive",
+          "iconFileName": "au-page/icons/coophive.png",
+          "width": 101,
+          "height": 22
+        },
+        {
+          "name": "Voiceflow",
+          "iconFileName": "au-page/icons/voiceflow.png",
+          "width": 89,
+          "height": 17
+        },
+        {
+          "name": "Mode",
+          "iconFileName": "chains/mode.svg",
+          "width": 56,
+          "height": 14
+        },
+        {
+          "name": "Story",
+          "iconFileName": "au-page/icons/story.png",
+          "width": 57,
+          "height": 13
+        },
+        {
+          "name": "Supafund",
+          "iconFileName": "au-page/icons/supafund.png",
+          "width": 77,
+          "height": 18
+        },
+        {
+          "name": "Bond",
+          "iconFileName": "au-page/icons/bond.png",
+          "width": 113,
+          "height": 13
+        }
+      ]
+    }
+  ]
+  
