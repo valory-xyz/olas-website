@@ -8,7 +8,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import Head from 'next/head';
-import Image from 'next/image.js';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -16,6 +16,18 @@ import Footer from 'components/Layout/Footer';
 import Header from 'components/Layout/Header';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
+
+const TOAST_MESSAGES = {
+  SUCCESS: 'Card copied to clipboard!',
+  ERROR: 'Copying to the clipboard failed, please download the card.',
+};
+
+const IMAGE_SIZES =
+  '(max-width: 1024px) 100vw, (max-width: 1480px) 720px, 920px';
+const IMAGE_CONTAINER_CLASSES =
+  'mt-6 md:mt-8 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px] 2xl:max-w-[920px]';
+const STEPS_CONTAINER_CLASSES =
+  'relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px]';
 
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -88,36 +100,21 @@ function generateShuffledIndices(length, excludeFirstIndex) {
   return indices;
 }
 
-const IMAGE_TO_TWITTER_URL = {
-  '/images/community-card/David vs Goliath - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/KThCetoKuM',
-  '/images/community-card/David vs Goliath - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/n9baRwwC1d',
-  '/images/community-card/Gladiator - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/uZZgeeOLA7',
-  '/images/community-card/Gladiator - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/y3oynJjLaB',
-  '/images/community-card/Gladiator - Pearl v1_ the Dawn of AI Ownership.webp':
-    'pic.twitter.com/7hDSabYoXY',
-  '/images/community-card/Renaissance - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/GfOqd5Fyck',
-  '/images/community-card/Renaissance - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/43tUCBOoED',
-  '/images/community-card/Robin Hood - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/yADMBf1Ew3',
-  '/images/community-card/Robin Hood - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/4sNauCqOKw',
-  '/images/community-card/Seven Sleep - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/YZmhPpfjmc',
-  '/images/community-card/Seven Sleep - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/NHQXfgKrLI',
-  '/images/community-card/Superman - I Own My AI with Pearl v1.webp':
-    'pic.twitter.com/hOp8SSZgjS',
-  '/images/community-card/Superman - Own Your AI with Pearl v1.webp':
-    'pic.twitter.com/CGL8JG1EXu',
-};
-
-const IMAGE_PATHS = Object.keys(IMAGE_TO_TWITTER_URL);
+const IMAGE_PATHS = [
+  '/images/community-card/David vs Goliath - I Own My AI with Pearl v1.webp',
+  '/images/community-card/David vs Goliath - Own Your AI with Pearl v1.webp',
+  '/images/community-card/Gladiator - I Own My AI with Pearl v1.webp',
+  '/images/community-card/Gladiator - Own Your AI with Pearl v1.webp',
+  '/images/community-card/Gladiator - Pearl v1_ the Dawn of AI Ownership.webp',
+  '/images/community-card/Renaissance - I Own My AI with Pearl v1.webp',
+  '/images/community-card/Renaissance - Own Your AI with Pearl v1.webp',
+  '/images/community-card/Robin Hood - I Own My AI with Pearl v1.webp',
+  '/images/community-card/Robin Hood - Own Your AI with Pearl v1.webp',
+  '/images/community-card/Seven Sleep - I Own My AI with Pearl v1.webp',
+  '/images/community-card/Seven Sleep - Own Your AI with Pearl v1.webp',
+  '/images/community-card/Superman - I Own My AI with Pearl v1.webp',
+  '/images/community-card/Superman - Own Your AI with Pearl v1.webp',
+];
 
 const TWEET_TEXT = [
   `Big Tech had its turn owning your AI. Now it's yours.
@@ -189,6 +186,7 @@ const CommunityCardClient = () => {
   );
   const [orderPos, setOrderPos] = useState(0);
   const [toast, setToast] = useState(null);
+  const [canCopy, setCanCopy] = useState(false);
 
   const currentImage = useMemo(
     () => IMAGE_PATHS[carouselIndex],
@@ -242,6 +240,20 @@ const CommunityCardClient = () => {
     return intent.toString();
   }, [shareText]);
 
+  useEffect(() => {
+    try {
+      const supported =
+        typeof navigator !== 'undefined' &&
+        !!navigator.clipboard &&
+        typeof window !== 'undefined' &&
+        'ClipboardItem' in window;
+      setCanCopy(Boolean(supported));
+    } catch (error) {
+      console.error(error);
+      setCanCopy(false);
+    }
+  }, []);
+
   const copyImageToClipboard = useCallback(async () => {
     try {
       if (
@@ -251,13 +263,12 @@ const CommunityCardClient = () => {
         !('ClipboardItem' in window)
       ) {
         setToast({
-          message: 'Copying to the clipboard failed, please download the card.',
+          message: TOAST_MESSAGES.ERROR,
           type: 'error',
         });
         return;
       }
 
-      // Load the image
       const img = await new Promise((resolve, reject) => {
         const image = new window.Image();
         image.crossOrigin = 'anonymous';
@@ -266,14 +277,13 @@ const CommunityCardClient = () => {
         image.src = currentImage;
       });
 
-      // Draw to canvas and convert to PNG (more compatible than WEBP)
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || img.width;
       canvas.height = img.naturalHeight || img.height;
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         setToast({
-          message: 'Copying to the clipboard failed, please download the card.',
+          message: TOAST_MESSAGES.ERROR,
           type: 'error',
         });
         return;
@@ -281,7 +291,6 @@ const CommunityCardClient = () => {
 
       ctx.drawImage(img, 0, 0);
 
-      // Convert to PNG blob
       const pngBlob = await new Promise((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
@@ -296,17 +305,16 @@ const CommunityCardClient = () => {
         );
       });
 
-      // Copy PNG to clipboard (PNG is more widely supported)
       const item = new window.ClipboardItem({ 'image/png': pngBlob });
       await navigator.clipboard.write([item]);
       setToast({
-        message: 'Image copied to clipboard!',
+        message: TOAST_MESSAGES.SUCCESS,
         type: 'success',
       });
     } catch (e) {
       console.error('Failed to copy image to clipboard:', e);
       setToast({
-        message: 'Copying to the clipboard failed, please download the card.',
+        message: TOAST_MESSAGES.ERROR,
         type: 'error',
       });
     }
@@ -324,17 +332,17 @@ const CommunityCardClient = () => {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 z-0" />
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center">
-          <div className="mt-6 md:mt-8 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px] 2xl:max-w-[920px]">
+          <div className={IMAGE_CONTAINER_CLASSES}>
             <div className="rounded-xl overflow-hidden shadow-xl ring-1 ring-black/5 bg-white relative z-10">
               <ImageCarousel
                 images={IMAGE_PATHS}
                 index={carouselIndex}
-                sizes="(max-width: 1024px) 100vw, (max-width: 1480px) 720px, 920px"
+                sizes={IMAGE_SIZES}
               />
             </div>
           </div>
 
-          <div className="relative z-10 mt-2 md:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px]">
+          <div className={STEPS_CONTAINER_CLASSES}>
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
@@ -348,14 +356,18 @@ const CommunityCardClient = () => {
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 2" />
               <div className="text-base">
-                Copy to clipboard or download your card.
+                {canCopy
+                  ? 'Copy to clipboard or download your card.'
+                  : 'Download your card.'}
               </div>
               <div className="mt-auto pt-6">
                 <div className="flex flex-row gap-2">
-                  <Button onClick={copyImageToClipboard} variant="outline">
-                    <LucideCopy className="mr-2 h-4 w-4" />
-                    Copy
-                  </Button>
+                  {canCopy && (
+                    <Button onClick={copyImageToClipboard} variant="outline">
+                      <LucideCopy className="mr-2 h-4 w-4" />
+                      Copy
+                    </Button>
+                  )}
                   <Button onClick={download} variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Download
