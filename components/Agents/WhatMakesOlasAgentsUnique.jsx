@@ -32,7 +32,7 @@ export const WhatMakesOlasAgentsUnique = () => (
         <div className="flex flex-col md:flex-row gap-4 lg:gap-14 md:pt-14 relative z-10">
           <div className="md:hidden relative my-10 z-10">
             <Image
-              src="/images/agents/mobile-circles.png"
+              src="/images/agents/mobile-circles-bg.png"
               alt="bg"
               width={385}
               height={385}

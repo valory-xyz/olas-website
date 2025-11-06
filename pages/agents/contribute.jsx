@@ -9,7 +9,6 @@ import {
   TEXT_MEDIUM_LIGHT_CLASS,
   TEXT_SMALL_CLASS,
 } from 'common-util/classes';
-import { STACK_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -155,60 +154,60 @@ const HowItWorks = () => (
   </SectionWrapper>
 );
 
-const GetStarted = () => (
-  <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
-    id="get-started"
-  >
-    <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
-      <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">
-        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>
+// const GetStarted = () => (
+//   <SectionWrapper
+//     customClasses="lg:p-24 px-4 py-12 border-y border-t-0"
+//     id="get-started"
+//   >
+//     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
+//       <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">
+//         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>
 
-        <div className="flex flex-col gap-5">
-          <p className={TEXT_CLASS}>
-            You can use this powerful autonomous service to track and enhance
-            the contributions of your community members in your own ecosystem.
-            By leveraging the Coordination Kit, you can deploy a similar system
-            to measure impact of community contributions in your ecosystem.
-          </p>
-          <p className={TEXT_CLASS}>
-            The Coordination Kit includes all the necessary code you need to set
-            up this autonomous service within your ecosystem.
-          </p>
-          <p className={TEXT_CLASS}>
-            Simply fork the existing code, adjust it to align with your
-            parameters, and integrate it.
-          </p>
-        </div>
-      </div>
+//         <div className="flex flex-col gap-5">
+//           <p className={TEXT_CLASS}>
+//             You can use this powerful autonomous service to track and enhance
+//             the contributions of your community members in your own ecosystem.
+//             By leveraging the Coordination Kit, you can deploy a similar system
+//             to measure impact of community contributions in your ecosystem.
+//           </p>
+//           <p className={TEXT_CLASS}>
+//             The Coordination Kit includes all the necessary code you need to set
+//             up this autonomous service within your ecosystem.
+//           </p>
+//           <p className={TEXT_CLASS}>
+//             Simply fork the existing code, adjust it to align with your
+//             parameters, and integrate it.
+//           </p>
+//         </div>
+//       </div>
 
-      <div className="flex items-center justify-center lg:col-span-6">
-        <div className="relative h-[294px] w-[316px] ">
-          <Image
-            alt="OLAS Utility"
-            src="/images/contribute-page/cta-background.png"
-            width={316}
-            height={294}
-          />
-          <Button
-            asChild
-            variant="default"
-            size="lg"
-            className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
-          >
-            <a
-              href={`${STACK_URL}/product/coordinationkit/`}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Get the CoordinationKit
-            </a>
-          </Button>
-        </div>
-      </div>
-    </div>
-  </SectionWrapper>
-);
+//       <div className="flex items-center justify-center lg:col-span-6">
+//         <div className="relative h-[294px] w-[316px] ">
+//           <Image
+//             alt="OLAS Utility"
+//             src="/images/contribute-page/cta-background.png"
+//             width={316}
+//             height={294}
+//           />
+//           <Button
+//             asChild
+//             variant="default"
+//             size="lg"
+//             className="absolute w-[200px] top-[132px] left-1/2 -translate-x-1/2"
+//           >
+//             <a
+//               href={`${STACK_URL}/product/coordinationkit/`}
+//               rel="noopener noreferrer"
+//               target="_blank"
+//             >
+//               Get the CoordinationKit
+//             </a>
+//           </Button>
+//         </div>
+//       </div>
+//     </div>
+//   </SectionWrapper>
+// );
 
 const ContributePage = () => (
   <PageWrapper>
@@ -219,7 +218,7 @@ const ContributePage = () => (
     <Hero />
     <WhatIsOlasContributeService />
     <HowItWorks />
-    <GetStarted />
+    {/* <GetStarted /> */}
   </PageWrapper>
 );
 

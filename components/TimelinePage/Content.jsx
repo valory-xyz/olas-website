@@ -130,7 +130,11 @@ const Timeline = ({ filters, setFilters }) => {
             </h3>
             <div className="w-full flex flex-col">
               {item.quarters.map((quarter, index) => (
-                <div key={`quarter ${index}`} className="mb-14">
+                <div
+                  id={`${item.year}-${quarter.quarter}`}
+                  key={`quarter ${index}`}
+                  className="mb-14"
+                >
                   <div className="w-full justify-between bg-slate-100 rounded-lg flex flex-row place-items-center px-6 py-4 mb-4">
                     <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>
                       {quarter.quarter}

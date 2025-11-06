@@ -4,7 +4,6 @@ import { LinkIcon } from 'lucide-react';
 
 import {
   COINGECKO_URL,
-  CONTRIBUTE_URL,
   ETHERSCAN_URL,
   SNAPSHOT_URL,
   VALORY_URL,
@@ -142,9 +141,9 @@ const faqList = [
             </p>
             <p>
               You can also{' '}
-              <SubsiteLink href={`${CONTRIBUTE_URL}/roadmap`}>
+              <Link className="text-purple-600" href="/roadmap">
                 read the Roadmap
-              </SubsiteLink>
+              </Link>
               .
             </p>
           </>

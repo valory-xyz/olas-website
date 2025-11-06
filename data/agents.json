@@ -95,7 +95,7 @@
     "serviceCategory": "NFTs",
     "description": "Deposit ETH and let El Collectooorr, an AI-powered agent, intelligently collect Art Blocks drops for you, combining crypto with AI for seamless NFT acquisitions.",
     "shortDescription": "Automated NFT collecting with AI agent.",
-    "appUrl": "https://elcollectooorr.art/vaults/latest",
+    "appUrl": "https://elcollectooorr.art",
     "marketingUrl": "https://elcollectooorr.art",
     "buildUrl": "https://docs.autonolas.network/product/mintkit/",
     "iconFilename": "el-collectooorr.svg",
