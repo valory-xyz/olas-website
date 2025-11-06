@@ -41,12 +41,13 @@ const resources = [
     ],
   },
   {
-    title: 'Deploy your own Mechs',
-    description: 'Construct your own marketplace for AI tools',
+    title: 'Hire or Monetize Mech Agents',
+    description:
+      'Build your agent on a first-of-its-kind decentralized marketplace for AI Agents',
     actions: [
       {
-        url: `${STACK_URL}/product/mechkit/`,
-        text: 'See the MechKit',
+        url: STACK_URL,
+        text: 'See the docs',
       },
     ],
   },
