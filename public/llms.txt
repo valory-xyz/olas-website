@@ -1,0 +1,57 @@
+website: https://olas.network
+
+name: Olas  
+tagline: Co-own AI  
+
+description: |
+  Olas enables everyone to own and monetize their AI agents. Olas is the platform that enables true co-ownership of AI. It offers a token-based infrastructure for AI agent economies including staking, agent marketplaces, and governance.
+
+features:
+  - Pearl: "AI Agent App Store" — lets any consumer with a laptop use AI agents they truly own. Users benefit from their agents' capabilities while earning potential rewards from OLAS staking. [oai_citation:0‡olas.network](https://olas.network/#pearl)
+  - Mech Marketplace: "AI Agent Bazaar" — decentralized marketplace where agents can offer their services, hire other agents' services and collaborate autonomously. [oai_citation:1‡olas.network](https://olas.network/#mech-marketplace)
+  - OLAS: The OLAS utility token provides access to the platform's benefits and coordinates agent interactions in entire AI Agent economies. [oai_citation:2‡olas.network](https://olas.network/#agent-economies)
+  - Multi-chain deployment (Ethereum, Gnosis Chain, Polygon, Arbitrum, Solana, Optimism, Base, Celo, Mode)  [oai_citation:3‡olas.network](https://olas.network/#agent-economies)
+  - Governance via DAO; voting-escrow version of token (veOLAS) used for governance.  [oai_citation:4‡olas.network](https://olas.network/olas-token)
+  - Olas AI Agents serve diverse use cases - from prediction markets and asset management to influencer agents - autonomously creating valuable outcomes. [oai_citation:4‡olas.network](https://olas.network/agents)
+  -  Olas powers some of the largest AI agent economies with millions of transactions. [oai_citation:4‡olas.network](https://olas.network/agent-economies, https://olas.network/#agent-economies)
+
+token:
+  name: OLAS  
+  address: 0x0001A500A6B18995B03f44bb040A5fFc28E45CB0  [oai_citation:5‡olas.network](https://olas.network/)  
+  standard: ERC-20
+  total_supply_cap: "1,000,000,000 OLAS" (first 10 years maximum issuance)  [oai_citation:7‡olas.network](https://olas.network/olas-token)  
+  inflation_after_10_years: 2% annual inflation cap (governance-adjustable towards lower values only!)  [oai_citation:8‡olas.network](https://olas.network/olas-token)
+
+tokenomics:
+  roles:
+    - Builders: rewarded for code / agent contributions  [oai_citation:9‡olas.network](https://olas.network/olas-token#protocol, https://olas.network/build)  
+    - Operators: stake OLAS & run agents to earn rewards  [oai_citation:10‡olas.network](https://olas.network/olas-token#protocol, https://olas.network/operate)  
+    - Bonders: provide liquidity (LP tokens) which they permanently "bond" to the network (i.e. sell) to receive OLAS at a discount; builds protocol-owned liquidity.  [oai_citation:11‡docs.olas.network](https://olas.network/olas-token#protocol, https://olas.network/bond)  
+    - Governors: governance participants (holders of OLAS locked as veOLAS) can influence distributions & access further benefits.  [oai_citation:12‡docs.olas.network](https://olas.network/govern)
+   - Launchers: deploy staking contracts to coordinate agent economies.  [oai_citation:12‡docs.olas.network](https://olas.network/launch)
+   - Contributors: promote the DAO and can access staking rewards when staking OLAS.  [oai_citation:12‡docs.olas.network](https://olas.network/contribute)
+
+  initial allocation:
+    - 47.35% of "fixed token supply" in first 10 years is for ecosystem rewards (builders / bonders / operators - staking).  [oai_citation:13‡olas.network](https://olas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf)  
+    - DAO Treasury: 10%  [oai_citation:14‡olas.network](https://olas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf)  
+    - Development reserve: 10%  [oai_citation:15‡olas.network](https://olas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf)  
+    - DAO founding members: 32.65%  [oai_citation:16‡olas.network](https://olas.network/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf)  
+
+  mechanisms:
+    - Developers mint code components and agent blueprints as NFTs.  [oai_citation:17‡docs.olas.network](https://olas.network/olas-token#protocol, https://olas.network/build)
+    - Donations (in ETH) can be made citing AI agents (aka autonomous services), leading to rewards being distributed proportionally to referenced code and agent blue print contributions.  [oai_citation:18‡docs.olas.network](https://olas.network/documents/whitepaper/Whitepaper%20v1.0.pdf, https://olas.network/build)
+    - Bonding: users deposit LP tokens (approved pairs) to get OLAS at discount over vesting period.  [oai_citation:19‡docs.olas.network](https://olas.network/olas-token#protocol, https://olas.network/bond)  
+    - Staking & operator rewards: agents running earn via staking mechanism.  [oai_citation:20‡olas.network](https://olas.network/olas-token#protocol, https://olas.network/operate, https://olas.network/staking)  
+    - veOLAS: locked OLAS for governance and to unlock top-up incentives for donations. [oai_citation:21‡docs.olas.network](https://olas.network/build)
+
+governance:
+  dao: Olas DAO  
+  voting_token: veOLAS (locked OLAS), address 0x7e01A500805f8A52Fad229b3015AD130A332B7b3  [oai_citation:22‡docs.olas.network](https://olas.network/govern)
+  adjustability: DAO can change tokenomics parameters including inflation after 10 years  [oai_citation:23‡olas.network](https://olas.network/olas-token)  
+
+history:
+  - Launched in 2021 as one of the first Crypto x AI projects
+  - First on-chain AI agent registry on Ethereum launched in July 2022
+  - OLAS token public launch: July 2023 via Liquidity Bootstrapping Pool (LBP) via Fjord Foundry.  [oai_citation:24‡olas.network](https://olas.network/faq, https://olas.network/timeline, https://olas.network/blog/olas-public-launch)  
+  - LBP raised ~$1.2M volume; closing FDV ~$74.6M.  [oai_citation:25‡olas.network](https://olas.network/blog/lbp-stats)  
+  - Full timeline with all key events: https://olas.network/timeline
