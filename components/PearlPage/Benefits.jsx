@@ -30,7 +30,7 @@ const benefits = [
   },
   {
     imgSrc: '/images/pearl-page/modes.png',
-    imgWidth: '872',
+    imgWidth: 872,
     imgHeight: 350,
     label: 'Co-Pilot Mode <-> Autonomous Mode',
     description: "Define your agent's goals, then let it operate autonomously.",
@@ -47,8 +47,8 @@ export const Benefits = () => (
 
     <div className="grid grid-cols-1 md:grid-cols-3 md:auto-rows-auto gap-6 max-w-[1320px] mx-auto">
       {benefits.map((benefit, index) => {
-        let colClass = 'col-span-1';
-        let rowClass = 'row-span-1';
+        let colClass = 'md:col-span-1';
+        let rowClass = 'md:row-span-1';
         let positionClass = '';
 
         if (index === 2) {
@@ -56,14 +56,14 @@ export const Benefits = () => (
           positionClass = 'md:col-start-3 md:row-start-1 md:row-end-3';
         }
         if (index === 3) {
-          colClass = 'col-span-2';
+          colClass = 'md:col-span-2';
           positionClass = 'md:row-start-2';
         }
 
         return (
           <Card
             key={`benefit-${index}`}
-            className={`md:${colClass} ${rowClass ? `md:${rowClass}` : ''} ${positionClass} text-left overflow-hidden`}
+            className={`${colClass} ${rowClass ? { rowClass } : ''} ${positionClass} text-left overflow-hidden`}
           >
             <Image
               src={benefit.imgSrc}
