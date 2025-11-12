@@ -442,6 +442,34 @@ const fetchDailyAgentPerformance = async () => {
   }
 };
 
+const fetchModiusOlasApr = async () => {
+  try {
+    const modiusContractsResult = await STAKING_GRAPH_CLIENTS.mode.request(
+      stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+    );
+    
+    const modiusContracts = modiusContractsResult?.stakingContracts;
+    return modiusContracts && modiusContracts.length > 0 ? getMaxApr(modiusContracts) : null;
+  } catch (error) {
+    console.error('Error fetching Modius OLAS APR:', error);
+    return null;
+  }
+};
+
+const fetchOptimusOlasApr = async () => {
+  try {
+    const optimusContractsResult = await STAKING_GRAPH_CLIENTS.optimism.request(
+      stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+    );
+    
+    const optimusContracts = optimusContractsResult?.stakingContracts;
+    return optimusContracts && optimusContracts.length > 0 ? getMaxApr(optimusContracts) : null;
+  } catch (error) {
+    console.error('Error fetching Optimus OLAS APR:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
     const olasUsdPricePromise = fetchOlasUsdPrice();
