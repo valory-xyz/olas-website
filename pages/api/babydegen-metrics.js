@@ -417,16 +417,19 @@ const fetchOptimusOlasApr = async () => {
 
 const fetchAllAgentMetrics = async () => {
   try {
-    const olasUsdPricePromise = fetchOlasUsdPrice();
     const [
       modiusMetricsResult,
       optimusMetricsResult,
-      olasAprResult,
       dailyActiveAgentsResult,
     ] = await Promise.allSettled([
-      fetchModiusMetrics(),
-      fetchOptimusMetrics(olasUsdPricePromise),
-      fetchOlasApr(),
+      (async () => {
+        const maxModiusApr = await fetchModiusOlasApr();
+        return fetchModiusMetrics(maxModiusApr);
+      })(),
+      (async () => {
+        const maxOptimusApr = await fetchOptimusOlasApr();
+        return fetchOptimusMetrics(maxOptimusApr);
+      })(),
       fetchDailyAgentPerformance(),
     ]);
 
@@ -449,13 +452,11 @@ const fetchAllAgentMetrics = async () => {
       );
     }
 
-    if (olasAprResult.status === 'fulfilled') {
       if (optimusData) {
-        optimusData.maxOlasApr = olasAprResult.value.optimus;
+      optimusData.maxOlasApr = optimusData.stakingAprCalculated;
       }
       if (modiusData) {
-        modiusData.maxOlasApr = olasAprResult.value.modius;
-      }
+      modiusData.maxOlasApr = modiusData.stakingAprCalculated;
     }
 
     if (dailyActiveAgentsResult.status === 'fulfilled') {
