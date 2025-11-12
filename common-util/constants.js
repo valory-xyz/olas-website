@@ -77,6 +77,28 @@ export const ACCELERATOR_APPLY_URL =
 export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
+export const STAKING_SUBGRAPH_URLS = {
+  gnosis:
+    'https://thegraph.com/explorer/subgraphs/F3iqL2iw5UTrP1qbb4S694pGEkBwzoxXp1TRikB2K4e?view=Query&chain=arbitrum-one',
+  optimism:
+    'https://thegraph.com/explorer/subgraphs/2fe1izA4aVvBHVwbPzP1BqxLkoR9ebygWM9iHXwLCnPE?view=Query&chain=arbitrum-one',
+};
+
+export const REGISTRY_SUBGRAPH_URLS = {
+  ethereum:
+    'https://thegraph.com/explorer/subgraphs/89VhY3d7w6Ran1C86wkchzYNEG3rLBgWvyDUZMEFyjtQ',
+  base: 'https://thegraph.com/explorer/subgraphs/Baqj7bPWWQKw8HXwfqbMZnFhkSamuUYFa3JgCRYF8Tcr?view=Query&chain=arbitrum-one',
+  celo: 'https://thegraph.com/explorer/subgraphs/BxkMNoiEHdbJDtrmMG1bqVvUfwVUWnf5bn47WnCdB1A4',
+  gnosis:
+    'https://thegraph.com/explorer/subgraphs/GmDw6a6EfP6z58dzkw5WehpxjaiEKB6aZRk4TNUm3DPn?view=Query&chain=arbitrum-one',
+  optimism:
+    'https://thegraph.com/explorer/subgraphs/BksA3aj8vX68TVs91ieDoGzFGASuLC7BaYo2HsGCea7p?view=Query&chain=arbitrum-one',
+  polygon:
+    'https://thegraph.com/explorer/subgraphs/HHRBjVWFT2bV7eNSRqbCNDtUVnLPt911hcp8mSe4z6KG',
+  arbitrum:
+    'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
+};
+
 export const TOKENOMICS_SUBGRAPH_URLS = [
   {
     key: 'ethereum',
@@ -84,21 +106,27 @@ export const TOKENOMICS_SUBGRAPH_URLS = [
   },
   {
     key: 'arbitrum',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
+    url: 'https://thegraph.com/explorer/subgraphs/EKdR7Xqiz3iEtZuAQPChPku14aSxnb85pVpx9Nb13J2',
   },
-  { key: 'base', url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL },
-  { key: 'celo', url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL },
+  {
+    key: 'base',
+    url: 'https://thegraph.com/explorer/subgraphs/4PfoaqBSC8zJKGSVxKmyQPHLvK4VrHu9ZiLeaGjhN59G',
+  },
+  {
+    key: 'celo',
+    url: 'https://thegraph.com/explorer/subgraphs/pVCUc7dQYpRFPBjX6trqqvJDedZKPRXn1C1yaihwLRQ',
+  },
   {
     key: 'gnosis',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
+    url: 'https://thegraph.com/explorer/subgraphs/CWCQsUk2zfD9JMYmsSYKvwhRjmTxFKRJtZK62w6x3bPX',
   },
   {
     key: 'optimism',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
+    url: 'https://thegraph.com/explorer/subgraphs/6PX6KaJdKtmeB3FmpA9s6PRRdB6yi7LMQipfSiJnNBRH',
   },
   {
     key: 'polygon',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
+    url: 'https://thegraph.com/explorer/subgraphs/B1BF29s7xVhueYcr6ZHhQiiSYr3h3uqpZnnqeP6Wefc3',
   },
   { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
 ];

@@ -1,5 +1,8 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { MODIUS_FIXED_END_DATE_UTC } from 'common-util/constants';
+import {
+  MODIUS_FIXED_END_DATE_UTC,
+  STAKING_SUBGRAPH_URLS,
+} from 'common-util/constants';
 import {
   dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
@@ -72,9 +75,7 @@ export const BabydegenMetricsInfo = () => {
         </h3>
         <p className="text-purple-600">
           Subgraph link{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL}
-          >
+          <ExternalLink href={STAKING_SUBGRAPH_URLS.optimism}>
             Optimism Staking
           </ExternalLink>
         </p>

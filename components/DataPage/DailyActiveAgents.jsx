@@ -1,4 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
 import {
   dailyAgentPerformancesQuery,
   dailyBabydegenPerformancesQuery,
@@ -34,10 +35,10 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {[
-              process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
+              REGISTRY_SUBGRAPH_URLS.gnosis,
+              REGISTRY_SUBGRAPH_URLS.base,
               process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
+              REGISTRY_SUBGRAPH_URLS.optimism,
             ].map((link, index) => (
               <ExternalLink key={index} href={link} className="mr-2">
                 {index + 1}
@@ -71,7 +72,7 @@ export const DailyActiveAgentsInfo = () => {
             Subgraph links:{' '}
             {[
               process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
+              REGISTRY_SUBGRAPH_URLS.optimism,
             ].map((link, index) => (
               <ExternalLink key={index} href={link} className="mr-2">
                 {index + 1}
@@ -103,14 +104,13 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[
-              process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
-            ].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
-              </ExternalLink>
-            ))}
+            {[REGISTRY_SUBGRAPH_URLS.gnosis, REGISTRY_SUBGRAPH_URLS.base].map(
+              (link, index) => (
+                <ExternalLink key={index} href={link} className="mr-2">
+                  {index + 1}
+                </ExternalLink>
+              ),
+            )}
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
         </div>
@@ -136,13 +136,11 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL].map(
-              (link, index) => (
-                <ExternalLink key={index} href={link} className="mr-2">
-                  {index + 1}
-                </ExternalLink>
-              ),
-            )}
+            {[REGISTRY_SUBGRAPH_URLS.gnosis].map((link, index) => (
+              <ExternalLink key={index} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))}
           </p>
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
         </div>
@@ -170,13 +168,11 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL].map(
-              (link, index) => (
-                <ExternalLink key={index} href={link} className="mr-2">
-                  {index + 1}
-                </ExternalLink>
-              ),
-            )}
+            {[REGISTRY_SUBGRAPH_URLS.gnosis].map((link, index) => (
+              <ExternalLink key={index} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))}
           </p>
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
 
@@ -186,13 +182,11 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL].map(
-              (link, index) => (
-                <ExternalLink key={index} href={link} className="mr-2">
-                  {index + 1}
-                </ExternalLink>
-              ),
-            )}
+            {[REGISTRY_SUBGRAPH_URLS.optimism].map((link, index) => (
+              <ExternalLink key={index} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
         </div>

@@ -1,5 +1,8 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
+import {
+  PREDICT_MARKET_DURATION_DAYS,
+  STAKING_SUBGRAPH_URLS,
+} from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -99,9 +102,7 @@ export const PredictRoiInfo = () => {
         </h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
-        <ExternalLink
-          href={process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL}
-        >
+        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>
           Subgraph link
         </ExternalLink>
         <CodeSnippet>{stakingGlobals}</CodeSnippet>
