@@ -170,73 +170,33 @@ const fetchOptimusPopulationMetrics = async () => {
   }
 };
 
-const fetchOptimusMetrics = async (olasUsdPricePromise) => {
-  const [populationResult, stakingResult, olasUsdPriceResult] =
-    await Promise.allSettled([
-      fetchOptimusPopulationMetrics(),
-      fetchOptimismStakingSnapshots(),
-      olasUsdPricePromise ?? fetchOlasUsdPrice(),
-    ]);
+const fetchOptimusMetrics = async (maxOlasApr) => {
+  const populationResult = await fetchOptimusPopulationMetrics();
 
-  if (populationResult.status !== 'fulfilled') {
-    console.error(
-      'Optimus population metrics fetch failed:',
-      populationResult.reason,
-    );
+  if (!populationResult) {
+    console.error('Optimus population metrics fetch failed');
     return null;
   }
 
-  const populationMetrics = populationResult.value;
-  const olasUsdPrice =
-    olasUsdPriceResult.status === 'fulfilled' ? olasUsdPriceResult.value : 0;
-  if (olasUsdPriceResult.status !== 'fulfilled') {
-    console.error('OLAS USD price fetch failed:', olasUsdPriceResult.reason);
-  }
-
-  const stakingSnapshots =
-    stakingResult.status === 'fulfilled' ? stakingResult.value : null;
-  if (stakingResult.status !== 'fulfilled') {
-    console.error(
-      'Optimism staking snapshots fetch failed:',
-      stakingResult.reason,
-    );
-  }
-
   const metrics = buildAprMetrics({
-    populationMetrics,
-    stakingSnapshots,
-    olasUsdPrice,
+    populationMetrics: populationResult,
+    maxOlasApr,
   });
 
   return metrics ?? { ...EMPTY_APR_METRICS };
 };
 
-const fetchModiusMetrics = async () => {
-  const [populationResult, stakingResult] = await Promise.allSettled([
-    fetchModiusPopulationMetrics(),
-    fetchModeStakingSnapshots(),
-  ]);
+const fetchModiusMetrics = async (maxOlasApr) => {
+  const populationResult = await fetchModiusPopulationMetrics();
 
-  if (populationResult.status !== 'fulfilled') {
-    console.error(
-      'Modius population metrics fetch failed:',
-      populationResult.reason,
-    );
+  if (!populationResult) {
+    console.error('Modius population metrics fetch failed');
     return null;
   }
 
-  const populationMetrics = populationResult.value;
-
-  const stakingSnapshots =
-    stakingResult.status === 'fulfilled' ? stakingResult.value : null;
-  if (stakingResult.status !== 'fulfilled') {
-    console.error('Mode staking snapshots fetch failed:', stakingResult.reason);
-  }
-
   const aprMetrics = buildAprMetrics({
-    populationMetrics,
-    stakingSnapshots,
-    olasUsdPrice: MODIUS_FIXED_OLAS_PRICE_USD,
+    populationMetrics: populationResult,
+    maxOlasApr,
   });
 
   if (!aprMetrics) {
@@ -371,11 +331,7 @@ const calculateStakingApr = ({ metrics, stakingSnapshots, olasUsdPrice }) => {
   return annualizationFactor * 365;
 };
 
-const buildAprMetrics = ({
-  populationMetrics,
-  stakingSnapshots,
-  olasUsdPrice,
-}) => {
+const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
   if (!Array.isArray(populationMetrics) || populationMetrics.length === 0) {
     return null;
   }
@@ -384,24 +340,10 @@ const buildAprMetrics = ({
   const latestUsdcApr = toNumber(latest?.sma7dProjectedUnrealisedPnL);
   const latestEthApr = toNumber(latest?.sma7dEthAdjustedProjectedUnrealisedPnL);
 
-  if (!Array.isArray(stakingSnapshots) || stakingSnapshots.length === 0) {
-    return {
-      latestUsdcApr,
-      latestEthApr,
-      stakingAprCalculated: null,
-    };
-  }
-
-  const stakingApr = calculateStakingApr({
-    metrics: populationMetrics,
-    stakingSnapshots,
-    olasUsdPrice,
-  });
-
   return {
     latestUsdcApr,
     latestEthApr,
-    stakingAprCalculated: Number.isFinite(stakingApr) ? stakingApr : null,
+    stakingAprCalculated: maxOlasApr,
   };
 };
 
@@ -442,20 +384,52 @@ const fetchDailyAgentPerformance = async () => {
   }
 };
 
+const fetchModiusOlasApr = async () => {
+  try {
+    const modiusContractsResult = await STAKING_GRAPH_CLIENTS.mode.request(
+      stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+    );
+
+    const modiusContracts = modiusContractsResult?.stakingContracts;
+    return modiusContracts && modiusContracts.length > 0
+      ? getMaxApr(modiusContracts)
+      : null;
+  } catch (error) {
+    console.error('Error fetching Modius OLAS APR:', error);
+    return null;
+  }
+};
+
+const fetchOptimusOlasApr = async () => {
+  try {
+    const optimusContractsResult = await STAKING_GRAPH_CLIENTS.optimism.request(
+      stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+    );
+
+    const optimusContracts = optimusContractsResult?.stakingContracts;
+    return optimusContracts && optimusContracts.length > 0
+      ? getMaxApr(optimusContracts)
+      : null;
+  } catch (error) {
+    console.error('Error fetching Optimus OLAS APR:', error);
+    return null;
+  }
+};
+
 const fetchAllAgentMetrics = async () => {
   try {
-    const olasUsdPricePromise = fetchOlasUsdPrice();
-    const [
-      modiusMetricsResult,
-      optimusMetricsResult,
-      olasAprResult,
-      dailyActiveAgentsResult,
-    ] = await Promise.allSettled([
-      fetchModiusMetrics(),
-      fetchOptimusMetrics(olasUsdPricePromise),
-      fetchOlasApr(),
-      fetchDailyAgentPerformance(),
-    ]);
+    const [modiusMetricsResult, optimusMetricsResult, dailyActiveAgentsResult] =
+      await Promise.allSettled([
+        (async () => {
+          const maxModiusApr = await fetchModiusOlasApr();
+          return fetchModiusMetrics(maxModiusApr);
+        })(),
+        (async () => {
+          const maxOptimusApr = await fetchOptimusOlasApr();
+          return fetchOptimusMetrics(maxOptimusApr);
+        })(),
+        fetchDailyAgentPerformance(),
+      ]);
 
     let optimusData = null;
     let modiusData = null;
@@ -476,13 +450,11 @@ const fetchAllAgentMetrics = async () => {
       );
     }
 
-    if (olasAprResult.status === 'fulfilled') {
-      if (optimusData) {
-        optimusData.maxOlasApr = olasAprResult.value.optimus;
-      }
-      if (modiusData) {
-        modiusData.maxOlasApr = olasAprResult.value.modius;
-      }
+    if (optimusData) {
+      optimusData.maxOlasApr = optimusData.stakingAprCalculated;
+    }
+    if (modiusData) {
+      modiusData.maxOlasApr = modiusData.stakingAprCalculated;
     }
 
     if (dailyActiveAgentsResult.status === 'fulfilled') {
