@@ -1,5 +1,8 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_AGENT_CLASSIFICATION } from 'common-util/constants';
+import {
+  PREDICT_AGENT_CLASSIFICATION,
+  REGISTRY_SUBGRAPH_URLS,
+} from 'common-util/constants';
 import {
   agentTxCountsQuery,
   registryGlobalsQuery,
@@ -33,14 +36,14 @@ export const TransactionsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {[
-              process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
+              REGISTRY_SUBGRAPH_URLS.gnosis,
+              REGISTRY_SUBGRAPH_URLS.base,
               process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL,
-              process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL,
+              REGISTRY_SUBGRAPH_URLS.optimism,
+              REGISTRY_SUBGRAPH_URLS.celo,
+              REGISTRY_SUBGRAPH_URLS.ethereum,
+              REGISTRY_SUBGRAPH_URLS.arbitrum,
+              REGISTRY_SUBGRAPH_URLS.polygon,
             ].map((link, index) => (
               <ExternalLink key={index} href={link} className="mr-2">
                 {index + 1}
@@ -90,10 +93,7 @@ export const TransactionsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph link:{' '}
-            <ExternalLink
-              href={process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL}
-              className="mr-2"
-            >
+            <ExternalLink href={REGISTRY_SUBGRAPH_URLS.gnosis} className="mr-2">
               Gnosis
             </ExternalLink>
           </p>
