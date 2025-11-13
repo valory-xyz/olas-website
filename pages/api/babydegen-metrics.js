@@ -331,10 +331,7 @@ const calculateStakingApr = ({ metrics, stakingSnapshots, olasUsdPrice }) => {
   return annualizationFactor * 365;
 };
 
-const buildAprMetrics = ({
-  populationMetrics,
-  maxOlasApr = null,
-}) => {
+const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
   if (!Array.isArray(populationMetrics) || populationMetrics.length === 0) {
     return null;
   }
@@ -392,9 +389,11 @@ const fetchModiusOlasApr = async () => {
     const modiusContractsResult = await STAKING_GRAPH_CLIENTS.mode.request(
       stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
     );
-    
+
     const modiusContracts = modiusContractsResult?.stakingContracts;
-    return modiusContracts && modiusContracts.length > 0 ? getMaxApr(modiusContracts) : null;
+    return modiusContracts && modiusContracts.length > 0
+      ? getMaxApr(modiusContracts)
+      : null;
   } catch (error) {
     console.error('Error fetching Modius OLAS APR:', error);
     return null;
@@ -406,9 +405,11 @@ const fetchOptimusOlasApr = async () => {
     const optimusContractsResult = await STAKING_GRAPH_CLIENTS.optimism.request(
       stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
     );
-    
+
     const optimusContracts = optimusContractsResult?.stakingContracts;
-    return optimusContracts && optimusContracts.length > 0 ? getMaxApr(optimusContracts) : null;
+    return optimusContracts && optimusContracts.length > 0
+      ? getMaxApr(optimusContracts)
+      : null;
   } catch (error) {
     console.error('Error fetching Optimus OLAS APR:', error);
     return null;
@@ -417,21 +418,18 @@ const fetchOptimusOlasApr = async () => {
 
 const fetchAllAgentMetrics = async () => {
   try {
-    const [
-      modiusMetricsResult,
-      optimusMetricsResult,
-      dailyActiveAgentsResult,
-    ] = await Promise.allSettled([
-      (async () => {
-        const maxModiusApr = await fetchModiusOlasApr();
-        return fetchModiusMetrics(maxModiusApr);
-      })(),
-      (async () => {
-        const maxOptimusApr = await fetchOptimusOlasApr();
-        return fetchOptimusMetrics(maxOptimusApr);
-      })(),
-      fetchDailyAgentPerformance(),
-    ]);
+    const [modiusMetricsResult, optimusMetricsResult, dailyActiveAgentsResult] =
+      await Promise.allSettled([
+        (async () => {
+          const maxModiusApr = await fetchModiusOlasApr();
+          return fetchModiusMetrics(maxModiusApr);
+        })(),
+        (async () => {
+          const maxOptimusApr = await fetchOptimusOlasApr();
+          return fetchOptimusMetrics(maxOptimusApr);
+        })(),
+        fetchDailyAgentPerformance(),
+      ]);
 
     let optimusData = null;
     let modiusData = null;
@@ -452,10 +450,10 @@ const fetchAllAgentMetrics = async () => {
       );
     }
 
-      if (optimusData) {
+    if (optimusData) {
       optimusData.maxOlasApr = optimusData.stakingAprCalculated;
-      }
-      if (modiusData) {
+    }
+    if (modiusData) {
       modiusData.maxOlasApr = modiusData.stakingAprCalculated;
     }
 
