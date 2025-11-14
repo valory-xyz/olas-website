@@ -190,7 +190,7 @@ const PearlTerms = () => {
                     integration is offered for your convenience, and all onramp
                     services are clearly branded and operated by Transak. When
                     accessing Transak through Pearl, users are redirected to
-                    Transak&nbsp;s interface and contract directly with Transak
+                    Transak&apos;s interface and contract directly with Transak
                     under its own{' '}
                     <ExternalLink href="https://transak.com/terms-of-service">
                       Terms of Service
@@ -209,7 +209,11 @@ const PearlTerms = () => {
                     holding, custody or transfer of funds taking place in the
                     process of fiat-to-crypto onboarding within Pearl is
                     performed solely by Transak. Valory is not an intermediary,
-                    counterparty or payment processor in any onramp transaction.
+                    counterparty, or payment processor in any onramp
+                    transaction. Valory assumes no responsibility or liability
+                    for the performance, security, or data handling of Transak
+                    nor its integration, except to the extent such liability
+                    cannot lawfully be excluded.
                   </p>
                 </div>
                 <div>
@@ -237,7 +241,7 @@ const PearlTerms = () => {
                     credentials. You contract directly with Web3Auth under its
                     own{' '}
                     <ExternalLink href="https://web3auth.io/docs/legal/terms-and-conditions">
-                      Terms of Service
+                      Terms of Use
                     </ExternalLink>{' '}
                     and{' '}
                     <ExternalLink href="https://web3auth.io/docs/legal/privacy-policy">
@@ -249,6 +253,52 @@ const PearlTerms = () => {
                     security, or data handling of Web3Auth nor its integration,
                     except to the extent such liability cannot lawfully be
                     excluded.
+                  </p>
+                </div>
+                <div>
+                  <h5
+                    className="text-lg text-black font-semibold"
+                    id="zendesk-terms"
+                  >
+                    <Link size={18} className="inline-block mb-1" /> 6.3 Zendesk
+                  </h5>
+                  <p className="mt-2">
+                    Pearl allows users to contact the Valory support team
+                    through Zendesk, a third-party support platform integrated
+                    into Pearl by Valory for handling support requests submitted
+                    by users using the “Contact Support” form in Pearl. When
+                    submitting the form, users are required to provide their
+                    email address, a description of the issue, and may
+                    optionally attach files, including app logs. This data is
+                    stored by Zendesk and is collected by Valory. The Valory
+                    support team may access, use, export, or analyze the data
+                    for support purposes. While any data use or support
+                    provision is handled by the Valory team, the full operation,
+                    processing, and management of the Zendesk platform and its
+                    integration is performed by Zendesk and subject to
+                    Zendesk&apos;s{' '}
+                    <ExternalLink href="https://www.zendesk.com/company/agreements-and-terms/terms-of-use/">
+                      Terms of Use
+                    </ExternalLink>{' '}
+                    and{' '}
+                    <ExternalLink href="https://www.zendesk.com/company/privacy./">
+                      Privacy Policy
+                    </ExternalLink>
+                    . Valory does not make any guarantees, warranties or
+                    representations regarding the timeliness, completeness,
+                    accuracy, or adequacy of any responses. Users acknowledge
+                    that the “Contact Support” form in Pearl is provided for
+                    convenience and clarity, and does not create any contractual
+                    obligations with Valory. Valory is not responsible for any
+                    errors, miscommunications, or actions resulting from the use
+                    of Zendesk, or for the content of messages submitted by
+                    users. Users remain solely responsible for their own
+                    decisions, actions, and precautions while using Pearl,
+                    including any reliance on support or feedback received from
+                    Valory and/or through Zendesk. Valory assumes no
+                    responsibility or liability for the performance, security,
+                    or data handling of Zendesk nor its integration, except to
+                    the extent such liability cannot lawfully be excluded.
                   </p>
                 </div>
               </div>
