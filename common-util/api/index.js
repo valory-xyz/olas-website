@@ -221,3 +221,18 @@ export const getGovernMetrics = async () => {
     return null;
   }
 };
+
+// ----------- BUILD -----------
+export const getBuildMetrics = async () => {
+  try {
+    const response = await fetch('/api/build-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch build metrics');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching build metrics:', error);
+    return null;
+  }
+};
