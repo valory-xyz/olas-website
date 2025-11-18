@@ -147,3 +147,8 @@ export const legacyMechFeesGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
   requestConfig,
 );
+
+export const autonolasGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL,
+  requestConfig,
+);
