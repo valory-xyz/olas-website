@@ -39,7 +39,6 @@ export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
 export const PROTOCOL_EARNED_FEES_ID = '3511561';
 export const MECH_TXS_QUERY_ID = '5195400';
 export const UNIQUE_STAKERS_QUERY_ID = '5200009';
-export const UNIQUE_BUILDERS_QUERY_ID = '4331416';
 export const DAILY_CONTRIBUTORS_QUERY_ID = '4349554';
 export const FEE_FLOW_QUERY_ID = '5166975';
 
@@ -98,6 +97,9 @@ export const REGISTRY_SUBGRAPH_URLS = {
   arbitrum:
     'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
 };
+
+export const AUTONOLAS_SUBGRAPH_URL =
+  process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
 export const TOKENOMICS_SUBGRAPH_URLS = [
   {

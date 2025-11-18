@@ -1,12 +1,11 @@
-import { getTotalUniqueBuilders } from 'common-util/api/dune';
-import { OLAS_ECONOMY_DASHBOARD_URL } from 'common-util/constants';
+import { getBuildMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 
 export const BuildMetrics = () => {
   const { data: metrics } = usePersistentSWR('buildMetrics', () =>
-    fetchMetrics([getTotalUniqueBuilders]),
+    fetchMetrics([getBuildMetrics]),
   );
 
   const buildData = [
@@ -19,8 +18,9 @@ export const BuildMetrics = () => {
           imageSrc: 'builders.png',
           labelText: 'Total Olas Builders',
           subText: 'Developing on the Olas Stack',
-          source: `${OLAS_ECONOMY_DASHBOARD_URL}#builders`,
-          metric: metrics,
+          source: '/data#builders',
+          isExternal: false,
+          metric: metrics?.[0]?.data?.totalBuilders,
         },
       ],
     },
