@@ -7,7 +7,6 @@ import {
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
   TOTAL_SERVICE_TRANSACTIONS_QUERY_ID,
-  UNIQUE_BUILDERS_QUERY_ID,
   UNIQUE_STAKERS_QUERY_ID,
   VEOLAS_CIRCULATING_SUPPLY_ID,
 } from 'common-util/constants';
@@ -88,17 +87,6 @@ export const getTotalUniqueStakers = async () => {
     return totalUniqueStakers;
   } catch (error) {
     console.error('Error in getTotalUniqueStakers: ', error);
-    return;
-  }
-};
-
-export const getTotalUniqueBuilders = async () => {
-  try {
-    const json = await duneApiCall({ queryId: UNIQUE_BUILDERS_QUERY_ID });
-    const TotalUniqueBuilders = get(json, 'result.rows[0].unique_minter_count');
-    return TotalUniqueBuilders;
-  } catch (error) {
-    console.error('Error in getTotalUniqueBuilders: ', error);
     return;
   }
 };
