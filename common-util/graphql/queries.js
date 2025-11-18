@@ -479,3 +479,12 @@ export const veOlasLockedBalanceQuery = gql`
     }
   }
 `;
+
+export const totalBuildersQuery = gql`
+  query TotalBuilders {
+    globals {
+      id
+      totalBuilders
+    }
+  }
+`;
