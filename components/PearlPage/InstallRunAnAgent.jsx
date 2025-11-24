@@ -12,9 +12,17 @@ import { Card } from 'components/ui/card';
 import { useHash } from 'hooks/useHash';
 
 const iconProps = { width: 24, height: 24 };
+
+const OS_TYPES = {
+  WINDOWS: 'Windows',
+  MACOS: 'MacOS',
+  UNKNOWN: 'unknown',
+};
+
 const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
+    os: OS_TYPES.MACOS,
     btnText: 'macOS M1+',
     downloadLink: null,
     icon: (
@@ -28,6 +36,7 @@ const downloadLinks = [
   },
   {
     id: 'darwin-x64.dmg',
+    os: OS_TYPES.MACOS,
     btnText: 'MacOS Intel',
     downloadLink: null,
     icon: (
@@ -41,6 +50,7 @@ const downloadLinks = [
   },
   {
     id: 'win32-x64.exe',
+    os: OS_TYPES.WINDOWS,
     btnText: 'Windows',
     downloadLink: null,
     icon: (
@@ -73,6 +83,23 @@ async function getLatestRelease() {
   }
 }
 
+const getUserOS = () => {
+  if (typeof window === 'undefined') return OS_TYPES.UNKNOWN;
+  const { userAgent, userAgentData } = window.navigator;
+
+  // userAgentData is more reliable but isn't widely supported yet
+  if (userAgentData?.platform) {
+    const platform = userAgentData.platform?.toLowerCase();
+    if (platform.indexOf('win') !== -1) return OS_TYPES.WINDOWS;
+    if (platform.indexOf('mac') !== -1) return OS_TYPES.MACOS;
+  }
+
+  const ua = userAgent.toLowerCase();
+  if (ua.indexOf('win') !== -1) return OS_TYPES.WINDOWS;
+  if (ua.indexOf('mac') !== -1) return OS_TYPES.MACOS;
+  return OS_TYPES.UNKNOWN;
+};
+
 const DownloadLinks = () => {
   const [links, setLinks] = useState(downloadLinks);
 
@@ -95,7 +122,14 @@ const DownloadLinks = () => {
             downloadLink: assetLink?.browser_download_url || null,
           };
         });
-        setLinks(updatedLinks);
+
+        const userOS = getUserOS();
+        const filteredLinks = updatedLinks.filter((link) => {
+          if (userOS === OS_TYPES.UNKNOWN) return true;
+          return link.os === userOS;
+        });
+
+        setLinks(filteredLinks);
       })
       .catch((error) => {
         console.error(error);
