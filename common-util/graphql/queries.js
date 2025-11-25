@@ -59,6 +59,7 @@ export const mechMarketplaceTotalRequestsQuery = gql`
   query MechMarketplaceTotalRequests {
     global(id: "") {
       totalRequests
+      totalDeliveries
     }
   }
 `;
@@ -67,6 +68,7 @@ export const mechGlobalsTotalRequestsQuery = gql`
   query MechGlobalsTotalRequests {
     global(id: "") {
       totalRequests
+      totalDeliveries
     }
   }
 `;

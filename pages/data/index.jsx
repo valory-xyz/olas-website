@@ -5,7 +5,7 @@ import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
 import { GovernVeOlasInfo } from 'components/DataPage/GovernVeOlasInfo';
 import { MechCategorizedRequestsInfo } from 'components/DataPage/MechCategorizedRequests';
-import { MechRequestsInfo } from 'components/DataPage/MechRequests';
+import { MechGlobalsInfo } from 'components/DataPage/MechGlobals';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import { OperatorsInfo } from 'components/DataPage/Operators';
@@ -26,7 +26,7 @@ const DataVerifyPage = () => (
     >
       <DailyActiveAgentsInfo />
       <BabydegenMetricsInfo />
-      <MechRequestsInfo />
+      <MechGlobalsInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />
       <GovernVeOlasInfo />

@@ -7,21 +7,20 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
 
-export const MechRequestsInfo = () => {
+export const MechGlobalsInfo = () => {
   return (
-    <SectionWrapper id="mech-requests">
-      <h2 className={SUB_HEADER_LG_CLASS}>Mech Requests</h2>
+    <SectionWrapper id="mech-globals">
+      <h2 className={SUB_HEADER_LG_CLASS}>Mech Globals</h2>
 
       <div className="space-y-6 mt-4">
         <p>
-          Total requests are aggregated from two sources: legacy Mech requests
-          on Gnosis and Mech Marketplace requests on Gnosis and Base. The legacy
-          Mech requests are read from the legacy Mech subgraph, while the
-          marketplace requests are read from the Mech Marketplace subgraphs.
+          Total requests and deliveries are aggregated from two sources: legacy
+          Mech subgraph on Gnosis and Mech Marketplace subgraph on Gnosis and
+          Base.
         </p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Legacy Mech Requests Query
+          Legacy Mech Globals Query
         </h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
@@ -32,7 +31,7 @@ export const MechRequestsInfo = () => {
         <CodeSnippet>{mechGlobalsTotalRequestsQuery}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Mech Marketplace Requests Query
+          Mech Marketplace Globals Query
         </h3>
         <p className="text-purple-600">
           Subgraph links:{' '}
