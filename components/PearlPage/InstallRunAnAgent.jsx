@@ -15,6 +15,8 @@ const iconProps = { width: 24, height: 24 };
 
 const OS_TYPES = {
   WINDOWS: 'Windows',
+  MACOS_ARM: 'MacOS_ARM',
+  MACOS_INTEL: 'MacOS_Intel',
   MACOS: 'MacOS',
   UNKNOWN: 'unknown',
 };
@@ -22,45 +24,27 @@ const OS_TYPES = {
 const downloadLinks = [
   {
     id: 'darwin-arm64.dmg',
-    os: OS_TYPES.MACOS,
+    os: OS_TYPES.MACOS_ARM,
     btnText: 'macOS M1+',
     downloadLink: null,
-    icon: (
-      <Image
-        src="/images/pearl-page/brand-apple.svg"
-        alt="Download for macOS M1+"
-        className="mr-3"
-        {...iconProps}
-      />
-    ),
+    iconSrc: '/images/pearl-page/brand-apple.svg',
+    iconAlt: 'Download for macOS M1+',
   },
   {
     id: 'darwin-x64.dmg',
-    os: OS_TYPES.MACOS,
+    os: OS_TYPES.MACOS_INTEL,
     btnText: 'MacOS Intel',
     downloadLink: null,
-    icon: (
-      <Image
-        src="/images/pearl-page/brand-apple.svg"
-        alt="Download for MacOS Intel"
-        className="mr-3"
-        {...iconProps}
-      />
-    ),
+    iconSrc: '/images/pearl-page/brand-apple.svg',
+    iconAlt: 'Download for MacOS Intel',
   },
   {
     id: 'win32-x64.exe',
     os: OS_TYPES.WINDOWS,
     btnText: 'Windows',
     downloadLink: null,
-    icon: (
-      <Image
-        src="/images/pearl-page/brand-windows.svg"
-        alt="Download for Windows"
-        className="mr-3"
-        {...iconProps}
-      />
-    ),
+    iconSrc: '/images/pearl-page/brand-windows.svg',
+    iconAlt: 'Download for Windows',
   },
 ];
 
@@ -83,17 +67,41 @@ async function getLatestRelease() {
   }
 }
 
-const getUserOS = () => {
+const getUserOS = async () => {
   if (typeof window === 'undefined') return OS_TYPES.UNKNOWN;
   const { userAgent, userAgentData } = window.navigator;
 
-  // userAgentData is more reliable but isn't widely supported yet
+  // 1. Try getHighEntropyValues for architecture detection (Chromium-based browsers)
+  if (userAgentData?.getHighEntropyValues) {
+    try {
+      const highEntropyValues = await userAgentData.getHighEntropyValues([
+        'platform',
+        'architecture',
+      ]);
+      const platform = highEntropyValues.platform?.toLowerCase();
+      const architecture = highEntropyValues.architecture?.toLowerCase();
+
+      if (platform?.indexOf('win') !== -1) return OS_TYPES.WINDOWS;
+      if (platform?.indexOf('mac') !== -1) {
+        // Distinguish between ARM (Apple Silicon) and x86 (Intel)
+        if (architecture === 'arm') return OS_TYPES.MACOS_ARM;
+        if (architecture === 'x86') return OS_TYPES.MACOS_INTEL;
+        // If architecture is unknown, return generic MacOS
+        return OS_TYPES.MACOS;
+      }
+    } catch (error) {
+      console.error('Error fetching high entropy values:', error);
+    }
+  }
+
+  // 2. Fallback to userAgentData.platform (doesn't return architecture.)
   if (userAgentData?.platform) {
     const platform = userAgentData.platform?.toLowerCase();
     if (platform.indexOf('win') !== -1) return OS_TYPES.WINDOWS;
     if (platform.indexOf('mac') !== -1) return OS_TYPES.MACOS;
   }
 
+  // 3. Final fallback to userAgent string
   const ua = userAgent.toLowerCase();
   if (ua.indexOf('win') !== -1) return OS_TYPES.WINDOWS;
   if (ua.indexOf('mac') !== -1) return OS_TYPES.MACOS;
@@ -106,34 +114,67 @@ const DownloadLinks = () => {
   const hash = useHash();
 
   useEffect(() => {
-    getLatestRelease()
-      .then((data) => {
-        const assets = data?.assets || [];
-        const prodAssets = assets.filter(
-          (asset) => !asset.name.startsWith('dev-'),
+    const detectOSAndUpdateLinks = async () => {
+      const data = await getLatestRelease();
+      const assets = data?.assets || [];
+      const prodAssets = assets.filter(
+        (asset) => !asset.name.startsWith('dev-'),
+      );
+      const updatedLinks = downloadLinks.map((link) => {
+        const assetLink = prodAssets.find((asset) =>
+          asset.browser_download_url.includes(link.id),
         );
-        const updatedLinks = downloadLinks.map((link) => {
-          const assetLink = prodAssets.find((asset) =>
-            asset.browser_download_url.includes(link.id),
-          );
 
+        return {
+          ...link,
+          downloadLink: assetLink?.browser_download_url || null,
+        };
+      });
+
+      const userOS = await getUserOS();
+      const updatedLinksWithOutlined = updatedLinks.map((link) => {
+        if (userOS === OS_TYPES.MACOS) {
           return {
             ...link,
-            downloadLink: assetLink?.browser_download_url || null,
+            outlined:
+              link.os !== OS_TYPES.MACOS_ARM &&
+              link.os !== OS_TYPES.MACOS_INTEL &&
+              link.os !== OS_TYPES.MACOS,
           };
-        });
+        }
 
-        const userOS = getUserOS();
-        const filteredLinks = updatedLinks.filter((link) => {
-          if (userOS === OS_TYPES.UNKNOWN) return true;
-          return link.os === userOS;
-        });
-
-        setLinks(filteredLinks);
-      })
-      .catch((error) => {
-        console.error(error);
+        return {
+          ...link,
+          outlined: userOS !== OS_TYPES.UNKNOWN && link.os !== userOS,
+        };
       });
+
+      // Sort so highlighted button is in the middle if only one is highlighted
+      const highlightedCount = updatedLinksWithOutlined.filter(
+        (link) => !link.outlined,
+      ).length;
+
+      let sortedLinks = updatedLinksWithOutlined;
+      if (highlightedCount === 1) {
+        const highlighted = updatedLinksWithOutlined.filter(
+          (link) => !link.outlined,
+        );
+        const outlined = updatedLinksWithOutlined.filter(
+          (link) => link.outlined,
+        );
+        // Place highlighted in the middle: [outlined[0], highlighted[0], outlined[1]]
+        sortedLinks =
+          outlined.length >= 2
+            ? [outlined[0], highlighted[0], outlined[1]]
+            : updatedLinksWithOutlined;
+      }
+
+      setLinks(sortedLinks);
+    };
+
+    detectOSAndUpdateLinks().catch((error) => {
+      console.error(error);
+    });
   }, []);
 
   return (
@@ -156,31 +197,43 @@ const DownloadLinks = () => {
           Click “Run Agent” and start earning potential rewards.
         </p>
       </div>
-      <div className="mx-auto md:w-fit flex flex-row max-md:flex-col md:gap-4 mt-8">
-        {links.map(({ id, btnText, downloadLink, icon }) => (
-          <Button
-            key={id}
-            onClick={
-              downloadLink ? () => window.open(downloadLink, '_blank') : null
-            }
-            disabled={!downloadLink}
-            variant={downloadLink ? 'default' : 'outline'}
-            size="xl"
-            id={id}
-            className={`mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer flex flex-row
+      <div className="mx-auto md:w-fit flex flex-row max-md:flex-col md:gap-4 mt-8 md:justify-center">
+        {links.map(
+          ({ id, btnText, downloadLink, iconSrc, iconAlt, outlined }) => {
+            const isOutline = !downloadLink || outlined;
+            return (
+              <Button
+                key={id}
+                onClick={
+                  downloadLink
+                    ? () => window.open(downloadLink, '_blank')
+                    : null
+                }
+                variant={downloadLink && !outlined ? 'default' : 'outline'}
+                size="xl"
+                id={id}
+                className={`mb-6 h-[56px] max-w-[165px] max-sm:max-w-full text-left cursor-pointer flex flex-row
               ${
                 hash === '#update'
                   ? getPlausibleUpdatePearlClass(id)
                   : getPlausibleDownloadPearlClass(id)
               }`}
-          >
-            {icon}
-            <div className="flex flex-col">
-              <div className="text-sm opacity-75">Download for</div>
-              {btnText}
-            </div>
-          </Button>
-        ))}
+              >
+                <Image
+                  src={iconSrc}
+                  alt={iconAlt}
+                  className="mr-3"
+                  style={{ filter: isOutline ? 'contrast(0)' : 'contrast(1)' }}
+                  {...iconProps}
+                />
+                <div className="flex flex-col">
+                  <div className="text-sm opacity-75">Download for</div>
+                  {btnText}
+                </div>
+              </Button>
+            );
+          },
+        )}
       </div>
     </Card>
   );
