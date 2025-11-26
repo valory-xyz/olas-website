@@ -14,6 +14,7 @@ import {
   mechMarketplaceTotalRequestsQuery,
   mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
+import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const fetchDailyAgentPerformance = async () => {
@@ -53,42 +54,24 @@ const fetchDailyAgentPerformance = async () => {
   }
 };
 
-const fetchMechRequestsFromSubgraphs = async () => {
+const fetchMechGlobals = async () => {
   try {
-    const [legacyMechResult, marketplaceGnosisResult, marketplaceBaseResult] =
-      await Promise.allSettled([
-        ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
-        ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
-        ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-      ]);
+    const results = await Promise.allSettled([
+      ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
+      ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
+      ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
+    ]);
 
-    const legacyMechTotalRequests = (() => {
-      if (legacyMechResult.status !== 'fulfilled') return 0;
-      const response = legacyMechResult.value;
-      return Number(response?.global?.totalRequests ?? 0);
-    })();
+    const totals = results.reduce(
+      (acc, res) => {
+        acc.requests += extractSettledNumber(res, 'global.totalRequests');
+        acc.deliveries += extractSettledNumber(res, 'global.totalDeliveries');
+        return acc;
+      },
+      { requests: 0, deliveries: 0 },
+    );
 
-    const marketplaceGnosisTotalRequests = (() => {
-      if (marketplaceGnosisResult.status !== 'fulfilled') return 0;
-      const response = marketplaceGnosisResult.value;
-      return Number(response?.global?.totalRequests ?? 0);
-    })();
-
-    const marketplaceBaseTotalRequests = (() => {
-      if (marketplaceBaseResult.status !== 'fulfilled') return 0;
-      const response = marketplaceBaseResult.value;
-      return Number(response?.global?.totalRequests ?? 0);
-    })();
-
-    return {
-      mech: legacyMechTotalRequests,
-      marketplace:
-        marketplaceGnosisTotalRequests + marketplaceBaseTotalRequests,
-      total:
-        legacyMechTotalRequests +
-        marketplaceGnosisTotalRequests +
-        marketplaceBaseTotalRequests,
-    };
+    return totals;
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
     return null;
@@ -175,13 +158,13 @@ export default async function handler(req, res) {
   );
 
   try {
-    const [dailyActiveAgents, requests, categorized] = await Promise.all([
+    const [dailyActiveAgents, globals, categorized] = await Promise.all([
       fetchDailyAgentPerformance(),
-      fetchMechRequestsFromSubgraphs(),
+      fetchMechGlobals(),
       fetchCategorizedRequestTotals(),
     ]);
 
-    if (dailyActiveAgents !== null && requests !== null) {
+    if (dailyActiveAgents !== null && globals !== null) {
       let typeTotals = {
         predictTxs: null,
         contributeTxs: null,
@@ -191,12 +174,15 @@ export default async function handler(req, res) {
       if (categorized) {
         const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
         const known = predictTxs + contributeTxs + governatooorrTxs;
-        const otherTxs = Math.max(0, Number(requests?.total ?? 0) - known);
+        const otherTxs = Math.max(0, globals.requests - known);
         typeTotals = { predictTxs, contributeTxs, governatooorrTxs, otherTxs };
       }
-      return res
-        .status(200)
-        .json({ dailyActiveAgents, totalRequests: requests, ...typeTotals });
+      return res.status(200).json({
+        dailyActiveAgents,
+        totalRequests: globals.requests,
+        totalDeliveries: globals.deliveries,
+        ...typeTotals,
+      });
     }
 
     return res.status(404).json({ error: 'Error fetching mech metrics.' });

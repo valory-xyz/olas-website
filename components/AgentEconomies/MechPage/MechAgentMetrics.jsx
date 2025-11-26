@@ -11,7 +11,8 @@ const fetchMetrics = async () => {
   const result = await getMechMetrics();
   return {
     dailyActiveAgents: result?.dailyActiveAgents ?? null,
-    totalTxs: result?.totalRequests?.total ?? null,
+    totalTxs: result?.totalRequests ?? null,
+    totalDeliveries: result?.totalDeliveries ?? null,
     predictTxs: result?.predictTxs ?? null,
     contributeTxs: result?.contributeTxs ?? null,
     governatooorrTxs: result?.governatooorrTxs ?? null,
@@ -102,8 +103,8 @@ export const MechAgentMetrics = () => {
 
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
-      <div className="text-7xl lg:text-9xl mb-12 max-w-[650px] mx-auto mb-16 w-full">
-        <Card className="flex flex-col gap-6 p-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
+      <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">
+        <Card className="flex flex-col gap-6 p-8 mb-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
           <div className="flex items-center">
             <Image
               alt="Mech DAAs"
@@ -130,21 +131,28 @@ export const MechAgentMetrics = () => {
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <p className="text-xl text-slate-700 mb-8 mx-auto mt-12">
+        <p className="text-xl text-slate-700 mt-0 mb-4 mx-auto">
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
           {typeof metrics?.totalTxs === 'number' ? (
-            <Link
-              className="font-bold"
-              href="/data#mech-requests-categorized"
-              hideArrow
-            >
+            <Link className="font-bold" href="/data#mech-globals" hideArrow>
               {metrics.totalTxs.toLocaleString()}
             </Link>
           ) : (
             <span className="font-bold">--</span>
           )}{' '}
-          requests from other AI agent economies.
+          requests and{' '}
+          {typeof metrics?.totalDeliveries === 'number' ? (
+            <Link className="font-bold" href="/data#mech-globals" hideArrow>
+              {metrics.totalDeliveries.toLocaleString()}
+            </Link>
+          ) : (
+            <span className="font-bold">--</span>
+          )}{' '}
+          deliveries from other AI agent economies.
+        </p>
+        <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">
+          Requests are broken up as:
         </p>
       </div>
       <div className="w-full border-y mb-8">
