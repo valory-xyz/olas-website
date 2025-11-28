@@ -1,3 +1,4 @@
+import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { autonolasBaseGraphClient } from 'common-util/graphql/client';
 import { dailyActivitiesQuery } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -25,25 +26,8 @@ const fetchContributeDaa7dAvg = async () => {
         orderDirection: 'desc',
       });
 
-    const totalsByDay = new Map();
-    rows.forEach((r) => {
-      const key = new Date(Number(r.dayTimestamp) * 1000)
-        .toISOString()
-        .slice(0, 10);
-      totalsByDay.set(key, Number(r.count || 0));
-    });
-
-    const dayKeys = [];
-    for (let i = 7; i >= 1; i -= 1) {
-      const ts = timestamp_lt - i * 24 * 60 * 60;
-      dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
-    }
-
-    const total = dayKeys.reduce(
-      (acc, k) => acc + (totalsByDay.get(k) || 0),
-      0,
-    );
-    return Math.floor(total / 7);
+    const average = calculate7DayAverage(rows, 'count');
+    return Math.floor(average);
   } catch (error) {
     console.error('Error fetching contribute DAA:', error);
     return null;
