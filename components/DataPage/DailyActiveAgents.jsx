@@ -1,6 +1,10 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
 import {
+  AUTONOLAS_BASE_SUBGRAPH_URL,
+  REGISTRY_SUBGRAPH_URLS,
+} from 'common-util/constants';
+import {
+  dailyActivitiesQuery,
   dailyAgentPerformancesQuery,
   dailyBabydegenPerformancesQuery,
   dailyMechAgentPerformancesQuery,
@@ -189,6 +193,32 @@ export const DailyActiveAgentsInfo = () => {
             ))}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper id="contribute-daily-active-agents">
+        <h2 className={SUB_HEADER_LG_CLASS}>Contribute Daily Active Agents</h2>
+
+        <div className="space-y-6 mt-4">
+          <p>
+            Tracks how many unique agent-41 services received ETH each day on
+            Base. The <strong>count</strong> reflects the number of unique
+            services that were active within the UTC day window.
+          </p>
+
+          <p>The following query is used to compute daily active agents:</p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Daily Activities Query
+          </h3>
+
+          <p className="text-purple-600">
+            Subgraph links:{' '}
+            <ExternalLink href={AUTONOLAS_BASE_SUBGRAPH_URL} className="mr-2">
+              1
+            </ExternalLink>
+          </p>
+          <CodeSnippet>{dailyActivitiesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>
