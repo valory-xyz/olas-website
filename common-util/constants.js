@@ -101,6 +101,9 @@ export const REGISTRY_SUBGRAPH_URLS = {
 export const AUTONOLAS_SUBGRAPH_URL =
   process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
+export const AUTONOLAS_BASE_SUBGRAPH_URL =
+  process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL;
+
 export const TOKENOMICS_SUBGRAPH_URLS = [
   {
     key: 'ethereum',
