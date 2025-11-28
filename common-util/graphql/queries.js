@@ -490,3 +490,24 @@ export const totalBuildersQuery = gql`
     }
   }
 `;
+
+export const dailyActivitiesQuery = gql`
+  query DailyActivities(
+    $first: Int
+    $where: DailyActivity_filter
+    $orderBy: DailyActivity_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    dailyActivities(
+      first: $first
+      where: $where
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      dayTimestamp
+      count
+      services
+    }
+  }
+`;
