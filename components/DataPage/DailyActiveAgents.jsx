@@ -2,6 +2,7 @@ import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
 import {
   dailyAgentPerformancesQuery,
+  dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
@@ -80,6 +81,35 @@ export const DailyActiveAgentsInfo = () => {
             ))}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper id="agentsfun-daily-active-agents">
+        <h2 className={SUB_HEADER_LG_CLASS}>Agents.fun Daily Active Agents</h2>
+
+        <div className="space-y-6 mt-4">
+          <p>
+            Tracks how many unique multisigs were active each day for Agents.fun
+            agents on Base. The <strong>active multisig count</strong> reflects
+            the number of unique multisigs that performed at least one on-chain
+            interaction attributed to a given agent within the UTC day window.
+          </p>
+
+          <p>The following query is used to compute daily active agents:</p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Daily Performance query
+          </h3>
+
+          <p className="text-purple-600">
+            Subgraph links:{' '}
+            {[REGISTRY_SUBGRAPH_URLS.base].map((link, index) => (
+              <ExternalLink key={index} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))}
+          </p>
+          <CodeSnippet>{dailyAgentsFunPerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
 
