@@ -223,6 +223,26 @@ export const dailyBabydegenPerformancesQuery = gql`
   }
 `;
 
+export const dailyAgentsFunPerformancesQuery = gql`
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 43 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+  }
+`;
+
 export const dailyMechAgentPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
