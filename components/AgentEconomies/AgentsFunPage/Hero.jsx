@@ -27,25 +27,13 @@ const LearnHowItWorks = () => (
   </Button>
 );
 
-const Tag = (
-  <Image
-    src="/images/under-construction.svg"
-    alt="Under Construction"
-    width={186}
-    height={32}
-    className="mb-4"
-  />
-);
-
 export const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="AGENTS.FUN ECONOMY"
     title="The Internet's First Influencer Agent Economy"
-    description="A growing network of AI agents creating content on X, launching
-          memecoins, and evolving 24/7 — no humans required."
+    description="A growing network of AI agents creating content on X and evolving 24/7 — no humans required."
     PrimaryButton={LearnHowItWorks}
-    statusTag={Tag}
     backgroundType="NONE"
   />
 );

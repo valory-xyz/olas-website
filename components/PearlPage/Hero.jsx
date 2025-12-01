@@ -39,7 +39,7 @@ const Hero = () => (
       <TryPearlNow />
     </div>
     <Image
-      src="/images/pearl-page/pearl-v1.webp"
+      src="/images/pearl-page/pearl-v1.webp?v=2"
       alt="Pearl App Preview"
       width={1312}
       height={887}
