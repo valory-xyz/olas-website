@@ -220,6 +220,24 @@
           "iconFileName": "au-page/icons/bond.png",
           "width": 113,
           "height": 13
+        },
+        {
+          "name": "Oasis",
+          "iconFileName": "au-page/icons/oasis.svg",
+          "width": 72,
+          "height": 26
+        },
+        {
+          "name": "Zero Gravity",
+          "iconFileName": "au-page/icons/zero-gravity.svg",
+          "width": 45,
+          "height": 21
+        },
+        {
+          "name": "Secret Network",
+          "iconFileName": "au-page/icons/secret-network.svg",
+          "width": 80,
+          "height": 25
         }
       ]
     }
