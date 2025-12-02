@@ -50,7 +50,7 @@ export const OwnYourAgent = () => (
 
     <div className="relative mx-auto shadow-overlay w-fit">
       <Image
-        src="/images/homepage/pearl-v1.png"
+        src="/images/homepage/pearl-v1.webp"
         alt="Pearl v1"
         width={864}
         height={474}

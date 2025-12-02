@@ -1,4 +1,5 @@
-import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { Accordion } from 'common-util/Accordion';
+import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
 import { HeroSection } from 'components/HeroSection';
 import { InfoCardList } from 'components/InfoCardList';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -8,7 +9,10 @@ import { TestimonySection } from 'components/TestimonySection';
 import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
-import Link from 'next/link';
+
+import NextLink from 'next/link';
+
+import { Link } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -33,25 +37,14 @@ const Explore = () => (
   </Button>
 );
 
-const Tag = (
-  <Image
-    src="/images/under-construction.svg"
-    alt="Under Construction"
-    width={186}
-    height={32}
-    className="mb-4"
-  />
-);
-
 const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="AGENTS.FUN AGENTS"
     title={AIAgentInfluencers}
-    description="Launch your personal AI influencer agent that posts, benefits from memecoins, and interacts with other influencer agents — 24/7."
+    description="Launch your personal AI Agent influencer that posts, and interacts with other influencer agents — 24/7."
     PrimaryButton={Explore}
     backgroundType="NONE"
-    statusTag={Tag}
   />
 );
 
@@ -63,10 +56,6 @@ const list = [
   {
     title: 'Earn OLAS rewards',
     desc: 'Stake your agent and unlock potential OLAS staking rewards as it works autonomously.',
-  },
-  {
-    title: 'Benefit from memecoins',
-    desc: 'Your agent creates and interacts with memecoins, giving you the potential to benefit from its holdings.',
   },
   {
     title: 'Smarter every day',
@@ -81,11 +70,7 @@ const list = [
     desc: (
       <>
         Set up and configure your agent in minutes — no coding required, just
-        download the{' '}
-        <Link href="/operate" className="text-purple-600">
-          Pearl app
-        </Link>{' '}
-        and go.
+        download the <Link href="/pearl#download">Pearl app</Link> and go.
       </>
     ),
   },
@@ -115,20 +100,20 @@ const TheFuture = () => (
 
 const tweets = [
   {
-    imgSrc: 'johnny-s-tweet.png',
-    linkUrl: 'https://x.com/johnny_v_good/status/1877295112499114045',
-  },
-  {
-    imgSrc: 'agent-z-tweet.png',
-    linkUrl: 'https://x.com/agentzeeeee/status/1876989678508728808',
-  },
-  {
     imgSrc: 'mr-cat-tweet.png',
     linkUrl: 'https://x.com/0xJohnAlter/status/1878747162600980784',
   },
   {
     imgSrc: 'inferno-agent-tweet.png',
     linkUrl: 'https://x.com/InfernoAgent_AI/status/1880087399394603098',
+  },
+  {
+    imgSrc: 'josh-wiggins-tweet.png',
+    linkUrl: 'https://x.com/JoshWiggin24420/status/1942623554173833616',
+  },
+  {
+    imgSrc: 'agent-z-tweet.png',
+    linkUrl: 'https://x.com/agentzeeeee/status/1876989678508728808',
   },
 ];
 
@@ -146,7 +131,7 @@ const funAgents = [
     title: 'Agent Base',
     anchor: 'agent-base',
     description:
-      'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, benefits from meme coins, and interacting autonomously — all powered by the Olas.',
+      'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, and interacting autonomously — all powered by the Olas.',
     imgSrc: 'agentsfun-base.png',
   },
   // {
@@ -159,15 +144,12 @@ const funAgents = [
 
 const PickYourAgent = () => (
   <SectionWrapper id="choose-agent">
-    <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
-      Pick your agent
-    </h2>
-    <div className="max-w-[800px] mx-auto flex md:flex-row flex-col gap-8">
+    <div className="max-w-[700px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
           id={agent.anchor}
           key={agent.title}
-          className="flex mx-auto flex-col gap-8 p-5"
+          className="flex items-start gap-8 p-8"
         >
           <Image
             src={`/images/agents/agentsfun/${agent.imgSrc}`}
@@ -175,16 +157,85 @@ const PickYourAgent = () => (
             width={128}
             height={128}
           />
-          <CardTitle>{agent.title}</CardTitle>
-          {agent.description}
-          {agent.link ? (
-            <Button variant="default" size="lg" className="w-fit" asChild>
-              <Link href={agent.link}>Run via Pearl</Link>
+          <div className="flex flex-col gap-4">
+            <CardTitle>{agent.title}</CardTitle>
+            {agent.description}
+            <Button variant="default" size="lg" className="w-fit mt-4" asChild>
+              <NextLink href="/pearl#download">Run Agent via Pearl</NextLink>
             </Button>
-          ) : (
-            <p className="text-amber-800">The agent is under construction.</p>
-          )}
+          </div>
         </Card>
+      ))}
+    </div>
+  </SectionWrapper>
+);
+
+const faqList = [
+  {
+    list: [
+      {
+        title: 'What is Agents.Fun?',
+        desc: 'Agents.Fun is an autonomous AI agent that is designed to be an autonomous influencer AI Agent that creates and publishes posts on X. It generates relevant content, and shares it automatically.',
+      },
+      {
+        title: 'Can my Agents.Fun generate images or videos for tweets?',
+        desc: 'Yes. Agents.fun is designed to autonomously create and post multimedia content — including images, videos, audio, and text.',
+      },
+      {
+        title: 'On which social media platform does the agent operate?',
+        desc: 'Currently, Agents.fun primarily operates on X (formerly Twitter).',
+      },
+      {
+        title: 'Do I need coding skills to use Agents.fun?',
+        desc: (
+          <>
+            No. With the <Link href="/pearl">Pearl app</Link>, you can easily
+            deploy and manage Agents.fun Agents without coding, making
+            AI-powered prediction markets accessible to a wider audience.
+          </>
+        ),
+      },
+      {
+        title: 'How can I get started with Agents.Fun?',
+        desc: (
+          <>
+            You can start by downloading the{' '}
+            <Link href="/pearl#download">Pearl app</Link> and running your own
+            influencer AI Agent.
+          </>
+        ),
+      },
+    ],
+  },
+];
+
+const Faq = () => (
+  <SectionWrapper
+    customClasses="bg-no-repeat py-8 px-6 lg:py-24 lg:px-0"
+    id="faq"
+  >
+    <div className={`${SCREEN_WIDTH_LG}`}>
+      <div className="grid gap-12">
+        <h2 className={`${SUB_HEADER_CLASS} text-center mb-6 lg:mb-8`}>FAQ</h2>
+      </div>
+
+      {faqList.map((faq, faqIndex) => (
+        <div
+          key={faq.name}
+          className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
+        >
+          {faq.name && (
+            <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
+          )}
+
+          {faq.list.map((eachFaq, index) => (
+            <div className="py-2" key={index}>
+              <Accordion label={eachFaq.title} defaultOpen={false}>
+                {eachFaq.desc}
+              </Accordion>
+            </div>
+          ))}
+        </div>
       ))}
     </div>
   </SectionWrapper>
@@ -200,6 +251,7 @@ const AgentsFunPage = () => (
     <TheFuture />
     <FirstAgents />
     <PickYourAgent />
+    <Faq />
   </PageWrapper>
 );
 

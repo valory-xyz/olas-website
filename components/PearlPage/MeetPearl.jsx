@@ -31,7 +31,7 @@ export const MeetPearlContent = () => (
     </div>
     <Image
       alt="Meet Pearl"
-      src="/images/pearl-page/select-your-agent.png"
+      src="/images/pearl-page/select-your-agent.webp"
       width={630}
       height={489}
       className="mx-auto"
