@@ -1,13 +1,12 @@
 import { getContributeMetrics } from 'common-util/api';
-import { get7DayAvgDailyActiveContributors } from 'common-util/api/dune';
-import { CONTRIBUTE_URL, DUNE_URL } from 'common-util/constants';
+import { CONTRIBUTE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 
 export const ContributeMetrics = () => {
   const { data: metrics } = usePersistentSWR('contributeMetrics', () =>
-    fetchMetrics([getContributeMetrics, get7DayAvgDailyActiveContributors]),
+    fetchMetrics([getContributeMetrics]),
   );
 
   if (!metrics) {
@@ -30,8 +29,9 @@ export const ContributeMetrics = () => {
           imageSrc: 'DAC.png',
           imageWidth: 72,
           labelText: 'Daily Active Contributors',
-          source: `${DUNE_URL}/the-contribute-agent-economy`,
-          metric: metrics[1],
+          source: '/data#contribute-daily-active-agents',
+          metric: metrics[0]?.data?.dailyActiveContributors,
+          isExternal: false,
         },
       ],
     },

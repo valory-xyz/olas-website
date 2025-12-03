@@ -152,3 +152,8 @@ export const autonolasGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL,
   requestConfig,
 );
+
+export const autonolasBaseGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL,
+  requestConfig,
+);

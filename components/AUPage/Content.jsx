@@ -22,7 +22,7 @@ const chunkArrays = (array, sizes) => {
 };
 
 const mediumRows = chunkArrays(AuSponsors[0].mediumIcons, 6);
-const smallRows = chunkArrays(AuSponsors[0].smallIcons, [6, 5, 4]);
+const smallRows = chunkArrays(AuSponsors[0].smallIcons, [7, 6, 5]);
 
 const Sponsors = () => (
   <div className="md:mx-auto max-w-[1000px] px-4 md:px-0">

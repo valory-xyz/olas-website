@@ -1,6 +1,5 @@
 import {
   DAA_QUERY_ID,
-  DAILY_CONTRIBUTORS_QUERY_ID,
   MECH_TXS_QUERY_ID,
   OLAS_STAKED_QUERY_ID,
   PREDICTION_TOTAL_TXS_QUERY_ID,
@@ -87,17 +86,6 @@ export const getTotalUniqueStakers = async () => {
     return totalUniqueStakers;
   } catch (error) {
     console.error('Error in getTotalUniqueStakers: ', error);
-    return;
-  }
-};
-
-export const get7DayAvgDailyActiveContributors = async () => {
-  try {
-    const json = await duneApiCall({ queryId: DAILY_CONTRIBUTORS_QUERY_ID });
-    const dailyActiveContributors = get(json, 'result.rows[0].active_services');
-    return dailyActiveContributors;
-  } catch (error) {
-    console.error('Error in get7DayAvgDailyActiveContributors: ', error);
     return;
   }
 };

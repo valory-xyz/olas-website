@@ -12,6 +12,8 @@ const list = [
     location: 'Buenos Aires, Devconnect',
     date: "Nov 18 '25",
     eventLink: 'https://luma.com/rnj5dc2b',
+    replayLink:
+      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs',
   },
   ,
   {
