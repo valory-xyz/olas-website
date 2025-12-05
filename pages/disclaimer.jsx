@@ -110,12 +110,15 @@ const DisclaimerPage = () => (
               </ol>
             </li>
             <li>
-              In case this Site links to any platform on which OLAS tokens can
-              be acquired, the following applies:
+              If this Site links to any platform where OLAS tokens can be
+              acquired, the following restrictions apply:
               <ol className={`list-[lower-alpha] ${subClassName}`}>
                 <li>
-                  To comply with local laws and regulations, we prohibit
-                  participants from the following countries in the sale:{' '}
+                  Participation may be restricted for residents of jurisdictions
+                  subject to sanctions or local prohibitions;
+                </li>
+                <li>
+                  To comply with applicable laws, participants from{' '}
                   <a
                     className="text-primary"
                     href="https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information"
@@ -123,10 +126,32 @@ const DisclaimerPage = () => (
                     target="_blank"
                   >
                     OFAC Restricted Countries
-                  </a>
-                  , United States of America.
+                  </a>{' '}
+                  and the United States of America are prohibited from
+                  participating.
+                </li>
+                <li>
+                  Access restrictions are implemented via technical and
+                  compliance measures, such as IP address or wallet screening,
+                  and do not affect your statutory privacy rights.
                 </li>
               </ol>
+            </li>
+            <li>
+              Location Data & Access Restriction <br />
+              We may process limited, region-level IP geolocation (country and
+              region as derived from the IP address) data to determine whether
+              access to this Site is permitted from your location. Some regions
+              may be restricted due to legal, regulatory, or security
+              requirements. We do not use or collect precise location data. This
+              is processed solely for the purpose of enforcing access
+              restrictions where required. It is not used for analytics,
+              marketing, profiling, or any secondary purpose. Location data is
+              processed transiently and is not stored, logged, or linked to any
+              user account or identifier. These access restrictions may be
+              applied consistently across all websites and applications operated
+              on behalf of the Olas DAO, following the same minimal-data
+              principles described above.
             </li>
             <li>
               Privacy and Analytics Tools
