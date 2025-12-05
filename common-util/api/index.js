@@ -148,6 +148,21 @@ export const getPearlDAAs = async () => {
   }
 };
 
+// ----------- AGENTS.FUN -----------
+export const getAgentsFunMetrics = async () => {
+  try {
+    const response = await fetch('/api/agentsfun-metrics');
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching agents.fun metrics:', error);
+    return null;
+  }
+};
+
 // ----------- MECH -----------
 export const getMechMetrics = async () => {
   try {

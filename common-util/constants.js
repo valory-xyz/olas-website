@@ -159,6 +159,7 @@ export const MECH_AGENT_CLASSIFICATION = {
   predict: [14, 25, 13],
   contribute: [6],
   governatooor: [5],
+  agentsfun: [43],
 };
 
 /**

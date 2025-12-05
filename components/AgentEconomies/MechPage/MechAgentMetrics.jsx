@@ -16,6 +16,7 @@ const fetchMetrics = async () => {
     predictTxs: result?.predictTxs ?? null,
     contributeTxs: result?.contributeTxs ?? null,
     governatooorrTxs: result?.governatooorrTxs ?? null,
+    agentsfunTxs: result?.agentsfunTxs ?? null,
     otherTxs: result?.otherTxs ?? null,
   };
 };
@@ -49,6 +50,24 @@ export const MechAgentMetrics = () => {
         ),
         subText: 'requests',
         value: metrics?.predictTxs?.toLocaleString(),
+      },
+      {
+        id: 'agentsfun',
+        label: (
+          <div className="flex flex-col gap-2 mb-3">
+            <Image
+              alt="Agents.fun"
+              src="/images/agents/agentsfun-economy.png"
+              width="35"
+              height="35"
+            />
+            <span className="text-base font-semibold text-black">
+              Agents.fun
+            </span>
+          </div>
+        ),
+        subText: 'requests',
+        value: metrics?.agentsfunTxs?.toLocaleString(),
       },
       {
         id: 'contribute',
@@ -159,10 +178,7 @@ export const MechAgentMetrics = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 items-end xl:w-max md:mx-auto">
           {data.map((item, index) => {
             let borderClassName = '';
-            if (index !== 0) borderClassName += 'xl:border-l-1.5';
-            if (index % 2 !== 0) borderClassName += ' md:border-l-1.5';
-            if (index < 2) borderClassName += ' sm:max-xl:border-b-1.5';
-            if (index !== index.length)
+            if (index !== data.length - 1)
               borderClassName += ' max-md:border-b-1.5';
 
             const getValue = () => {
