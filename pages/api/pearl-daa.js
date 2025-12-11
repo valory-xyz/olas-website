@@ -10,6 +10,7 @@ import {
 } from 'common-util/graphql/client';
 import {
   checkpointsQuery,
+  dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
   dailyPredictAgentPerformancesWithMultisigsQuery,
 } from 'common-util/graphql/queries';
@@ -39,8 +40,8 @@ const getPredictPerformances = async () => {
       dailyPredictAgentPerformancesWithMultisigsQuery,
       {
         agentId_in: traderAgentIds,
-        dayTimestamp_gte: timestamp_gt,
-        dayTimestamp_lte: timestamp_lt,
+        dayTimestamp_gt: timestamp_gt,
+        dayTimestamp_lt: timestamp_lt,
       },
     );
 
@@ -84,6 +85,21 @@ const getBabydegenPerformances = async () => {
   }
 };
 
+const getAgentsFunPerformances = async () => {
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+
+  const result = await REGISTRY_GRAPH_CLIENTS.base.request(
+    dailyAgentsFunPerformancesQuery,
+    {
+      timestamp_gt,
+      timestamp_lt,
+    },
+  );
+
+  return result.dailyAgentPerformances ?? [];
+};
+
 const getPearlServiceIds = async () => {
   const predictStakingContracts = Object.values(PREDICT_STAKING_PROGRAMS_PEARL);
 
@@ -102,12 +118,17 @@ const getPearlServiceIds = async () => {
 };
 
 const getCombinedPearlDAAs = async () => {
-  const [pearlServiceIdsResult, predictResult, babydegenResult] =
-    await Promise.allSettled([
-      getPearlServiceIds(),
-      getPredictPerformances(),
-      getBabydegenPerformances(),
-    ]);
+  const [
+    pearlServiceIdsResult,
+    predictResult,
+    babydegenResult,
+    agentsFunResult,
+  ] = await Promise.allSettled([
+    getPearlServiceIds(),
+    getPredictPerformances(),
+    getBabydegenPerformances(),
+    getAgentsFunPerformances(),
+  ]);
 
   const pearlServiceIds =
     pearlServiceIdsResult.status === 'fulfilled'
@@ -117,6 +138,8 @@ const getCombinedPearlDAAs = async () => {
     predictResult.status === 'fulfilled' ? predictResult.value : [];
   const babydegenPerformances =
     babydegenResult.status === 'fulfilled' ? babydegenResult.value : [];
+  const agentsFunPerformances =
+    agentsFunResult.status === 'fulfilled' ? agentsFunResult.value : [];
 
   const filteredPredictPerformances = filterPearlPerformances(
     predictPerformances,
@@ -131,8 +154,12 @@ const getCombinedPearlDAAs = async () => {
     filteredPredictPerformances,
     'activeMultisigCount',
   );
+  const agentsFunAverage = calculate7DayAverage(
+    agentsFunPerformances,
+    'activeMultisigCount',
+  );
 
-  const averageDAAs = babydegenAverage + predictAverage;
+  const averageDAAs = babydegenAverage + predictAverage + agentsFunAverage;
 
   return Math.floor(averageDAAs);
 };
