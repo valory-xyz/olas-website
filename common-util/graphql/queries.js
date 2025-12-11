@@ -297,15 +297,15 @@ export const dailyPredictAgentsPerformancesQuery = gql`
 export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
   query DailyPredictAgentPerformancesWithMultisigs(
     $agentId_in: [Int!]!
-    $dayTimestamp_gte: Int!
-    $dayTimestamp_lte: Int!
+    $dayTimestamp_gt: Int!
+    $dayTimestamp_lt: Int!
   ) {
     dailyAgentPerformances(
       where: {
         and: [
           { agentId_in: $agentId_in }
-          { dayTimestamp_gte: $dayTimestamp_gte }
-          { dayTimestamp_lte: $dayTimestamp_lte }
+          { dayTimestamp_gt: $dayTimestamp_gt }
+          { dayTimestamp_lt: $dayTimestamp_lt }
         ]
       }
       orderBy: dayTimestamp
