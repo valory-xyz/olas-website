@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BLOCKED_REGIONS = ['UA-14', 'UA-09', 'UA-65', 'UA-23', 'GB-LND']; //GB-LDN added for testing TODO: remove after testing
+const BLOCKED_REGIONS = ['UA-14', 'UA-09', 'UA-65', 'UA-23'];
 
 export function middleware(request) {
   const region = request.headers.get('x-vercel-ip-country-region');
