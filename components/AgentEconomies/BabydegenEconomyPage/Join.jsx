@@ -1,8 +1,9 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
+import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export const Join = () => (
   <SectionWrapper
@@ -22,7 +23,9 @@ export const Join = () => (
       </h2>
       <div className="flex flex-wrap justify-center gap-6 mx-auto">
         <Button variant="default" size="lg" asChild>
-          <Link href="/pearl#download">Run BabyDegen Agent via Pearl</Link>
+          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+            Run BabyDegen Agent via Pearl
+          </SubsiteLink>
         </Button>
 
         {/* <Button variant="outline" size="lg" asChild>

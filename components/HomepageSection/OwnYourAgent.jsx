@@ -1,9 +1,8 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const list = [
   {
@@ -60,7 +59,7 @@ export const OwnYourAgent = () => (
 
     <div className="w-fit mt-14 mx-auto">
       <Button variant="default" size="xl" asChild>
-        <Link href="/pearl">Own Your Agent</Link>
+        <SubsiteLink>Own Your Agent</SubsiteLink>
       </Button>
     </div>
   </SectionWrapper>

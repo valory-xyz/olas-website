@@ -1,8 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
+import { PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
-import Link from 'next/link';
+import { SubsiteLink } from 'components/ui/typography';
 
 const PearlContent = () => (
   <ol className="list-decimal ml-6">
@@ -11,11 +12,11 @@ const PearlContent = () => (
     </strong>
     <div className="mb-4">
       Visit{' '}
-      <Link href="/pearl#download" className="text-purple-600">
+      <SubsiteLink href={PEARL_YOU_URL}>
         <span className="inline-block max-w-full break-all">
-          https://olas.network/pearl#download
+          {PEARL_YOU_URL}
         </span>
-      </Link>{' '}
+      </SubsiteLink>{' '}
       to download the Pearl app.
     </div>
 
@@ -39,7 +40,9 @@ const PearlContent = () => (
 
 const PearlButton = () => (
   <Button variant="default" size="xl" asChild className="grow mt-6">
-    <Link href="/pearl#download">Run an Agent</Link>
+    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+      Run an Agent
+    </SubsiteLink>
   </Button>
 );
 

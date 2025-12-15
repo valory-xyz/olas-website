@@ -1,7 +1,9 @@
 import Image from 'next/image';
 
+import { PEARL_YOU_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 
 const HeroImage = () => (
@@ -15,7 +17,9 @@ const HeroImage = () => (
 
 const RunAnAgent = () => (
   <Button variant="default" size="xl" asChild className="grow max-md:w-full">
-    <Link href="/pearl#download">Run an Agent</Link>
+    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+      Run an Agent
+    </SubsiteLink>
   </Button>
 );
 

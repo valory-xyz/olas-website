@@ -1,10 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
-import Link from 'next/link';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 
 const list = [
   {
@@ -17,9 +16,9 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          <Link href="/pearl#download" className="break-words text-purple-600">
-            https://olas.network/pearl#download
-          </Link>{' '}
+          <SubsiteLink href={PEARL_YOU_URL} className="break-words">
+            {PEARL_YOU_URL}
+          </SubsiteLink>{' '}
           to download the Pearl app.
         </div>
 
@@ -47,7 +46,9 @@ const list = [
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        <Link href="/pearl#download">Run an Agent</Link>
+        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          Run an Agent
+        </SubsiteLink>
       </Button>
     ),
   },

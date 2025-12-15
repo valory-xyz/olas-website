@@ -2,6 +2,7 @@ import {
   COINGECKO_URL,
   DISCORD_INVITE_URL,
   DOCS_BASE_URL,
+  PEARL_YOU_URL,
   WHITEPAPER,
   X_OLAS_URL,
 } from 'common-util/constants';
@@ -42,7 +43,7 @@ const SOCIAL_LINKS = [
 const FOR_USERS_LINKS = [
   {
     title: 'Pearl: The “AI Agent App Store”',
-    link: '/pearl',
+    link: PEARL_YOU_URL,
   },
   {
     title: 'Mech Marketplace: The "AI Agent Bazaar"',

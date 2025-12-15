@@ -1,9 +1,8 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
+import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import { SquareCheck } from 'lucide-react';
-import Link from 'next/link';
 
 const evaluationList = [
   {
@@ -29,9 +28,7 @@ export const HowToApply = () => (
         </h2>
         <div className="mb-8">
           We recommend you{' '}
-          <Link href="/pearl" className="text-purple-600">
-            download and try Pearl
-          </Link>
+          <SubsiteLink href={PEARL_YOU_URL}>download and try Pearl</SubsiteLink>
           , consult the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">
             Integrating Your AI Agent with Pearl

@@ -3,12 +3,11 @@ import {
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
-import { QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import { H2 } from 'components/ui/typography';
+import { H2, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const TaggedItem = ({ item }) => (
   <div className="max-sm:mt-2 rounded-full border py-1 pr-2 max-w-fit inline mr-2">
@@ -152,7 +151,7 @@ const OptimusAgent = () => (
 
       <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <Link href="/pearl#download">Run via Pearl</Link>
+          <SubsiteLink href={PEARL_YOU_URL}>Run via Pearl</SubsiteLink>
         </Button>
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>

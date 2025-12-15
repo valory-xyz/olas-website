@@ -1,4 +1,6 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import { Card } from 'components/ui/card';
+import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -53,10 +55,8 @@ export const MMPearlDiagram = () => (
         className="md:max-xl:ml-12"
       >
         <p className="mb-3">
-          <Link className="text-purple-700 hover:text-purple-800" href="/pearl">
-            Pearl
-          </Link>{' '}
-          today is a world of AI agents owned by you — in one app.
+          <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink> today is a world
+          of AI agents owned by you — in one app.
         </p>
         <p className="mb-3">
           The next stage, powered by the{' '}

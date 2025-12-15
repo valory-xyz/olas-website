@@ -1,3 +1,4 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Operate from 'components/OperatePage';
@@ -10,7 +11,7 @@ const OperatePage = () => {
   useEffect(() => {
     if (window.location.hash === '#download') {
       // redirect to new pearl page
-      router.replace('/pearl#download');
+      router.replace(PEARL_YOU_URL);
     }
   }, [router]);
 

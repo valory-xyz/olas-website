@@ -1,3 +1,4 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Tag } from 'components/ui/tag';
@@ -12,7 +13,7 @@ const cards = [
         Own Your Agent <br /> with Pearl
       </>
     ),
-    link: '/pearl',
+    link: PEARL_YOU_URL,
   },
   {
     image: '/images/about/mech-marketplace.png',
