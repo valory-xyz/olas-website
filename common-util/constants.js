@@ -51,7 +51,7 @@ export const X_VALORY_AG_URL = 'https://x.com/valoryag';
 export const VALORY_URL = 'https://www.valory.xyz';
 export const SHORTS_URL = 'https://shorts.wtf';
 export const MECH_MARKETPLACE_URL = 'https://marketplace.olas.network/';
-export const PEARL_YOU_URL = 'https://www.pearl.you/';
+export const PEARL_YOU_URL = 'https://pearl.you/';
 
 export const CONTRIBUTE_URL = 'https://contribute.olas.network';
 export const OPERATE_URL = 'https://operate.olas.network';
