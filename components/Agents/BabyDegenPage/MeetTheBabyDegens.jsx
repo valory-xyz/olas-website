@@ -151,7 +151,9 @@ const OptimusAgent = () => (
 
       <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <SubsiteLink href={PEARL_YOU_URL}>Run via Pearl</SubsiteLink>
+          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+            Run via Pearl
+          </SubsiteLink>
         </Button>
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>

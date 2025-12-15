@@ -1,10 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
+import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const steps = [
   {
@@ -80,9 +79,9 @@ const Pearl = () => (
         benefit from it.
       </p>
 
-      <Link href="/operate" className="text-purple-600">
+      <SubsiteLink href={PEARL_YOU_URL}>
         Explore AI Agents available on Pearl
-      </Link>
+      </SubsiteLink>
     </div>
     <Image
       src="/images/accelerator/agents.png"

@@ -17,7 +17,7 @@ const list = [
         <div className="mb-4">
           Visit{' '}
           <SubsiteLink href={PEARL_YOU_URL} className="break-words">
-            {PEARL_YOU_URL}
+            Pearl.you
           </SubsiteLink>{' '}
           to download the Pearl app.
         </div>
