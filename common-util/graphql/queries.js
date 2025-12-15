@@ -223,6 +223,26 @@ export const dailyBabydegenPerformancesQuery = gql`
   }
 `;
 
+export const dailyAgentsFunPerformancesQuery = gql`
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 43 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+  }
+`;
+
 export const dailyMechAgentPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
@@ -277,15 +297,15 @@ export const dailyPredictAgentsPerformancesQuery = gql`
 export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
   query DailyPredictAgentPerformancesWithMultisigs(
     $agentId_in: [Int!]!
-    $dayTimestamp_gte: Int!
-    $dayTimestamp_lte: Int!
+    $dayTimestamp_gt: Int!
+    $dayTimestamp_lt: Int!
   ) {
     dailyAgentPerformances(
       where: {
         and: [
           { agentId_in: $agentId_in }
-          { dayTimestamp_gte: $dayTimestamp_gte }
-          { dayTimestamp_lte: $dayTimestamp_lte }
+          { dayTimestamp_gt: $dayTimestamp_gt }
+          { dayTimestamp_lt: $dayTimestamp_lt }
         ]
       }
       orderBy: dayTimestamp

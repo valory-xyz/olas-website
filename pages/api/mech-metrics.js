@@ -8,6 +8,7 @@ import {
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
+  agentTxCountsQuery,
   dailyMechAgentPerformancesQuery,
   mechGlobalsTotalRequestsQuery,
   mechMarketplaceRequestsPerAgentsQuery,
@@ -74,6 +75,24 @@ const fetchMechGlobals = async () => {
     return totals;
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
+    return null;
+  }
+};
+
+// Fetch agents.fun txCount from Base registry subgraph
+const fetchAgentsFunTxCount = async () => {
+  try {
+    const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
+    const result = await REGISTRY_GRAPH_CLIENTS.base.request(
+      agentTxCountsQuery,
+      {
+        agentIds,
+      },
+    );
+    const rows = result?.agentPerformances || [];
+    return rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
+  } catch (error) {
+    console.error('Error fetching agents.fun txCount:', error);
     return null;
   }
 };
@@ -158,24 +177,34 @@ export default async function handler(req, res) {
   );
 
   try {
-    const [dailyActiveAgents, globals, categorized] = await Promise.all([
-      fetchDailyAgentPerformance(),
-      fetchMechGlobals(),
-      fetchCategorizedRequestTotals(),
-    ]);
+    const [dailyActiveAgents, globals, categorized, agentsfunTxs] =
+      await Promise.all([
+        fetchDailyAgentPerformance(),
+        fetchMechGlobals(),
+        fetchCategorizedRequestTotals(),
+        fetchAgentsFunTxCount(),
+      ]);
 
     if (dailyActiveAgents !== null && globals !== null) {
       let typeTotals = {
         predictTxs: null,
         contributeTxs: null,
         governatooorrTxs: null,
+        agentsfunTxs: null,
         otherTxs: null,
       };
       if (categorized) {
         const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
-        const known = predictTxs + contributeTxs + governatooorrTxs;
+        const known =
+          predictTxs + contributeTxs + governatooorrTxs + (agentsfunTxs ?? 0);
         const otherTxs = Math.max(0, globals.requests - known);
-        typeTotals = { predictTxs, contributeTxs, governatooorrTxs, otherTxs };
+        typeTotals = {
+          predictTxs,
+          contributeTxs,
+          governatooorrTxs,
+          agentsfunTxs,
+          otherTxs,
+        };
       }
       return res.status(200).json({
         dailyActiveAgents,
