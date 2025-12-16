@@ -1,3 +1,4 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Tag } from 'components/ui/tag';
@@ -12,7 +13,8 @@ const cards = [
         Own Your Agent <br /> with Pearl
       </>
     ),
-    link: '/pearl',
+    link: PEARL_YOU_URL,
+    isExternal: true,
   },
   {
     image: '/images/about/mech-marketplace.png',
@@ -23,16 +25,19 @@ const cards = [
       </>
     ),
     link: '/mech-marketplace',
+    isExternal: false,
   },
   {
     image: '/images/about/olas-dao.png',
     title: 'Explore DAO Roles',
     link: '/olas-token#choose-your-role',
+    isExternal: false,
   },
   {
     image: '/images/about/olas-token.png',
     title: 'Get OLAS Token',
     link: '/olas-token',
+    isExternal: false,
   },
 ];
 
@@ -44,8 +49,8 @@ export const GetInvolved = () => (
       </Tag>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {cards.map((card) => (
-          <Link key={card.title} href={card.link}>
+        {cards.map((card) => {
+          const cardContent = (
             <Card className="relative activity-card-opaque flex items-center hover:bg-white duration-150 hover:cursor-pointer py-4 px-6 h-[136px] md:max-w-md w-full">
               <span className="text-lg font-medium">{card.title}</span>
               <Image
@@ -56,8 +61,18 @@ export const GetInvolved = () => (
                 className="absolute bottom-0 right-0"
               />
             </Card>
-          </Link>
-        ))}
+          );
+
+          return card.isExternal ? (
+            <a key={card.title} href={card.link} rel="noopener noreferrer">
+              {cardContent}
+            </a>
+          ) : (
+            <Link key={card.title} href={card.link}>
+              {cardContent}
+            </Link>
+          );
+        })}
       </div>
     </div>
   </SectionWrapper>

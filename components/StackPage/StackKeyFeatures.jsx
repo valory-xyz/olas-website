@@ -1,4 +1,4 @@
-import { DOCS_BASE_URL } from 'common-util/constants';
+import { DOCS_BASE_URL, PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { SubsiteLink } from 'components/ui/typography';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 const list = [
   {
     title: 'Pearl',
-    url: '/pearl',
+    url: PEARL_YOU_URL,
     description: 'AI Agent App Store for consumers to own AI agents.',
     imgUrl: 'pearl-icon.png',
   },

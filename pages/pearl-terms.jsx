@@ -1,11 +1,15 @@
 import { AlertTriangle, Link } from 'lucide-react';
 
-import { DISCORD_INVITE_URL, VALORY_URL } from 'common-util/constants';
+import {
+  DISCORD_INVITE_URL,
+  PEARL_YOU_URL,
+  VALORY_URL,
+} from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import SectionHeading from 'components/SectionHeading';
-import { ExternalLink } from 'components/ui/typography';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import { useRouter } from 'next/router';
 
 // Note: All links on this page must be external because
@@ -36,9 +40,7 @@ const PearlTerms = () => {
               </p>
               <p className="mt-2">
                 Pearl is a desktop application available for download on the{' '}
-                <ExternalLink href="https://olas.network/pearl" hideArrow>
-                  Olas Site
-                </ExternalLink>{' '}
+                <SubsiteLink href={PEARL_YOU_URL}>Pearl Site</SubsiteLink>{' '}
                 therefore is subject to these Pearl Terms, the Valory Terms, and
                 the{' '}
                 <ExternalLink href="https://olas.network/disclaimer" hideArrow>

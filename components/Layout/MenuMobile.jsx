@@ -1,6 +1,7 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { MENU_DATA } from 'common-util/constants';
+import { MENU_DATA, PEARL_YOU_URL } from 'common-util/constants';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import { AlignJustify, ChevronDown, MoveUpRight, X } from 'lucide-react';
 import Link from 'next/link';
@@ -116,7 +117,9 @@ export const MenuMobile = ({ className }) => {
                     className="w-full"
                     onClick={toggleOpen}
                   >
-                    <Link href="/pearl">Own Your Agent</Link>
+                    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+                      Own Your Agent
+                    </SubsiteLink>
                   </Button>
                 </NavigationMenu.Item>
               </NavigationMenu.List>

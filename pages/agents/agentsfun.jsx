@@ -10,9 +10,8 @@ import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
 
-import NextLink from 'next/link';
-
-import { Link } from 'components/ui/typography';
+import { PEARL_YOU_URL } from 'common-util/constants';
+import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
   <Image
@@ -70,7 +69,8 @@ const list = [
     desc: (
       <>
         Set up and configure your agent in minutes — no coding required, just
-        download the <Link href="/pearl#download">Pearl app</Link> and go.
+        download the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>{' '}
+        and go.
       </>
     ),
   },
@@ -161,7 +161,9 @@ const PickYourAgent = () => (
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
             <Button variant="default" size="lg" className="w-fit mt-4" asChild>
-              <NextLink href="/pearl#download">Run Agent via Pearl</NextLink>
+              <SubsiteLink href={PEARL_YOU_URL} isInButton>
+                Run Agent via Pearl
+              </SubsiteLink>
             </Button>
           </div>
         </Card>
@@ -189,9 +191,10 @@ const faqList = [
         title: 'Do I need coding skills to use Agents.fun?',
         desc: (
           <>
-            No. With the <Link href="/pearl">Pearl app</Link>, you can easily
-            deploy and manage Agents.fun Agents without coding, making
-            AI-powered prediction markets accessible to a wider audience.
+            No. With the{' '}
+            <SubsiteLink href={{ PEARL_YOU_URL }}>Pearl app</SubsiteLink>, you
+            can easily deploy and manage Agents.fun Agents without coding,
+            making AI-powered prediction markets accessible to a wider audience.
           </>
         ),
       },
@@ -200,8 +203,8 @@ const faqList = [
         desc: (
           <>
             You can start by downloading the{' '}
-            <Link href="/pearl#download">Pearl app</Link> and running your own
-            influencer AI Agent.
+            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and
+            running your own influencer AI Agent.
           </>
         ),
       },

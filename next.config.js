@@ -46,17 +46,22 @@ module.exports = withPlausibleProxy()({
       },
       {
         source: '/ea-agentsfun',
-        destination: '/pearl',
+        destination: 'https://www.pearl.you/',
         permanent: true,
       },
       {
         source: '/ea-all',
-        destination: '/pearl',
+        destination: 'https://www.pearl.you/',
         permanent: true,
       },
       {
         source: '/ea-modius',
-        destination: '/pearl',
+        destination: 'https://www.pearl.you/',
+        permanent: true,
+      },
+      {
+        source: '/pearl',
+        destination: 'https://www.pearl.you/',
         permanent: true,
       },
       {

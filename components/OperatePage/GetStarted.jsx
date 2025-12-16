@@ -1,10 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
-import { ExternalLink } from 'components/ui/typography';
-import Link from 'next/link';
+import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 
 const list = [
   {
@@ -40,7 +39,9 @@ const list = [
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        <Link href="/pearl#download">Get Started with Pearl</Link>
+        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          Get Started with Pearl
+        </SubsiteLink>
       </Button>
     ),
   },

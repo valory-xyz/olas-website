@@ -5,6 +5,7 @@ import { LinkIcon } from 'lucide-react';
 import {
   COINGECKO_URL,
   ETHERSCAN_URL,
+  PEARL_YOU_URL,
   SNAPSHOT_URL,
   VALORY_URL,
   VEOLAS_URL,
@@ -618,9 +619,9 @@ const FAQPage = () => (
 
     <div className="mb-8">
       Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
-      <Link href="/pearl#faq" className="text-purple-600">
+      <SubsiteLink href={`${PEARL_YOU_URL}FAQ`}>
         Check out the Pearl FAQ
-      </Link>
+      </SubsiteLink>
       .
     </div>
 
@@ -632,7 +633,7 @@ const FAQPage = () => (
         <h2 className="text-2xl font-semibold mt-2 mb-4 pb-4 border-b-1.5 text-gray-600">
           {eachSet.category}
         </h2>
-        {eachSet.list.map((faq, index) => (
+        {eachSet.list.map((faq) => (
           <div className="py-2 scroll-mt-20" key={faq.id} id={faq.id}>
             <Question text={faq.title} questionId={faq.id}>
               {faq.desc}

@@ -3,9 +3,11 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { PEARL_YOU_URL } from 'common-util/constants';
 import { TrusteeQuotePropTypes } from 'common-util/propTypes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
+import { SubsiteLink } from 'components/ui/typography';
 import unsortedTrustedBy from 'data/trustedBy.json';
 import Image from 'next/image';
 import { Trustee } from './Trustee';
@@ -117,7 +119,9 @@ const Hero = () => (
           asChild
           className="inline-flex md:ml-auto max-sm:grow"
         >
-          <Link href="/pearl">Own Your Agent</Link>
+          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+            Own Your Agent
+          </SubsiteLink>
         </Button>
         <Button
           variant="outline"
