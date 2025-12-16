@@ -76,7 +76,7 @@ export const SubsiteLink = ({
 
   return (
     <a
-      className={`${textClass} ${className}`}
+      className={`cursor-pointer ${textClass} ${className}`}
       href={href}
       rel="noopener noreferrer"
     >
