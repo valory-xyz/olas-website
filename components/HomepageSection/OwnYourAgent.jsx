@@ -1,3 +1,4 @@
+import { PEARL_YOU_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
@@ -59,7 +60,9 @@ export const OwnYourAgent = () => (
 
     <div className="w-fit mt-14 mx-auto">
       <Button variant="default" size="xl" asChild>
-        <SubsiteLink>Own Your Agent</SubsiteLink>
+        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          Own Your Agent
+        </SubsiteLink>
       </Button>
     </div>
   </SectionWrapper>
