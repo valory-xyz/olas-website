@@ -69,6 +69,7 @@ export const SubsiteLink = ({
   className,
   href,
   isInButton = false,
+  isExternal = false,
 }) => {
   const textClass = isInButton
     ? 'text-white'
@@ -79,6 +80,7 @@ export const SubsiteLink = ({
       className={`cursor-pointer ${textClass} ${className}`}
       href={href}
       rel="noopener noreferrer"
+      target={isExternal ? '_blank' : undefined}
     >
       {children}
     </a>
@@ -90,6 +92,7 @@ SubsiteLink.propTypes = {
   href: PropTypes.string.isRequired,
   class: PropTypes.string,
   isInButton: PropTypes.bool,
+  isExternal: PropTypes.bool,
 };
 
 export const Link = ({ children, className, href }) => (
