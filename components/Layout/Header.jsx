@@ -1,6 +1,4 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
 import { Button } from 'components/ui/button';
-import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Menu } from './Menu';
@@ -27,9 +25,7 @@ const Header = () => (
           asChild
           className="hidden md:inline-flex ml-auto"
         >
-          <SubsiteLink href={PEARL_YOU_URL} isInButton>
-            Own Your Agent
-          </SubsiteLink>
+          <Link href="/#pearl">Own Your Agent</Link>
         </Button>
       </div>
     </nav>

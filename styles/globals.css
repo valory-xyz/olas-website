@@ -146,14 +146,6 @@ video {
   z-index: 0;
 }
 
-.benefit-card-bg {
-  background-image: url('/images/pearl-page/benefit-card-bg.svg');
-  background-repeat: repeat;
-  width: 100%;
-  background-position: center;
-  z-index: 0;
-}
-
 .shadow-overlay::after {
   content: "";
   position: absolute;
