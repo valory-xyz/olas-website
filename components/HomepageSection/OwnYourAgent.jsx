@@ -79,7 +79,7 @@ export const OwnYourAgent = () => (
 
       <div className="w-fit mt-14 mx-auto">
         <Button variant="default" size="xl" asChild>
-          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          <SubsiteLink href={PEARL_YOU_URL} isInButton isExternal>
             Own Your Agent
             <ArrowUpRight size={24} className="ml-2" />
           </SubsiteLink>
