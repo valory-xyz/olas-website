@@ -26,6 +26,7 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 const LIMIT = 1000;
 const PAGES = 10;
+const SCALE = 100n; // 2 decimals
 const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 const INVALID_ANSWER_HEX =
@@ -193,13 +194,17 @@ const fetchRoi = async () => {
       BigInt(1e18);
 
     const partialRoi =
-      ((totalMarketPayout - totalCosts) * BigInt(100)) / totalCosts;
+      ((totalMarketPayout - totalCosts) * BigInt(100) * SCALE) / totalCosts;
     const finalRoi =
       ((totalMarketPayout + totalOlasRewardsPayoutInUsd - totalCosts) *
-        BigInt(100)) /
+        BigInt(100) *
+        SCALE) /
       totalCosts;
 
-    return { partialRoi: Number(partialRoi), finalRoi: Number(finalRoi) };
+    return {
+      partialRoi: Number(partialRoi) / Number(SCALE),
+      finalRoi: Number(finalRoi) / Number(SCALE),
+    };
   } catch (error) {
     throw error;
   }
