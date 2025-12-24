@@ -121,7 +121,7 @@ export const getBabydegenMetrics = async () => {
 // ----------- PREDICT -----------
 export const getPredictMetrics = async () => {
   try {
-    const response = await fetch('/api/predict-metrics');
+    const response = await fetch('/api/predict/metrics');
     if (!response.ok) {
       throw new Error('Failed to fetch metrics');
     }
@@ -135,7 +135,7 @@ export const getPredictMetrics = async () => {
 
 export const getPredictRoi = async () => {
   try {
-    const response = await fetch('/api/predict-roi');
+    const response = await fetch('/api/predict/roi');
     if (!response.ok) {
       throw new Error('Failed to fetch ROI');
     }
@@ -149,7 +149,7 @@ export const getPredictRoi = async () => {
 
 export const getPredictSuccessRate = async () => {
   try {
-    const response = await fetch('/api/predict-success-rate');
+    const response = await fetch('/api/predict/success-rate');
     if (!response.ok) {
       throw new Error('Failed to fetch success rate');
     }

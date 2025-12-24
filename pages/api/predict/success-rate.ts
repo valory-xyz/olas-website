@@ -1,11 +1,20 @@
 import { CACHE_DURATION_SECONDS } from 'common-util/constants';
 import { predictAgentsGraphClient } from 'common-util/graphql/client';
 import { getClosedMarketsBetsQuery } from 'common-util/graphql/queries';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const LIMIT = 1000;
 const PAGES = 10;
 const INVALID_ANSWER_HEX =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+type SuccessRateResponse = {
+  successRate?: string;
+};
+
+type ErrorResponse = {
+  message: string;
+};
 
 const fetchSuccessRate = async () => {
   try {
@@ -34,7 +43,10 @@ const fetchSuccessRate = async () => {
   }
 };
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<SuccessRateResponse | ErrorResponse>,
+) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
