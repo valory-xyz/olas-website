@@ -133,6 +133,20 @@ export const getPredictMetrics = async () => {
   }
 };
 
+export const getPredictRoi = async () => {
+  try {
+    const response = await fetch('/api/predict-roi');
+    if (!response.ok) {
+      throw new Error('Failed to fetch ROI');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching predict ROI:', error);
+    return null;
+  }
+};
+
 // ----------- PEARL DAAS -----------
 export const getPearlDAAs = async () => {
   try {

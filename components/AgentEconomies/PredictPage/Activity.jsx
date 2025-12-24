@@ -1,4 +1,4 @@
-import { getPredictMetrics } from 'common-util/api';
+import { getPredictMetrics, getPredictRoi } from 'common-util/api';
 import { getTotalPredictTransactions } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
@@ -9,21 +9,10 @@ import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-const fetchMetrics = async () => {
-  const [predictMetrics, total] = await Promise.allSettled([
-    getPredictMetrics(),
-    getTotalPredictTransactions(),
-  ]);
+const processPredictMetrics = (predictMetrics) => {
+  if (!predictMetrics) return null;
 
-  const dailyActiveAgents =
-    predictMetrics.status === 'fulfilled'
-      ? (predictMetrics.value?.dailyActiveAgents ?? null)
-      : null;
-
-  const predictTxsByType =
-    predictMetrics.status === 'fulfilled'
-      ? (predictMetrics.value?.predictTxsByType ?? null)
-      : null;
+  const predictTxsByType = predictMetrics.predictTxsByType ?? null;
 
   const traderTxs = predictTxsByType
     ? (predictTxsByType.valory_trader || 0) +
@@ -35,25 +24,12 @@ const fetchMetrics = async () => {
     : null;
 
   return {
-    dailyActiveAgents,
+    dailyActiveAgents: predictMetrics.dailyActiveAgents ?? null,
     traderTxs,
     mechTxs,
     marketCreatorTxs,
-    totalTxs: total.status === 'fulfilled' ? total.value : null,
-    partialRoi:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.roi?.partialRoi
-        : null,
-    finalRoi:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.roi?.finalRoi
-        : null,
-    apr:
-      predictMetrics.status === 'fulfilled' ? predictMetrics.value?.apr : null,
-    successRate:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.successRate
-        : null,
+    apr: predictMetrics.apr ?? null,
+    successRate: predictMetrics.successRate ?? null,
   };
 };
 
@@ -195,10 +171,25 @@ const TransactionsBubble = ({ metrics, image, title }) => {
 };
 
 export const Activity = () => {
-  const { data: metrics } = usePersistentSWR(
-    'predictionActivityMetrics',
-    fetchMetrics,
+  const { data: predictMetrics } = usePersistentSWR(
+    'predictionMetrics',
+    getPredictMetrics,
   );
+  const { data: totalTxs } = usePersistentSWR(
+    'totalPredictTransactions',
+    getTotalPredictTransactions,
+  );
+  const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
+
+  const metrics = useMemo(() => {
+    const base = processPredictMetrics(predictMetrics) || {};
+    return {
+      ...base,
+      totalTxs: totalTxs ?? null,
+      partialRoi: roi?.partialRoi ?? null,
+      finalRoi: roi?.finalRoi ?? null,
+    };
+  }, [predictMetrics, totalTxs, roi]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
