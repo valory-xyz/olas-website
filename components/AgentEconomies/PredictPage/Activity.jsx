@@ -1,5 +1,4 @@
 import { getPredictMetrics, getPredictRoi } from 'common-util/api';
-import { getTotalPredictTransactions } from 'common-util/api/dune';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -175,21 +174,16 @@ export const Activity = () => {
     'predictionMetrics',
     getPredictMetrics,
   );
-  const { data: totalTxs } = usePersistentSWR(
-    'totalPredictTransactions',
-    getTotalPredictTransactions,
-  );
   const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
 
   const metrics = useMemo(() => {
     const base = processPredictMetrics(predictMetrics) || {};
     return {
       ...base,
-      totalTxs: totalTxs ?? null,
       partialRoi: roi?.partialRoi ?? null,
       finalRoi: roi?.finalRoi ?? null,
     };
-  }, [predictMetrics, totalTxs, roi]);
+  }, [predictMetrics, roi]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
