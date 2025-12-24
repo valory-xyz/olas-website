@@ -73,29 +73,21 @@ export const mechGlobalsTotalRequestsQuery = gql`
   }
 `;
 
-export const getMechRequestsQuery = ({
-  timestamp_gt,
-  first,
-  skip,
-  pages,
-}) => gql`
+export const getMechRequestsRangeQuery = (start, end) => gql`
   query MechRequests {
-    ${Array.from({ length: pages })
-      .map((_, i) => {
-        const _skip = i * first + skip;
-        return `
-          _page${i + 1}: requests(
-            first: ${first}
-            skip: ${_skip}
-            where: { blockTimestamp_gt: ${timestamp_gt} }
-          ) {
-            id
-            questionTitle
-            blockTimestamp
-          }
-        `;
-      })
-      .join('\n')}
+    requests(
+      first: 1000
+      where: { 
+        blockTimestamp_gte: ${start}, 
+        blockTimestamp_lt: ${end} 
+      }
+      orderBy: blockTimestamp
+      orderDirection: asc
+    ) {
+      id
+      questionTitle
+      blockTimestamp
+    }
   }`;
 
 export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
