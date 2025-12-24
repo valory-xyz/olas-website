@@ -102,33 +102,6 @@ const fetchOlasApr = async () => {
   }
 };
 
-const fetchSuccessRate = async () => {
-  try {
-    const closedMarketsBetsResult = await predictAgentsGraphClient.request(
-      getClosedMarketsBetsQuery({ first: LIMIT, pages: PAGES }),
-    );
-
-    const closedMarketsBets = Object.values(closedMarketsBetsResult).flat();
-
-    const totalBets = closedMarketsBets.length;
-    // Calculate amount of won bets
-    let wonBets = 0;
-
-    closedMarketsBets.forEach((bet) => {
-      const marketAnswer = bet.fixedProductMarketMaker.currentAnswer;
-      const betAnswer = bet.outcomeIndex;
-      if (marketAnswer === INVALID_ANSWER_HEX) return;
-      if (Number(marketAnswer) === Number(betAnswer)) {
-        wonBets += 1;
-      }
-    });
-
-    return ((wonBets / totalBets) * 100).toFixed(0);
-  } catch (error) {
-    throw error;
-  }
-};
-
 const fetchAllAgentMetrics = async () => {
   try {
     const [aprResult, daaResult, txsByTypeResult] = await Promise.allSettled([
