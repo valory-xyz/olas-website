@@ -5,7 +5,7 @@ import {
 } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
-  getMechRequestsRangeQuery,
+  getMechRequestsQuery,
   stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
@@ -18,11 +18,15 @@ export const PredictRoiInfo = () => {
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(
     PREDICT_MARKET_DURATION_DAYS,
   );
-  const now = getMidnightUtcTimestampDaysAgo(0);
   const totalMechRequests = totalMechRequestsQuery;
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
   const stakingGlobals = stakingGlobalsQuery;
-  const mechRequests = getMechRequestsRangeQuery(marketOpenTimestamp, now);
+  const mechRequests = getMechRequestsQuery({
+    timestamp_gt: marketOpenTimestamp,
+    first: 1000,
+    skip: 0,
+    pages: 10,
+  });
 
   return (
     <SectionWrapper id="predict-roi">

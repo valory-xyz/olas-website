@@ -10,7 +10,7 @@ import {
 } from 'common-util/graphql/client';
 import {
   getMarketsAndBetsQuery,
-  getMechRequestsRangeQuery,
+  getMechRequestsQuery,
   stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
@@ -19,6 +19,8 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 const SCALE = 100n; // 2 decimals
 const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
+const LIMIT = 1000;
+const PAGES = 10;
 
 type TotalMechRequestsResponse = {
   global: {
@@ -44,89 +46,43 @@ type StakingGlobalsResponse = {
 };
 
 type MechRequestsResponse = {
-  requests: {
-    questionTitle: string;
-  }[];
-};
-
-const LIMIT = 1000;
-
-type RecursivelyFetchQueryDataParams = {
-  start: number;
-  end: number;
-  queryBuilderFn: (start: number, end: number) => string;
-  extractor: (response: unknown) => unknown[];
-};
-
-export async function recursivelyFetchQueryData({
-  start,
-  end,
-  queryBuilderFn,
-  extractor,
-}: RecursivelyFetchQueryDataParams) {
-  const initialChunkSize = 6 * 60 * 60; // 6-hour chunks
-  const totalDuration = end - start;
-  const chunkCount = Math.ceil(totalDuration / initialChunkSize);
-
-  const fetchRecursive = async (chunkStart, chunkEnd) => {
-    try {
-      const query = queryBuilderFn(chunkStart, chunkEnd);
-      const response = await mechGraphClient.request(query);
-      const data = extractor(response);
-
-      // If items are less than limit, there are no more items in this range
-      if (data.length < LIMIT) {
-        return data;
-      }
-
-      // If there are more items, we split the duration into two halves to fetch them in parallel manner
-      const mid = Math.floor((chunkStart + chunkEnd) / 2);
-
-      // Prevent infinite loops if multiple items share the exact same second
-      if (mid <= chunkStart) {
-        return data;
-      }
-
-      const [left, right] = await Promise.all([
-        fetchRecursive(chunkStart, mid),
-        fetchRecursive(mid, chunkEnd),
-      ]);
-
-      return [...left, ...right];
-    } catch (err) {
-      console.error(`Error fetching range ${chunkStart}-${chunkEnd}`, err);
-      throw err;
-    }
-  };
-
-  const initialPromises = [];
-  for (let i = 0; i < chunkCount; i++) {
-    const chunkStart = start + i * initialChunkSize;
-    const chunkEnd = Math.min(end, chunkStart + initialChunkSize);
-
-    initialPromises.push(fetchRecursive(chunkStart, chunkEnd));
-  }
-
-  const results = await Promise.all(initialPromises);
-  const flatData = results.flat();
-
-  // Deduplicate
-  const uniqueMap = new Map();
-  flatData.forEach((item) => {
-    if (item.id) uniqueMap.set(item.id, item);
-  });
-
-  return Array.from(uniqueMap.values());
-}
+  questionTitle: string;
+}[];
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
-  const today = getMidnightUtcTimestampDaysAgo(0);
-  const lastFourDaysRequests = await recursivelyFetchQueryData({
-    queryBuilderFn: getMechRequestsRangeQuery,
-    extractor: (response: MechRequestsResponse) => response.requests,
-    start: marketOpenTimestamp,
-    end: today,
-  });
+  // Request all mech requests by pages
+  let skip = 0;
+  let lastFourDaysRequests: MechRequestsResponse = [];
+
+  try {
+    while (true) {
+      const response = await mechGraphClient.request(
+        getMechRequestsQuery({
+          timestamp_gt: marketOpenTimestamp,
+          first: LIMIT,
+          skip,
+          pages: PAGES,
+        }),
+      );
+
+      const pageData = Object.values(response).flat();
+
+      lastFourDaysRequests = lastFourDaysRequests.concat(pageData);
+      skip += LIMIT * PAGES;
+
+      // If the returned page is empty, or the amount of items is less
+      // than the limit, we're on the last page
+      if (
+        !Array.isArray(pageData) ||
+        pageData.length === 0 ||
+        pageData.length < LIMIT * PAGES
+      ) {
+        break;
+      }
+    }
+  } catch (e) {
+    console.error("Couldn't fetch all requests", e);
+  }
 
   return lastFourDaysRequests;
 };
