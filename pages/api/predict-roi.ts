@@ -61,7 +61,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
           first: LIMIT,
           skip,
           pages: PAGES,
-        })
+        }),
       );
 
       const pageData = Object.values(response).flat();
@@ -89,7 +89,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
 const fetchRoi = async () => {
   try {
     const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(
-      PREDICT_MARKET_DURATION_DAYS
+      PREDICT_MARKET_DURATION_DAYS,
     );
 
     // Request fees, payouts, staking rewards and olas price
@@ -102,7 +102,7 @@ const fetchRoi = async () => {
     ] = await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(
-        getMarketsAndBetsQuery(marketOpenTimestamp)
+        getMarketsAndBetsQuery(marketOpenTimestamp),
       ),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL),
@@ -111,7 +111,7 @@ const fetchRoi = async () => {
 
     const olasInUsdPrice = await olasInUsdPriceResult.json();
     const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPrice[OLAS_ADDRESS]?.usd || 0) * 1e18)
+      Math.floor(Number(olasInUsdPrice[OLAS_ADDRESS]?.usd || 0) * 1e18),
     );
 
     const totalMechRequests = (totalRequestsResult as TotalMechRequestsResponse)
@@ -133,19 +133,20 @@ const fetchRoi = async () => {
     const totalCosts =
       BigInt(
         (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalTraded ||
-          0
+          0,
       ) +
       BigInt(
-        (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalFees || 0
+        (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalFees || 0,
       ) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
 
     const totalMarketPayout = BigInt(
-      (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalPayout || 0
+      (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalPayout || 0,
     );
     const totalOlasRewardsPayoutInUsd =
       (BigInt(
-        (totalRewardsResult as StakingGlobalsResponse).global?.totalRewards || 0
+        (totalRewardsResult as StakingGlobalsResponse).global?.totalRewards ||
+          0,
       ) *
         olasInUsdPriceInEth) /
       BigInt(1e18);
@@ -170,12 +171,12 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`
+    `s-maxage=${CACHE_DURATION_SECONDS}`,
   );
   res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
   res.setHeader(
     'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`
+    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
   );
 
   try {
