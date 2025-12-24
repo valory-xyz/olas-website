@@ -147,6 +147,20 @@ export const getPredictRoi = async () => {
   }
 };
 
+export const getPredictSuccessRate = async () => {
+  try {
+    const response = await fetch('/api/predict-success-rate');
+    if (!response.ok) {
+      throw new Error('Failed to fetch success rate');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching predict success rate:', error);
+    return null;
+  }
+};
+
 // ----------- PEARL DAAS -----------
 export const getPearlDAAs = async () => {
   try {

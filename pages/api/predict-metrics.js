@@ -3,24 +3,18 @@ import {
   PREDICT_AGENT_CLASSIFICATION,
 } from 'common-util/constants';
 import {
-  predictAgentsGraphClient,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
-  getClosedMarketsBetsQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
-const LIMIT = 1000;
-const PAGES = 10;
-const INVALID_ANSWER_HEX =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
 const PREDICT_AGENT_IDS_FLAT = Object.values(PREDICT_AGENT_CLASSIFICATION)
   .flat()
@@ -137,17 +131,14 @@ const fetchSuccessRate = async () => {
 
 const fetchAllAgentMetrics = async () => {
   try {
-    const [aprResult, successRateResult, daaResult, txsByTypeResult] =
-      await Promise.allSettled([
-        fetchOlasApr(),
-        fetchSuccessRate(),
-        fetchPredictDaa7dAvg(),
-        fetchPredictTxsByAgentType(),
-      ]);
+    const [aprResult, daaResult, txsByTypeResult] = await Promise.allSettled([
+      fetchOlasApr(),
+      fetchPredictDaa7dAvg(),
+      fetchPredictTxsByAgentType(),
+    ]);
 
     const metrics = {
       apr: null,
-      successRate: null,
       dailyActiveAgents: null,
       predictTxsByType: null,
     };
@@ -157,15 +148,6 @@ const fetchAllAgentMetrics = async () => {
       metrics.apr = aprResult.value;
     } else {
       console.error('Fetch APR for predict failed:', aprResult.reason);
-    }
-
-    if (successRateResult.status === 'fulfilled') {
-      metrics.successRate = successRateResult.value;
-    } else {
-      console.error(
-        'Fetch Success Rate for predict failed:',
-        successRateResult.reason,
-      );
     }
 
     if (daaResult.status === 'fulfilled') {

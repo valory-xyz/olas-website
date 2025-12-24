@@ -1,4 +1,8 @@
-import { getPredictMetrics, getPredictRoi } from 'common-util/api';
+import {
+  getPredictMetrics,
+  getPredictRoi,
+  getPredictSuccessRate,
+} from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -28,7 +32,6 @@ const processPredictMetrics = (predictMetrics) => {
     mechTxs,
     marketCreatorTxs,
     apr: predictMetrics.apr ?? null,
-    successRate: predictMetrics.successRate ?? null,
   };
 };
 
@@ -175,6 +178,10 @@ export const Activity = () => {
     getPredictMetrics,
   );
   const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
+  const { data: successRateData } = usePersistentSWR(
+    'predictSuccessRate',
+    getPredictSuccessRate,
+  );
 
   const metrics = useMemo(() => {
     const base = processPredictMetrics(predictMetrics) || {};
@@ -182,8 +189,9 @@ export const Activity = () => {
       ...base,
       partialRoi: roi?.partialRoi ?? null,
       finalRoi: roi?.finalRoi ?? null,
+      successRate: successRateData?.successRate ?? null,
     };
-  }, [predictMetrics, roi]);
+  }, [predictMetrics, roi, successRateData]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
