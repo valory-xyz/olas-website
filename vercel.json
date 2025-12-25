@@ -4,11 +4,11 @@
       "maxDuration": 300,
       "memory": 3009
     },
-    "pages/api/predict/roi.ts": {
+    "pages/api/predict-metrics/roi.ts": {
       "maxDuration": 300,
       "memory": 3009
     },
-    "pages/api/predict/success-rate.ts": {
+    "pages/api/predict-metrics/success-rate.ts": {
       "maxDuration": 300,
       "memory": 3009
     }

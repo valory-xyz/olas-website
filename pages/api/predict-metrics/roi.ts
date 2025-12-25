@@ -49,6 +49,12 @@ type MechRequestsResponse = {
   questionTitle: string;
 }[];
 
+type OlasInUsdPriceResponse = {
+  [OLAS_ADDRESS]: {
+    usd: number;
+  };
+};
+
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   // Request all mech requests by pages
   let skip = 0;
@@ -100,26 +106,31 @@ const fetchRoi = async () => {
       totalRewardsResult,
       olasInUsdPriceResult,
       lastFourDaysRequests,
-    ] = await Promise.all([
+    ] = (await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(
         getMarketsAndBetsQuery(marketOpenTimestamp),
       ),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
-      fetch(COINGECKO_OLAS_IN_USD_PRICE_URL),
+      fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
       fetchMechRequests(marketOpenTimestamp),
-    ]);
+    ])) as [
+      TotalMechRequestsResponse,
+      MarketsAndBetsResponse,
+      StakingGlobalsResponse,
+      OlasInUsdPriceResponse,
+      MechRequestsResponse,
+    ];
 
-    const olasInUsdPrice = await olasInUsdPriceResult.json();
     const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPrice[OLAS_ADDRESS]?.usd || 0) * 1e18),
+      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18),
     );
 
-    const totalMechRequests = (totalRequestsResult as TotalMechRequestsResponse)
-      .global.totalRequests;
-    const openMarketTitles = (
-      marketsAndBetsResult as MarketsAndBetsResponse
-    ).fixedProductMarketMakerCreations.map((market) => market.question);
+    const totalMechRequests = totalRequestsResult.global.totalRequests;
+    const openMarketTitles =
+      marketsAndBetsResult.fixedProductMarketMakerCreations.map(
+        (market) => market.question,
+      );
 
     // The Mech subgraph calculates totalRequests for all markets.
     // To calculate ROI correctly, we need to subtract the requests
