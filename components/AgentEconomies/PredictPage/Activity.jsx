@@ -1,5 +1,8 @@
-import { getPredictMetrics } from 'common-util/api';
-import { getTotalPredictTransactions } from 'common-util/api/dune';
+import {
+  getPredictMetrics,
+  getPredictRoi,
+  getPredictSuccessRate,
+} from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -9,21 +12,10 @@ import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-const fetchMetrics = async () => {
-  const [predictMetrics, total] = await Promise.allSettled([
-    getPredictMetrics(),
-    getTotalPredictTransactions(),
-  ]);
+const processPredictMetrics = (predictMetrics) => {
+  if (!predictMetrics) return null;
 
-  const dailyActiveAgents =
-    predictMetrics.status === 'fulfilled'
-      ? (predictMetrics.value?.dailyActiveAgents ?? null)
-      : null;
-
-  const predictTxsByType =
-    predictMetrics.status === 'fulfilled'
-      ? (predictMetrics.value?.predictTxsByType ?? null)
-      : null;
+  const predictTxsByType = predictMetrics.predictTxsByType ?? null;
 
   const traderTxs = predictTxsByType
     ? (predictTxsByType.valory_trader || 0) +
@@ -35,25 +27,11 @@ const fetchMetrics = async () => {
     : null;
 
   return {
-    dailyActiveAgents,
+    dailyActiveAgents: predictMetrics.dailyActiveAgents ?? null,
     traderTxs,
     mechTxs,
     marketCreatorTxs,
-    totalTxs: total.status === 'fulfilled' ? total.value : null,
-    partialRoi:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.roi?.partialRoi
-        : null,
-    finalRoi:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.roi?.finalRoi
-        : null,
-    apr:
-      predictMetrics.status === 'fulfilled' ? predictMetrics.value?.apr : null,
-    successRate:
-      predictMetrics.status === 'fulfilled'
-        ? predictMetrics.value?.successRate
-        : null,
+    apr: predictMetrics.apr ?? null,
   };
 };
 
@@ -195,10 +173,25 @@ const TransactionsBubble = ({ metrics, image, title }) => {
 };
 
 export const Activity = () => {
-  const { data: metrics } = usePersistentSWR(
-    'predictionActivityMetrics',
-    fetchMetrics,
+  const { data: predictMetrics } = usePersistentSWR(
+    'predictionMetrics',
+    getPredictMetrics,
   );
+  const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
+  const { data: successRateData } = usePersistentSWR(
+    'predictSuccessRate',
+    getPredictSuccessRate,
+  );
+
+  const metrics = useMemo(() => {
+    const base = processPredictMetrics(predictMetrics) || {};
+    return {
+      ...base,
+      partialRoi: roi?.partialRoi ?? null,
+      finalRoi: roi?.finalRoi ?? null,
+      successRate: successRateData?.successRate ?? null,
+    };
+  }, [predictMetrics, roi, successRateData]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">

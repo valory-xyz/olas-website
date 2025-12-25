@@ -2,7 +2,6 @@ import {
   DAA_QUERY_ID,
   MECH_TXS_QUERY_ID,
   OLAS_STAKED_QUERY_ID,
-  PREDICTION_TOTAL_TXS_QUERY_ID,
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
   TOTAL_SERVICE_TRANSACTIONS_QUERY_ID,
@@ -46,19 +45,6 @@ export const getTotalTransactionsCount = async () => {
     return totalTxs;
   } catch (error) {
     console.error('Error in getTotalTransactionsCount: ', error);
-    return;
-  }
-};
-
-export const getTotalPredictTransactions = async () => {
-  try {
-    const json = await duneApiCall({
-      queryId: PREDICTION_TOTAL_TXS_QUERY_ID,
-    });
-    const totalTxs = get(json, 'result.rows[0].transactions_number');
-    return totalTxs;
-  } catch (error) {
-    console.error('Error in getTotalPredictTransactions: ', error);
     return;
   }
 };
