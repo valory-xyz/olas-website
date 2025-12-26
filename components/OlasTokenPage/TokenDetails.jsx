@@ -59,14 +59,19 @@ export const TokenDetails = () => (
                   <TableRow key={index}>
                     <TableCell className="border">{token.name}</TableCell>
                     <TableCell className="border">
-                      {token.exchange ? (
-                        <a
-                          href={token.exchange.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {token.exchange.name} ↗
-                        </a>
+                      {token.exchanges ? (
+                        <div className="flex flex-col gap-2">
+                          {token.exchanges.map((exchange) => (
+                            <a
+                              key={exchange.url}
+                              href={exchange.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {exchange.name} ↗
+                            </a>
+                          ))}
+                        </div>
                       ) : (
                         'Coming soon'
                       )}
@@ -108,14 +113,19 @@ export const TokenDetails = () => (
                 <h3 className="font-bold mb-2">{token.name}</h3>
                 <p>
                   <strong>Get OLAS:</strong>{' '}
-                  {token.exchange ? (
-                    <a
-                      href={token.exchange.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {token.exchange.name} ↗
-                    </a>
+                  {token.exchanges ? (
+                    <div className="flex gap-x-2 flex-wrap">
+                      {token.exchanges.map((exchange) => (
+                        <a
+                          key={exchange.url}
+                          href={exchange.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {exchange.name} ↗
+                        </a>
+                      ))}
+                    </div>
                   ) : (
                     'TBD'
                   )}
