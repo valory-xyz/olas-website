@@ -13,7 +13,9 @@ export const Roadmap = () => (
         <div className="roadmap-bg" aria-hidden="true" />
       </div>
       <div className="relative z-10 w-full">
-        <SectionHeading other="text-center">Olas Roadmap</SectionHeading>
+        <h1 className="text-3xl lg:text-[40px] mb-12 text-gray-700 font-semibold text-center">
+          Olas Roadmap
+        </h1>
         <div className="flex flex-col place-items-center cursor-default pb-12">
           <Tag variant="primary" className="w-fit">
             Co-Owned AI

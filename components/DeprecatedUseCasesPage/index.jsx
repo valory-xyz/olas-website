@@ -19,7 +19,9 @@ export const DeprecatedUseCases = () => {
     >
       <div className="max-w-4xl mx-auto flex flex-col">
         <div className="text-center mb-14">
-          <SectionHeading spacing="mb-6">Deprecated Use Cases</SectionHeading>
+          <h1 className="text-3xl lg:text-[40px] mb-6 text-gray-700 font-semibold">
+            Deprecated Use Cases
+          </h1>
         </div>
         <div className="grid md:grid-cols-2 gap-4 mb-20">
           {deprecatedItems.map((item) => (
