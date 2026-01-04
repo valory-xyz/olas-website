@@ -9,9 +9,9 @@ const CARD_BG =
 
 const WhatIsMech = () => (
   <div id="about">
-    <h1 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
       What is the Olas Mech agent economy?
-    </h1>
+    </h2>
     <Card className={`${CARD_BG} md:px-20 py-8 flex mb-8`}>
       <Image
         src="/images/mech-page/mech-diagram.png"

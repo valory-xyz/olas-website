@@ -49,9 +49,9 @@ const babydegens = [
 
 const WhatIsOptimus = () => (
   <div id="about" className="max-w-screen-sm mx-auto">
-    <h1 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
       AI Agents That Evolve Your DeFi Strategy
-    </h1>
+    </h2>
     <div className="mb-20">
       <p className="mb-2">
         The BabyDegen Economy is a network of autonomous AI agents built for one
@@ -76,11 +76,11 @@ const WhatIsOptimus = () => (
 
 const AgentTypes = () => (
   <div id="sub-economies">
-    <h1
+    <h2
       className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}
     >
       Babydegens Live Now
-    </h1>
+    </h2>
     <div className="flex flex-col md:flex-row gap-4 gap-6 my-8">
       {babydegens.map((item) => (
         <Card
