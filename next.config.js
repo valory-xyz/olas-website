@@ -85,6 +85,11 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/agents/mech',
+        destination: '/agents/ai-mechs',
+        permanent: true,
+      },
+      {
         source: '/academy',
         destination: '/404',
         permanent: false,
