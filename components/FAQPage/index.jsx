@@ -441,9 +441,9 @@ const faqList = [
               <li className="mb-2">DAO founding members: 32.65%</li>
             </ul>{' '}
             <p>
-              See the live statistics here:{' '}
+              See the live statistics on the{' '}
               <Link href="/olas-token" className="text-purple-600">
-                https://olas.network/olas-token
+                token page
               </Link>
               .
             </p>
