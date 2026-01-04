@@ -16,9 +16,14 @@ import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
 import { TokenHolders } from 'components/DataPage/TokenHolders';
 import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 
 const DataVerifyPage = () => (
   <PageWrapper>
+    <Meta
+      pageTitle="Data Verification"
+      description="Verify Olas protocol metrics and data. Access detailed information about agents, operators, staking, transactions, and on-chain activity across the Olas ecosystem."
+    />
     <div className="p-14 border-b-1.5">
       <h1 className={`${TITLE_CLASS} text-center`}>Data verification</h1>
     </div>
