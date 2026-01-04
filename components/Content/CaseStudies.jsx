@@ -35,9 +35,9 @@ export const CaseStudies = ({ limit }) => {
   return (
     <section>
       <div>
-        <h2 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
+        <h1 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Case Studies
-        </h2>
+        </h1>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {(limit ? caseStudies.slice(0, limit) : caseStudies).map((item) => (

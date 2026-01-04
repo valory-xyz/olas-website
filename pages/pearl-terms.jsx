@@ -26,7 +26,9 @@ const PearlTerms = () => {
       />
       <SectionWrapper backgroundType="SUBTLE_GRADIENT">
         <article className="max-w-[800px] mx-auto">
-          <SectionHeading color="text-purple-950">Pearl Terms</SectionHeading>
+          <h1 className="text-3xl lg:text-[40px] mb-12 text-purple-950 font-semibold">
+            Pearl Terms
+          </h1>
           <div className="text-xl text-gray-600 space-y-6">
             <section>
               <h4 className="text-xl text-black font-semibold mt-8">
