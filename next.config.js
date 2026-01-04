@@ -90,11 +90,6 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
-        source: '/academy',
-        destination: '/404',
-        permanent: false,
-      },
-      {
         source: '/protocol',
         destination: '/stack',
         permanent: true,
