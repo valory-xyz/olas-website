@@ -20,7 +20,10 @@ const PearlTerms = () => {
   const Layout = hideLayout ? 'div' : PageWrapper;
   return (
     <Layout>
-      <Meta pageTitle="Pearl Terms" />
+      <Meta
+        pageTitle="Pearl Terms"
+        description="Terms and conditions for using the Pearl application. Learn about Pearl's scope, user responsibilities, third-party integrations, and legal agreements."
+      />
       <SectionWrapper backgroundType="SUBTLE_GRADIENT">
         <article className="max-w-[800px] mx-auto">
           <SectionHeading color="text-purple-950">Pearl Terms</SectionHeading>
