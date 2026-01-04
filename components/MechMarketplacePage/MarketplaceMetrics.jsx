@@ -49,7 +49,7 @@ export const MarketplaceMetrics = () => {
         ],
       },
     ];
-  }, [metrics]);
+  }, [mechFees, ataTransactions]);
 
   return (
     <SectionWrapper id="stats" customClasses="mt-16">

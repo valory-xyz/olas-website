@@ -290,7 +290,10 @@ const points = [
       <p>
         If you have any questions about this Disclaimer & Privacy Policy, please
         contact Crypto in Motion (
-        <a href="mailto:contact@cryptoinmotion.co.uk" className="text-purple-600">
+        <a
+          href="mailto:contact@cryptoinmotion.co.uk"
+          className="text-purple-600"
+        >
           contact@cryptoinmotion.co.uk
         </a>
         ).{' '}
