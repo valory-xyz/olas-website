@@ -58,8 +58,10 @@ npm run lint:fix    # Fix ESLint issues automatically
 - Failed subgraph queries don't break the entire page - graceful degradation is built-in
 
 **Regional Restrictions:**
-- `middleware.js` blocks specific Ukrainian regions using Vercel's geo-headers
-- Redirects to `/restricted` page for blocked regions
+- `middleware.js` blocks OFAC sanctioned countries and regions using Vercel's geo-headers
+- Blocked countries: Cuba (CU), Iran (IR), North Korea (KP), Syria (SY), Russia (RU), Belarus (BY)
+- Blocked Ukrainian regions: UA-14, UA-09, UA-43, UA-65, UA-23 (Donetsk, Luhansk, Crimea, Sevastopol)
+- Redirects to `/restricted` page for blocked locations
 
 **Data Flow:**
 1. Frontend components call API routes via `/api/*` endpoints
