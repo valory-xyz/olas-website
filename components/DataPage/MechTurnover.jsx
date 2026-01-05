@@ -1,4 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { MECH_FEES_SUBGRAPH_DISPLAY_URLS } from 'common-util/constants';
 import {
   legacyMechFeesQuery,
   legacyMechFeesTotalsQuery,
@@ -33,13 +34,13 @@ export const MechTurnoverInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
+            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesGnosis}
             className="mr-2"
           >
             Gnosis
           </ExternalLink>
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
+            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesBase}
             className="mr-2"
           >
             Base
@@ -53,9 +54,7 @@ export const MechTurnoverInfo = () => {
 
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}
-          >
+          <ExternalLink href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.legacyFeesGnosis}>
             Gnosis
           </ExternalLink>
         </p>
@@ -81,13 +80,13 @@ export const MechTurnoverInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
+            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesGnosis}
             className="mr-2"
           >
             Gnosis
           </ExternalLink>
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
+            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesBase}
             className="mr-2"
           >
             Base
@@ -98,9 +97,7 @@ export const MechTurnoverInfo = () => {
         <h4 className="font-semibold">Legacy Mech Fees Totals</h4>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}
-          >
+          <ExternalLink href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.legacyFeesGnosis}>
             Gnosis
           </ExternalLink>
         </p>

@@ -1,5 +1,6 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
+  PREDICT_AGENTS_SUBGRAPH_DISPLAY_URL,
   PREDICT_MARKET_DURATION_DAYS,
   STAKING_SUBGRAPH_URLS,
 } from 'common-util/constants';
@@ -90,9 +91,7 @@ export const PredictRoiInfo = () => {
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
-        <ExternalLink
-          href={process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}
-        >
+        <ExternalLink href={PREDICT_AGENTS_SUBGRAPH_DISPLAY_URL}>
           Subgraph link
         </ExternalLink>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>

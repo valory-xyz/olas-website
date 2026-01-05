@@ -1,5 +1,6 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
+  BABYDEGEN_SUBGRAPH_DISPLAY_URLS,
   MODIUS_FIXED_END_DATE_UTC,
   STAKING_SUBGRAPH_URLS,
 } from 'common-util/constants';
@@ -60,9 +61,7 @@ export const BabydegenMetricsInfo = () => {
         </h3>
         <p className="text-purple-600">
           Subgraph link{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL}
-          >
+          <ExternalLink href={BABYDEGEN_SUBGRAPH_DISPLAY_URLS.optimism}>
             Optimism BabyDegen
           </ExternalLink>
         </p>
@@ -88,9 +87,7 @@ export const BabydegenMetricsInfo = () => {
         </h3>
         <p className="text-purple-600">
           Subgraph link{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL}
-          >
+          <ExternalLink href={BABYDEGEN_SUBGRAPH_DISPLAY_URLS.mode}>
             Mode BabyDegen
           </ExternalLink>
         </p>

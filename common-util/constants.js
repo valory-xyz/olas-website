@@ -96,6 +96,29 @@ export const REGISTRY_SUBGRAPH_URLS = {
     'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
 };
 
+// Display URLs for Mech Fees subgraphs (user-facing links on data page)
+// These are separate from the API endpoints in .env.local used for GraphQL queries
+export const MECH_FEES_SUBGRAPH_DISPLAY_URLS = {
+  newFeesGnosis:
+    'https://thegraph.com/explorer/subgraphs/FVimvzJV7aFP3GLzhL8uTXsDmPD9Wzp6tEBtzPsHfd3K?view=Query&chain=arbitrum-one',
+  newFeesBase:
+    'https://thegraph.com/explorer/subgraphs/8a7YpqVVhiJBfLjFMwtH3jmHFUMAahfeHHGbh9vU26Tk?view=Query&chain=arbitrum-one',
+  legacyFeesGnosis:
+    'https://thegraph.com/explorer/subgraphs/JCYjvfTErSkkFYjGedMHPnTcySpeB1Z81FLYUuEjWXK3?view=Query&chain=arbitrum-one',
+};
+
+// Display URL for Predict Agents subgraph
+// Note: This is a self-hosted subgraph on Autonolas infrastructure
+export const PREDICT_AGENTS_SUBGRAPH_DISPLAY_URL =
+  'https://predict-agents.subgraph.autonolas.tech';
+
+// Display URLs for Babydegen subgraphs (user-facing links on data page)
+export const BABYDEGEN_SUBGRAPH_DISPLAY_URLS = {
+  optimism:
+    'https://thegraph.com/explorer/subgraphs/DwWxLbCWqMZyBfEHskUcGye5eBbQxQTsfzVbbTjpvhMS?view=Query&chain=arbitrum-one',
+  mode: process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL,
+};
+
 export const AUTONOLAS_SUBGRAPH_URL =
   process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
