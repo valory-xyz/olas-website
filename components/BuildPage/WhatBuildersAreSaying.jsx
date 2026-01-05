@@ -50,7 +50,8 @@ const quotes = [
   },
   {
     projectImage: 'alprina.png',
-    projectUrl: 'https://web.archive.org/web/20251218004459/https://www.alprina.com/',
+    projectUrl:
+      'https://web.archive.org/web/20251218004459/https://www.alprina.com/',
     quote:
       "As the founder of Alprina, an AI agent designed to predict stock movements, I chose Olas for its robust decentralized infrastructure. Olas's open-source framework and multi-chain protocol offer the flexibility and scalability essential for developing sophisticated agent economies. By leveraging Olas, we seamlessly integrate off-chain AI services with on-chain security, fostering innovation in a co-owned and decentralized environment.",
     name: 'Josh Wagenbach',
