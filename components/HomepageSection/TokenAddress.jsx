@@ -110,7 +110,7 @@ const TokenTabs = ({ activeTab, setActiveTab, setCurrentAddress }) => (
         >
           <Image
             src={`/images/homepage/addresses/${imageSrc}`}
-            alt={addresses.name}
+            alt={address.name}
             width={20}
             height={20}
             className="mx-auto aspect-square min-w-[20px]"

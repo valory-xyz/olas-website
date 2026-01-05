@@ -179,6 +179,7 @@ const UsersCard = ({ olasStaked, totalOperators }) => (
 const OlasBurnedCard = () => (
   <ActivityCard
     icon="olas-burned.png"
+    text="OLAS burned"
     primary={{
       value: '$0',
       text: 'OLAS burned',
@@ -191,6 +192,7 @@ const OlasBurnedCard = () => (
 const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   <ActivityCard
     icon="daas.png"
+    text="Daily Active Agents"
     iconWidth={252}
     iconHeight={56}
     primary={{
@@ -209,6 +211,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
 const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
+    text="Agent to Agent"
     iconWidth={104}
     iconHeight={36}
     primary={{
@@ -235,6 +238,7 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
 const TransactionsCard = ({ transactions }) => (
   <ActivityCard
     icon="txns.png"
+    text="Transactions"
     primary={{
       value: transactions,
       text: 'txns',
