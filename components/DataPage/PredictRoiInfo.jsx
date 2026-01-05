@@ -90,11 +90,20 @@ export const PredictRoiInfo = () => {
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
-        <ExternalLink
-          href={process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}
-        >
-          Subgraph link
-        </ExternalLink>
+        <p className="text-purple-600">
+          API endpoint:{' '}
+          <code>
+            {process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}
+          </code>
+        </p>
+        <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
+        <CodeSnippet>
+          {`# Replace TIMESTAMP with a Unix timestamp (e.g., 1700000000)
+curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "{ fixedProductMarketMakerCreations(where: { blockTimestamp_gt: TIMESTAMP }) { id question } global(id: \\\"\\\") { totalFees totalPayout totalTraded } }"}'`}
+        </CodeSnippet>
+        <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>

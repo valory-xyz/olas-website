@@ -3,6 +3,7 @@ import {
   MODIUS_FIXED_END_DATE_UTC,
   STAKING_SUBGRAPH_URLS,
 } from 'common-util/constants';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import {
   dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
@@ -61,7 +62,9 @@ export const BabydegenMetricsInfo = () => {
         <p className="text-purple-600">
           Subgraph link{' '}
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
+            )}
           >
             Optimism BabyDegen
           </ExternalLink>
@@ -89,7 +92,9 @@ export const BabydegenMetricsInfo = () => {
         <p className="text-purple-600">
           Subgraph link{' '}
           <ExternalLink
-            href={process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL,
+            )}
           >
             Mode BabyDegen
           </ExternalLink>
