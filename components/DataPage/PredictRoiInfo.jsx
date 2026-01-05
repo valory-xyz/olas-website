@@ -1,9 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  PREDICT_AGENTS_SUBGRAPH_DISPLAY_URL,
   PREDICT_MARKET_DURATION_DAYS,
   STAKING_SUBGRAPH_URLS,
 } from 'common-util/constants';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -91,7 +91,11 @@ export const PredictRoiInfo = () => {
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
-        <ExternalLink href={PREDICT_AGENTS_SUBGRAPH_DISPLAY_URL}>
+        <ExternalLink
+          href={getSubgraphExplorerUrl(
+            process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL,
+          )}
+        >
           Subgraph link
         </ExternalLink>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>

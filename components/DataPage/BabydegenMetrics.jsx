@@ -1,9 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  BABYDEGEN_SUBGRAPH_DISPLAY_URLS,
   MODIUS_FIXED_END_DATE_UTC,
   STAKING_SUBGRAPH_URLS,
 } from 'common-util/constants';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import {
   dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
@@ -61,7 +61,11 @@ export const BabydegenMetricsInfo = () => {
         </h3>
         <p className="text-purple-600">
           Subgraph link{' '}
-          <ExternalLink href={BABYDEGEN_SUBGRAPH_DISPLAY_URLS.optimism}>
+          <ExternalLink
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
+            )}
+          >
             Optimism BabyDegen
           </ExternalLink>
         </p>
@@ -87,7 +91,11 @@ export const BabydegenMetricsInfo = () => {
         </h3>
         <p className="text-purple-600">
           Subgraph link{' '}
-          <ExternalLink href={BABYDEGEN_SUBGRAPH_DISPLAY_URLS.mode}>
+          <ExternalLink
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL,
+            )}
+          >
             Mode BabyDegen
           </ExternalLink>
         </p>

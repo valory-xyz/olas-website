@@ -1,11 +1,11 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { MECH_FEES_SUBGRAPH_DISPLAY_URLS } from 'common-util/constants';
 import {
   legacyMechFeesQuery,
   legacyMechFeesTotalsQuery,
   newMechFeesQuery,
   newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
@@ -34,13 +34,17 @@ export const MechTurnoverInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           <ExternalLink
-            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesGnosis}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+            )}
             className="mr-2"
           >
             Gnosis
           </ExternalLink>
           <ExternalLink
-            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesBase}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL,
+            )}
             className="mr-2"
           >
             Base
@@ -54,7 +58,11 @@ export const MechTurnoverInfo = () => {
 
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.legacyFeesGnosis}>
+          <ExternalLink
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+            )}
+          >
             Gnosis
           </ExternalLink>
         </p>
@@ -80,13 +88,17 @@ export const MechTurnoverInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           <ExternalLink
-            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesGnosis}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+            )}
             className="mr-2"
           >
             Gnosis
           </ExternalLink>
           <ExternalLink
-            href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.newFeesBase}
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL,
+            )}
             className="mr-2"
           >
             Base
@@ -97,7 +109,11 @@ export const MechTurnoverInfo = () => {
         <h4 className="font-semibold">Legacy Mech Fees Totals</h4>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink href={MECH_FEES_SUBGRAPH_DISPLAY_URLS.legacyFeesGnosis}>
+          <ExternalLink
+            href={getSubgraphExplorerUrl(
+              process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
+            )}
+          >
             Gnosis
           </ExternalLink>
         </p>
