@@ -86,6 +86,7 @@ const ActivityCard = ({
   icon,
   iconWidth = 40,
   iconHeight = 40,
+  alt,
   text,
   primary: {
     text: primaryText,
@@ -119,7 +120,7 @@ const ActivityCard = ({
       <div className="flex flex-row place-items-center gap-3">
         <Image
           src={`${imgPath}${icon}`}
-          alt={text}
+          alt={alt ?? text}
           width={iconWidth}
           height={iconHeight}
         />
@@ -179,7 +180,7 @@ const UsersCard = ({ olasStaked, totalOperators }) => (
 const OlasBurnedCard = () => (
   <ActivityCard
     icon="olas-burned.png"
-    text="OLAS burned"
+    alt="OLAS burned"
     primary={{
       value: '$0',
       text: 'OLAS burned',
@@ -192,7 +193,7 @@ const OlasBurnedCard = () => (
 const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   <ActivityCard
     icon="daas.png"
-    text="Daily Active Agents"
+    alt="Daily Active Agents"
     iconWidth={252}
     iconHeight={56}
     primary={{
@@ -211,7 +212,7 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
 const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   <ActivityCard
     icon="agent-to-agent.png"
-    text="Agent to Agent"
+    alt="Agent to Agent"
     iconWidth={104}
     iconHeight={36}
     primary={{
@@ -238,7 +239,7 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
 const TransactionsCard = ({ transactions }) => (
   <ActivityCard
     icon="txns.png"
-    text="Transactions"
+    alt="Transactions"
     primary={{
       value: transactions,
       text: 'txns',
