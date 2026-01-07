@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { cva } from 'class-variance-authority';
@@ -6,38 +5,51 @@ import { ChevronDown } from 'lucide-react';
 
 import { cn } from 'lib/utils';
 
-const NavigationMenu = forwardRef(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Root
-    ref={ref}
-    className={cn(
-      'relative z-10 flex max-w-max flex-1 items-center md:justify-center',
-      className,
-    )}
-    {...props}
-  >
-    {children}
-    <NavigationMenuViewport />
-  </NavigationMenuPrimitive.Root>
-));
+interface NavigationMenuProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const NavigationMenu = forwardRef<HTMLElement, NavigationMenuProps>(
+  ({ className, children, ...props }, ref) => (
+    <NavigationMenuPrimitive.Root
+      ref={ref}
+      className={cn(
+        'relative z-10 flex max-w-max flex-1 items-center md:justify-center',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <NavigationMenuViewport />
+    </NavigationMenuPrimitive.Root>
+  ),
+);
 NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
-NavigationMenu.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-};
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenu.defaultProps = { className: null };
 
-const NavigationMenuList = forwardRef(({ className, ...props }, ref) => (
-  <NavigationMenuPrimitive.List
-    ref={ref}
-    className={cn(
-      'group flex flex-1 list-none items-center justify-center space-x-1',
-      className,
-    )}
-    {...props}
-  />
-));
+interface NavigationMenuListProps {
+  className?: string;
+}
+
+const NavigationMenuList = forwardRef<HTMLElement, NavigationMenuListProps>(
+  ({ className, ...props }, ref) => (
+    <NavigationMenuPrimitive.List
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'group flex flex-1 list-none items-center justify-center space-x-1',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName;
-NavigationMenuList.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenuList.defaultProps = { className: null };
 
 const NavigationMenuItem = NavigationMenuPrimitive.Item;
@@ -46,31 +58,44 @@ const navigationMenuTriggerStyle = cva(
   'group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-md font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50',
 );
 
-const NavigationMenuTrigger = forwardRef(
-  ({ className, children, ...props }, ref) => (
-    <NavigationMenuPrimitive.Trigger
-      ref={ref}
-      className={cn(navigationMenuTriggerStyle(), 'group', className)}
-      {...props}
-    >
-      {children}{' '}
-      <ChevronDown
-        className="ml-1 transition duration-200 group-data-[state=open]:rotate-180"
-        size={12}
-        aria-hidden="true"
-      />
-    </NavigationMenuPrimitive.Trigger>
-  ),
-);
+interface NavigationMenuTriggerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const NavigationMenuTrigger = forwardRef<
+  HTMLElement,
+  NavigationMenuTriggerProps
+>(({ className, children, ...props }, ref) => (
+  <NavigationMenuPrimitive.Trigger
+    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+    ref={ref}
+    className={cn(navigationMenuTriggerStyle(), 'group', className)}
+    {...props}
+  >
+    {children}{' '}
+    <ChevronDown
+      className="ml-1 transition duration-200 group-data-[state=open]:rotate-180"
+      size={12}
+      aria-hidden="true"
+    />
+  </NavigationMenuPrimitive.Trigger>
+));
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
-NavigationMenuTrigger.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-};
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenuTrigger.defaultProps = { className: null };
 
-const NavigationMenuContent = forwardRef(({ className, ...props }, ref) => (
+interface NavigationMenuContentProps {
+  className?: string;
+}
+
+const NavigationMenuContent = forwardRef<
+  HTMLElement,
+  NavigationMenuContentProps
+>(({ className, ...props }, ref) => (
   <NavigationMenuPrimitive.Content
+    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
     ref={ref}
     className={cn(
       'left-0 top-0 w-full max-h-[520px] overflow-auto data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 md:absolute md:w-auto ',
@@ -80,18 +105,27 @@ const NavigationMenuContent = forwardRef(({ className, ...props }, ref) => (
   />
 ));
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
-NavigationMenuContent.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenuContent.defaultProps = { className: null };
 
 const NavigationMenuLink = NavigationMenuPrimitive.Link;
 
-const NavigationMenuViewport = forwardRef(({ className, ...props }, ref) => (
+interface NavigationMenuViewportProps {
+  className?: string;
+}
+
+const NavigationMenuViewport = forwardRef<
+  HTMLElement,
+  NavigationMenuViewportProps
+>(({ className, ...props }, ref) => (
   <div className={cn('absolute md:left-0 top-full flex justify-center')}>
     <NavigationMenuPrimitive.Viewport
       className={cn(
         'origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]',
         className,
       )}
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
       ref={ref}
       {...props}
     />
@@ -99,11 +133,20 @@ const NavigationMenuViewport = forwardRef(({ className, ...props }, ref) => (
 ));
 NavigationMenuViewport.displayName =
   NavigationMenuPrimitive.Viewport.displayName;
-NavigationMenuViewport.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenuViewport.defaultProps = { className: null };
 
-const NavigationMenuIndicator = forwardRef(({ className, ...props }, ref) => (
+interface NavigationMenuIndicatorProps {
+  className?: string;
+}
+
+const NavigationMenuIndicator = forwardRef<
+  HTMLElement,
+  NavigationMenuIndicatorProps
+>(({ className, ...props }, ref) => (
   <NavigationMenuPrimitive.Indicator
+    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
     ref={ref}
     className={cn(
       'top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in',
@@ -116,7 +159,8 @@ const NavigationMenuIndicator = forwardRef(({ className, ...props }, ref) => (
 ));
 NavigationMenuIndicator.displayName =
   NavigationMenuPrimitive.Indicator.displayName;
-NavigationMenuIndicator.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 NavigationMenuIndicator.defaultProps = { className: null };
 
 export {

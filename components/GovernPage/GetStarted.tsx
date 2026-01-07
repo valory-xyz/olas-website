@@ -21,6 +21,8 @@ const steps = [
     description: (
       <>
         You can do everything governance related on the{' '}
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={GOVERN_URL}>Govern App</SubsiteLink>. Simply connect
         your wallet to start voting.
       </>
@@ -53,6 +55,7 @@ const steps = [
 ];
 
 export const GetStarted = () => (
+
   <SectionWrapper
     customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
     id="get-started"
@@ -68,7 +71,12 @@ export const GetStarted = () => (
       ))}
 
       <div className="self-center">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
         <Button variant="default" size="xl" asChild className="mt-10">
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={GOVERN_URL} isInButton>
             Start governing now
           </SubsiteLink>

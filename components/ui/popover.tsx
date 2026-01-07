@@ -1,7 +1,14 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { InfoIcon } from 'components/ui/info-icon';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+
+interface PopoverProps {
+  children: React.ReactNode;
+  text?: string;
+  className?: string;
+  align?: string;
+  side?: string;
+}
 
 export const Popover = ({
   children,
@@ -9,8 +16,9 @@ export const Popover = ({
   align,
   side,
   className,
+  // @ts-expect-error TS(2339) FIXME: Property 'contentClassName' does not exist on type... Remove this comment to see the full error message
   contentClassName,
-}) => {
+}: PopoverProps) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = (e) => {
@@ -30,7 +38,9 @@ export const Popover = ({
           <InfoIcon />
         </Tooltip.Trigger>
         <Tooltip.Content
+          // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"top" | "... Remove this comment to see the full error message
           side={side}
+          // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"center" ... Remove this comment to see the full error message
           align={align}
           className={`p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1 ${contentClassName}`}
         >
@@ -39,14 +49,6 @@ export const Popover = ({
       </Tooltip.Root>
     </Tooltip.Provider>
   );
-};
-
-Popover.propTypes = {
-  children: PropTypes.node.isRequired,
-  text: PropTypes.string,
-  className: PropTypes.string,
-  align: PropTypes.string,
-  side: PropTypes.string,
 };
 
 Popover.defaultProps = {

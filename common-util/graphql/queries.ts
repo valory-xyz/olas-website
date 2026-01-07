@@ -127,7 +127,7 @@ export const stakingGlobalsQuery = gql`
 export const dailyBabydegenPopulationMetricsQuery = ({
   first = 10,
   timestampLte,
-} = {}) => {
+}: any = {}) => {
   const whereClause =
     typeof timestampLte === 'number'
       ? `where: { timestamp_lte: ${timestampLte} }`
@@ -156,7 +156,7 @@ export const dailyBabydegenPopulationMetricsQuery = ({
 export const dailyStakingGlobalsSnapshotsQuery = ({
   first = 10,
   timestampLte,
-} = {}) => {
+}: any = {}) => {
   const whereClause =
     typeof timestampLte === 'number'
       ? `where: { timestamp_lte: ${timestampLte} }`

@@ -15,6 +15,7 @@ const HeroImage = () => (
 );
 
 const Explore = () => (
+  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
   <Button
     variant="default"
     size="xl"
@@ -26,6 +27,7 @@ const Explore = () => (
 );
 
 export const Hero = () => (
+  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message
   <HeroSection
     HeroImage={HeroImage}
     pageName="MECH MARKETPLACE"

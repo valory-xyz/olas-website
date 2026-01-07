@@ -10,6 +10,8 @@ const CaseStudiesPage = () => (
       pageTitle="Case Studies"
       description="Read up on the various success stories achieved with Olas!"
     />
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper>
       <BlogBackButton />
       <CaseStudies />

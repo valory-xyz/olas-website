@@ -18,6 +18,7 @@ export const OlasAgents = () => (
 );
 
 export const WhatMakesOlasAgentsUnique = () => (
+
   <SectionWrapper>
     <div className="flex flex-col max-w-[1320px] mx-auto text-center">
       <SectionHeading>What Makes Olas&apos; AI Agents Unique?</SectionHeading>
@@ -83,6 +84,8 @@ export const WhatMakesOlasAgentsUnique = () => (
               />
               <p className="-top-[35px] relative">
                 They are listed on a global agent directory called{' '}
+                // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+                // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
                 <SubsiteLink href={MECH_MARKETPLACE_URL}>
                   Mech Marketplace
                 </SubsiteLink>
@@ -98,6 +101,8 @@ export const WhatMakesOlasAgentsUnique = () => (
               />
               <p className="-top-[30px] relative">
                 They optionally are made accessible to end-users via{' '}
+                // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+                // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
                 <SubsiteLink href={PEARL_YOU_URL}>
                   Pearl, the AI Agent App Store
                 </SubsiteLink>

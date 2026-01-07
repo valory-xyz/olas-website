@@ -6,7 +6,6 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js';
-import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { Line } from 'react-chartjs-2';
 
@@ -20,70 +19,75 @@ import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-export const EmissionsToBuilders = memo(({ emissions, loading }) => {
-  const devIncentivesPoints = getCumulativeEmissions(
-    emissions,
-    'devIncentivesTotalTopUp',
-  );
-  const availableDevIncentivesPoints = getCumulativeEmissions(
-    emissions,
-    'availableDevIncentives',
-  );
+interface EmissionsToBuildersProps {
+  emissions: unknown[];
+  loading: boolean;
+}
 
-  return (
-    <div className="flex flex-col flex-auto p-4">
-      <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
-        Emissions per epoch
-      </h2>
-      <div className="flex gap-4 mb-6">
-        <LegendItem
-          color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Dev rewards available for claiming"
-        />
-        <LegendItem
-          color={EMISSIONS_CHART_COLORS.devRewards.legend}
-          label="Dev rewards claimed"
-        />
-      </div>
-      <div className="flex flex-col flex-auto gap-8">
-        <div className="flex-auto">
-          {loading ? (
-            <div className="text-center">Loading...</div>
-          ) : (
-            <Line
-              data={{
-                labels: emissions.map((item) => item.counter),
-                datasets: [
-                  {
-                    label: 'Available incentives',
-                    data: availableDevIncentivesPoints,
-                    pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
-                    borderColor: EMISSIONS_CHART_COLORS.available.line,
-                  },
-                  {
-                    label: 'Emitted incentives',
-                    data: devIncentivesPoints,
-                    pointBackgroundColor:
-                      EMISSIONS_CHART_COLORS.devRewards.line,
-                    borderColor: EMISSIONS_CHART_COLORS.devRewards.line,
-                  },
-                ],
-              }}
-              options={getEmissionsChartOptions([
-                ...devIncentivesPoints,
-                ...availableDevIncentivesPoints,
-              ])}
-            />
-          )}
+export const EmissionsToBuilders = memo(
+  ({ emissions, loading }: EmissionsToBuildersProps) => {
+    const devIncentivesPoints = getCumulativeEmissions(
+      emissions,
+      'devIncentivesTotalTopUp',
+    );
+    const availableDevIncentivesPoints = getCumulativeEmissions(
+      emissions,
+      'availableDevIncentives',
+    );
+
+    return (
+      <div className="flex flex-col flex-auto p-4">
+        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase mb-6">
+          Emissions per epoch
+        </h2>
+        <div className="flex gap-4 mb-6">
+          <LegendItem
+            color={EMISSIONS_CHART_COLORS.available.legend}
+            label="Dev rewards available for claiming"
+          />
+          <LegendItem
+            color={EMISSIONS_CHART_COLORS.devRewards.legend}
+            label="Dev rewards claimed"
+          />
+        </div>
+        <div className="flex flex-col flex-auto gap-8">
+          <div className="flex-auto">
+            {loading ? (
+              <div className="text-center">Loading...</div>
+            ) : (
+              <Line
+                data={{
+                  // @ts-expect-error TS(2339) FIXME: Property 'counter' does not exist on type 'unknown... Remove this comment to see the full error message
+                  labels: emissions.map((item) => item.counter),
+                  datasets: [
+                    {
+                      label: 'Available incentives',
+                      data: availableDevIncentivesPoints,
+                      pointBackgroundColor:
+                        EMISSIONS_CHART_COLORS.available.line,
+                      borderColor: EMISSIONS_CHART_COLORS.available.line,
+                    },
+                    {
+                      label: 'Emitted incentives',
+                      data: devIncentivesPoints,
+                      pointBackgroundColor:
+                        EMISSIONS_CHART_COLORS.devRewards.line,
+                      borderColor: EMISSIONS_CHART_COLORS.devRewards.line,
+                    },
+                  ],
+                }}
+                // @ts-expect-error TS(2322) FIXME: Type '{ responsive: boolean; maintainAspectRatio: ... Remove this comment to see the full error message
+                options={getEmissionsChartOptions([
+                  ...devIncentivesPoints,
+                  ...availableDevIncentivesPoints,
+                ])}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 EmissionsToBuilders.displayName = 'EmissionsToBuilders';
-
-EmissionsToBuilders.propTypes = {
-  emissions: PropTypes.arrayOf(emissionType).isRequired,
-  loading: PropTypes.bool.isRequired,
-};

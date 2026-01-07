@@ -121,8 +121,12 @@ export const MechAgentMetrics = () => {
   );
 
   return (
+
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
       <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
         <Card className="flex flex-col gap-6 p-8 mb-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
           <div className="flex items-center">
             <Image
@@ -138,6 +142,8 @@ export const MechAgentMetrics = () => {
             <Link
               className="font-extrabold text-6xl"
               href="/data#mech-daily-active-agents"
+
+              // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
               hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
@@ -147,6 +153,8 @@ export const MechAgentMetrics = () => {
           )}
           <div className="flex gap-2">
             Daily Active Agents (DAAs){' '}
+            // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
+            // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
@@ -154,6 +162,8 @@ export const MechAgentMetrics = () => {
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
           {typeof metrics?.totalTxs === 'number' ? (
+
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: any; className: string; href: st... Remove this comment to see the full error message
             <Link className="font-bold" href="/data#mech-globals" hideArrow>
               {metrics.totalTxs.toLocaleString()}
             </Link>
@@ -162,6 +172,8 @@ export const MechAgentMetrics = () => {
           )}{' '}
           requests and{' '}
           {typeof metrics?.totalDeliveries === 'number' ? (
+
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: any; className: string; href: st... Remove this comment to see the full error message
             <Link className="font-bold" href="/data#mech-globals" hideArrow>
               {metrics.totalDeliveries.toLocaleString()}
             </Link>
@@ -184,6 +196,8 @@ export const MechAgentMetrics = () => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
+
+                // @ts-expect-error TS(2322) FIXME: Type '{ children: any; href: string; hideArrow: tr... Remove this comment to see the full error message
                 <Link href="/data#mech-requests-categorized" hideArrow>
                   {item.value}
                 </Link>

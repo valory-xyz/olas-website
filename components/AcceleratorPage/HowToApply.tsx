@@ -21,6 +21,9 @@ const evaluationList = [
 
 export const HowToApply = () => (
   <div className="max-w-[720px] mx-auto max-sm:mx-4">
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+    // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
     <Card className="rounded-3xl border outline outline-8 outline-slate-100">
       <div className="px-6 md:px-12 border-b-1.5 border-dotted">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-8 mt-12`}>
@@ -28,6 +31,8 @@ export const HowToApply = () => (
         </h2>
         <div className="mb-8">
           We recommend you{' '}
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={PEARL_YOU_URL}>download and try Pearl</SubsiteLink>
           , consult the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">

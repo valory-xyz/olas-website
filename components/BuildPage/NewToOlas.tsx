@@ -61,6 +61,8 @@ export const NewToOlas = () => (
 
     <div className="grid md:grid-cols-3 md:gap-x-4 gap-y-4 max-w-5xl max-w-full xl:mx-auto xl:w-[1200px]">
       {programs.map((item) => (
+
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; ke... Remove this comment to see the full error message
         <Card
           className="bg-[#F8F9FC] flex flex-col overflow-hidden w-full border-t border-white rounded-2xl"
           key={item.title}
@@ -70,10 +72,14 @@ export const NewToOlas = () => (
             alt={item.title}
             width={495}
             height={260}
+
+            // @ts-expect-error TS(2322) FIXME: Type '{ src: string; alt: string; width: number; h... Remove this comment to see the full error message
             image
             className="rounded-lg p-2 object-cover w-full"
           />
           <div className="p-6">
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
             <CardTitle className="mb-4 md:max-w-[230px]  mx-auto text-center">
               <span>{item.title}</span>
             </CardTitle>

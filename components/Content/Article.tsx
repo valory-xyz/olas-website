@@ -1,7 +1,6 @@
 import { isArray } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { useMemo, useState } from 'react';
 
 import { CARD_CLASS } from 'common-util/classes';
@@ -9,10 +8,26 @@ import { formatDate } from 'common-util/formatDate';
 
 const imageDomain = process.env.NEXT_PUBLIC_API_URL;
 
-const Article = ({ article, href, showReadTime, showDate }) => {
+interface ArticleProps {
+  article: {
+    attributes?: {
+      datePublished?: string;
+      headerImage?: object;
+      slug?: string;
+      title?: string;
+      readTime?: number;
+    };
+  };
+  href: string;
+  showReadTime?: boolean;
+  showDate?: boolean;
+}
+
+const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
+    // @ts-expect-error TS(2339) FIXME: Property 'data' does not exist on type 'object'.
     const imageData = article?.attributes?.headerImage?.data;
     const data = isArray(imageData) ? imageData?.[0] : imageData;
 
@@ -25,6 +40,7 @@ const Article = ({ article, href, showReadTime, showDate }) => {
     title,
     readTime,
     datePublished: datePublishedFromArticle,
+    // @ts-expect-error TS(2339) FIXME: Property 'publishedAt' does not exist on type '{ d... Remove this comment to see the full error message
     publishedAt,
   } = article.attributes;
   const { url, width, height } = image || {};
@@ -80,21 +96,6 @@ const Article = ({ article, href, showReadTime, showDate }) => {
       </article>
     </Link>
   );
-};
-
-Article.propTypes = {
-  article: PropTypes.shape({
-    attributes: PropTypes.shape({
-      datePublished: PropTypes.string,
-      headerImage: PropTypes.object,
-      slug: PropTypes.string,
-      title: PropTypes.string,
-      readTime: PropTypes.number,
-    }),
-  }).isRequired,
-  href: PropTypes.string.isRequired,
-  showReadTime: PropTypes.bool,
-  showDate: PropTypes.bool,
 };
 
 Article.defaultProps = {

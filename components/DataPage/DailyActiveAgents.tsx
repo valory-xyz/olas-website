@@ -18,6 +18,8 @@ import { CodeSnippet } from './CodeSnippet';
 export const DailyActiveAgentsInfo = () => {
   return (
     <>
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Daily Active Agents</h2>
 
@@ -54,6 +56,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="babydegen-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Babydegen Daily Active Agents</h2>
 
@@ -88,6 +92,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="agentsfun-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Agents.fun Daily Active Agents</h2>
 
@@ -117,6 +123,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="mech-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Mech Daily Active Agents</h2>
 
@@ -150,6 +158,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="predict-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Predict Daily Active Agents</h2>
 
@@ -180,6 +190,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="pearl-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Pearl Daily Active Agents</h2>
 
@@ -226,6 +238,8 @@ export const DailyActiveAgentsInfo = () => {
         </div>
       </SectionWrapper>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="contribute-daily-active-agents">
         <h2 className={SUB_HEADER_LG_CLASS}>Contribute Daily Active Agents</h2>
 

@@ -1,9 +1,13 @@
-import PropTypes from 'prop-types';
-
 import Footer from './Footer';
 import Header from './Header';
 
-const PageWrapper = ({ children }) => (
+interface PageWrapperProps {
+  children: React.ReactNode;
+}
+
+const PageWrapper = ({
+  children
+}: PageWrapperProps) => (
   <>
     <Header />
 
@@ -11,9 +15,5 @@ const PageWrapper = ({ children }) => (
     <Footer />
   </>
 );
-
-PageWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default PageWrapper;

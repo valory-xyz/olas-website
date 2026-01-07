@@ -90,8 +90,16 @@ LegendItem.propTypes = {
 LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
+
+  // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message
   <div class="flex flex-col gap-2 text-base max-w-md">
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+    // @ts-expect-error TS(2322): Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message
     <span class="font-semibold mb-2">How is the Total Supply calculated?</span>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+    // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
     <span class="italic">
       <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
       <span className="font-semibold">buOLAS</span> value
@@ -154,11 +162,14 @@ export const SupplyPieChart = () => {
         ];
 
         const result = await Promise.allSettled(promises);
+
+        // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
         const totalSupplyResult = await result[0].value.json();
 
         const totalSupply = BigInt(totalSupplyResult.data.totalSupply);
         const distributions = result
           .slice(1, result.length)
+          // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
           .map((item) => item.value || 0);
 
         const circulatingSupply =
@@ -166,6 +177,8 @@ export const SupplyPieChart = () => {
             ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
             : 0;
 
+
+        // @ts-expect-error TS(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         setTotalSupply(formatEthers(totalSupply));
         setData([
           ...distributions.map((item, index) => ({
@@ -203,6 +216,8 @@ export const SupplyPieChart = () => {
             {loading ? '--' : formatNumber(totalSupply)}
           </div>
           <div className="mb-4">
+            // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
+            // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
             <Popover
               text="Verify"
               align="start"

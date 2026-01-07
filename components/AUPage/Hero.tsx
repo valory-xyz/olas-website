@@ -22,6 +22,9 @@ export const Hero = () => (
           crypto and AI.
         </h1>
 
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
         <Button
           variant="default"
           size="xl"

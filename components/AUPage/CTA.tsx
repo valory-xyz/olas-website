@@ -138,6 +138,7 @@ export const CTA = () => (
             let iconsClassName = replayLink ? '' : 'text-purple-600';
 
             return (
+              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
               <Card
                 key={index}
                 className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}

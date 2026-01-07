@@ -24,6 +24,7 @@ const HeroImage = () => (
 );
 
 const Hero = () => (
+
   <SectionWrapper customClasses={`border-b ${SECTION_BOX_CLASS}`}>
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-top xl:gap-0">
       <div className="md:mb-12 lg:col-span-6">
@@ -38,6 +39,9 @@ const Hero = () => (
           Leverage autonomous services to track and enhance the influence of
           your community.
         </div>
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message
         <Button
           asChild
           variant="default"
@@ -58,6 +62,7 @@ const Hero = () => (
 );
 
 const WhatIsOlasContributeService = () => (
+
   <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="about">
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
       <div className="pr-0 mb-12 lg:col-span-6 lg:pr-20">
@@ -118,6 +123,7 @@ const howItWorksList = [
   ],
 ];
 const HowItWorks = () => (
+
   <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:py-0" id="how-it-works">
     <div className="max-w-screen-md items-start m-auto">
       <div className="pr-0 lg:pr-12 mb-12">

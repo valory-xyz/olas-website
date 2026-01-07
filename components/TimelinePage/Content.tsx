@@ -42,7 +42,11 @@ const categories = [
 
 const Categories = ({ filters, toggleFilters }) => {
   return (
+
     <SectionWrapper id="categories">
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+      // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
       <Card className="max-w-[856px] mx-auto p-8 border border-slate-200 outline outline-slate-100 outline-[8px] rounded-xl">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-bold">Categories</h2>
@@ -101,6 +105,7 @@ const Timeline = ({ filters, setFilters }) => {
   }, [filters]);
 
   return (
+
     <SectionWrapper customClasses="pt-0 py-12">
       <div className="max-w-[872px] mx-auto max-lg:mx-4">
         {filters.length > 0 && (
@@ -109,6 +114,9 @@ const Timeline = ({ filters, setFilters }) => {
               {filters.length} filter{`${filters.length === 1 ? '' : 's'}`}{' '}
               applied.
             </div>
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: string; variant: string; classNa... Remove this comment to see the full error message
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: string; variant: "outline"; clas... Remove this comment to see the full error message
             <Button
               variant="outline"
               className="px-1"
@@ -143,10 +151,13 @@ const Timeline = ({ filters, setFilters }) => {
                   </div>
                   <div className="flex flex-col">
                     {quarter.topics.map((topic) => (
+
+                      // @ts-expect-error TS(2322) FIXME: Type '{ topic: string; content: string; category: ... Remove this comment to see the full error message
                       <div key={topic} className="px-6 py-4 border-b-1.5">
                         <Accordion
                           titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
                           dropdownClass="border-none"
+                          // @ts-expect-error TS(2322) FIXME: Type 'Element' is not assignable to type 'string'.
                           label={<Markdown>{topic.topic}</Markdown>}
                           defaultOpen={false}
                         >

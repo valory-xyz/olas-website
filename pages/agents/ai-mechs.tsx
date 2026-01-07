@@ -83,6 +83,8 @@ const AiMechs = () => (
       description="The marketplace for agent tools; Hire a Mech agent to expand your agent’s capabilities and pay for them in crypto."
       siteImageUrl="/images/agents/ai-mechs.png"
     />
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper>
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
@@ -95,9 +97,15 @@ const AiMechs = () => (
             for them in crypto.
           </Lead>
           <div className="grid md:grid-cols-2 gap-8">
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: Element; size: string; asChild: ... Remove this comment to see the full error message
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; size: "xl"; asChild: tr... Remove this comment to see the full error message
             <Button size="xl" asChild variant="default">
               <a href="#mech-resources">Learn more</a>
             </Button>
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: Element; size: string; asChild: ... Remove this comment to see the full error message
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; size: "xl"; asChild: tr... Remove this comment to see the full error message
             <Button size="xl" asChild variant="outline">
               <a href="#integrate">Integrate Mechs</a>
             </Button>
@@ -114,6 +122,8 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper id="about" customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
@@ -129,12 +139,16 @@ const AiMechs = () => (
             marketplace to provide their own specialized skills and tasks.
           </Lead>
 
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href="https://marketplace.olas.network/gnosis/ai-agents/2235?activity=true">
             Check out Mechs in action
           </SubsiteLink>
         </div>
       </div>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper id="why-mechs">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
@@ -148,6 +162,8 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper
       id="how-it-works"
       customClasses="lg:p-24 px-4 py-12 border-y"
@@ -181,6 +197,8 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper id="use-case">
       <H2 className="text-center mb-12">Case study: Mechs Predictions</H2>
       <PredictionAgentsTable />
@@ -189,6 +207,8 @@ const AiMechs = () => (
         more information on Prediction Agents
       </Lead>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="integrate">
       <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-start">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left mb-12">
@@ -236,6 +256,8 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper
       customClasses="lg:p-24 px-4 py-12 border-b"
       id="mech-resources"
@@ -248,17 +270,35 @@ const AiMechs = () => (
               resource.actions.length > 1 ? CardContent : CardFooter;
             return (
               <div key={index} className="mb-4 md:mb-0">
+                // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+                // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+                // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; className: string; }' is ... Remove this comment to see the full error message
                 <Card className="max-w-md mx-auto h-full">
+                  // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+                  // @ts-expect-error TS(2559): Type '{ children: Element; }' has no properties in... Remove this comment to see the full error message
+                  // @ts-expect-error TS(2559) FIXME: Type '{ children: any[]; }' has no properties in c... Remove this comment to see the full error message
                   <CardHeader>
+                    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+                    // @ts-expect-error TS(2559): Type '{ children: string; }' has no properties in ... Remove this comment to see the full error message
                     <CardTitle>{resource.title}</CardTitle>
                   </CardHeader>
                   {resource.description && (
+
+                    // @ts-expect-error TS(2559) FIXME: Type '{ children: any[]; }' has no properties in c... Remove this comment to see the full error message
                     <CardContent>
+                      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+                      // @ts-expect-error TS(2559): Type '{ children: string; }' has no properties in ... Remove this comment to see the full error message
+                      // @ts-expect-error TS(2559) FIXME: Type '{ children: string; }' has no properties in ... Remove this comment to see the full error message
                       <CardDescription>{resource.description}</CardDescription>
                     </CardContent>
                   )}
+                  // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+                  // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+                  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
                   <FooterTag className="space-y-4">
                     {resource.actions.map((action, actionIndex) => (
+
+                      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "secondary"; a... Remove this comment to see the full error message
                       <Button
                         variant="secondary"
                         asChild

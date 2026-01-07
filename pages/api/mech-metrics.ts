@@ -34,7 +34,10 @@ const fetchDailyAgentPerformance = async () => {
       }),
     ]);
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
+
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     const basePerformances = baseResult.dailyAgentPerformances ?? [];
 
     const gnosisAverage = calculate7DayAverage(
@@ -89,6 +92,8 @@ const fetchAgentsFunTxCount = async () => {
         agentIds,
       },
     );
+
+    // @ts-expect-error TS(2339) FIXME: Property 'agentPerformances' does not exist on typ... Remove this comment to see the full error message
     const rows = result?.agentPerformances || [];
     return rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
   } catch (error) {
@@ -135,12 +140,15 @@ const fetchCategorizedRequestTotals = async () => {
     };
 
     if (mechResult.status === 'fulfilled') {
+      // @ts-expect-error TS(2339) FIXME: Property 'requestsPerAgentOnchains' does not exist... Remove this comment to see the full error message
       addCounts(mechResult.value?.requestsPerAgentOnchains);
     }
     if (marketplaceGnosisResult.status === 'fulfilled') {
+      // @ts-expect-error TS(2339) FIXME: Property 'requestsPerAgents' does not exist on typ... Remove this comment to see the full error message
       addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
+      // @ts-expect-error TS(2339) FIXME: Property 'requestsPerAgents' does not exist on typ... Remove this comment to see the full error message
       addCounts(marketplaceBaseResult.value?.requestsPerAgents);
     }
 

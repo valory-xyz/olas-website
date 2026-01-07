@@ -48,8 +48,10 @@ export const Paths = () => (
         chance to start earning dev rewards in the Olas ecosystem. To learn more
         about dev rewards, check out{' '}
         <SubsiteLink
+          // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
           className="underline text-slate-800"
           href={BUILD_MECH_TOOL_URL}
+
           rel="noopener noreferrer"
         >
           this guide
@@ -71,6 +73,9 @@ export const Paths = () => (
       </ul>
 
       <div className="flex max-md:flex-col max-md:text-center gap-6">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message
         <Button
           variant="valory"
           size="xl"
@@ -80,6 +85,9 @@ export const Paths = () => (
             Start building Mech tools today
           </Link>
         </Button>
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message
         <Button
           variant="valory"
           size="xl"

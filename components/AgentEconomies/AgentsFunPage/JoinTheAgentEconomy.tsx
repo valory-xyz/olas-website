@@ -12,6 +12,8 @@ const PearlContent = () => (
     </strong>
     <div className="mb-4">
       Visit{' '}
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+      // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
       <SubsiteLink href={PEARL_YOU_URL}>
         <span className="inline-block max-w-full break-all">
           {PEARL_YOU_URL}
@@ -39,7 +41,11 @@ const PearlContent = () => (
 );
 
 const PearlButton = () => (
+
+  // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="grow mt-6">
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+    // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
     <SubsiteLink href={PEARL_YOU_URL} isInButton>
       Run an Agent
     </SubsiteLink>
@@ -47,6 +53,7 @@ const PearlButton = () => (
 );
 
 export const JoinTheAgentEconomy = () => (
+
   <SectionWrapper id="get-started" customClasses="max-md:p-4 lg:my-32">
     <div className="text-center max-w-[650px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
@@ -54,6 +61,8 @@ export const JoinTheAgentEconomy = () => (
       </h2>
 
       <div className="flex">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'imgUrl'.
+        // @ts-expect-error TS(2739): Type '{ imgUrl: string; title: string; content: El... Remove this comment to see the full error message
         <StarterCards
           imgUrl="/images/pearl-icon.png"
           title="Run via Pearl"

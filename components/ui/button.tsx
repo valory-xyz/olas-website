@@ -1,6 +1,5 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
-import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
 import { cn } from 'lib/utils';
@@ -41,12 +40,28 @@ const buttonVariants = cva(
   },
 );
 
-const Button = forwardRef(
+interface ButtonProps {
+  asChild?: boolean;
+  className?: string;
+  size?: 'default' | 'sm' | 'lg' | 'xl' | 'icon';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'ghostPrimary'
+    | 'link'
+    | 'valory';
+}
+
+const Button = forwardRef<HTMLElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
+        // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
         ref={ref}
         {...props}
       />
@@ -56,22 +71,7 @@ const Button = forwardRef(
 
 Button.displayName = 'Button';
 
-Button.propTypes = {
-  asChild: PropTypes.bool,
-  className: PropTypes.string,
-  size: PropTypes.oneOf(['default', 'sm', 'lg', 'xl', 'icon']),
-  variant: PropTypes.oneOf([
-    'default',
-    'destructive',
-    'outline',
-    'secondary',
-    'ghost',
-    'ghostPrimary',
-    'link',
-    'valory',
-  ]),
-};
-
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 Button.defaultProps = {
   asChild: false,
   className: null,

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import qs from 'qs';
 import useSWR from 'swr';
 
@@ -7,11 +6,21 @@ import Article from './Article';
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
+
+// @ts-expect-error TS(2556) FIXME: A spread argument must either have a tuple type or... Remove this comment to see the full error message
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const QUARTERLY_UPDATES_FUNNEL_ID = 8;
 
-export const Updates = ({ limit, isMain = false }) => {
+interface UpdatesProps {
+  limit?: number;
+}
+
+export const Updates = ({
+  limit,
+  // @ts-expect-error TS(2339) FIXME: Property 'isMain' does not exist on type 'UpdatesP... Remove this comment to see the full error message
+  isMain = false,
+}: UpdatesProps) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -60,9 +69,6 @@ export const Updates = ({ limit, isMain = false }) => {
   );
 };
 
-Updates.propTypes = {
-  limit: PropTypes.number,
-};
 Updates.defaultProps = {
   limit: 1000,
 };

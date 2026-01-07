@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import qs from 'qs';
 import useSWR from 'swr';
 
@@ -7,11 +6,17 @@ import Article from './Article';
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
+
+// @ts-expect-error TS(2556) FIXME: A spread argument must either have a tuple type or... Remove this comment to see the full error message
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const CASE_STUDIES_FUNNEL_ID = 9;
 
-export const CaseStudies = ({ limit }) => {
+interface CaseStudiesProps {
+  limit?: number;
+}
+
+export const CaseStudies = ({ limit }: CaseStudiesProps) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -53,9 +58,6 @@ export const CaseStudies = ({ limit }) => {
   );
 };
 
-CaseStudies.propTypes = {
-  limit: PropTypes.number,
-};
 CaseStudies.defaultProps = {
   limit: 1000,
 };

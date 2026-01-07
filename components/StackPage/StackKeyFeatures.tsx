@@ -36,6 +36,7 @@ const list = [
 ];
 
 export const StackKeyFeatures = () => (
+
   <SectionWrapper customClasses="xl:p-24 px-4 py-12 border-y" id="key-features">
     <div className="max-w-[872px] mx-auto flex flex-col gap-5">
       <p>
@@ -46,6 +47,9 @@ export const StackKeyFeatures = () => (
       <div className="grid md:grid-cols-2 gap-4">
         {list.map((item) => (
           <Link key={item.title} href={item.url}>
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
             <Card className="p-4 flex gap-4 w-full h-full lg:h-[100px] hover:bg-slate-100 duration-100 ease-in">
               <Image
                 src={`/images/stack-page/${item.imgUrl}`}
@@ -66,6 +70,8 @@ export const StackKeyFeatures = () => (
       <p>
         To learn more about each part of the stack, visit their relevant pages
         or the{' '}
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={DOCS_BASE_URL}>technical documentation.</SubsiteLink>
       </p>
     </div>

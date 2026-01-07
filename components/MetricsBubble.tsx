@@ -1,15 +1,31 @@
 import { Card } from 'components/ui/card';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
+
+interface MetricsBubbleProps {
+  data?: {
+    id: string;
+    subText: string;
+    value?: string;
+    source?: {
+      link: string;
+      isExternal?: boolean;
+    };
+  }[];
+  image?: string;
+  title: string;
+}
 
 export const MetricsBubble = ({
+  // @ts-expect-error TS(2339) FIXME: Property 'isUnderConstruction' does not exist on t... Remove this comment to see the full error message
   isUnderConstruction,
+  // @ts-expect-error TS(2339) FIXME: Property 'metrics' does not exist on type 'Metrics... Remove this comment to see the full error message
   metrics,
   image,
   title,
-}) => {
+}: MetricsBubbleProps) => {
   return (
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
     <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
       {isUnderConstruction && (
         <Image
@@ -20,7 +36,6 @@ export const MetricsBubble = ({
           className="mb-4"
         />
       )}
-
       <div className="mt-auto">
         {image && (
           <Image
@@ -44,6 +59,7 @@ export const MetricsBubble = ({
               : 'div';
             const source =
               item.source && value !== '--' ? (
+                // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; href: any; hideArrow: tru... Remove this comment to see the full error message
                 <SourceTag href={item.source.link} hideArrow>
                   {value}
                   {item.source.isExternal && (
@@ -69,22 +85,6 @@ export const MetricsBubble = ({
       </div>
     </Card>
   );
-};
-
-MetricsBubble.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      subText: PropTypes.string.isRequired,
-      value: PropTypes.string,
-      source: PropTypes.shape({
-        link: PropTypes.string.isRequired,
-        isExternal: PropTypes.bool,
-      }),
-    }),
-  ),
-  image: PropTypes.string,
-  title: PropTypes.string.isRequired,
 };
 
 MetricsBubble.defaultProps = {

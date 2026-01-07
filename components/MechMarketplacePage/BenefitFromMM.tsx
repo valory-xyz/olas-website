@@ -41,6 +41,7 @@ const list = [
       </div>
     ),
     button: (
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
       <Button variant="default" size="lg" asChild className="w-full">
         <ExternalLink
           href={`${BUILD_URL}/hire`}
@@ -80,6 +81,7 @@ const list = [
       </div>
     ),
     button: (
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
       <Button variant="default" size="lg" asChild className="w-full">
         <ExternalLink
           href={`${BUILD_URL}/monetize`}
@@ -112,6 +114,7 @@ export const BenefitFromMM = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (
+          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: string; id: stri... Remove this comment to see the full error message
           <Card
             key={item.title}
             id={item.anchor}

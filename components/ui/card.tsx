@@ -1,78 +1,123 @@
-import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import { cn } from 'lib/utils';
 
-const Card = forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'rounded-lg border text-card-foreground shadow-sm',
-      className,
-    )}
-    {...props}
-  />
-));
+interface CardProps {
+  className?: string;
+}
+
+const Card = forwardRef<HTMLElement, CardProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'rounded-lg border text-card-foreground shadow-sm',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 Card.displayName = 'Card';
-Card.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 Card.defaultProps = { className: null };
 
-const CardHeader = forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('flex flex-col space-y-1.5 p-6', className)}
-    {...props}
-  />
-));
+interface CardHeaderProps {
+  className?: string;
+}
+
+const CardHeader = forwardRef<HTMLElement, CardHeaderProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 p-6', className)}
+      {...props}
+    />
+  ),
+);
 CardHeader.displayName = 'CardHeader';
-CardHeader.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 CardHeader.defaultProps = { className: null };
 
-const CardTitle = forwardRef(({ className, children, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      'text-2xl font-semibold leading-none tracking-tight',
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </h3>
-));
+interface CardTitleProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const CardTitle = forwardRef<HTMLElement, CardTitleProps>(
+  ({ className, children, ...props }, ref) => (
+    <h3
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'text-2xl font-semibold leading-none tracking-tight',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </h3>
+  ),
+);
 CardTitle.displayName = 'CardTitle';
-CardTitle.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-};
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 CardTitle.defaultProps = { className: '' };
 
-const CardDescription = forwardRef(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn('text-lg text-muted-foreground', className)}
-    {...props}
-  />
-));
+interface CardDescriptionProps {
+  className?: string;
+}
+
+const CardDescription = forwardRef<HTMLElement, CardDescriptionProps>(
+  ({ className, ...props }, ref) => (
+    <p
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn('text-lg text-muted-foreground', className)}
+      {...props}
+    />
+  ),
+);
 CardDescription.displayName = 'CardDescription';
-CardDescription.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 CardDescription.defaultProps = { className: null };
 
-const CardContent = forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
-));
+interface CardContentProps {
+  className?: string;
+}
+
+const CardContent = forwardRef<HTMLElement, CardContentProps>(
+  ({ className, ...props }, ref) => (
+    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+  ),
+);
 CardContent.displayName = 'CardContent';
-CardContent.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 CardContent.defaultProps = { className: null };
 
-const CardFooter = forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('flex items-center p-6 pt-0', className)}
-    {...props}
-  />
-));
+interface CardFooterProps {
+  className?: string;
+}
+
+const CardFooter = forwardRef<HTMLElement, CardFooterProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn('flex items-center p-6 pt-0', className)}
+      {...props}
+    />
+  ),
+);
 CardFooter.displayName = 'CardFooter';
-CardFooter.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 CardFooter.defaultProps = { className: null };
 
 export {

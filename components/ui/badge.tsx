@@ -1,5 +1,4 @@
 import { cva } from 'class-variance-authority';
-import PropTypes from 'prop-types';
 
 import { cn } from 'lib/utils';
 
@@ -23,16 +22,18 @@ const badgeVariants = cva(
   },
 );
 
-function Badge({ className, variant, ...props }) {
+interface BadgeProps {
+  className?: string;
+  variant?: string;
+}
+
+function Badge({ className, variant, ...props }: BadgeProps) {
   return (
+    // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"default"... Remove this comment to see the full error message
     <div className={cn(badgeVariants({ variant }), className)} {...props} />
   );
 }
 
-Badge.propTypes = {
-  className: PropTypes.string,
-  variant: PropTypes.string,
-};
 Badge.defaultProps = {
   className: null,
   variant: null,

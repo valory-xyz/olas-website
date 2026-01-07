@@ -1,6 +1,5 @@
 import { cva } from 'class-variance-authority';
 import { cn } from 'lib/utils';
-import PropTypes from 'prop-types';
 
 const tagVariants = cva(
   'relative inline-flex items-center justify-center px-3 py-1 font-semibold rounded-md text-center w-full',
@@ -33,7 +32,18 @@ const tagBordersVariants = cva('absolute w-2 h-2', {
   },
 });
 
-export const Tag = ({ className, variant, children, ...props }) => {
+interface TagProps {
+  className?: string;
+  variant?: "primary" | "secondary" | "tertiary" | "white";
+  children: React.ReactNode;
+}
+
+export const Tag = ({
+  className,
+  variant,
+  children,
+  ...props
+}: TagProps) => {
   return (
     <div className={cn('relative inline-block', className)} {...props}>
       <div className="absolute inset-0 pointer-events-none">
@@ -66,12 +76,6 @@ export const Tag = ({ className, variant, children, ...props }) => {
       <div className={cn(tagVariants({ variant }), 'z-10')}>{children}</div>
     </div>
   );
-};
-
-Tag.propTypes = {
-  className: PropTypes.string,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'tertiary', 'white']),
-  children: PropTypes.node.isRequired,
 };
 
 Tag.defaultProps = {

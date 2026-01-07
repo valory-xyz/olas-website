@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 
 export const MarketplaceMetrics = () => {
+  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('mainMetrics', getMainMetrics);
   const { mechFees, ataTransactions } = metrics?.data ?? {};
 
@@ -56,6 +57,7 @@ export const MarketplaceMetrics = () => {
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
       {marketplaceData.map((data, index) => (
+        // @ts-expect-error TS(2322) FIXME: Type '{ role: string; displayMetrics: { key: strin... Remove this comment to see the full error message
         <MetricsCard key={index} metrics={data} />
       ))}
       <div className="mt-8 text-center">

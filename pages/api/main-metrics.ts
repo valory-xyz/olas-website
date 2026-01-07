@@ -41,6 +41,7 @@ const fetchDailyAgentPerformance = async () => {
 
     const performanceByChains = results
       .filter((result) => result.status === 'fulfilled')
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
       .map((result) => result.value.dailyActiveMultisigs_collection ?? []);
 
     const totalAverage = performanceByChains.reduce(
@@ -67,6 +68,7 @@ const fetchTotalOlasStaked = async () => {
 
     const olasStakedByChains = results
       .filter((result) => result.status === 'fulfilled')
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
       .map((result) => result.value.global?.currentOlasStaked ?? '0');
 
     const olasStaked = olasStakedByChains.reduce(
@@ -74,6 +76,7 @@ const fetchTotalOlasStaked = async () => {
       BigInt(0),
     );
 
+    // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; }' is not as... Remove this comment to see the full error message
     return formatWeiNumber(`${olasStaked}`, { notation: 'standard' });
   } catch (error) {
     console.error('Error fetching OLAS staked:', error);
@@ -96,6 +99,7 @@ const fetchTransactions = async () => {
 
     const txCountByChains = results
       .filter((result) => result.status === 'fulfilled')
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
       .map((result) => result.value.global?.txCount ?? '0');
 
     const transactions = txCountByChains.reduce(
@@ -103,6 +107,7 @@ const fetchTransactions = async () => {
       BigInt(0),
     );
 
+    // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; }' is not as... Remove this comment to see the full error message
     return formatEthNumber(`${transactions}`, { notation: 'standard' });
   } catch (error) {
     console.error('Error fetching transactions:', error);
@@ -125,6 +130,7 @@ const fetchTotalOperators = async () => {
 
     const operatorsByChains = results
       .filter((result) => result.status === 'fulfilled')
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
       .map((result) => result.value.globals?.[0]?.totalOperators ?? 0);
 
     const totalOperators = operatorsByChains.reduce(

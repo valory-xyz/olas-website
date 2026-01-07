@@ -1,11 +1,23 @@
 import { TEXT_LARGE_CLASS } from 'common-util/classes';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
 import { Card } from './ui/card';
+
+interface StarterCardsProps {
+  title: string;
+  content: React.ReactNode;
+  button?: React.ReactNode;
+  imgUrl?: string;
+  className?: string;
+  imgClassName?: string;
+  titleClassName?: string;
+  contentClassName?: string;
+  buttonClassName?: string;
+}
 
 export const StarterCards = ({
   imgUrl,
   title,
+  // @ts-expect-error TS(2339) FIXME: Property 'subtitle' does not exist on type 'Starte... Remove this comment to see the full error message
   subtitle,
   content,
   button,
@@ -14,7 +26,8 @@ export const StarterCards = ({
   titleClassName,
   contentClassName,
   buttonClassName,
-}) => (
+}: StarterCardsProps) => (
+  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
   <Card className={`flex flex-col w-full ${className || ''}`}>
     <div className="border-b-1.5 text-left flex flex-row gap-3 place-items-center p-6">
       <Image
@@ -37,15 +50,3 @@ export const StarterCards = ({
     </div>
   </Card>
 );
-
-StarterCards.propTypes = {
-  title: PropTypes.string.isRequired,
-  content: PropTypes.node.isRequired,
-  button: PropTypes.node,
-  imgUrl: PropTypes.string,
-  className: PropTypes.string,
-  imgClassName: PropTypes.string,
-  titleClassName: PropTypes.string,
-  contentClassName: PropTypes.string,
-  buttonClassName: PropTypes.string,
-};

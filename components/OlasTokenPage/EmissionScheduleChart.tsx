@@ -1,7 +1,6 @@
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 import { ETHERSCAN_URL } from 'common-util/constants';
 import dayjs from 'dayjs';
-import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
 import Verify from '../Verify';
 
@@ -43,12 +42,19 @@ const OlasMintInfo = () => (
   </>
 );
 
+interface EmissionScheduleChartProps {
+  inflationForYear?: string[];
+  timeLaunch?: unknown;
+  currentYear?: unknown;
+  loading: boolean;
+}
+
 export const EmissionScheduleChart = ({
   inflationForYear,
   timeLaunch,
   currentYear,
   loading,
-}) => (
+}: EmissionScheduleChartProps) => (
   <>
     <div className="flex p-4 border-b">
       <div className="mr-8">
@@ -59,7 +65,8 @@ export const EmissionScheduleChart = ({
           <span className="text-gradient">
             {loading
               ? '--'
-              : dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
+              : // @ts-expect-error TS(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
           </span>
         </div>
         <Verify
@@ -110,6 +117,8 @@ export const EmissionScheduleChart = ({
                     display: true,
                     text: 'Year',
                   },
+
+                  // @ts-expect-error TS(2322) FIXME: Type '{ title: { display: true; text: string; }; g... Remove this comment to see the full error message
                   gridLines: {
                     color: 'white',
                   },
@@ -123,6 +132,8 @@ export const EmissionScheduleChart = ({
                   ticks: {
                     callback(value) {
                       // Format y-axis numbers as 20m, not 20,000,000
+
+                      // @ts-expect-error TS(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
                       return `${value / 1000000}m`;
                     },
                   },
@@ -137,13 +148,6 @@ export const EmissionScheduleChart = ({
     </div>
   </>
 );
-
-EmissionScheduleChart.propTypes = {
-  inflationForYear: PropTypes.arrayOf(PropTypes.string),
-  timeLaunch: PropTypes.bigint,
-  currentYear: PropTypes.bigint,
-  loading: PropTypes.bool.isRequired,
-};
 
 EmissionScheduleChart.defaultProps = {
   inflationForYear: [],

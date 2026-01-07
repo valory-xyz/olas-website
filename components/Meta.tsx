@@ -1,6 +1,5 @@
 import { getLimitedText } from 'common-util/getLimitedText';
 import Head from 'next/head';
-import PropTypes from 'prop-types';
 
 const TITLE_CHAR_MAX = '55';
 
@@ -10,9 +9,16 @@ const SITE_DESCRIPTION =
 const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.webp`;
 
-const Meta = ({ pageTitle, description, siteImageUrl }) => {
+interface MetaProps {
+  pageTitle?: string;
+  description?: string;
+  siteImageUrl?: string;
+}
+
+const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
   let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
 
+  // @ts-expect-error TS(2365) FIXME: Operator '>' cannot be applied to types 'number' a... Remove this comment to see the full error message
   if (title.length > TITLE_CHAR_MAX) {
     description = `Discover ${pageTitle}`;
 
@@ -47,11 +53,6 @@ const Meta = ({ pageTitle, description, siteImageUrl }) => {
   );
 };
 
-Meta.propTypes = {
-  pageTitle: PropTypes.string,
-  description: PropTypes.string,
-  siteImageUrl: PropTypes.string,
-};
 Meta.defaultProps = {
   pageTitle: null,
   description: SITE_DESCRIPTION,

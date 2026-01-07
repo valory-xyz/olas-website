@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 
 import { VideoPropTypes } from 'common-util/propTypes';
 import { Spinner } from 'components/Spinner';
@@ -8,14 +7,24 @@ import Image from 'next/image';
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 
-const Video = ({ video }) => (
+interface VideoProps {
+  video: unknown;
+}
+
+const Video = ({ video }: VideoProps) => (
   <a
     href={
+      // @ts-expect-error TS(2339) FIXME: Property 'platform_link' does not exist on type 'u... Remove this comment to see the full error message
       video.platform_link ||
+      // @ts-expect-error TS(2339) FIXME: Property 'drive_link' does not exist on type 'unkn... Remove this comment to see the full error message
       video.drive_link ||
+      // @ts-expect-error TS(2339) FIXME: Property 'video_url' does not exist on type 'unkno... Remove this comment to see the full error message
       video.video_url ||
+      // @ts-expect-error TS(2339) FIXME: Property 'apple_link' does not exist on type 'unkn... Remove this comment to see the full error message
       video.apple_link ||
+      // @ts-expect-error TS(2339) FIXME: Property 'spotify_link' does not exist on type 'un... Remove this comment to see the full error message
       video.spotify_link ||
+      // @ts-expect-error TS(2339) FIXME: Property 'rss_link' does not exist on type 'unknow... Remove this comment to see the full error message
       video.rss_link
     }
     target="_blank"
@@ -24,9 +33,13 @@ const Video = ({ video }) => (
     <div
       className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
     >
+      // @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not
+      exist on type 'u... Remove this comment to see the full error message
       {video.imageFilename && (
         <Image
+          // @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not exist on type 'u... Remove this comment to see the full error message
           src={`${video.imageFilename}`}
+          // @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on type 'unknown'.
           alt={video.title}
           width={750}
           height={200}
@@ -35,10 +48,14 @@ const Video = ({ video }) => (
       )}
       <div className="p-6 flex flex-col h-full">
         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal min-h-[70px]">
+          // @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on
+          type 'unknown'.
           {video.title}
         </h2>
         <div className="text-gray-500 mt-auto">
           <span className="text-sm md:text-xl lg:text-sm">
+            // @ts-expect-error TS(2339) FIXME: Property 'date' does not exist
+            on type 'unknown'.
             {formatDate(video.date)}
           </span>
         </div>
@@ -47,11 +64,19 @@ const Video = ({ video }) => (
   </a>
 );
 
-Video.propTypes = {
-  video: VideoPropTypes.isRequired,
-};
+interface VideosProps {
+  isLoading?: boolean;
+  videos?: unknown[];
+  limit?: number;
+}
 
-export const Videos = ({ isLoading, videos, limit, isMain }) => (
+export const Videos = ({
+  isLoading,
+  videos,
+  limit,
+  // @ts-expect-error TS(2339) FIXME: Property 'isMain' does not exist on type 'VideosPr... Remove this comment to see the full error message
+  isMain,
+}: VideosProps) => (
   <section>
     <div>
       <div>
@@ -80,6 +105,7 @@ export const Videos = ({ isLoading, videos, limit, isMain }) => (
       ) : (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {videos.map((video) => (
+            // @ts-expect-error TS(2339) FIXME: Property 'id' does not exist on type 'unknown'.
             <div key={video.id}>
               <Video video={video} />
             </div>
@@ -89,12 +115,6 @@ export const Videos = ({ isLoading, videos, limit, isMain }) => (
     </div>
   </section>
 );
-
-Videos.propTypes = {
-  isLoading: PropTypes.bool,
-  videos: PropTypes.arrayOf(VideoPropTypes),
-  limit: PropTypes.number,
-};
 
 Videos.defaultProps = {
   isLoading: true,

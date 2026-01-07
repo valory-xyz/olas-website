@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const Info = () => (
+
   <SectionWrapper id="about">
     <div className="max-w-[650px] mx-auto">
       <p className="mb-6">
@@ -20,7 +21,13 @@ export const Info = () => (
         easily.
       </p>
 
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+      // @ts-expect-error TS(2322): Type '{ children: Element[]; class: string; }' is ... Remove this comment to see the full error message
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message
       <div class="border-l-4 border-purple-700 pl-6 py-2">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
         <div class="font-bold flex flex-row text-xl gap-2 place-items-center mb-3">
           <InfoIcon size={20} /> Example
         </div>

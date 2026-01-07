@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 const getPrimaryStyle = (disabled) => `
@@ -20,11 +19,27 @@ const sizeMdStyle = 'px-3 py-2 text-lg lg:text-lg lg:px-3 lg:py-2 rounded-md';
 const disabledStyle =
   'text-gray-500 border-gray-300 bg-white cursor-not-allowed';
 
+interface ButtonProps {
+  className?: string;
+  href: string | object;
+  isExternal?: boolean;
+  size?: string;
+  type?: string;
+  disabled?: boolean;
+}
+
 /**
  *
  * @deprecated This component is deprecated and use components/ui/button.jsx instead.
  */
-export function Button({ href, className, size, isExternal, type, ...props }) {
+export function Button({
+  href,
+  className,
+  size,
+  isExternal,
+  type,
+  ...props
+}: ButtonProps) {
   const fullClassName = `
     inline-flex
     items-center
@@ -53,14 +68,6 @@ export function Button({ href, className, size, isExternal, type, ...props }) {
   );
 }
 
-Button.propTypes = {
-  className: PropTypes.string,
-  href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  isExternal: PropTypes.bool,
-  size: PropTypes.string,
-  type: PropTypes.string,
-  disabled: PropTypes.bool,
-};
 Button.defaultProps = {
   className: null,
   isExternal: false,

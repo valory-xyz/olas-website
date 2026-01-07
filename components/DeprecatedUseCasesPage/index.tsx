@@ -26,6 +26,9 @@ export const DeprecatedUseCases = () => {
         <div className="grid md:grid-cols-2 gap-4 mb-20">
           {deprecatedItems.map((item) => (
             <Link key={item.id} href={servicePath(item)}>
+              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+              // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
               <Card className="activity-card-opaque h-full flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
                 <Image
                   src={`/images/agents/${item.iconFilename}`}
@@ -43,6 +46,9 @@ export const DeprecatedUseCases = () => {
           ))}
         </div>
         <div className="flex max-sm:flex-col gap-4 w-fit mx-auto">
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+          // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
           <Button
             variant="default"
             size="lg"
@@ -51,6 +57,9 @@ export const DeprecatedUseCases = () => {
           >
             <Link href="/agents">Explore Agents</Link>
           </Button>
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+          // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
           <Button
             variant="outline"
             size="lg"

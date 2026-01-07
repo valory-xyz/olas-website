@@ -1,14 +1,20 @@
-/* eslint-disable react/require-default-props */
-import PropTypes from 'prop-types';
 import { useMemo } from 'react';
+
+interface SectionWrapperProps {
+  backgroundType?: "SUBTLE_GRADIENT" | "GRAY" | "GRAY_GRADIENT" | "GOVERNATOOORR" | "NONE";
+  children: React.ReactNode;
+  customClasses?: string;
+  id?: string;
+  customStyle?: object;
+}
 
 const SectionWrapper = ({
   children,
   customClasses,
   backgroundType,
   id,
-  customStyle,
-}) => {
+  customStyle
+}: SectionWrapperProps) => {
   const backgroundClasses = useMemo(() => {
     switch (backgroundType) {
       case 'SUBTLE_GRADIENT':
@@ -35,20 +41,6 @@ const SectionWrapper = ({
       {children}
     </section>
   );
-};
-
-SectionWrapper.propTypes = {
-  backgroundType: PropTypes.oneOf([
-    'SUBTLE_GRADIENT',
-    'GRAY',
-    'GRAY_GRADIENT',
-    'GOVERNATOOORR',
-    'NONE',
-  ]),
-  children: PropTypes.node.isRequired,
-  customClasses: PropTypes.string,
-  id: PropTypes.string,
-  customStyle: PropTypes.object,
 };
 
 SectionWrapper.defaultProps = {

@@ -4,6 +4,7 @@ import { CARD_BG } from 'styles/globals';
 
 export const ComingSoon = ({ text, className }) => {
   return (
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
     <Card className={`${CARD_BG} max-h-[250px] p-16 ${className}`}>
       <Image
         alt="Metrics Coming Soon"

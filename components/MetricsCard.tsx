@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import PropTypes from 'prop-types';
 import { Card } from './ui/card';
 import { ExternalLink, Link } from './ui/typography';
 
@@ -15,9 +14,30 @@ export const fetchMetrics = async (fetchFunctions) => {
   }
 };
 
-export const MetricsCard = ({ metrics }) => {
+interface MetricsCardProps {
+  metrics: {
+    role: string;
+    displayMetrics: {
+      key: string;
+      imageSrc: string;
+      labelText: string;
+      source?: string;
+      metric?: string | number;
+      isMoney?: boolean;
+      isExternal?: boolean;
+      subText?: string;
+      imageWidth?: number;
+    }[];
+  };
+}
+
+export const MetricsCard = ({
+  metrics
+}: MetricsCardProps) => {
   return (
-    <Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
+
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+    (<Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
       {metrics.displayMetrics.map((metric, index) => {
         const borderClassName =
           metrics.displayMetrics.length > 1 && index === 0
@@ -32,6 +52,7 @@ export const MetricsCard = ({ metrics }) => {
             <div className="flex items-center">
               {metric.imageSrc && (
                 <Image
+                  // @ts-expect-error TS(2339) FIXME: Property 'role' does not exist on type '{ key: str... Remove this comment to see the full error message
                   alt={metric.role}
                   src={`/images/${metrics.role}-page/${metric.imageSrc}`}
                   width={metric.imageWidth ?? 35}
@@ -39,6 +60,7 @@ export const MetricsCard = ({ metrics }) => {
                   className="mr-4"
                 />
               )}
+              // @ts-expect-error TS(2339) FIXME: Property 'image' does not exist on type '{ key: st... Remove this comment to see the full error message
               {metric.image && <span className="mr-4">{metric.image}</span>}
               {metric.labelText}
             </div>
@@ -49,7 +71,7 @@ export const MetricsCard = ({ metrics }) => {
           </div>
         );
       })}
-    </Card>
+    </Card>)
   );
 };
 
@@ -76,6 +98,8 @@ const renderMetricValue = (metric) => {
     <ExternalLink
       className={valueClassName}
       href={metric.source}
+
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
       target="_blank"
       hideArrow
     >
@@ -84,28 +108,11 @@ const renderMetricValue = (metric) => {
       <span className="text-4xl">↗</span>
     </ExternalLink>
   ) : (
-    <Link className={valueClassName} href={metric.source} hideArrow>
+
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
+    (<Link className={valueClassName} href={metric.source} hideArrow>
       {metric.isMoney && <span>$</span>}
       {formatted}
-    </Link>
+    </Link>)
   );
-};
-
-MetricsCard.propTypes = {
-  metrics: PropTypes.shape({
-    role: PropTypes.string.isRequired,
-    displayMetrics: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        imageSrc: PropTypes.string.isRequired,
-        labelText: PropTypes.string.isRequired,
-        source: PropTypes.string,
-        metric: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        isMoney: PropTypes.bool,
-        isExternal: PropTypes.bool,
-        subText: PropTypes.string,
-        imageWidth: PropTypes.number,
-      }),
-    ).isRequired,
-  }).isRequired,
 };

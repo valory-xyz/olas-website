@@ -4,6 +4,8 @@ import qs from 'qs';
 import useSWR from 'swr';
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+
+// @ts-expect-error TS(2556) FIXME: A spread argument must either have a tuple type or... Remove this comment to see the full error message
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const useFetch = (subUrl, params) => {

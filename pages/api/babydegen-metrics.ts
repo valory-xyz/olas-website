@@ -51,11 +51,13 @@ const fetchOlasApr = async () => {
 
     const modiusContracts =
       modiusContractsResult.status === 'fulfilled'
-        ? modiusContractsResult.value.stakingContracts
+        ? // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
+          modiusContractsResult.value.stakingContracts
         : null;
     const optimusContracts =
       optimusContractsResult.status === 'fulfilled'
-        ? optimusContractsResult.value.stakingContracts
+        ? // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
+          optimusContractsResult.value.stakingContracts
         : null;
 
     return {
@@ -95,8 +97,11 @@ const fetchModiusPopulationMetrics = async () => {
         timestampLte: MODIUS_FIXED_END_TIMESTAMP,
       }),
     );
+
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
     const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? result.dailyPopulationMetrics
+      ? // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
+        result.dailyPopulationMetrics
       : [];
     if (rows.length === 0) return null;
 
@@ -125,8 +130,11 @@ const fetchModeStakingSnapshots = async () => {
         timestampLte: MODIUS_FIXED_END_TIMESTAMP,
       }),
     );
+
+    // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
     const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
-      ? result.cumulativeDailyStakingGlobals
+      ? // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
+        result.cumulativeDailyStakingGlobals
       : [];
     if (rows.length === 0) return null;
 
@@ -147,8 +155,11 @@ const fetchOptimusPopulationMetrics = async () => {
     const result = await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
       dailyBabydegenPopulationMetricsQuery({ first: 10 }),
     );
+
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
     const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? result.dailyPopulationMetrics
+      ? // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
+        result.dailyPopulationMetrics
       : [];
     if (rows.length === 0) return null;
 
@@ -217,8 +228,11 @@ const fetchOptimismStakingSnapshots = async () => {
     const result = await STAKING_GRAPH_CLIENTS.optimism.request(
       dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
     );
+
+    // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
     const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
-      ? result.cumulativeDailyStakingGlobals
+      ? // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
+        result.cumulativeDailyStakingGlobals
       : [];
 
     if (rows.length === 0) return null;
@@ -363,7 +377,10 @@ const fetchDailyAgentPerformance = async () => {
       }),
     ]);
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     const modePerformances = modeResult.dailyAgentPerformances ?? [];
+
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
 
     const modeAverage = calculate7DayAverage(
@@ -390,6 +407,7 @@ const fetchModiusOlasApr = async () => {
       stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
     const modiusContracts = modiusContractsResult?.stakingContracts;
     return modiusContracts && modiusContracts.length > 0
       ? getMaxApr(modiusContracts)
@@ -406,6 +424,7 @@ const fetchOptimusOlasApr = async () => {
       stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
     const optimusContracts = optimusContractsResult?.stakingContracts;
     return optimusContracts && optimusContracts.length > 0
       ? getMaxApr(optimusContracts)

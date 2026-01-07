@@ -67,6 +67,7 @@ const fetchPredictTxsByAgentType = async () => {
       { agentIds: PREDICT_AGENT_IDS_FLAT },
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'agentPerformances' does not exist on typ... Remove this comment to see the full error message
     const rows = response?.agentPerformances || [];
     const idToTx = new Map();
     rows.forEach((row) => {
@@ -94,6 +95,7 @@ const fetchOlasApr = async () => {
       stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
     const gnosisContracts = contractsResult?.stakingContracts;
 
     return getMaxApr(gnosisContracts);

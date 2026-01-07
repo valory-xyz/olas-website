@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const IntensiveProgram = () => (
+
   <SectionWrapper
     id="intensive-program"
     customClasses="bg-[url('/images/academy/intensive-program.png')] bg-no-repeat bg-cover text-white"
@@ -59,6 +60,9 @@ export const IntensiveProgram = () => (
         results. Here&apos;s a snapshot of our accomplishments:
       </p>
       <AcademyTable />
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+      // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
       <Button
         variant="default"
         size="xl"

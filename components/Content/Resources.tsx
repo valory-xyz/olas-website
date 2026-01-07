@@ -1,10 +1,15 @@
-import PropTypes from 'prop-types';
 import Link from 'next/link';
 import resources from 'data/resources.json';
 import Resource from './Resource';
 
-const Resources = ({ limit = null, tagFilter = null }) => {
+interface ResourcesProps {
+  limit?: number;
+  tagFilter?: string;
+}
+
+const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
   const sortedResources = resources.sort(
+    // @ts-expect-error TS(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
     (a, b) => new Date(b.date) - new Date(a.date),
   );
 
@@ -48,10 +53,6 @@ const Resources = ({ limit = null, tagFilter = null }) => {
   );
 };
 
-Resources.propTypes = {
-  limit: PropTypes.number,
-  tagFilter: PropTypes.string,
-};
 Resources.defaultProps = {
   limit: null,
   tagFilter: null,

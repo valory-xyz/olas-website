@@ -15,6 +15,7 @@ const FeaturedIn = () => (
     <h3 className="text-2xl md:text-4xl font-bold mb-12">Featured In</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
       {featuredIn.map((item) => {
+        // @ts-expect-error TS(2339) FIXME: Property 'imageWidth' does not exist on type '{ id... Remove this comment to see the full error message
         const { id, name, iconFilename, imageWidth, imageHeight } = item;
         return (
           <div key={id} className="grayscale flex justify-center items-center">

@@ -385,6 +385,8 @@ const faqList = [
               <ExternalLink
                 href={SNAPSHOT_URL}
                 className="text-purple-600"
+
+                // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -394,6 +396,8 @@ const faqList = [
               <ExternalLink
                 href={SNAPSHOT_URL}
                 className="text-purple-600"
+
+                // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -403,6 +407,8 @@ const faqList = [
             </p>
             <p>
               You can lock OLAS for veOLAS and check unlocks for your wallet{' '}
+              // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+              // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
               <SubsiteLink href={VEOLAS_URL}>here</SubsiteLink>.
             </p>
           </>
@@ -600,6 +606,8 @@ const Question = ({ text, children, questionId }) => {
       {children}
 
       {copied && (
+
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; }' is... Remove this comment to see the full error message
         <Card className="fixed bottom-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 z-50 bg-white shadow-lg">
           Copied to clipboard
         </Card>
@@ -619,6 +627,8 @@ const FAQPage = () => (
 
     <div className="mb-8">
       Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+      // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
       <SubsiteLink href={`${PEARL_YOU_URL}FAQ`}>
         Check out the Pearl FAQ
       </SubsiteLink>

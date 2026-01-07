@@ -150,11 +150,19 @@ const OptimusAgent = () => (
       </div>
 
       <div className="flex flex-wrap gap-4">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
         <Button variant="default" size="xl" className="max-md:grow w-fit">
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={PEARL_YOU_URL} isInButton>
             Run via Pearl
           </SubsiteLink>
         </Button>
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>
@@ -164,11 +172,15 @@ const OptimusAgent = () => (
 );
 
 export const MeetTheBabyDegens = () => (
+
   <SectionWrapper
     id="agents"
     customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
   >
     <div className="text-center">
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+      // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
+      // @ts-expect-error TS(2741) FIXME: Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
       <H2>
         Meet the{' '}
         <Image

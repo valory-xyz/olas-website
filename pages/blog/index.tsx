@@ -10,6 +10,8 @@ const ArticlesPage = () => (
       pageTitle="Blog"
       description="Read up on the latest articles and news, keep up to date with Olas!"
     />
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper>
       <h1 className={TITLE_CLASS}>Blog</h1>
       <Articles isMain displayFolders />

@@ -45,6 +45,7 @@ const getPredictPerformances = async () => {
       },
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     return performance?.dailyAgentPerformances ?? [];
   } catch (error) {
     console.error('GraphQL query error:', error);
@@ -78,6 +79,7 @@ const getBabydegenPerformances = async () => {
       },
     );
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
     return result.dailyAgentPerformances ?? [];
   } catch (error) {
     console.error('Error fetching Optimism DAAs:', error);
@@ -97,6 +99,7 @@ const getAgentsFunPerformances = async () => {
     },
   );
 
+  // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
   return result.dailyAgentPerformances ?? [];
 };
 
@@ -112,6 +115,7 @@ const getPearlServiceIds = async () => {
   );
 
   const contractsToServiceId = getContractsToServiceId(
+    // @ts-expect-error TS(2339) FIXME: Property 'checkpoints' does not exist on type 'unk... Remove this comment to see the full error message
     checkpoints?.checkpoints ?? [],
   );
   return new Set(Object.keys(contractsToServiceId).map(Number));

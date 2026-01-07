@@ -178,6 +178,7 @@ export const ProtocolAudits = () => (
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {audit.list.map((auditor) => (
+              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: any; }' is not a... Remove this comment to see the full error message
               <Card key={auditor.title}>
                 <div className="flex gap-3 border-b-1.5 px-6 py-4 items-center">
                   <Image

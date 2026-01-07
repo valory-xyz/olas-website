@@ -10,11 +10,14 @@ const UpdatesPage = () => (
       pageTitle="Quarterly Updates"
       description="Stay informed with our latest quarterly updates, featuring key insights, progress reports, and upcoming developments."
     />
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+    // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
     <SectionWrapper>
       <BlogBackButton />
       <h1 className="mb-8 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
         Quarterly Updates
       </h1>
+      // @ts-expect-error TS(2322) FIXME: Type '{ isMain: boolean; }' is not assignable to t... Remove this comment to see the full error message
       <Updates isMain={true} />
     </SectionWrapper>
   </PageWrapper>

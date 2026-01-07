@@ -73,6 +73,8 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
 
     <div className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-5xl mx-auto mb-16">
       {innovations.map((item) => (
+
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; ke... Remove this comment to see the full error message
         <Card
           className="flex flex-col gap-6 p-6 bg-white rounded-2xl border-0"
           key={item.title}
@@ -85,6 +87,8 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
             className="object-contain self-center"
           />
           <div className="text-start">
+            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+            // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
             <CardTitle className="mb-4">
               <span>{item.title}</span>
             </CardTitle>
@@ -107,6 +111,8 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
     </div>
 
     {!hideLearnMoreButton && (
+
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
       <Button variant="outline" size="xl" asChild className="mt-auto">
         <Link href="/learn">Learn more</Link>
       </Button>

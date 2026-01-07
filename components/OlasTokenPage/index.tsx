@@ -61,6 +61,8 @@ const Supply = () => {
               .call()
               .then((result) => {
                 newInflationForYear[i] = web3.utils.fromWei(
+
+                  // @ts-expect-error TS(2339) FIXME: Property 'toString' does not exist on type 'void |... Remove this comment to see the full error message
                   result.toString(),
                   'ether',
                 );
@@ -118,6 +120,8 @@ const Supply = () => {
         ).map(async ([chain, client]) => {
           try {
             const rewards = await client.request(
+
+              // @ts-expect-error TS(2339) FIXME: Property 'epoches' does not exist on type 'unknown... Remove this comment to see the full error message
               rewardUpdates(emissionsData.epoches),
             );
             return { chain, rewards };
@@ -131,6 +135,8 @@ const Supply = () => {
           stakingRewardsPromises,
         );
 
+
+        // @ts-expect-error TS(2339) FIXME: Property 'epoches' does not exist on type 'unknown... Remove this comment to see the full error message
         const emissions = [...emissionsData.epoches].map((epoch, index) => {
           let totalClaimableStakingRewards = BigInt(0);
           let totalClaimedStakingRewards = BigInt(0);
@@ -172,6 +178,8 @@ const Supply = () => {
 
   return (
     <div className="text-black border-b" id="supply">
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
+      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="supply">
         <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">
           Supply
@@ -182,6 +190,8 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl font-bold">Token Supply</h2>
             </div>
+            // @ts-expect-error TS(2322): Type '{ epoch: any; split: {}; loading: boolean; }... Remove this comment to see the full error message
+            // @ts-expect-error TS(2322) FIXME: Type '{ epoch: any; split: {}; loading: boolean; }... Remove this comment to see the full error message
             <SupplyPieChart epoch={epoch} split={split} loading={loading} />
           </div>
 
@@ -227,6 +237,7 @@ const Supply = () => {
               </p>
             </div>
             <div className="p-4">
+              // @ts-expect-error TS(2322): Type '{ emissions: any[]; loading: boolean; }' is ... Remove this comment to see the full error message
               <ActualEmissionsChart emissions={emissions} loading={loading} />
             </div>
           </div>
@@ -236,6 +247,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Builders</h2>
             </div>
+            // @ts-expect-error TS(2322): Type '{ emissions: any[]; loading: boolean; }' is ... Remove this comment to see the full error message
             <EmissionsToBuilders emissions={emissions} loading={loading} />
           </div>
 
@@ -244,6 +256,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Bonders</h2>
             </div>
+            // @ts-expect-error TS(2322): Type '{ emissions: any[]; loading: boolean; }' is ... Remove this comment to see the full error message
             <EmissionsToBonders emissions={emissions} loading={loading} />
           </div>
 
@@ -252,6 +265,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>
+            // @ts-expect-error TS(2322): Type '{ emissions: any[]; loading: boolean; }' is ... Remove this comment to see the full error message
             <EmissionsToOperators emissions={emissions} loading={loading} />
           </div>
 

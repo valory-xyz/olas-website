@@ -19,6 +19,7 @@ export const HeroSection = ({
 }) => (
   <SectionWrapper
     customClasses={`border-b ${SECTION_BOX_CLASS} ${className}`}
+    // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"SUBTLE_G... Remove this comment to see the full error message
     backgroundType={backgroundType}
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">

@@ -1,8 +1,15 @@
-import PropTypes from 'prop-types';
-
 import { CARD_CSS, TEXT_CLASS } from 'common-util/classes';
 
-export const InfoCardList = ({ cards, wrapperClasses }) => {
+interface InfoCardListProps {
+  wrapperClasses?: string;
+  cards?: {
+    icon?: unknown;
+    title?: string;
+    desc?: string;
+  }[];
+}
+
+export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
   if (!cards) return null;
 
   return (
@@ -15,6 +22,9 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
             className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${isLastOdd ? 'md:translate-x-1/2' : ''}`}
             style={CARD_CSS}
           >
+            // @ts-expect-error TS(2746) FIXME: This JSX tag's 'children' prop
+            expects a single ch... Remove this comment to see the full error
+            message
             <div className="flex items-center">
               {icon || null}
               <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>
@@ -27,17 +37,6 @@ export const InfoCardList = ({ cards, wrapperClasses }) => {
       })}
     </div>
   );
-};
-
-InfoCardList.propTypes = {
-  wrapperClasses: PropTypes.string,
-  cards: PropTypes.arrayOf(
-    PropTypes.shape({
-      icon: PropTypes.null,
-      title: PropTypes.string,
-      desc: PropTypes.string,
-    }),
-  ),
 };
 
 InfoCardList.defaultProps = {

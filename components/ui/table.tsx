@@ -1,100 +1,165 @@
-import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import { cn } from 'lib/utils';
 
-const Table = forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table
-      ref={ref}
-      className={cn('w-full caption-bottom text-lg', className)}
-      {...props}
-    />
-  </div>
-));
+interface TableProps {
+  className?: string;
+}
+
+const Table = forwardRef<HTMLElement, TableProps>(
+  ({ className, ...props }, ref) => (
+    <div className="relative w-full overflow-auto">
+      <table
+        // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+        ref={ref}
+        className={cn('w-full caption-bottom text-lg', className)}
+        {...props}
+      />
+    </div>
+  ),
+);
 Table.displayName = 'Table';
-Table.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 Table.defaultProps = { className: null };
 
-const TableHeader = forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
-));
+interface TableHeaderProps {
+  className?: string;
+}
+
+const TableHeader = forwardRef<HTMLElement, TableHeaderProps>(
+  ({ className, ...props }, ref) => (
+    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+    <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  ),
+);
 TableHeader.displayName = 'TableHeader';
-TableHeader.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableHeader.defaultProps = { className: null };
 
-const TableBody = forwardRef(({ className, ...props }, ref) => (
-  <tbody
-    ref={ref}
-    className={cn('[&_tr:last-child]:border-0', className)}
-    {...props}
-  />
-));
+interface TableBodyProps {
+  className?: string;
+}
+
+const TableBody = forwardRef<HTMLElement, TableBodyProps>(
+  ({ className, ...props }, ref) => (
+    <tbody
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn('[&_tr:last-child]:border-0', className)}
+      {...props}
+    />
+  ),
+);
 TableBody.displayName = 'TableBody';
-TableBody.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableBody.defaultProps = { className: null };
 
-const TableFooter = forwardRef(({ className, ...props }, ref) => (
-  <tfoot
-    ref={ref}
-    className={cn(
-      'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
-      className,
-    )}
-    {...props}
-  />
-));
+interface TableFooterProps {
+  className?: string;
+}
+
+const TableFooter = forwardRef<HTMLElement, TableFooterProps>(
+  ({ className, ...props }, ref) => (
+    <tfoot
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 TableFooter.displayName = 'TableFooter';
-TableFooter.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableFooter.defaultProps = { className: null };
 
-const TableRow = forwardRef(({ className, ...props }, ref) => (
-  <tr
-    ref={ref}
-    className={cn(
-      'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
-      className,
-    )}
-    {...props}
-  />
-));
+interface TableRowProps {
+  className?: string;
+}
+
+const TableRow = forwardRef<HTMLElement, TableRowProps>(
+  ({ className, ...props }, ref) => (
+    <tr
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 TableRow.displayName = 'TableRow';
-TableRow.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableRow.defaultProps = { className: null };
 
-const TableHead = forwardRef(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
-      className,
-    )}
-    {...props}
-  />
-));
+interface TableHeadProps {
+  className?: string;
+}
+
+const TableHead = forwardRef<HTMLElement, TableHeadProps>(
+  ({ className, ...props }, ref) => (
+    <th
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 TableHead.displayName = 'TableHead';
-TableHead.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableHead.defaultProps = { className: null };
 
-const TableCell = forwardRef(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn('p-4 align-middle [&:has([role=checkbox])]:pr-0', className)}
-    {...props}
-  />
-));
+interface TableCellProps {
+  className?: string;
+}
+
+const TableCell = forwardRef<HTMLElement, TableCellProps>(
+  ({ className, ...props }, ref) => (
+    <td
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn(
+        'p-4 align-middle [&:has([role=checkbox])]:pr-0',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 TableCell.displayName = 'TableCell';
-TableCell.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableCell.defaultProps = { className: null };
 
-const TableCaption = forwardRef(({ className, ...props }, ref) => (
-  <caption
-    ref={ref}
-    className={cn('mt-4 text-lg text-muted-foreground', className)}
-    {...props}
-  />
-));
+interface TableCaptionProps {
+  className?: string;
+}
+
+const TableCaption = forwardRef<HTMLElement, TableCaptionProps>(
+  ({ className, ...props }, ref) => (
+    <caption
+      ref={ref}
+      className={cn('mt-4 text-lg text-muted-foreground', className)}
+      {...props}
+    />
+  ),
+);
 TableCaption.displayName = 'TableCaption';
-TableCaption.propTypes = { className: PropTypes.string };
+
+// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
 TableCaption.defaultProps = { className: null };
 
 export {

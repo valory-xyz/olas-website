@@ -124,6 +124,7 @@ const ProjectTypes = ({ projectTags }) => (
 const EventLink = ({ link, type }) => (
   <>
     {type == 'button' && (
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
       <Button variant="default" size="lg" asChild>
         <a href={link} target="_blank" rel="noopenner noreferrer">
           Register Now
@@ -172,6 +173,7 @@ export const CatchTheNextEvent = () => (
                 : 'bg-purple-50 border-fuchsia-200 text-purple-700';
 
             return (
+              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
               <Card
                 key={index}
                 className="bg-white border-inherit shadow-sm flex flex-col justify-between rounded-xl"

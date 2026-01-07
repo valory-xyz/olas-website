@@ -13,6 +13,7 @@ const fetchDailyAgentPerformance = async () => {
     { timestamp_gt, timestamp_lt },
   );
 
+  // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
   const performances = result.dailyAgentPerformances ?? [];
   return calculate7DayAverage(performances, 'activeMultisigCount');
 };

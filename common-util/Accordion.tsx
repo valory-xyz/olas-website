@@ -1,16 +1,23 @@
 import { ChevronDown } from 'lucide-react';
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 
 const transition = 'transition-all duration-300 ease-in-out';
+
+interface AccordionProps {
+  label: string;
+  defaultOpen?: boolean;
+  titleClass?: string;
+  dropdownClass?: string;
+  children: React.ReactNode;
+}
 
 export const Accordion = ({
   label,
   defaultOpen = true,
   titleClass,
   dropdownClass,
-  children,
-}) => {
+  children
+}: AccordionProps) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
   const buttonClass =
     titleClass ||
@@ -48,14 +55,6 @@ export const Accordion = ({
       </div>
     </div>
   );
-};
-
-Accordion.propTypes = {
-  label: PropTypes.string.isRequired,
-  defaultOpen: PropTypes.bool,
-  titleClass: PropTypes.string,
-  dropdownClass: PropTypes.string,
-  children: PropTypes.node.isRequired,
 };
 
 Accordion.defaultProps = {

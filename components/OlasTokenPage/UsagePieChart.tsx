@@ -1,7 +1,6 @@
 import { ArcElement, Chart } from 'chart.js';
 import { ETHERSCAN_URL } from 'common-util/constants';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
 import Verify from '../Verify';
 
@@ -16,7 +15,21 @@ const verifyLinks = [
   `${READ_PROXY_ETHERSCAN_URL}F33`,
 ];
 
-export const UsagePieChart = ({ epoch, split, loading }) => (
+interface UsagePieChartProps {
+  epoch?: unknown;
+  loading: boolean;
+  split: {
+    bonders?: number;
+    developers?: number;
+    staking?: number;
+  };
+}
+
+export const UsagePieChart = ({
+  epoch,
+  split,
+  loading,
+}: UsagePieChartProps) => (
   <div>
     <div>
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
@@ -98,6 +111,7 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
       <div className="flex flex-row gap-3 text-slate-400 mb-4">
         <p>Verify: </p>
         {verifyLinks.map((link, index) => (
+          // @ts-expect-error TS(2322) FIXME: Type '{ key: string; url: string; text: number; }'... Remove this comment to see the full error message
           <Verify key={`Verify ${index}`} url={link} text={index + 1} />
         ))}
       </div>
@@ -107,16 +121,6 @@ export const UsagePieChart = ({ epoch, split, loading }) => (
     </div>
   </div>
 );
-
-UsagePieChart.propTypes = {
-  epoch: PropTypes.bigint,
-  loading: PropTypes.bool.isRequired,
-  split: PropTypes.shape({
-    bonders: PropTypes.number,
-    developers: PropTypes.number,
-    staking: PropTypes.number,
-  }).isRequired,
-};
 
 UsagePieChart.defaultProps = {
   epoch: null,

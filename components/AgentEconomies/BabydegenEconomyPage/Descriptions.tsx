@@ -83,6 +83,7 @@ const AgentTypes = () => (
     </h2>
     <div className="flex flex-col md:flex-row gap-4 gap-6 my-8">
       {babydegens.map((item) => (
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: string; classNam... Remove this comment to see the full error message
         <Card
           key={item.id}
           className="flex flex-col p-8 max-sm:w-auto w-[424px] rounded-xl mx-auto"

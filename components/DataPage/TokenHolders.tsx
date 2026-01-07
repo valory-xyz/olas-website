@@ -8,6 +8,9 @@ import { CodeSnippet } from './CodeSnippet';
 
 const TokenHoldersQuerySnippet = () => (
   <CodeSnippet>
+    // @ts-expect-error TS(2339): Property 'loc' does not exist on type
+    'string'. // @ts-expect-error TS(2339) FIXME: Property 'loc' does not exist
+    on type 'string'.
     {holderCountsQuery.loc?.source?.body || holderCountsQuery}
   </CodeSnippet>
 );
@@ -17,6 +20,7 @@ const toNetworkEntry = ({ key, name, address }) =>
 
 const selectTokenHolderNetworks = () =>
   tokens
+    // @ts-expect-error TS(2345) FIXME: Argument of type '({ key, name, address }: { key: ... Remove this comment to see the full error message
     .map(toNetworkEntry)
     .filter((entry) => entry?.key && entry?.tokenAddress);
 

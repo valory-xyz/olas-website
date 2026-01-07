@@ -16,60 +16,114 @@ export const CARD_BG =
 export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'a'.
     <a
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'className'.
       className="text-purple-800 hover:text-blue-800"
       target="_blank"
       rel="noopener noreferrer"
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'props'.
       {...props}
     />
   ),
   // Apply margin to paragraphs to create space between them
+
+  // @ts-expect-error TS(2695) FIXME: Left side of comma operator is unused and has no s... Remove this comment to see the full error message
   p: ({ node, ...props }) => <p {...props} />,
+
+  // @ts-expect-error TS(2552) FIXME: Cannot find name 'strong'. Did you mean 'String'?
   strong: ({ node, ...props }) => <strong {...props}></strong>,
   // Apply tailwind classes to style lists
   ul: ({ node, ...props }) => (
     <>
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ul'.
       <ul
+
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'className'.
         className="list-disc list-inside ml-4 inline-block w-full"
+
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'props'.
         {...props}
+
+      // @ts-expect-error TS(2365) FIXME: Operator '<' cannot be applied to types 'RegExp' a... Remove this comment to see the full error message
       />
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'br'.
       <br />
     </>
   ),
   ol: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'ol'.
     <ol className="list-decimal list-inside inline-block" {...props} />
   ),
+
+  // @ts-expect-error TS(2304) FIXME: Cannot find name 'li'.
   li: ({ node, ...props }) => <li className="mb-2" {...props} />,
   h1: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h2'.
     <h2 className="text-3xl font-bold mb-4" {...props} />
   ),
   h2: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h2'.
     <h2 className="text-2xl font-semibold mb-3" {...props} />
   ),
   h3: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h3'.
     <h3 className="text-xl font-medium mb-2" {...props} />
   ),
   h4: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h4'.
     <h4 className="text-lg font-medium mb-2" {...props} />
   ),
   h5: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h5'.
     <h5 className="text-[17px] font-medium mb-2" {...props} />
   ),
   h6: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'h6'.
     <h6 className="text-sm font-medium mb-2" {...props} />
   ),
   pre: ({ node, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'pre'.
     <pre
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'className'.
       className="p-4 bg-gray-800 border rounded-md overflow-auto"
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'props'.
       {...props}
     />
   ),
+
+  // @ts-expect-error TS(2304) FIXME: Cannot find name 'code'.
   code: ({ node, ...props }) => <code className="text-sm" {...props} />,
   blockquote: ({ node, children, className, ...props }) => (
+
+    // @ts-expect-error TS(2304) FIXME: Cannot find name 'blockquote'.
     <blockquote
+
+      // @ts-expect-error TS(2349) FIXME: This expression is not callable.
       className={`border-l-4 border-gray-800 pl-6 mb-4 italic ${className}`}
+
+      // @ts-expect-error TS(2304) FIXME: Cannot find name 'props'.
       {...props}
+
+    // @ts-expect-error TS(2365) FIXME: Operator '<' cannot be applied to types 'boolean' ... Remove this comment to see the full error message
     >
+
+      // @ts-expect-error TS(18004) FIXME: No value exists in scope for the shorthand propert... Remove this comment to see the full error message
       {children}
     </blockquote>
   ),

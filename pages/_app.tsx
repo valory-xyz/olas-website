@@ -1,6 +1,5 @@
 import PlausibleProvider from 'next-plausible';
 import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import 'styles/globals.css';
 
@@ -9,6 +8,7 @@ function PlausibleTracker() {
 
   useEffect(() => {
     const handleRouteChange = (url) => {
+      // @ts-expect-error TS(2339) FIXME: Property 'plausible' does not exist on type 'Windo... Remove this comment to see the full error message
       window.plausible?.('pageview', {
         url,
         props: {
@@ -31,7 +31,12 @@ function PlausibleTracker() {
   return null;
 }
 
-export default function App({ Component, pageProps }) {
+interface AppProps {
+  Component: React.ElementType;
+  pageProps: object;
+}
+
+export default function App({ Component, pageProps }: AppProps) {
   return (
     <PlausibleProvider
       domain="olas.network"
@@ -39,6 +44,7 @@ export default function App({ Component, pageProps }) {
       taggedEvents
       enabled
       scriptProps={{
+        // @ts-expect-error TS(2322) FIXME: Type '{ 'data-domain': string; 'data-track-outboun... Remove this comment to see the full error message
         'data-domain': 'olas.network',
         'data-track-outbound-links': true,
         'data-track-file-downloads': true,
@@ -51,8 +57,3 @@ export default function App({ Component, pageProps }) {
     </PlausibleProvider>
   );
 }
-
-App.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
-};

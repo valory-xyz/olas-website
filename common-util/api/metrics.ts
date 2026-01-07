@@ -19,6 +19,7 @@ export const fetchAtaTransactions = async () => {
 
     const ataTransactionsByChains = results
       .filter((result) => result.status === 'fulfilled')
+      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
       .map((result) => result.value?.globals?.[0]?.totalAtaTransactions || '0');
 
     return ataTransactionsByChains
@@ -41,7 +42,9 @@ export const fetchMechFees = async () => {
     let totalFees = 0;
 
     results.forEach((result, index) => {
+      // @ts-expect-error TS(2339) FIXME: Property 'global' does not exist on type 'unknown'... Remove this comment to see the full error message
       if (result.status === 'fulfilled' && result.value?.global) {
+        // @ts-expect-error TS(2339) FIXME: Property 'global' does not exist on type 'unknown'... Remove this comment to see the full error message
         const feeValue = result.value.global;
 
         if (index === 2) {

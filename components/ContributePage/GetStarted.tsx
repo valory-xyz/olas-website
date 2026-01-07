@@ -16,6 +16,8 @@ const steps = [
     description: (
       <>
         Go to the{' '}
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={CONTRIBUTE_URL}>Contribute App</SubsiteLink>
         . <br />
         Link your crypto wallet to get started with Contribute.
@@ -49,6 +51,7 @@ const steps = [
 ];
 
 export const GetStarted = () => (
+
   <SectionWrapper
     id="get-started"
     customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
@@ -66,7 +69,12 @@ export const GetStarted = () => (
       ))}
 
       <div className="self-center">
+        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
+        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
+        // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
+          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
+          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={CONTRIBUTE_URL} isInButton>
             Get started
           </SubsiteLink>

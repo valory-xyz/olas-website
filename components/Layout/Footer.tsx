@@ -10,7 +10,6 @@ import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 
 const SOCIAL_LINKS = [
   {
@@ -138,7 +137,21 @@ const MORE_LINKS = [
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-const LinksBlock = ({ title, links, className }) => (
+interface LinksBlockProps {
+  title: string;
+  links: {
+    title: string;
+    link: string;
+    isExternal?: boolean;
+  }[];
+  className?: string;
+}
+
+const LinksBlock = ({
+  title,
+  links,
+  className
+}: LinksBlockProps) => (
   <div>
     <span className="block font-semibold">{title}</span>
     <div className={cn('flex flex-col gap-3 py-3', className)}>
@@ -170,18 +183,6 @@ const LinksBlock = ({ title, links, className }) => (
     </div>
   </div>
 );
-
-LinksBlock.propTypes = {
-  title: PropTypes.string.isRequired,
-  links: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      link: PropTypes.string.isRequired,
-      isExternal: PropTypes.bool,
-    }),
-  ).isRequired,
-  className: PropTypes.string,
-};
 
 LinksBlock.defaultProps = {
   className: '',
