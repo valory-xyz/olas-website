@@ -1,3 +1,4 @@
+import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { Activity } from 'components/AgentEconomies/PredictPage/Activity';
 import { GetInvolved } from 'components/AgentEconomies/PredictPage/GetInvolved';
@@ -28,7 +29,7 @@ export const getStaticProps = async () => {
     props: {
       metrics,
     },
-    revalidate: 3600, // Revalidate every hour
+    revalidate: REVALIDATE_DURATION,
   };
 };
 

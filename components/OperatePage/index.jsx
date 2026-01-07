@@ -5,10 +5,10 @@ import { OperateMetrics } from './OperateMetrics';
 import { WhatOperatorsAreSaying } from './WhatOperatorsAreSaying';
 import { WhyBecomeAnOperator } from './WhyBecomeAnOperator';
 
-const Operate = () => (
+const Operate = ({ metrics }) => (
   <>
     <Hero />
-    <OperateMetrics />
+    <OperateMetrics metrics={metrics} />
     <EarnOlas />
     <WhyBecomeAnOperator />
     <WhatOperatorsAreSaying />

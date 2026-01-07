@@ -1,3 +1,4 @@
+import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
 import Hero from 'components/HomepageSection/Hero';
@@ -51,6 +52,6 @@ export const getStaticProps = async () => {
     props: {
       metrics: mappedMetrics,
     },
-    revalidate: 3600, // revalidate every hour.
+    revalidate: REVALIDATE_DURATION,
   };
 };

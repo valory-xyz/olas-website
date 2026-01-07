@@ -142,6 +142,7 @@ export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
 export const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
+export const REVALIDATE_DURATION = 60 * 60; // 1 hour
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
 

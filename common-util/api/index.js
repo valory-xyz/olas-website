@@ -179,20 +179,7 @@ export const getFeeFlowMetrics = async () => {
   }
 };
 
-// ----------- MAIN -----------
-export const getMainMetrics = async () => {
-  try {
-    const response = await fetch('/api/main-metrics');
-    if (!response.ok) {
-      throw new Error('Failed to fetch metrics');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching main metrics:', error);
-    return null;
-  }
-};
+
 
 export const getTotalTokenHolders = async () => {
   try {

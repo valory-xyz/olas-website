@@ -1,34 +1,10 @@
-import { getMainMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-const fetchMetrics = async () => {
-  const mainMetrics = await getMainMetrics();
-  const data = mainMetrics?.data;
-
-  if (!data) {
-    return {
-      dailyActiveAgents: null,
-      totalOperators: null,
-    };
-  }
-
-  return {
-    dailyActiveAgents: data.dailyActiveAgents ?? null,
-    totalOperators: data.totalOperators ?? null,
-  };
-};
-
-export const OperateMetrics = () => {
-  const { data: metrics } = usePersistentSWR(
-    'operateActivityMetrics',
-    fetchMetrics,
-  );
-
+export const OperateMetrics = ({ metrics }) => {
   const data = useMemo(
     () => [
       {

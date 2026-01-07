@@ -210,8 +210,6 @@ export const fetchAllAgentMetrics = async (): Promise<{ data: any; timestamp: nu
       );
     }
 
-
-
     const data = {
       data: metrics,
       timestamp: Date.now(),
