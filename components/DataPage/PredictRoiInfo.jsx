@@ -98,10 +98,9 @@ export const PredictRoiInfo = () => {
         </p>
         <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
-          {`# Replace TIMESTAMP with a Unix timestamp (e.g., 1700000000)
-curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
+          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '{"query": "{ fixedProductMarketMakerCreations(where: { blockTimestamp_gt: TIMESTAMP }) { id question } global(id: \\\"\\\") { totalFees totalPayout totalTraded } }"}'`}
+  -d '{"query": "{ fixedProductMarketMakerCreations(where: { blockTimestamp_gt: ${marketOpenTimestamp} }) { id question } global(id: \\\"\\\") { totalFees totalPayout totalTraded } }"}'`}
         </CodeSnippet>
         <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>
