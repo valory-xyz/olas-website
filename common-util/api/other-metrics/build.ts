@@ -1,9 +1,14 @@
 import { autonolasGraphClient } from 'common-util/graphql/client';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 
+type TotalBuildersResult = {
+  globals: { totalBuilders: number }[];
+};
+
 const fetchTotalBuilders = async () => {
   try {
-    const result = (await autonolasGraphClient.request(totalBuildersQuery)) as any;
+    const result: TotalBuildersResult =
+      await autonolasGraphClient.request(totalBuildersQuery);
     const globals = result?.globals || [];
     if (globals.length === 0) {
       return null;

@@ -10,6 +10,12 @@ const LIMIT = 1000;
 const PAGES = 5;
 const BUFFER_SECONDS = 60;
 
+type VeOlasLockedBalanceResult = {
+  token: {
+    balance: string;
+  };
+};
+
 const fetchLockedBalance = async () => {
   const client = TOKENOMICS_GRAPH_CLIENTS.ethereum;
   if (!client) {
@@ -17,9 +23,12 @@ const fetchLockedBalance = async () => {
   }
 
   try {
-    const response = (await client.request(veOlasLockedBalanceQuery, {
-      tokenId: VEOLAS_TOKEN_ID,
-    })) as any;
+    const response: VeOlasLockedBalanceResult = await client.request(
+      veOlasLockedBalanceQuery,
+      {
+        tokenId: VEOLAS_TOKEN_ID,
+      }
+    );
     return response?.token?.balance ?? '0';
   } catch (error) {
     console.error('Error fetching veOLAS locked balance:', error);
@@ -29,28 +38,35 @@ const fetchLockedBalance = async () => {
 
 const buildVeOlasNetworks = () => [{ key: 'ethereum' }];
 
-const fetchActiveDepositorCount = async ({ key }: { key: string }, unlockAfter: string) => {
-  const client = (TOKENOMICS_GRAPH_CLIENTS as any)[key];
+type ActiveVeOlasDepositorsResult = {
+  veolasDepositors: { id: string; unlockTimestamp: string }[];
+};
+
+const fetchActiveDepositorCount = async (
+  { key }: { key: string },
+  unlockAfter: string
+) => {
+  const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
     return 0;
   }
 
   let skip = 0;
-  let allDepositors: any[] = [];
+  let allDepositors: ActiveVeOlasDepositorsResult['veolasDepositors'] = [];
 
   try {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const response = (await client.request(
+      const response: ActiveVeOlasDepositorsResult = await client.request(
         getActiveVeOlasDepositorsQuery({
           first: LIMIT,
           skip,
           pages: PAGES,
           unlockAfter,
-        } as any),
-      )) as any;
+        })
+      );
 
-      const pageData = Object.values(response).flat() as any[];
+      const pageData = Object.values(response).flat();
 
       allDepositors = allDepositors.concat(pageData);
       skip += LIMIT * PAGES;
@@ -70,9 +86,12 @@ const fetchActiveDepositorCount = async ({ key }: { key: string }, unlockAfter: 
   return allDepositors.length;
 };
 
-const getActiveDepositorCounts = (networks: { key: string }[], unlockAfter: string) =>
+const getActiveDepositorCounts = (
+  networks: { key: string }[],
+  unlockAfter: string
+) =>
   Promise.all(
-    networks.map((network) => fetchActiveDepositorCount(network, unlockAfter)),
+    networks.map((network) => fetchActiveDepositorCount(network, unlockAfter))
   );
 
 const countActiveDepositors = async () => {

@@ -77,14 +77,3 @@ export const getBlog = async (id) => {
   const json = await apiCall('blog-posts', slugParams);
   return get(json, 'data[0]') || null;
 };
-
-// ----------- FUNNELS -----------
-export const getFunnel = async (id) => {
-  const params = {
-    populate: '*',
-  };
-  const json = await apiCall(`funnels/${id}`, params);
-  const data = get(json, 'data') || null;
-  return data;
-};
-

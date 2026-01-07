@@ -1,10 +1,10 @@
 import {
-    MECH_FEES_GRAPH_CLIENTS,
-    legacyMechFeesGraphClient,
+  MECH_FEES_GRAPH_CLIENTS,
+  legacyMechFeesGraphClient,
 } from 'common-util/graphql/client';
 import {
-    legacyMechFeesTotalsQuery,
-    newMechFeesTotalsQuery,
+  legacyMechFeesTotalsQuery,
+  newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
 
 export const fetchMechFeeMetrics = async () => {
@@ -26,16 +26,14 @@ export const fetchMechFeeMetrics = async () => {
       Number(gnosisNewGlobal?.totalFeesInUSD || 0) +
       Number(baseNewGlobal?.totalFeesInUSD || 0) +
       Number(
-        // @ts-ignore
-        (BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString(),
+        (BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString()
       );
 
     const outUsd =
       Number(gnosisNewGlobal?.totalFeesOutUSD || 0) +
       Number(baseNewGlobal?.totalFeesOutUSD || 0) +
       Number(
-        // @ts-ignore
-        (BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString(),
+        (BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString()
       );
 
     const unclaimed = Math.max(inUsd - outUsd, 0);

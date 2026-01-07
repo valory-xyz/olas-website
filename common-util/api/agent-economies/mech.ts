@@ -1,16 +1,16 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import {
-    ATA_GRAPH_CLIENTS,
-    REGISTRY_GRAPH_CLIENTS,
+  ATA_GRAPH_CLIENTS,
+  REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
-    agentTxCountsQuery,
-    dailyMechAgentPerformancesQuery,
-    mechGlobalsTotalRequestsQuery,
-    mechMarketplaceRequestsPerAgentsQuery,
-    mechMarketplaceTotalRequestsQuery,
-    mechRequestsPerAgentOnchainsQuery,
+  agentTxCountsQuery,
+  dailyMechAgentPerformancesQuery,
+  mechGlobalsTotalRequestsQuery,
+  mechMarketplaceRequestsPerAgentsQuery,
+  mechMarketplaceTotalRequestsQuery,
+  mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
 import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -47,11 +47,11 @@ const fetchDailyAgentPerformance = async () => {
 
     const gnosisAverage = calculate7DayAverage(
       gnosisPerformances,
-      'activeMultisigCount',
+      'activeMultisigCount'
     );
     const baseAverage = calculate7DayAverage(
       basePerformances,
-      'activeMultisigCount',
+      'activeMultisigCount'
     );
 
     return gnosisAverage + baseAverage;
@@ -75,7 +75,7 @@ const fetchMechGlobals = async () => {
         acc.deliveries += extractSettledNumber(res, 'global.totalDeliveries');
         return acc;
       },
-      { requests: 0, deliveries: 0 },
+      { requests: 0, deliveries: 0 }
     );
 
     return totals;
@@ -96,10 +96,10 @@ const fetchAgentsFunTxCount = async () => {
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
     const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(
-        agentTxCountsQuery,
-        {
+      agentTxCountsQuery,
+      {
         agentIds,
-        },
+      }
     );
     const rows = result?.agentPerformances || [];
     return rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
@@ -107,6 +107,19 @@ const fetchAgentsFunTxCount = async () => {
     console.error('Error fetching agents.fun txCount:', error);
     return null;
   }
+};
+
+type MechResult = {
+  requestsPerAgentOnchains: { id: string; requestsCount: number }[];
+  requestsPerAgents: { id: string; requestsCount: number }[];
+};
+
+type MarketplaceGnosisResult = {
+  requestsPerAgents: { id: string; requestsCount: number }[];
+};
+
+type MarketplaceBaseResult = {
+  requestsPerAgents: { id: string; requestsCount: number }[];
 };
 
 // Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
@@ -118,21 +131,27 @@ const fetchCategorizedRequestTotals = async () => {
 
   try {
     const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
-      await Promise.allSettled([
+      (await Promise.allSettled([
         ATA_GRAPH_CLIENTS.legacyMech.request(
-          mechRequestsPerAgentOnchainsQuery(allIds.map(String)),
+          mechRequestsPerAgentOnchainsQuery(allIds.map(String))
         ),
         ATA_GRAPH_CLIENTS.gnosis.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
         ),
         ATA_GRAPH_CLIENTS.base.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
         ),
-      ]);
+      ])) as [
+        PromiseSettledResult<MechResult>,
+        PromiseSettledResult<MarketplaceGnosisResult>,
+        PromiseSettledResult<MarketplaceBaseResult>,
+      ];
 
     const combinedCounts = new Map();
 
-    const addCounts = (records: any) => {
+    const addCounts = (
+      records: { id: string; requestsCount: number }[] | undefined
+    ) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
         if (!item?.id) return;
@@ -141,28 +160,25 @@ const fetchCategorizedRequestTotals = async () => {
         const requestCount = Number(item?.requestsCount ?? 0);
         combinedCounts.set(
           agentId,
-          (combinedCounts.get(agentId) ?? 0) + requestCount,
+          (combinedCounts.get(agentId) ?? 0) + requestCount
         );
       });
     };
 
     if (mechResult.status === 'fulfilled') {
-      // @ts-ignore
       addCounts(mechResult.value?.requestsPerAgentOnchains);
     }
     if (marketplaceGnosisResult.status === 'fulfilled') {
-      // @ts-ignore
       addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
-      // @ts-ignore
       addCounts(marketplaceBaseResult.value?.requestsPerAgents);
     }
 
-    const sumCountsForAgentIds = (agentIds: any[]) =>
+    const sumCountsForAgentIds = (agentIds: number[]) =>
       agentIds.reduce(
         (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
-        0,
+        0
       );
 
     return {
@@ -196,22 +212,15 @@ export const fetchMechMetrics = async () => {
       };
 
       if (categorized) {
-        // @ts-ignore
         const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
         const known =
-          // @ts-ignore
           predictTxs + contributeTxs + governatooorrTxs + (agentsfunTxs ?? 0);
         const otherTxs = Math.max(0, globals.requests - known);
         typeTotals = {
-          // @ts-ignore
           predictTxs,
-          // @ts-ignore
           contributeTxs,
-          // @ts-ignore
           governatooorrTxs,
-          // @ts-ignore
           agentsfunTxs,
-          // @ts-ignore
           otherTxs,
         };
       }

@@ -9,19 +9,24 @@ const LIMIT = 1000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
+type DailyActivitiesResult = {
+  dailyActivities: { count: number }[];
+};
+
 const fetchContributeDaa7dAvg = async () => {
   try {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
-    const result = (await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
-      where: {
-        dayTimestamp_gt: String(timestamp_gt),
-        dayTimestamp_lt: String(timestamp_lt),
-      },
-      orderBy: 'dayTimestamp',
-      orderDirection: 'desc',
-    } as any)) as any;
+    const result: DailyActivitiesResult =
+      await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
+        where: {
+          dayTimestamp_gt: String(timestamp_gt),
+          dayTimestamp_lt: String(timestamp_lt),
+        },
+        orderBy: 'dayTimestamp',
+        orderDirection: 'desc',
+      });
 
     const rows = result?.dailyActivities || [];
     const average = calculate7DayAverage(rows, 'count');
@@ -32,9 +37,13 @@ const fetchContributeDaa7dAvg = async () => {
   }
 };
 
+type LeaderboardResult = {
+  json_value: { wallet_address: string; points: number };
+};
+
 const fetchTotalOlasContributors = async () => {
   let skip = 0;
-  let allResults: any[] = [];
+  let allResults: LeaderboardResult[] = [];
 
   try {
     // eslint-disable-next-line no-constant-condition
@@ -47,7 +56,7 @@ const fetchTotalOlasContributors = async () => {
         return null;
       }
 
-      const pageData = (await response.json()) as any[];
+      const pageData: LeaderboardResult[] = await response.json();
 
       allResults = allResults.concat(pageData);
       skip += LIMIT;
@@ -81,7 +90,10 @@ export const fetchContributeMetrics = async () => {
       fetchContributeDaa7dAvg(),
     ]);
 
-    const metrics: { totalOlasContributors: number | null; dailyActiveContributors: number | null } = {
+    const metrics: {
+      totalOlasContributors: number | null;
+      dailyActiveContributors: number | null;
+    } = {
       totalOlasContributors: null,
       dailyActiveContributors: null,
     };
@@ -91,7 +103,7 @@ export const fetchContributeMetrics = async () => {
     } else {
       console.error(
         LEADERBOARD_ERROR_MESSAGE,
-        totalOlasContributorsResult.reason,
+        totalOlasContributorsResult.reason
       );
     }
 

@@ -3,16 +3,31 @@ import { holderCountsQuery } from 'common-util/graphql/queries';
 import tokens from 'data/tokens.json';
 import { sum } from 'lodash';
 
-const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddress: string }) => {
-  const client = (TOKENOMICS_GRAPH_CLIENTS as any)[key];
+type HolderCountsResult = {
+  token: {
+    holderCount: string;
+  };
+};
+
+const fetchHolderCount = async ({
+  key,
+  tokenAddress,
+}: {
+  key: string;
+  tokenAddress: string;
+}) => {
+  const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
     return 0;
   }
 
   try {
-    const response = (await client.request(holderCountsQuery, {
-      tokenId: tokenAddress,
-    })) as any;
+    const response: HolderCountsResult = await client.request(
+      holderCountsQuery,
+      {
+        tokenId: tokenAddress,
+      }
+    );
     return Number(response?.token?.holderCount ?? 0);
   } catch (error) {
     console.error(`Token holder subgraph request failed for ${key}:`, error);

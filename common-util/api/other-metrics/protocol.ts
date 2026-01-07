@@ -11,7 +11,7 @@ const duneApiFetch = async (queryId: string | number) => {
       headers: {
         'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY || '',
       },
-    },
+    }
   );
 
   if (!response.ok) {
@@ -21,11 +21,24 @@ const duneApiFetch = async (queryId: string | number) => {
   return response.json();
 };
 
+type ProtocolMetricsResult = {
+  result: {
+    rows: {
+      protocol_owned_liquidity_value_across_chains: number;
+      Cumulative_Protocol_Earned_Fees: number;
+    }[];
+  };
+};
+
 export const fetchProtocolMetrics = async () => {
   try {
     const [polResponse, revenueResponse] = await Promise.allSettled([
-      duneApiFetch(TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID),
-      duneApiFetch(TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID),
+      duneApiFetch(
+        TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID
+      ) as Promise<ProtocolMetricsResult>,
+      duneApiFetch(
+        TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID
+      ) as Promise<ProtocolMetricsResult>,
     ]);
 
     const metrics: {
@@ -39,14 +52,14 @@ export const fetchProtocolMetrics = async () => {
     if (polResponse.status === 'fulfilled') {
       metrics.totalProtocolOwnedLiquidity = get(
         polResponse.value,
-        'result.rows[0].protocol_owned_liquidity_value_across_chains',
+        'result.rows[0].protocol_owned_liquidity_value_across_chains'
       );
     }
 
     if (revenueResponse.status === 'fulfilled') {
       metrics.totalProtocolRevenue = get(
         revenueResponse.value,
-        'result.rows[0].Cumulative_Protocol_Earned_Fees',
+        'result.rows[0].Cumulative_Protocol_Earned_Fees'
       );
     }
 
