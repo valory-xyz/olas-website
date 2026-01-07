@@ -78,7 +78,6 @@ export const OwnYourAgent = () => (
       </div>
 
       <div className="w-fit mt-14 mx-auto">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}
         <Button variant="default" size="xl" asChild>
           <SubsiteLink href={PEARL_YOU_URL} isInButton isExternal>
             Own Your Agent

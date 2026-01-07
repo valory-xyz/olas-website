@@ -150,13 +150,11 @@ const OptimusAgent = () => (
       </div>
 
       <div className="flex flex-wrap gap-4">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}
         <Button variant="default" size="xl" className="max-md:grow w-fit">
           <SubsiteLink href={PEARL_YOU_URL} isInButton>
             Run via Pearl
           </SubsiteLink>
         </Button>
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
         <Button variant="outline" size="xl" className="max-md:grow w-fit">
           <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>

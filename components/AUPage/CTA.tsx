@@ -136,10 +136,10 @@ export const CTA = () => (
             let iconsClassName = replayLink ? '' : 'text-purple-600';
 
             return (
-              // @ts-expect-error FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
               <Card
                 key={index}
                 className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
+                // @ts-expect-error TS(2322) FIXME: Type '{ id: string; key: string; className: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
                 style={cardStyle}
               >
                 <div className="flex flex-col gap-1 w-full">

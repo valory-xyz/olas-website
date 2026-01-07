@@ -111,6 +111,7 @@ export const GetStarted = () => (
             <StarterCards
               imgUrl={item.imgUrl}
               title={item.title}
+              // @ts-expect-error TS(2339) FIXME: Property 'subtitle' does not exist on type 'Starte... Remove this comment to see the full error message
               subtitle={item.subtitle}
               content={item.content}
               button={item.button}

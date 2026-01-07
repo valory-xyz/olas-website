@@ -39,14 +39,11 @@ const PearlContent = () => (
 );
 
 const PearlButton = () => (
-  <>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}
-    <Button variant="default" size="xl" asChild className="grow mt-6">
-      <SubsiteLink href={PEARL_YOU_URL} isInButton>
-        Run an Agent
-      </SubsiteLink>
-    </Button>
-  </>
+  <Button variant="default" size="xl" asChild className="grow mt-6">
+    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+      Run an Agent
+    </SubsiteLink>
+  </Button>
 );
 
 export const JoinTheAgentEconomy = () => (

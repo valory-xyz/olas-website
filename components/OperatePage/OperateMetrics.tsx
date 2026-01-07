@@ -59,9 +59,6 @@ export const OperateMetrics = () => {
       >
         Hundreds of Operators are Already Running Agents
       </h2>
-      {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-      {/* @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
       <Card className="grid md:grid-cols-2 gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
           let borderClassName = '';

@@ -22,9 +22,8 @@ export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
             className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${isLastOdd ? 'md:translate-x-1/2' : ''}`}
             style={CARD_CSS}
           >
-            Remove this comment to see the full error message
             <div className="flex items-center">
-              {icon || null}
+              {icon !== undefined ? (icon as React.ReactNode) : null}
               <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>
                 {title}
               </h3>

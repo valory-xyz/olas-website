@@ -19,7 +19,6 @@ export const AgentsFunMetrics = () => {
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
       <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
         <Card className="flex flex-col gap-6 p-8 mb-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
           <div className="flex items-center">
             <Image

@@ -14,7 +14,7 @@ const ways = [
     imageSrc: '/images/build-page/hire.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
-      // {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
+      // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
       <SubsiteLink href={`${BUILD_URL}/hire`} className="mt-4">
         Hire an agent
       </SubsiteLink>
@@ -157,7 +157,6 @@ export const WaysToGrow = () => {
                     }}
                   ></div>
 
-                  {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
                   <Card className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white">
                     <button
                       className="absolute top-4 right-4 cursor-pointer z-10"

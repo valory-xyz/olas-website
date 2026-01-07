@@ -21,9 +21,6 @@ export const TrustedBy = () => (
       ))}
     </div>
     <div className="flex justify-center">
-      {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-      {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
       <Button variant="outline" size="lg" asChild className="">
         <Link href="/case-studies">Explore Case Studies</Link>
       </Button>

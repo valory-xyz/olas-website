@@ -72,7 +72,6 @@ export const Paths = () => (
       </ul>
 
       <div className="flex max-md:flex-col max-md:text-center gap-6">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message */}
         <Button
           variant="valory"
           size="xl"
@@ -82,7 +81,6 @@ export const Paths = () => (
             Start building Mech tools today
           </Link>
         </Button>
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message */}{' '}
         <Button
           variant="valory"
           size="xl"

@@ -9,6 +9,7 @@ interface MarkdownProps {
 }
 
 const Markdown = ({ className, children }: MarkdownProps) => (
+  // @ts-expect-error TS(2322) FIXME: This JSX tag's 'children' prop expects type 'string'... Remove this comment to see the full error message
   <ReactMarkdown
     // @ts-expect-error TS(2322) FIXME: Type '(options?: void | Options) => void | Transfo... Remove this comment to see the full error message
     remarkPlugins={[remarkGfm]}

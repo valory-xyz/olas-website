@@ -12,7 +12,6 @@ export const Hero = () => (
         Become an Olas agent Builder
       </h3>
       <span className="text-lg">Learn to build autonomous AI agents</span>
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message */}
       <Button
         variant="valory"
         size="xl"

@@ -16,7 +16,6 @@ const HeroImage = () => (
 );
 
 const RunAnAgent = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="grow max-md:w-full">
     <SubsiteLink href={PEARL_YOU_URL} isInButton>
       Run an Agent
@@ -25,12 +24,9 @@ const RunAnAgent = () => (
 );
 
 const LearnHowItWorks = () => (
-  <>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "ghostPrimary"... Remove this comment to see the full error message */}
-    <Button variant="ghostPrimary" size="xl" asChild className="grow">
-      <Link href="#about">Learn How it Works</Link>
-    </Button>
-  </>
+  <Button variant="ghostPrimary" size="xl" asChild className="grow">
+    <Link href="#about">Learn How it Works</Link>
+  </Button>
 );
 
 export const Hero = () => (

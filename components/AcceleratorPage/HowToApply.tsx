@@ -21,7 +21,6 @@ const evaluationList = [
 
 export const HowToApply = () => (
   <div className="max-w-[720px] mx-auto max-sm:mx-4">
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
     <Card className="rounded-3xl border outline outline-8 outline-slate-100">
       <div className="px-6 md:px-12 border-b-1.5 border-dotted">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-8 mt-12`}>

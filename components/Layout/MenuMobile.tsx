@@ -118,12 +118,12 @@ export const MenuMobile = ({ className }) => {
                 })}
 
                 <NavigationMenu.Item className="p-6 border">
-                  {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}
                   <Button
                     variant="default"
                     size="lg"
                     asChild
                     className="w-full"
+                    // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
                     onClick={toggleOpen}
                   >
                     <SubsiteLink href={PEARL_YOU_URL} isInButton>

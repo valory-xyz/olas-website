@@ -111,9 +111,6 @@ const Hero = () => (
         </div>
       </div>
       <div className="flex flex-wrap place-content-center mx-4 gap-4 w-fit mx-auto">
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}{' '}
         <Button
           variant="default"
           size="lg"
@@ -122,9 +119,6 @@ const Hero = () => (
         >
           <Link href="/#pearl">Own Your Agent</Link>
         </Button>
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
         <Button
           variant="outline"
           size="lg"

@@ -74,9 +74,9 @@ const GetInvolvedCard = ({
 }) => {
   return (
     <Link href={href}>
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; id... Remove this comment to see the full error message */}
       <Card
         className="activity-card-opaque p-6 grid-flow-row min-h-[278px] h-full hover:bg-white duration-150"
+        // @ts-expect-error TS(2322) FIXME: Type '{ id: string; key: string; className: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
         id={`get-involved-${id}`}
       >
         {imageSrc && title && (

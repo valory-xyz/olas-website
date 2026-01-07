@@ -17,8 +17,6 @@ export const KitPage = () => {
 
   return (
     <>
-      {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'title'. */}{' '}
-      {/* @ts-expect-error TS(2322): Type '{ title: string; description: string; }' is ... Remove this comment to see the full error message */}{' '}
       {/* @ts-expect-error TS(2322) FIXME: Type '{ title: string; description: string; }' is ... Remove this comment to see the full error message */}{' '}
       <Meta title={kit.title} description={kit.description} />
       <section className="bg-white text-black py-16 px-4 border-y">

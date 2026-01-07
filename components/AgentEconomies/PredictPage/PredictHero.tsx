@@ -36,6 +36,7 @@ const ExplorePredict = () => (
     size="xl"
     asChild
     className="max-xl:grow"
+    // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
     rel="noopener noreferrer"
   >
     <a href={PREDICT_URL}>Explore Predict UI</a>

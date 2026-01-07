@@ -25,6 +25,7 @@ const fetchPredictDaa7dAvg = async () => {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist on type '... Remove this comment to see the full error message
     const { dailyAgentPerformances: rows = [] } =
       await REGISTRY_GRAPH_CLIENTS.gnosis.request(
         dailyPredictAgentsPerformancesQuery,

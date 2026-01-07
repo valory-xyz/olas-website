@@ -38,9 +38,6 @@ const Hero = () => (
           Leverage autonomous services to track and enhance the influence of
           your community.
         </div>
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-        {/* @ts-expect-error TS(2322): Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message */}{' '}
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message */}{' '}
         <Button
           asChild
           variant="default"

@@ -29,7 +29,6 @@ const OlasToken = () => (
       height={78}
     />
     <p className="text-xl font-semibold">OLAS Token</p>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message */}{' '}
     <Card className="activity-card-opaque p-4 w-[326px] text-center">
       OLAS bootstraps the{' '}
       <Link

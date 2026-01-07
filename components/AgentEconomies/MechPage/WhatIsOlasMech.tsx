@@ -12,7 +12,6 @@ const WhatIsMech = () => (
     <h2 className={`${SUB_HEADER_CLASS} font-semibold text-left text-4xl mb-8`}>
       What is the Olas Mech agent economy?
     </h2>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message */}
     <Card className={`${CARD_BG} md:px-20 py-8 flex mb-8`}>
       <Image
         src="/images/mech-page/mech-diagram.png"
@@ -43,7 +42,6 @@ const WhatIsMech = () => (
 const TheProcess = () => (
   <div id="process">
     <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-8`}>The process</h2>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message */}{' '}
     <Card className={`${CARD_BG} max-w mb-8`}>
       <Image
         alt="The process"

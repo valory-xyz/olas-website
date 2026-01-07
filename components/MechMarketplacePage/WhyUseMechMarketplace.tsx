@@ -35,8 +35,6 @@ const list = [
 
 export const WhyUseMechMarketplace = () => (
   <div id="why-mech-marketplace">
-    {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'heade'. */}{' '}
-    {/* @ts-expect-error TS(2741): Property 'description' is missing in type '{ heade... Remove this comment to see the full error message */}{' '}
     {/* @ts-expect-error TS(2741) FIXME: Property 'description' is missing in type '{ heade... Remove this comment to see the full error message */}{' '}
     <HowItWorks
       headerText="Why Businesses Use the Mech Marketplace: The AI Agent Bazaar"

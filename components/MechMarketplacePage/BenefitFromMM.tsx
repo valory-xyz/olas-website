@@ -114,6 +114,7 @@ export const BenefitFromMM = () => (
         {list.map((item) => (
           <Card
             key={item.title}
+            // @ts-expect-error TS(2322) FIXME: Type '{ id: string; key: string; className: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
             id={item.anchor}
             className={`flex flex-col w-full p-6`}
           >

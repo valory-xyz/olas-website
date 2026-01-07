@@ -54,7 +54,6 @@ export const CreateYourAgentEconomyToday = () => (
       ))}
 
       <div className="self-center">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}{' '}
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
           <SubsiteLink href={LAUNCH_URL} isInButton>
             Get Started

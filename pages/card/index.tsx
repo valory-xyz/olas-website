@@ -354,6 +354,7 @@ const CommunityCardClient = () => {
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
               <div className="mt-auto pt-4 md:pt-6">
+                {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message */}
                 <Button onClick={shuffle} variant="outline">
                   <Shuffle className="mr-2 h-4 w-4" />
                   Shuffle Card

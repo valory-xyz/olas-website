@@ -22,7 +22,6 @@ export const Hero = () => (
           crypto and AI.
         </h1>
 
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}
         <Button
           variant="default"
           size="xl"

@@ -46,7 +46,6 @@ export const StackKeyFeatures = () => (
       <div className="grid md:grid-cols-2 gap-4">
         {list.map((item) => (
           <Link key={item.title} href={item.url}>
-            {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
             <Card className="p-4 flex gap-4 w-full h-full lg:h-[100px] hover:bg-slate-100 duration-100 ease-in">
               <Image
                 src={`/images/stack-page/${item.imgUrl}`}

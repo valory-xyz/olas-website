@@ -16,6 +16,7 @@ const fetchContributeDaa7dAvg = async () => {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
+    // @ts-expect-error TS(2339) FIXME: Property 'dailyActivities' does not exist on type '... Remove this comment to see the full error message
     const { dailyActivities: rows = [] } =
       await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
         where: {

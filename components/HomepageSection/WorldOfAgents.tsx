@@ -54,9 +54,6 @@ export const WorldOfAgents = () => {
       </div>
 
       <div className="w-fit mt-14 mx-auto">
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
         <Button variant="outline" size="xl" asChild>
           <Link href="/agents">Explore Agents</Link>
         </Button>

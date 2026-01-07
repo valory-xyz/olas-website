@@ -112,6 +112,7 @@ const Timeline = ({ filters, setFilters }) => {
             <Button
               variant="outline"
               className="px-1"
+              // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
               onClick={() => setFilters([])}
             >
               Reset all

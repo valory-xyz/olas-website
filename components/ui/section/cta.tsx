@@ -10,9 +10,6 @@ export const CTASection = ({ text, ctaUrl, ctaText }) => (
     <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
       <div className="mx-auto max-w-screen-sm text-center gap-8 flex flex-col">
         <div className="text-purple-700 font-medium italic">{text}</div>
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
-        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}{' '}
         <Button variant="default" size="xl" asChild className="w-fit mx-auto">
           <a href={ctaUrl}>{ctaText}</a>
         </Button>

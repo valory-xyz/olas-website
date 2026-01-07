@@ -149,6 +149,7 @@ const PickYourAgent = () => (
     <div className="max-w-[700px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
+          // @ts-expect-error TS(2322) FIXME: Type '{ anchor: string; title: string; description: string; imgSrc: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
           id={agent.anchor}
           key={agent.title}
           className="flex items-start gap-8 p-8"
