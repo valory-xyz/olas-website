@@ -4,11 +4,7 @@
       "maxDuration": 300,
       "memory": 3009
     },
-    "pages/api/predict-metrics/roi.ts": {
-      "maxDuration": 300,
-      "memory": 3009
-    },
-    "pages/api/predict-metrics/success-rate.ts": {
+    "pages/api/refresh-metrics/predict.ts": {
       "maxDuration": 300,
       "memory": 3009
     }
@@ -16,6 +12,10 @@
   "crons": [
     {
       "path": "/api/refresh-metrics/main",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/refresh-metrics/predict",
       "schedule": "0 * * * *"
     }
   ]

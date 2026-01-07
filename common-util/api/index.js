@@ -118,48 +118,7 @@ export const getBabydegenMetrics = async () => {
   }
 };
 
-// ----------- PREDICT -----------
-export const getPredictMetrics = async () => {
-  try {
-    const response = await fetch('/api/predict-metrics/main');
-    if (!response.ok) {
-      throw new Error('Failed to fetch metrics');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching predict metrics:', error);
-    return null;
-  }
-};
 
-export const getPredictRoi = async () => {
-  try {
-    const response = await fetch('/api/predict-metrics/roi');
-    if (!response.ok) {
-      throw new Error('Failed to fetch ROI');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching predict ROI:', error);
-    return null;
-  }
-};
-
-export const getPredictSuccessRate = async () => {
-  try {
-    const response = await fetch('/api/predict-metrics/success-rate');
-    if (!response.ok) {
-      throw new Error('Failed to fetch success rate');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching predict success rate:', error);
-    return null;
-  }
-};
 
 // ----------- PEARL DAAS -----------
 export const getPearlDAAs = async () => {

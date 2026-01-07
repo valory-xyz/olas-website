@@ -1,21 +1,15 @@
-import {
-  getPredictMetrics,
-  getPredictRoi,
-  getPredictSuccessRate,
-} from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { Link } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-const processPredictMetrics = (predictMetrics) => {
-  if (!predictMetrics) return null;
+const processPredictMetrics = (metrics) => {
+  if (!metrics) return null;
 
-  const predictTxsByType = predictMetrics.predictTxsByType ?? null;
+  const predictTxsByType = metrics.predictTxsByType ?? null;
 
   const traderTxs = predictTxsByType
     ? (predictTxsByType.valory_trader || 0) +
@@ -27,11 +21,14 @@ const processPredictMetrics = (predictMetrics) => {
     : null;
 
   return {
-    dailyActiveAgents: predictMetrics.dailyActiveAgents ?? null,
+    dailyActiveAgents: metrics.dailyActiveAgents ?? null,
     traderTxs,
     mechTxs,
     marketCreatorTxs,
-    apr: predictMetrics.apr ?? null,
+    apr: metrics.apr ?? null,
+    partialRoi: metrics.partialRoi ?? null,
+    finalRoi: metrics.finalRoi ?? null,
+    successRate: metrics.successRate ?? null,
   };
 };
 
@@ -172,26 +169,10 @@ const TransactionsBubble = ({ metrics, image, title }) => {
   return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
-export const Activity = () => {
-  const { data: predictMetrics } = usePersistentSWR(
-    'predictionMetrics',
-    getPredictMetrics,
-  );
-  const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
-  const { data: successRateData } = usePersistentSWR(
-    'predictSuccessRate',
-    getPredictSuccessRate,
-  );
-
+export const Activity = ({ metrics: initialMetrics }) => {
   const metrics = useMemo(() => {
-    const base = processPredictMetrics(predictMetrics) || {};
-    return {
-      ...base,
-      partialRoi: roi?.partialRoi ?? null,
-      finalRoi: roi?.finalRoi ?? null,
-      successRate: successRateData?.successRate ?? null,
-    };
-  }, [predictMetrics, roi, successRateData]);
+    return processPredictMetrics(initialMetrics);
+  }, [initialMetrics]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
