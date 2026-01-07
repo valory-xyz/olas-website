@@ -29,11 +29,7 @@ const HeroImage = () => (
 );
 
 const StartCreating = () => (
-
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; asChild: true; variant: "... Remove this comment to see the full error message
   <Button asChild variant="default" size="xl" className="mt-6 w-full md:w-auto">
-    // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-    // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
     <SubsiteLink href={SHORTS_URL} isInButton>
       Start creating now
     </SubsiteLink>
@@ -51,8 +47,7 @@ const Tag = (
 );
 
 const Hero = () => (
-
-  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message
+  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message */}
   <HeroSection
     HeroImage={HeroImage}
     pageName="SHORTS.WTF"
@@ -87,7 +82,6 @@ const list = [
   },
 ];
 const TurnYourIdeas = () => (
-
   <SectionWrapper customClasses={SECTION_BOX_CLASS} id="about">
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
       <div className="pr-0 lg:col-span-6 lg:pr-16">
@@ -199,7 +193,6 @@ const getStartedList = [
 ];
 
 const GetStarted = () => (
-
   <SectionWrapper
     id="get-started"
     customClasses={`${SECTION_BOX_CLASS} border-y border-t-0`}
@@ -228,9 +221,6 @@ const GetStarted = () => (
             width={316}
             height={294}
           />
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-          // @ts-expect-error TS(2322): Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; asChild: true; variant:... Remove this comment to see the full error message
           <Button
             asChild
             variant="default"

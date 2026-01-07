@@ -35,9 +35,7 @@ const list = [
 
 export const HowTheEconomyWorks = () => (
   <div id="how-it-works">
-    // @ts-expect-error TS(2304) FIXME: Cannot find name 'headerText'.
-    // @ts-expect-error TS(2739): Type '{ headerText: string; imgFolder: string; lis... Remove this comment to see the full error message
-    // @ts-expect-error TS(2739) FIXME: Type '{ headerText: string; imgFolder: string; lis... Remove this comment to see the full error message
+    {/* @ts-expect-error TS(2739) FIXME: Type '{ headerText: string; imgFolder: string; lis... Remove this comment to see the full error message */}
     <HowItWorks
       headerText="How an Influencer Agent Economy Works"
       imgFolder="agentsfun-page"

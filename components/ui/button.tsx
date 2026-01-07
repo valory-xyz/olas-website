@@ -42,6 +42,7 @@ const buttonVariants = cva(
 
 interface ButtonProps {
   asChild?: boolean;
+  children?: React.ReactNode;
   className?: string;
   size?: 'default' | 'sm' | 'lg' | 'xl' | 'icon';
   variant?:

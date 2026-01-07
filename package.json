@@ -8,7 +8,7 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "eslint --fix \"./**/*.{js,jsx}\""
+    "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.17",

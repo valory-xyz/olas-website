@@ -39,7 +39,6 @@ export const ForOlasHolders = () => (
       </div>
       <div className="flex flex-col md:grid grid-cols-2 gap-4">
         {list.map((item) => (
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: string; classNam... Remove this comment to see the full error message
           <Card
             key={item.title}
             className={`flex flex-col gap-2 p-6 bg-slate-100 border-slate-200 shadow-none ${item.cardWidth}`}

@@ -14,7 +14,7 @@ const ways = [
     imageSrc: '/images/build-page/hire.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
+      // {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
       <SubsiteLink href={`${BUILD_URL}/hire`} className="mt-4">
         Hire an agent
       </SubsiteLink>
@@ -29,16 +29,12 @@ const ways = [
         <ul className="list-disc ml-6 mt-4">
           <li>
             Build tools using the{' '}
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-            // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
             <SubsiteLink href={`${STACK_URL}/mech-tools-dev`}>
               Mech Tools Dev
             </SubsiteLink>
           </li>
           <li>
             Or build you agent with whatever framework you want, wrap it in{' '}
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-            // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
             <SubsiteLink href={`${STACK_URL}/olas-sdk`}>Olas SDK</SubsiteLink>
           </li>
         </ul>
@@ -131,8 +127,6 @@ export const WaysToGrow = () => {
 
       <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-4xl mx-auto">
         {ways.map((item) => (
-
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; ke... Remove this comment to see the full error message
           <Card
             className="flex flex-col overflow-hidden border rounded-xl"
             key={item.title}
@@ -145,8 +139,6 @@ export const WaysToGrow = () => {
               className="rounded-xl py-auto object-cover w-full"
             />
             <div className="p-6 py-8 flex flex-col h-full">
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-              // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
               <CardTitle className="mb-6 leading-[140%] text-xl text-center">
                 <span>{item.title}</span>
               </CardTitle>
@@ -165,9 +157,7 @@ export const WaysToGrow = () => {
                     }}
                   ></div>
 
-                  // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                  // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-                  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+                  {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
                   <Card className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white">
                     <button
                       className="absolute top-4 right-4 cursor-pointer z-10"

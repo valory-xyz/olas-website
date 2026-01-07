@@ -100,7 +100,6 @@ export const OlasProtocol = () => (
         <p>The protocol provides a number of core incentive mechanisms:</p>
         <div className="grid md:grid-cols-2 gap-4">
           {incentives.map((item, index) => (
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: string; classNam... Remove this comment to see the full error message
             <Card
               key={item.title}
               className={`p-6 ${

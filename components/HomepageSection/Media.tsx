@@ -15,12 +15,12 @@ const Media = () => {
       customClasses="px-4 md:px-8 py-12 lg:p-24 border-b bg-slate-100"
     >
       <div className="max-w-screen-xl mx-auto flex flex-col gap-20">
-        // @ts-expect-error TS(2741): Property 'isMain' is missing in type '{ isLoading:... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2741): Property 'isMain' is missing in type '{ isLoading:... Remove this comment to see the full error message */}{' '}
         <Videos isLoading={isLoading} videos={videos} limit={LIMIT} />
         <div id="blog">
-          // @ts-expect-error TS(2552) FIXME: Cannot find name 'limit'. Did you mean 'LIMIT'?
-          // @ts-expect-error TS(2322): Type '{ limit: number; tagFilter: string; showSeeA... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ limit: number; tagFilter: string; showSeeA... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2552) FIXME: Cannot find name 'limit'. Did you mean 'LIMIT'? */}{' '}
+          {/* @ts-expect-error TS(2322): Type '{ limit: number; tagFilter: string; showSeeA... Remove this comment to see the full error message */}{' '}
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ limit: number; tagFilter: string; showSeeA... Remove this comment to see the full error message */}{' '}
           <Articles limit={LIMIT} tagFilter="bonds" showSeeAll />
         </div>
       </div>

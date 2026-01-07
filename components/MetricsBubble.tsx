@@ -3,10 +3,11 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 
 interface MetricsBubbleProps {
-  data?: {
+  isUnderConstruction?: boolean;
+  metrics?: {
     id: string;
     subText: string;
-    value?: string;
+    value?: string | null;
     source?: {
       link: string;
       isExternal?: boolean;
@@ -17,15 +18,12 @@ interface MetricsBubbleProps {
 }
 
 export const MetricsBubble = ({
-  // @ts-expect-error TS(2339) FIXME: Property 'isUnderConstruction' does not exist on t... Remove this comment to see the full error message
   isUnderConstruction,
-  // @ts-expect-error TS(2339) FIXME: Property 'metrics' does not exist on type 'Metrics... Remove this comment to see the full error message
   metrics,
   image,
   title,
 }: MetricsBubbleProps) => {
   return (
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
     <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
       {isUnderConstruction && (
         <Image
@@ -50,25 +48,11 @@ export const MetricsBubble = ({
         <div className="text-lg font-medium mb-6">{title}</div>
 
         <div className="flex flex-col gap-8">
-          {metrics.map((item) => {
-            const value = !metrics || item.value === null ? '--' : item.value;
-            const SourceTag = item.source
-              ? item.source.isExternal
-                ? ExternalLink
-                : Link
-              : 'div';
-            const source =
-              item.source && value !== '--' ? (
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; href: any; hideArrow: tru... Remove this comment to see the full error message
-                <SourceTag href={item.source.link} hideArrow>
-                  {value}
-                  {item.source.isExternal && (
-                    <span className="text-2xl">↗</span>
-                  )}
-                </SourceTag>
-              ) : (
-                value
-              );
+          {metrics?.map((item) => {
+            const value =
+              item.value === null || item.value === undefined
+                ? '--'
+                : item.value;
 
             return (
               <div key={item.id} className="flex flex-col gap-3">
@@ -76,7 +60,18 @@ export const MetricsBubble = ({
                   {item.subText}
                 </span>
                 <span className="block text-2xl font-semibold text-purple-600">
-                  {source}
+                  {item.source && value !== '--' ? (
+                    item.source.isExternal ? (
+                      <ExternalLink href={item.source.link} hideArrow>
+                        {value}
+                        <span className="text-2xl">↗</span>
+                      </ExternalLink>
+                    ) : (
+                      <Link href={item.source.link}>{value}</Link>
+                    )
+                  ) : (
+                    value
+                  )}
                 </span>
               </div>
             );
@@ -88,6 +83,7 @@ export const MetricsBubble = ({
 };
 
 MetricsBubble.defaultProps = {
-  data: null,
-  image: null,
+  isUnderConstruction: false,
+  metrics: undefined,
+  image: undefined,
 };

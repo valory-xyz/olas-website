@@ -34,16 +34,11 @@ const tagBordersVariants = cva('absolute w-2 h-2', {
 
 interface TagProps {
   className?: string;
-  variant?: "primary" | "secondary" | "tertiary" | "white";
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'white';
   children: React.ReactNode;
 }
 
-export const Tag = ({
-  className,
-  variant,
-  children,
-  ...props
-}: TagProps) => {
+export const Tag = ({ className, variant, children, ...props }: TagProps) => {
   return (
     <div className={cn('relative inline-block', className)} {...props}>
       <div className="absolute inset-0 pointer-events-none">

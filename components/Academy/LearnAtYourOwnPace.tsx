@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const LearnAtYourOwnPace = () => (
-
   <SectionWrapper
     id="learn"
     customClasses="bg-[url('/images/academy/learn-at-your-own-pace.png')] bg-no-repeat bg-cover text-white"
@@ -40,9 +39,7 @@ export const LearnAtYourOwnPace = () => (
         <li>Prefer a self-paced study approach.</li>
       </ul>
       <div className="flex gap-6 max-md:flex-col max-md:text-center">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message */}
         <Button
           variant="valory"
           size="xl"
@@ -52,9 +49,7 @@ export const LearnAtYourOwnPace = () => (
             Start course on Youtube
           </Link>
         </Button>
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "valory"; size... Remove this comment to see the full error message */}{' '}
         <Button variant="valory" size="xl" className="my-6 w-fit rounded-none">
           <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
         </Button>

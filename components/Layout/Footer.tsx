@@ -147,11 +147,7 @@ interface LinksBlockProps {
   className?: string;
 }
 
-const LinksBlock = ({
-  title,
-  links,
-  className
-}: LinksBlockProps) => (
+const LinksBlock = ({ title, links, className }: LinksBlockProps) => (
   <div>
     <span className="block font-semibold">{title}</span>
     <div className={cn('flex flex-col gap-3 py-3', className)}>

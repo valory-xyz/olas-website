@@ -23,8 +23,8 @@ const steps = [
         As a Bonder, you exchange your LP tokens for discounted OLAS to help the
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
         tokens to your chosen{' '}
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2304) FIXME: Cannot find
+        name &apos;childre&apos;. */}{' '}
         <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>,
         exchanging your LP tokens for discounted OLAS, available after the
         predetermined vesting period.
@@ -56,7 +56,6 @@ const steps = [
 ];
 
 export const HowBondingWorks = () => (
-
   <SectionWrapper
     id="how-it-works"
     customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
@@ -72,12 +71,7 @@ export const HowBondingWorks = () => (
       ))}
 
       <div className="self-center">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={BOND_URL} isInButton>
             Start bonding now
           </SubsiteLink>

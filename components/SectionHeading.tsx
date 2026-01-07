@@ -15,7 +15,7 @@ const SectionHeading = ({
   spacing,
   display,
   weight,
-  other
+  other,
 }: SectionHeadingProps) => (
   <h2
     className={`text-3xl lg:text-[40px] ${size} ${spacing} ${color} ${display} ${weight} ${other}`}

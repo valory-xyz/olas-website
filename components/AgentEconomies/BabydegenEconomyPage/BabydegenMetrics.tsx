@@ -104,17 +104,13 @@ const BabydegenMetricsBubble = ({
 };
 
 export const BabydegenMetrics = () => {
-
   // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('BabydegenMetrics', fetchMetrics);
 
   return (
-
     <SectionWrapper id="stats">
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
         <Card className="flex flex-col gap-6 p-8 border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center md:col-span-2 w-full">
           <div className="flex items-center">
             <Image
@@ -130,7 +126,6 @@ export const BabydegenMetrics = () => {
             <Link
               className="font-extrabold text-6xl"
               href="/data#babydegen-daily-active-agents"
-
               // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
               hideArrow
             >
@@ -141,8 +136,6 @@ export const BabydegenMetrics = () => {
           )}
           <div className="flex gap-2">
             Daily Active Agents (DAAs){' '}
-            // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
-            // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>

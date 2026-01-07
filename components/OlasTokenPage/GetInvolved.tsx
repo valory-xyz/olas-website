@@ -74,9 +74,7 @@ const GetInvolvedCard = ({
 }) => {
   return (
     <Link href={href}>
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-      // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; id... Remove this comment to see the full error message
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; id... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; id... Remove this comment to see the full error message */}
       <Card
         className="activity-card-opaque p-6 grid-flow-row min-h-[278px] h-full hover:bg-white duration-150"
         id={`get-involved-${id}`}

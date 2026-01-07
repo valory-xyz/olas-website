@@ -13,7 +13,6 @@ const HeroImage = () => (
 );
 
 const Explore = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="md:w-auto mb-6 w-full">
     <a href="#get-involved">Explore</a>
   </Button>

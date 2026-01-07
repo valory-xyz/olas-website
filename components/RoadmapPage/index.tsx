@@ -1,11 +1,9 @@
 import { SECTION_BOX_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import SectionHeading from 'components/SectionHeading';
 import { Tag } from 'components/ui/tag';
 import { MMPearlDiagram } from './MMPearlDiagram';
 
 export const Roadmap = () => (
-
   <SectionWrapper
     customClasses={`${SECTION_BOX_CLASS} max-sm:px-0 relative overflow-hidden md:border md:border-b-1.5`}
   >
@@ -22,8 +20,6 @@ export const Roadmap = () => (
             Co-Owned AI
           </Tag>
           <span className="text-slate-500">=</span>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <Tag variant="secondary">
             <p>
               <span className="text-purple-700 hover:text-purple-800">
@@ -40,8 +36,6 @@ export const Roadmap = () => (
             </p>
           </Tag>
           <span className="text-slate-500">+</span>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <Tag variant="secondary">
             <p>
               <span className="text-purple-700 hover:text-purple-800">AI:</span>{' '}
@@ -56,8 +50,6 @@ export const Roadmap = () => (
             </p>
           </Tag>
           <span className="text-slate-500">+</span>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <Tag variant="secondary">
             <p>
               <span className="text-purple-700 hover:text-purple-800">

@@ -31,16 +31,13 @@ const AIAgentInfluencers = (
 );
 
 const Explore = () => (
-
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="max-md:grow">
     <a href="#choose-agent">Explore</a>
   </Button>
 );
 
 const Hero = () => (
-
-  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message
+  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message */}
   <HeroSection
     HeroImage={HeroImage}
     pageName="AGENTS.FUN AGENTS"
@@ -73,8 +70,6 @@ const list = [
     desc: (
       <>
         Set up and configure your agent in minutes — no coding required, just
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         download the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>{' '}
         and go.
       </>
@@ -83,7 +78,6 @@ const list = [
 ];
 
 const TheFuture = () => (
-
   <SectionWrapper id="about">
     <div className="text-center max-w-[720px] mx-auto mb-16">
       <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
@@ -100,7 +94,7 @@ const TheFuture = () => (
       <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         Benefits
       </h2>
-      // @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message       */}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
@@ -151,12 +145,9 @@ const funAgents = [
 ];
 
 const PickYourAgent = () => (
-
   <SectionWrapper id="choose-agent">
     <div className="max-w-[700px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
-
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; id: string; key: stri... Remove this comment to see the full error message
         <Card
           id={agent.anchor}
           key={agent.title}
@@ -169,16 +160,9 @@ const PickYourAgent = () => (
             height={128}
           />
           <div className="flex flex-col gap-4">
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2559): Type '{ children: string; }' has no properties in ... Remove this comment to see the full error message
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
             <Button variant="default" size="lg" className="w-fit mt-4" asChild>
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-              // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
               <SubsiteLink href={PEARL_YOU_URL} isInButton>
                 Run Agent via Pearl
               </SubsiteLink>
@@ -210,12 +194,9 @@ const faqList = [
         desc: (
           <>
             No. With the{' '}
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-            // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ PEARL_YOU_URL: string; }' is not assignabl... Remove this comment to see the full error message
-            <SubsiteLink href={{ PEARL_YOU_URL }}>Pearl app</SubsiteLink>, you
-            can easily deploy and manage Agents.fun Agents without coding,
-            making AI-powered prediction markets accessible to a wider audience.
+            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can
+            easily deploy and manage Agents.fun Agents without coding, making
+            AI-powered prediction markets accessible to a wider audience.
           </>
         ),
       },
@@ -224,8 +205,6 @@ const faqList = [
         desc: (
           <>
             You can start by downloading the{' '}
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-            // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
             <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and
             running your own influencer AI Agent.
           </>
@@ -236,7 +215,6 @@ const faqList = [
 ];
 
 const Faq = () => (
-
   <SectionWrapper
     customClasses="bg-no-repeat py-8 px-6 lg:py-24 lg:px-0"
     id="faq"
@@ -248,24 +226,18 @@ const Faq = () => (
 
       {faqList.map((faq, faqIndex) => (
         <div
-
           // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
           key={faq.name}
           className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
         >
-          // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
-          // @ts-expect-error TS(2339): Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
-          // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message */}
           {faq.name && (
-
             // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
             <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
           )}
 
           {faq.list.map((eachFaq, index) => (
             <div className="py-2" key={index}>
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-              // @ts-expect-error TS(2739): Type '{ children: string | Element; label: string;... Remove this comment to see the full error message
               <Accordion label={eachFaq.title} defaultOpen={false}>
                 {eachFaq.desc}
               </Accordion>

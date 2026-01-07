@@ -18,15 +18,12 @@ const TokenomicsAlert = () => (
       <p>
         You can check available dev rewards for existing/minted agents and
         components on{' '}
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={DEV_REWARDS_URL}>Tokenomics</SubsiteLink>.
       </p>
     </div>
   </div>
 );
 const Content = () => (
-
   <SectionWrapper customClasses="max-w-screen-md m-8 mt-0" id="rewards">
     <div className={`flex flex-col gap-3 text-md w-full my-8`}>
       <h3 className={SUB_HEADER_MEDIUM_CLASS}>
@@ -52,8 +49,6 @@ const Content = () => (
       <p>
         In order to qualify for developer rewards an Olas builder must mint a
         component or agent on the{' '}
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={`${MECH_MARKETPLACE_URL}/ethereum/components`}>
           Mech Marketplace
         </SubsiteLink>{' '}

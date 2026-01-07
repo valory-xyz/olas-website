@@ -25,14 +25,12 @@ const OnDemand = (
 );
 
 const GetInvolved = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="max-xl:grow">
     <a href="#get-started">Get involved</a>
   </Button>
 );
 
 const ExplorePredict = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "ghostPrimary"... Remove this comment to see the full error message
   <Button
     variant="ghostPrimary"
     size="xl"

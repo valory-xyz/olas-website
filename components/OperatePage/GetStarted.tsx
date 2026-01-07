@@ -33,16 +33,12 @@ const list = [
       </ol>
     ),
     button: (
-
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
       <Button
         variant="default"
         size="xl"
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={PEARL_YOU_URL} isInButton>
           Get Started with Pearl
         </SubsiteLink>
@@ -82,8 +78,6 @@ const list = [
       </ol>
     ),
     button: (
-
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
       <Button
         variant="outline"
         size="xl"
@@ -102,7 +96,6 @@ const list = [
 ];
 
 export const GetStarted = () => (
-
   <SectionWrapper
     id="get-started"
     customClasses="max-md:p-4 max-lg:px-4 lg:my-32"
@@ -115,12 +108,9 @@ export const GetStarted = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (
           <div key={item.title} className="flex">
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'imgUrl'.
-            // @ts-expect-error TS(2739): Type '{ imgUrl: string; title: string; subtitle: s... Remove this comment to see the full error message
             <StarterCards
               imgUrl={item.imgUrl}
               title={item.title}
-              // @ts-expect-error TS(2322) FIXME: Type '{ imgUrl: string; title: string; subtitle: s... Remove this comment to see the full error message
               subtitle={item.subtitle}
               content={item.content}
               button={item.button}

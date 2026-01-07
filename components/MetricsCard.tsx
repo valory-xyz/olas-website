@@ -31,13 +31,9 @@ interface MetricsCardProps {
   };
 }
 
-export const MetricsCard = ({
-  metrics
-}: MetricsCardProps) => {
+export const MetricsCard = ({ metrics }: MetricsCardProps) => {
   return (
-
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-    (<Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
+    <Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
       {metrics.displayMetrics.map((metric, index) => {
         const borderClassName =
           metrics.displayMetrics.length > 1 && index === 0
@@ -60,7 +56,7 @@ export const MetricsCard = ({
                   className="mr-4"
                 />
               )}
-              // @ts-expect-error TS(2339) FIXME: Property 'image' does not exist on type '{ key: st... Remove this comment to see the full error message
+              {/* @ts-expect-error TS(2339) FIXME: Property 'image' does not exist on type '{ key: st... Remove this comment to see the full error message */}
               {metric.image && <span className="mr-4">{metric.image}</span>}
               {metric.labelText}
             </div>
@@ -71,7 +67,7 @@ export const MetricsCard = ({
           </div>
         );
       })}
-    </Card>)
+    </Card>
   );
 };
 
@@ -98,7 +94,6 @@ const renderMetricValue = (metric) => {
     <ExternalLink
       className={valueClassName}
       href={metric.source}
-
       // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
       target="_blank"
       hideArrow
@@ -108,11 +103,10 @@ const renderMetricValue = (metric) => {
       <span className="text-4xl">↗</span>
     </ExternalLink>
   ) : (
-
     // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
-    (<Link className={valueClassName} href={metric.source} hideArrow>
+    <Link className={valueClassName} href={metric.source} hideArrow>
       {metric.isMoney && <span>$</span>}
       {formatted}
-    </Link>)
+    </Link>
   );
 };

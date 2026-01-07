@@ -16,7 +16,7 @@ export const Accordion = ({
   defaultOpen = true,
   titleClass,
   dropdownClass,
-  children
+  children,
 }: AccordionProps) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
   const buttonClass =

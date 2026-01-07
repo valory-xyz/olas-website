@@ -15,14 +15,12 @@ const HeroImage = () => (
 );
 
 const GetInvolved = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
   <Button variant="default" size="xl" asChild className="grow">
     <a href="#events">Get Involved</a>
   </Button>
 );
 
 const LearnToBuild = () => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "ghostPrimary"... Remove this comment to see the full error message
   <Button variant="ghostPrimary" size="xl" asChild className="grow">
     <Link href="/build">Learn to Build</Link>
   </Button>

@@ -30,7 +30,6 @@ const formatToTooltip = ({ from, to }) =>
   `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
 export const FeeMetrics = () => {
-
   // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics, error } = usePersistentSWR(
     'FeeFlowMetrics',
@@ -172,7 +171,6 @@ export const FeeMetrics = () => {
   };
 
   return (
-
     <SectionWrapper
       customClasses="text-center py-16 px-4 border-b"
       id="fee-flow"
@@ -227,8 +225,6 @@ export const FeeMetrics = () => {
                       <span className="text-base max-sm:text-sm font-semibold">
                         {item.label}
                       </span>
-                      // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
-                      // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
                       <Popover>{item.description}</Popover>
                     </div>
                   </div>

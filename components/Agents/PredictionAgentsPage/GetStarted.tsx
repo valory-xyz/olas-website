@@ -16,7 +16,7 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
           <SubsiteLink href={PEARL_YOU_URL} className="break-words">
             Pearl.you
           </SubsiteLink>{' '}
@@ -41,16 +41,12 @@ const list = [
       </ol>
     ),
     button: (
-
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
       <Button
         variant="default"
         size="xl"
         asChild
         className="grow mt-6 max-md:w-full"
       >
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={PEARL_YOU_URL} isInButton>
           Run an Agent
         </SubsiteLink>
@@ -86,8 +82,7 @@ const list = [
       </>
     ),
     button: (
-
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
+      // {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}
       <Button
         variant="outline"
         size="xl"
@@ -106,7 +101,6 @@ const list = [
 ];
 
 export const GetStarted = () => (
-
   <SectionWrapper id="get-started" customClasses="max-md:p-4 lg:my-32">
     <div className="text-center max-w-[870px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
@@ -116,8 +110,6 @@ export const GetStarted = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (
           <div key={item.title} className="flex">
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'imgUrl'.
-            // @ts-expect-error TS(2740): Type '{ imgUrl: string; title: string; content: El... Remove this comment to see the full error message
             <StarterCards
               imgUrl={item.imgUrl}
               title={item.title}

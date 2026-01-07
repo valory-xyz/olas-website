@@ -14,8 +14,6 @@ import { CodeSnippet } from './CodeSnippet';
 export const TransactionsInfo = () => {
   return (
     <>
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
-      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="transactions">
         <h2 className={SUB_HEADER_LG_CLASS}>Transactions</h2>
 
@@ -55,9 +53,6 @@ export const TransactionsInfo = () => {
           <CodeSnippet>{registryGlobalsQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
-
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'ch'.
-      // @ts-expect-error TS(2741): Property 'backgroundType' is missing in type '{ ch... Remove this comment to see the full error message
       <SectionWrapper id="predict-transactions-by-type">
         <h2 className={SUB_HEADER_LG_CLASS}>
           Predict: Transactions by Agent Type

@@ -31,7 +31,6 @@ const list = [
 ];
 
 export const WhyBecomeGovernor = () => (
-
   <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-16 lg:pb-12`}>
     <div
       className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
@@ -42,7 +41,7 @@ export const WhyBecomeGovernor = () => (
       >
         Why become an Olas Governor?
       </h2>
-      // @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message */}{' '}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>

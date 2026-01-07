@@ -95,15 +95,15 @@ export const ForProtocols = () => (
                 </h4>
                 <p className="text-slate-600">{item.description}</p>
               </div>
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-              // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; className: string; }' is ... Remove this comment to see the full error message
+              {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+              {/* @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
+              {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; className: string; }' is ... Remove this comment to see the full error message */}{' '}
               <Card className="activity-card-opaque p-8 md:w-[436px]">
                 <h5 className="text-lg font-semibold mb-4">{item.cardTitle}</h5>
                 <div className="mb-6">{item.cardContent}</div>
-                // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "ghostPrimary"... Remove this comment to see the full error message
+                {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+                {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
+                {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "ghostPrimary"... Remove this comment to see the full error message */}{' '}
                 <Button variant="ghostPrimary" size="lg" asChild>
                   {item.isExternal ? (
                     <ExternalLink href={item.buttonUrl} hideArrow>

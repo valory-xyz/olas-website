@@ -65,7 +65,6 @@ const ImageCarousel = ({
           alt="Olas community card"
           fill
           sizes={sizes}
-
           // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type 'Placehold... Remove this comment to see the full error message
           placeholder={placeholder}
           className={
@@ -295,7 +294,6 @@ const CommunityCardClient = () => {
         return;
       }
 
-
       // @ts-expect-error TS(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
       ctx.drawImage(img, 0, 0);
 
@@ -312,7 +310,6 @@ const CommunityCardClient = () => {
           1.0,
         );
       });
-
 
       // @ts-expect-error TS(2322) FIXME: Type 'unknown' is not assignable to type 'string |... Remove this comment to see the full error message
       const item = new window.ClipboardItem({ 'image/png': pngBlob });
@@ -353,25 +350,16 @@ const CommunityCardClient = () => {
           </div>
 
           <div className={STEPS_CONTAINER_CLASSES}>
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
               <div className="mt-auto pt-4 md:pt-6">
-                // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
                 <Button onClick={shuffle} variant="outline">
                   <Shuffle className="mr-2 h-4 w-4" />
                   Shuffle Card
                 </Button>
               </div>
             </Card>
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 2" />
               <div className="text-base">
@@ -382,16 +370,13 @@ const CommunityCardClient = () => {
               <div className="mt-auto pt-6">
                 <div className="flex flex-row gap-2">
                   {canCopy && (
-
                     // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
                     <Button onClick={copyImageToClipboard} variant="outline">
                       <LucideCopy className="mr-2 h-4 w-4" />
                       Copy
                     </Button>
                   )}
-                  // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                  // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
-                  // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
+                  {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message */}
                   <Button onClick={download} variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Download
@@ -399,18 +384,12 @@ const CommunityCardClient = () => {
                 </div>
               </div>
             </Card>
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 3" />
               <div className="text-base w-1/2 md:w-full">
                 Share on X and attach your card.
               </div>
               <div className="mt-auto pt-6">
-                // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                // @ts-expect-error TS(2322): Type '{ children: Element; asChild: true; }' is no... Remove this comment to see the full error message
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; asChild: true; }' is no... Remove this comment to see the full error message
                 <Button asChild>
                   <Link
                     href={shareUrl}

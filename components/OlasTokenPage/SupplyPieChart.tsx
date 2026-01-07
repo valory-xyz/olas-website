@@ -90,49 +90,48 @@ LegendItem.propTypes = {
 LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
-
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message
-  <div class="flex flex-col gap-2 text-base max-w-md">
-    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-    // @ts-expect-error TS(2322): Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message
-    <span class="font-semibold mb-2">How is the Total Supply calculated?</span>
-    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-    // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message
-    <span class="italic">
-      <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
-      <span className="font-semibold">buOLAS</span> value
-    </span>
-    <ExternalLink
-      href={`${ETHERSCAN_URL}/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16`}
-    >
-      Verify on-chain value
-    </ExternalLink>
-    <p>
-      <span className="font-semibold">buOLAS</span> is a portion of tokens that
-      have been burned following the{' '}
-      <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
-        Olas DAO proposal
+  <>
+    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message */}
+    <div class="flex flex-col gap-2 text-base max-w-md">
+      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message     */}
+      <span class="font-semibold mb-2">
+        How is the Total Supply calculated?
+      </span>
+      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message */}
+      <span class="italic">
+        <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
+        <span className="font-semibold">buOLAS</span> value
+      </span>
+      <ExternalLink
+        href={`${ETHERSCAN_URL}/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16`}
+      >
+        Verify on-chain value
       </ExternalLink>
-      . Verify:
-    </p>
-    <ExternalLink
-      href={`${ETHERSCAN_URL}/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog`}
-    >
-      Revoke buOLAS execution 1
-    </ExternalLink>
-    <ExternalLink
-      href={`${ETHERSCAN_URL}/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog`}
-    >
-      Revoke buOLAS execution 2
-    </ExternalLink>
-    <ExternalLink
-      href={`${ETHERSCAN_URL}/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog`}
-    >
-      Revoke buOLAS execution 3
-    </ExternalLink>
-  </div>
+      <p>
+        <span className="font-semibold">buOLAS</span> is a portion of tokens
+        that have been burned following the{' '}
+        <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
+          Olas DAO proposal
+        </ExternalLink>
+        . Verify:
+      </p>
+      <ExternalLink
+        href={`${ETHERSCAN_URL}/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog`}
+      >
+        Revoke buOLAS execution 1
+      </ExternalLink>
+      <ExternalLink
+        href={`${ETHERSCAN_URL}/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog`}
+      >
+        Revoke buOLAS execution 2
+      </ExternalLink>
+      <ExternalLink
+        href={`${ETHERSCAN_URL}/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog`}
+      >
+        Revoke buOLAS execution 3
+      </ExternalLink>
+    </div>
+  </>
 );
 
 function formatNumber(number) {
@@ -177,7 +176,6 @@ export const SupplyPieChart = () => {
             ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
             : 0;
 
-
         // @ts-expect-error TS(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         setTotalSupply(formatEthers(totalSupply));
         setData([
@@ -216,8 +214,6 @@ export const SupplyPieChart = () => {
             {loading ? '--' : formatNumber(totalSupply)}
           </div>
           <div className="mb-4">
-            // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
-            // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
             <Popover
               text="Verify"
               align="start"

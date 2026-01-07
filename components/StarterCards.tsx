@@ -27,7 +27,6 @@ export const StarterCards = ({
   contentClassName,
   buttonClassName,
 }: StarterCardsProps) => (
-  // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
   <Card className={`flex flex-col w-full ${className || ''}`}>
     <div className="border-b-1.5 text-left flex flex-row gap-3 place-items-center p-6">
       <Image

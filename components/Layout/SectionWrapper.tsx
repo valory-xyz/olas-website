@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 
 interface SectionWrapperProps {
-  backgroundType?: "SUBTLE_GRADIENT" | "GRAY" | "GRAY_GRADIENT" | "GOVERNATOOORR" | "NONE";
+  backgroundType?:
+    | 'SUBTLE_GRADIENT'
+    | 'GRAY'
+    | 'GRAY_GRADIENT'
+    | 'GOVERNATOOORR'
+    | 'NONE';
   children: React.ReactNode;
   customClasses?: string;
   id?: string;
@@ -13,7 +18,7 @@ const SectionWrapper = ({
   customClasses,
   backgroundType,
   id,
-  customStyle
+  customStyle,
 }: SectionWrapperProps) => {
   const backgroundClasses = useMemo(() => {
     switch (backgroundType) {

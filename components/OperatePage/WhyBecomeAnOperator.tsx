@@ -32,8 +32,6 @@ const list = [
     desc: (
       <p>
         Choose from a growing list of{' '}
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={`${OPERATE_URL}/contracts`}>
           staking contracts
         </SubsiteLink>
@@ -44,7 +42,6 @@ const list = [
 ];
 
 export const WhyBecomeAnOperator = () => (
-
   <SectionWrapper id="why-operate">
     <div className="max-w-screen-xl mx-auto lg:px-12">
       <h2
@@ -52,7 +49,7 @@ export const WhyBecomeAnOperator = () => (
       >
         Why become an Olas Operator?
       </h2>
-      // @ts-expect-error TS(2322) FIXME: Type '({ title: string; icon: Element; desc: strin... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; icon: Element; desc: strin... Remove this comment to see the full error message */}{' '}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>

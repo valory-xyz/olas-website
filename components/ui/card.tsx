@@ -1,7 +1,8 @@
-import { forwardRef } from 'react';
 import { cn } from 'lib/utils';
+import { forwardRef } from 'react';
 
 interface CardProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -24,6 +25,7 @@ Card.displayName = 'Card';
 Card.defaultProps = { className: null };
 
 interface CardHeaderProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -68,6 +70,7 @@ CardTitle.displayName = 'CardTitle';
 CardTitle.defaultProps = { className: '' };
 
 interface CardDescriptionProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -87,13 +90,18 @@ CardDescription.displayName = 'CardDescription';
 CardDescription.defaultProps = { className: null };
 
 interface CardContentProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
 const CardContent = forwardRef<HTMLElement, CardContentProps>(
   ({ className, ...props }, ref) => (
-    // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
-    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+    <div
+      // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
+      ref={ref}
+      className={cn('p-6 pt-0', className)}
+      {...props}
+    />
   ),
 );
 CardContent.displayName = 'CardContent';
@@ -102,6 +110,7 @@ CardContent.displayName = 'CardContent';
 CardContent.defaultProps = { className: null };
 
 interface CardFooterProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -122,9 +131,9 @@ CardFooter.defaultProps = { className: null };
 
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 };

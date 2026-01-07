@@ -93,8 +93,10 @@ export const UsagePieChart = ({
               labels: ['Builders', 'Bonders', 'Operators'],
               datasets: [
                 {
-                  data: [split.developers, split.bonders, split.staking] || [
-                    0, 0, 0,
+                  data: [
+                    split?.developers ?? 0,
+                    split?.bonders ?? 0,
+                    split?.staking ?? 0,
                   ],
                   backgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                   hoverBackgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],

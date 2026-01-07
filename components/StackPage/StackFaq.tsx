@@ -40,24 +40,18 @@ export const StackFaq = () => (
 
       {faqList.map((faq, faqIndex) => (
         <div
-
           // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
           key={faq.name}
           className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
         >
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'list'.
-          // @ts-expect-error TS(2339): Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
-          // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message */}
           {faq.name && (
-
             // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
             <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
           )}
 
           {faq.list.map((eachFaq, index) => (
             <div className="py-2" key={index}>
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-              // @ts-expect-error TS(2739): Type '{ children: string; label: string; defaultOp... Remove this comment to see the full error message
               <Accordion label={eachFaq.title} defaultOpen={false}>
                 {eachFaq.desc}
               </Accordion>

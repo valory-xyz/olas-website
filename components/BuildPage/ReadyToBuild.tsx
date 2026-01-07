@@ -38,8 +38,6 @@ export const ReadyToBuild = () => (
 
     <div className="grid md:grid-cols-2 md:gap-x-4 gap-x-10 gap-y-4 max-w-5xl mx-auto ">
       {content.map((item) => (
-
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; ke... Remove this comment to see the full error message
         <Card
           className="bg-gradient-to-t from-[#EEF0F7] to-[#FCFCFD] flex flex-col overflow-hidden border-t border-gray-200"
           key={item.title}
@@ -52,13 +50,11 @@ export const ReadyToBuild = () => (
             className="rounded-lg py-auto object-cover w-full"
           />
           <div className="p-6 py-8 flex flex-col h-full">
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
             <CardTitle className="mb-4 text-left">
               <span>{item.title}</span>
             </CardTitle>
             <div className="mb-2 text-start">{item.description}</div>
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
+            {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
             <SubsiteLink href={item.link} className="mt-auto">
               {item.linkText}
             </SubsiteLink>

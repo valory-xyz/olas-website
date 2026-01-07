@@ -114,7 +114,6 @@ export const WhatCanYouBuild = () => (
         Marketplace: The AI Agent Bazaar.
       </p>
       {list.map((item, index) => (
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
         <Card
           key={index}
           className="bg-white border-inherit shadow-sm flex flex-col justify-between rounded-xl p-6 mb-6"

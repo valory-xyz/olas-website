@@ -44,7 +44,6 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
           <span className="flex items-center gap-2">
             Total ROI - Average{' '}
             {metrics?.partialRoi && (
-
               <Popover>
                 <div className="flex flex-col max-w-[320px] gap-4 text-base ">
                   <p className="text-gray-500">
@@ -93,7 +92,6 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
     ],
     [metrics],
   );
-
 
   // @ts-expect-error TS(2322) FIXME: Type '{ metrics: ({ id: string; subText: Element; ... Remove this comment to see the full error message
   return <MetricsBubble metrics={data} image={image} title={title} />;
@@ -172,13 +170,11 @@ const TransactionsBubble = ({ metrics, image, title }) => {
     [metrics],
   );
 
-
   // @ts-expect-error TS(2322) FIXME: Type '{ metrics: { id: string; subText: Element; v... Remove this comment to see the full error message
   return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
 export const Activity = () => {
-
   // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: predictMetrics } = usePersistentSWR(
     'predictionMetrics',
@@ -205,12 +201,8 @@ export const Activity = () => {
   }, [predictMetrics, roi, successRateData]);
 
   return (
-
     <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
         <Card className="md:col-span-2 flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-full text-xl w-full mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <div className="flex gap-4 items-center">
             <Image
@@ -221,38 +213,31 @@ export const Activity = () => {
             />
             Predict Agent Economy
           </div>
-          // @ts-expect-error TS(2339): Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message
-          // @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message */}
           {metrics?.dailyActiveAgents ? (
             <Link
               className="font-extrabold text-6xl"
               href="/data#predict-daily-active-agents"
-
               // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; className: string; href: ... Remove this comment to see the full error message
               hideArrow
             >
-              // @ts-expect-error TS(2339): Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message
-              // @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message
+              {/* @ts-expect-error TS(2339): Property &apos;dailyActiveAgents&apos; does
+              not exist on typ... */}{' '}
+              Remove this comment to see the full error
+              {/* @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message */}
               {metrics.dailyActiveAgents}
             </Link>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
           )}
           <div className="flex self-center gap-2">
-            Daily Active Agents (DAAs)
-            // @ts-expect-error TS(2609) FIXME: JSX spread child must be an array type.
-            // @ts-expect-error TS(2741): Property 'contentClassName' is missing in type '{ ... Remove this comment to see the full error message
+            Daily Active Agents (DAAs){' '}
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'title'.
-        // @ts-expect-error TS(2741): Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message
-        // @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message */}{' '}
         <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'title'.
-        // @ts-expect-error TS(2741): Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message
-        // @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message */}{' '}
         <TransactionsBubble
           title="Transactions by Agent Type"
           metrics={metrics}

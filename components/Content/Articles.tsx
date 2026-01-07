@@ -54,9 +54,9 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
                 {folders.map((folder) => (
                   <Link key={folder.label} href={folder.link}>
-                    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-                    // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-                    // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+                    {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+                    {/* @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
+                    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
                     <Card className="flex p-3 gap-2 justify-between items-center">
                       <div className="flex">
                         <div className="p-3 bg-purple-100 rounded-lg">

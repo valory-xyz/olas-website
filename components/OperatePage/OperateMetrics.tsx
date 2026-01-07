@@ -24,7 +24,6 @@ const fetchMetrics = async () => {
 };
 
 export const OperateMetrics = () => {
-
   // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR(
     'operateActivityMetrics',
@@ -54,16 +53,15 @@ export const OperateMetrics = () => {
   );
 
   return (
-
     <SectionWrapper id="stats" customClasses="mx-4 md:mx-12 mt-24 mb-16">
       <h2
         className={`text-2xl md:text-[32px] tracking-tighter font-bold text-center mb-12`}
       >
         Hundreds of Operators are Already Running Agents
       </h2>
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-      // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+      {/* @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
+      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}{' '}
       <Card className="grid md:grid-cols-2 gap-6 p-6 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
         {data.map((item, index) => {
           let borderClassName = '';

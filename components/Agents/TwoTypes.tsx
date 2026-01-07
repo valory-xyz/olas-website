@@ -37,7 +37,6 @@ export const TwoTypes = () => {
   const [openModalKey, setOpenModalKey] = useState(null);
 
   return (
-
     <SectionWrapper>
       <SectionHeading other="text-center">
         Two Types of Olas Agents
@@ -75,9 +74,7 @@ export const TwoTypes = () => {
             className="fixed w-full h-full z-50 left-0 top-0 bg-black opacity-40"
             onClick={() => setOpenModalKey(null)}
           ></div>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-          // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message */}
           <Card className="fixed z-50 max-h-[600px] overflow-y-auto m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md bg-white">
             <button
               className="absolute top-4 right-4 cursor-pointer z-10"

@@ -6,9 +6,7 @@ interface ResourceProps {
   };
 }
 
-const Resource = ({
-  resource
-}: ResourceProps) => (
+const Resource = ({ resource }: ResourceProps) => (
   <a href={resource.url} target="_blank" rel="noopener noreferrer">
     <article className="p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-lg">
       <div className="flex justify-between items-center">

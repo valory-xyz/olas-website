@@ -144,9 +144,6 @@ export const TokenAddress = () => {
         width={487}
         height={444}
       />
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-      // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; }'... Remove this comment to see the full error message
       <Card className="absolute z-20 card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
         <TokenDropdown
           activeTab={activeTab}
@@ -180,22 +177,14 @@ export const TokenAddress = () => {
         </div>
       </Card>
       {copied && (
-
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; }' is... Remove this comment to see the full error message
         <Card className="fixed bottom-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 z-50 bg-white shadow-lg">
           Copied to clipboard
         </Card>
       )}
       <div className="flex flex-row gap-4 mt-14 w-fit mx-auto">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
         <Button variant="default" size="lg" asChild className="z-10">
           <Link href="/olas-token#token-details">Get OLAS</Link>
         </Button>
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
         <Button variant="outline" size="lg" asChild className="z-10">
           <Link href="/olas-token">Tokenomics</Link>
         </Button>

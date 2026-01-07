@@ -22,9 +22,7 @@ export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
             className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${isLastOdd ? 'md:translate-x-1/2' : ''}`}
             style={CARD_CSS}
           >
-            // @ts-expect-error TS(2746) FIXME: This JSX tag's 'children' prop
-            expects a single ch... Remove this comment to see the full error
-            message
+            Remove this comment to see the full error message
             <div className="flex items-center">
               {icon || null}
               <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>

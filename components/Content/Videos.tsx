@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import { VideoPropTypes } from 'common-util/propTypes';
 import { Spinner } from 'components/Spinner';
 import Image from 'next/image';
 
@@ -33,8 +32,7 @@ const Video = ({ video }: VideoProps) => (
     <div
       className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
     >
-      // @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not
-      exist on type 'u... Remove this comment to see the full error message
+      {/* @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not exist on type 'u... Remove this comment to see the full error message */}
       {video.imageFilename && (
         <Image
           // @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not exist on type 'u... Remove this comment to see the full error message
@@ -48,14 +46,12 @@ const Video = ({ video }: VideoProps) => (
       )}
       <div className="p-6 flex flex-col h-full">
         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal min-h-[70px]">
-          // @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on
-          type 'unknown'.
+          {/* @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on type 'unknown'. */}
           {video.title}
         </h2>
         <div className="text-gray-500 mt-auto">
           <span className="text-sm md:text-xl lg:text-sm">
-            // @ts-expect-error TS(2339) FIXME: Property 'date' does not exist
-            on type 'unknown'.
+            {/* @ts-expect-error TS(2339) FIXME: Property 'date' does not exist on type 'unknown'. */}
             {formatDate(video.date)}
           </span>
         </div>

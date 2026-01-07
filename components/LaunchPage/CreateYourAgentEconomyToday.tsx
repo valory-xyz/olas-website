@@ -39,7 +39,6 @@ const steps = [
 ];
 
 export const CreateYourAgentEconomyToday = () => (
-
   <SectionWrapper
     id="get-started"
     customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
@@ -55,12 +54,8 @@ export const CreateYourAgentEconomyToday = () => (
       ))}
 
       <div className="self-center">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; variant: "default"; size:... Remove this comment to see the full error message */}{' '}
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={LAUNCH_URL} isInButton>
             Get Started
           </SubsiteLink>

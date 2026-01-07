@@ -51,7 +51,6 @@ const Only10Teams = () => (
 const DisplaySteps = () => (
   <div className="flex flex-col md:flex-row mx-auto xl:px-8 max-w-5xl justify-between max-md:gap-y-4 mb-12 md:mb-20">
     {steps.map((item, index) => (
-
       // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
       <Card
         key={index}
@@ -81,8 +80,6 @@ const Pearl = () => (
         benefit from it.
       </p>
 
-      // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-      // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
       <SubsiteLink href={PEARL_YOU_URL}>
         Explore AI Agents available on Pearl
       </SubsiteLink>
@@ -98,7 +95,6 @@ const Pearl = () => (
 );
 
 export const WhatIsPearl = () => (
-
   <SectionWrapper>
     <Only10Teams />
     <DisplaySteps />

@@ -5,7 +5,6 @@ import { Link, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 export const CoownershipOfAi = () => (
-
   <SectionWrapper id="co-ownership-of-ai">
     <div className="mx-auto flex flex-col items-center">
       <div className="max-w-[670px] mx-auto flex flex-col gap-6 mb-20">
@@ -16,8 +15,6 @@ export const CoownershipOfAi = () => (
           </span>
         </h2>
         <p>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           With Olas&apos; <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink>,
           the first “AI Agent App Store”, any consumer with a laptop can use AI
           agents they truly own.
@@ -51,8 +48,6 @@ export const CoownershipOfAi = () => (
         className="mb-6"
       />
       <span className={TEXT_SMALL_CLASS}>
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-        // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
         <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink> and{' '}
         <Link href="/mech-marketplace">Mech Marketplace</Link> help power and
         scale Olas agent economies.

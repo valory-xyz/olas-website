@@ -5,9 +5,7 @@ interface PageWrapperProps {
   children: React.ReactNode;
 }
 
-const PageWrapper = ({
-  children
-}: PageWrapperProps) => (
+const PageWrapper = ({ children }: PageWrapperProps) => (
   <>
     <Header />
 

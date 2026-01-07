@@ -25,7 +25,6 @@ export const HowItWorks = () => {
   const [activeTab, setActiveTab] = useState('mechanism');
 
   return (
-
     <SectionWrapper>
       <div className="max-w-5xl mx-auto">
         <div className="place-items-center grid mb-10">
@@ -61,9 +60,9 @@ export const HowItWorks = () => {
             width={528}
             height={400}
           />
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-          // @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+          {/* @ts-expect-error TS(2322): Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message */}{' '}
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; className: string; }' i... Remove this comment to see the full error message */}{' '}
           <Card className="bg-slate-100 p-6 w-[320px] h-fit">
             <ol className="list-decimal ml-6">
               {(activeTab === 'mechanism' ? mechanismList : exampleList).map(

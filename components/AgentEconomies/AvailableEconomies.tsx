@@ -30,9 +30,7 @@ export const AvailableEconomies = () => {
         <div className="grid md:grid-cols-2 gap-6 mb-20">
           {agentEconomies.services.map((item) => (
             <Link key={item.title} href={item.link} className="w-full h-full">
-              // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-              // @ts-expect-error TS(2322): Type '{ children: Element[]; className: string; st... Remove this comment to see the full error message
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; st... Remove this comment to see the full error message
+              {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; st... Remove this comment to see the full error message */}
               <Card
                 className="agent-economy-card p-10 flex flex-col gap-y-8 place-items-center text-center hover:bg-white duration-150 w-full h-full"
                 style={{ '--gradient-color': item.gradientColor }}
@@ -52,9 +50,7 @@ export const AvailableEconomies = () => {
           ))}
         </div>
         <div className="max-sm:flex-col flex gap-4 w-fit mx-auto">
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-          // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}{' '}
           <Button
             variant="default"
             size="lg"
@@ -63,9 +59,7 @@ export const AvailableEconomies = () => {
           >
             <Link href="/agents">Explore Agents</Link>
           </Button>
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-          // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
+          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
           <Button
             variant="outline"
             size="lg"

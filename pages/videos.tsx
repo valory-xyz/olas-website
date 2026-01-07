@@ -17,7 +17,7 @@ const VideosPage = () => {
         <h1 className="mb-4 text-3xl lg:text-5xl tracking-tight font-extrabold text-gray-900 ">
           Videos & Podcasts
         </h1>
-        // @ts-expect-error TS(2322) FIXME: Type '{ isLoading: boolean; videos: any; isMain: t... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ isLoading: boolean; videos: any; isMain: t... Remove this comment to see the full error message */}{' '}
         <Videos isLoading={isLoading} videos={videos} isMain />
       </SectionWrapper>
     </PageWrapper>

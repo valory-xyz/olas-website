@@ -32,7 +32,6 @@ const steps = [
 ];
 
 export const HowItWorks = () => (
-
   <SectionWrapper id="how-it-works" customClasses="py-8 px-5 lg:px-0">
     <div className="max-w-[640px] gap-2 mx-auto">
       <h2 className={`${SUB_HEADER_CLASS}`}>How It Works</h2>
@@ -45,15 +44,15 @@ export const HowItWorks = () => (
       ))}
 
       <div className="flex flex-col md:flex-row gap-3">
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}{' '}
         <Button variant="default" size="lg" asChild className="mt-4 md:mt-10">
           <Link href="#events">Get Involved</Link>
         </Button>
-        // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-        // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
+        {/* @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}{' '}
+        {/* @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message */}{' '}
+        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}{' '}
         <Button variant="outline" size="lg" asChild className="mt-4 md:mt-10">
           <Link href="/build">Learn to Build</Link>
         </Button>

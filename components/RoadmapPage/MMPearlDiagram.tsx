@@ -29,9 +29,7 @@ const OlasToken = () => (
       height={78}
     />
     <p className="text-xl font-semibold">OLAS Token</p>
-    // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-    // @ts-expect-error TS(2322): Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
+    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message */}{' '}
     <Card className="activity-card-opaque p-4 w-[326px] text-center">
       OLAS bootstraps the{' '}
       <Link
@@ -58,8 +56,6 @@ export const MMPearlDiagram = () => (
         className="md:max-xl:ml-12"
       >
         <p className="mb-3">
-          // @ts-expect-error TS(2304) FIXME: Cannot find name 'childre'.
-          // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
           <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink> today is a world
           of AI agents owned by you — in one app.
         </p>

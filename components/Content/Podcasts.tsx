@@ -56,8 +56,6 @@ const Podcast = ({ podcast }) => {
           </span>
         </div>
         {watchLink && (
-
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; cla... Remove this comment to see the full error message
           <Button variant="outline" className="py-2 mt-auto mb-2">
             <a
               href={watchLink}
@@ -79,8 +77,6 @@ const Podcast = ({ podcast }) => {
           {links
             .filter((link) => !!link.url)
             .map((link, index) => (
-
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; variant:... Remove this comment to see the full error message
               <Button key={index} variant="outline" className="flex gap-1 px-1">
                 <Image
                   src={`/images/au-page/${link.imgSrc}`}
@@ -147,9 +143,6 @@ export const Podcasts = () => {
             Playlist with All Episodes
           </h4>
           <div className="flex flex-col md:flex-row gap-4">
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
             <Button variant="outline" size="lg" className="text-black" asChild>
               <a
                 href="https://www.youtube.com/playlist?list=PLoP4p0r-X94r1FA7yoOwRqvOjiYGSNQoj"
@@ -159,9 +152,6 @@ export const Podcasts = () => {
                 Watch on Youtube
               </a>
             </Button>
-            // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'.
-            // @ts-expect-error TS(2322): Type '{ children: Element; variant: string; size: ... Remove this comment to see the full error message
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message
             <Button variant="outline" size="lg" className="text-black" asChild>
               <a
                 href={`${X_OLAS_URL}/status/1926956504441065621`}

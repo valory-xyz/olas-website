@@ -15,7 +15,6 @@ const list = [
     replayLink:
       'https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs',
   },
-  ,
   {
     title: 'The Next Wave',
     imageSrc: 'token2049.png',
@@ -25,7 +24,6 @@ const list = [
     replayLink:
       'https://www.youtube.com/playlist?list=PLoP4p0r-X94r0Bgrt7PPQIR6vlzOIkg0N',
   },
-  ,
   {
     title: 'EthCC Cannes 🇫🇷',
     imageSrc: 'EthCC-Cannes.png',
@@ -138,7 +136,7 @@ export const CTA = () => (
             let iconsClassName = replayLink ? '' : 'text-purple-600';
 
             return (
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
+              // @ts-expect-error FIXME: Type '{ children: Element[]; key: number; classNam... Remove this comment to see the full error message
               <Card
                 key={index}
                 className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
