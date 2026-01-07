@@ -1,43 +1,13 @@
 import { useMemo } from 'react';
 
-import { getBabydegenMetrics } from 'common-util/api';
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { Link } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import { isNil } from 'lodash';
 import Image from 'next/image';
-
-const fetchMetrics = async () => {
-  try {
-    const babydegenMetrics = await getBabydegenMetrics();
-
-    return {
-      modius: {
-        latestUsdcApr: babydegenMetrics?.modius?.latestUsdcApr ?? null,
-        latestAvgApr: babydegenMetrics?.modius?.latestAvgApr ?? null,
-        latestEthApr: babydegenMetrics?.modius?.latestEthApr ?? null,
-        stakingAprCalculated:
-          babydegenMetrics?.modius?.stakingAprCalculated ?? null,
-        maxOlasApr: babydegenMetrics?.modius?.maxOlasApr ?? null,
-      },
-      optimus: {
-        latestUsdcApr: babydegenMetrics?.optimus?.latestUsdcApr ?? null,
-        latestEthApr: babydegenMetrics?.optimus?.latestEthApr ?? null,
-        maxOlasApr: babydegenMetrics?.optimus?.maxOlasApr ?? null,
-        stakingAprCalculated:
-          babydegenMetrics?.optimus?.stakingAprCalculated ?? null,
-      },
-      dailyActiveAgents: babydegenMetrics?.dailyActiveAgents ?? null,
-    };
-  } catch (error) {
-    console.error('Error fetching average Aprs:', error);
-    return { modius: null, optimus: null, dailyActiveAgents: null };
-  }
-};
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
@@ -102,9 +72,7 @@ const BabydegenMetricsBubble = ({
   );
 };
 
-export const BabydegenMetrics = () => {
-  const { data: metrics } = usePersistentSWR('BabydegenMetrics', fetchMetrics);
-
+export const BabydegenMetrics = ({ metrics }) => {
   return (
     <SectionWrapper id="stats">
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">

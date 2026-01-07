@@ -1,20 +1,11 @@
-import { getAgentsFunMetrics } from 'common-util/api';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { Link } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 
-const fetchMetrics = async () => {
-  const result = await getAgentsFunMetrics();
-  return { dailyActiveAgents: result?.dailyActiveAgents ?? null };
-};
-
-export const AgentsFunMetrics = () => {
-  const { data: metrics } = usePersistentSWR('AgentsFunMetrics', fetchMetrics);
-
+export const AgentsFunMetrics = ({ metrics }) => {
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
       <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">

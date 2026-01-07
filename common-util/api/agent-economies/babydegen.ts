@@ -1,10 +1,8 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
-  CACHE_DURATION_SECONDS,
   MODIUS_FIXED_END_DATE_UTC,
-  MODIUS_FIXED_OLAS_PRICE_USD,
   MODIUS_STAKING_CONTRACTS,
-  OPTIMUS_STAKING_CONTRACTS,
+  OPTIMUS_STAKING_CONTRACTS
 } from 'common-util/constants';
 import {
   BABYDEGEN_GRAPH_CLIENTS,
@@ -43,10 +41,10 @@ const fetchOlasApr = async () => {
       await Promise.allSettled([
         STAKING_GRAPH_CLIENTS.mode.request(
           stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
-        ),
+        ) as Promise<any>,
         STAKING_GRAPH_CLIENTS.optimism.request(
           stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
-        ),
+        ) as Promise<any>,
       ]);
 
     const modiusContracts =
@@ -89,12 +87,12 @@ const fetchOlasUsdPrice = async () => {
 
 const fetchModiusPopulationMetrics = async () => {
   try {
-    const result = await BABYDEGEN_GRAPH_CLIENTS.mode.request(
+    const result = (await BABYDEGEN_GRAPH_CLIENTS.mode.request(
       dailyBabydegenPopulationMetricsQuery({
         first: 7,
         timestampLte: MODIUS_FIXED_END_TIMESTAMP,
-      }),
-    );
+      } as any),
+    )) as any;
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
@@ -119,12 +117,12 @@ const fetchModiusPopulationMetrics = async () => {
 
 const fetchModeStakingSnapshots = async () => {
   try {
-    const result = await STAKING_GRAPH_CLIENTS.mode.request(
+    const result = (await STAKING_GRAPH_CLIENTS.mode.request(
       dailyStakingGlobalsSnapshotsQuery({
         first: 7,
         timestampLte: MODIUS_FIXED_END_TIMESTAMP,
-      }),
-    );
+      } as any),
+    )) as any;
     const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
       ? result.cumulativeDailyStakingGlobals
       : [];
@@ -144,9 +142,9 @@ const fetchModeStakingSnapshots = async () => {
 
 const fetchOptimusPopulationMetrics = async () => {
   try {
-    const result = await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
+    const result = (await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
       dailyBabydegenPopulationMetricsQuery({ first: 10 }),
-    );
+    )) as any;
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
@@ -214,9 +212,9 @@ const fetchModiusMetrics = async (maxOlasApr) => {
 
 const fetchOptimismStakingSnapshots = async () => {
   try {
-    const result = await STAKING_GRAPH_CLIENTS.optimism.request(
+    const result = (await STAKING_GRAPH_CLIENTS.optimism.request(
       dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
-    );
+    )) as any;
     const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
       ? result.cumulativeDailyStakingGlobals
       : [];
@@ -356,11 +354,11 @@ const fetchDailyAgentPerformance = async () => {
       REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }),
+      }) as Promise<any>,
       REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }),
+      }) as Promise<any>,
     ]);
 
     const modePerformances = modeResult.dailyAgentPerformances ?? [];
@@ -386,9 +384,9 @@ const fetchDailyAgentPerformance = async () => {
 
 const fetchModiusOlasApr = async () => {
   try {
-    const modiusContractsResult = await STAKING_GRAPH_CLIENTS.mode.request(
+    const modiusContractsResult = (await STAKING_GRAPH_CLIENTS.mode.request(
       stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
-    );
+    )) as any;
 
     const modiusContracts = modiusContractsResult?.stakingContracts;
     return modiusContracts && modiusContracts.length > 0
@@ -402,9 +400,9 @@ const fetchModiusOlasApr = async () => {
 
 const fetchOptimusOlasApr = async () => {
   try {
-    const optimusContractsResult = await STAKING_GRAPH_CLIENTS.optimism.request(
+    const optimusContractsResult = (await STAKING_GRAPH_CLIENTS.optimism.request(
       stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
-    );
+    )) as any;
 
     const optimusContracts = optimusContractsResult?.stakingContracts;
     return optimusContracts && optimusContracts.length > 0
@@ -482,34 +480,12 @@ const fetchAllAgentMetrics = async () => {
   }
 };
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  res.setHeader(
-    'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`,
-  );
-  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
-  );
-
+export const fetchBabyDegenMetrics = async () => {
   try {
     const latestMetrics = await fetchAllAgentMetrics();
-    if (latestMetrics) {
-      return res.status(200).json(latestMetrics.data);
-    }
-
-    return res
-      .status(404)
-      .json({ error: 'Not enough data traces found for one or more agents.' });
+    return latestMetrics?.data || null;
   } catch (error) {
-    console.error('Error in handler:', error);
-    return res
-      .status(500)
-      .json({ error: 'Failed to fetch agent performance values.' });
+    console.error('Error fetching all babydegen metrics:', error);
+    return null;
   }
-}
+};
