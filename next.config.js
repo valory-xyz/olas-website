@@ -20,6 +20,16 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/education-articles',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/poaa-whitepaper.pdf',
+        destination: '/whitepaper',
+        permanent: true,
+      },
+      {
         source: '/explore',
         destination: '/agents',
         permanent: true,
