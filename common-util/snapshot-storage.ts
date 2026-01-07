@@ -22,6 +22,7 @@ export const saveSnapshot = async ({
     addRandomSuffix: false,
     contentType: CONTENT_TYPE,
     allowOverwrite: true,
+    cacheControlMaxAge: 0, // Disables caching so that old content is not served
   });
 
   return blob.url;
@@ -44,7 +45,9 @@ export const getSnapshot = async ({
 
     if (!blob) return null;
 
-    const response = await fetch(blob.url);
+    const response = await fetch(`${blob.url}?t=${Date.now()}`, {
+      cache: 'no-store',
+    });
 
     if (!response.ok)
       throw new Error(`Failed to fetch snapshot from ${blob.url}`);
