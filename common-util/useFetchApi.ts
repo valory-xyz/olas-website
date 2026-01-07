@@ -48,15 +48,18 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
       thumbnail,
       video: videoUploaded,
     } = attributes || {};
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL &&
+      process.env.NEXT_PUBLIC_API_URL !== '__URL__'
+        ? process.env.NEXT_PUBLIC_API_URL
+        : '';
     const thumbnailUrl = get(thumbnail, 'data.attributes.url');
-    const imageFilename = thumbnailUrl
-      ? `${process.env.NEXT_PUBLIC_API_URL}${thumbnailUrl}`
-      : '';
+    const imageFilename =
+      thumbnailUrl && apiUrl ? `${apiUrl}${thumbnailUrl}` : '';
 
     const videoUploadedUrl = get(videoUploaded, 'data[0].attributes.url');
-    const video_url = videoUploadedUrl
-      ? `${process.env.NEXT_PUBLIC_API_URL}${videoUploadedUrl}`
-      : '';
+    const video_url =
+      videoUploadedUrl && apiUrl ? `${apiUrl}${videoUploadedUrl}` : '';
 
     return {
       id,

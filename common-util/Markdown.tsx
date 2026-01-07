@@ -15,9 +15,15 @@ const Markdown = ({ className, children }: MarkdownProps) => (
     remarkPlugins={[remarkGfm]}
     // @ts-expect-error TS(2322) FIXME: Type '(options?: void | Options) => void | Transfo... Remove this comment to see the full error message
     rehypePlugins={[rehypeRaw]}
-    urlTransform={(uri) =>
-      uri.startsWith('http') ? uri : `${process.env.NEXT_PUBLIC_API_URL}${uri}`
-    }
+    urlTransform={(uri) => {
+      if (uri.startsWith('http')) return uri;
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL &&
+        process.env.NEXT_PUBLIC_API_URL !== '__URL__'
+          ? process.env.NEXT_PUBLIC_API_URL
+          : '';
+      return apiUrl ? `${apiUrl}${uri}` : uri;
+    }}
     components={markdownComponents}
     className={className}
   >

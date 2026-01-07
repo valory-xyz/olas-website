@@ -22,7 +22,12 @@ const EducationArticle = () => {
 
   const { title, body: content, headerImage } = educationArticle.attributes;
   const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${imagePath}`;
+  const apiUrl =
+    process.env.NEXT_PUBLIC_API_URL &&
+    process.env.NEXT_PUBLIC_API_URL !== '__URL__'
+      ? process.env.NEXT_PUBLIC_API_URL
+      : '';
+  const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
   return (
     <PageWrapper>

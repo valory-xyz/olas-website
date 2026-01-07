@@ -6,7 +6,11 @@ import { useMemo, useState } from 'react';
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 
-const imageDomain = process.env.NEXT_PUBLIC_API_URL;
+const imageDomain =
+  process.env.NEXT_PUBLIC_API_URL &&
+  process.env.NEXT_PUBLIC_API_URL !== '__URL__'
+    ? process.env.NEXT_PUBLIC_API_URL
+    : '';
 
 interface ArticleProps {
   article: {
@@ -65,7 +69,7 @@ const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
       <article
         className={`${CARD_CLASS} h-full overflow-hidden border-t border-[#0000000d]`}
       >
-        {!imageError && (url || width || height) ? (
+        {!imageError && (url || width || height) && imageDomain ? (
           <div className="flex h-full">
             <Image
               src={imageDomain + url}
