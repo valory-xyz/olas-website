@@ -9,23 +9,21 @@ const LIMIT = 1000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
-
 const fetchContributeDaa7dAvg = async () => {
   try {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
-    const { dailyActivities: rows = [] } =
-      await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
-        where: {
-          dayTimestamp_gt: String(timestamp_gt),
-          dayTimestamp_lt: String(timestamp_lt),
-        },
-        orderBy: 'dayTimestamp',
-        orderDirection: 'desc',
-      });
+    const result = (await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
+      where: {
+        dayTimestamp_gt: String(timestamp_gt),
+        dayTimestamp_lt: String(timestamp_lt),
+      },
+      orderBy: 'dayTimestamp',
+      orderDirection: 'desc',
+    } as any)) as any;
 
+    const rows = result?.dailyActivities || [];
     const average = calculate7DayAverage(rows, 'count');
     return Math.floor(average);
   } catch (error) {
@@ -36,10 +34,10 @@ const fetchContributeDaa7dAvg = async () => {
 
 const fetchTotalOlasContributors = async () => {
   let skip = 0;
-  let allResults = [];
+  let allResults: any[] = [];
 
   try {
-    // Request all the users by pages
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const url = `${LEADERBOARD_BASE_URL}?skip=${skip}&limit=${LIMIT}`;
       const response = await fetch(url);
@@ -49,13 +47,11 @@ const fetchTotalOlasContributors = async () => {
         return null;
       }
 
-      const pageData = await response.json();
+      const pageData = (await response.json()) as any[];
 
       allResults = allResults.concat(pageData);
       skip += LIMIT;
 
-      // If the returned page is empty, or the amount of items is less
-      // than the limit, we're on the last page
       if (
         !Array.isArray(pageData) ||
         pageData.length === 0 ||
@@ -73,24 +69,23 @@ const fetchTotalOlasContributors = async () => {
 
     return activeUsers;
   } catch (error) {
-    console.error(LEADERBOARD_ERROR_MESSAGE);
+    console.error(LEADERBOARD_ERROR_MESSAGE, error);
     return null;
   }
 };
 
-const fetchAllContributeMetrics = async () => {
+export const fetchContributeMetrics = async () => {
   try {
     const [totalOlasContributorsResult, daaResult] = await Promise.allSettled([
       fetchTotalOlasContributors(),
       fetchContributeDaa7dAvg(),
     ]);
 
-    const metrics = {
+    const metrics: { totalOlasContributors: number | null; dailyActiveContributors: number | null } = {
       totalOlasContributors: null,
       dailyActiveContributors: null,
     };
 
-    // Process the results from Promise.allSettled
     if (totalOlasContributorsResult.status === 'fulfilled') {
       metrics.totalOlasContributors = totalOlasContributorsResult.value;
     } else {
@@ -106,44 +101,9 @@ const fetchAllContributeMetrics = async () => {
       console.error('Fetch DAA for contribute failed:', daaResult.reason);
     }
 
-    const data = {
-      data: metrics,
-      timestamp: Date.now(),
-    };
-
-    return data;
+    return metrics;
   } catch (error) {
-    console.error('Error fetching main metrics:', error);
+    console.error('Error fetching contribute metrics:', error);
     return null;
   }
 };
-
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  res.setHeader(
-    'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`,
-  );
-  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
-  );
-
-  try {
-    const latestMetrics = await fetchAllContributeMetrics();
-    if (latestMetrics) {
-      return res.status(200).json(latestMetrics);
-    }
-
-    return res.status(404).json({ error: 'Data is empty' });
-  } catch (error) {
-    console.error('Error in handler:', error);
-    return res
-      .status(500)
-      .json({ error: 'Failed to fetch contribute metrics.' });
-  }
-}

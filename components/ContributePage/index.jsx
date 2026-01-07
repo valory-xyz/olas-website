@@ -5,10 +5,10 @@ import Hero from './Hero';
 import { WhatContributorsAreSaying } from './WhatContributorsAreSaying';
 import { WhyBecomeAnOlasContributor } from './WhyBecomeAnOlasContributor';
 
-const ContributePage = () => (
+const ContributePage = ({ metrics }) => (
   <>
     <Hero />
-    <ContributeMetrics />
+    <ContributeMetrics metrics={metrics} />
     <GetOlas />
     <WhyBecomeAnOlasContributor />
     <WhatContributorsAreSaying />

@@ -1,30 +1,30 @@
-import { getBuildMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
-import { usePersistentSWR } from 'hooks';
+import { MetricsCard } from 'components/MetricsCard';
+import { useMemo } from 'react';
 
-export const BuildMetrics = () => {
-  const { data: metrics } = usePersistentSWR('buildMetrics', () =>
-    fetchMetrics([getBuildMetrics]),
+export const BuildMetrics = ({ metrics }) => {
+  const buildMetrics = metrics?.build;
+
+  const buildData = useMemo(
+    () => [
+      {
+        role: 'build',
+        displayMetrics: [
+          {
+            key: 'build',
+            role: 'build',
+            imageSrc: 'builders.png',
+            labelText: 'Total Olas Builders',
+            subText: 'Developing on the Olas Stack',
+            source: '/data#builders',
+            isExternal: false,
+            metric: buildMetrics?.totalBuilders,
+          },
+        ],
+      },
+    ],
+    [buildMetrics],
   );
-
-  const buildData = [
-    {
-      role: 'build',
-      displayMetrics: [
-        {
-          key: 'build',
-          role: 'build',
-          imageSrc: 'builders.png',
-          labelText: 'Total Olas Builders',
-          subText: 'Developing on the Olas Stack',
-          source: '/data#builders',
-          isExternal: false,
-          metric: metrics?.[0]?.data?.totalBuilders,
-        },
-      ],
-    },
-  ];
 
   return (
     <SectionWrapper id="stats" customClasses="border-b-1.5 py-16">

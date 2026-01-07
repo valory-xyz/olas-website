@@ -126,9 +126,9 @@ export const MechAgentMetrics = ({ metrics }) => {
         <p className="text-xl text-slate-700 mt-0 mb-4 mx-auto">
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
-          {typeof metrics?.totalTxs === 'number' ? (
+          {typeof metrics?.totalRequests === 'number' ? (
             <Link className="font-bold" href="/data#mech-globals" hideArrow>
-              {metrics.totalTxs.toLocaleString()}
+              {metrics.totalRequests.toLocaleString()}
             </Link>
           ) : (
             <span className="font-bold">--</span>
