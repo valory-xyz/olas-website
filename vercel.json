@@ -12,5 +12,11 @@
       "maxDuration": 300,
       "memory": 3009
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/refresh-metrics/main",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

@@ -13,9 +13,7 @@ import {
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
-
-const fetchDailyAgentPerformance = async () => {
+const fetchDailyAgentPerformance = async (): Promise<number | null> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
@@ -41,7 +39,7 @@ const fetchDailyAgentPerformance = async () => {
 
     const performanceByChains = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value.dailyActiveMultisigs_collection ?? []);
+      .map((result) => (result as PromiseFulfilledResult<any>).value.dailyActiveMultisigs_collection ?? []);
 
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
@@ -56,7 +54,7 @@ const fetchDailyAgentPerformance = async () => {
   }
 };
 
-const fetchTotalOlasStaked = async () => {
+const fetchTotalOlasStaked = async (): Promise<string | null> => {
   try {
     const results = await Promise.allSettled([
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
@@ -67,21 +65,21 @@ const fetchTotalOlasStaked = async () => {
 
     const olasStakedByChains = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value.global?.currentOlasStaked ?? '0');
+      .map((result) => (result as PromiseFulfilledResult<any>).value.global?.currentOlasStaked ?? '0');
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
       BigInt(0),
     );
 
-    return formatWeiNumber(`${olasStaked}`, { notation: 'standard' });
+    return formatWeiNumber(`${olasStaked}`, { notation: 'standard', maximumFractionDigits: 0 });
   } catch (error) {
     console.error('Error fetching OLAS staked:', error);
     return null;
   }
 };
 
-const fetchTransactions = async () => {
+const fetchTransactions = async (): Promise<string | null> => {
   try {
     const results = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(registryGlobalsQuery),
@@ -96,21 +94,21 @@ const fetchTransactions = async () => {
 
     const txCountByChains = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value.global?.txCount ?? '0');
+      .map((result) => (result as PromiseFulfilledResult<any>).value.global?.txCount ?? '0');
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
       BigInt(0),
     );
 
-    return formatEthNumber(`${transactions}`, { notation: 'standard' });
+    return formatEthNumber(`${transactions}`, { notation: 'standard', maximumFractionDigits: 0 });
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return null;
   }
 };
 
-const fetchTotalOperators = async () => {
+const fetchTotalOperators = async (): Promise<number | null> => {
   try {
     const results = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
@@ -125,7 +123,7 @@ const fetchTotalOperators = async () => {
 
     const operatorsByChains = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value.globals?.[0]?.totalOperators ?? 0);
+      .map((result) => (result as PromiseFulfilledResult<any>).value.globals?.[0]?.totalOperators ?? 0);
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
@@ -139,7 +137,7 @@ const fetchTotalOperators = async () => {
   }
 };
 
-const fetchAllAgentMetrics = async () => {
+export const fetchAllAgentMetrics = async (): Promise<{ data: any; timestamp: number } | null> => {
   try {
     const [
       dailyActiveAgentsResult,
@@ -212,6 +210,8 @@ const fetchAllAgentMetrics = async () => {
       );
     }
 
+
+
     const data = {
       data: metrics,
       timestamp: Date.now(),
@@ -223,31 +223,3 @@ const fetchAllAgentMetrics = async () => {
     return null;
   }
 };
-
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  res.setHeader(
-    'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`,
-  );
-  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
-  );
-
-  try {
-    const latestMetrics = await fetchAllAgentMetrics();
-    if (latestMetrics) {
-      return res.status(200).json(latestMetrics);
-    }
-
-    return res.status(404).json({ error: 'Data is empty' });
-  } catch (error) {
-    console.error('Error in handler:', error);
-    return res.status(500).json({ error: 'Failed to fetch main metrics.' });
-  }
-}

@@ -1,51 +1,13 @@
-import { getMainMetrics } from 'common-util/api';
-import { getTotalUniqueStakers } from 'common-util/api/dune';
 import { VALORY_GIT_URL } from 'common-util/constants';
 import { formatEthNumber } from 'common-util/numberFormatter';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink, Link } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
 const imgPath = '/images/homepage/activity/';
-
-const fetchMetrics = async () => {
-  const [mainMetrics, agents] = await Promise.allSettled([
-    getMainMetrics(),
-    getTotalUniqueStakers(),
-  ]);
-
-  return {
-    transactions:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.transactions
-        : null,
-    agents: agents.status === 'fulfilled' ? agents.value : null,
-    olasStaked:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.olasStaked
-        : null,
-    dailyActiveAgents:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.dailyActiveAgents
-        : null,
-    ataTransactions:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.ataTransactions
-        : null,
-    mechTurnover:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.mechFees
-        : null,
-    totalOperators:
-      mainMetrics.status === 'fulfilled'
-        ? mainMetrics.value?.data?.totalOperators
-        : null,
-  };
-};
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
@@ -265,15 +227,12 @@ const AgentsGrid = () => (
   </div>
 );
 
-export const Activity = () => {
-  const { data: metrics } = usePersistentSWR('tokenMetrics', fetchMetrics);
-
+export const Activity = ({ metrics }) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) return null;
 
     return {
       transactions: metrics.transactions?.toLocaleString() || '--',
-      agents: metrics.agents?.toLocaleString() || '--',
       olasStaked: metrics.olasStaked?.toLocaleString() || '--',
       dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
       mechTurnover: metrics.mechTurnover || '--',
@@ -312,7 +271,6 @@ export const Activity = () => {
             className="mt-12 ml-3 md:mr-4 w-[124px] h-[176px]"
           />
           <UsersCard
-            agents={processedMetrics?.agents}
             olasStaked={processedMetrics?.olasStaked}
             totalOperators={processedMetrics?.totalOperators}
           />
@@ -375,7 +333,6 @@ export const Activity = () => {
 
       <div className="flex flex-col md:hidden w-[90%] mx-auto">
         <UsersCard
-          agents={processedMetrics?.agents}
           olasStaked={processedMetrics?.olasStaked}
           totalOperators={processedMetrics?.totalOperators}
         />
