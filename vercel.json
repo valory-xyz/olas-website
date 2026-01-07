@@ -15,6 +15,10 @@
     "pages/api/refresh-metrics/other.ts": {
       "maxDuration": 300,
       "memory": 3009
+    },
+    "pages/api/refresh-metrics/main.ts": {
+      "maxDuration": 300,
+      "memory": 3009
     }
   },
   "crons": [
