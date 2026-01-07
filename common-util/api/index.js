@@ -150,37 +150,6 @@ export const getAgentsFunMetrics = async () => {
   }
 };
 
-// ----------- MECH -----------
-export const getMechMetrics = async () => {
-  try {
-    const response = await fetch('/api/mech-metrics');
-    if (!response.ok) {
-      throw new Error('Failed to fetch metrics');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching mech metrics:', error);
-    return null;
-  }
-};
-
-export const getFeeFlowMetrics = async () => {
-  try {
-    const response = await fetch('/api/mech-fees');
-    if (!response.ok) {
-      throw new Error('Failed to fetch mech fee flow metrics');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching mech fee flow metrics:', error);
-    return null;
-  }
-};
-
-
-
 export const getTotalTokenHolders = async () => {
   try {
     const response = await fetch('/api/token-holders');

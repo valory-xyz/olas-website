@@ -1,40 +1,15 @@
-import { getFeeFlowMetrics } from 'common-util/api';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
-import { usePersistentSWR, useWindowWidth } from 'hooks';
+import { useWindowWidth } from 'hooks';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Chart } from 'react-google-charts';
 
-const fetchMetrics = async () => {
-  try {
-    const result = await getFeeFlowMetrics();
-    if (!result) {
-      throw new Error('Failed to fetch metrics');
-    }
-    return {
-      totalFees: result.totalFees || 0,
-      claimedFees: result.claimedFees || 0,
-      unclaimedFees: result.unclaimedFees || 0,
-      recievedFees: result.recievedFees || 0,
-      olasBurned: result.olasBurned || 0,
-    };
-  } catch (error) {
-    console.error('Error in fetchMetrics:', error);
-    return null;
-  }
-};
-
 const formatToTooltip = ({ from, to }) =>
   `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
-export const FeeMetrics = () => {
-  const { data: metrics, error } = usePersistentSWR(
-    'FeeFlowMetrics',
-    fetchMetrics,
-  );
-
+export const FeeMetrics = ({ metrics }) => {
   const windowWidth = useWindowWidth();
 
   const chartSizes = useMemo(() => {
@@ -191,54 +166,48 @@ export const FeeMetrics = () => {
         </p>
       </div>
 
-      {error ? (
-        <div className="text-center py-8">Error loading metrics</div>
-      ) : (
-        <>
-          <div className="w-full max-w-full overflow-x-auto my-8">
-            <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
-              <Chart
-                chartType="Sankey"
-                width="100%"
-                height={chartSizes.chartHeight}
-                data={data}
-                options={options}
-              />
-            </div>
-          </div>
+      <div className="w-full max-w-full overflow-x-auto my-8">
+        <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
+          <Chart
+            chartType="Sankey"
+            width="100%"
+            height={chartSizes.chartHeight}
+            data={data}
+            options={options}
+          />
+        </div>
+      </div>
 
-          <div className="mx-auto grid grid-cols-2 xl:grid-cols-5 gap-0 w-full items-end mb-8 max-w-7xl mx-auto">
-            {Object.values(formerData).map((item, index) => {
-              let borderClassName = '';
-              if (index !== 0) borderClassName += 'xl:border-l-1.5';
-              if (index % 2 !== 0) borderClassName += ' border-l-1.5';
+      <div className="mx-auto grid grid-cols-2 xl:grid-cols-5 gap-0 w-full items-end mb-8 max-w-7xl mx-auto">
+        {Object.values(formerData).map((item, index) => {
+          let borderClassName = '';
+          if (index !== 0) borderClassName += 'xl:border-l-1.5';
+          if (index % 2 !== 0) borderClassName += ' border-l-1.5';
 
-              return (
-                <div
-                  key={item.id}
-                  className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
-                  style={{ color: item.color }}
-                >
-                  <div className="flex flex-col gap-2 mb-3">
-                    <div className="flex flex-wrap gap-2 text-black">
-                      <span className="text-base max-sm:text-sm font-semibold">
-                        {item.label}
-                      </span>
-                      <Popover>{item.description}</Popover>
-                    </div>
-                  </div>
-                  <Link
-                    href="/data#mech-turnover"
-                    className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
-                  >
-                    $ {Number(item.value.toFixed(2)).toLocaleString()}
-                  </Link>
+          return (
+            <div
+              key={item.id}
+              className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
+              style={{ color: item.color }}
+            >
+              <div className="flex flex-col gap-2 mb-3">
+                <div className="flex flex-wrap gap-2 text-black">
+                  <span className="text-base max-sm:text-sm font-semibold">
+                    {item.label}
+                  </span>
+                  <Popover>{item.description}</Popover>
                 </div>
-              );
-            })}
-          </div>
-        </>
-      )}
+              </div>
+              <Link
+                href="/data#mech-turnover"
+                className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
+              >
+                $ {Number(item.value.toFixed(2)).toLocaleString()}
+              </Link>
+            </div>
+          );
+        })}
+      </div>
     </SectionWrapper>
   );
 };

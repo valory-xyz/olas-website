@@ -1,22 +1,31 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
+import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import {
-  CACHE_DURATION_SECONDS,
-  MECH_AGENT_CLASSIFICATION,
-} from 'common-util/constants';
-import {
-  ATA_GRAPH_CLIENTS,
-  REGISTRY_GRAPH_CLIENTS,
+    ATA_GRAPH_CLIENTS,
+    REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
-  agentTxCountsQuery,
-  dailyMechAgentPerformancesQuery,
-  mechGlobalsTotalRequestsQuery,
-  mechMarketplaceRequestsPerAgentsQuery,
-  mechMarketplaceTotalRequestsQuery,
-  mechRequestsPerAgentOnchainsQuery,
+    agentTxCountsQuery,
+    dailyMechAgentPerformancesQuery,
+    mechGlobalsTotalRequestsQuery,
+    mechMarketplaceRequestsPerAgentsQuery,
+    mechMarketplaceTotalRequestsQuery,
+    mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
 import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+
+type GnosisResult = {
+  dailyAgentPerformances: {
+    activeMultisigCount: number;
+  }[];
+};
+
+type BaseResult = {
+  dailyAgentPerformances: {
+    activeMultisigCount: number;
+  }[];
+};
 
 const fetchDailyAgentPerformance = async () => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
@@ -27,13 +36,12 @@ const fetchDailyAgentPerformance = async () => {
       REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }),
+      }) as Promise<GnosisResult>,
       REGISTRY_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }),
+      }) as Promise<BaseResult>,
     ]);
-
     const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
     const basePerformances = baseResult.dailyAgentPerformances ?? [];
 
@@ -46,9 +54,7 @@ const fetchDailyAgentPerformance = async () => {
       'activeMultisigCount',
     );
 
-    const average = gnosisAverage + baseAverage;
-
-    return average;
+    return gnosisAverage + baseAverage;
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
     return null;
@@ -79,15 +85,21 @@ const fetchMechGlobals = async () => {
   }
 };
 
+type AgentPerformance = {
+  agentPerformances: {
+    txCount: number;
+  }[];
+};
+
 // Fetch agents.fun txCount from Base registry subgraph
 const fetchAgentsFunTxCount = async () => {
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
-    const result = await REGISTRY_GRAPH_CLIENTS.base.request(
-      agentTxCountsQuery,
-      {
+    const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(
+        agentTxCountsQuery,
+        {
         agentIds,
-      },
+        },
     );
     const rows = result?.agentPerformances || [];
     return rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
@@ -120,7 +132,7 @@ const fetchCategorizedRequestTotals = async () => {
 
     const combinedCounts = new Map();
 
-    const addCounts = (records) => {
+    const addCounts = (records: any) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
         if (!item?.id) return;
@@ -135,16 +147,19 @@ const fetchCategorizedRequestTotals = async () => {
     };
 
     if (mechResult.status === 'fulfilled') {
+      // @ts-ignore
       addCounts(mechResult.value?.requestsPerAgentOnchains);
     }
     if (marketplaceGnosisResult.status === 'fulfilled') {
+      // @ts-ignore
       addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
+      // @ts-ignore
       addCounts(marketplaceBaseResult.value?.requestsPerAgents);
     }
 
-    const sumCountsForAgentIds = (agentIds) =>
+    const sumCountsForAgentIds = (agentIds: any[]) =>
       agentIds.reduce(
         (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
         0,
@@ -161,21 +176,7 @@ const fetchCategorizedRequestTotals = async () => {
   }
 };
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  res.setHeader(
-    'Vercel-CDN-Cache-Control',
-    `s-maxage=${CACHE_DURATION_SECONDS}`,
-  );
-  res.setHeader('CDN-Cache-Control', `s-maxage=${CACHE_DURATION_SECONDS}`);
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_DURATION_SECONDS}, stale-while-revalidate=${CACHE_DURATION_SECONDS * 2}`,
-  );
-
+export const fetchMechMetrics = async () => {
   try {
     const [dailyActiveAgents, globals, categorized, agentsfunTxs] =
       await Promise.all([
@@ -193,30 +194,38 @@ export default async function handler(req, res) {
         agentsfunTxs: null,
         otherTxs: null,
       };
+
       if (categorized) {
+        // @ts-ignore
         const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
         const known =
+          // @ts-ignore
           predictTxs + contributeTxs + governatooorrTxs + (agentsfunTxs ?? 0);
         const otherTxs = Math.max(0, globals.requests - known);
         typeTotals = {
+          // @ts-ignore
           predictTxs,
+          // @ts-ignore
           contributeTxs,
+          // @ts-ignore
           governatooorrTxs,
+          // @ts-ignore
           agentsfunTxs,
+          // @ts-ignore
           otherTxs,
         };
       }
-      return res.status(200).json({
+
+      return {
         dailyActiveAgents,
         totalRequests: globals.requests,
         totalDeliveries: globals.deliveries,
         ...typeTotals,
-      });
+      };
     }
-
-    return res.status(404).json({ error: 'Error fetching mech metrics.' });
+    return null;
   } catch (error) {
-    console.error('Error in handler:', error);
-    return res.status(500).json({ error: 'Failed to fetch mech metrics.' });
+    console.error('Error fetching all mech metrics:', error);
+    return null;
   }
-}
+};

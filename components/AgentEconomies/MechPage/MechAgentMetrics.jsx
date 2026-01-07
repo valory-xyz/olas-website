@@ -1,38 +1,11 @@
-import { getMechMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
-const fetchMetrics = async () => {
-  const result = await getMechMetrics();
-  return {
-    dailyActiveAgents: result?.dailyActiveAgents ?? null,
-    totalTxs: result?.totalRequests ?? null,
-    totalDeliveries: result?.totalDeliveries ?? null,
-    predictTxs: result?.predictTxs ?? null,
-    contributeTxs: result?.contributeTxs ?? null,
-    governatooorrTxs: result?.governatooorrTxs ?? null,
-    agentsfunTxs: result?.agentsfunTxs ?? null,
-    otherTxs: result?.otherTxs ?? null,
-  };
-};
-
-const usePersistentSWR = (key, fetcher) =>
-  useSWR(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
-
-export const MechAgentMetrics = () => {
-  const { data: metrics } = usePersistentSWR(
-    'mechActivityMetrics',
-    fetchMetrics,
-  );
-
+export const MechAgentMetrics = ({ metrics }) => {
   const data = useMemo(
     () => [
       {
