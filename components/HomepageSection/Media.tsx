@@ -17,8 +17,12 @@ const Media = () => {
       <div className="max-w-screen-xl mx-auto flex flex-col gap-20">
         <Videos isLoading={isLoading} videos={videos} limit={LIMIT} />
         <div id="blog">
-          {/* @ts-expect-error TS(2322) FIXME: Type '{ limit: number; tagFilter: string; showSeeA... Remove this comment to see the full error message */}{' '}
-          <Articles limit={LIMIT} tagFilter="bonds" showSeeAll />
+          <Articles
+            limit={LIMIT}
+            showSeeAll
+            isMain={false}
+            displayFolders={false}
+          />
         </div>
       </div>
     </SectionWrapper>

@@ -113,8 +113,7 @@ export const UsagePieChart = ({
       <div className="flex flex-row gap-3 text-slate-400 mb-4">
         <p>Verify: </p>
         {verifyLinks.map((link, index) => (
-          // @ts-expect-error TS(2322) FIXME: Type '{ key: string; url: string; text: number; }'... Remove this comment to see the full error message
-          <Verify key={`Verify ${index}`} url={link} text={index + 1} />
+          <Verify key={`Verify ${index}`} url={link} text={String(index + 1)} />
         ))}
       </div>
       <p className="text-slate-500">

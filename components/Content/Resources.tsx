@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import resources from 'data/resources.json';
+import Link from 'next/link';
 import Resource from './Resource';
 
 interface ResourcesProps {
@@ -8,10 +8,14 @@ interface ResourcesProps {
 }
 
 const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
-  const sortedResources = resources.sort(
-    // @ts-expect-error TS(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
+  const sortedResources = resources.sort((a, b) => {
+    const dateA = (a as { date?: string }).date;
+    const dateB = (b as { date?: string }).date;
+    if (!dateA && !dateB) return 0;
+    if (!dateA) return 1;
+    if (!dateB) return -1;
+    return new Date(dateB).getTime() - new Date(dateA).getTime();
+  });
 
   let newResources = [];
 

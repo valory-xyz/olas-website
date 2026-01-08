@@ -49,14 +49,18 @@ export const GetInvolved = () => (
       </Tag>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {cards.map((card) => {
+        {cards.map((card, index) => {
+          const cardKey =
+            typeof card.title === 'string' ? card.title : `card-${index}`;
+          const cardAlt =
+            typeof card.title === 'string' ? card.title : 'Card image';
+
           const cardContent = (
             <Card className="relative activity-card-opaque flex items-center hover:bg-white duration-150 hover:cursor-pointer py-4 px-6 h-[136px] md:max-w-md w-full">
               <span className="text-lg font-medium">{card.title}</span>
               <Image
                 src={card.image}
-                // @ts-expect-error TS(2322) FIXME: Type 'string | Element' is not assignable to type ... Remove this comment to see the full error message
-                alt={card.title}
+                alt={cardAlt}
                 height={120}
                 width={120}
                 className="absolute bottom-0 right-0"
@@ -65,13 +69,11 @@ export const GetInvolved = () => (
           );
 
           return card.isExternal ? (
-            // @ts-expect-error TS(2322) FIXME: Type 'string | Element' is not assignable to type ... Remove this comment to see the full error message
-            <a key={card.title} href={card.link} rel="noopener noreferrer">
+            <a key={cardKey} href={card.link} rel="noopener noreferrer">
               {cardContent}
             </a>
           ) : (
-            // @ts-expect-error TS(2322) FIXME: Type 'string | Element' is not assignable to type ... Remove this comment to see the full error message
-            <Link key={card.title} href={card.link}>
+            <Link key={cardKey} href={card.link}>
               {cardContent}
             </Link>
           );

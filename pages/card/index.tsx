@@ -65,8 +65,8 @@ const ImageCarousel = ({
           alt="Olas community card"
           fill
           sizes={sizes}
-          // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type 'Placehold... Remove this comment to see the full error message
-          placeholder={placeholder}
+          placeholder="blur"
+          blurDataURL={placeholder}
           className={
             'object-cover absolute inset-0 will-change-opacity transition-opacity duration-1000 ease-out ' +
             (i === activeIndex ? 'opacity-100' : 'opacity-0')
@@ -270,7 +270,7 @@ const CommunityCardClient = () => {
         return;
       }
 
-      const img = await new Promise((resolve, reject) => {
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
         const image = new window.Image();
         image.crossOrigin = 'anonymous';
         image.onload = () => resolve(image);
@@ -280,10 +280,8 @@ const CommunityCardClient = () => {
 
       const canvas = document.createElement('canvas');
 
-      // @ts-expect-error TS(2339) FIXME: Property 'naturalWidth' does not exist on type 'un... Remove this comment to see the full error message
       canvas.width = img.naturalWidth || img.width;
 
-      // @ts-expect-error TS(2339) FIXME: Property 'naturalHeight' does not exist on type 'u... Remove this comment to see the full error message
       canvas.height = img.naturalHeight || img.height;
       const ctx = canvas.getContext('2d');
       if (!ctx) {
@@ -294,10 +292,9 @@ const CommunityCardClient = () => {
         return;
       }
 
-      // @ts-expect-error TS(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
       ctx.drawImage(img, 0, 0);
 
-      const pngBlob = await new Promise((resolve, reject) => {
+      const pngBlob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -311,7 +308,6 @@ const CommunityCardClient = () => {
         );
       });
 
-      // @ts-expect-error TS(2322) FIXME: Type 'unknown' is not assignable to type 'string |... Remove this comment to see the full error message
       const item = new window.ClipboardItem({ 'image/png': pngBlob });
       await navigator.clipboard.write([item]);
       setToast({
@@ -354,7 +350,6 @@ const CommunityCardClient = () => {
               <StepLabel label="Step 1" />
               <div className="text-base">Generate the card you like.</div>
               <div className="mt-auto pt-4 md:pt-6">
-                {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message */}
                 <Button onClick={shuffle} variant="outline">
                   <Shuffle className="mr-2 h-4 w-4" />
                   Shuffle Card
@@ -371,13 +366,11 @@ const CommunityCardClient = () => {
               <div className="mt-auto pt-6">
                 <div className="flex flex-row gap-2">
                   {canCopy && (
-                    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message
                     <Button onClick={copyImageToClipboard} variant="outline">
                       <LucideCopy className="mr-2 h-4 w-4" />
                       Copy
                     </Button>
                   )}
-                  {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; onClick: (... Remove this comment to see the full error message */}
                   <Button onClick={download} variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Download

@@ -93,7 +93,6 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
     [metrics],
   );
 
-  // @ts-expect-error TS(2322) FIXME: Type '{ metrics: ({ id: string; subText: Element; ... Remove this comment to see the full error message
   return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
@@ -170,30 +169,30 @@ const TransactionsBubble = ({ metrics, image, title }) => {
     [metrics],
   );
 
-  // @ts-expect-error TS(2322) FIXME: Type '{ metrics: { id: string; subText: Element; v... Remove this comment to see the full error message
   return <MetricsBubble metrics={data} image={image} title={title} />;
 };
 
 export const Activity = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: predictMetrics } = usePersistentSWR(
     'predictionMetrics',
     getPredictMetrics,
   );
 
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: roi } = usePersistentSWR('predictRoi', getPredictRoi);
 
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: successRateData } = usePersistentSWR(
     'predictSuccessRate',
     getPredictSuccessRate,
   );
 
   const metrics = useMemo(() => {
-    const base = processPredictMetrics(predictMetrics) || {};
+    const base = processPredictMetrics(predictMetrics);
     return {
-      ...base,
+      dailyActiveAgents: base?.dailyActiveAgents ?? null,
+      traderTxs: base?.traderTxs ?? null,
+      mechTxs: base?.mechTxs ?? null,
+      marketCreatorTxs: base?.marketCreatorTxs ?? null,
+      apr: base?.apr ?? null,
       partialRoi: roi?.partialRoi ?? null,
       finalRoi: roi?.finalRoi ?? null,
       successRate: successRateData?.successRate ?? null,
@@ -213,18 +212,11 @@ export const Activity = () => {
             />
             Predict Agent Economy
           </div>
-          {/* @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message */}
           {metrics?.dailyActiveAgents ? (
             <Link
               className="font-extrabold text-6xl"
               href="/data#predict-daily-active-agents"
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; className: string; href: ... Remove this comment to see the full error message
-              hideArrow
             >
-              {/* @ts-expect-error TS(2339): Property &apos;dailyActiveAgents&apos; does
-              not exist on typ... */}{' '}
-              Remove this comment to see the full error
-              {/* @ts-expect-error TS(2339) FIXME: Property 'dailyActiveAgents' does not exist on typ... Remove this comment to see the full error message */}
               {metrics.dailyActiveAgents}
             </Link>
           ) : (
@@ -235,12 +227,15 @@ export const Activity = () => {
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        {/* @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message */}{' '}
-        <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
-        {/* @ts-expect-error TS(2741) FIXME: Property 'image' is missing in type '{ title: stri... Remove this comment to see the full error message */}{' '}
+        <AgentPerformanceBubble
+          title="Agent Performance"
+          metrics={metrics}
+          image="/images/predict-page/agent-performance.png"
+        />
         <TransactionsBubble
           title="Transactions by Agent Type"
           metrics={metrics}
+          image="/images/predict-page/transactions.png"
         />
       </div>
     </SectionWrapper>

@@ -14,7 +14,6 @@ const ways = [
     imageSrc: '/images/build-page/hire.png',
     description: <>Make use of the available mechs on Mech Marketplace.</>,
     link: (
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
       <SubsiteLink href={`${BUILD_URL}/hire`} className="mt-4">
         Hire an agent
       </SubsiteLink>

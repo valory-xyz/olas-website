@@ -40,9 +40,16 @@ const fetchDailyAgentPerformance = async () => {
     ]);
 
     const performanceByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-      .map((result) => result.value.dailyActiveMultisigs_collection ?? []);
+      .filter(
+        (result): result is PromiseFulfilledResult<unknown> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => {
+        const value = result.value as {
+          dailyActiveMultisigs_collection?: unknown[];
+        };
+        return value.dailyActiveMultisigs_collection ?? [];
+      });
 
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
@@ -67,16 +74,22 @@ const fetchTotalOlasStaked = async () => {
     ]);
 
     const olasStakedByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-      .map((result) => result.value.global?.currentOlasStaked ?? '0');
+      .filter(
+        (result): result is PromiseFulfilledResult<unknown> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => {
+        const value = result.value as {
+          global?: { currentOlasStaked?: string };
+        };
+        return value.global?.currentOlasStaked ?? '0';
+      });
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
       BigInt(0),
     );
 
-    // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; }' is not as... Remove this comment to see the full error message
     return formatWeiNumber(`${olasStaked}`, { notation: 'standard' });
   } catch (error) {
     console.error('Error fetching OLAS staked:', error);
@@ -98,16 +111,20 @@ const fetchTransactions = async () => {
     ]);
 
     const txCountByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-      .map((result) => result.value.global?.txCount ?? '0');
+      .filter(
+        (result): result is PromiseFulfilledResult<unknown> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => {
+        const value = result.value as { global?: { txCount?: string } };
+        return value.global?.txCount ?? '0';
+      });
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
       BigInt(0),
     );
 
-    // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; }' is not as... Remove this comment to see the full error message
     return formatEthNumber(`${transactions}`, { notation: 'standard' });
   } catch (error) {
     console.error('Error fetching transactions:', error);
@@ -129,9 +146,16 @@ const fetchTotalOperators = async () => {
     ]);
 
     const operatorsByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-      .map((result) => result.value.globals?.[0]?.totalOperators ?? 0);
+      .filter(
+        (result): result is PromiseFulfilledResult<unknown> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => {
+        const value = result.value as {
+          globals?: Array<{ totalOperators?: number }>;
+        };
+        return value.globals?.[0]?.totalOperators ?? 0;
+      });
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,

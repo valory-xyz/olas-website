@@ -60,11 +60,17 @@ const Supply = () => {
               .getActualInflationForYear(i)
               .call()
               .then((result) => {
-                newInflationForYear[i] = web3.utils.fromWei(
-                  // @ts-expect-error TS(2339) FIXME: Property 'toString' does not exist on type 'void |... Remove this comment to see the full error message
-                  result.toString(),
-                  'ether',
-                );
+                const resultValue = result as unknown;
+                if (
+                  typeof resultValue === 'string' ||
+                  typeof resultValue === 'number' ||
+                  typeof resultValue === 'bigint'
+                ) {
+                  newInflationForYear[i] = web3.utils.fromWei(
+                    String(resultValue),
+                    'ether',
+                  );
+                }
                 return result;
               })
               .catch((error) => {
@@ -110,8 +116,9 @@ const Supply = () => {
         });
 
         // emissions
-        const emissionsData =
-          await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(emissionsQuery);
+        const emissionsData = (await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(
+          emissionsQuery,
+        )) as { epoches?: Array<{ counter?: number; [key: string]: unknown }> };
 
         // Fetch rewards updates from all staking subgraphs
         const stakingRewardsPromises = Object.entries(
@@ -119,8 +126,7 @@ const Supply = () => {
         ).map(async ([chain, client]) => {
           try {
             const rewards = await client.request(
-              // @ts-expect-error TS(2339) FIXME: Property 'epoches' does not exist on type 'unknown... Remove this comment to see the full error message
-              rewardUpdates(emissionsData.epoches),
+              rewardUpdates(emissionsData.epoches || []),
             );
             return { chain, rewards };
           } catch (error) {
@@ -133,8 +139,7 @@ const Supply = () => {
           stakingRewardsPromises,
         );
 
-        // @ts-expect-error TS(2339) FIXME: Property 'epoches' does not exist on type 'unknown... Remove this comment to see the full error message
-        const emissions = [...emissionsData.epoches].map((epoch, index) => {
+        const emissions = (emissionsData.epoches || []).map((epoch, index) => {
           let totalClaimableStakingRewards = BigInt(0);
           let totalClaimedStakingRewards = BigInt(0);
 
@@ -185,8 +190,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl font-bold">Token Supply</h2>
             </div>
-            {/* @ts-expect-error TS(2322) FIXME: Type '{ epoch: any; split: {}; loading: boolean; }... Remove this comment to see the full error message */}
-            <SupplyPieChart epoch={epoch} split={split} loading={loading} />
+            <SupplyPieChart />
           </div>
 
           <div

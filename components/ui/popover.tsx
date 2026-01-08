@@ -6,8 +6,9 @@ interface PopoverProps {
   children: React.ReactNode;
   text?: string;
   className?: string;
-  align?: string;
-  side?: string;
+  align?: 'start' | 'center' | 'end';
+  side?: 'top' | 'right' | 'bottom' | 'left';
+  contentClassName?: string;
 }
 
 export const Popover = ({
@@ -16,7 +17,6 @@ export const Popover = ({
   align,
   side,
   className,
-  // @ts-expect-error TS(2339) FIXME: Property 'contentClassName' does not exist on type... Remove this comment to see the full error message
   contentClassName,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
@@ -38,11 +38,9 @@ export const Popover = ({
           <InfoIcon />
         </Tooltip.Trigger>
         <Tooltip.Content
-          // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"top" | "... Remove this comment to see the full error message
           side={side}
-          // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"center" ... Remove this comment to see the full error message
           align={align}
-          className={`p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1 ${contentClassName}`}
+          className={`p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1 ${contentClassName || ''}`}
         >
           <p>{children}</p>
         </Tooltip.Content>

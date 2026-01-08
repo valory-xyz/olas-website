@@ -37,7 +37,6 @@ const Explore = () => (
 );
 
 const Hero = () => (
-  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message */}
   <HeroSection
     HeroImage={HeroImage}
     pageName="AGENTS.FUN AGENTS"
@@ -94,7 +93,6 @@ const TheFuture = () => (
       <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
         Benefits
       </h2>
-      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message       */}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
@@ -149,7 +147,6 @@ const PickYourAgent = () => (
     <div className="max-w-[700px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
         <Card
-          // @ts-expect-error TS(2322) FIXME: Type '{ anchor: string; title: string; description: string; imgSrc: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
           id={agent.anchor}
           key={agent.title}
           className="flex items-start gap-8 p-8"
@@ -227,14 +224,13 @@ const Faq = () => (
 
       {faqList.map((faq, faqIndex) => (
         <div
-          // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
-          key={faq.name}
+          key={faqIndex}
           className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
         >
-          {/* @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message */}
-          {faq.name && (
-            // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: ({... Remove this comment to see the full error message
-            <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
+          {'name' in faq && faq.name && (
+            <div className="text-2xl font-semibold mt-2 mb-4">
+              {String(faq.name)}
+            </div>
           )}
 
           {faq.list.map((eachFaq, index) => (

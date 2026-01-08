@@ -14,7 +14,12 @@ export const H1 = ({ children, className }: H1Props) => (
   </h1>
 );
 
-export const H2 = ({ children, className }) => (
+interface H2Props {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const H2 = ({ children, className = '' }: H2Props) => (
   <h2
     className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
   >
@@ -74,14 +79,13 @@ ExternalLink.defaultProps = { className: null, hideArrow: false };
 interface SubsiteLinkProps {
   children: React.ReactNode;
   href: string;
-  class?: string;
+  className?: string;
   isInButton?: boolean;
   isExternal?: boolean;
 }
 
 export const SubsiteLink = ({
   children,
-  // @ts-expect-error TS(2339) FIXME: Property 'className' does not exist on type 'Subsi... Remove this comment to see the full error message
   className,
   href,
   isInButton = false,
@@ -107,6 +111,7 @@ interface LinkProps {
   children: React.ReactNode;
   href: string | object;
   className?: string;
+  hideArrow?: boolean;
 }
 
 export const Link = ({ children, className, href }: LinkProps) => (

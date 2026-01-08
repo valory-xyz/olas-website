@@ -65,8 +65,7 @@ export const EmissionScheduleChart = ({
           <span className="text-gradient">
             {loading
               ? '--'
-              : // @ts-expect-error TS(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                dayjs.unix(timeLaunch?.toString()).format("DD MMM 'YY")}
+              : dayjs.unix(Number(timeLaunch)).format("DD MMM 'YY")}
           </span>
         </div>
         <Verify
@@ -117,9 +116,7 @@ export const EmissionScheduleChart = ({
                     display: true,
                     text: 'Year',
                   },
-
-                  // @ts-expect-error TS(2322) FIXME: Type '{ title: { display: true; text: string; }; g... Remove this comment to see the full error message
-                  gridLines: {
+                  grid: {
                     color: 'white',
                   },
                 },
@@ -132,9 +129,9 @@ export const EmissionScheduleChart = ({
                   ticks: {
                     callback(value) {
                       // Format y-axis numbers as 20m, not 20,000,000
-
-                      // @ts-expect-error TS(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
-                      return `${value / 1000000}m`;
+                      const numValue =
+                        typeof value === 'number' ? value : Number(value);
+                      return `${numValue / 1000000}m`;
                     },
                   },
                 },

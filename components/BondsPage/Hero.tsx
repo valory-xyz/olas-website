@@ -32,7 +32,6 @@ const StartBonding = () => (
 );
 
 export const Hero = () => (
-  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message
   <HeroSection
     HeroImage={HeroImage}
     pageName="OLAS BOND"

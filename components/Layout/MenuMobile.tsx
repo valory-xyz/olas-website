@@ -13,7 +13,7 @@ const linkClassName =
 const subLinkClassName =
   'flex w-full pl-14 pr-6 py-3 focus:bg-accent border-t text-slate-700 focus:text-black focus:outline-none';
 
-const useToggle = () => {
+const useToggle = (): [boolean, () => void] => {
   const [state, setState] = useState(false);
 
   const toggle = () => {
@@ -23,18 +23,23 @@ const useToggle = () => {
   return [state, toggle];
 };
 
-export const MenuMobile = ({ className }) => {
+interface MenuMobileProps {
+  className?: string;
+}
+
+export const MenuMobile = ({ className }: MenuMobileProps) => {
   const [isOpened, toggleOpen] = useToggle();
   const [isSubmenuExpanded, toggleSubmenuExpand] = useToggle();
 
   return (
-    // @ts-expect-error TS(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message
-    <NavigationMenu.Root className={className} value={isOpened}>
+    <NavigationMenu.Root
+      className={className}
+      value={isOpened ? 'open' : 'closed'}
+    >
       <NavigationMenu.List>
         <NavigationMenu.Item>
           <NavigationMenu.Trigger
             className="flex font-medium items-center group"
-            // @ts-expect-error TS(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message
             onClick={toggleOpen}
           >
             {isOpened ? 'Close' : 'Menu'}
@@ -49,8 +54,7 @@ export const MenuMobile = ({ className }) => {
             )}
           </NavigationMenu.Trigger>
 
-          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; value: boolean | (() ... Remove this comment to see the full error message */}
-          <NavigationMenu.Content value={isOpened}>
+          <NavigationMenu.Content>
             <NavigationMenu.Sub
               value={isSubmenuExpanded ? 'group' : null}
               className="relative bg-white z-10"
@@ -58,16 +62,21 @@ export const MenuMobile = ({ className }) => {
               <NavigationMenu.List className="max-h-[480px] overflow-scroll">
                 {MENU_DATA.map((item, index) => {
                   if (item.link) {
-                    // @ts-expect-error TS(2339) FIXME: Property 'isExternal' does not exist on type '{ li... Remove this comment to see the full error message
-                    const LinkTag = item.isExternal ? 'a' : Link;
+                    const menuItem = item as {
+                      link: string;
+                      text: string;
+                      isExternal?: boolean;
+                    };
+                    const LinkTag = menuItem.isExternal ? 'a' : Link;
                     return (
                       <NavigationMenu.Item key={index}>
-                        {/* @ts-expect-error TS(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message */}
                         <NavigationMenu.Trigger asChild onClick={toggleOpen}>
-                          <LinkTag href={item.link} className={linkClassName}>
-                            {item.text}
-                            {/* @ts-expect-error TS(2339) FIXME: Property 'isExternal' does not exist on type '{ li... Remove this comment to see the full error message */}
-                            {item.isExternal && (
+                          <LinkTag
+                            href={menuItem.link}
+                            className={linkClassName}
+                          >
+                            {menuItem.text}
+                            {menuItem.isExternal && (
                               <MoveUpRight size={24} aria-hidden="true" />
                             )}
                           </LinkTag>
@@ -80,7 +89,6 @@ export const MenuMobile = ({ className }) => {
                       <NavigationMenu.Item value="group" key={index}>
                         <NavigationMenu.Trigger
                           className={cn(linkClassName, 'group')}
-                          // @ts-expect-error TS(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message
                           onClick={toggleSubmenuExpand}
                         >
                           {item.text}
@@ -96,7 +104,6 @@ export const MenuMobile = ({ className }) => {
                               <li key={component.title}>
                                 <NavigationMenu.Link
                                   asChild
-                                  // @ts-expect-error TS(2322) FIXME: Type 'boolean | (() => void)' is not assignable to... Remove this comment to see the full error message
                                   onClick={toggleOpen}
                                 >
                                   <Link
@@ -123,8 +130,6 @@ export const MenuMobile = ({ className }) => {
                     size="lg"
                     asChild
                     className="w-full"
-                    // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
-                    onClick={toggleOpen}
                   >
                     <SubsiteLink href={PEARL_YOU_URL} isInButton>
                       Own Your Agent

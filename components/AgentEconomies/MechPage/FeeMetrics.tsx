@@ -30,7 +30,6 @@ const formatToTooltip = ({ from, to }) =>
   `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
 export const FeeMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics, error } = usePersistentSWR(
     'FeeFlowMetrics',
     fetchMetrics,

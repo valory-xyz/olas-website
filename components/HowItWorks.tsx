@@ -2,19 +2,31 @@ import { SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
 import Image from 'next/image';
 import SectionWrapper from './Layout/SectionWrapper';
 
+interface HowItWorksProps {
+  headerText: string;
+  headerClassName?: string;
+  description?: React.ReactNode;
+  imgFolder: string;
+  list: Array<{
+    title: string;
+    description: string | React.ReactNode;
+    imgSrc: string;
+  }>;
+}
+
 export const HowItWorks = ({
   headerText,
   headerClassName,
   description,
   imgFolder,
   list,
-}) => (
+}: HowItWorksProps) => (
   <SectionWrapper
     id="how-it-works"
     customClasses="max-w-4xl m-6 md:m-16 lg:mx-auto lg:pb-16"
   >
     <div className="mb-16">
-      <h2 className={`${SUB_HEADER_CLASS} mb-6 ${headerClassName}`}>
+      <h2 className={`${SUB_HEADER_CLASS} mb-6 ${headerClassName || ''}`}>
         {headerText}
       </h2>
       {description && <div>{description}</div>}

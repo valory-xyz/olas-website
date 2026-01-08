@@ -382,23 +382,11 @@ const faqList = [
               . veOLAS is the governance token, which anyone can get by locking
               OLAS to participate in governance. Governance proposals can be
               found for off-chain votes on Snapshot{' '}
-              <ExternalLink
-                href={SNAPSHOT_URL}
-                className="text-purple-600"
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink href={SNAPSHOT_URL} className="text-purple-600">
                 here
               </ExternalLink>{' '}
               and for on-chain votes{' '}
-              <ExternalLink
-                href={SNAPSHOT_URL}
-                className="text-purple-600"
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink href={SNAPSHOT_URL} className="text-purple-600">
                 here
               </ExternalLink>
               . buOLAS is a vesting contract for the founding members.

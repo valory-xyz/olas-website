@@ -138,8 +138,6 @@ export const MechAgentMetrics = () => {
             <Link
               className="font-extrabold text-6xl"
               href="/data#mech-daily-active-agents"
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
-              hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
             </Link>
@@ -155,8 +153,7 @@ export const MechAgentMetrics = () => {
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
           {typeof metrics?.totalTxs === 'number' ? (
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: any; className: string; href: st... Remove this comment to see the full error message
-            <Link className="font-bold" href="/data#mech-globals" hideArrow>
+            <Link className="font-bold" href="/data#mech-globals">
               {metrics.totalTxs.toLocaleString()}
             </Link>
           ) : (
@@ -164,8 +161,7 @@ export const MechAgentMetrics = () => {
           )}{' '}
           requests and{' '}
           {typeof metrics?.totalDeliveries === 'number' ? (
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: any; className: string; href: st... Remove this comment to see the full error message
-            <Link className="font-bold" href="/data#mech-globals" hideArrow>
+            <Link className="font-bold" href="/data#mech-globals">
               {metrics.totalDeliveries.toLocaleString()}
             </Link>
           ) : (
@@ -187,10 +183,7 @@ export const MechAgentMetrics = () => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: any; href: string; hideArrow: tr... Remove this comment to see the full error message
-                <Link href="/data#mech-requests-categorized" hideArrow>
-                  {item.value}
-                </Link>
+                <Link href="/data#mech-requests-categorized">{item.value}</Link>
               );
             };
 

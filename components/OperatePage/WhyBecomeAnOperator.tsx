@@ -49,7 +49,6 @@ export const WhyBecomeAnOperator = () => (
       >
         Why become an Olas Operator?
       </h2>
-      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; icon: Element; desc: strin... Remove this comment to see the full error message */}{' '}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>

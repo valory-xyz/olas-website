@@ -23,8 +23,6 @@ const steps = [
         As a Bonder, you exchange your LP tokens for discounted OLAS to help the
         Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
         tokens to your chosen{' '}
-        {/* @ts-expect-error TS(2304) FIXME: Cannot find
-        name &apos;childre&apos;. */}{' '}
         <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>,
         exchanging your LP tokens for discounted OLAS, available after the
         predetermined vesting period.

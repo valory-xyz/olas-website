@@ -58,8 +58,8 @@ export const getEmissionsChartOptions = (points) => ({
   interaction: {
     intersect: false,
     includeInvisible: true,
-    mode: 'nearest',
-    axis: 'x',
+    mode: 'nearest' as const,
+    axis: 'x' as const,
   },
   plugins: {
     tooltip: {

@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 const transition = 'transition-all duration-300 ease-in-out';
 
 interface AccordionProps {
-  label: string;
+  label: string | React.ReactNode;
   defaultOpen?: boolean;
   titleClass?: string;
   dropdownClass?: string;
+  customClass?: string;
   children: React.ReactNode;
 }
 
@@ -16,11 +17,13 @@ export const Accordion = ({
   defaultOpen = true,
   titleClass,
   dropdownClass,
+  customClass,
   children,
 }: AccordionProps) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
   const buttonClass =
     titleClass ||
+    customClass ||
     'flex gap-3 items-center justify-between w-full px-6 py-4 font-medium bg-gray-100 border border-gray-200 hover:bg-gray-100';
   const divClass =
     dropdownClass ||
@@ -39,7 +42,11 @@ export const Accordion = ({
         `}
         aria-expanded={accordionOpen ? 'true' : 'false'}
       >
-        <span className="text-lg">{label}</span>
+        {typeof label === 'string' ? (
+          <span className="text-lg">{label}</span>
+        ) : (
+          <div className="text-lg">{label}</div>
+        )}
         <div>
           <ChevronDown
             className={`transform origin-center transition duration-100 ease-out ${accordionOpen && '!rotate-180'}`}

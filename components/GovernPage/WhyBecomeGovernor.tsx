@@ -41,7 +41,6 @@ export const WhyBecomeGovernor = () => (
       >
         Why become an Olas Governor?
       </h2>
-      {/* @ts-expect-error TS(2322) FIXME: Type '({ title: string; desc: string; } | { title:... Remove this comment to see the full error message */}{' '}
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>

@@ -16,7 +16,6 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
           <SubsiteLink href={PEARL_YOU_URL} className="break-words">
             Pearl.you
           </SubsiteLink>{' '}
@@ -82,7 +81,6 @@ const list = [
       </>
     ),
     button: (
-      // {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "outline"; siz... Remove this comment to see the full error message */}
       <Button
         variant="outline"
         size="xl"

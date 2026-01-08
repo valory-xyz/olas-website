@@ -58,7 +58,6 @@ export const GetStarted = () => (
 
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-10">
-          {/* // @ts-expect-error TS(2304) FIXME: Cannot find name 'children'. */}
           <SubsiteLink href={STACK_URL} isInButton>
             Start Building Now
           </SubsiteLink>

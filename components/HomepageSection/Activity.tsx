@@ -49,7 +49,15 @@ const fetchMetrics = async () => {
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
-const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
+interface OlasIsBurnedArrowProps {
+  pointsDown?: boolean;
+  className?: string;
+}
+
+const OlasIsBurnedArrow = ({
+  pointsDown = false,
+  className,
+}: OlasIsBurnedArrowProps) => (
   <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
     <p className="w-[76px] md:ml-[58px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
       OLAS is burned
@@ -66,7 +74,6 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
       <Popover
         align="center"
         side="right"
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; align: str... Remove this comment to see the full error message
         contentClassName="w-[382px] text-left font-normal translate-x-2"
       >
         Fees collected can be turned on or off by the Governors of the Olas
@@ -83,6 +90,24 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
   </div>
 );
 
+interface ActivityCardLinkProps {
+  text?: React.ReactNode;
+  link: string;
+  value: string | number;
+  isLinkExternal?: boolean;
+}
+
+interface ActivityCardProps {
+  icon: string;
+  iconWidth?: number;
+  iconHeight?: number;
+  alt?: string;
+  text?: React.ReactNode;
+  primary: ActivityCardLinkProps;
+  secondary?: Partial<ActivityCardLinkProps>;
+  tertiary?: Partial<ActivityCardLinkProps>;
+}
+
 const ActivityCard = ({
   icon,
   iconWidth = 40,
@@ -97,32 +122,18 @@ const ActivityCard = ({
   },
   secondary = {},
   tertiary = {},
-}) => {
+}: ActivityCardProps) => {
   const {
-    // @ts-expect-error TS(2339) FIXME: Property 'text' does not exist on type '{}'.
     text: secondaryText,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'link' does not exist on type '{}'.
     link: secondaryLink,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type '{}'.
     value: secondaryValue,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'isLinkExternal' does not exist on type '... Remove this comment to see the full error message
     isLinkExternal: secondaryIsLinkExternal = true,
   } = secondary;
 
   const {
-    // @ts-expect-error TS(2339) FIXME: Property 'text' does not exist on type '{}'.
     text: tertiaryText,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'link' does not exist on type '{}'.
     link: tertiaryLink,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type '{}'.
     value: tertiaryValue,
-
-    // @ts-expect-error TS(2339) FIXME: Property 'isLinkExternal' does not exist on type '... Remove this comment to see the full error message
     isLinkExternal: tertiaryIsLinkExternal = true,
   } = tertiary;
 
@@ -135,7 +146,7 @@ const ActivityCard = ({
       <div className="flex flex-row place-items-center gap-3">
         <Image
           src={`${imgPath}${icon}`}
-          alt={alt ?? text}
+          alt={alt ?? (typeof text === 'string' ? text : 'Activity icon')}
           width={iconWidth}
           height={iconHeight}
         />
@@ -173,19 +184,23 @@ const ActivityCard = ({
   );
 };
 
-const UsersCard = ({ olasStaked, totalOperators }) => (
-  // @ts-expect-error TS(2741) FIXME: Property 'alt' is missing in type '{ icon: string;... Remove this comment to see the full error message
+interface UsersCardProps {
+  olasStaked?: string;
+  totalOperators?: string;
+}
+
+const UsersCard = ({ olasStaked, totalOperators }: UsersCardProps) => (
   <ActivityCard
     icon="users.png"
     text="Users"
     primary={{
-      value: totalOperators,
+      value: totalOperators || '--',
       text: 'Agents deployed',
       link: '/data#operators',
       isLinkExternal: false,
     }}
     secondary={{
-      value: olasStaked,
+      value: olasStaked || '--',
       text: 'OLAS staked',
       link: '/data#olas-staked',
       isLinkExternal: false,
@@ -194,7 +209,6 @@ const UsersCard = ({ olasStaked, totalOperators }) => (
 );
 
 const OlasBurnedCard = () => (
-  // @ts-expect-error TS(2741) FIXME: Property 'text' is missing in type '{ icon: string... Remove this comment to see the full error message
   <ActivityCard
     icon="olas-burned.png"
     alt="OLAS burned"
@@ -207,15 +221,20 @@ const OlasBurnedCard = () => (
   />
 );
 
-const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
-  // @ts-expect-error TS(2741) FIXME: Property 'text' is missing in type '{ icon: string... Remove this comment to see the full error message
+interface DailyActiveAgentsCardProps {
+  dailyActiveAgents?: string;
+}
+
+const DailyActiveAgentsCard = ({
+  dailyActiveAgents,
+}: DailyActiveAgentsCardProps) => (
   <ActivityCard
     icon="daas.png"
     alt="Daily Active Agents"
     iconWidth={252}
     iconHeight={56}
     primary={{
-      value: dailyActiveAgents,
+      value: dailyActiveAgents || '--',
       text: (
         <>
           DAAs <Popover>7-day average Daily Active Agents</Popover>
@@ -227,22 +246,28 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
-  // @ts-expect-error TS(2741) FIXME: Property 'text' is missing in type '{ icon: string... Remove this comment to see the full error message
+interface AgentToAgentCardProps {
+  ataTransactions?: string;
+  mechTurnover?: string | number;
+}
+
+const AgentToAgentCard = ({
+  ataTransactions,
+  mechTurnover,
+}: AgentToAgentCardProps) => (
   <ActivityCard
     icon="agent-to-agent.png"
     alt="Agent to Agent"
     iconWidth={104}
     iconHeight={36}
     primary={{
-      // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; }' is not as... Remove this comment to see the full error message
-      value: formatEthNumber(ataTransactions, { notation: 'standard' }),
+      value: formatEthNumber(ataTransactions || '0', { notation: 'standard' }),
       text: 'A2A txns',
       link: '/data#ata-transactions',
       isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(mechTurnover).toLocaleString()}`,
+      value: `$${Number(mechTurnover || 0).toLocaleString()}`,
       text: 'turnover',
       link: '/data#mech-turnover',
       isLinkExternal: false,
@@ -256,13 +281,16 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   />
 );
 
-const TransactionsCard = ({ transactions }) => (
-  // @ts-expect-error TS(2741) FIXME: Property 'text' is missing in type '{ icon: string... Remove this comment to see the full error message
+interface TransactionsCardProps {
+  transactions?: string;
+}
+
+const TransactionsCard = ({ transactions }: TransactionsCardProps) => (
   <ActivityCard
     icon="txns.png"
     alt="Transactions"
     primary={{
-      value: transactions,
+      value: transactions || '--',
       text: 'txns',
       link: '/data#transactions',
       isLinkExternal: false,
@@ -287,7 +315,6 @@ const AgentsGrid = () => (
 );
 
 export const Activity = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('tokenMetrics', fetchMetrics);
 
   const processedMetrics = useMemo(() => {
@@ -334,8 +361,6 @@ export const Activity = () => {
             className="mt-12 ml-3 md:mr-4 w-[124px] h-[176px]"
           />
           <UsersCard
-            // @ts-expect-error TS(2322) FIXME: Type '{ agents: any; olasStaked: any; totalOperato... Remove this comment to see the full error message
-            agents={processedMetrics?.agents}
             olasStaked={processedMetrics?.olasStaked}
             totalOperators={processedMetrics?.totalOperators}
           />
@@ -353,7 +378,6 @@ export const Activity = () => {
         <div className="flex flex-row place-items-center w-full justify-between">
           <div className="flex flex-col">
             <OlasBurnedCard />
-            {/* @ts-expect-error TS(2741) FIXME: Property 'className' is missing in type '{}' but r... Remove this comment to see the full error message*/}
             <OlasIsBurnedArrow />
           </div>
           <div className="flex flex-col place-items-center z-10">
@@ -399,8 +423,6 @@ export const Activity = () => {
 
       <div className="flex flex-col md:hidden w-[90%] mx-auto">
         <UsersCard
-          // @ts-expect-error TS(2322) FIXME: Type '{ agents: any; olasStaked: any; totalOperato... Remove this comment to see the full error message
-          agents={processedMetrics?.agents}
           olasStaked={processedMetrics?.olasStaked}
           totalOperators={processedMetrics?.totalOperators}
         />

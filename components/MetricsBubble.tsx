@@ -6,7 +6,7 @@ interface MetricsBubbleProps {
   isUnderConstruction?: boolean;
   metrics?: {
     id: string;
-    subText: string;
+    subText: string | React.ReactNode;
     value?: string | null;
     source?: {
       link: string;

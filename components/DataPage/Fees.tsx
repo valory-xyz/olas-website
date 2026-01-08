@@ -18,12 +18,10 @@ export const FeesInfo = () => {
         <div className="flex gap-2">
           <Verify
             url="https://gnosisscan.io/address/0x735faab1c4ec41128c367afb5c3bac73509f70bb#readProxyContract#F8"
-            // @ts-expect-error TS(2322) FIXME: Type '{ url: string; text: string; }' is not assig... Remove this comment to see the full error message
             text="1"
           />
           <Verify
             url="https://basescan.org/address/0xf24eE42edA0fc9b33B7D41B06Ee8ccD2Ef7C5020#readProxyContract#F8"
-            // @ts-expect-error TS(2322) FIXME: Type '{ url: string; text: string; }' is not assig... Remove this comment to see the full error message
             text="2"
           />
         </div>

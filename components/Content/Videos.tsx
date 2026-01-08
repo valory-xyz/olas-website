@@ -6,25 +6,33 @@ import Image from 'next/image';
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 
+interface VideoItem {
+  id?: string;
+  platform_link?: string;
+  drive_link?: string;
+  video_url?: string;
+  apple_link?: string;
+  spotify_link?: string;
+  rss_link?: string;
+  imageFilename?: string;
+  title?: string;
+  date?: string;
+}
+
 interface VideoProps {
-  video: unknown;
+  video: VideoItem;
 }
 
 const Video = ({ video }: VideoProps) => (
   <a
     href={
-      // @ts-expect-error TS(2339) FIXME: Property 'platform_link' does not exist on type 'u... Remove this comment to see the full error message
       video.platform_link ||
-      // @ts-expect-error TS(2339) FIXME: Property 'drive_link' does not exist on type 'unkn... Remove this comment to see the full error message
       video.drive_link ||
-      // @ts-expect-error TS(2339) FIXME: Property 'video_url' does not exist on type 'unkno... Remove this comment to see the full error message
       video.video_url ||
-      // @ts-expect-error TS(2339) FIXME: Property 'apple_link' does not exist on type 'unkn... Remove this comment to see the full error message
       video.apple_link ||
-      // @ts-expect-error TS(2339) FIXME: Property 'spotify_link' does not exist on type 'un... Remove this comment to see the full error message
       video.spotify_link ||
-      // @ts-expect-error TS(2339) FIXME: Property 'rss_link' does not exist on type 'unknow... Remove this comment to see the full error message
-      video.rss_link
+      video.rss_link ||
+      '#'
     }
     target="_blank"
     rel="noopener noreferrer"
@@ -32,13 +40,10 @@ const Video = ({ video }: VideoProps) => (
     <div
       className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
     >
-      {/* @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not exist on type 'u... Remove this comment to see the full error message */}
       {video.imageFilename && (
         <Image
-          // @ts-expect-error TS(2339) FIXME: Property 'imageFilename' does not exist on type 'u... Remove this comment to see the full error message
           src={`${video.imageFilename}`}
-          // @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on type 'unknown'.
-          alt={video.title}
+          alt={video.title || 'Video thumbnail'}
           width={750}
           height={200}
           className="rounded-t-lg"
@@ -46,13 +51,11 @@ const Video = ({ video }: VideoProps) => (
       )}
       <div className="p-6 flex flex-col h-full">
         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 truncate whitespace-normal min-h-[70px]">
-          {/* @ts-expect-error TS(2339) FIXME: Property 'title' does not exist on type 'unknown'. */}
           {video.title}
         </h2>
         <div className="text-gray-500 mt-auto">
           <span className="text-sm md:text-xl lg:text-sm">
-            {/* @ts-expect-error TS(2339) FIXME: Property 'date' does not exist on type 'unknown'. */}
-            {formatDate(video.date)}
+            {video.date ? formatDate(video.date) : ''}
           </span>
         </div>
       </div>
@@ -62,17 +65,12 @@ const Video = ({ video }: VideoProps) => (
 
 interface VideosProps {
   isLoading?: boolean;
-  videos?: unknown[];
+  videos?: VideoItem[];
   limit?: number;
+  isMain?: boolean;
 }
 
-export const Videos = ({
-  isLoading,
-  videos,
-  limit,
-  // @ts-expect-error TS(2339) FIXME: Property 'isMain' does not exist on type 'VideosPr... Remove this comment to see the full error message
-  isMain,
-}: VideosProps) => (
+export const Videos = ({ isLoading, videos, limit, isMain }: VideosProps) => (
   <section>
     <div>
       <div>
@@ -101,8 +99,7 @@ export const Videos = ({
       ) : (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {videos.map((video) => (
-            // @ts-expect-error TS(2339) FIXME: Property 'id' does not exist on type 'unknown'.
-            <div key={video.id}>
+            <div key={video.id || Math.random()}>
               <Video video={video} />
             </div>
           ))}

@@ -5,7 +5,7 @@ interface InfoCardListProps {
   cards?: {
     icon?: unknown;
     title?: string;
-    desc?: string;
+    desc?: string | React.ReactNode;
   }[];
 }
 

@@ -14,8 +14,7 @@ export const ProtocolCta = () => (
       </h2>
 
       <div className="flex flex-wrap gap-2 justify-center">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: Element; variant: "default"; siz... Remove this comment to see the full error message */}{' '}
-        <Button variant="default" size="xl" asChild isExternal>
+        <Button variant="default" size="xl" asChild>
           <a
             href={`${STACK_URL}/protocol`}
             target="_blank"

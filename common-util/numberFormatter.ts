@@ -1,23 +1,21 @@
 export const formatWeiNumber = (
-  numberInWei,
-  options = {
+  numberInWei: number | string,
+  options: Intl.NumberFormatOptions = {
     notation: 'compact',
     maximumFractionDigits: 3,
   },
 ) => {
-  // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; maximumFract... Remove this comment to see the full error message
   const formatter = Intl.NumberFormat('en', options);
-  return formatter.format(numberInWei / 10 ** 18);
+  return formatter.format(Number(numberInWei) / 10 ** 18);
 };
 
 export const formatEthNumber = (
-  numberInEth,
-  options = {
+  numberInEth: number | string,
+  options: Intl.NumberFormatOptions = {
     notation: 'compact',
     maximumFractionDigits: 3,
   },
 ) => {
-  // @ts-expect-error TS(2345) FIXME: Argument of type '{ notation: string; maximumFract... Remove this comment to see the full error message
   const formatter = Intl.NumberFormat('en', options);
-  return formatter.format(numberInEth);
+  return formatter.format(Number(numberInEth));
 };

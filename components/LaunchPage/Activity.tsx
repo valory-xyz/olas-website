@@ -20,8 +20,6 @@ export const Activity = () => (
       <Link
         className="font-extrabold text-6xl"
         href="/agent-economies#agent-economies"
-        // @ts-expect-error TS(2322) FIXME: Type '{ children: number; className: string; href:... Remove this comment to see the full error message
-        hideArrow
       >
         {AI_AGENT_ECONOMIES}
       </Link>

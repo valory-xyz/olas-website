@@ -54,7 +54,6 @@ export const ReadyToBuild = () => (
               <span>{item.title}</span>
             </CardTitle>
             <div className="mb-2 text-start">{item.description}</div>
-            {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message */}
             <SubsiteLink href={item.link} className="mt-auto">
               {item.linkText}
             </SubsiteLink>

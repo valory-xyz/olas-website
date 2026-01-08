@@ -25,16 +25,21 @@ const fetchPredictDaa7dAvg = async () => {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
-    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist on type '... Remove this comment to see the full error message
-    const { dailyAgentPerformances: rows = [] } =
-      await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-        dailyPredictAgentsPerformancesQuery,
-        {
-          agentIds: PREDICT_AGENT_IDS_FLAT,
-          timestamp_gt,
-          timestamp_lt,
-        },
-      );
+    const response = await REGISTRY_GRAPH_CLIENTS.gnosis.request(
+      dailyPredictAgentsPerformancesQuery,
+      {
+        agentIds: PREDICT_AGENT_IDS_FLAT,
+        timestamp_gt,
+        timestamp_lt,
+      },
+    );
+    const typedResponse = response as {
+      dailyAgentPerformances?: Array<{
+        dayTimestamp: string | number;
+        activeMultisigCount?: string | number;
+      }>;
+    };
+    const rows = typedResponse.dailyAgentPerformances ?? [];
 
     const totalsByDay = new Map();
     rows.forEach((r) => {
@@ -68,8 +73,10 @@ const fetchPredictTxsByAgentType = async () => {
       { agentIds: PREDICT_AGENT_IDS_FLAT },
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'agentPerformances' does not exist on typ... Remove this comment to see the full error message
-    const rows = response?.agentPerformances || [];
+    const typedResponse = response as {
+      agentPerformances?: Array<{ id: string; txCount?: string | number }>;
+    };
+    const rows = typedResponse.agentPerformances || [];
     const idToTx = new Map();
     rows.forEach((row) => {
       idToTx.set(String(row.id), BigInt(row.txCount || 0));
@@ -96,8 +103,8 @@ const fetchOlasApr = async () => {
       stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
-    const gnosisContracts = contractsResult?.stakingContracts;
+    const typedResult = contractsResult as { stakingContracts?: unknown[] };
+    const gnosisContracts = typedResult.stakingContracts;
 
     return getMaxApr(gnosisContracts);
   } catch (error) {

@@ -48,16 +48,13 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
             <div className="flex items-center">
               {metric.imageSrc && (
                 <Image
-                  // @ts-expect-error TS(2339) FIXME: Property 'role' does not exist on type '{ key: str... Remove this comment to see the full error message
-                  alt={metric.role}
+                  alt={metrics.role}
                   src={`/images/${metrics.role}-page/${metric.imageSrc}`}
                   width={metric.imageWidth ?? 35}
                   height={35}
                   className="mr-4"
                 />
               )}
-              {/* @ts-expect-error TS(2339) FIXME: Property 'image' does not exist on type '{ key: st... Remove this comment to see the full error message */}
-              {metric.image && <span className="mr-4">{metric.image}</span>}
               {metric.labelText}
             </div>
             {renderMetricValue(metric)}
@@ -91,20 +88,13 @@ const renderMetricValue = (metric) => {
   }
 
   return isExternal ? (
-    <ExternalLink
-      className={valueClassName}
-      href={metric.source}
-      // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
-      target="_blank"
-      hideArrow
-    >
+    <ExternalLink className={valueClassName} href={metric.source} hideArrow>
       {metric.isMoney && <span>$</span>}
       {formatted}
       <span className="text-4xl">↗</span>
     </ExternalLink>
   ) : (
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; className:... Remove this comment to see the full error message
-    <Link className={valueClassName} href={metric.source} hideArrow>
+    <Link className={valueClassName} href={metric.source}>
       {metric.isMoney && <span>$</span>}
       {formatted}
     </Link>

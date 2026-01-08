@@ -20,8 +20,8 @@ const fetchLockedBalance = async () => {
       tokenId: VEOLAS_TOKEN_ID,
     });
 
-    // @ts-expect-error TS(2339) FIXME: Property 'token' does not exist on type 'unknown'.
-    return response?.token?.balance ?? '0';
+    const typedResponse = response as { token?: { balance?: string } };
+    return typedResponse.token?.balance ?? '0';
   } catch (error) {
     console.error('Error fetching veOLAS locked balance:', error);
     return null;

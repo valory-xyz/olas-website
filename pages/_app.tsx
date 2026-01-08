@@ -7,9 +7,15 @@ function PlausibleTracker() {
   const router = useRouter();
 
   useEffect(() => {
-    const handleRouteChange = (url) => {
-      // @ts-expect-error TS(2339) FIXME: Property 'plausible' does not exist on type 'Windo... Remove this comment to see the full error message
-      window.plausible?.('pageview', {
+    const handleRouteChange = (url: string) => {
+      (
+        window as typeof window & {
+          plausible?: (
+            event: string,
+            options?: { url?: string; props?: Record<string, unknown> },
+          ) => void;
+        }
+      ).plausible?.('pageview', {
         url,
         props: {
           utm_source: router.query.utm_source,
@@ -43,14 +49,15 @@ export default function App({ Component, pageProps }: AppProps) {
       trackOutboundLinks
       taggedEvents
       enabled
-      scriptProps={{
-        // @ts-expect-error TS(2322) FIXME: Type '{ 'data-domain': string; 'data-track-outboun... Remove this comment to see the full error message
-        'data-domain': 'olas.network',
-        'data-track-outbound-links': true,
-        'data-track-file-downloads': true,
-        'data-track-utm': true,
-        'data-track-referrer': true,
-      }}
+      scriptProps={
+        {
+          'data-domain': 'olas.network',
+          'data-track-outbound-links': true,
+          'data-track-file-downloads': true,
+          'data-track-utm': true,
+          'data-track-referrer': true,
+        } as React.HTMLAttributes<HTMLScriptElement>
+      }
     >
       <PlausibleTracker />
       <Component {...pageProps} />

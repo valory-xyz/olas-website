@@ -90,48 +90,43 @@ LegendItem.propTypes = {
 LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
-  <>
-    {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message */}
-    <div class="flex flex-col gap-2 text-base max-w-md">
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; class: string; }' is not... Remove this comment to see the full error message     */}
-      <span class="font-semibold mb-2">
-        How is the Total Supply calculated?
-      </span>
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message */}
-      <span class="italic">
-        <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
-        <span className="font-semibold">buOLAS</span> value
-      </span>
-      <ExternalLink
-        href={`${ETHERSCAN_URL}/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16`}
-      >
-        Verify on-chain value
+  <div className="flex flex-col gap-2 text-base max-w-md">
+    <span className="font-semibold mb-2">
+      How is the Total Supply calculated?
+    </span>
+    <span className="italic">
+      <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
+      <span className="font-semibold">buOLAS</span> value
+    </span>
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/address/0x0001A500A6B18995B03f44bb040A5fFc28E45CB0#readContract#F16`}
+    >
+      Verify on-chain value
+    </ExternalLink>
+    <p>
+      <span className="font-semibold">buOLAS</span> is a portion of tokens that
+      have been burned following the{' '}
+      <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
+        Olas DAO proposal
       </ExternalLink>
-      <p>
-        <span className="font-semibold">buOLAS</span> is a portion of tokens
-        that have been burned following the{' '}
-        <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
-          Olas DAO proposal
-        </ExternalLink>
-        . Verify:
-      </p>
-      <ExternalLink
-        href={`${ETHERSCAN_URL}/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog`}
-      >
-        Revoke buOLAS execution 1
-      </ExternalLink>
-      <ExternalLink
-        href={`${ETHERSCAN_URL}/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog`}
-      >
-        Revoke buOLAS execution 2
-      </ExternalLink>
-      <ExternalLink
-        href={`${ETHERSCAN_URL}/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog`}
-      >
-        Revoke buOLAS execution 3
-      </ExternalLink>
-    </div>
-  </>
+      . Verify:
+    </p>
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0xa9e1dae6a5b43b06180034ed670864ec82204d8479398a5282e13fb1a327cf4d#eventlog`}
+    >
+      Revoke buOLAS execution 1
+    </ExternalLink>
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0x4e5126b56e3acac1d80278602c72933f538ab8d069ec267a6d61ca17ae0b0a08#eventlog`}
+    >
+      Revoke buOLAS execution 2
+    </ExternalLink>
+    <ExternalLink
+      href={`${ETHERSCAN_URL}/tx/0x0132ac743f3da1a3eb1fb8e5bc853e254b47ddbf4e1f6a699e21cbc787d44a26#eventlog`}
+    >
+      Revoke buOLAS execution 3
+    </ExternalLink>
+  </div>
 );
 
 function formatNumber(number) {
@@ -146,8 +141,16 @@ function formatEthers(value) {
 }
 
 export const SupplyPieChart = () => {
-  const [data, setData] = useState([]);
-  const [totalSupply, setTotalSupply] = useState();
+  const [data, setData] = useState<
+    Array<{
+      id: string;
+      label: string;
+      address?: string;
+      color: string;
+      value: number;
+    }>
+  >([]);
+  const [totalSupply, setTotalSupply] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -162,21 +165,31 @@ export const SupplyPieChart = () => {
 
         const result = await Promise.allSettled(promises);
 
-        // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-        const totalSupplyResult = await result[0].value.json();
+        const firstResult = result[0];
+        if (firstResult.status !== 'fulfilled') {
+          throw new Error('Failed to fetch total supply');
+        }
+        const response = firstResult.value as Response;
+        const totalSupplyResult = (await response.json()) as {
+          data: { totalSupply: string | number };
+        };
 
         const totalSupply = BigInt(totalSupplyResult.data.totalSupply);
-        const distributions = result
-          .slice(1, result.length)
-          // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-          .map((item) => item.value || 0);
+        const distributions = result.slice(1, result.length).map((item) => {
+          if (item.status === 'fulfilled') {
+            const value = item.value as unknown;
+            if (typeof value === 'string' || typeof value === 'number') {
+              return BigInt(String(value));
+            }
+          }
+          return 0n;
+        });
 
         const circulatingSupply =
           totalSupply > 0
             ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
-            : 0;
+            : 0n;
 
-        // @ts-expect-error TS(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         setTotalSupply(formatEthers(totalSupply));
         setData([
           ...distributions.map((item, index) => ({
@@ -201,7 +214,7 @@ export const SupplyPieChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [data]);
 
   return (
     <>

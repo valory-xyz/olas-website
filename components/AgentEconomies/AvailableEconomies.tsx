@@ -32,8 +32,11 @@ export const AvailableEconomies = () => {
             <Link key={item.title} href={item.link} className="w-full h-full">
               <Card
                 className="agent-economy-card p-10 flex flex-col gap-y-8 place-items-center text-center hover:bg-white duration-150 w-full h-full"
-                // @ts-expect-error TS(2322) FIXME: Type '{ children: Element[]; className: string; style: { '--gradient-color': any; }; }' is not assignable... Remove this comment to see the full error message
-                style={{ '--gradient-color': item.gradientColor }}
+                style={
+                  {
+                    '--gradient-color': item.gradientColor,
+                  } as React.CSSProperties
+                }
               >
                 <Image
                   src={item.image}

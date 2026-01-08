@@ -4,6 +4,7 @@ import { Card } from './ui/card';
 
 interface StarterCardsProps {
   title: string;
+  subtitle?: string;
   content: React.ReactNode;
   button?: React.ReactNode;
   imgUrl?: string;
@@ -17,7 +18,6 @@ interface StarterCardsProps {
 export const StarterCards = ({
   imgUrl,
   title,
-  // @ts-expect-error TS(2339) FIXME: Property 'subtitle' does not exist on type 'Starte... Remove this comment to see the full error message
   subtitle,
   content,
   button,

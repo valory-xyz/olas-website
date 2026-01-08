@@ -31,20 +31,14 @@ const GetInvolved = () => (
 );
 
 const ExplorePredict = () => (
-  <Button
-    variant="ghostPrimary"
-    size="xl"
-    asChild
-    className="max-xl:grow"
-    // @ts-expect-error TS(2322) FIXME: Type '{ children: string; href: string; className:... Remove this comment to see the full error message
-    rel="noopener noreferrer"
-  >
-    <a href={PREDICT_URL}>Explore Predict UI</a>
+  <Button variant="ghostPrimary" size="xl" asChild className="max-xl:grow">
+    <a href={PREDICT_URL} rel="noopener noreferrer">
+      Explore Predict UI
+    </a>
   </Button>
 );
 
 export const PredictHero = () => (
-  // @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message
   <HeroSection
     HeroImage={HeroImage}
     pageName="OLAS PREDICT"

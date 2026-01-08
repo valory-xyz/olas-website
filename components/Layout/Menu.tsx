@@ -1,28 +1,33 @@
-import PropTypes from 'prop-types';
-import Link from 'next/link';
-import React from 'react';
-import { cn } from 'lib/utils';
+import { MENU_DATA } from 'common-util/constants';
 import {
   NavigationMenu,
   NavigationMenuContent,
+  NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuItem,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from 'components/ui/navigation-menu';
+import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
-import { MENU_DATA } from 'common-util/constants';
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const triggerStyle = navigationMenuTriggerStyle();
 
-const ListItem = React.forwardRef(
-  // @ts-expect-error TS(2339) FIXME: Property 'className' does not exist on type '{}'.
+interface ListItemProps {
+  className?: string;
+  title: string;
+  children: React.ReactNode;
+  href?: string;
+}
+
+const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
   ({ className, title, children, ...props }, ref) => (
     <li>
       <NavigationMenuLink asChild>
         <a
-          // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<unknown>' is not assignable to ... Remove this comment to see the full error message
           ref={ref}
           className={cn(
             'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
@@ -47,27 +52,28 @@ ListItem.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
-ListItem.defaultProps = {
-  className: null,
-};
+interface MenuProps {
+  className?: string;
+}
 
-export function Menu({ className }) {
+export function Menu({ className }: MenuProps) {
   return (
     <NavigationMenu className={className}>
-      {/* @ts-expect-error TS(2559) FIXME: Type '{ children: Element[]; }' has no properties ... Remove this comment to see the full error message */}
       <NavigationMenuList>
         {MENU_DATA.map((item, index) => {
           if (item.link) {
-            // @ts-expect-error TS(2339) FIXME: Property 'isExternal' does not exist on type '{ li... Remove this comment to see the full error message
-            const LinkTag = item.isExternal ? 'a' : NavigationMenuLink;
+            const menuItem = item as {
+              link: string;
+              text: string;
+              isExternal?: boolean;
+            };
+            const LinkTag = menuItem.isExternal ? 'a' : NavigationMenuLink;
             return (
               <NavigationMenuItem key={index}>
-                <Link href={item.link} legacyBehavior passHref>
+                <Link href={menuItem.link} legacyBehavior passHref>
                   <LinkTag className={triggerStyle}>
-                    {item.text}
-                    {/* @ts-expect-error TS(2339) FIXME: Property 'isExternal' does not exist on type '{ li... Remove this comment to see the full error message */}
-                    {item.isExternal && (
+                    {menuItem.text}
+                    {menuItem.isExternal && (
                       <MoveUpRight
                         size={12}
                         className="ml-1"
@@ -83,11 +89,9 @@ export function Menu({ className }) {
             return (
               <NavigationMenuItem key={index}>
                 <NavigationMenuTrigger>{item.text}</NavigationMenuTrigger>
-                {/* @ts-expect-error TS(2559) FIXME: Type '{ children: Element; }' has no properties in... Remove this comment to see the full error message */}
                 <NavigationMenuContent>
                   <ul className="grid w-[300px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     {item.submenu.map((component) => (
-                      // @ts-expect-error TS(2322) FIXME: Type '{ children: string; key: string; title: stri... Remove this comment to see the full error message
                       <ListItem
                         key={component.title}
                         title={component.title}

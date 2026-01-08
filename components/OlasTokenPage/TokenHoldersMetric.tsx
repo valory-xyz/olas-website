@@ -16,7 +16,6 @@ const fetchMetrics = async () => {
 };
 
 export const TokenHoldersMetric = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR(
     'tokenHoldersMetric',
     fetchMetrics,
@@ -39,7 +38,6 @@ export const TokenHoldersMetric = () => {
           <Link
             href="/data#token-holders"
             className="font-extrabold text-6xl text-purple-600"
-            // @ts-expect-error TS(2322) FIXME: Type '{ children: any; href: string; className: st... Remove this comment to see the full error message
             hideArrow
           >
             {metrics?.totalTokenHolders?.toLocaleString()}

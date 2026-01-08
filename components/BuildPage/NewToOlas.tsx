@@ -1,7 +1,5 @@
 import { TEXT_MEDIUM_LIGHT_CLASS } from 'common-util/classes';
-import { VALORY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -70,8 +68,6 @@ export const NewToOlas = () => (
             alt={item.title}
             width={495}
             height={260}
-            // @ts-expect-error TS(2322) FIXME: Type '{ src: string; alt: string; width: number; h... Remove this comment to see the full error message
-            image
             className="rounded-lg p-2 object-cover w-full"
           />
           <div className="p-6">

@@ -103,7 +103,6 @@ const BabydegenMetricsBubble = ({
 };
 
 export const BabydegenMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('BabydegenMetrics', fetchMetrics);
 
   return (
@@ -124,8 +123,6 @@ export const BabydegenMetrics = () => {
             <Link
               className="font-extrabold text-6xl"
               href="/data#babydegen-daily-active-agents"
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
-              hideArrow
             >
               {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
             </Link>

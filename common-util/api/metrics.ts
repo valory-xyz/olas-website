@@ -18,9 +18,16 @@ export const fetchAtaTransactions = async () => {
     ]);
 
     const ataTransactionsByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      // @ts-expect-error TS(2339) FIXME: Property 'value' does not exist on type 'PromiseSe... Remove this comment to see the full error message
-      .map((result) => result.value?.globals?.[0]?.totalAtaTransactions || '0');
+      .filter(
+        (result): result is PromiseFulfilledResult<unknown> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => {
+        const value = result.value as {
+          globals?: Array<{ totalAtaTransactions?: string }>;
+        };
+        return value?.globals?.[0]?.totalAtaTransactions || '0';
+      });
 
     return ataTransactionsByChains
       .reduce((sum, ataTxByChain) => sum + BigInt(ataTxByChain), BigInt(0))
@@ -42,20 +49,23 @@ export const fetchMechFees = async () => {
     let totalFees = 0;
 
     results.forEach((result, index) => {
-      // @ts-expect-error TS(2339) FIXME: Property 'global' does not exist on type 'unknown'... Remove this comment to see the full error message
-      if (result.status === 'fulfilled' && result.value?.global) {
-        // @ts-expect-error TS(2339) FIXME: Property 'global' does not exist on type 'unknown'... Remove this comment to see the full error message
-        const feeValue = result.value.global;
+      if (result.status === 'fulfilled') {
+        const value = result.value as {
+          global?: { totalFeesIn?: string; totalFeesInUSD?: string };
+        };
+        if (value?.global) {
+          const feeValue = value.global;
 
-        if (index === 2) {
-          // Legacy mech fees (index 2) - convert from wei to XDAI
-          const weiValue = feeValue.totalFeesIn || '0';
-          const xdaiValue = Number(weiValue) / 10 ** 18;
-          totalFees += xdaiValue;
-        } else {
-          // New mech fees (indices 0, 1) - already in USD
-          const usdValue = Number(feeValue.totalFeesInUSD || '0');
-          totalFees += usdValue;
+          if (index === 2) {
+            // Legacy mech fees (index 2) - convert from wei to XDAI
+            const weiValue = feeValue.totalFeesIn || '0';
+            const xdaiValue = Number(weiValue) / 10 ** 18;
+            totalFees += xdaiValue;
+          } else {
+            // New mech fees (indices 0, 1) - already in USD
+            const usdValue = Number(feeValue.totalFeesInUSD || '0');
+            totalFees += usdValue;
+          }
         }
       }
     });

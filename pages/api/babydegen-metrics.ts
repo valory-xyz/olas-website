@@ -2,7 +2,6 @@ import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   CACHE_DURATION_SECONDS,
   MODIUS_FIXED_END_DATE_UTC,
-  MODIUS_FIXED_OLAS_PRICE_USD,
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
 } from 'common-util/constants';
@@ -51,13 +50,13 @@ const fetchOlasApr = async () => {
 
     const modiusContracts =
       modiusContractsResult.status === 'fulfilled'
-        ? // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
-          modiusContractsResult.value.stakingContracts
+        ? (modiusContractsResult.value as { stakingContracts?: unknown[] })
+            .stakingContracts
         : null;
     const optimusContracts =
       optimusContractsResult.status === 'fulfilled'
-        ? // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
-          optimusContractsResult.value.stakingContracts
+        ? (optimusContractsResult.value as { stakingContracts?: unknown[] })
+            .stakingContracts
         : null;
 
     return {
@@ -98,10 +97,14 @@ const fetchModiusPopulationMetrics = async () => {
       }),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
-    const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
-        result.dailyPopulationMetrics
+    const typedResult = result as {
+      dailyPopulationMetrics?: Array<{
+        medianAUM?: string | number;
+        [key: string]: unknown;
+      }>;
+    };
+    const rows = Array.isArray(typedResult.dailyPopulationMetrics)
+      ? typedResult.dailyPopulationMetrics
       : [];
     if (rows.length === 0) return null;
 
@@ -131,10 +134,11 @@ const fetchModeStakingSnapshots = async () => {
       }),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
-    const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
-      ? // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
-        result.cumulativeDailyStakingGlobals
+    const typedResult = result as {
+      cumulativeDailyStakingGlobals?: Array<{ [key: string]: unknown }>;
+    };
+    const rows = Array.isArray(typedResult.cumulativeDailyStakingGlobals)
+      ? typedResult.cumulativeDailyStakingGlobals
       : [];
     if (rows.length === 0) return null;
 
@@ -156,10 +160,15 @@ const fetchOptimusPopulationMetrics = async () => {
       dailyBabydegenPopulationMetricsQuery({ first: 10 }),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
-    const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? // @ts-expect-error TS(2339) FIXME: Property 'dailyPopulationMetrics' does not exist o... Remove this comment to see the full error message
-        result.dailyPopulationMetrics
+    const typedResult = result as {
+      dailyPopulationMetrics?: Array<{
+        timestamp: string | number;
+        medianAUM?: string | number;
+        [key: string]: unknown;
+      }>;
+    };
+    const rows = Array.isArray(typedResult.dailyPopulationMetrics)
+      ? typedResult.dailyPopulationMetrics
       : [];
     if (rows.length === 0) return null;
 
@@ -229,10 +238,16 @@ const fetchOptimismStakingSnapshots = async () => {
       dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
-    const rows = Array.isArray(result?.cumulativeDailyStakingGlobals)
-      ? // @ts-expect-error TS(2339) FIXME: Property 'cumulativeDailyStakingGlobals' does not ... Remove this comment to see the full error message
-        result.cumulativeDailyStakingGlobals
+    const typedResult = result as {
+      cumulativeDailyStakingGlobals?: Array<{
+        timestamp: string | number;
+        medianCumulativeRewards?: string | number;
+        numServices?: number;
+        [key: string]: unknown;
+      }>;
+    };
+    const rows = Array.isArray(typedResult.cumulativeDailyStakingGlobals)
+      ? typedResult.cumulativeDailyStakingGlobals
       : [];
 
     if (rows.length === 0) return null;
@@ -377,11 +392,16 @@ const fetchDailyAgentPerformance = async () => {
       }),
     ]);
 
-    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
-    const modePerformances = modeResult.dailyAgentPerformances ?? [];
+    const typedModeResult = modeResult as {
+      dailyAgentPerformances?: unknown[];
+    };
+    const modePerformances = typedModeResult.dailyAgentPerformances ?? [];
 
-    // @ts-expect-error TS(2339) FIXME: Property 'dailyAgentPerformances' does not exist o... Remove this comment to see the full error message
-    const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
+    const typedOptimismResult = optimismResult as {
+      dailyAgentPerformances?: unknown[];
+    };
+    const optimismPerformances =
+      typedOptimismResult.dailyAgentPerformances ?? [];
 
     const modeAverage = calculate7DayAverage(
       modePerformances,
@@ -407,8 +427,10 @@ const fetchModiusOlasApr = async () => {
       stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
-    const modiusContracts = modiusContractsResult?.stakingContracts;
+    const typedResult = modiusContractsResult as {
+      stakingContracts?: unknown[];
+    };
+    const modiusContracts = typedResult.stakingContracts;
     return modiusContracts && modiusContracts.length > 0
       ? getMaxApr(modiusContracts)
       : null;
@@ -424,8 +446,10 @@ const fetchOptimusOlasApr = async () => {
       stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
     );
 
-    // @ts-expect-error TS(2339) FIXME: Property 'stakingContracts' does not exist on type... Remove this comment to see the full error message
-    const optimusContracts = optimusContractsResult?.stakingContracts;
+    const typedResult = optimusContractsResult as {
+      stakingContracts?: unknown[];
+    };
+    const optimusContracts = typedResult.stakingContracts;
     return optimusContracts && optimusContracts.length > 0
       ? getMaxApr(optimusContracts)
       : null;

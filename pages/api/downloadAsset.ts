@@ -48,11 +48,10 @@ export default async function handler(req, res) {
         }
 
         // Set headers for file download
+        const typedResponse = response as { name?: string };
         res.setHeader(
           'Content-Disposition',
-
-          // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type 'OctokitRes... Remove this comment to see the full error message
-          `attachment; filename="${response.name}"`,
+          `attachment; filename="${typedResponse.name || 'download'}"`,
         );
         res.setHeader('Content-Type', 'application/octet-stream');
         // Caching for a day

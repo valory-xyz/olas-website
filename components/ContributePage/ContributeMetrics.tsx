@@ -5,7 +5,6 @@ import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 
 export const ContributeMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('contributeMetrics', () =>
     fetchMetrics([getContributeMetrics]),
   );

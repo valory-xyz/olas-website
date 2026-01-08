@@ -1,7 +1,7 @@
 import { getLimitedText } from 'common-util/getLimitedText';
 import Head from 'next/head';
 
-const TITLE_CHAR_MAX = '55';
+const TITLE_CHAR_MAX = 55;
 
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION =
@@ -18,7 +18,6 @@ interface MetaProps {
 const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
   let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
 
-  // @ts-expect-error TS(2365) FIXME: Operator '>' cannot be applied to types 'number' a... Remove this comment to see the full error message
   if (title.length > TITLE_CHAR_MAX) {
     description = `Discover ${pageTitle}`;
 

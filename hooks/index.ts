@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-export const usePersistentSWR = (key, fetcher, config) =>
+export const usePersistentSWR = (
+  key: string,
+  fetcher: () => Promise<any>,
+  config?: any,
+) =>
   useSWR(key, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,

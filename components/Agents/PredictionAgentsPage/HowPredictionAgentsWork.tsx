@@ -38,7 +38,6 @@ const list = [
 ];
 
 export const HowPredictionAgentsWork = () => (
-  // @ts-expect-error TS(2741) FIXME: Property 'headerClassName' is missing in type '{ h... Remove this comment to see the full error message
   <HowItWorks
     headerText="How It Works"
     description="Fund the Prediction Agent and benefit from its autonomous labor. It finds markets, places bets, and collects rewards — all without manual input."

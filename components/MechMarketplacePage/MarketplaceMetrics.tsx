@@ -3,12 +3,10 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { usePersistentSWR } from 'hooks';
 import { ChevronRight } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
 export const MarketplaceMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('mainMetrics', getMainMetrics);
   const { mechFees, ataTransactions } = metrics?.data ?? {};
 
@@ -24,14 +22,8 @@ export const MarketplaceMetrics = () => {
             isMoney: true,
             source: '/data#mech-turnover',
             isExternal: false,
-            image: (
-              <Image
-                src="/images/marketplace-page/money-bag.png"
-                alt="A2A"
-                width={24}
-                height={24}
-              />
-            ),
+            imageSrc: '/images/marketplace-page/money-bag.png',
+            imageWidth: 24,
           },
           {
             key: 'ataTransactions',
@@ -40,14 +32,8 @@ export const MarketplaceMetrics = () => {
             isMoney: false,
             source: '/data#ata-transactions',
             isExternal: false,
-            image: (
-              <Image
-                src="/images/marketplace-page/agent-to-agent.png"
-                alt="A2A"
-                width={80}
-                height={48}
-              />
-            ),
+            imageSrc: '/images/marketplace-page/agent-to-agent.png',
+            imageWidth: 80,
           },
         ],
       },
@@ -57,7 +43,6 @@ export const MarketplaceMetrics = () => {
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
       {marketplaceData.map((data, index) => (
-        // @ts-expect-error TS(2322) FIXME: Type '{ role: string; displayMetrics: { key: strin... Remove this comment to see the full error message
         <MetricsCard key={index} metrics={data} />
       ))}
       <div className="mt-8 text-center">

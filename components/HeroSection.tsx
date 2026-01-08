@@ -6,6 +6,23 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from './Layout/SectionWrapper';
 
+interface HeroSectionProps {
+  HeroImage: React.ComponentType;
+  pageName: string;
+  title: string | React.ReactNode;
+  description?: React.ReactNode;
+  PrimaryButton: React.ComponentType;
+  SecondaryButton?: React.ComponentType;
+  statusTag?: React.ReactNode;
+  backgroundType?:
+    | 'SUBTLE_GRADIENT'
+    | 'GRAY'
+    | 'GRAY_GRADIENT'
+    | 'GOVERNATOOORR'
+    | 'NONE';
+  className?: string;
+}
+
 export const HeroSection = ({
   HeroImage,
   pageName,
@@ -16,10 +33,9 @@ export const HeroSection = ({
   statusTag,
   backgroundType = 'SUBTLE_GRADIENT',
   className,
-}) => (
+}: HeroSectionProps) => (
   <SectionWrapper
     customClasses={`border-b ${SECTION_BOX_CLASS} ${className}`}
-    // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"SUBTLE_G... Remove this comment to see the full error message
     backgroundType={backgroundType}
   >
     <div className="flex justify-between max-w-screen-xl items-start mx-auto xl:gap-0 lg:px-12 lg:gap-8 lg:grid-cols-12 lg:items-center">

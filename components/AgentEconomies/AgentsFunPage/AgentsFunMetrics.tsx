@@ -13,7 +13,6 @@ const fetchMetrics = async () => {
 };
 
 export const AgentsFunMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('AgentsFunMetrics', fetchMetrics);
 
   return (
@@ -34,8 +33,6 @@ export const AgentsFunMetrics = () => {
             <Link
               className="font-extrabold text-6xl"
               href="/data#agentsfun-daily-active-agents"
-              // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
-              hideArrow
             >
               {Math.floor(metrics.dailyActiveAgents).toLocaleString()}
             </Link>

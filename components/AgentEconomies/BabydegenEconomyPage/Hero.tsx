@@ -30,17 +30,14 @@ const LearnHowItWorks = () => (
 );
 
 export const Hero = () => (
-  <>
-    {/* @ts-expect-error TS(2739) FIXME: Type '{ HeroImage: () => Element; pageName: string... Remove this comment to see the full error message */}
-    <HeroSection
-      HeroImage={HeroImage}
-      pageName="BABYDEGEN ECONOMY"
-      title="The First AI Trading Economy Built on Autonomous Agents"
-      description="A network of autonomous AI trading agents navigating DeFi ecosystems,
+  <HeroSection
+    HeroImage={HeroImage}
+    pageName="BABYDEGEN ECONOMY"
+    title="The First AI Trading Economy Built on Autonomous Agents"
+    description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
           24/7 without human input."
-      PrimaryButton={RunAnAgent}
-      SecondaryButton={LearnHowItWorks}
-    />
-  </>
+    PrimaryButton={RunAnAgent}
+    SecondaryButton={LearnHowItWorks}
+  />
 );

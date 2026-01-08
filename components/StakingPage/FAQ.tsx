@@ -76,7 +76,6 @@ export const FAQ = () => (
       <div className="py-2" key={index}>
         <Accordion
           label={eachFaq.title}
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: string | Element; label: string;... Remove this comment to see the full error message
           customClass="p-0 bg-white"
           defaultOpen={false}
         >

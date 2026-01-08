@@ -24,7 +24,6 @@ const fetchMetrics = async () => {
 };
 
 export const OperateMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR(
     'operateActivityMetrics',
     fetchMetrics,

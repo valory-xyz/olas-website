@@ -14,12 +14,16 @@ import {
 import { memo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { LegendItem } from './LegendItem';
-import { emissionType } from './types';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
+interface EmissionData {
+  counter?: number;
+  [key: string]: unknown;
+}
+
 interface EmissionsToBondersProps {
-  emissions: unknown[];
+  emissions: EmissionData[];
   loading: boolean;
 }
 
@@ -56,8 +60,7 @@ export const EmissionsToBonders = memo(
             ) : (
               <Line
                 data={{
-                  // @ts-expect-error TS(2339) FIXME: Property 'counter' does not exist on type 'unknown... Remove this comment to see the full error message
-                  labels: emissions.map((item) => item.counter),
+                  labels: emissions.map((item) => item.counter ?? 0),
                   datasets: [
                     {
                       label: 'OLAS bonds claimable',
@@ -76,7 +79,6 @@ export const EmissionsToBonders = memo(
                     },
                   ],
                 }}
-                // @ts-expect-error TS(2322) FIXME: Type '{ responsive: boolean; maintainAspectRatio: ... Remove this comment to see the full error message
                 options={getEmissionsChartOptions([
                   ...totalBondsClaimable,
                   ...totalBondsClaimed,

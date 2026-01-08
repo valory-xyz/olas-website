@@ -40,7 +40,7 @@ const buttonVariants = cva(
   },
 );
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
   className?: string;
@@ -56,13 +56,12 @@ interface ButtonProps {
     | 'valory';
 }
 
-const Button = forwardRef<HTMLElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
-        // @ts-expect-error TS(2322) FIXME: Type 'ForwardedRef<HTMLElement>' is not assignable... Remove this comment to see the full error message
         ref={ref}
         {...props}
       />
@@ -71,13 +70,5 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-
-// @ts-expect-error TS(2339) FIXME: Property 'defaultProps' does not exist on type 'Fo... Remove this comment to see the full error message
-Button.defaultProps = {
-  asChild: false,
-  className: null,
-  size: 'default',
-  variant: 'default',
-};
 
 export { Button, buttonVariants };

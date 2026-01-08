@@ -48,10 +48,8 @@ export const Paths = () => (
         chance to start earning dev rewards in the Olas ecosystem. To learn more
         about dev rewards, check out{' '}
         <SubsiteLink
-          // @ts-expect-error TS(2322) FIXME: Type '{ children: string; className: string; href:... Remove this comment to see the full error message
           className="underline text-slate-800"
           href={BUILD_MECH_TOOL_URL}
-          rel="noopener noreferrer"
         >
           this guide
         </SubsiteLink>{' '}

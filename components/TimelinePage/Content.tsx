@@ -112,7 +112,6 @@ const Timeline = ({ filters, setFilters }) => {
             <Button
               variant="outline"
               className="px-1"
-              // @ts-expect-error TS(2741): Property 'className' is missing in type '{ childre... Remove this comment to see the full error message
               onClick={() => setFilters([])}
             >
               Reset all
@@ -144,12 +143,13 @@ const Timeline = ({ filters, setFilters }) => {
                   </div>
                   <div className="flex flex-col">
                     {quarter.topics.map((topic) => (
-                      // @ts-expect-error TS(2322) FIXME: Type '{ topic: string; content: string; category: ... Remove this comment to see the full error message
-                      <div key={topic} className="px-6 py-4 border-b-1.5">
+                      <div
+                        key={topic.topic || String(topic)}
+                        className="px-6 py-4 border-b-1.5"
+                      >
                         <Accordion
                           titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
                           dropdownClass="border-none"
-                          // @ts-expect-error TS(2322) FIXME: Type 'Element' is not assignable to type 'string'.
                           label={<Markdown>{topic.topic}</Markdown>}
                           defaultOpen={false}
                         >

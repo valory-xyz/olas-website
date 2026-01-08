@@ -40,14 +40,13 @@ export const StackFaq = () => (
 
       {faqList.map((faq, faqIndex) => (
         <div
-          // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
-          key={faq.name}
+          key={faqIndex}
           className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
         >
-          {/* @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message */}
-          {faq.name && (
-            // @ts-expect-error TS(2339) FIXME: Property 'name' does not exist on type '{ list: { ... Remove this comment to see the full error message
-            <div className="text-2xl font-semibold mt-2 mb-4">{faq.name}</div>
+          {'name' in faq && faq.name && (
+            <div className="text-2xl font-semibold mt-2 mb-4">
+              {String(faq.name)}
+            </div>
           )}
 
           {faq.list.map((eachFaq, index) => (

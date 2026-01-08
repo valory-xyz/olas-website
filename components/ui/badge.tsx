@@ -24,12 +24,11 @@ const badgeVariants = cva(
 
 interface BadgeProps {
   className?: string;
-  variant?: string;
+  variant?: 'default' | 'secondary' | 'destructive' | 'outline';
 }
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    // @ts-expect-error TS(2322) FIXME: Type 'string' is not assignable to type '"default"... Remove this comment to see the full error message
     <div className={cn(badgeVariants({ variant }), className)} {...props} />
   );
 }

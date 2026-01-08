@@ -17,8 +17,7 @@ export const KitPage = () => {
 
   return (
     <>
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ title: string; description: string; }' is ... Remove this comment to see the full error message */}{' '}
-      <Meta title={kit.title} description={kit.description} />
+      <Meta pageTitle={kit.title} description={kit.description} />
       <section className="bg-white text-black py-16 px-4 border-y">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
           <div className="md:w-1/2">

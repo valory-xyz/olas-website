@@ -6,19 +6,19 @@ import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import servicesData from 'data/agents.json';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
 
-const FieldRow = ({ fieldName, value }) => (
+interface FieldRowProps {
+  fieldName: string;
+  value: string;
+  last?: boolean;
+}
+
+const FieldRow = ({ fieldName, value }: FieldRowProps) => (
   <div className="p-4 flex justify-between gap-8 text-right">
     <div>{fieldName}</div>
     <div>{value}</div>
   </div>
 );
-
-FieldRow.propTypes = {
-  fieldName: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-};
 
 const ServiceDetail = ({ service }) => {
   if (!service) return <Spinner />;
@@ -45,7 +45,6 @@ const ServiceDetail = ({ service }) => {
             <h1 className="text-5xl font-bold mb-4">{service.name}</h1>
             {service.demo && (
               <div className="inline-block">
-                {/* @ts-expect-error TS(2322) FIXME: Type '{ children: string; variant: string; classNa... Remove this comment to see the full error message */}
                 <Badge variant="outline" className="mb-8">
                   Demo
                 </Badge>
@@ -65,7 +64,6 @@ const ServiceDetail = ({ service }) => {
                 <FieldRow
                   fieldName="Description"
                   value={service.description}
-                  // @ts-expect-error TS(2322) FIXME: Type '{ fieldName: string; value: any; last: true;... Remove this comment to see the full error message
                   last
                 />
               )}

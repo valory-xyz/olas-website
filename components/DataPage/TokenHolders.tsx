@@ -8,19 +8,29 @@ import { CodeSnippet } from './CodeSnippet';
 
 const TokenHoldersQuerySnippet = () => (
   <CodeSnippet>
-    {/* @ts-expect-error TS(2339) FIXME: Property 'loc' does not exist on type 'string'. */}
-    {holderCountsQuery.loc?.source?.body || holderCountsQuery}
+    {typeof holderCountsQuery === 'string'
+      ? holderCountsQuery
+      : (holderCountsQuery as { loc?: { source?: { body?: string } } }).loc
+          ?.source?.body || String(holderCountsQuery)}
   </CodeSnippet>
 );
 
-const toNetworkEntry = ({ key, name, address }) =>
+interface TokenEntry {
+  key?: string;
+  name?: string;
+  address?: string;
+}
+
+const toNetworkEntry = ({ key, name, address }: TokenEntry) =>
   key && address ? { key, name, tokenAddress: address } : null;
 
 const selectTokenHolderNetworks = () =>
   tokens
-    // @ts-expect-error TS(2345) FIXME: Argument of type '({ key, name, address }: { key: ... Remove this comment to see the full error message
-    .map(toNetworkEntry)
-    .filter((entry) => entry?.key && entry?.tokenAddress);
+    .map((token: TokenEntry) => toNetworkEntry(token))
+    .filter(
+      (entry): entry is NonNullable<ReturnType<typeof toNetworkEntry>> =>
+        entry !== null && entry !== undefined,
+    );
 
 export const TokenHolders = () => {
   const tokenNetworks = useMemo(selectTokenHolderNetworks, []);

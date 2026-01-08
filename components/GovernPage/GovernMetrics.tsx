@@ -5,7 +5,6 @@ import { usePersistentSWR } from 'hooks';
 import { useMemo } from 'react';
 
 export const GovernMetrics = () => {
-  // @ts-expect-error TS(2554) FIXME: Expected 3 arguments, but got 2.
   const { data: metrics } = usePersistentSWR('governMetrics', getGovernMetrics);
 
   const governData = useMemo(() => {

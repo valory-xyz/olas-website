@@ -1,35 +1,49 @@
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { markdownComponents } from 'styles/globals';
+import type { PluggableList } from 'unified';
 
 interface MarkdownProps {
   className?: string;
   children?: string | React.ReactElement;
 }
 
-const Markdown = ({ className, children }: MarkdownProps) => (
-  // @ts-expect-error TS(2322) FIXME: This JSX tag's 'children' prop expects type 'string'... Remove this comment to see the full error message
-  <ReactMarkdown
-    // @ts-expect-error TS(2322) FIXME: Type '(options?: void | Options) => void | Transfo... Remove this comment to see the full error message
-    remarkPlugins={[remarkGfm]}
-    // @ts-expect-error TS(2322) FIXME: Type '(options?: void | Options) => void | Transfo... Remove this comment to see the full error message
-    rehypePlugins={[rehypeRaw]}
-    urlTransform={(uri) => {
-      if (uri.startsWith('http')) return uri;
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL &&
-        process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-          ? process.env.NEXT_PUBLIC_API_URL
-          : '';
-      return apiUrl ? `${apiUrl}${uri}` : uri;
-    }}
-    components={markdownComponents}
-    className={className}
-  >
-    {children}
-  </ReactMarkdown>
-);
+const Markdown = ({ className, children }: MarkdownProps) => {
+  let childrenString: string;
+  if (typeof children === 'string') {
+    childrenString = children;
+  } else if (React.isValidElement(children)) {
+    const props = children.props as { children?: string };
+    childrenString =
+      typeof props?.children === 'string'
+        ? props.children
+        : String(children || '');
+  } else {
+    childrenString = String(children || '');
+  }
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm] as PluggableList}
+      rehypePlugins={[rehypeRaw] as PluggableList}
+      urlTransform={(uri) => {
+        if (uri.startsWith('http')) return uri;
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL &&
+          process.env.NEXT_PUBLIC_API_URL !== '__URL__'
+            ? process.env.NEXT_PUBLIC_API_URL
+            : '';
+        return apiUrl ? `${apiUrl}${uri}` : uri;
+      }}
+      components={markdownComponents}
+      className={className}
+    >
+      {childrenString}
+    </ReactMarkdown>
+  );
+};
 
 Markdown.defaultProps = {
   className: '',

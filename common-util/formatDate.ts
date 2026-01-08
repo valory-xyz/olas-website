@@ -1,12 +1,11 @@
-export const formatDate = (date) => {
+export const formatDate = (date: string | Date) => {
   const newDate = new Date(date);
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',
     month: 'short',
     year: '2-digit',
   };
 
-  // @ts-expect-error TS(2769) FIXME: No overload matches this call.
   const formattedDate = newDate.toLocaleDateString('en-GB', options);
   return formattedDate.replace(/ /g, '-');
 };

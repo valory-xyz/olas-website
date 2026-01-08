@@ -169,7 +169,6 @@ export const MeetTheBabyDegens = () => (
     customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
   >
     <div className="text-center">
-      {/* @ts-expect-error TS(2741) FIXME: Property 'className' is missing in type '{ childre... Remove this comment to see the full error message */}{' '}
       <H2>
         Meet the{' '}
         <Image

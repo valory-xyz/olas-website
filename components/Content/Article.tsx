@@ -16,7 +16,32 @@ interface ArticleProps {
   article: {
     attributes?: {
       datePublished?: string;
-      headerImage?: object;
+      publishedAt?: string;
+      headerImage?: {
+        data?:
+          | {
+              attributes?: {
+                formats?: {
+                  large?: {
+                    url?: string;
+                    width?: number;
+                    height?: number;
+                  };
+                };
+              };
+            }
+          | Array<{
+              attributes?: {
+                formats?: {
+                  large?: {
+                    url?: string;
+                    width?: number;
+                    height?: number;
+                  };
+                };
+              };
+            }>;
+      };
       slug?: string;
       title?: string;
       readTime?: number;
@@ -31,7 +56,6 @@ const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
-    // @ts-expect-error TS(2339) FIXME: Property 'data' does not exist on type 'object'.
     const imageData = article?.attributes?.headerImage?.data;
     const data = isArray(imageData) ? imageData?.[0] : imageData;
 
@@ -44,9 +68,8 @@ const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
     title,
     readTime,
     datePublished: datePublishedFromArticle,
-    // @ts-expect-error TS(2339) FIXME: Property 'publishedAt' does not exist on type '{ d... Remove this comment to see the full error message
     publishedAt,
-  } = article.attributes;
+  } = article.attributes || {};
   const { url, width, height } = image || {};
   const datePublished = formatDate(datePublishedFromArticle || publishedAt);
 

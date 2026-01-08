@@ -76,7 +76,6 @@ const GetInvolvedCard = ({
     <Link href={href}>
       <Card
         className="activity-card-opaque p-6 grid-flow-row min-h-[278px] h-full hover:bg-white duration-150"
-        // @ts-expect-error TS(2322) FIXME: Type '{ id: string; key: string; className: string; }' is not assignable to type '{ id: string; key: string; className: string; }'
         id={`get-involved-${id}`}
       >
         {imageSrc && title && (
@@ -138,17 +137,16 @@ export const GetInvolved = () => (
         {GET_INVOLVED_DATA.map((datum) => {
           const {
             imageSrc,
-
-            // @ts-expect-error TS(2339) FIXME: Property 'imageHeight' does not exist on type '{ i... Remove this comment to see the full error message
             imageHeight,
-
-            // @ts-expect-error TS(2339) FIXME: Property 'imageWidth' does not exist on type '{ id... Remove this comment to see the full error message
             imageWidth,
             title,
             description,
             ctaText,
             href,
-          } = datum;
+          } = datum as typeof datum & {
+            imageHeight?: number;
+            imageWidth?: number;
+          };
           return (
             <GetInvolvedCard
               key={datum.id}

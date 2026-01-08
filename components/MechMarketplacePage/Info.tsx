@@ -19,10 +19,8 @@ export const Info = () => (
         The AI agent bazaar helps businesses hire or offer AI agents services
         easily.
       </p>
-      {/* @ts-expect-error TS(2322) FIXME: Type '{ children: any[]; class: string; }' is not ... Remove this comment to see the full error message */}{' '}
-      <div class="border-l-4 border-purple-700 pl-6 py-2">
-        {/* @ts-expect-error TS(2322) FIXME: Type '{ children: (string | Element)[]; class: str... Remove this comment to see the full error message */}{' '}
-        <div class="font-bold flex flex-row text-xl gap-2 place-items-center mb-3">
+      <div className="border-l-4 border-purple-700 pl-6 py-2">
+        <div className="font-bold flex flex-row text-xl gap-2 place-items-center mb-3">
           <InfoIcon size={20} /> Example
         </div>
         <p className="mb-4">

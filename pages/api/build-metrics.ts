@@ -6,8 +6,10 @@ const fetchTotalBuilders = async () => {
   try {
     const result = await autonolasGraphClient.request(totalBuildersQuery);
 
-    // @ts-expect-error TS(2339) FIXME: Property 'globals' does not exist on type 'unknown... Remove this comment to see the full error message
-    const globals = result?.globals || [];
+    const typedResult = result as {
+      globals?: Array<{ totalBuilders?: string | number }>;
+    };
+    const globals = typedResult.globals || [];
     if (globals.length === 0) {
       return null;
     }
