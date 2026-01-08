@@ -192,15 +192,17 @@ export const MechAgentMetrics = ({ metrics }) => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                <div className="flex items-center gap-2 justify-center">
+                <div className="flex items-center gap-2">
                   <Link href="/data#mech-requests-categorized" hideArrow>
-                    <div className="flex items-center gap-2 text-black">
+                    <div className="flex items-center">
                       <span
                         className={item.status.stale ? 'text-gray-400' : ''}
                       >
                         {item.value}
                       </span>
-                      <StaleIndicator status={item.status} />
+                      <span className="text-black">
+                        <StaleIndicator status={item.status} />
+                      </span>
                     </div>
                   </Link>
                 </div>
