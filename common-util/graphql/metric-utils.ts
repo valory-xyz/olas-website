@@ -5,7 +5,8 @@ export const createStaleStatus = (
   fetchErrors: string[],
 ): MetricStatus => ({
   stale: indexingErrors.length > 0 || fetchErrors.length > 0,
-  lastValidAt: Date.now(),
+  lastValidAt:
+    indexingErrors.length === 0 && fetchErrors.length === 0 ? Date.now() : null,
   indexingErrors,
   fetchErrors,
 });
