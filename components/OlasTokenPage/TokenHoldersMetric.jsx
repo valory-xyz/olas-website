@@ -6,7 +6,8 @@ import { Link } from '../ui/typography';
 
 export const TokenHoldersMetric = ({ metrics }) => {
   const tokenHolders = metrics?.tokenHolders;
-  const { value, status } = tokenHolders?.totalTokenHolders;
+  const value = tokenHolders?.totalTokenHolders?.value;
+  const status = tokenHolders?.totalTokenHolders?.status;
 
   return (
     <SectionWrapper id="stats" customClasses="border-b-1.5 py-16">

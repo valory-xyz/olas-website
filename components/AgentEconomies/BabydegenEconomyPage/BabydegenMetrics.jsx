@@ -5,6 +5,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
@@ -18,6 +19,7 @@ const formatNumber = (num) => {
 const BabydegenMetricsBubble = ({
   isUnderConstruction = false,
   metrics,
+  status,
   sourceUrl = '/data#babydegen-metrics',
   image,
   title,
@@ -38,6 +40,7 @@ const BabydegenMetricsBubble = ({
           ? formatNumber(metrics.latestUsdcApr)
           : null,
         source: baseSource,
+        status,
       },
       {
         id: 'toETH',
@@ -46,6 +49,7 @@ const BabydegenMetricsBubble = ({
           ? formatNumber(metrics.latestEthApr)
           : null,
         source: baseSource,
+        status,
       },
       {
         id: 'olasApr',
@@ -56,11 +60,12 @@ const BabydegenMetricsBubble = ({
             ? formatNumber(metrics.maxOlasApr)
             : null,
         source: !isNil(metrics?.stakingAprCalculated) ? olasSource : undefined,
+        status,
       },
     ];
 
     return baseMetrics;
-  }, [metrics, sourceUrl]);
+  }, [metrics, sourceUrl, status]);
 
   return (
     <MetricsBubble
@@ -87,14 +92,25 @@ export const BabydegenMetrics = ({ metrics }) => {
             />
             BabyDegen Agent Economy
           </div>
-          {metrics?.dailyActiveAgents ? (
-            <Link
-              className="font-extrabold text-6xl"
-              href="/data#babydegen-daily-active-agents"
-              hideArrow
-            >
-              {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-            </Link>
+          {metrics?.dailyActiveAgents?.value ? (
+            <div className="flex items-center gap-2">
+              <Link
+                className="font-extrabold text-6xl"
+                href="/data#babydegen-daily-active-agents"
+                hideArrow
+              >
+                <span
+                  className={
+                    metrics.dailyActiveAgents.status.stale
+                      ? 'text-gray-400'
+                      : ''
+                  }
+                >
+                  {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
+                </span>
+              </Link>
+              <StaleIndicator status={metrics.dailyActiveAgents.status} />
+            </div>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
           )}
@@ -107,12 +123,14 @@ export const BabydegenMetrics = ({ metrics }) => {
           isUnderConstruction
           title="Modius Agent Economy"
           image="/images/babydegen-econ-page/modius.png"
-          metrics={metrics?.modius}
+          metrics={metrics?.modius?.value}
+          status={metrics?.modius?.status}
         />
         <BabydegenMetricsBubble
           title="Optimus Agent Economy"
           image="/images/babydegen-econ-page/optimus.png"
-          metrics={metrics?.optimus}
+          metrics={metrics?.optimus?.value}
+          status={metrics?.optimus?.status}
         />
       </div>
     </SectionWrapper>

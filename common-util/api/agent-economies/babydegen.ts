@@ -9,11 +9,13 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import tokens from 'data/tokens.json';
@@ -32,32 +34,41 @@ const EMPTY_APR_METRICS = {
   latestUsdcApr: null,
   latestEthApr: null,
   stakingAprCalculated: null,
+  maxOlasApr: null,
 };
 
-type DailyPopulationMetrics = {
+type DailyPopulationMetrics = WithMeta<{
   dailyPopulationMetrics: {
     timestamp: number;
     medianAUM: number;
   }[];
-};
+}>;
 
-const fetchModiusPopulationMetrics = async () => {
+const fetchModiusPopulationMetrics = async (): Promise<
+  MetricWithStatus<any[] | null>
+> => {
+  const indexingErrors: string[] = [];
   try {
-    const result: DailyPopulationMetrics =
-      await BABYDEGEN_GRAPH_CLIENTS.mode.request(
-        dailyBabydegenPopulationMetricsQuery({
-          first: 7,
-          timestampLte: MODIUS_FIXED_END_TIMESTAMP,
-        } as Parameters<typeof dailyBabydegenPopulationMetricsQuery>[0])
-      );
+    const result: DailyPopulationMetrics = (await BABYDEGEN_GRAPH_CLIENTS.mode.request(
+      dailyBabydegenPopulationMetricsQuery({
+        first: 7,
+        timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+      } as Parameters<typeof dailyBabydegenPopulationMetricsQuery>[0])
+    ));
+
+    if (result._meta?.hasIndexingErrors) {
+      indexingErrors.push('babyDegen:mode');
+    }
+
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
-    if (rows.length === 0) return null;
+    if (rows.length === 0)
+      return { value: null, status: createStaleStatus(indexingErrors, []) };
 
     if (rows.length < 7) {
       console.error('Not enough Modius population snapshots before cutoff.');
-      return null;
+      return { value: null, status: createStaleStatus(indexingErrors, []) };
     }
 
     const processed = rows.map((row) => ({
@@ -65,28 +76,43 @@ const fetchModiusPopulationMetrics = async () => {
       medianFundedAUM: toNumber(row.medianAUM),
     }));
 
-    return processed.reverse();
+    return {
+      value: processed.reverse(),
+      status: createStaleStatus(indexingErrors, []),
+    };
   } catch (error) {
     console.error('Error fetching Modius population metrics:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['babyDegen:mode']),
+    };
   }
 };
 
-const fetchOptimusPopulationMetrics = async () => {
+const fetchOptimusPopulationMetrics = async (): Promise<
+  MetricWithStatus<any[] | null>
+> => {
+  const indexingErrors: string[] = [];
   try {
-    const result: DailyPopulationMetrics =
-      await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
-        dailyBabydegenPopulationMetricsQuery({ first: 10 })
-      );
+    const result: DailyPopulationMetrics = (await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
+      dailyBabydegenPopulationMetricsQuery({ first: 10 })
+    ));
+
+    if (result._meta?.hasIndexingErrors) {
+      indexingErrors.push('babyDegen:optimism');
+    }
+
     const rows = Array.isArray(result?.dailyPopulationMetrics)
       ? result.dailyPopulationMetrics
       : [];
-    if (rows.length === 0) return null;
+    if (rows.length === 0)
+      return { value: null, status: createStaleStatus(indexingErrors, []) };
 
     // Exclude today (UTC)
     const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
     const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
-    if (filtered.length < 7) return null;
+    if (filtered.length < 7)
+      return { value: null, status: createStaleStatus(indexingErrors, []) };
 
     // Map medianAUM to medianFundedAUM
     const processedRows = filtered.slice(0, 7).map((row) => ({
@@ -94,140 +120,105 @@ const fetchOptimusPopulationMetrics = async () => {
       medianFundedAUM: toNumber(row.medianAUM),
     }));
 
-    return processedRows.reverse();
+    return {
+      value: processedRows.reverse(),
+      status: createStaleStatus(indexingErrors, []),
+    };
   } catch (error) {
     console.error('Error fetching Optimus population metrics:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['babyDegen:optimism']),
+    };
   }
 };
 
-const fetchOptimusMetrics = async (maxOlasApr) => {
-  const populationResult = await fetchOptimusPopulationMetrics();
+const fetchOptimusMetrics = async (
+  maxOlasApr: MetricWithStatus<number | null>
+): Promise<MetricWithStatus<any>> => {
+  const { value: populationResult, status: populationStatus } =
+    await fetchOptimusPopulationMetrics();
 
   if (!populationResult) {
-    console.error('Optimus population metrics fetch failed');
-    return null;
+    return { value: null, status: populationStatus };
   }
 
   const metrics = buildAprMetrics({
     populationMetrics: populationResult,
-    maxOlasApr,
+    maxOlasApr: maxOlasApr.value,
   });
 
-  return metrics ?? { ...EMPTY_APR_METRICS };
+  return {
+    value: metrics ?? { ...EMPTY_APR_METRICS },
+    status: createStaleStatus(
+      [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ]
+    ),
+  };
 };
 
-const fetchModiusMetrics = async (maxOlasApr) => {
-  const populationResult = await fetchModiusPopulationMetrics();
+const fetchModiusMetrics = async (
+  maxOlasApr: MetricWithStatus<number | null>
+): Promise<MetricWithStatus<any>> => {
+  const { value: populationResult, status: populationStatus } =
+    await fetchModiusPopulationMetrics();
 
   if (!populationResult) {
-    console.error('Modius population metrics fetch failed');
-    return null;
+    return { value: null, status: populationStatus };
   }
 
   const aprMetrics = buildAprMetrics({
     populationMetrics: populationResult,
-    maxOlasApr,
+    maxOlasApr: maxOlasApr.value,
   });
 
   if (!aprMetrics) {
     return {
-      ...EMPTY_APR_METRICS,
-      latestAvgApr: null,
+      value: {
+        ...EMPTY_APR_METRICS,
+        latestAvgApr: null,
+      },
+      status: populationStatus,
     };
   }
 
   return {
-    ...aprMetrics,
-    latestAvgApr: aprMetrics.latestUsdcApr,
+    value: {
+      ...aprMetrics,
+      latestAvgApr: aprMetrics.latestUsdcApr,
+    },
+    status: createStaleStatus(
+      [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ]
+    ),
   };
 };
 
-const toNumber = (value) => {
+const toNumber = (value: unknown) => {
   const num = Number(value);
   return Number.isFinite(num) ? num : 0;
 };
 
-/**
- * Calculates combined daily ROIs by combining agent performance with staking rewards.
- * Uses a single OLAS USD price snapshot for all staking reward conversions.
- * Returns array of daily combined ROI values (agent performance + staking rewards).
- */
-const calculateCombinedDailyROIs = (metrics, stakingTotals, olasUsdPrice) => {
-  if (!Array.isArray(metrics) || metrics.length === 0) return null;
-  if (!Array.isArray(stakingTotals) || stakingTotals.length === 0) return null;
 
-  const stakingByTimestamp = new Map();
-  stakingTotals.forEach((staking) => {
-    stakingByTimestamp.set(staking.timestamp, staking);
-  });
-
-  const combinedRois = [];
-  let lastStakingRoi = 0;
-
-  metrics.forEach((metric) => {
-    const staking = stakingByTimestamp.get(metric.timestamp);
-    let stakingRoi = lastStakingRoi;
-
-    if (staking && olasUsdPrice > 0) {
-      const medianRewardsOlas =
-        Number(BigInt(staking.medianCumulativeRewards)) / 1e18;
-      const medianRewardsUsd = medianRewardsOlas * olasUsdPrice;
-      const medianFundedAum = toNumber(metric.medianFundedAUM);
-
-      stakingRoi =
-        medianFundedAum > 0 ? (medianRewardsUsd / medianFundedAum) * 100 : 0;
-      lastStakingRoi = stakingRoi;
-    }
-
-    const agentRoi = toNumber(metric.medianUnrealisedPnL);
-    combinedRois.push(agentRoi + stakingRoi);
-  });
-
-  return combinedRois;
-};
-
-/**
- * Calculates Simple Moving Average (SMA) over a specified window.
- * Takes the most recent 'window' values and returns their average.
- */
-const calculateSma = (values, window = 7) => {
-  if (!Array.isArray(values) || values.length < window) return null;
-  const subset = values.slice(-window);
-  const sum = subset.reduce((accumulator, value) => accumulator + value, 0);
-  return sum / window;
-};
-
-/**
- * Calculates annualized APR by combining agent performance and staking rewards.
- * Process:
- * 1. Compute daily combined ROIs (agent trading + staking rewards) using the shared OLAS USD price snapshot
- * 2. Calculate 7-day SMA of those ROIs
- * 3. Normalize by average agent age (days active)
- * 4. Annualize by multiplying by 365
- * Returns the final APR percentage.
- */
-const calculateStakingApr = ({ metrics, stakingSnapshots, olasUsdPrice }) => {
-  if (!metrics || !stakingSnapshots) return null;
-
-  const combined = calculateCombinedDailyROIs(
-    metrics,
-    stakingSnapshots,
-    olasUsdPrice
-  );
-  if (!combined) return null;
-
-  const sma = calculateSma(combined, 7);
-  if (sma === null) return null;
-
-  const latestMetric = metrics[metrics.length - 1];
-  const averageAge = toNumber(latestMetric?.averageAgentDaysActive);
-  const annualizationFactor = averageAge > 0 ? sma / averageAge : 0;
-
-  return annualizationFactor * 365;
-};
-
-const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
+const buildAprMetrics = ({
+  populationMetrics,
+  maxOlasApr = null,
+}: {
+  populationMetrics: any[];
+  maxOlasApr: number | null;
+}) => {
   if (!Array.isArray(populationMetrics) || populationMetrics.length === 0) {
     return null;
   }
@@ -240,27 +231,46 @@ const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
     latestUsdcApr,
     latestEthApr,
     stakingAprCalculated: maxOlasApr,
+    maxOlasApr,
   };
 };
 
-const fetchDailyAgentPerformance = async () => {
+const fetchDailyAgentPerformance = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
-    const [modeResult, optimismResult] = await Promise.all([
+    const [modeResult, optimismResult] = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }) as Promise<any>,
+      }),
       REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }) as Promise<any>,
+      }),
     ]);
 
-    const modePerformances = modeResult.dailyAgentPerformances ?? [];
-    const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
+    const handleResult = (
+      result: PromiseSettledResult<any>,
+      source: string
+    ) => {
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${source}`);
+        return [];
+      }
+      if (result.value?._meta?.hasIndexingErrors) {
+        indexingErrors.push(`registry:${source}`);
+      }
+      return result.value?.dailyAgentPerformances ?? [];
+    };
+
+    const modePerformances = handleResult(modeResult, 'mode');
+    const optimismPerformances = handleResult(optimismResult, 'optimism');
 
     const modeAverage = calculate7DayAverage(
       modePerformances,
@@ -271,24 +281,30 @@ const fetchDailyAgentPerformance = async () => {
       'activeMultisigCount'
     );
 
-    const average = modeAverage + optimismAverage;
-
-    return average;
+    return {
+      value: modeAverage + optimismAverage,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching babydegen daily agent performances:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:mode', 'registry:optimism']),
+    };
   }
 };
 
-type StakingContractsResult = {
+type StakingContractsResult = WithMeta<{
   stakingContracts: {
     rewardsPerSecond: string;
     minStakingDeposit: string;
     numAgentInstances: string;
   }[];
-};
+}>;
 
-const fetchModiusOlasApr = async () => {
+const fetchModiusOlasApr = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   try {
     const modiusContractsResult: StakingContractsResult =
       await STAKING_GRAPH_CLIENTS.mode.request(
@@ -296,16 +312,28 @@ const fetchModiusOlasApr = async () => {
       );
 
     const modiusContracts = modiusContractsResult?.stakingContracts;
-    return modiusContracts && modiusContracts.length > 0
-      ? getMaxApr(modiusContracts)
-      : null;
+    return {
+      value:
+        modiusContracts && modiusContracts.length > 0
+          ? getMaxApr(modiusContracts)
+          : null,
+      status: createStaleStatus(
+        modiusContractsResult?._meta?.hasIndexingErrors ? ['staking:mode'] : [],
+        []
+      ),
+    };
   } catch (error) {
     console.error('Error fetching Modius OLAS APR:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['staking:mode']),
+    };
   }
 };
 
-const fetchOptimusOlasApr = async () => {
+const fetchOptimusOlasApr = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   try {
     const optimusContractsResult: StakingContractsResult =
       await STAKING_GRAPH_CLIENTS.optimism.request(
@@ -313,87 +341,53 @@ const fetchOptimusOlasApr = async () => {
       );
 
     const optimusContracts = optimusContractsResult?.stakingContracts;
-    return optimusContracts && optimusContracts.length > 0
-      ? getMaxApr(optimusContracts)
-      : null;
+    return {
+      value:
+        optimusContracts && optimusContracts.length > 0
+          ? getMaxApr(optimusContracts)
+          : null,
+      status: createStaleStatus(
+        optimusContractsResult?._meta?.hasIndexingErrors
+          ? ['staking:optimism']
+          : [],
+        []
+      ),
+    };
   } catch (error) {
     console.error('Error fetching Optimus OLAS APR:', error);
-    return null;
-  }
-};
-
-const fetchAllAgentMetrics = async () => {
-  try {
-    const [modiusMetricsResult, optimusMetricsResult, dailyActiveAgentsResult] =
-      await Promise.allSettled([
-        (async () => {
-          const maxModiusApr = await fetchModiusOlasApr();
-          return fetchModiusMetrics(maxModiusApr);
-        })(),
-        (async () => {
-          const maxOptimusApr = await fetchOptimusOlasApr();
-          return fetchOptimusMetrics(maxOptimusApr);
-        })(),
-        fetchDailyAgentPerformance(),
-      ]);
-
-    let optimusData = null;
-    let modiusData = null;
-    let dailyActiveAgentsData = null;
-
-    if (modiusMetricsResult.status === 'fulfilled') {
-      modiusData = modiusMetricsResult.value;
-    } else {
-      console.error('Modius data fetch failed:', modiusMetricsResult.reason);
-    }
-
-    if (optimusMetricsResult.status === 'fulfilled') {
-      optimusData = optimusMetricsResult.value;
-    } else {
-      console.error(
-        'Optimus metrics fetch failed:',
-        optimusMetricsResult.reason
-      );
-    }
-
-    if (optimusData) {
-      optimusData.maxOlasApr = optimusData.stakingAprCalculated;
-    }
-    if (modiusData) {
-      modiusData.maxOlasApr = modiusData.stakingAprCalculated;
-    }
-
-    if (dailyActiveAgentsResult.status === 'fulfilled') {
-      dailyActiveAgentsData = dailyActiveAgentsResult.value;
-    } else {
-      console.error(
-        'Babydegen DAAs data fetch failed:',
-        dailyActiveAgentsResult.reason
-      );
-    }
-
-    const data = {
-      data: {
-        optimus: optimusData,
-        modius: modiusData,
-        dailyActiveAgents: dailyActiveAgentsData,
-      },
-      timestamp: Date.now(),
+    return {
+      value: null,
+      status: createStaleStatus([], ['staking:optimism']),
     };
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching babydegen metrics:', error);
-    return null;
   }
 };
 
 export const fetchBabyDegenMetrics = async () => {
   try {
-    const latestMetrics = await fetchAllAgentMetrics();
-    return latestMetrics?.data || null;
+    const [modiusApr, optimusApr] = await Promise.all([
+      fetchModiusOlasApr(),
+      fetchOptimusOlasApr(),
+    ]);
+
+    const [modiusMetrics, optimusMetrics, dailyActiveAgents] =
+      await Promise.all([
+        fetchModiusMetrics(modiusApr),
+        fetchOptimusMetrics(optimusApr),
+        fetchDailyAgentPerformance(),
+      ]);
+
+    return {
+      optimus: optimusMetrics,
+      modius: modiusMetrics,
+      dailyActiveAgents,
+    };
   } catch (error) {
     console.error('Error fetching all babydegen metrics:', error);
-    return null;
+    const errorStatus = createStaleStatus([], ['babyDegen:all']);
+    return {
+      optimus: { value: null, status: errorStatus },
+      modius: { value: null, status: errorStatus },
+      dailyActiveAgents: { value: null, status: errorStatus },
+    };
   }
 };

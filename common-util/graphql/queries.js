@@ -38,6 +38,9 @@ export const rewardUpdates = (epochs) => gql`
 
 export const stakingContractsQuery = (addresses) => gql`
   {
+    _meta {
+      hasIndexingErrors
+    }
     stakingContracts(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]}) {
       id
       rewardsPerSecond

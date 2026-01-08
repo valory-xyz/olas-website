@@ -2,12 +2,31 @@ import {
   MECH_FEES_GRAPH_CLIENTS,
   legacyMechFeesGraphClient,
 } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   legacyMechFeesTotalsQuery,
   newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
+import { WithMeta } from 'common-util/graphql/types';
+
+type MechFeesResult = WithMeta<{
+  global: {
+    totalFeesInUSD: string;
+    totalFeesOutUSD: string;
+  };
+}>;
+
+type LegacyMechFeesResult = WithMeta<{
+  global: {
+    totalFeesIn: string;
+    totalFeesOut: string;
+  };
+}>;
 
 export const fetchMechFeeMetrics = async () => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const [gnosisNew, baseNew, legacy] = await Promise.allSettled([
       MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesTotalsQuery),
@@ -15,12 +34,23 @@ export const fetchMechFeeMetrics = async () => {
       legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
     ]);
 
-    const getSafe = (res: PromiseSettledResult<any>) =>
-      res.status === 'fulfilled' ? res.value : null;
+    const getSafe = (
+      res: PromiseSettledResult<any>,
+      source: string
+    ) => {
+      if (res.status === 'rejected') {
+        fetchErrors.push(`mechFees:${source}`);
+        return null;
+      }
+      if (res.value?._meta?.hasIndexingErrors) {
+        indexingErrors.push(`mechFees:${source}`);
+      }
+      return res.value;
+    };
 
-    const gnosisNewGlobal = getSafe(gnosisNew)?.global;
-    const baseNewGlobal = getSafe(baseNew)?.global;
-    const legacyGlobal = getSafe(legacy)?.global;
+    const gnosisNewGlobal = getSafe(gnosisNew, 'gnosis')?.global;
+    const baseNewGlobal = getSafe(baseNew, 'base')?.global;
+    const legacyGlobal = getSafe(legacy, 'legacy')?.global;
 
     const inUsd =
       Number(gnosisNewGlobal?.totalFeesInUSD || 0) +
@@ -37,17 +67,28 @@ export const fetchMechFeeMetrics = async () => {
       );
 
     const unclaimed = Math.max(inUsd - outUsd, 0);
+    const status = createStaleStatus(indexingErrors, fetchErrors);
+    const createMetric = (value: number) => ({ value, status });
 
     return {
-      totalFees: Number(inUsd.toFixed(6)),
-      claimedFees: Number(outUsd.toFixed(6)),
-      recievedFees: Number(outUsd.toFixed(6)),
-      unclaimedFees: Number(unclaimed.toFixed(6)),
-      protocolFees: 0,
-      olasBurned: 0,
+      totalFees: createMetric(Number(inUsd.toFixed(6))),
+      claimedFees: createMetric(Number(outUsd.toFixed(6))),
+      recievedFees: createMetric(Number(outUsd.toFixed(6))),
+      unclaimedFees: createMetric(Number(unclaimed.toFixed(6))),
+      protocolFees: createMetric(0),
+      olasBurned: createMetric(0),
     };
   } catch (error) {
     console.error('Error fetching mech fees from subgraphs:', error);
-    return null;
+    const errorStatus = createStaleStatus([], ['mechFees:all']);
+    const errorMetric = { value: null, status: errorStatus };
+    return {
+      totalFees: errorMetric,
+      claimedFees: errorMetric,
+      recievedFees: errorMetric,
+      unclaimedFees: errorMetric,
+      protocolFees: errorMetric,
+      olasBurned: errorMetric,
+    };
   }
 };
