@@ -40,6 +40,49 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+## Vercel Configuration (`vercel.json`)
+
+The `vercel.json` file configures serverless functions and scheduled cron jobs for refreshing metrics.
+
+### Functions
+
+The `functions` block configures resource limits for serverless API routes:
+
+```json
+"functions": {
+  "pages/api/refresh-metrics/main.ts": {
+    "maxDuration": 300,
+    "memory": 3009
+  }
+}
+```
+
+| Property | Description |
+|----------|-------------|
+| `maxDuration` | Maximum execution time in seconds |
+| `memory` | Memory allocation in MB |
+
+### Crons
+
+The `crons` block schedules automatic API calls as per following syntax:
+
+```json
+"crons": [
+  {
+    "path": "/api/refresh-metrics/main",
+    "schedule": "0 * * * *"
+  }
+]
+```
+
+**Cron syntax:** `minute hour day-of-month month day-of-week`
+
+| Schedule | Meaning | Example Use |
+|----------|---------|-------------|
+| `0 * * * *` | Every hour at minute 0 | Main metrics, Predict metrics |
+| `0 */2 * * *` | Every 2 hours at minute 0 | Agent economies |
+| `0 */6 * * *` | Every 6 hours at minute 0 | Other metrics |
+
 ## Update CMS
 
 This site uses [Strapi](https://strapi.io/) as a CMS. To update the content, run the [CMS backend repo](https://github.com/valory-xyz/cms-backend).

@@ -1,3 +1,4 @@
+import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { Bond } from 'components/BondsPage';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -19,7 +20,7 @@ export const getStaticProps = async () => {
     props: {
       metrics: snapshot?.data || null,
     },
-    revalidate: 60,
+    revalidate: REVALIDATE_DURATION,
   };
 };
 

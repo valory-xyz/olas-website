@@ -6,19 +6,19 @@
     },
     "pages/api/refresh-metrics/predict.ts": {
       "maxDuration": 300,
-      "memory": 3009
+      "memory": 512
     },
     "pages/api/refresh-metrics/agent-economies.ts": {
       "maxDuration": 300,
-      "memory": 3009
+      "memory": 512
     },
     "pages/api/refresh-metrics/other.ts": {
       "maxDuration": 300,
-      "memory": 3009
+      "memory": 512
     },
     "pages/api/refresh-metrics/main.ts": {
       "maxDuration": 300,
-      "memory": 3009
+      "memory": 512
     }
   },
   "crons": [

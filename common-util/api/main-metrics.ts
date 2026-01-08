@@ -75,7 +75,7 @@ const fetchDailyAgentPerformance = async (): Promise<
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
         sum + calculate7DayAverage(performanceByChain, 'count'),
-      0,
+      0
     );
 
     return {
@@ -129,7 +129,7 @@ const fetchTotalOlasStaked = async (): Promise<
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
-      BigInt(0),
+      BigInt(0)
     );
 
     return {
@@ -199,7 +199,7 @@ const fetchTransactions = async (): Promise<
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
-      BigInt(0),
+      BigInt(0)
     );
 
     return {
@@ -263,13 +263,15 @@ const fetchTotalOperators = async (): Promise<
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`registry:${chain}`);
         }
+        // TODO: Update operatorGlobalsQuery to use global(id: '') instead of globals array
+        // to avoid needing to pick the first item
         operatorsByChains.push(data.globals?.[0]?.totalOperators ?? 0);
       }
     });
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
-      0,
+      0
     );
 
     return {
@@ -317,7 +319,9 @@ export const fetchAtaTransactions = async (): Promise<
           indexingErrors.push(`ata:${source}`);
         }
         ataTransactionsByChains.push(
-          data.globals?.[0]?.totalAtaTransactions || '0',
+          // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
+          // to avoid needing to pick the first item
+          data.globals?.[0]?.totalAtaTransactions || '0'
         );
       }
     });
@@ -391,7 +395,7 @@ export const fetchMechFees = async (): Promise<
           } else {
             // New mech fees (indices 0, 1) - already in USD
             const usdValue = Number(
-              (data.global as MechFeesResult['global']).totalFeesInUSD || '0',
+              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
             );
             totalFees += usdValue;
           }

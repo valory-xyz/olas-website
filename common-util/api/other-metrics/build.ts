@@ -27,6 +27,8 @@ const fetchTotalBuilders = async (): Promise<
       };
     }
 
+    // TODO: Update totalBuildersQuery to use global(id: '') instead of globals array
+    // to avoid needing to pick the first item
     return {
       value: Number(globals[0]?.totalBuilders || 0),
       status: createStaleStatus(indexingErrors, []),
