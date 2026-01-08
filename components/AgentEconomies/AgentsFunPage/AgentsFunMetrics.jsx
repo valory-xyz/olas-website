@@ -7,7 +7,7 @@ import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 
 export const AgentsFunMetrics = ({ metrics }) => {
-  const { value, status } = metrics?.dailyActiveAgents;
+  const { value, status } = metrics?.dailyActiveAgents || {};
 
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
@@ -30,7 +30,7 @@ export const AgentsFunMetrics = ({ metrics }) => {
                 href="/data#agentsfun-daily-active-agents"
                 hideArrow
               >
-                <span className={status.stale ? 'text-gray-400' : ''}>
+                <span className={status?.stale ? 'text-gray-400' : ''}>
                   {Math.floor(value).toLocaleString()}
                 </span>
               </Link>
