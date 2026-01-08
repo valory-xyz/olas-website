@@ -218,6 +218,7 @@ const fetchOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
   let lastFourDaysRequests: MechRequestsResponse = [];
+  let hasIndexingErrors = false;
 
   try {
     while (true) {
@@ -228,9 +229,15 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
           skip,
           pages: ROI_PAGES,
         })
-      );
+      ) as any;
 
-      const pageData = Object.values(response).flat() as any[];
+      if (response?._meta?.hasIndexingErrors) {
+        hasIndexingErrors = true;
+      }
+
+      const pageData = Object.entries(response)
+        .filter(([key]) => key !== '_meta')
+        .flatMap(([, value]) => value) as any[];
 
       lastFourDaysRequests = lastFourDaysRequests.concat(pageData);
       skip += ROI_LIMIT * ROI_PAGES;
@@ -245,9 +252,10 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
     }
   } catch (e) {
     console.error("Couldn't fetch all requests", e);
+    return { data: lastFourDaysRequests.length > 0 ? lastFourDaysRequests : [], hasIndexingErrors: false, fetchError: true };
   }
 
-  return lastFourDaysRequests;
+  return { data: lastFourDaysRequests, hasIndexingErrors, fetchError: false };
 };
 
 const fetchRoi = async (): Promise<
@@ -266,7 +274,7 @@ const fetchRoi = async (): Promise<
       marketsAndBetsResult,
       totalRewardsResult,
       olasInUsdPriceResult,
-      lastFourDaysRequests,
+      mechRequestsResult,
     ] = (await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(
@@ -280,7 +288,7 @@ const fetchRoi = async (): Promise<
       MarketsAndBetsResponse,
       StakingGlobalsResponse,
       OlasInUsdPriceResponse,
-      MechRequestsResponse,
+      Awaited<ReturnType<typeof fetchMechRequests>>,
     ];
 
     if (totalRequestsResult._meta?.hasIndexingErrors) {
@@ -292,12 +300,19 @@ const fetchRoi = async (): Promise<
     if (totalRewardsResult._meta?.hasIndexingErrors) {
       indexingErrors.push('staking:gnosis');
     }
+    if (mechRequestsResult.hasIndexingErrors) {
+      indexingErrors.push('mech:requests');
+    }
+    if (mechRequestsResult.fetchError) {
+      fetchErrors.push('mech:requests');
+    }
 
     const olasInUsdPriceInEth = BigInt(
       Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18)
     );
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
+    const lastFourDaysRequests = mechRequestsResult.data;
     const openMarketTitles =
       marketsAndBetsResult.fixedProductMarketMakerCreations.map(
         (market) => market.question

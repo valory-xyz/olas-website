@@ -2,7 +2,10 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { StaleIndicator } from 'components/ui/StaleIndicator';
+import {
+  StaleIndicator,
+  StaleMetricContent,
+} from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -31,6 +34,7 @@ const processPredictMetrics = (metrics) => {
     apr: metrics.apr?.value ?? null,
     aprStatus: metrics.apr?.status,
     partialRoi: metrics.partialRoi?.value ?? null,
+    partialRoiStatus: metrics.partialRoi?.status,
     finalRoi: metrics.finalRoi?.value ?? null,
     roiStatus: metrics.finalRoi?.status,
     successRate: metrics.successRate?.value ?? null,
@@ -61,7 +65,12 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
                   </p>
                   <div className="flex justify-between">
                     <span className="text-gray-900">Partial ROI</span>
-                    <span className="text-purple-600">{`${metrics.partialRoi}%`}</span>
+                    <span
+                      className={`${metrics.partialRoiStatus?.stale ? 'text-gray-400' : ''}`}
+                    >{`${metrics.partialRoi}%`}</span>
+                  </div>
+                  <div className="text-sm">
+                    <StaleMetricContent status={metrics.partialRoiStatus} />
                   </div>
                 </div>
               </Popover>

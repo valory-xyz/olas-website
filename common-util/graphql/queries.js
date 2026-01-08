@@ -102,6 +102,12 @@ export const getMechRequestsQuery = ({
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }`;
 
 export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
