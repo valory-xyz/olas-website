@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority';
+import React from 'react';
 
 import { cn } from 'lib/utils';
 
@@ -22,8 +23,7 @@ const badgeVariants = cva(
   },
 );
 
-interface BadgeProps {
-  className?: string;
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline';
 }
 
