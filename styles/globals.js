@@ -30,7 +30,7 @@ export const markdownComponents = {
   ul: ({ node, ...props }) => (
     <>
       <ul
-        className="list-disc list-inside ml-4 inline-block w-full"
+        className="list-disc list-inside pl-4 inline-block w-full"
         {...props}
       />
       <br />
