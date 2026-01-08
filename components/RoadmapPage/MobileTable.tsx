@@ -15,7 +15,7 @@ const TableCell = ({
   const colorClass =
     column === 'pearl' ? 'roadmap-cell-pearl' : 'roadmap-cell-marketplace';
   return (
-    <td className={`border border-slate-200 p-3 ${colorClass}`}>
+    <td className={`border border-slate-300 p-3 ${colorClass}`}>
       {showCheckmark && <CheckCheck className="inline mr-2" />}
       {children}
     </td>
@@ -33,7 +33,7 @@ const SpanningTableCell = ({
 }: SpanningTableCellProps) => (
   <td
     colSpan={2}
-    className={`text-center text-slate-600 font-medium p-3 border border-slate-200 ${className}`}
+    className={`text-center text-slate-600 font-medium p-3 border border-slate-300 ${className}`}
   >
     {children}
   </td>
@@ -116,13 +116,13 @@ const roadmapData: RoadmapItem[] = [
 
 export const MobileTable = () => (
   <div className="md:hidden w-full h-[1420px] border border-t-1.5 mobile-roadmap-container relative">
-    <table className="table-fixed w-full border border-slate-200 mobile-roadmap-table">
+    <table className="table-fixed w-full border border-slate-300 mobile-roadmap-table">
       <thead className="bg-slate-100 text-center text-lg text-black">
         <tr>
-          <th className="w-1/2 font-medium border border-slate-200 p-3">
+          <th className="w-1/2 font-medium border border-slate-300 p-3">
             Pearl
           </th>
-          <th className="w-1/2 font-medium border border-slate-200 p-3">
+          <th className="w-1/2 font-medium border border-slate-300 p-3">
             Marketplace
           </th>
         </tr>
