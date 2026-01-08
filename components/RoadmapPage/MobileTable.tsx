@@ -1,7 +1,17 @@
 import { CheckCheck } from 'lucide-react';
 import { OlasToken } from './OlasToken';
 
-const TableCell = ({ children, column, showCheckmark = false }) => {
+interface TableCellProps {
+  children: React.ReactNode;
+  column: 'pearl' | 'marketplace';
+  showCheckmark?: boolean;
+}
+
+const TableCell = ({
+  children,
+  column,
+  showCheckmark = false,
+}: TableCellProps) => {
   const colorClass =
     column === 'pearl' ? 'roadmap-cell-pearl' : 'roadmap-cell-marketplace';
   return (
@@ -12,7 +22,15 @@ const TableCell = ({ children, column, showCheckmark = false }) => {
   );
 };
 
-const SpanningTableCell = ({ children, className = '' }) => (
+interface SpanningTableCellProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const SpanningTableCell = ({
+  children,
+  className = '',
+}: SpanningTableCellProps) => (
   <td
     colSpan={2}
     className={`text-center text-slate-600 font-medium p-3 border border-slate-200 ${className}`}
@@ -20,6 +38,81 @@ const SpanningTableCell = ({ children, className = '' }) => (
     {children}
   </td>
 );
+
+type RoadmapItem =
+  | { type: 'section'; label: string; className?: string }
+  | {
+      type: 'row';
+      pearl: string;
+      marketplace: string;
+      showCheckmark?: boolean;
+    };
+
+const roadmapData: RoadmapItem[] = [
+  { type: 'section', label: 'Now' },
+  {
+    type: 'row',
+    pearl: 'AI Agent Ownership',
+    marketplace: 'A2A Collaboration',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'Simplified UX',
+    marketplace: 'Monetize Your Agent',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'Human-like Utility',
+    marketplace: 'x402',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'Web2 UX',
+    marketplace: 'Simplified Onboarding',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'More Agents',
+    marketplace: 'Seamless Data Storage',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'Multiple AI Agents',
+    marketplace: 'ERC-8004',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'Open-source',
+    marketplace: 'Hire Mech Agents',
+    showCheckmark: true,
+  },
+  {
+    type: 'row',
+    pearl: 'No-code Experience',
+    marketplace: '',
+    showCheckmark: true,
+  },
+  { type: 'section', label: 'Short-Term', className: 'pt-10' },
+  { type: 'row', pearl: 'Even More Agents', marketplace: 'Dynamic Fees' },
+  {
+    type: 'row',
+    pearl: 'State-of-the-art UX',
+    marketplace: 'Native x402',
+  },
+  { type: 'section', label: 'Mid-Term', className: 'pt-10' },
+  {
+    type: 'row',
+    pearl: 'Cutting-edge Utility',
+    marketplace: 'Access any Service with just a Signature',
+  },
+  { type: 'row', pearl: ' ', marketplace: 'MCP' },
+];
 
 export const MobileTable = () => (
   <div className="md:hidden w-full h-[1420px] border border-t-1.5 mobile-roadmap-container relative">
@@ -35,94 +128,30 @@ export const MobileTable = () => (
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <SpanningTableCell>Now</SpanningTableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            AI Agent Ownership
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            A2A Collaboration
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            Simplified UX
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            Monetize Your Agent
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            Human-like Utility
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            x402
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            Web2 UX
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            Simplified Onboarding
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            More Agents
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            Seamless Data Storage
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            Multiple AI Agents
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            ERC-8004
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            Open-source
-          </TableCell>
-          <TableCell column="marketplace" showCheckmark>
-            Hire Mech Agents
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl" showCheckmark>
-            No-code Experience
-          </TableCell>
-        </tr>
-        <tr>
-          <SpanningTableCell className="pt-10">Short-Term</SpanningTableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl">Even More Agents</TableCell>
-          <TableCell column="marketplace">Dynamic Fees</TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl">State-of-the-art UX</TableCell>
-          <TableCell column="marketplace">Native x402</TableCell>
-        </tr>
-        <tr>
-          <SpanningTableCell className="pt-10">Mid-Term</SpanningTableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl">Cutting-edge Utility</TableCell>
-          <TableCell column="marketplace">
-            Access any Service with just a Signature
-          </TableCell>
-        </tr>
-        <tr>
-          <TableCell column="pearl"> </TableCell>
-          <TableCell column="marketplace">MCP</TableCell>
-        </tr>
+        {roadmapData.map((item, index) => {
+          if (item.type === 'section') {
+            return (
+              <tr key={index}>
+                <SpanningTableCell className={item.className || ''}>
+                  {item.label}
+                </SpanningTableCell>
+              </tr>
+            );
+          }
+          return (
+            <tr key={index}>
+              <TableCell column="pearl" showCheckmark={item.showCheckmark}>
+                {item.pearl}
+              </TableCell>
+              <TableCell
+                column="marketplace"
+                showCheckmark={item.showCheckmark}
+              >
+                {item.marketplace}
+              </TableCell>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
     <div className="mb-12 mx-auto w-fit bottom-28 mt-16">
