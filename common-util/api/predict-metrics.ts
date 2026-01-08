@@ -1,25 +1,27 @@
 import {
-    DEFAULT_MECH_FEE,
-    GNOSIS_STAKING_CONTRACTS,
-    PREDICT_AGENT_CLASSIFICATION,
-    PREDICT_MARKET_DURATION_DAYS,
+  DEFAULT_MECH_FEE,
+  GNOSIS_STAKING_CONTRACTS,
+  PREDICT_AGENT_CLASSIFICATION,
+  PREDICT_MARKET_DURATION_DAYS,
 } from 'common-util/constants';
 import {
-    mechGraphClient,
-    predictAgentsGraphClient,
-    REGISTRY_GRAPH_CLIENTS,
-    STAKING_GRAPH_CLIENTS,
+  mechGraphClient,
+  predictAgentsGraphClient,
+  REGISTRY_GRAPH_CLIENTS,
+  STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
-    agentTxCountsQuery,
-    dailyPredictAgentsPerformancesQuery,
-    getClosedMarketsBetsQuery,
-    getMarketsAndBetsQuery,
-    getMechRequestsQuery,
-    stakingContractsQuery,
-    stakingGlobalsQuery,
-    totalMechRequestsQuery,
+  agentTxCountsQuery,
+  dailyPredictAgentsPerformancesQuery,
+  getClosedMarketsBetsQuery,
+  getMarketsAndBetsQuery,
+  getMechRequestsQuery,
+  stakingContractsQuery,
+  stakingGlobalsQuery,
+  totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -38,13 +40,13 @@ const SUCCESS_PAGES = 10;
 const INVALID_ANSWER_HEX =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
-type TotalMechRequestsResponse = {
+type TotalMechRequestsResponse = WithMeta<{
   global: {
     totalRequests: number;
   };
-};
+}>;
 
-type MarketsAndBetsResponse = {
+type MarketsAndBetsResponse = WithMeta<{
   fixedProductMarketMakerCreations: {
     question: string;
   }[];
@@ -53,13 +55,13 @@ type MarketsAndBetsResponse = {
     totalFees: number;
     totalPayout: number;
   };
-};
+}>;
 
-type StakingGlobalsResponse = {
+type StakingGlobalsResponse = WithMeta<{
   global: {
     totalRewards: number;
   };
-};
+}>;
 
 type MechRequestsResponse = {
   questionTitle: string;
@@ -71,7 +73,28 @@ type OlasInUsdPriceResponse = {
   };
 };
 
-const fetchPredictDaa7dAvg = async (): Promise<number | null> => {
+type DailyPredictPerformancesResponse = WithMeta<{
+  dailyAgentPerformances: {
+    dayTimestamp: string;
+    activeMultisigCount: number;
+  }[];
+}>;
+
+type AgentTxCountsResponse = WithMeta<{
+  agentPerformances: {
+    id: string;
+    txCount: string;
+  }[];
+}>;
+
+type ClosedMarketsBetsResponse = WithMeta<Record<string, any[]>>;
+
+const fetchPredictDaa7dAvg = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
@@ -82,13 +105,17 @@ const fetchPredictDaa7dAvg = async (): Promise<number | null> => {
         agentIds: PREDICT_AGENT_IDS_FLAT,
         timestamp_gt,
         timestamp_lt,
-      },
-    )) as { dailyAgentPerformances: any[] };
+      }
+    )) as DailyPredictPerformancesResponse;
+
+    if (result._meta?.hasIndexingErrors) {
+      indexingErrors.push('registry:gnosis');
+    }
 
     const rows = result.dailyAgentPerformances || [];
     const totalsByDay = new Map<string, number>();
 
-    rows.forEach((r: any) => {
+    rows.forEach((r) => {
       const key = new Date(Number(r.dayTimestamp) * 1000)
         .toISOString()
         .slice(0, 10);
@@ -104,28 +131,41 @@ const fetchPredictDaa7dAvg = async (): Promise<number | null> => {
 
     const total = dayKeys.reduce(
       (acc, k) => acc + (totalsByDay.get(k) || 0),
-      0,
+      0
     );
-    return Math.floor(total / 7);
+
+    return {
+      value: Math.floor(total / 7),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching Predict DAA:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['predict:daa']),
+    };
   }
 };
 
-const fetchPredictTxsByAgentType = async (): Promise<Record<
-  string,
-  number
-> | null> => {
+const fetchPredictTxsByAgentType = async (): Promise<
+  MetricWithStatus<Record<string, number> | null>
+> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const response = (await REGISTRY_GRAPH_CLIENTS.gnosis.request(
       agentTxCountsQuery,
-      { agentIds: PREDICT_AGENT_IDS_FLAT },
-    )) as { agentPerformances: any[] };
+      { agentIds: PREDICT_AGENT_IDS_FLAT }
+    )) as AgentTxCountsResponse;
+
+    if (response._meta?.hasIndexingErrors) {
+      indexingErrors.push('registry:gnosis');
+    }
 
     const rows = response?.agentPerformances || [];
     const idToTx = new Map<string, bigint>();
-    rows.forEach((row: any) => {
+    rows.forEach((row) => {
       idToTx.set(String(row.id), BigInt(row.txCount || 0));
     });
 
@@ -138,28 +178,42 @@ const fetchPredictTxsByAgentType = async (): Promise<Record<
       result[category] = Number(sum);
     });
 
-    return result;
+    return {
+      value: result,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching Predict Txs:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['predict:txs']),
+    };
   }
 };
 
-const fetchOlasApr = async (): Promise<string | null> => {
+const fetchOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const contractsResult = (await STAKING_GRAPH_CLIENTS.gnosis.request(
-      stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
+      stakingContractsQuery(GNOSIS_STAKING_CONTRACTS)
     )) as { stakingContracts: any[] };
 
     const gnosisContracts = contractsResult?.stakingContracts;
 
-    return `${getMaxApr(gnosisContracts)}`;
+    return {
+      value: `${getMaxApr(gnosisContracts)}`,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching OLAS APR:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['staking:apr']),
+    };
   }
 };
-
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
@@ -173,7 +227,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
           first: ROI_LIMIT,
           skip,
           pages: ROI_PAGES,
-        }),
+        })
       );
 
       const pageData = Object.values(response).flat() as any[];
@@ -196,13 +250,15 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
   return lastFourDaysRequests;
 };
 
-const fetchRoi = async (): Promise<{
-  partialRoi: number;
-  finalRoi: number;
-} | null> => {
+const fetchRoi = async (): Promise<
+  MetricWithStatus<{ partialRoi: number; finalRoi: number } | null>
+> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(
-      PREDICT_MARKET_DURATION_DAYS,
+      PREDICT_MARKET_DURATION_DAYS
     );
 
     const [
@@ -214,7 +270,7 @@ const fetchRoi = async (): Promise<{
     ] = (await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(
-        getMarketsAndBetsQuery(marketOpenTimestamp),
+        getMarketsAndBetsQuery(marketOpenTimestamp)
       ),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
@@ -227,14 +283,24 @@ const fetchRoi = async (): Promise<{
       MechRequestsResponse,
     ];
 
+    if (totalRequestsResult._meta?.hasIndexingErrors) {
+      indexingErrors.push('mech');
+    }
+    if (marketsAndBetsResult._meta?.hasIndexingErrors) {
+      indexingErrors.push('predictAgents');
+    }
+    if (totalRewardsResult._meta?.hasIndexingErrors) {
+      indexingErrors.push('staking:gnosis');
+    }
+
     const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18),
+      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18)
     );
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const openMarketTitles =
       marketsAndBetsResult.fixedProductMarketMakerCreations.map(
-        (market) => market.question,
+        (market) => market.question
       );
 
     let requestsToSubtract = 0;
@@ -245,23 +311,15 @@ const fetchRoi = async (): Promise<{
     });
 
     const totalCosts =
-      BigInt(
-        (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalTraded ||
-          0,
-      ) +
-      BigInt(
-        (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalFees || 0,
-      ) +
+      BigInt(marketsAndBetsResult.global?.totalTraded || 0) +
+      BigInt(marketsAndBetsResult.global?.totalFees || 0) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
 
     const totalMarketPayout = BigInt(
-      (marketsAndBetsResult as MarketsAndBetsResponse).global?.totalPayout || 0,
+      marketsAndBetsResult.global?.totalPayout || 0
     );
     const totalOlasRewardsPayoutInUsd =
-      (BigInt(
-        (totalRewardsResult as StakingGlobalsResponse).global?.totalRewards ||
-          0,
-      ) *
+      (BigInt(totalRewardsResult.global?.totalRewards || 0) *
         olasInUsdPriceInEth) /
       BigInt(1e18);
 
@@ -274,22 +332,37 @@ const fetchRoi = async (): Promise<{
       totalCosts;
 
     return {
-      partialRoi: Number(partialRoi) / Number(SCALE),
-      finalRoi: Number(finalRoi) / Number(SCALE),
+      value: {
+        partialRoi: Number(partialRoi) / Number(SCALE),
+        finalRoi: Number(finalRoi) / Number(SCALE),
+      },
+      status: createStaleStatus(indexingErrors, fetchErrors),
     };
   } catch (error) {
     console.error('Error fetching Predict ROI:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['predict:roi']),
+    };
   }
 };
 
-const fetchSuccessRate = async (): Promise<string | null> => {
+const fetchSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const closedMarketsBetsResult = (await predictAgentsGraphClient.request(
-      getClosedMarketsBetsQuery({ first: SUCCESS_LIMIT, pages: SUCCESS_PAGES }),
-    )) as any;
+      getClosedMarketsBetsQuery({ first: SUCCESS_LIMIT, pages: SUCCESS_PAGES })
+    )) as ClosedMarketsBetsResponse;
 
-    const closedMarketsBets = Object.values(closedMarketsBetsResult).flat() as any[];
+    if (closedMarketsBetsResult._meta?.hasIndexingErrors) {
+      indexingErrors.push('predictAgents');
+    }
+
+    const closedMarketsBets = Object.entries(closedMarketsBetsResult)
+      .filter(([key]) => key !== '_meta')
+      .flatMap(([, value]) => value) as any[];
 
     const totalBets = closedMarketsBets.length;
     let wonBets = 0;
@@ -303,61 +376,94 @@ const fetchSuccessRate = async (): Promise<string | null> => {
       }
     });
 
-    return ((wonBets / totalBets) * 100).toFixed(0);
+    return {
+      value: ((wonBets / totalBets) * 100).toFixed(0),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching Predict Success Rate:', error);
-    return null;
-  }
-};
-
-export const fetchAllPredictMetrics = async () => {
-  try {
-    const [
-      aprResult,
-      daaResult,
-      txsByTypeResult,
-      roiResult,
-      successRateResult,
-    ] = await Promise.allSettled([
-      fetchOlasApr(),
-      fetchPredictDaa7dAvg(),
-      fetchPredictTxsByAgentType(),
-      fetchRoi(),
-      fetchSuccessRate(),
-    ]);
-
-    const metrics = {
-      apr: null,
-      dailyActiveAgents: null,
-      predictTxsByType: null,
-      partialRoi: null,
-      finalRoi: null,
-      successRate: null,
-    };
-
-    if (aprResult.status === 'fulfilled') {
-      metrics.apr = aprResult.value;
-    }
-    if (daaResult.status === 'fulfilled') {
-      metrics.dailyActiveAgents = daaResult.value;
-    }
-    if (txsByTypeResult.status === 'fulfilled') {
-      metrics.predictTxsByType = txsByTypeResult.value;
-    }
-    if (roiResult.status === 'fulfilled' && roiResult.value) {
-      metrics.partialRoi = roiResult.value.partialRoi;
-      metrics.finalRoi = roiResult.value.finalRoi;
-    }
-    if (successRateResult.status === 'fulfilled') {
-      metrics.successRate = successRateResult.value;
-    }
-
     return {
-      data: metrics,
-      timestamp: Date.now(),
+      value: null,
+      status: createStaleStatus([], ['predict:successRate']),
     };
-  } catch (error) {
-    console.error('Error fetching all predict metrics:', error);
-    return null;
   }
 };
+
+export type PredictMetricsData = {
+  apr: MetricWithStatus<string | null>;
+  dailyActiveAgents: MetricWithStatus<number | null>;
+  predictTxsByType: MetricWithStatus<Record<string, number> | null>;
+  partialRoi: MetricWithStatus<number | null>;
+  finalRoi: MetricWithStatus<number | null>;
+  successRate: MetricWithStatus<string | null>;
+};
+
+export type PredictMetricsSnapshot = {
+  data: PredictMetricsData;
+  timestamp: number;
+};
+
+export const fetchAllPredictMetrics =
+  async (): Promise<PredictMetricsSnapshot | null> => {
+    try {
+      const [
+        aprResult,
+        daaResult,
+        txsByTypeResult,
+        roiResult,
+        successRateResult,
+      ] = await Promise.allSettled([
+        fetchOlasApr(),
+        fetchPredictDaa7dAvg(),
+        fetchPredictTxsByAgentType(),
+        fetchRoi(),
+        fetchSuccessRate(),
+      ]);
+
+      const freshStatus = createStaleStatus([], []);
+
+      const data: PredictMetricsData = {
+        apr:
+          aprResult.status === 'fulfilled'
+            ? aprResult.value
+            : { value: null, status: createStaleStatus([], ['predict:apr']) },
+        dailyActiveAgents:
+          daaResult.status === 'fulfilled'
+            ? daaResult.value
+            : { value: null, status: createStaleStatus([], ['predict:daa']) },
+        predictTxsByType:
+          txsByTypeResult.status === 'fulfilled'
+            ? txsByTypeResult.value
+            : { value: null, status: createStaleStatus([], ['predict:txs']) },
+        partialRoi:
+          roiResult.status === 'fulfilled' && roiResult.value.value
+            ? {
+                value: roiResult.value.value.partialRoi,
+                status: roiResult.value.status,
+              }
+            : { value: null, status: createStaleStatus([], ['predict:roi']) },
+        finalRoi:
+          roiResult.status === 'fulfilled' && roiResult.value.value
+            ? {
+                value: roiResult.value.value.finalRoi,
+                status: roiResult.value.status,
+              }
+            : { value: null, status: createStaleStatus([], ['predict:roi']) },
+        successRate:
+          successRateResult.status === 'fulfilled'
+            ? successRateResult.value
+            : {
+                value: null,
+                status: createStaleStatus([], ['predict:successRate']),
+              },
+      };
+
+      return {
+        data,
+        timestamp: Date.now(),
+      };
+    } catch (error) {
+      console.error('Error fetching all predict metrics:', error);
+      return null;
+    }
+  };

@@ -52,6 +52,12 @@ export const totalMechRequestsQuery = gql`
     global(id: "") {
       totalRequests
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -111,6 +117,12 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
       totalFees
       totalPayout
       totalTraded
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -206,6 +218,12 @@ export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -297,6 +315,12 @@ export const dailyPredictAgentsPerformancesQuery = gql`
       dayTimestamp
       activeMultisigCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -360,6 +384,12 @@ export const agentTxCountsQuery = gql`
     ) {
       id
       txCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
