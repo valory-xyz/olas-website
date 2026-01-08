@@ -133,7 +133,7 @@ video {
 }
 
 .roadmap-bg {
-  background-image: url('/images/roadmap-page/roadmap-bg.webp');
+  background-image: url('/images/roadmap-page/roadmap.webp');
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: contain;
@@ -249,4 +249,36 @@ tr, th {
     padding-top: 90px;
     margin-top: -90px;
   }
+}
+
+/* Mobile Roadmap Table Styles */
+.mobile-roadmap-container {
+  background-image: url('/images/roadmap-page/roadmap-mobile.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mobile-roadmap-table,
+.mobile-roadmap-table tbody,
+.mobile-roadmap-table tr,
+.mobile-roadmap-table td,
+.mobile-roadmap-table th {
+  background-color: transparent;
+}
+
+.mobile-roadmap-table .roadmap-cell-pearl {
+  color: #db2777;
+}
+
+.mobile-roadmap-table .roadmap-cell-pearl svg {
+  color: #db2777;
+}
+
+.mobile-roadmap-table .roadmap-cell-marketplace {
+  color: #7e22ce;
+}
+
+.mobile-roadmap-table .roadmap-cell-marketplace svg {
+  color: #7e22ce;
 }
