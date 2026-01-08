@@ -40,17 +40,16 @@ export default function Home({ metrics }) {
 export const getStaticProps = async () => {
   const metricsSnapshot = await getSnapshot({ category: 'main' });
 
-  const metrics = metricsSnapshot?.data || null;
-  const mappedMetrics = metrics
+  const metrics = metricsSnapshot?.data
     ? {
-        ...metrics,
-        mechTurnover: metrics.mechFees,
+        ...metricsSnapshot.data,
+        mechTurnover: metricsSnapshot.data.mechFees,
       }
     : null;
 
   return {
     props: {
-      metrics: mappedMetrics,
+      metrics,
     },
     revalidate: REVALIDATE_DURATION,
   };

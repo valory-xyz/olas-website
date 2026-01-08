@@ -121,6 +121,12 @@ export const stakingGlobalsQuery = gql`
       totalRewards
       currentOlasStaked
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -373,6 +379,12 @@ export const dailyAgentPerformancesQuery = gql`
       id
       count
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -381,6 +393,12 @@ export const registryGlobalsQuery = gql`
     global(id: "") {
       id
       txCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -391,6 +409,12 @@ export const operatorGlobalsQuery = gql`
       id
       totalOperators
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -399,6 +423,12 @@ export const ataTransactionsQuery = gql`
     globals(where: { id: "" }) {
       id
       totalAtaTransactions
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -409,6 +439,12 @@ export const newMechFeesQuery = gql`
       id
       totalFeesInUSD
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -417,6 +453,12 @@ export const legacyMechFeesQuery = gql`
     global(id: "") {
       id
       totalFeesIn
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;

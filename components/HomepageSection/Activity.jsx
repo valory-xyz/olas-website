@@ -3,6 +3,10 @@ import { formatEthNumber } from 'common-util/numberFormatter';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
+import {
+  StaleIndicator,
+  StaleMetricContent,
+} from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -10,6 +14,26 @@ import { useMemo } from 'react';
 const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
+
+const ActivityValue = ({
+  LinkComponent,
+  href,
+  value,
+  text,
+  status,
+  textSize = 'xl',
+}) => (
+  <div className="flex flex-row gap-2 place-items-center">
+    <LinkComponent href={href}>
+      <div
+        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${status?.stale ? 'text-gray-400' : 'text-purple-700'}`}
+      >
+        {value}
+      </div>
+    </LinkComponent>
+    {text}
+  </div>
+);
 
 const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
   <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
@@ -54,6 +78,7 @@ const ActivityCard = ({
     text: primaryText,
     link: primaryLink,
     value: primaryValue,
+    status: primaryStatus,
     isLinkExternal: primaryIsLinkExternal = true,
   },
   secondary = {},
@@ -64,6 +89,7 @@ const ActivityCard = ({
     link: secondaryLink,
     value: secondaryValue,
     isLinkExternal: secondaryIsLinkExternal = true,
+    status: secondaryStatus,
   } = secondary;
 
   const {
@@ -71,6 +97,7 @@ const ActivityCard = ({
     link: tertiaryLink,
     value: tertiaryValue,
     isLinkExternal: tertiaryIsLinkExternal = true,
+    status: tertiaryStatus,
   } = tertiary;
 
   const PrimaryLink = primaryIsLinkExternal ? ExternalLink : Link;
@@ -88,52 +115,73 @@ const ActivityCard = ({
         />
         {text}
       </div>
-      <div className="flex flex-row gap-2 place-items-center">
-        <PrimaryLink href={primaryLink}>
-          <div className="text-purple-700 text-2xl font-semibold">
-            {primaryValue}
-          </div>
-        </PrimaryLink>
-        {primaryText}
-      </div>
+      <ActivityValue
+        LinkComponent={PrimaryLink}
+        href={primaryLink}
+        value={primaryValue}
+        text={primaryText}
+        status={primaryStatus}
+        textSize="2xl"
+      />
       {secondaryValue && (
-        <div className="flex flex-row gap-2 place-items-center">
-          <SecondaryLink href={secondaryLink}>
-            <div className="text-purple-700 text-xl font-semibold">
-              {secondaryValue}
-            </div>
-          </SecondaryLink>
-          {secondaryText}
-        </div>
+        <ActivityValue
+          LinkComponent={SecondaryLink}
+          href={secondaryLink}
+          value={secondaryValue}
+          text={secondaryText}
+          status={secondaryStatus}
+          textSize="xl"
+        />
       )}
       {tertiaryValue && (
-        <div className="flex flex-row gap-2 place-items-center">
-          <TertiaryLink href={tertiaryLink}>
-            <div className="text-purple-700 text-xl font-semibold">
-              {tertiaryValue}
-            </div>
-          </TertiaryLink>
-          {tertiaryText}
-        </div>
+        <ActivityValue
+          LinkComponent={TertiaryLink}
+          href={tertiaryLink}
+          value={tertiaryValue}
+          text={tertiaryText}
+          status={tertiaryStatus}
+          textSize="xl"
+        />
       )}
     </Card>
   );
 };
 
-const UsersCard = ({ olasStaked, totalOperators }) => (
+const UsersCard = ({
+  olasStaked,
+  totalOperators,
+  totalOperatorsStatus,
+  olasStakedStatus,
+}) => (
   <ActivityCard
     icon="users.png"
     text="Users"
     primary={{
       value: totalOperators,
-      text: 'Agents deployed',
+      text: (
+        <>
+          Agents deployed
+          {totalOperatorsStatus?.stale && (
+            <StaleIndicator status={totalOperatorsStatus} />
+          )}
+        </>
+      ),
       link: '/data#operators',
+      status: totalOperatorsStatus,
       isLinkExternal: false,
     }}
     secondary={{
       value: olasStaked,
-      text: 'OLAS staked',
+      text: (
+        <>
+          OLAS staked
+          {olasStakedStatus?.stale && (
+            <StaleIndicator status={olasStakedStatus} />
+          )}
+        </>
+      ),
       link: '/data#olas-staked',
+      status: olasStakedStatus,
       isLinkExternal: false,
     }}
   />
@@ -152,7 +200,10 @@ const OlasBurnedCard = () => (
   />
 );
 
-const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
+const DailyActiveAgentsCard = ({
+  dailyActiveAgents,
+  dailyActiveAgentsStatus,
+}) => (
   <ActivityCard
     icon="daas.png"
     alt="Daily Active Agents"
@@ -160,9 +211,18 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
     iconHeight={56}
     primary={{
       value: dailyActiveAgents,
+      status: dailyActiveAgentsStatus,
       text: (
         <>
-          DAAs <Popover>7-day average Daily Active Agents</Popover>
+          DAAs{' '}
+          <Popover>
+            7-day average Daily Active Agents
+            {dailyActiveAgentsStatus?.stale && (
+              <div className="mt-4">
+                <StaleMetricContent status={dailyActiveAgentsStatus} />
+              </div>
+            )}
+          </Popover>
         </>
       ),
       link: '/data#daily-active-agents',
@@ -171,7 +231,12 @@ const DailyActiveAgentsCard = ({ dailyActiveAgents }) => (
   />
 );
 
-const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
+const AgentToAgentCard = ({
+  ataTransactions,
+  mechTurnover,
+  ataTransactionsStatus,
+  mechTurnoverStatus,
+}) => (
   <ActivityCard
     icon="agent-to-agent.png"
     alt="Agent to Agent"
@@ -179,14 +244,30 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
     iconHeight={36}
     primary={{
       value: formatEthNumber(ataTransactions, { notation: 'standard' }),
-      text: 'A2A txns',
+      text: (
+        <>
+          A2A txns
+          {ataTransactionsStatus?.stale && (
+            <StaleIndicator status={ataTransactionsStatus} />
+          )}
+        </>
+      ),
       link: '/data#ata-transactions',
+      status: ataTransactionsStatus,
       isLinkExternal: false,
     }}
     secondary={{
       value: `$${Number(mechTurnover).toLocaleString()}`,
-      text: 'turnover',
+      text: (
+        <>
+          turnover
+          {mechTurnoverStatus?.stale && (
+            <StaleIndicator status={mechTurnoverStatus} />
+          )}
+        </>
+      ),
       link: '/data#mech-turnover',
+      status: mechTurnoverStatus,
       isLinkExternal: false,
     }}
     tertiary={{
@@ -198,14 +279,22 @@ const AgentToAgentCard = ({ ataTransactions, mechTurnover }) => (
   />
 );
 
-const TransactionsCard = ({ transactions }) => (
+const TransactionsCard = ({ transactions, transactionsStatus }) => (
   <ActivityCard
     icon="txns.png"
     alt="Transactions"
     primary={{
       value: transactions,
-      text: 'txns',
+      text: (
+        <>
+          txns
+          {transactionsStatus?.stale && (
+            <StaleIndicator status={transactionsStatus} />
+          )}
+        </>
+      ),
       link: '/data#transactions',
+      status: transactionsStatus,
       isLinkExternal: false,
     }}
   />
@@ -232,12 +321,19 @@ export const Activity = ({ metrics }) => {
     if (!metrics) return null;
 
     return {
-      transactions: metrics.transactions?.toLocaleString() || '--',
-      olasStaked: metrics.olasStaked?.toLocaleString() || '--',
-      dailyActiveAgents: metrics.dailyActiveAgents?.toLocaleString() || '--',
-      mechTurnover: metrics.mechTurnover || '--',
-      ataTransactions: metrics.ataTransactions?.toLocaleString() || '--',
-      totalOperators: metrics.totalOperators?.toLocaleString() || '--',
+      transactions: metrics.transactions?.value?.toLocaleString() || '--',
+      transactionsStatus: metrics.transactions?.status,
+      olasStaked: metrics.olasStaked?.value?.toLocaleString() || '--',
+      olasStakedStatus: metrics.olasStaked?.status,
+      dailyActiveAgents:
+        metrics.dailyActiveAgents?.value?.toLocaleString() || '--',
+      dailyActiveAgentsStatus: metrics.dailyActiveAgents?.status,
+      mechTurnover: metrics.mechTurnover?.value || '--',
+      mechTurnoverStatus: metrics.mechTurnover?.status,
+      ataTransactions: metrics.ataTransactions?.value?.toLocaleString() || '--',
+      ataTransactionsStatus: metrics.ataTransactions?.status,
+      totalOperators: metrics.totalOperators?.value?.toLocaleString() || '--',
+      totalOperatorsStatus: metrics.totalOperators?.status,
     };
   }, [metrics]);
 
@@ -273,6 +369,8 @@ export const Activity = ({ metrics }) => {
           <UsersCard
             olasStaked={processedMetrics?.olasStaked}
             totalOperators={processedMetrics?.totalOperators}
+            totalOperatorsStatus={processedMetrics?.totalOperatorsStatus}
+            olasStakedStatus={processedMetrics?.olasStakedStatus}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -297,6 +395,9 @@ export const Activity = ({ metrics }) => {
           <div className="flex flex-col">
             <DailyActiveAgentsCard
               dailyActiveAgents={processedMetrics?.dailyActiveAgents}
+              dailyActiveAgentsStatus={
+                processedMetrics?.dailyActiveAgentsStatus
+              }
             />
             <div className="flex flex-row">
               <Image
@@ -316,6 +417,8 @@ export const Activity = ({ metrics }) => {
           <AgentToAgentCard
             ataTransactions={processedMetrics?.ataTransactions}
             mechTurnover={processedMetrics?.mechTurnover}
+            ataTransactionsStatus={processedMetrics?.ataTransactionsStatus}
+            mechTurnoverStatus={processedMetrics?.mechTurnoverStatus}
           />
           <div>
             <Image
@@ -327,7 +430,10 @@ export const Activity = ({ metrics }) => {
             />
             <p>AI Agent Bazaar is used</p>
           </div>
-          <TransactionsCard transactions={processedMetrics?.transactions} />
+          <TransactionsCard
+            transactions={processedMetrics?.transactions}
+            transactionsStatus={processedMetrics?.transactionsStatus}
+          />
         </div>
       </div>
 
@@ -335,6 +441,8 @@ export const Activity = ({ metrics }) => {
         <UsersCard
           olasStaked={processedMetrics?.olasStaked}
           totalOperators={processedMetrics?.totalOperators}
+          totalOperatorsStatus={processedMetrics?.totalOperatorsStatus}
+          olasStakedStatus={processedMetrics?.olasStakedStatus}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}
@@ -345,6 +453,7 @@ export const Activity = ({ metrics }) => {
         />
         <DailyActiveAgentsCard
           dailyActiveAgents={processedMetrics?.dailyActiveAgents}
+          dailyActiveAgentsStatus={processedMetrics?.dailyActiveAgentsStatus}
         />
         <Image
           src={`${imgPath}mobile-arrow2.png`}

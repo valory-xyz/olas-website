@@ -1,7 +1,8 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import { ExternalLink } from 'components/ui/typography';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useMemo } from 'react';
 
 export const OperateMetrics = ({ metrics }) => {
@@ -12,7 +13,8 @@ export const OperateMetrics = ({ metrics }) => {
         imageSrc: 'operators.png',
         labelText: 'Operators',
         subText: 'All-time unique agent Operators',
-        value: metrics?.totalOperators?.toLocaleString(),
+        value: metrics?.totalOperators?.value?.toLocaleString(),
+        status: metrics?.totalOperators?.status,
         source: '/data#operators',
       },
       {
@@ -20,7 +22,8 @@ export const OperateMetrics = ({ metrics }) => {
         imageSrc: 'DAA.png',
         labelText: 'Daily Active Agents (DAAs)',
         subText: 'Agents running daily, averaged over 7 days',
-        value: metrics?.dailyActiveAgents?.toLocaleString(),
+        value: metrics?.dailyActiveAgents?.value?.toLocaleString(),
+        status: metrics?.dailyActiveAgents?.status,
         source: '/data#daily-active-agents',
       },
     ],
@@ -40,12 +43,14 @@ export const OperateMetrics = ({ metrics }) => {
           if (index == 0)
             borderClassName +=
               'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200';
+          const isStale = item.status?.stale;
+
           const getValue = () => {
             if (!item.value) return '--';
             return (
-              <ExternalLink href={item.source} hideArrow>
+              <Link href={item.source} hideArrow>
                 {item.value}
-              </ExternalLink>
+              </Link>
             );
           };
           return (
@@ -66,9 +71,18 @@ export const OperateMetrics = ({ metrics }) => {
                   {item.labelText}
                 </span>
               </div>
-              <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
-                {getValue()}
-              </span>
+              <div className="flex justify-center items-center mb-4">
+                <span
+                  className={`text-5xl max-sm:text-4xl font-extrabold ${isStale ? 'text-gray-400' : 'text-purple-600'}`}
+                >
+                  {getValue()}
+                </span>
+                {isStale && (
+                  <span className="ml-2">
+                    <StaleIndicator status={item.status} />
+                  </span>
+                )}
+              </div>
               <span className="block text-lg text-slate-700">
                 {item.subText}
               </span>

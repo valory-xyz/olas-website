@@ -15,19 +15,40 @@ import {
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
+import {
+  MetricStatus,
+  MetricWithStatus,
+  WithMeta,
+} from 'common-util/graphql/types';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-type DailyAgentPerformancesResult = {
+
+const createStaleStatus = (
+  indexingErrors: string[],
+  fetchErrors: string[]
+): MetricStatus => ({
+  stale: indexingErrors.length > 0 || fetchErrors.length > 0,
+  lastValidAt: Date.now(),
+  indexingErrors,
+  fetchErrors,
+});
+
+type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
     id: string;
     count: number;
   }[];
-};
+}>;
 
-const fetchDailyAgentPerformance = async (): Promise<number | null> => {
+const fetchDailyAgentPerformance = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  const chains = ['gnosis', 'base', 'mode', 'optimism'] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled([
@@ -49,13 +70,21 @@ const fetchDailyAgentPerformance = async (): Promise<number | null> => {
       }),
     ]);
 
-    const performanceByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<DailyAgentPerformancesResult>).value
-            .dailyActiveMultisigs_collection ?? []
-      );
+    const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
+      [];
+
+    results.forEach((result, index) => {
+      const chain = chains[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${chain}`);
+      } else {
+        const data = result.value as DailyAgentPerformancesResult;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`registry:${chain}`);
+        }
+        performanceByChains.push(data.dailyActiveMultisigs_collection ?? []);
+      }
+    });
 
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
@@ -63,20 +92,32 @@ const fetchDailyAgentPerformance = async (): Promise<number | null> => {
       0
     );
 
-    return Math.floor(totalAverage);
+    return {
+      value: Math.floor(totalAverage),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching daily agent performances:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:all']),
+    };
   }
 };
 
-type StakingGlobalsResult = {
+type StakingGlobalsResult = WithMeta<{
   global: {
     currentOlasStaked: string;
   };
-};
+}>;
 
-const fetchTotalOlasStaked = async (): Promise<string | null> => {
+const fetchTotalOlasStaked = async (): Promise<
+  MetricWithStatus<string | null>
+> => {
+  const chains = ['gnosis', 'base', 'mode', 'optimism'] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const results = await Promise.allSettled([
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
@@ -85,36 +126,64 @@ const fetchTotalOlasStaked = async (): Promise<string | null> => {
       STAKING_GRAPH_CLIENTS.optimism.request(stakingGlobalsQuery),
     ]);
 
-    const olasStakedByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<StakingGlobalsResult>).value.global
-            ?.currentOlasStaked ?? '0'
-      );
+    const olasStakedByChains: string[] = [];
+
+    results.forEach((result, index) => {
+      const chain = chains[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`staking:${chain}`);
+      } else {
+        const data = result.value as StakingGlobalsResult;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`staking:${chain}`);
+        }
+        olasStakedByChains.push(data.global?.currentOlasStaked ?? '0');
+      }
+    });
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
       BigInt(0)
     );
 
-    return formatWeiNumber(`${olasStaked}`, {
-      notation: 'standard',
-      maximumFractionDigits: 0,
-    });
+    return {
+      value: formatWeiNumber(`${olasStaked}`, {
+        notation: 'standard',
+        maximumFractionDigits: 0,
+      }),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching OLAS staked:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['staking:all']),
+    };
   }
 };
 
-type RegistryGlobalsResult = {
+type RegistryGlobalsResult = WithMeta<{
   global: {
     txCount: string;
   };
-};
+}>;
 
-const fetchTransactions = async (): Promise<string | null> => {
+const fetchTransactions = async (): Promise<
+  MetricWithStatus<string | null>
+> => {
+  const chains = [
+    'gnosis',
+    'base',
+    'mode',
+    'optimism',
+    'celo',
+    'ethereum',
+    'polygon',
+    'arbitrum',
+  ] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const results = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(registryGlobalsQuery),
@@ -127,36 +196,64 @@ const fetchTransactions = async (): Promise<string | null> => {
       REGISTRY_GRAPH_CLIENTS.arbitrum.request(registryGlobalsQuery),
     ]);
 
-    const txCountByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<RegistryGlobalsResult>).value.global
-            ?.txCount ?? '0'
-      );
+    const txCountByChains: string[] = [];
+
+    results.forEach((result, index) => {
+      const chain = chains[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${chain}`);
+      } else {
+        const data = result.value as RegistryGlobalsResult;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`registry:${chain}`);
+        }
+        txCountByChains.push(data.global?.txCount ?? '0');
+      }
+    });
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
       BigInt(0)
     );
 
-    return formatEthNumber(`${transactions}`, {
-      notation: 'standard',
-      maximumFractionDigits: 0,
-    });
+    return {
+      value: formatEthNumber(`${transactions}`, {
+        notation: 'standard',
+        maximumFractionDigits: 0,
+      }),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching transactions:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:all']),
+    };
   }
 };
 
-type OperatorGlobalsResult = {
+type OperatorGlobalsResult = WithMeta<{
   globals: {
     totalOperators: number;
   }[];
-};
+}>;
 
-const fetchTotalOperators = async (): Promise<number | null> => {
+const fetchTotalOperators = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
+  const chains = [
+    'gnosis',
+    'base',
+    'mode',
+    'optimism',
+    'celo',
+    'ethereum',
+    'polygon',
+    'arbitrum',
+  ] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const results = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
@@ -169,33 +266,52 @@ const fetchTotalOperators = async (): Promise<number | null> => {
       REGISTRY_GRAPH_CLIENTS.arbitrum.request(operatorGlobalsQuery),
     ]);
 
-    const operatorsByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<OperatorGlobalsResult>).value
-            .globals?.[0]?.totalOperators ?? 0
-      );
+    const operatorsByChains: number[] = [];
+
+    results.forEach((result, index) => {
+      const chain = chains[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${chain}`);
+      } else {
+        const data = result.value as OperatorGlobalsResult;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`registry:${chain}`);
+        }
+        operatorsByChains.push(data.globals?.[0]?.totalOperators ?? 0);
+      }
+    });
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
       0
     );
 
-    return totalOperators;
+    return {
+      value: totalOperators,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching total operators:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:all']),
+    };
   }
 };
 
-type AtaTransactionsResult = {
+type AtaTransactionsResult = WithMeta<{
   globals: {
     totalAtaTransactions: string;
   }[];
-};
+}>;
 
-export const fetchAtaTransactions = async () => {
+export const fetchAtaTransactions = async (): Promise<
+  MetricWithStatus<string | null>
+> => {
+  const sources = ['gnosis', 'base', 'legacyMech'] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const results = await Promise.allSettled([
       ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
@@ -203,167 +319,161 @@ export const fetchAtaTransactions = async () => {
       ATA_GRAPH_CLIENTS.legacyMech.request(ataTransactionsQuery),
     ]);
 
-    const ataTransactionsByChains = results
-      .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<AtaTransactionsResult>).value
-            ?.globals?.[0]?.totalAtaTransactions || '0'
-      );
+    const ataTransactionsByChains: string[] = [];
 
-    return ataTransactionsByChains
+    results.forEach((result, index) => {
+      const source = sources[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`ata:${source}`);
+      } else {
+        const data = result.value as AtaTransactionsResult;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`ata:${source}`);
+        }
+        ataTransactionsByChains.push(
+          data.globals?.[0]?.totalAtaTransactions || '0'
+        );
+      }
+    });
+
+    const value = ataTransactionsByChains
       .reduce((sum, ataTxByChain) => sum + BigInt(ataTxByChain), BigInt(0))
       .toString();
+
+    return {
+      value,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching ATA transactions:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['ata:all']),
+    };
   }
 };
 
-type MechFeesResult = {
+type MechFeesResult = WithMeta<{
   global: {
     totalFeesIn: string;
     totalFeesInUSD: string;
   };
-};
+}>;
 
-type LegacyMechFeesResult = {
+type LegacyMechFeesResult = WithMeta<{
   global: {
     totalFeesIn: string;
   };
-};
+}>;
 
-export const fetchMechFees = async () => {
+export const fetchMechFees = async (): Promise<
+  MetricWithStatus<string | null>
+> => {
+  const sources = ['gnosis', 'base', 'legacy'] as const;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
-    const results = (await Promise.allSettled([
+    const results = await Promise.allSettled([
       MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
       MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
       legacyMechFeesGraphClient.request(legacyMechFeesQuery),
-    ])) as [
-      PromiseFulfilledResult<MechFeesResult>,
-      PromiseFulfilledResult<MechFeesResult>,
-      PromiseFulfilledResult<LegacyMechFeesResult>,
-    ];
+    ]);
 
     let totalFees = 0;
 
     results.forEach((result, index) => {
-      if (result.status === 'fulfilled' && result.value?.global) {
-        const feeValue = result.value.global;
+      const source = sources[index];
+      if (result.status === 'rejected') {
+        fetchErrors.push(`mechFees:${source}`);
+      } else {
+        const data =
+          index === 2
+            ? (result.value as LegacyMechFeesResult)
+            : (result.value as MechFeesResult);
 
-        if (index === 2) {
-          // Legacy mech fees (index 2) - convert from wei to XDAI
-          const weiValue = feeValue.totalFeesIn || '0';
-          const xdaiValue = Number(weiValue) / 10 ** 18;
-          totalFees += xdaiValue;
-        } else {
-          // New mech fees (indices 0, 1) - already in USD
-          const usdValue = Number(
-            (feeValue as MechFeesResult['global']).totalFeesInUSD || '0'
-          );
-          totalFees += usdValue;
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`mechFees:${source}`);
+        }
+
+        if (data.global) {
+          if (index === 2) {
+            // Legacy mech fees (index 2) - convert from wei to XDAI
+            const weiValue =
+              (data.global).totalFeesIn ||
+              '0';
+            const xdaiValue = Number(weiValue) / 10 ** 18;
+            totalFees += xdaiValue;
+          } else {
+            // New mech fees (indices 0, 1) - already in USD
+            const usdValue = Number(
+              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
+            );
+            totalFees += usdValue;
+          }
         }
       }
     });
 
-    return totalFees.toFixed(2);
+    return {
+      value: totalFees.toFixed(2),
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching mech fees:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['mechFees:all']),
+    };
   }
 };
 
-export const fetchAllAgentMetrics = async (): Promise<{
-  data: {
-    dailyActiveAgents: number | null;
-    olasStaked: string | null;
-    transactions: string | null;
-    ataTransactions: string | null;
-    mechFees: string | null;
-    totalOperators: number | null;
-  };
+export type MainMetricsData = {
+  dailyActiveAgents: MetricWithStatus<number | null>;
+  olasStaked: MetricWithStatus<string | null>;
+  transactions: MetricWithStatus<string | null>;
+  ataTransactions: MetricWithStatus<string | null>;
+  mechFees: MetricWithStatus<string | null>;
+  totalOperators: MetricWithStatus<number | null>;
+};
+
+export type MainMetricsSnapshot = {
+  data: MainMetricsData;
   timestamp: number;
-} | null> => {
-  try {
-    const [
-      dailyActiveAgentsResult,
-      olasStakedResult,
-      transactionsResult,
-      ataTransactionsResult,
-      mechFeesResult,
-      totalOperatorsResult,
-    ] = await Promise.allSettled([
-      fetchDailyAgentPerformance(),
-      fetchTotalOlasStaked(),
-      fetchTransactions(),
-      fetchAtaTransactions(),
-      fetchMechFees(),
-      fetchTotalOperators(),
-    ]);
-
-    const metrics = {
-      dailyActiveAgents: null,
-      olasStaked: null,
-      transactions: null,
-      ataTransactions: null,
-      mechFees: null,
-      totalOperators: null,
-    };
-
-    // Process the results from Promise.allSettled
-    if (dailyActiveAgentsResult.status === 'fulfilled') {
-      metrics.dailyActiveAgents = dailyActiveAgentsResult.value;
-    } else {
-      console.error(
-        'Fetch daily active agents failed:',
-        dailyActiveAgentsResult.reason
-      );
-    }
-
-    if (olasStakedResult.status === 'fulfilled') {
-      metrics.olasStaked = olasStakedResult.value;
-    } else {
-      console.error('Fetch OLAS staked failed:', olasStakedResult.reason);
-    }
-
-    if (transactionsResult.status === 'fulfilled') {
-      metrics.transactions = transactionsResult.value;
-    } else {
-      console.error('Fetch transactions failed:', transactionsResult.reason);
-    }
-
-    if (ataTransactionsResult.status === 'fulfilled') {
-      metrics.ataTransactions = ataTransactionsResult.value;
-    } else {
-      console.error(
-        'Fetch ATA transactions failed:',
-        ataTransactionsResult.reason
-      );
-    }
-
-    if (mechFeesResult.status === 'fulfilled') {
-      metrics.mechFees = mechFeesResult.value;
-    } else {
-      console.error('Fetch mech fees failed:', mechFeesResult.reason);
-    }
-
-    if (totalOperatorsResult.status === 'fulfilled') {
-      metrics.totalOperators = totalOperatorsResult.value;
-    } else {
-      console.error(
-        'Fetch total operators failed:',
-        totalOperatorsResult.reason
-      );
-    }
-
-    const data = {
-      data: metrics,
-      timestamp: Date.now(),
-    };
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching main metrics:', error);
-    return null;
-  }
 };
+
+export const fetchAllAgentMetrics =
+  async (): Promise<MainMetricsSnapshot | null> => {
+    try {
+      const [
+        dailyActiveAgentsResult,
+        olasStakedResult,
+        transactionsResult,
+        ataTransactionsResult,
+        mechFeesResult,
+        totalOperatorsResult,
+      ] = await Promise.all([
+        fetchDailyAgentPerformance(),
+        fetchTotalOlasStaked(),
+        fetchTransactions(),
+        fetchAtaTransactions(),
+        fetchMechFees(),
+        fetchTotalOperators(),
+      ]);
+
+      return {
+        data: {
+          dailyActiveAgents: dailyActiveAgentsResult,
+          olasStaked: olasStakedResult,
+          transactions: transactionsResult,
+          ataTransactions: ataTransactionsResult,
+          mechFees: mechFeesResult,
+          totalOperators: totalOperatorsResult,
+        },
+        timestamp: Date.now(),
+      };
+    } catch (error) {
+      console.error('Error fetching main metrics:', error);
+      return null;
+    }
+  };

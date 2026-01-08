@@ -17,11 +17,10 @@ const MechMarketplacePage = ({ metrics }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'main' });
-  const metrics = snapshot?.data || null;
 
   return {
     props: {
-      metrics,
+      metrics: snapshot?.data || null,
     },
     revalidate: REVALIDATE_DURATION,
   };
