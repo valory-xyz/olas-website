@@ -6,6 +6,7 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
   dailyAgentPerformancesQuery,
@@ -15,24 +16,9 @@ import {
   registryGlobalsQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
-import {
-  MetricStatus,
-  MetricWithStatus,
-  WithMeta,
-} from 'common-util/graphql/types';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-
-
-const createStaleStatus = (
-  indexingErrors: string[],
-  fetchErrors: string[]
-): MetricStatus => ({
-  stale: indexingErrors.length > 0 || fetchErrors.length > 0,
-  lastValidAt: Date.now(),
-  indexingErrors,
-  fetchErrors,
-});
 
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
@@ -89,7 +75,7 @@ const fetchDailyAgentPerformance = async (): Promise<
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
         sum + calculate7DayAverage(performanceByChain, 'count'),
-      0
+      0,
     );
 
     return {
@@ -143,7 +129,7 @@ const fetchTotalOlasStaked = async (): Promise<
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
-      BigInt(0)
+      BigInt(0),
     );
 
     return {
@@ -213,7 +199,7 @@ const fetchTransactions = async (): Promise<
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
-      BigInt(0)
+      BigInt(0),
     );
 
     return {
@@ -283,7 +269,7 @@ const fetchTotalOperators = async (): Promise<
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
-      0
+      0,
     );
 
     return {
@@ -331,7 +317,7 @@ export const fetchAtaTransactions = async (): Promise<
           indexingErrors.push(`ata:${source}`);
         }
         ataTransactionsByChains.push(
-          data.globals?.[0]?.totalAtaTransactions || '0'
+          data.globals?.[0]?.totalAtaTransactions || '0',
         );
       }
     });
@@ -399,15 +385,13 @@ export const fetchMechFees = async (): Promise<
         if (data.global) {
           if (index === 2) {
             // Legacy mech fees (index 2) - convert from wei to XDAI
-            const weiValue =
-              (data.global).totalFeesIn ||
-              '0';
+            const weiValue = data.global.totalFeesIn || '0';
             const xdaiValue = Number(weiValue) / 10 ** 18;
             totalFees += xdaiValue;
           } else {
             // New mech fees (indices 0, 1) - already in USD
             const usdValue = Number(
-              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
+              (data.global as MechFeesResult['global']).totalFeesInUSD || '0',
             );
             totalFees += usdValue;
           }
