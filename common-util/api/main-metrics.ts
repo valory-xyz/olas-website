@@ -173,6 +173,8 @@ const fetchTotalOperators = async (): Promise<number | null> => {
       .filter((result) => result.status === 'fulfilled')
       .map(
         (result) =>
+          // TODO: Update operatorGlobalsQuery to use global(id: '') instead of globals array
+          // to avoid needing to pick the first item
           (result as PromiseFulfilledResult<OperatorGlobalsResult>).value
             .globals?.[0]?.totalOperators ?? 0
       );
@@ -207,8 +209,10 @@ export const fetchAtaTransactions = async () => {
       .filter((result) => result.status === 'fulfilled')
       .map(
         (result) =>
+          // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
+          // to avoid needing to pick the first item
           (result as PromiseFulfilledResult<AtaTransactionsResult>).value
-            ?.globals?.[0]?.totalAtaTransactions || '0'
+            ?.globals?.[0]?.totalAtaTransactions ?? '0'
       );
 
     return ataTransactionsByChains

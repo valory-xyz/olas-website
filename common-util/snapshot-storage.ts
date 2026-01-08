@@ -1,6 +1,6 @@
 import { list, put } from '@vercel/blob';
 
-const METRICS_PREFIX = 'metrics';
+const METRICS_PREFIX = `WEBSITE-METRICS-${process.env.NODE_ENV}`;
 const CONTENT_TYPE = 'application/json';
 
 const getSnapshotFilename = (category: string) =>
@@ -11,6 +11,15 @@ type SaveSnapshotParams = {
   data: unknown;
 };
 
+/**
+ * Snapshot Storage:
+ * Stores metric snapshots in Vercel Blob storage. We keep
+ * one blob per category per environment (eg: 'main', 'other', 'predict').
+ *
+ * When we save, we overwrite the existing blob instead of creating new ones.
+ * This way, the refresh-metrics endpoints can just update the same file with
+ * fresh data.
+ */
 export const saveSnapshot = async ({
   category,
   data,
@@ -32,6 +41,9 @@ type GetSnapshotParams = {
   category: string;
 };
 
+/**
+ * Retrieves the latest snapshot for a given category.
+ */
 export const getSnapshot = async ({
   category,
 }: GetSnapshotParams): Promise<unknown | null> => {
@@ -45,7 +57,7 @@ export const getSnapshot = async ({
 
     if (!blob) return null;
 
-    const response = await fetch(`${blob.url}?t=${Date.now()}`, {
+    const response = await fetch(blob.url, {
       cache: 'no-store',
     });
 

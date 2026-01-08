@@ -13,6 +13,8 @@ const fetchTotalBuilders = async () => {
     if (globals.length === 0) {
       return null;
     }
+    // TODO: Update totalBuildersQuery to use global(id: '') instead of globals array
+    // to avoid needing to pick the first item
     return Number(globals[0]?.totalBuilders || 0);
   } catch (error) {
     console.error('Error fetching total builders:', error);
