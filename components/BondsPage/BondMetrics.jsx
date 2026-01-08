@@ -21,7 +21,10 @@ export const BondMetrics = ({ metrics }) => {
             imageSrc: 'liquidity.png',
             labelText: 'Total Protocol-owned Liquidity',
             source: DUNE_TOTAL_LIQUIDITY_URL,
-            metric: Math.round(protocolMetrics.totalProtocolOwnedLiquidity),
+            metric: Math.round(
+              protocolMetrics.totalProtocolOwnedLiquidity?.value,
+            ),
+            status: protocolMetrics.totalProtocolOwnedLiquidity?.status,
             isMoney: true,
           },
           {
@@ -29,7 +32,8 @@ export const BondMetrics = ({ metrics }) => {
             imageSrc: 'protocol-fees.png',
             labelText: 'Fees from Protocol-owned Liquidity',
             source: DUNE_TOTAL_PROTOCOL_REVENUE_URL,
-            metric: Math.round(protocolMetrics.totalProtocolRevenue),
+            metric: Math.round(protocolMetrics.totalProtocolRevenue?.value),
+            status: protocolMetrics.totalProtocolRevenue?.status,
             isMoney: true,
           },
         ],

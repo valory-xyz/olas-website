@@ -2,6 +2,8 @@ import {
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
 } from 'common-util/constants';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import { MetricWithStatus } from 'common-util/graphql/types';
 import get from 'lodash/get';
 
 const duneApiFetch = async (queryId: string | number) => {
@@ -13,12 +15,17 @@ const duneApiFetch = async (queryId: string | number) => {
       },
     }
   );
+  const data = await response.json();
+
+  if (data?.error) {
+    throw new Error(`Dune API error: ${data.error}`);
+  }
 
   if (!response.ok) {
     throw new Error(`Dune API error: ${response.statusText}`);
   }
 
-  return response.json();
+  return data;
 };
 
 type ProtocolMetricsResult = {
@@ -41,31 +48,54 @@ export const fetchProtocolMetrics = async () => {
       ) as Promise<ProtocolMetricsResult>,
     ]);
 
-    const metrics: {
-      totalProtocolOwnedLiquidity: number | null;
-      totalProtocolRevenue: number | null;
-    } = {
-      totalProtocolOwnedLiquidity: null,
-      totalProtocolRevenue: null,
+    let polMetric: MetricWithStatus<number | null> = {
+      value: null,
+      status: createStaleStatus([], []),
     };
 
     if (polResponse.status === 'fulfilled') {
-      metrics.totalProtocolOwnedLiquidity = get(
+      polMetric.value = get(
         polResponse.value,
         'result.rows[0].protocol_owned_liquidity_value_across_chains'
       );
+    } else {
+      console.error(
+        'Error fetching protocol owned liquidity:',
+        polResponse.reason
+      );
+      polMetric.status = createStaleStatus([], ['dune:pol']);
     }
 
+    let revenueMetric: MetricWithStatus<number | null> = {
+      value: null,
+      status: createStaleStatus([], []),
+    };
+
     if (revenueResponse.status === 'fulfilled') {
-      metrics.totalProtocolRevenue = get(
+      revenueMetric.value = get(
         revenueResponse.value,
         'result.rows[0].Cumulative_Protocol_Earned_Fees'
       );
+    } else {
+      console.error('Error fetching protocol revenue:', revenueResponse.reason);
+      revenueMetric.status = createStaleStatus([], ['dune:revenue']);
     }
 
-    return metrics;
+    return {
+      totalProtocolOwnedLiquidity: polMetric,
+      totalProtocolRevenue: revenueMetric,
+    };
   } catch (error) {
     console.error('Error fetching protocol metrics:', error);
-    return null;
+    return {
+      totalProtocolOwnedLiquidity: {
+        value: null,
+        status: createStaleStatus([], ['dune:pol']),
+      },
+      totalProtocolRevenue: {
+        value: null,
+        status: createStaleStatus([], ['dune:revenue']),
+      },
+    };
   }
 };

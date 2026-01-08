@@ -91,13 +91,17 @@ const renderMetricValue = (metric) => {
           target="_blank"
           hideArrow
         >
-          {metric.isMoney && <span>$</span>}
-          {formatted}
-          <span className="text-4xl">↗</span>
+          <div
+            className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}
+          >
+            {metric.isMoney && <span>$</span>}
+            {formatted}
+            <span className="text-4xl">↗</span>
+          </div>
         </ExternalLink>
       ) : (
         <Link className={valueClassName} href={metric.source} hideArrow>
-          <span className={isStale ? 'text-gray-400' : 'text-purple-600'}>
+          <span className={isStale ? 'text-gray-400' : ''}>
             {metric.isMoney && <span>$</span>}
             {formatted}
           </span>

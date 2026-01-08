@@ -542,6 +542,12 @@ export const holderCountsQuery = gql`
     token(id: $tokenId) {
       holderCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -569,6 +575,12 @@ export const getActiveVeOlasDepositorsQuery = ({
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -576,6 +588,12 @@ export const veOlasLockedBalanceQuery = gql`
   query VeOlasLockedBalance($tokenId: ID!) {
     token(id: $tokenId) {
       balance
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -585,6 +603,12 @@ export const totalBuildersQuery = gql`
     globals {
       id
       totalBuilders
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -606,6 +630,12 @@ export const dailyActivitiesQuery = gql`
       dayTimestamp
       count
       services
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;

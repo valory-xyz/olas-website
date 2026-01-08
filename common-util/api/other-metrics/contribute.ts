@@ -1,6 +1,8 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { autonolasBaseGraphClient } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import { dailyActivitiesQuery } from 'common-util/graphql/queries';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const AGENT_TYPE = 14;
@@ -9,11 +11,13 @@ const LIMIT = 1000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
-type DailyActivitiesResult = {
+type DailyActivitiesResult = WithMeta<{
   dailyActivities: { count: number }[];
-};
+}>;
 
-const fetchContributeDaa7dAvg = async () => {
+const fetchContributeDaa7dAvg = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   try {
     const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
     const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
@@ -28,12 +32,24 @@ const fetchContributeDaa7dAvg = async () => {
         orderDirection: 'desc',
       });
 
+    const indexingErrors: string[] = [];
+    if (result._meta?.hasIndexingErrors) {
+      indexingErrors.push('contribute:daa');
+    }
+
     const rows = result?.dailyActivities || [];
     const average = calculate7DayAverage(rows, 'count');
-    return Math.floor(average);
+    
+    return {
+      value: Math.floor(average),
+      status: createStaleStatus(indexingErrors, []),
+    };
   } catch (error) {
     console.error('Error fetching contribute DAA:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['contribute:daa']),
+    };
   }
 };
 
@@ -41,7 +57,9 @@ type LeaderboardResult = {
   json_value: { wallet_address: string; points: number };
 };
 
-const fetchTotalOlasContributors = async () => {
+const fetchTotalOlasContributors = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   let skip = 0;
   let allResults: LeaderboardResult[] = [];
 
@@ -53,7 +71,10 @@ const fetchTotalOlasContributors = async () => {
 
       if (!response.ok) {
         console.error(LEADERBOARD_ERROR_MESSAGE);
-        return null;
+        return {
+          value: null,
+          status: createStaleStatus([], ['contribute:total']),
+        };
       }
 
       const pageData: LeaderboardResult[] = await response.json();
@@ -76,10 +97,16 @@ const fetchTotalOlasContributors = async () => {
       return sum + 1;
     }, 0);
 
-    return activeUsers;
+    return {
+      value: activeUsers,
+      status: createStaleStatus([], []),
+    };
   } catch (error) {
     console.error(LEADERBOARD_ERROR_MESSAGE, error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['contribute:total']),
+    };
   }
 };
 
@@ -90,32 +117,48 @@ export const fetchContributeMetrics = async () => {
       fetchContributeDaa7dAvg(),
     ]);
 
-    const metrics: {
-      totalOlasContributors: number | null;
-      dailyActiveContributors: number | null;
-    } = {
-      totalOlasContributors: null,
-      dailyActiveContributors: null,
+    let dailyActiveContributors: MetricWithStatus<number | null> = {
+      value: null,
+      status: createStaleStatus([], []),
+    };
+
+    let totalOlasContributors: MetricWithStatus<number | null> = {
+      value: null,
+      status: createStaleStatus([], []),
     };
 
     if (totalOlasContributorsResult.status === 'fulfilled') {
-      metrics.totalOlasContributors = totalOlasContributorsResult.value;
+      totalOlasContributors = totalOlasContributorsResult.value;
     } else {
       console.error(
         LEADERBOARD_ERROR_MESSAGE,
         totalOlasContributorsResult.reason
       );
+      totalOlasContributors.status = createStaleStatus([], ['contribute:total']);
     }
 
     if (daaResult.status === 'fulfilled') {
-      metrics.dailyActiveContributors = daaResult.value;
+      dailyActiveContributors = daaResult.value;
     } else {
       console.error('Fetch DAA for contribute failed:', daaResult.reason);
+      dailyActiveContributors.status = createStaleStatus([], ['contribute:daa']);
     }
 
-    return metrics;
+    return {
+      totalOlasContributors,
+      dailyActiveContributors,
+    };
   } catch (error) {
     console.error('Error fetching contribute metrics:', error);
-    return null;
+    return {
+      totalOlasContributors: {
+        value: null,
+        status: createStaleStatus([], ['contribute:total']),
+      },
+      dailyActiveContributors: {
+        value: null,
+        status: createStaleStatus([], ['contribute:daa']),
+      },
+    };
   }
 };
