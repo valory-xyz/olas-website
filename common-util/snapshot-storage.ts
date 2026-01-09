@@ -2,7 +2,7 @@ import { list, put } from '@vercel/blob';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import lodash from 'lodash';
 
-const METRICS_PREFIX = `WEBSITE-METRICS-${process.env.NODE_ENV}`;
+const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
 const CONTENT_TYPE = 'application/json';
 
 const getSnapshotFilename = (category: string) =>
