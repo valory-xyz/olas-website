@@ -111,7 +111,7 @@ export const TokenDetails = () => (
             return (
               <div key={index} className="border p-4 rounded">
                 <h3 className="font-bold mb-2">{token.name}</h3>
-                <p>
+                <div>
                   <strong>Get OLAS:</strong>{' '}
                   {token.exchanges ? (
                     <div className="flex gap-x-2 flex-wrap">
@@ -129,8 +129,8 @@ export const TokenDetails = () => (
                   ) : (
                     'TBD'
                   )}
-                </p>
-                <p>
+                </div>
+                <div>
                   <strong>Token Address:</strong>{' '}
                   <a
                     href={explorerUrl}
@@ -140,8 +140,8 @@ export const TokenDetails = () => (
                   >
                     {truncateAddress(token.address)} ↗
                   </a>
-                </p>
-                <p>
+                </div>
+                <div>
                   <strong>Bridge:</strong>{' '}
                   {token.bridge ? (
                     <a
@@ -154,7 +154,7 @@ export const TokenDetails = () => (
                   ) : (
                     'n/a'
                   )}
-                </p>
+                </div>
               </div>
             );
           })}

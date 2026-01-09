@@ -5,10 +5,29 @@ export const formatWeiNumber = (
     maximumFractionDigits: 3,
   },
 ) => {
-  const wei =
-    typeof numberInWei === 'string' ? BigInt(numberInWei) : numberInWei;
-  const ethInt = wei / 10n ** 18n;
-  const ethFrac = wei % 10n ** 18n;
+  let wei: bigint;
+  if (typeof numberInWei === 'bigint') {
+    wei = numberInWei;
+  } else {
+    try {
+      const numValue = Number(numberInWei);
+      if (
+        !Number.isFinite(numValue) ||
+        Number.isNaN(numValue) ||
+        numValue < Number.MIN_SAFE_INTEGER ||
+        numValue > Number.MAX_SAFE_INTEGER
+      ) {
+        return new Intl.NumberFormat('en', options).format(0);
+      }
+      wei = BigInt(numberInWei);
+    } catch {
+      return new Intl.NumberFormat('en', options).format(0);
+    }
+  }
+
+  const divisor = 10n ** 18n;
+  const ethInt = wei / divisor;
+  const ethFrac = wei % divisor;
   const eth = Number(ethInt) + Number(ethFrac) / 1e18;
   return new Intl.NumberFormat('en', options).format(eth);
 };
