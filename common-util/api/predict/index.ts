@@ -64,6 +64,7 @@ const fetchPredictDaa7dAvg = async (): Promise<
       timestamp_gt,
       timestamp_lt,
     },
+    // TODO: move these to consts for better maintainability
     source: 'registry:gnosis',
     transform: (data) => {
       const rows = data.dailyAgentPerformances || [];
