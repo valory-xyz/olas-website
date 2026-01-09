@@ -40,12 +40,7 @@ export default function Home({ metrics }) {
 export const getStaticProps = async () => {
   const metricsSnapshot = await getSnapshot({ category: 'main' });
 
-  const metrics = metricsSnapshot?.data
-    ? {
-        ...metricsSnapshot.data,
-        mechTurnover: metricsSnapshot.data.mechFees,
-      }
-    : null;
+  const metrics = metricsSnapshot?.data ?? null;
 
   return {
     props: {

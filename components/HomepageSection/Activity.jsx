@@ -233,9 +233,9 @@ const DailyActiveAgentsCard = ({
 
 const AgentToAgentCard = ({
   ataTransactions,
-  mechTurnover,
+  mechFees,
   ataTransactionsStatus,
-  mechTurnoverStatus,
+  mechFeesStatus,
 }) => (
   <ActivityCard
     icon="agent-to-agent.png"
@@ -257,17 +257,15 @@ const AgentToAgentCard = ({
       isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(mechTurnover).toLocaleString()}`,
+      value: `$${Number(mechFees).toLocaleString()}`,
       text: (
         <>
           turnover
-          {mechTurnoverStatus?.stale && (
-            <StaleIndicator status={mechTurnoverStatus} />
-          )}
+          {mechFeesStatus?.stale && <StaleIndicator status={mechFeesStatus} />}
         </>
       ),
       link: '/data#mech-turnover',
-      status: mechTurnoverStatus,
+      status: mechFeesStatus,
       isLinkExternal: false,
     }}
     tertiary={{
@@ -328,8 +326,8 @@ export const Activity = ({ metrics }) => {
       dailyActiveAgents:
         metrics.dailyActiveAgents?.value?.toLocaleString() || '--',
       dailyActiveAgentsStatus: metrics.dailyActiveAgents?.status,
-      mechTurnover: metrics.mechTurnover?.value || '--',
-      mechTurnoverStatus: metrics.mechTurnover?.status,
+      mechFees: metrics.mechFees?.value || '--',
+      mechFeesStatus: metrics.mechFees?.status,
       ataTransactions: metrics.ataTransactions?.value?.toLocaleString() || '--',
       ataTransactionsStatus: metrics.ataTransactions?.status,
       totalOperators: metrics.totalOperators?.value?.toLocaleString() || '--',
@@ -416,9 +414,9 @@ export const Activity = ({ metrics }) => {
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
             ataTransactions={processedMetrics?.ataTransactions}
-            mechTurnover={processedMetrics?.mechTurnover}
+            mechFees={processedMetrics?.mechFees}
             ataTransactionsStatus={processedMetrics?.ataTransactionsStatus}
-            mechTurnoverStatus={processedMetrics?.mechTurnoverStatus}
+            mechFeesStatus={processedMetrics?.mechFeesStatus}
           />
           <div>
             <Image
@@ -472,7 +470,8 @@ export const Activity = ({ metrics }) => {
         />
         <AgentToAgentCard
           ataTransactions={processedMetrics?.ataTransactions}
-          mechTurnover={processedMetrics?.mechTurnover}
+          mechFees={processedMetrics?.mechFees}
+          mechFeesStatus={processedMetrics?.mechFeesStatus}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />
