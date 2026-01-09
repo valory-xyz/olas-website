@@ -6,6 +6,7 @@ import { PoweringAnEconomy } from 'components/AgentEconomies/AgentsFunPage/Power
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
+import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
@@ -28,7 +29,8 @@ const AgentsFun = ({ metrics }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'agent-economies' });
-  const metrics = snapshot?.data?.agentsFun || null;
+  const metrics =
+    (snapshot?.data as AgentEconomiesMetricsData)?.agentsFun || null;
 
   return {
     props: {

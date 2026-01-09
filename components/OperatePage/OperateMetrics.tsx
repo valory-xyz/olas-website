@@ -47,11 +47,7 @@ export const OperateMetrics = ({ metrics }) => {
 
           const getValue = () => {
             if (!item.value) return '--';
-            return (
-              <Link href={item.source} hideArrow>
-                {item.value}
-              </Link>
-            );
+            return <Link href={item.source}>{item.value}</Link>;
           };
           return (
             <div

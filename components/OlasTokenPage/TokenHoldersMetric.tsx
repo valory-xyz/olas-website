@@ -23,7 +23,7 @@ export const TokenHoldersMetric = ({ metrics }) => {
           The OLAS Token is widely supported by the community
         </div>
         {value ? (
-          <Link href="/data#token-holders" className="" hideArrow>
+          <Link href="/data#token-holders">
             <div className="flex items-center gap-2 text-black">
               <span
                 className={`font-extrabold text-6xl ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`}

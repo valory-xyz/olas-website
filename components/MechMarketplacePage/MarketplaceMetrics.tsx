@@ -20,7 +20,7 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isMoney: true,
             source: '/data#mech-turnover',
             isExternal: false,
-            imageSrc: '/images/marketplace-page/money-bag.png',
+            imageSrc: 'money-bag.png',
             imageWidth: 24,
           },
           {
@@ -31,7 +31,7 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isMoney: false,
             source: '/data#ata-transactions',
             isExternal: false,
-            imageSrc: '/images/marketplace-page/agent-to-agent.png',
+            imageSrc: 'agent-to-agent.png',
             imageWidth: 80,
           },
         ],

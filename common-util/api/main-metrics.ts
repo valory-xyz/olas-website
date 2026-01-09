@@ -53,8 +53,8 @@ const fetchDailyAgentPerformance = async (): Promise<
         REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
           timestamp_gt,
           timestamp_lt,
-        })
-      )
+        }),
+      ),
     );
 
     const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
@@ -77,7 +77,7 @@ const fetchDailyAgentPerformance = async (): Promise<
     const totalAverage = performanceByChains.reduce(
       (sum, performanceByChain) =>
         sum + calculate7DayAverage(performanceByChain, 'count'),
-      0
+      0,
     );
 
     return {
@@ -107,7 +107,9 @@ const fetchTotalOlasStaked = async (): Promise<
 
   try {
     const results = await Promise.allSettled(
-      STAKING_CHAINS.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
+      STAKING_CHAINS.map((chain) =>
+        STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery),
+      ),
     );
 
     const olasStakedByChains: string[] = [];
@@ -128,7 +130,7 @@ const fetchTotalOlasStaked = async (): Promise<
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
-      BigInt(0)
+      BigInt(0),
     );
 
     return {
@@ -161,7 +163,9 @@ const fetchTransactions = async (): Promise<
 
   try {
     const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) =>
+        REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery),
+      ),
     );
 
     const txCountByChains: string[] = [];
@@ -182,7 +186,7 @@ const fetchTransactions = async (): Promise<
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
-      BigInt(0)
+      BigInt(0),
     );
 
     return {
@@ -215,7 +219,9 @@ const fetchTotalOperators = async (): Promise<
 
   try {
     const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) =>
+        REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery),
+      ),
     );
 
     const operatorsByChains: number[] = [];
@@ -238,7 +244,7 @@ const fetchTotalOperators = async (): Promise<
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
-      0
+      0,
     );
 
     return {
@@ -269,7 +275,9 @@ export const fetchAtaTransactions = async (): Promise<
 
   try {
     const results = await Promise.allSettled(
-      sources.map((source) => ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
+      sources.map((source) =>
+        ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery),
+      ),
     );
 
     const ataTransactionsByChains: string[] = [];
@@ -287,7 +295,7 @@ export const fetchAtaTransactions = async (): Promise<
         ataTransactionsByChains.push(
           // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
           // to avoid needing to pick the first item
-          data.globals?.[0]?.totalAtaTransactions || '0'
+          data.globals?.[0]?.totalAtaTransactions || '0',
         );
       }
     });
@@ -365,7 +373,7 @@ export const fetchMechFees = async (): Promise<
           } else {
             // New mech fees (gnosis, base) - already in USD
             const usdValue = Number(
-              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
+              (data.global as MechFeesResult['global']).totalFeesInUSD || '0',
             );
             totalFees += usdValue;
           }

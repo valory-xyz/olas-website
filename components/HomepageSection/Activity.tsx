@@ -22,6 +22,21 @@ const ActivityValue = ({
   text,
   status,
   textSize = 'xl',
+}: {
+  LinkComponent: React.ComponentType<{
+    href: string;
+    children: React.ReactNode;
+  }>;
+  href: string;
+  value: string | number;
+  text?: React.ReactNode;
+  status?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
+  textSize?: 'xl' | '2xl';
 }) => (
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
@@ -35,7 +50,13 @@ const ActivityValue = ({
   </div>
 );
 
-const OlasIsBurnedArrow = ({ pointsDown = false, className }) => (
+const OlasIsBurnedArrow = ({
+  pointsDown = false,
+  className = '',
+}: {
+  pointsDown?: boolean;
+  className?: string;
+}) => (
   <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
     <p className="w-[76px] md:ml-[58px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
       OLAS is burned
@@ -73,6 +94,12 @@ type ActivityCardLinkProps = {
   link: string;
   value: string | number;
   isLinkExternal?: boolean;
+  status?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
 };
 
 type ActivityCardProps = {
@@ -170,6 +197,21 @@ const UsersCard = ({
   totalOperators,
   totalOperatorsStatus,
   olasStakedStatus,
+}: {
+  olasStaked?: string;
+  totalOperators?: string;
+  totalOperatorsStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
+  olasStakedStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
 }) => (
   <ActivityCard
     icon="users.png"
@@ -217,6 +259,14 @@ const OlasBurnedCard = () => (
 const DailyActiveAgentsCard = ({
   dailyActiveAgents,
   dailyActiveAgentsStatus,
+}: {
+  dailyActiveAgents?: string;
+  dailyActiveAgentsStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
 }) => (
   <ActivityCard
     icon="daas.png"
@@ -250,6 +300,21 @@ const AgentToAgentCard = ({
   mechFees,
   ataTransactionsStatus,
   mechFeesStatus,
+}: {
+  ataTransactions?: string;
+  mechFees?: string | number;
+  ataTransactionsStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
+  mechFeesStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
 }) => (
   <ActivityCard
     icon="agent-to-agent.png"
@@ -289,7 +354,18 @@ const AgentToAgentCard = ({
   />
 );
 
-const TransactionsCard = ({ transactions, transactionsStatus }) => (
+const TransactionsCard = ({
+  transactions,
+  transactionsStatus,
+}: {
+  transactions?: string;
+  transactionsStatus?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
+}) => (
   <ActivityCard
     icon="txns.png"
     alt="Transactions"
@@ -324,9 +400,42 @@ const AgentsGrid = () => (
   </div>
 );
 
-export const Activity = ({ metrics }) => {
+type MetricStatus = {
+  stale: boolean;
+  lastValidAt: number | null;
+  indexingErrors: string[];
+  fetchErrors: string[];
+};
+
+export const Activity = ({
+  metrics = null,
+}: {
+  metrics?: {
+    transactions?: { value?: number; status?: MetricStatus };
+    olasStaked?: { value?: number; status?: MetricStatus };
+    dailyActiveAgents?: { value?: number; status?: MetricStatus };
+    mechFees?: { value?: number | string; status?: MetricStatus };
+    ataTransactions?: { value?: number; status?: MetricStatus };
+    totalOperators?: { value?: number; status?: MetricStatus };
+  } | null;
+}) => {
   const processedMetrics = useMemo(() => {
-    if (!metrics) return null;
+    if (!metrics) {
+      return {
+        transactions: '--',
+        transactionsStatus: undefined,
+        olasStaked: '--',
+        olasStakedStatus: undefined,
+        dailyActiveAgents: '--',
+        dailyActiveAgentsStatus: undefined,
+        mechFees: '--',
+        mechFeesStatus: undefined,
+        ataTransactions: '--',
+        ataTransactionsStatus: undefined,
+        totalOperators: '--',
+        totalOperatorsStatus: undefined,
+      };
+    }
 
     return {
       transactions: metrics.transactions?.value?.toLocaleString() || '--',
@@ -375,10 +484,10 @@ export const Activity = ({ metrics }) => {
             className="mt-12 ml-3 md:mr-4 w-[124px] h-[176px]"
           />
           <UsersCard
-            olasStaked={processedMetrics?.olasStaked}
-            totalOperators={processedMetrics?.totalOperators}
-            totalOperatorsStatus={processedMetrics?.totalOperatorsStatus}
-            olasStakedStatus={processedMetrics?.olasStakedStatus}
+            olasStaked={processedMetrics.olasStaked}
+            totalOperators={processedMetrics.totalOperators}
+            totalOperatorsStatus={processedMetrics.totalOperatorsStatus}
+            olasStakedStatus={processedMetrics.olasStakedStatus}
           />
           <Image
             src={`${imgPath}arrow.png`}
@@ -394,7 +503,7 @@ export const Activity = ({ metrics }) => {
         <div className="flex flex-row place-items-center w-full justify-between">
           <div className="flex flex-col">
             <OlasBurnedCard />
-            <OlasIsBurnedArrow />
+            <OlasIsBurnedArrow className="" />
           </div>
           <div className="flex flex-col place-items-center z-10">
             <AgentsGrid />
@@ -402,10 +511,8 @@ export const Activity = ({ metrics }) => {
           </div>
           <div className="flex flex-col">
             <DailyActiveAgentsCard
-              dailyActiveAgents={processedMetrics?.dailyActiveAgents}
-              dailyActiveAgentsStatus={
-                processedMetrics?.dailyActiveAgentsStatus
-              }
+              dailyActiveAgents={processedMetrics.dailyActiveAgents}
+              dailyActiveAgentsStatus={processedMetrics.dailyActiveAgentsStatus}
             />
             <div className="flex flex-row">
               <Image
@@ -423,10 +530,10 @@ export const Activity = ({ metrics }) => {
         </div>
         <div className="flex flex-row place-items-center">
           <AgentToAgentCard
-            ataTransactions={processedMetrics?.ataTransactions}
-            mechFees={processedMetrics?.mechFees}
-            ataTransactionsStatus={processedMetrics?.ataTransactionsStatus}
-            mechFeesStatus={processedMetrics?.mechFeesStatus}
+            ataTransactions={processedMetrics.ataTransactions}
+            mechFees={processedMetrics.mechFees}
+            ataTransactionsStatus={processedMetrics.ataTransactionsStatus}
+            mechFeesStatus={processedMetrics.mechFeesStatus}
           />
           <div>
             <Image
@@ -439,18 +546,18 @@ export const Activity = ({ metrics }) => {
             <p>AI Agent Bazaar is used</p>
           </div>
           <TransactionsCard
-            transactions={processedMetrics?.transactions}
-            transactionsStatus={processedMetrics?.transactionsStatus}
+            transactions={processedMetrics.transactions}
+            transactionsStatus={processedMetrics.transactionsStatus}
           />
         </div>
       </div>
 
       <div className="flex flex-col md:hidden w-[90%] mx-auto">
         <UsersCard
-          olasStaked={processedMetrics?.olasStaked}
-          totalOperators={processedMetrics?.totalOperators}
-          totalOperatorsStatus={processedMetrics?.totalOperatorsStatus}
-          olasStakedStatus={processedMetrics?.olasStakedStatus}
+          olasStaked={processedMetrics.olasStaked}
+          totalOperators={processedMetrics.totalOperators}
+          totalOperatorsStatus={processedMetrics.totalOperatorsStatus}
+          olasStakedStatus={processedMetrics.olasStakedStatus}
         />
         <Image
           src={`${imgPath}mobile-arrow.png`}
@@ -460,8 +567,8 @@ export const Activity = ({ metrics }) => {
           className="mx-auto mb-2"
         />
         <DailyActiveAgentsCard
-          dailyActiveAgents={processedMetrics?.dailyActiveAgents}
-          dailyActiveAgentsStatus={processedMetrics?.dailyActiveAgentsStatus}
+          dailyActiveAgents={processedMetrics.dailyActiveAgents}
+          dailyActiveAgentsStatus={processedMetrics.dailyActiveAgentsStatus}
         />
         <Image
           src={`${imgPath}mobile-arrow2.png`}
@@ -470,7 +577,10 @@ export const Activity = ({ metrics }) => {
           height={120}
           className="mx-auto mb-2"
         />
-        <TransactionsCard transactions={processedMetrics?.transactions} />
+        <TransactionsCard
+          transactions={processedMetrics.transactions}
+          transactionsStatus={processedMetrics.transactionsStatus}
+        />
         <Image
           src={`${imgPath}mobile-arrow3.png`}
           alt="arrow"
@@ -479,9 +589,10 @@ export const Activity = ({ metrics }) => {
           className="mx-auto mb-2"
         />
         <AgentToAgentCard
-          ataTransactions={processedMetrics?.ataTransactions}
-          mechFees={processedMetrics?.mechFees}
-          mechFeesStatus={processedMetrics?.mechFeesStatus}
+          ataTransactions={processedMetrics.ataTransactions}
+          mechFees={processedMetrics.mechFees}
+          ataTransactionsStatus={processedMetrics.ataTransactionsStatus}
+          mechFeesStatus={processedMetrics.mechFeesStatus}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />

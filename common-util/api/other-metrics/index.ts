@@ -25,7 +25,7 @@ export const fetchAllOtherMetrics = async (): Promise<OtherMetricsSnapshot> => {
       fetchGovernMetrics(),
       fetchTokenHolders(),
       fetchProtocolMetrics(),
-    ]
+    ],
   );
 
   return {

@@ -28,11 +28,11 @@ export const fetchMechFeeMetrics = async () => {
   const fetchErrors: string[] = [];
 
   try {
-    const [gnosisNew, baseNew, legacy] = await Promise.allSettled([
+    const [gnosisNew, baseNew, legacy] = (await Promise.allSettled([
       MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesTotalsQuery),
       MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesTotalsQuery),
       legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
-    ]) as [
+    ])) as [
       PromiseSettledResult<MechFeesResult>,
       PromiseSettledResult<MechFeesResult>,
       PromiseSettledResult<LegacyMechFeesResult>,
@@ -40,7 +40,7 @@ export const fetchMechFeeMetrics = async () => {
 
     const getNewMechFees = (
       res: PromiseSettledResult<MechFeesResult>,
-      source: string
+      source: string,
     ): MechFeesResult['global'] | null => {
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${source}`);
@@ -54,7 +54,7 @@ export const fetchMechFeeMetrics = async () => {
 
     const getLegacyMechFees = (
       res: PromiseSettledResult<LegacyMechFeesResult>,
-      source: string
+      source: string,
     ): LegacyMechFeesResult['global'] | null => {
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${source}`);
@@ -74,14 +74,14 @@ export const fetchMechFeeMetrics = async () => {
       Number(gnosisNewGlobal?.totalFeesInUSD || 0) +
       Number(baseNewGlobal?.totalFeesInUSD || 0) +
       Number(
-        (BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString()
+        (BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString(),
       );
 
     const outUsd =
       Number(gnosisNewGlobal?.totalFeesOutUSD || 0) +
       Number(baseNewGlobal?.totalFeesOutUSD || 0) +
       Number(
-        (BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString()
+        (BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString(),
       );
 
     const unclaimed = Math.max(inUsd - outUsd, 0);

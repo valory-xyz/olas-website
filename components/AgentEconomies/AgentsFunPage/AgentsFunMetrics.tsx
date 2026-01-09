@@ -28,7 +28,6 @@ export const AgentsFunMetrics = ({ metrics }) => {
               <Link
                 className="font-extrabold text-6xl"
                 href="/data#agentsfun-daily-active-agents"
-                hideArrow
               >
                 <span className={status?.stale ? 'text-gray-400' : ''}>
                   {Math.floor(value).toLocaleString()}

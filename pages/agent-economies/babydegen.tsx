@@ -6,6 +6,7 @@ import { Join } from 'components/AgentEconomies/BabydegenEconomyPage/Join';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
+import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
@@ -26,7 +27,8 @@ const Optimus = ({ metrics }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'agent-economies' });
-  const metrics = snapshot?.data?.babyDegen || null;
+  const metrics =
+    (snapshot?.data as AgentEconomiesMetricsData)?.babyDegen || null;
 
   return {
     props: {

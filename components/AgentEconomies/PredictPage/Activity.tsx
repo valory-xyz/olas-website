@@ -11,7 +11,24 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 const processPredictMetrics = (metrics) => {
-  if (!metrics) return null;
+  if (!metrics) {
+    return {
+      dailyActiveAgents: null,
+      dailyActiveAgentsStatus: undefined,
+      traderTxs: null,
+      txsStatus: undefined,
+      mechTxs: null,
+      marketCreatorTxs: null,
+      apr: null,
+      aprStatus: undefined,
+      partialRoi: null,
+      partialRoiStatus: undefined,
+      finalRoi: null,
+      roiStatus: undefined,
+      successRate: null,
+      successRateStatus: undefined,
+    };
+  }
 
   const predictTxsByType = metrics.predictTxsByType?.value ?? null;
 
@@ -42,7 +59,7 @@ const processPredictMetrics = (metrics) => {
   };
 };
 
-const AgentPerformanceBubble = ({ metrics, image, title }) => {
+const AgentPerformanceBubble = ({ metrics, title }) => {
   const data = useMemo(
     () => [
       {
@@ -50,7 +67,7 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
         subText: (
           <span className="flex items-center gap-2">
             Total ROI - Average{' '}
-            {metrics?.partialRoi && (
+            {metrics.partialRoi && (
               <Popover>
                 <div className="flex flex-col max-w-[320px] gap-4 text-base ">
                   <p className="text-gray-500">
@@ -77,8 +94,8 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
             )}
           </span>
         ),
-        value: metrics?.finalRoi ? `${metrics.finalRoi}%` : null,
-        status: metrics?.roiStatus,
+        value: metrics.finalRoi ? `${metrics.finalRoi}%` : null,
+        status: metrics.roiStatus,
         source: {
           link: '/data#predict-roi',
           isExternal: false,
@@ -87,8 +104,8 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
       {
         id: 'apr',
         subText: 'APR, OLAS - Via OLAS Staking',
-        value: metrics?.apr ? `${metrics.apr}%` : null,
-        status: metrics?.aprStatus,
+        value: metrics.apr ? `${metrics.apr}%` : null,
+        status: metrics.aprStatus,
         source: {
           link: '/data#predict-apr',
           isExternal: false,
@@ -97,8 +114,8 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
       {
         id: 'accuracy',
         subText: 'Prediction Accuracy -  Average (Last 10K Bets)',
-        value: metrics?.successRate ? `${metrics.successRate}%` : null,
-        status: metrics?.successRateStatus,
+        value: metrics.successRate ? `${metrics.successRate}%` : null,
+        status: metrics.successRateStatus,
         source: {
           link: '/data#predict-accuracy',
           isExternal: false,
@@ -108,10 +125,10 @@ const AgentPerformanceBubble = ({ metrics, image, title }) => {
     [metrics],
   );
 
-  return <MetricsBubble metrics={data} image={image} title={title} />;
+  return <MetricsBubble metrics={data} title={title} />;
 };
 
-const TransactionsBubble = ({ metrics, image, title }) => {
+const TransactionsBubble = ({ metrics, title }) => {
   const data = useMemo(
     () => [
       {
@@ -127,8 +144,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
             <span>Traders</span>
           </div>
         ),
-        value: metrics?.traderTxs ? metrics.traderTxs.toLocaleString() : null,
-        status: metrics?.txsStatus,
+        value: metrics.traderTxs ? metrics.traderTxs.toLocaleString() : null,
+        status: metrics.txsStatus,
         source: {
           link: '/data#predict-transactions-by-type',
           isExternal: false,
@@ -147,8 +164,8 @@ const TransactionsBubble = ({ metrics, image, title }) => {
             <span>Mechs: Prediction Brokers</span>
           </div>
         ),
-        value: metrics?.mechTxs ? metrics.mechTxs.toLocaleString() : null,
-        status: metrics?.txsStatus,
+        value: metrics.mechTxs ? metrics.mechTxs.toLocaleString() : null,
+        status: metrics.txsStatus,
         source: {
           link: '/data#predict-transactions-by-type',
           isExternal: false,
@@ -174,10 +191,10 @@ const TransactionsBubble = ({ metrics, image, title }) => {
             <span>Closers</span>
           </div>
         ),
-        value: metrics?.marketCreatorTxs
+        value: metrics.marketCreatorTxs
           ? metrics.marketCreatorTxs.toLocaleString()
           : null,
-        status: metrics?.txsStatus,
+        status: metrics.txsStatus,
         source: {
           link: '/data#predict-transactions-by-type',
           isExternal: false,
@@ -187,7 +204,7 @@ const TransactionsBubble = ({ metrics, image, title }) => {
     [metrics],
   );
 
-  return <MetricsBubble metrics={data} image={image} title={title} />;
+  return <MetricsBubble metrics={data} title={title} />;
 };
 
 export const Activity = ({ metrics: initialMetrics }) => {
@@ -209,11 +226,10 @@ export const Activity = ({ metrics: initialMetrics }) => {
             Predict Agent Economy
           </div>
           <div className="flex items-center gap-2">
-            {metrics?.dailyActiveAgents ? (
+            {metrics.dailyActiveAgents ? (
               <Link
                 className="font-extrabold text-6xl"
                 href="/data#predict-daily-active-agents"
-                hideArrow
               >
                 <span
                   className={`${metrics.dailyActiveAgentsStatus?.stale ? 'text-gray-400' : ''}`}
@@ -231,15 +247,10 @@ export const Activity = ({ metrics: initialMetrics }) => {
             <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <AgentPerformanceBubble
-          title="Agent Performance"
-          metrics={metrics}
-          image="/images/predict-page/agent-performance.png"
-        />
+        <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
         <TransactionsBubble
           title="Transactions by Agent Type"
           metrics={metrics}
-          image="/images/predict-page/transactions.png"
         />
       </div>
     </SectionWrapper>

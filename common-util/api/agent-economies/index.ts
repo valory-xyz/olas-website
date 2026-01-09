@@ -15,21 +15,22 @@ export type AgentEconomiesSnapshot = {
   timestamp: number;
 };
 
-export const fetchAllAgentEconomiesMetrics = async (): Promise<AgentEconomiesSnapshot> => {
-  const [agentsFun, babyDegen, mech, mechFees] = await Promise.all([
-    fetchAgentsFunMetrics(),
-    fetchBabyDegenMetrics(),
-    fetchMechMetrics(),
-    fetchMechFeeMetrics(),
-  ]);
+export const fetchAllAgentEconomiesMetrics =
+  async (): Promise<AgentEconomiesSnapshot> => {
+    const [agentsFun, babyDegen, mech, mechFees] = await Promise.all([
+      fetchAgentsFunMetrics(),
+      fetchBabyDegenMetrics(),
+      fetchMechMetrics(),
+      fetchMechFeeMetrics(),
+    ]);
 
-  return {
-    data: {
-      agentsFun,
-      babyDegen,
-      mech,
-      mechFees,
-    },
-    timestamp: Date.now(),
+    return {
+      data: {
+        agentsFun,
+        babyDegen,
+        mech,
+        mechFees,
+      },
+      timestamp: Date.now(),
+    };
   };
-};

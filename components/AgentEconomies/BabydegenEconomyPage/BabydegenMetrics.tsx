@@ -97,7 +97,6 @@ export const BabydegenMetrics = ({ metrics }) => {
               <Link
                 className="font-extrabold text-6xl"
                 href="/data#babydegen-daily-active-agents"
-                hideArrow
               >
                 <span
                   className={

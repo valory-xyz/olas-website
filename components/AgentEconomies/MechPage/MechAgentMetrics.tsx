@@ -118,7 +118,6 @@ export const MechAgentMetrics = ({ metrics }) => {
               <Link
                 className="font-extrabold text-6xl"
                 href="/data#mech-daily-active-agents"
-                hideArrow
               >
                 <span
                   className={
@@ -145,7 +144,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           than{' '}
           {typeof metrics?.totalRequests?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
-              <Link className="font-bold" href="/data#mech-globals" hideArrow>
+              <Link className="font-bold" href="/data#mech-globals">
                 <span
                   className={
                     metrics.totalRequests.status?.stale ? 'text-gray-400' : ''
@@ -162,7 +161,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           requests and{' '}
           {typeof metrics?.totalDeliveries?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
-              <Link className="font-bold" href="/data#mech-globals" hideArrow>
+              <Link className="font-bold" href="/data#mech-globals">
                 <span
                   className={
                     metrics.totalDeliveries.status?.stale ? 'text-gray-400' : ''
@@ -193,7 +192,7 @@ export const MechAgentMetrics = ({ metrics }) => {
               if (!item.value) return '--';
               return (
                 <div className="flex items-center gap-2">
-                  <Link href="/data#mech-requests-categorized" hideArrow>
+                  <Link href="/data#mech-requests-categorized">
                     <div className="flex items-center">
                       <span
                         className={item.status?.stale ? 'text-gray-400' : ''}

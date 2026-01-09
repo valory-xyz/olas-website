@@ -13,6 +13,12 @@ type MetricsBubbleProps = {
       link: string;
       isExternal?: boolean;
     };
+    status?: {
+      stale: boolean;
+      lastValidAt: number | null;
+      indexingErrors: string[];
+      fetchErrors: string[];
+    };
   }[];
   image?: string;
   title: string;
@@ -51,23 +57,26 @@ export const MetricsBubble = ({
         <div className="flex flex-col gap-8">
           {metrics.map((item) => {
             const value = !metrics || item.value === null ? '--' : item.value;
-            const SourceTag = item.source
-              ? item.source.isExternal
-                ? ExternalLink
-                : Link
-              : 'div';
             const source =
               item.source && value !== '--' ? (
-                <SourceTag href={item.source.link} hideArrow>
-                  <span
-                    className={`${item.status?.stale ? 'text-gray-400' : ''}`}
-                  >
-                    {value}
-                  </span>
-                  {item.source.isExternal && (
+                item.source.isExternal ? (
+                  <ExternalLink href={item.source.link} hideArrow>
+                    <span
+                      className={`${item.status?.stale ? 'text-gray-400' : ''}`}
+                    >
+                      {value}
+                    </span>
                     <span className="text-2xl">↗</span>
-                  )}
-                </SourceTag>
+                  </ExternalLink>
+                ) : (
+                  <Link href={item.source.link}>
+                    <span
+                      className={`${item.status?.stale ? 'text-gray-400' : ''}`}
+                    >
+                      {value}
+                    </span>
+                  </Link>
+                )
               ) : (
                 value
               );

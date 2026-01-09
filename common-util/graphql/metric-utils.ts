@@ -3,7 +3,7 @@ import { MetricStatus, MetricWithStatus, WithMeta } from './types';
 
 export const createStaleStatus = (
   indexingErrors: string[],
-  fetchErrors: string[]
+  fetchErrors: string[],
 ): MetricStatus => ({
   stale: indexingErrors.length > 0 || fetchErrors.length > 0,
   lastValidAt:
@@ -29,7 +29,9 @@ export async function executeGraphQLQuery<
   variables,
   source,
   transform,
-}: GraphQLQueryOptions<TData, TResult>): Promise<MetricWithStatus<TResult | null>> {
+}: GraphQLQueryOptions<TData, TResult>): Promise<
+  MetricWithStatus<TResult | null>
+> {
   const indexingErrors: string[] = [];
 
   try {

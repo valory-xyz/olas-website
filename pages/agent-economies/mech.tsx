@@ -7,6 +7,7 @@ import { WhyOlasMech } from 'components/AgentEconomies/MechPage/WhyOlasMech';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
+import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
@@ -28,12 +29,12 @@ const Mech = ({ mech, mechFees }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'agent-economies' });
-  const data = snapshot?.data || {};
+  const data = (snapshot?.data as AgentEconomiesMetricsData) || null;
 
   return {
     props: {
-      mech: data.mech || null,
-      mechFees: data.mechFees || null,
+      mech: data?.mech || null,
+      mechFees: data?.mechFees || null,
     },
     revalidate: REVALIDATE_DURATION,
   };

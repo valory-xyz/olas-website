@@ -111,7 +111,6 @@ type LinkProps = {
   children: React.ReactNode;
   href: string | object;
   className?: string;
-  hideArrow?: boolean;
 };
 
 export const Link = ({ children, className, href }: LinkProps) => (

@@ -69,7 +69,18 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
   );
 };
 
-const renderMetricValue = (metric) => {
+const renderMetricValue = (metric: {
+  metric?: string | number;
+  status?: {
+    stale: boolean;
+    lastValidAt: number | null;
+    indexingErrors: string[];
+    fetchErrors: string[];
+  };
+  isMoney?: boolean;
+  source?: string;
+  isExternal?: boolean;
+}) => {
   const isStale = metric.status?.stale;
   const valueClassName = 'font-extrabold max-sm:text-4xl text-6xl';
   const staleIndicator = isStale ? (
@@ -100,12 +111,7 @@ const renderMetricValue = (metric) => {
   return (
     <div className="flex items-center">
       {isExternal ? (
-        <ExternalLink
-          className={valueClassName}
-          href={metric.source}
-          target="_blank"
-          hideArrow
-        >
+        <ExternalLink className={valueClassName} href={metric.source} hideArrow>
           <div
             className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}
           >
@@ -115,7 +121,7 @@ const renderMetricValue = (metric) => {
           </div>
         </ExternalLink>
       ) : (
-        <Link className={valueClassName} href={metric.source} hideArrow>
+        <Link className={valueClassName} href={metric.source}>
           <span className={isStale ? 'text-gray-400' : ''}>
             {metric.isMoney && <span>$</span>}
             {formatted}
