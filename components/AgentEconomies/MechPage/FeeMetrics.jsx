@@ -1,40 +1,16 @@
-import { getFeeFlowMetrics } from 'common-util/api';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
-import { usePersistentSWR, useWindowWidth } from 'hooks';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
+import { useWindowWidth } from 'hooks';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Chart } from 'react-google-charts';
 
-const fetchMetrics = async () => {
-  try {
-    const result = await getFeeFlowMetrics();
-    if (!result) {
-      throw new Error('Failed to fetch metrics');
-    }
-    return {
-      totalFees: result.totalFees || 0,
-      claimedFees: result.claimedFees || 0,
-      unclaimedFees: result.unclaimedFees || 0,
-      recievedFees: result.recievedFees || 0,
-      olasBurned: result.olasBurned || 0,
-    };
-  } catch (error) {
-    console.error('Error in fetchMetrics:', error);
-    return null;
-  }
-};
-
 const formatToTooltip = ({ from, to }) =>
   `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
-export const FeeMetrics = () => {
-  const { data: metrics, error } = usePersistentSWR(
-    'FeeFlowMetrics',
-    fetchMetrics,
-  );
-
+export const FeeMetrics = ({ metrics }) => {
   const windowWidth = useWindowWidth();
 
   const chartSizes = useMemo(() => {
@@ -50,21 +26,24 @@ export const FeeMetrics = () => {
         label: 'Total Task Payments',
         description:
           'Micropayments made by agents (demand-side) when requesting tasks.',
-        value: metrics?.totalFees || 0,
+        value: metrics?.totalFees?.value || 0,
+        status: metrics?.totalFees?.status,
         color: '#7a9cf7',
       },
       unclaimed: {
         id: 'unclaimed',
         label: 'Unclaimed Payments',
         description: 'Micropayments not yet claimed by mechs (supply-side).',
-        value: metrics?.unclaimedFees || 0,
+        value: metrics?.unclaimedFees?.value || 0,
+        status: metrics?.unclaimedFees?.status,
         color: '#90a1b9',
       },
       claimed: {
         id: 'claimed',
         label: 'Claimed Payments',
         description: 'Micropayments already claimed by mechs (supply-side).',
-        value: metrics?.claimedFees || 0,
+        value: metrics?.claimedFees?.value || 0,
+        status: metrics?.claimedFees?.status,
         color: '#5fb178',
       },
       recieved: {
@@ -72,7 +51,8 @@ export const FeeMetrics = () => {
         label: 'Realised Mech Earnings',
         description:
           'Micropayments received by mechs (supply-side) after marketplace fees.',
-        value: metrics?.recievedFees || 0,
+        value: metrics?.recievedFees?.value || 0,
+        status: metrics?.recievedFees?.status,
         color: '#68bcce',
       },
       burned: {
@@ -81,7 +61,8 @@ export const FeeMetrics = () => {
         description:
           'Marketplace fees taken from claimed payments and regularly burned by the DAO.',
         // Marketplace Fees Burned should always be 1% of Claimed Payments
-        value: metrics?.olasBurned || 0,
+        value: metrics?.olasBurned?.value || 0,
+        status: metrics?.olasBurned?.status,
         color: '#dab2e4',
       },
     }),
@@ -191,54 +172,52 @@ export const FeeMetrics = () => {
         </p>
       </div>
 
-      {error ? (
-        <div className="text-center py-8">Error loading metrics</div>
-      ) : (
-        <>
-          <div className="w-full max-w-full overflow-x-auto my-8">
-            <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
-              <Chart
-                chartType="Sankey"
-                width="100%"
-                height={chartSizes.chartHeight}
-                data={data}
-                options={options}
-              />
-            </div>
-          </div>
+      <div className="w-full max-w-full overflow-x-auto my-8">
+        <div className="min-w-[320px] max-w-7xl mx-auto w-full overflow-hidden">
+          <Chart
+            chartType="Sankey"
+            width="100%"
+            height={chartSizes.chartHeight}
+            data={data}
+            options={options}
+          />
+        </div>
+      </div>
 
-          <div className="mx-auto grid grid-cols-2 xl:grid-cols-5 gap-0 w-full items-end mb-8 max-w-7xl mx-auto">
-            {Object.values(formerData).map((item, index) => {
-              let borderClassName = '';
-              if (index !== 0) borderClassName += 'xl:border-l-1.5';
-              if (index % 2 !== 0) borderClassName += ' border-l-1.5';
+      <div className="mx-auto grid grid-cols-2 xl:grid-cols-5 gap-0 w-full items-end mb-8 max-w-7xl mx-auto">
+        {Object.values(formerData).map((item, index) => {
+          let borderClassName = '';
+          if (index !== 0) borderClassName += 'xl:border-l-1.5';
+          if (index % 2 !== 0) borderClassName += ' border-l-1.5';
 
-              return (
-                <div
-                  key={item.id}
-                  className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
-                  style={{ color: item.color }}
-                >
-                  <div className="flex flex-col gap-2 mb-3">
-                    <div className="flex flex-wrap gap-2 text-black">
-                      <span className="text-base max-sm:text-sm font-semibold">
-                        {item.label}
-                      </span>
-                      <Popover>{item.description}</Popover>
-                    </div>
-                  </div>
-                  <Link
-                    href="/data#mech-turnover"
-                    className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
-                  >
-                    $ {Number(item.value.toFixed(2)).toLocaleString()}
-                  </Link>
+          return (
+            <div
+              key={item.id}
+              className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
+            >
+              <div className="flex flex-col gap-2 mb-3">
+                <div className="flex flex-wrap gap-2 text-black">
+                  <span className="text-base max-sm:text-sm font-semibold">
+                    {item.label}
+                  </span>
+                  <Popover>{item.description}</Popover>
                 </div>
-              );
-            })}
-          </div>
-        </>
-      )}
+              </div>
+              <Link
+                href="/data#mech-turnover"
+                className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
+              >
+                <div className="flex items-center gap-2 text-black">
+                  <span style={{ color: item.color }}>
+                    $ {Number(item.value.toFixed(2)).toLocaleString()}
+                  </span>
+                  <StaleIndicator status={item.status} />
+                </div>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
     </SectionWrapper>
   );
 };

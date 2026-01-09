@@ -1,15 +1,12 @@
-import { getMainMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
-import { usePersistentSWR } from 'hooks';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export const MarketplaceMetrics = () => {
-  const { data: metrics } = usePersistentSWR('mainMetrics', getMainMetrics);
-  const { mechFees, ataTransactions } = metrics?.data ?? {};
+export const MarketplaceMetrics = ({ metrics }) => {
+  const { mechFees, ataTransactions } = metrics ?? {};
 
   const marketplaceData = useMemo(() => {
     return [
@@ -19,7 +16,8 @@ export const MarketplaceMetrics = () => {
           {
             key: 'mechFees',
             labelText: 'Total Marketplace Turnover',
-            metric: mechFees ? Number(mechFees).toFixed(0) : null,
+            metric: mechFees?.value ? Number(mechFees.value).toFixed(0) : null,
+            status: mechFees?.status,
             isMoney: true,
             source: '/data#mech-turnover',
             isExternal: false,
@@ -35,7 +33,8 @@ export const MarketplaceMetrics = () => {
           {
             key: 'ataTransactions',
             labelText: 'Total A2A Transactions',
-            metric: ataTransactions,
+            metric: ataTransactions?.value,
+            status: ataTransactions?.status,
             isMoney: false,
             source: '/data#ata-transactions',
             isExternal: false,

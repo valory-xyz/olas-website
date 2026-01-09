@@ -4,10 +4,10 @@ import { Hero } from './Hero';
 import { ShapeTheFuture } from './ShapeTheFuture';
 import { WhyBecomeGovernor } from './WhyBecomeGovernor';
 
-export const Govern = () => (
+export const Govern = ({ metrics }) => (
   <>
     <Hero />
-    <GovernMetrics />
+    <GovernMetrics metrics={metrics} />
     <ShapeTheFuture />
     <WhyBecomeGovernor />
     <GetStarted />

@@ -1,25 +1,13 @@
-import { getTotalTokenHolders } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card } from 'components/ui/card';
-import { Link } from 'components/ui/typography';
-import { usePersistentSWR } from 'hooks';
 import Image from 'next/image';
+import { Card } from '../ui/card';
+import { StaleIndicator } from '../ui/StaleIndicator';
+import { Link } from '../ui/typography';
 
-const fetchMetrics = async () => {
-  try {
-    const totalTokenHolders = await getTotalTokenHolders();
-    return { totalTokenHolders: totalTokenHolders || null };
-  } catch (error) {
-    console.error('Error fetching total token holders:', error);
-    return { totalTokenHolders: null };
-  }
-};
-
-export const TokenHoldersMetric = () => {
-  const { data: metrics } = usePersistentSWR(
-    'tokenHoldersMetric',
-    fetchMetrics,
-  );
+export const TokenHoldersMetric = ({ metrics }) => {
+  const tokenHolders = metrics?.tokenHolders;
+  const value = tokenHolders?.totalTokenHolders?.value;
+  const status = tokenHolders?.totalTokenHolders?.status;
 
   return (
     <SectionWrapper id="stats" customClasses="border-b-1.5 py-16">
@@ -34,13 +22,18 @@ export const TokenHoldersMetric = () => {
           />
           The OLAS Token is widely supported by the community
         </div>
-        {metrics?.totalTokenHolders ? (
-          <Link
-            href="/data#token-holders"
-            className="font-extrabold text-6xl text-purple-600"
-            hideArrow
-          >
-            {metrics?.totalTokenHolders?.toLocaleString()}
+        {value ? (
+          <Link href="/data#token-holders" className="" hideArrow>
+            <div className="flex items-center gap-2 text-black">
+              <span
+                className={`font-extrabold text-6xl ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+              >
+                {value?.toLocaleString()}
+              </span>
+              <StaleIndicator
+                status={tokenHolders?.totalTokenHolders?.status}
+              />
+            </div>
           </Link>
         ) : (
           <span className="text-purple-600 text-6xl">--</span>

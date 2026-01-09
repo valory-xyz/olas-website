@@ -1,3 +1,5 @@
+import { REVALIDATE_DURATION } from 'common-util/constants';
+import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
 import Hero from 'components/HomepageSection/Hero';
 import Media from 'components/HomepageSection/Media';
@@ -11,7 +13,7 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home() {
+export default function Home({ metrics }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,10 +29,23 @@ export default function Home() {
       <WorldOfAgents />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAiAgentEconomies />
+      <PowersAiAgentEconomies metrics={metrics} />
       <TrustedBy />
       <PropelledBy />
       <Media />
     </PageWrapper>
   );
 }
+
+export const getStaticProps = async () => {
+  const metricsSnapshot = await getSnapshot({ category: 'main' });
+
+  const metrics = metricsSnapshot?.data ?? null;
+
+  return {
+    props: {
+      metrics,
+    },
+    revalidate: REVALIDATE_DURATION,
+  };
+};

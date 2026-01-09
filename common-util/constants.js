@@ -36,7 +36,7 @@ export const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID = '5383248';
 export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
 export const PROTOCOL_EARNED_FEES_ID = '3511561';
 export const MECH_TXS_QUERY_ID = '5195400';
-export const UNIQUE_STAKERS_QUERY_ID = '5200009';
+
 export const FEE_FLOW_QUERY_ID = '5166975';
 
 export const OLAS_STAKED_QUERY_ID = '5344501';
@@ -142,6 +142,7 @@ export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
 export const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
+export const REVALIDATE_DURATION = 5 * 60; // 5 minutes
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
 

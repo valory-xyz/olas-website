@@ -1,41 +1,42 @@
-import { getContributeMetrics } from 'common-util/api';
 import { CONTRIBUTE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { fetchMetrics, MetricsCard } from 'components/MetricsCard';
-import { usePersistentSWR } from 'hooks';
+import { MetricsCard } from 'components/MetricsCard';
+import { useMemo } from 'react';
 
-export const ContributeMetrics = () => {
-  const { data: metrics } = usePersistentSWR('contributeMetrics', () =>
-    fetchMetrics([getContributeMetrics]),
-  );
+export const ContributeMetrics = ({ metrics }) => {
+  const contributeMetrics = metrics?.contribute;
 
-  if (!metrics) {
-    return null;
-  }
+  const contributeData = useMemo(() => {
+    if (!contributeMetrics) return null;
 
-  const contributeData = [
-    {
-      role: 'contribute',
-      displayMetrics: [
-        {
-          key: 'totalContribute',
-          imageSrc: 'contributors.png',
-          labelText: 'Total Olas Contributors',
-          source: CONTRIBUTE_URL,
-          metric: metrics[0]?.data?.totalOlasContributors,
-        },
-        {
-          key: 'DailyContribute',
-          imageSrc: 'DAC.png',
-          imageWidth: 72,
-          labelText: 'Daily Active Contributors',
-          source: '/data#contribute-daily-active-agents',
-          metric: metrics[0]?.data?.dailyActiveContributors,
-          isExternal: false,
-        },
-      ],
-    },
-  ];
+    return [
+      {
+        role: 'contribute',
+        displayMetrics: [
+          {
+            key: 'totalContribute',
+            imageSrc: 'contributors.png',
+            labelText: 'Total Olas Contributors',
+            source: CONTRIBUTE_URL,
+            metric: contributeMetrics.totalOlasContributors?.value,
+            status: contributeMetrics.totalOlasContributors?.status,
+          },
+          {
+            key: 'DailyContribute',
+            imageSrc: 'DAC.png',
+            imageWidth: 72,
+            labelText: 'Daily Active Contributors',
+            source: '/data#contribute-daily-active-agents',
+            metric: contributeMetrics.dailyActiveContributors?.value,
+            status: contributeMetrics.dailyActiveContributors?.status,
+            isExternal: false,
+          },
+        ],
+      },
+    ];
+  }, [contributeMetrics]);
+
+  if (!contributeData) return null;
 
   return (
     <SectionWrapper customClasses="pt-16 pb-8">

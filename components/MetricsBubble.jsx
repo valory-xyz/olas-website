@@ -1,4 +1,5 @@
 import { Card } from 'components/ui/card';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
@@ -45,7 +46,11 @@ export const MetricsBubble = ({
             const source =
               item.source && value !== '--' ? (
                 <SourceTag href={item.source.link} hideArrow>
-                  {value}
+                  <span
+                    className={`${item.status?.stale ? 'text-gray-400' : ''}`}
+                  >
+                    {value}
+                  </span>
                   {item.source.isExternal && (
                     <span className="text-2xl">↗</span>
                   )}
@@ -59,9 +64,14 @@ export const MetricsBubble = ({
                 <span className="block text-base text-slate-700">
                   {item.subText}
                 </span>
-                <span className="block text-2xl font-semibold text-purple-600">
-                  {source}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`block text-2xl font-semibold ${item.status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+                  >
+                    {source}
+                  </span>
+                  <StaleIndicator status={item.status} />
+                </div>
               </div>
             );
           })}
