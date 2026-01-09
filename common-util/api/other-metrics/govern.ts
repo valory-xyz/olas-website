@@ -1,6 +1,9 @@
 import { VEOLAS_TOKEN_ID } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+} from 'common-util/graphql/metric-utils';
 import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
@@ -28,30 +31,13 @@ const fetchLockedBalance = async (): Promise<
     };
   }
 
-  try {
-    const response: VeOlasLockedBalanceResult = await client.request(
-      veOlasLockedBalanceQuery,
-      {
-        tokenId: VEOLAS_TOKEN_ID,
-      }
-    );
-
-    const indexingErrors: string[] = [];
-    if (response._meta?.hasIndexingErrors) {
-      indexingErrors.push('govern:lockedBalance');
-    }
-
-    return {
-      value: response?.token?.balance ?? '0',
-      status: createStaleStatus(indexingErrors, []),
-    };
-  } catch (error) {
-    console.error('Error fetching veOLAS locked balance:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['govern:lockedBalance']),
-    };
-  }
+  return executeGraphQLQuery<VeOlasLockedBalanceResult, string>({
+    client,
+    query: veOlasLockedBalanceQuery,
+    variables: { tokenId: VEOLAS_TOKEN_ID },
+    source: 'govern:lockedBalance',
+    transform: (data) => data?.token?.balance ?? '0',
+  });
 };
 
 const buildVeOlasNetworks = () => [{ key: 'ethereum' }];

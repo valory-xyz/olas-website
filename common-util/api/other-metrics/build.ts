@@ -1,5 +1,8 @@
 import { autonolasGraphClient } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+} from 'common-util/graphql/metric-utils';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
@@ -10,36 +13,20 @@ type TotalBuildersResult = WithMeta<{
 const fetchTotalBuilders = async (): Promise<
   MetricWithStatus<number | null>
 > => {
-  try {
-    const result: TotalBuildersResult =
-      await autonolasGraphClient.request(totalBuildersQuery);
-
-    const indexingErrors: string[] = [];
-    if (result._meta?.hasIndexingErrors) {
-      indexingErrors.push('build:totalBuilders');
-    }
-
-    const globals = result?.globals || [];
-    if (globals.length === 0) {
-      return {
-        value: null,
-        status: createStaleStatus(indexingErrors, ['build:totalBuilders']),
-      };
-    }
-
-    // TODO: Update totalBuildersQuery to use global(id: '') instead of globals array
-    // to avoid needing to pick the first item
-    return {
-      value: Number(globals[0]?.totalBuilders || 0),
-      status: createStaleStatus(indexingErrors, []),
-    };
-  } catch (error) {
-    console.error('Error fetching total builders:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['build:totalBuilders']),
-    };
-  }
+  return executeGraphQLQuery<TotalBuildersResult, number | null>({
+    client: autonolasGraphClient,
+    query: totalBuildersQuery,
+    source: 'build:totalBuilders',
+    transform: (data) => {
+      const globals = data?.globals || [];
+      if (globals.length === 0) {
+        return null;
+      }
+      // TODO: Update totalBuildersQuery to use global(id: '') instead of globals array
+      // to avoid needing to pick the first item
+      return Number(globals[0]?.totalBuilders || 0);
+    },
+  });
 };
 
 export const fetchBuildMetrics = async () => {

@@ -10,7 +10,10 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+} from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
@@ -89,130 +92,92 @@ type AgentTxCountsResponse = WithMeta<{
 
 type ClosedMarketsBetsResponse = WithMeta<Record<string, any[]>>;
 
+type StakingContractsResponse = WithMeta<{
+  stakingContracts: any[];
+}>;
+
 const fetchPredictDaa7dAvg = async (): Promise<
   MetricWithStatus<number | null>
 > => {
-  const indexingErrors: string[] = [];
-  const fetchErrors: string[] = [];
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
-  try {
-    const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-    const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  return executeGraphQLQuery<DailyPredictPerformancesResponse, number>({
+    client: REGISTRY_GRAPH_CLIENTS.gnosis,
+    query: dailyPredictAgentsPerformancesQuery,
+    variables: {
+      agentIds: PREDICT_AGENT_IDS_FLAT,
+      timestamp_gt,
+      timestamp_lt,
+    },
+    source: 'registry:gnosis',
+    transform: (data) => {
+      const rows = data.dailyAgentPerformances || [];
+      const totalsByDay = new Map<string, number>();
 
-    const result = (await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-      dailyPredictAgentsPerformancesQuery,
-      {
-        agentIds: PREDICT_AGENT_IDS_FLAT,
-        timestamp_gt,
-        timestamp_lt,
+      rows.forEach((r) => {
+        const key = new Date(Number(r.dayTimestamp) * 1000)
+          .toISOString()
+          .slice(0, 10);
+        const prev = totalsByDay.get(key) || 0;
+        totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
+      });
+
+      const dayKeys = [];
+      for (let i = 7; i >= 1; i -= 1) {
+        const ts = timestamp_lt - i * 24 * 60 * 60;
+        dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
       }
-    )) as DailyPredictPerformancesResponse;
 
-    if (result._meta?.hasIndexingErrors) {
-      indexingErrors.push('registry:gnosis');
-    }
+      const total = dayKeys.reduce(
+        (acc, k) => acc + (totalsByDay.get(k) || 0),
+        0
+      );
 
-    const rows = result.dailyAgentPerformances || [];
-    const totalsByDay = new Map<string, number>();
-
-    rows.forEach((r) => {
-      const key = new Date(Number(r.dayTimestamp) * 1000)
-        .toISOString()
-        .slice(0, 10);
-      const prev = totalsByDay.get(key) || 0;
-      totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
-    });
-
-    const dayKeys = [];
-    for (let i = 7; i >= 1; i -= 1) {
-      const ts = timestamp_lt - i * 24 * 60 * 60;
-      dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
-    }
-
-    const total = dayKeys.reduce(
-      (acc, k) => acc + (totalsByDay.get(k) || 0),
-      0
-    );
-
-    return {
-      value: Math.floor(total / 7),
-      status: createStaleStatus(indexingErrors, fetchErrors),
-    };
-  } catch (error) {
-    console.error('Error fetching Predict DAA:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['predict:daa']),
-    };
-  }
+      return Math.floor(total / 7);
+    },
+  });
 };
 
 const fetchPredictTxsByAgentType = async (): Promise<
   MetricWithStatus<Record<string, number> | null>
 > => {
-  const indexingErrors: string[] = [];
-  const fetchErrors: string[] = [];
-
-  try {
-    const response = (await REGISTRY_GRAPH_CLIENTS.gnosis.request(
-      agentTxCountsQuery,
-      { agentIds: PREDICT_AGENT_IDS_FLAT }
-    )) as AgentTxCountsResponse;
-
-    if (response._meta?.hasIndexingErrors) {
-      indexingErrors.push('registry:gnosis');
-    }
-
-    const rows = response?.agentPerformances || [];
-    const idToTx = new Map<string, bigint>();
-    rows.forEach((row) => {
-      idToTx.set(String(row.id), BigInt(row.txCount || 0));
-    });
-
-    const result: Record<string, number> = {};
-    Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(([category, ids]) => {
-      let sum = 0n;
-      ids.forEach((id) => {
-        sum += idToTx.get(String(Number(id))) || 0n;
+  return executeGraphQLQuery<AgentTxCountsResponse, Record<string, number>>({
+    client: REGISTRY_GRAPH_CLIENTS.gnosis,
+    query: agentTxCountsQuery,
+    variables: { agentIds: PREDICT_AGENT_IDS_FLAT },
+    source: 'registry:gnosis',
+    transform: (data) => {
+      const rows = data?.agentPerformances || [];
+      const idToTx = new Map<string, bigint>();
+      rows.forEach((row) => {
+        idToTx.set(String(row.id), BigInt(row.txCount || 0));
       });
-      result[category] = Number(sum);
-    });
 
-    return {
-      value: result,
-      status: createStaleStatus(indexingErrors, fetchErrors),
-    };
-  } catch (error) {
-    console.error('Error fetching Predict Txs:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['predict:txs']),
-    };
-  }
+      const result: Record<string, number> = {};
+      Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(([category, ids]) => {
+        let sum = 0n;
+        ids.forEach((id) => {
+          sum += idToTx.get(String(Number(id))) || 0n;
+        });
+        result[category] = Number(sum);
+      });
+
+      return result;
+    },
+  });
 };
 
 const fetchOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
-  const indexingErrors: string[] = [];
-  const fetchErrors: string[] = [];
-
-  try {
-    const contractsResult = (await STAKING_GRAPH_CLIENTS.gnosis.request(
-      stakingContractsQuery(GNOSIS_STAKING_CONTRACTS)
-    )) as { stakingContracts: any[] };
-
-    const gnosisContracts = contractsResult?.stakingContracts;
-
-    return {
-      value: `${getMaxApr(gnosisContracts)}`,
-      status: createStaleStatus(indexingErrors, fetchErrors),
-    };
-  } catch (error) {
-    console.error('Error fetching OLAS APR:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['staking:apr']),
-    };
-  }
+  return executeGraphQLQuery<StakingContractsResponse, string>({
+    client: STAKING_GRAPH_CLIENTS.gnosis,
+    query: stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
+    source: 'staking:gnosis',
+    transform: (data) => {
+      const contracts = data?.stakingContracts;
+      return `${getMaxApr(contracts)}`;
+    },
+  });
 };
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
@@ -363,45 +328,30 @@ const fetchRoi = async (): Promise<
 };
 
 const fetchSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
-  const indexingErrors: string[] = [];
-  const fetchErrors: string[] = [];
+  return executeGraphQLQuery<ClosedMarketsBetsResponse, string>({
+    client: predictAgentsGraphClient,
+    query: getClosedMarketsBetsQuery({ first: SUCCESS_LIMIT, pages: SUCCESS_PAGES }),
+    source: 'predictAgents',
+    transform: (data) => {
+      const closedMarketsBets = Object.entries(data)
+        .filter(([key]) => key !== '_meta')
+        .flatMap(([, value]) => value) as any[];
 
-  try {
-    const closedMarketsBetsResult = (await predictAgentsGraphClient.request(
-      getClosedMarketsBetsQuery({ first: SUCCESS_LIMIT, pages: SUCCESS_PAGES })
-    )) as ClosedMarketsBetsResponse;
+      const totalBets = closedMarketsBets.length;
+      let wonBets = 0;
 
-    if (closedMarketsBetsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('predictAgents');
-    }
+      closedMarketsBets.forEach((bet) => {
+        const marketAnswer = bet.fixedProductMarketMaker.currentAnswer;
+        const betAnswer = bet.outcomeIndex;
+        if (marketAnswer === INVALID_ANSWER_HEX) return;
+        if (Number(marketAnswer) === Number(betAnswer)) {
+          wonBets += 1;
+        }
+      });
 
-    const closedMarketsBets = Object.entries(closedMarketsBetsResult)
-      .filter(([key]) => key !== '_meta')
-      .flatMap(([, value]) => value) as any[];
-
-    const totalBets = closedMarketsBets.length;
-    let wonBets = 0;
-
-    closedMarketsBets.forEach((bet) => {
-      const marketAnswer = bet.fixedProductMarketMaker.currentAnswer;
-      const betAnswer = bet.outcomeIndex;
-      if (marketAnswer === INVALID_ANSWER_HEX) return;
-      if (Number(marketAnswer) === Number(betAnswer)) {
-        wonBets += 1;
-      }
-    });
-
-    return {
-      value: ((wonBets / totalBets) * 100).toFixed(0),
-      status: createStaleStatus(indexingErrors, fetchErrors),
-    };
-  } catch (error) {
-    console.error('Error fetching Predict Success Rate:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['predict:successRate']),
-    };
-  }
+      return ((wonBets / totalBets) * 100).toFixed(0);
+    },
+  });
 };
 
 export type PredictMetricsData = {
@@ -434,8 +384,6 @@ export const fetchAllPredictMetrics =
         fetchRoi(),
         fetchSuccessRate(),
       ]);
-
-      const freshStatus = createStaleStatus([], []);
 
       const data: PredictMetricsData = {
         apr:

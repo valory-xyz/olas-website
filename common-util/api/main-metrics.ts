@@ -187,6 +187,7 @@ const fetchTransactions = async (): Promise<
     results.forEach((result, index) => {
       const chain = chains[index];
       if (result.status === 'rejected') {
+        console.error(result)
         fetchErrors.push(`registry:${chain}`);
       } else {
         const data = result.value as RegistryGlobalsResult;

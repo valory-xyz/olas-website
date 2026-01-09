@@ -1,6 +1,9 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { autonolasBaseGraphClient } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+} from 'common-util/graphql/metric-utils';
 import { dailyActivitiesQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -18,39 +21,23 @@ type DailyActivitiesResult = WithMeta<{
 const fetchContributeDaa7dAvg = async (): Promise<
   MetricWithStatus<number | null>
 > => {
-  try {
-    const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-    const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
-
-    const result: DailyActivitiesResult =
-      await autonolasBaseGraphClient.request(dailyActivitiesQuery, {
-        where: {
-          dayTimestamp_gt: String(timestamp_gt),
-          dayTimestamp_lt: String(timestamp_lt),
-        },
-        orderBy: 'dayTimestamp',
-        orderDirection: 'desc',
-      });
-
-    const indexingErrors: string[] = [];
-    if (result._meta?.hasIndexingErrors) {
-      indexingErrors.push('contribute:daa');
-    }
-
-    const rows = result?.dailyActivities || [];
-    const average = calculate7DayAverage(rows, 'count');
-    
-    return {
-      value: Math.floor(average),
-      status: createStaleStatus(indexingErrors, []),
-    };
-  } catch (error) {
-    console.error('Error fetching contribute DAA:', error);
-    return {
-      value: null,
-      status: createStaleStatus([], ['contribute:daa']),
-    };
-  }
+  return executeGraphQLQuery<DailyActivitiesResult, number>({
+    client: autonolasBaseGraphClient,
+    query: dailyActivitiesQuery,
+    variables: {
+      where: {
+        dayTimestamp_gt: String(getMidnightUtcTimestampDaysAgo(8)),
+        dayTimestamp_lt: String(getMidnightUtcTimestampDaysAgo(0)),
+      },
+      orderBy: 'dayTimestamp',
+      orderDirection: 'desc',
+    },
+    source: 'contribute:daa',
+    transform: (data) => {
+      const rows = data?.dailyActivities || [];
+      return Math.floor(calculate7DayAverage(rows, 'count'));
+    },
+  });
 };
 
 type LeaderboardResult = {
