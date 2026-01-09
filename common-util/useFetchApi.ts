@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { getApiUrl } from 'common-util/getApiUrl';
 import get from 'lodash/get';
 import qs from 'qs';
 import useSWR from 'swr';
@@ -47,11 +48,7 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
       thumbnail,
       video: videoUploaded,
     } = attributes || {};
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL &&
-      process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-        ? process.env.NEXT_PUBLIC_API_URL
-        : '';
+    const apiUrl = getApiUrl();
     const thumbnailUrl = get(thumbnail, 'data.attributes.url');
     const imageFilename =
       thumbnailUrl && apiUrl ? `${apiUrl}${thumbnailUrl}` : '';

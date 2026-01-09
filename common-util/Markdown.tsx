@@ -1,3 +1,4 @@
+import { getApiUrl } from 'common-util/getApiUrl';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -30,11 +31,7 @@ const Markdown = ({ className, children }: MarkdownProps) => {
       rehypePlugins={[rehypeRaw] as PluggableList}
       urlTransform={(uri) => {
         if (uri.startsWith('http')) return uri;
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL &&
-          process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-            ? process.env.NEXT_PUBLIC_API_URL
-            : '';
+        const apiUrl = getApiUrl();
         return apiUrl ? `${apiUrl}${uri}` : uri;
       }}
       components={markdownComponents}

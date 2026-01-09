@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import PageWrapper from 'components/Layout/PageWrapper';
 import { getEducationArticle } from 'common-util/api';
+import { getApiUrl } from 'common-util/getApiUrl';
+import Markdown from 'common-util/Markdown';
+import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
-import Markdown from 'common-util/Markdown';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { TEXT, TITLE } from 'styles/globals';
 
 const EducationArticle = () => {
@@ -22,11 +23,7 @@ const EducationArticle = () => {
 
   const { title, body: content, headerImage } = educationArticle.attributes;
   const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL &&
-    process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-      ? process.env.NEXT_PUBLIC_API_URL
-      : '';
+  const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
   return (

@@ -20,6 +20,37 @@ import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import tokens from 'data/tokens.json';
 
+interface StakingContract {
+  id: string;
+  rewardsPerSecond: string;
+  minStakingDeposit: string;
+  numAgentInstances: string;
+}
+
+interface StakingContractsResponse {
+  stakingContracts?: StakingContract[];
+}
+
+interface DailyStakingGlobalsSnapshot {
+  timestamp: string | number;
+  medianCumulativeRewards?: string | number;
+  numServices?: number;
+}
+
+interface DailyStakingGlobalsResponse {
+  cumulativeDailyStakingGlobals?: DailyStakingGlobalsSnapshot[];
+}
+
+interface DailyAgentPerformance {
+  id: string;
+  dayTimestamp: string | number;
+  activeMultisigCount: string | number;
+}
+
+interface DailyAgentPerformancesResponse {
+  dailyAgentPerformances?: DailyAgentPerformance[];
+}
+
 const OLAS_ADDRESS = tokens
   .find((item) => item.key === 'optimism')
   ?.address?.toLowerCase();
@@ -50,12 +81,12 @@ const fetchOlasApr = async () => {
 
     const modiusContracts =
       modiusContractsResult.status === 'fulfilled'
-        ? (modiusContractsResult.value as { stakingContracts?: unknown[] })
+        ? (modiusContractsResult.value as StakingContractsResponse)
             .stakingContracts
         : null;
     const optimusContracts =
       optimusContractsResult.status === 'fulfilled'
-        ? (optimusContractsResult.value as { stakingContracts?: unknown[] })
+        ? (optimusContractsResult.value as StakingContractsResponse)
             .stakingContracts
         : null;
 
@@ -134,9 +165,7 @@ const fetchModeStakingSnapshots = async () => {
       }),
     );
 
-    const typedResult = result as {
-      cumulativeDailyStakingGlobals?: Array<{ [key: string]: unknown }>;
-    };
+    const typedResult = result as DailyStakingGlobalsResponse;
     const rows = Array.isArray(typedResult.cumulativeDailyStakingGlobals)
       ? typedResult.cumulativeDailyStakingGlobals
       : [];
@@ -238,14 +267,7 @@ const fetchOptimismStakingSnapshots = async () => {
       dailyStakingGlobalsSnapshotsQuery({ first: 10 }),
     );
 
-    const typedResult = result as {
-      cumulativeDailyStakingGlobals?: Array<{
-        timestamp: string | number;
-        medianCumulativeRewards?: string | number;
-        numServices?: number;
-        [key: string]: unknown;
-      }>;
-    };
+    const typedResult = result as DailyStakingGlobalsResponse;
     const rows = Array.isArray(typedResult.cumulativeDailyStakingGlobals)
       ? typedResult.cumulativeDailyStakingGlobals
       : [];
@@ -392,14 +414,11 @@ const fetchDailyAgentPerformance = async () => {
       }),
     ]);
 
-    const typedModeResult = modeResult as {
-      dailyAgentPerformances?: unknown[];
-    };
+    const typedModeResult = modeResult as DailyAgentPerformancesResponse;
     const modePerformances = typedModeResult.dailyAgentPerformances ?? [];
 
-    const typedOptimismResult = optimismResult as {
-      dailyAgentPerformances?: unknown[];
-    };
+    const typedOptimismResult =
+      optimismResult as DailyAgentPerformancesResponse;
     const optimismPerformances =
       typedOptimismResult.dailyAgentPerformances ?? [];
 
@@ -427,9 +446,7 @@ const fetchModiusOlasApr = async () => {
       stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
     );
 
-    const typedResult = modiusContractsResult as {
-      stakingContracts?: unknown[];
-    };
+    const typedResult = modiusContractsResult as StakingContractsResponse;
     const modiusContracts = typedResult.stakingContracts;
     return modiusContracts && modiusContracts.length > 0
       ? getMaxApr(modiusContracts)
@@ -446,9 +463,7 @@ const fetchOptimusOlasApr = async () => {
       stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
     );
 
-    const typedResult = optimusContractsResult as {
-      stakingContracts?: unknown[];
-    };
+    const typedResult = optimusContractsResult as StakingContractsResponse;
     const optimusContracts = typedResult.stakingContracts;
     return optimusContracts && optimusContracts.length > 0
       ? getMaxApr(optimusContracts)

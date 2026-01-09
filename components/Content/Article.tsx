@@ -5,12 +5,9 @@ import { useMemo, useState } from 'react';
 
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
+import { getApiUrl } from 'common-util/getApiUrl';
 
-const imageDomain =
-  process.env.NEXT_PUBLIC_API_URL &&
-  process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-    ? process.env.NEXT_PUBLIC_API_URL
-    : '';
+const imageDomain = getApiUrl();
 
 interface ArticleProps {
   article: {

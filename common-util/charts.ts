@@ -38,7 +38,7 @@ export const getEmissionsChartOptions = (points) => ({
         display: true,
         text: 'Epoch',
       },
-      gridLines: {
+      grid: {
         color: 'white',
       },
     },

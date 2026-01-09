@@ -1,5 +1,6 @@
 import { getBlog } from 'common-util/api';
 import { formatDate } from 'common-util/formatDate';
+import { getApiUrl } from 'common-util/getApiUrl';
 import { getLimitedText } from 'common-util/getLimitedText';
 import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -16,11 +17,7 @@ const BlogItem = ({ blog }) => {
   const { title, datePublished, body: content, headerImage } = blog.attributes;
   const formattedDate = formatDate(datePublished);
   const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL &&
-    process.env.NEXT_PUBLIC_API_URL !== '__URL__'
-      ? process.env.NEXT_PUBLIC_API_URL
-      : '';
+  const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
   const formattedContent = <Markdown>{content}</Markdown>;

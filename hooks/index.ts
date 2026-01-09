@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { SWRConfiguration } from 'swr';
 
-export const usePersistentSWR = (
+export const usePersistentSWR = <Data, ErrorType = Error>(
   key: string,
-  fetcher: () => Promise<any>,
-  config?: any,
+  fetcher: () => Promise<Data>,
+  config?: SWRConfiguration<Data, ErrorType>,
 ) =>
-  useSWR(key, fetcher, {
+  useSWR<Data, ErrorType>(key, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     ...config,
