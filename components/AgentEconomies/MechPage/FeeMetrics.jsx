@@ -1,6 +1,7 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Popover } from 'components/ui/popover';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { useWindowWidth } from 'hooks';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -25,21 +26,24 @@ export const FeeMetrics = ({ metrics }) => {
         label: 'Total Task Payments',
         description:
           'Micropayments made by agents (demand-side) when requesting tasks.',
-        value: metrics?.totalFees || 0,
+        value: metrics?.totalFees?.value || 0,
+        status: metrics?.totalFees?.status,
         color: '#7a9cf7',
       },
       unclaimed: {
         id: 'unclaimed',
         label: 'Unclaimed Payments',
         description: 'Micropayments not yet claimed by mechs (supply-side).',
-        value: metrics?.unclaimedFees || 0,
+        value: metrics?.unclaimedFees?.value || 0,
+        status: metrics?.unclaimedFees?.status,
         color: '#90a1b9',
       },
       claimed: {
         id: 'claimed',
         label: 'Claimed Payments',
         description: 'Micropayments already claimed by mechs (supply-side).',
-        value: metrics?.claimedFees || 0,
+        value: metrics?.claimedFees?.value || 0,
+        status: metrics?.claimedFees?.status,
         color: '#5fb178',
       },
       recieved: {
@@ -47,7 +51,8 @@ export const FeeMetrics = ({ metrics }) => {
         label: 'Realised Mech Earnings',
         description:
           'Micropayments received by mechs (supply-side) after marketplace fees.',
-        value: metrics?.recievedFees || 0,
+        value: metrics?.recievedFees?.value || 0,
+        status: metrics?.recievedFees?.status,
         color: '#68bcce',
       },
       burned: {
@@ -56,7 +61,8 @@ export const FeeMetrics = ({ metrics }) => {
         description:
           'Marketplace fees taken from claimed payments and regularly burned by the DAO.',
         // Marketplace Fees Burned should always be 1% of Claimed Payments
-        value: metrics?.olasBurned || 0,
+        value: metrics?.olasBurned?.value || 0,
+        status: metrics?.olasBurned?.status,
         color: '#dab2e4',
       },
     }),
@@ -188,7 +194,6 @@ export const FeeMetrics = ({ metrics }) => {
             <div
               key={item.id}
               className={`text-start flex flex-col w-[280px] p-3 border-gray-300 h-full max-sm:w-full ${borderClassName}`}
-              style={{ color: item.color }}
             >
               <div className="flex flex-col gap-2 mb-3">
                 <div className="flex flex-wrap gap-2 text-black">
@@ -202,7 +207,12 @@ export const FeeMetrics = ({ metrics }) => {
                 href="/data#mech-turnover"
                 className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
               >
-                $ {Number(item.value.toFixed(2)).toLocaleString()}
+                <div className="flex items-center gap-2 text-black">
+                  <span style={{ color: item.color }}>
+                    $ {Number(item.value.toFixed(2)).toLocaleString()}
+                  </span>
+                  <StaleIndicator status={item.status} />
+                </div>
               </Link>
             </div>
           );

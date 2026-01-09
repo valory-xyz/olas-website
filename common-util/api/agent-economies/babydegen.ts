@@ -10,20 +10,17 @@ import {
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
+  createStaleStatus,
+  executeGraphQLQuery,
+} from 'common-util/graphql/metric-utils';
+import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import tokens from 'data/tokens.json';
-
-const OLAS_ADDRESS = tokens
-  .find((item) => item.key === 'optimism')
-  ?.address?.toLowerCase();
-const COINGECKO_OLAS_IN_USD_PRICE_URL = OLAS_ADDRESS
-  ? `https://api.coingecko.com/api/v3/simple/token_price/optimistic-ethereum?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`
-  : null;
 
 const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
   new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000
@@ -32,202 +29,87 @@ const EMPTY_APR_METRICS = {
   latestUsdcApr: null,
   latestEthApr: null,
   stakingAprCalculated: null,
+  maxOlasApr: null,
 };
 
-type DailyPopulationMetrics = {
+type DailyPopulationMetrics = WithMeta<{
   dailyPopulationMetrics: {
     timestamp: number;
     medianAUM: number;
   }[];
-};
+}>;
 
-const fetchModiusPopulationMetrics = async () => {
-  try {
-    const result: DailyPopulationMetrics =
-      await BABYDEGEN_GRAPH_CLIENTS.mode.request(
-        dailyBabydegenPopulationMetricsQuery({
-          first: 7,
-          timestampLte: MODIUS_FIXED_END_TIMESTAMP,
-        } as Parameters<typeof dailyBabydegenPopulationMetricsQuery>[0])
-      );
-    const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? result.dailyPopulationMetrics
-      : [];
-    if (rows.length === 0) return null;
-
-    if (rows.length < 7) {
-      console.error('Not enough Modius population snapshots before cutoff.');
-      return null;
-    }
-
-    const processed = rows.map((row) => ({
-      ...row,
-      medianFundedAUM: toNumber(row.medianAUM),
-    }));
-
-    return processed.reverse();
-  } catch (error) {
-    console.error('Error fetching Modius population metrics:', error);
-    return null;
-  }
-};
-
-const fetchOptimusPopulationMetrics = async () => {
-  try {
-    const result: DailyPopulationMetrics =
-      await BABYDEGEN_GRAPH_CLIENTS.optimism.request(
-        dailyBabydegenPopulationMetricsQuery({ first: 10 })
-      );
-    const rows = Array.isArray(result?.dailyPopulationMetrics)
-      ? result.dailyPopulationMetrics
-      : [];
-    if (rows.length === 0) return null;
-
-    // Exclude today (UTC)
-    const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
-    const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
-    if (filtered.length < 7) return null;
-
-    // Map medianAUM to medianFundedAUM
-    const processedRows = filtered.slice(0, 7).map((row) => ({
-      ...row,
-      medianFundedAUM: toNumber(row.medianAUM),
-    }));
-
-    return processedRows.reverse();
-  } catch (error) {
-    console.error('Error fetching Optimus population metrics:', error);
-    return null;
-  }
-};
-
-const fetchOptimusMetrics = async (maxOlasApr) => {
-  const populationResult = await fetchOptimusPopulationMetrics();
-
-  if (!populationResult) {
-    console.error('Optimus population metrics fetch failed');
-    return null;
-  }
-
-  const metrics = buildAprMetrics({
-    populationMetrics: populationResult,
-    maxOlasApr,
-  });
-
-  return metrics ?? { ...EMPTY_APR_METRICS };
-};
-
-const fetchModiusMetrics = async (maxOlasApr) => {
-  const populationResult = await fetchModiusPopulationMetrics();
-
-  if (!populationResult) {
-    console.error('Modius population metrics fetch failed');
-    return null;
-  }
-
-  const aprMetrics = buildAprMetrics({
-    populationMetrics: populationResult,
-    maxOlasApr,
-  });
-
-  if (!aprMetrics) {
-    return {
-      ...EMPTY_APR_METRICS,
-      latestAvgApr: null,
-    };
-  }
-
-  return {
-    ...aprMetrics,
-    latestAvgApr: aprMetrics.latestUsdcApr,
-  };
-};
-
-const toNumber = (value) => {
+const toNumber = (value: unknown) => {
   const num = Number(value);
   return Number.isFinite(num) ? num : 0;
 };
 
-/**
- * Calculates combined daily ROIs by combining agent performance with staking rewards.
- * Uses a single OLAS USD price snapshot for all staking reward conversions.
- * Returns array of daily combined ROI values (agent performance + staking rewards).
- */
-const calculateCombinedDailyROIs = (metrics, stakingTotals, olasUsdPrice) => {
-  if (!Array.isArray(metrics) || metrics.length === 0) return null;
-  if (!Array.isArray(stakingTotals) || stakingTotals.length === 0) return null;
-
-  const stakingByTimestamp = new Map();
-  stakingTotals.forEach((staking) => {
-    stakingByTimestamp.set(staking.timestamp, staking);
+const fetchModiusPopulationMetrics = async (): Promise<
+  MetricWithStatus<any[] | null>
+> => {
+  return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
+    client: BABYDEGEN_GRAPH_CLIENTS.mode,
+    query: dailyBabydegenPopulationMetricsQuery({
+      first: 7,
+      timestampLte: MODIUS_FIXED_END_TIMESTAMP,
+    } as Parameters<typeof dailyBabydegenPopulationMetricsQuery>[0]),
+    source: 'babyDegen:mode',
+    transform: (data) => {
+      const rows = Array.isArray(data?.dailyPopulationMetrics)
+        ? data.dailyPopulationMetrics
+        : [];
+      if (rows.length === 0) return null;
+      if (rows.length < 7) {
+        console.error('Not enough Modius population snapshots before cutoff.');
+        return null;
+      }
+      return rows
+        .map((row) => ({
+          ...row,
+          medianFundedAUM: toNumber(row.medianAUM),
+        }))
+        .reverse();
+    },
   });
+};
 
-  const combinedRois = [];
-  let lastStakingRoi = 0;
+const fetchOptimusPopulationMetrics = async (): Promise<
+  MetricWithStatus<any[] | null>
+> => {
+  return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
+    client: BABYDEGEN_GRAPH_CLIENTS.optimism,
+    query: dailyBabydegenPopulationMetricsQuery({ first: 10 }),
+    source: 'babyDegen:optimism',
+    transform: (data) => {
+      const rows = Array.isArray(data?.dailyPopulationMetrics)
+        ? data.dailyPopulationMetrics
+        : [];
+      if (rows.length === 0) return null;
 
-  metrics.forEach((metric) => {
-    const staking = stakingByTimestamp.get(metric.timestamp);
-    let stakingRoi = lastStakingRoi;
+      // Exclude today (UTC)
+      const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
+      const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+      if (filtered.length < 7) return null;
 
-    if (staking && olasUsdPrice > 0) {
-      const medianRewardsOlas =
-        Number(BigInt(staking.medianCumulativeRewards)) / 1e18;
-      const medianRewardsUsd = medianRewardsOlas * olasUsdPrice;
-      const medianFundedAum = toNumber(metric.medianFundedAUM);
-
-      stakingRoi =
-        medianFundedAum > 0 ? (medianRewardsUsd / medianFundedAum) * 100 : 0;
-      lastStakingRoi = stakingRoi;
-    }
-
-    const agentRoi = toNumber(metric.medianUnrealisedPnL);
-    combinedRois.push(agentRoi + stakingRoi);
+      // Map medianAUM to medianFundedAUM
+      return filtered
+        .slice(0, 7)
+        .map((row) => ({
+          ...row,
+          medianFundedAUM: toNumber(row.medianAUM),
+        }))
+        .reverse();
+    },
   });
-
-  return combinedRois;
 };
 
-/**
- * Calculates Simple Moving Average (SMA) over a specified window.
- * Takes the most recent 'window' values and returns their average.
- */
-const calculateSma = (values, window = 7) => {
-  if (!Array.isArray(values) || values.length < window) return null;
-  const subset = values.slice(-window);
-  const sum = subset.reduce((accumulator, value) => accumulator + value, 0);
-  return sum / window;
-};
-
-/**
- * Calculates annualized APR by combining agent performance and staking rewards.
- * Process:
- * 1. Compute daily combined ROIs (agent trading + staking rewards) using the shared OLAS USD price snapshot
- * 2. Calculate 7-day SMA of those ROIs
- * 3. Normalize by average agent age (days active)
- * 4. Annualize by multiplying by 365
- * Returns the final APR percentage.
- */
-const calculateStakingApr = ({ metrics, stakingSnapshots, olasUsdPrice }) => {
-  if (!metrics || !stakingSnapshots) return null;
-
-  const combined = calculateCombinedDailyROIs(
-    metrics,
-    stakingSnapshots,
-    olasUsdPrice
-  );
-  if (!combined) return null;
-
-  const sma = calculateSma(combined, 7);
-  if (sma === null) return null;
-
-  const latestMetric = metrics[metrics.length - 1];
-  const averageAge = toNumber(latestMetric?.averageAgentDaysActive);
-  const annualizationFactor = averageAge > 0 ? sma / averageAge : 0;
-
-  return annualizationFactor * 365;
-};
-
-const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
+const buildAprMetrics = ({
+  populationMetrics,
+  maxOlasApr = null,
+}: {
+  populationMetrics: any[];
+  maxOlasApr: number | null;
+}) => {
   if (!Array.isArray(populationMetrics) || populationMetrics.length === 0) {
     return null;
   }
@@ -240,27 +122,119 @@ const buildAprMetrics = ({ populationMetrics, maxOlasApr = null }) => {
     latestUsdcApr,
     latestEthApr,
     stakingAprCalculated: maxOlasApr,
+    maxOlasApr,
   };
 };
 
-const fetchDailyAgentPerformance = async () => {
+const fetchOptimusMetrics = async (
+  maxOlasApr: MetricWithStatus<number | null>
+): Promise<MetricWithStatus<any>> => {
+  const { value: populationResult, status: populationStatus } =
+    await fetchOptimusPopulationMetrics();
+
+  if (!populationResult) {
+    return { value: null, status: populationStatus };
+  }
+
+  const metrics = buildAprMetrics({
+    populationMetrics: populationResult,
+    maxOlasApr: maxOlasApr.value,
+  });
+
+  return {
+    value: metrics ?? { ...EMPTY_APR_METRICS },
+    status: createStaleStatus(
+      [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ]
+    ),
+  };
+};
+
+const fetchModiusMetrics = async (
+  maxOlasApr: MetricWithStatus<number | null>
+): Promise<MetricWithStatus<any>> => {
+  const { value: populationResult, status: populationStatus } =
+    await fetchModiusPopulationMetrics();
+
+  if (!populationResult) {
+    return { value: null, status: populationStatus };
+  }
+
+  const aprMetrics = buildAprMetrics({
+    populationMetrics: populationResult,
+    maxOlasApr: maxOlasApr.value,
+  });
+
+  if (!aprMetrics) {
+    return {
+      value: {
+        ...EMPTY_APR_METRICS,
+        latestAvgApr: null,
+      },
+      status: populationStatus,
+    };
+  }
+
+  return {
+    value: {
+      ...aprMetrics,
+      latestAvgApr: aprMetrics.latestUsdcApr,
+    },
+    status: createStaleStatus(
+      [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ]
+    ),
+  };
+};
+
+const fetchDailyAgentPerformance = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
-    const [modeResult, optimismResult] = await Promise.all([
+    const [modeResult, optimismResult] = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }) as Promise<any>,
+      }),
       REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
-      }) as Promise<any>,
+      }),
     ]);
 
-    const modePerformances = modeResult.dailyAgentPerformances ?? [];
-    const optimismPerformances = optimismResult.dailyAgentPerformances ?? [];
+    const handleResult = (
+      result: PromiseSettledResult<any>,
+      source: string
+    ) => {
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${source}`);
+        return [];
+      }
+      if (result.value?._meta?.hasIndexingErrors) {
+        indexingErrors.push(`registry:${source}`);
+      }
+      return result.value?.dailyAgentPerformances ?? [];
+    };
+
+    const modePerformances = handleResult(modeResult, 'mode');
+    const optimismPerformances = handleResult(optimismResult, 'optimism');
 
     const modeAverage = calculate7DayAverage(
       modePerformances,
@@ -271,129 +245,81 @@ const fetchDailyAgentPerformance = async () => {
       'activeMultisigCount'
     );
 
-    const average = modeAverage + optimismAverage;
-
-    return average;
+    return {
+      value: modeAverage + optimismAverage,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching babydegen daily agent performances:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:mode', 'registry:optimism']),
+    };
   }
 };
 
-type StakingContractsResult = {
+type StakingContractsResult = WithMeta<{
   stakingContracts: {
     rewardsPerSecond: string;
     minStakingDeposit: string;
     numAgentInstances: string;
   }[];
+}>;
+
+const fetchModiusOlasApr = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
+  return executeGraphQLQuery<StakingContractsResult, number | null>({
+    client: STAKING_GRAPH_CLIENTS.mode,
+    query: stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
+    source: 'staking:mode',
+    transform: (data) => {
+      const contracts = data?.stakingContracts;
+      return contracts && contracts.length > 0 ? getMaxApr(contracts) : null;
+    },
+  });
 };
 
-const fetchModiusOlasApr = async () => {
-  try {
-    const modiusContractsResult: StakingContractsResult =
-      await STAKING_GRAPH_CLIENTS.mode.request(
-        stakingContractsQuery(MODIUS_STAKING_CONTRACTS)
-      );
-
-    const modiusContracts = modiusContractsResult?.stakingContracts;
-    return modiusContracts && modiusContracts.length > 0
-      ? getMaxApr(modiusContracts)
-      : null;
-  } catch (error) {
-    console.error('Error fetching Modius OLAS APR:', error);
-    return null;
-  }
-};
-
-const fetchOptimusOlasApr = async () => {
-  try {
-    const optimusContractsResult: StakingContractsResult =
-      await STAKING_GRAPH_CLIENTS.optimism.request(
-        stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS)
-      );
-
-    const optimusContracts = optimusContractsResult?.stakingContracts;
-    return optimusContracts && optimusContracts.length > 0
-      ? getMaxApr(optimusContracts)
-      : null;
-  } catch (error) {
-    console.error('Error fetching Optimus OLAS APR:', error);
-    return null;
-  }
-};
-
-const fetchAllAgentMetrics = async () => {
-  try {
-    const [modiusMetricsResult, optimusMetricsResult, dailyActiveAgentsResult] =
-      await Promise.allSettled([
-        (async () => {
-          const maxModiusApr = await fetchModiusOlasApr();
-          return fetchModiusMetrics(maxModiusApr);
-        })(),
-        (async () => {
-          const maxOptimusApr = await fetchOptimusOlasApr();
-          return fetchOptimusMetrics(maxOptimusApr);
-        })(),
-        fetchDailyAgentPerformance(),
-      ]);
-
-    let optimusData = null;
-    let modiusData = null;
-    let dailyActiveAgentsData = null;
-
-    if (modiusMetricsResult.status === 'fulfilled') {
-      modiusData = modiusMetricsResult.value;
-    } else {
-      console.error('Modius data fetch failed:', modiusMetricsResult.reason);
-    }
-
-    if (optimusMetricsResult.status === 'fulfilled') {
-      optimusData = optimusMetricsResult.value;
-    } else {
-      console.error(
-        'Optimus metrics fetch failed:',
-        optimusMetricsResult.reason
-      );
-    }
-
-    if (optimusData) {
-      optimusData.maxOlasApr = optimusData.stakingAprCalculated;
-    }
-    if (modiusData) {
-      modiusData.maxOlasApr = modiusData.stakingAprCalculated;
-    }
-
-    if (dailyActiveAgentsResult.status === 'fulfilled') {
-      dailyActiveAgentsData = dailyActiveAgentsResult.value;
-    } else {
-      console.error(
-        'Babydegen DAAs data fetch failed:',
-        dailyActiveAgentsResult.reason
-      );
-    }
-
-    const data = {
-      data: {
-        optimus: optimusData,
-        modius: modiusData,
-        dailyActiveAgents: dailyActiveAgentsData,
-      },
-      timestamp: Date.now(),
-    };
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching babydegen metrics:', error);
-    return null;
-  }
+const fetchOptimusOlasApr = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
+  return executeGraphQLQuery<StakingContractsResult, number | null>({
+    client: STAKING_GRAPH_CLIENTS.optimism,
+    query: stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
+    source: 'staking:optimism',
+    transform: (data) => {
+      const contracts = data?.stakingContracts;
+      return contracts && contracts.length > 0 ? getMaxApr(contracts) : null;
+    },
+  });
 };
 
 export const fetchBabyDegenMetrics = async () => {
   try {
-    const latestMetrics = await fetchAllAgentMetrics();
-    return latestMetrics?.data || null;
+    const [modiusApr, optimusApr] = await Promise.all([
+      fetchModiusOlasApr(),
+      fetchOptimusOlasApr(),
+    ]);
+
+    const [modiusMetrics, optimusMetrics, dailyActiveAgents] =
+      await Promise.all([
+        fetchModiusMetrics(modiusApr),
+        fetchOptimusMetrics(optimusApr),
+        fetchDailyAgentPerformance(),
+      ]);
+
+    return {
+      optimus: optimusMetrics,
+      modius: modiusMetrics,
+      dailyActiveAgents,
+    };
   } catch (error) {
     console.error('Error fetching all babydegen metrics:', error);
-    return null;
+    const errorStatus = createStaleStatus([], ['babyDegen:all']);
+    return {
+      optimus: { value: null, status: errorStatus },
+      modius: { value: null, status: errorStatus },
+      dailyActiveAgents: { value: null, status: errorStatus },
+    };
   }
 };

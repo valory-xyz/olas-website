@@ -4,6 +4,7 @@ import {
   ATA_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyMechAgentPerformancesQuery,
@@ -12,6 +13,7 @@ import {
   mechMarketplaceTotalRequestsQuery,
   mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
+import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -27,12 +29,16 @@ type BaseResult = {
   }[];
 };
 
-const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0); // timestamp of today UTC midnight
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8); // timestamp of 8 days ago UTC midnight
+const fetchDailyAgentPerformance = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
+  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
+  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
-    const [gnosisResult, baseResult] = await Promise.all([
+    const [gnosisResult, baseResult] = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
@@ -42,8 +48,22 @@ const fetchDailyAgentPerformance = async () => {
         timestamp_lt,
       }) as Promise<BaseResult>,
     ]);
-    const gnosisPerformances = gnosisResult.dailyAgentPerformances ?? [];
-    const basePerformances = baseResult.dailyAgentPerformances ?? [];
+
+    const handleResult = <T>(
+      result: PromiseSettledResult<T>,
+      source: string
+    ) => {
+      if (result.status === 'rejected') {
+        fetchErrors.push(`registry:${source}`);
+        return null;
+      }
+      return result.value;
+    };
+
+    const gnosisData = handleResult(gnosisResult, 'gnosis');
+    const baseData = handleResult(baseResult, 'base');
+    const gnosisPerformances = gnosisData?.dailyAgentPerformances ?? [];
+    const basePerformances = baseData?.dailyAgentPerformances ?? [];
 
     const gnosisAverage = calculate7DayAverage(
       gnosisPerformances,
@@ -54,20 +74,48 @@ const fetchDailyAgentPerformance = async () => {
       'activeMultisigCount'
     );
 
-    return gnosisAverage + baseAverage;
+    return {
+      value: gnosisAverage + baseAverage,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:gnosis', 'registry:base']),
+    };
   }
 };
 
-const fetchMechGlobals = async () => {
+type MechGlobalsResult = WithMeta<{
+  global: {
+    totalRequests: string;
+    totalDeliveries: string;
+  };
+}>;
+
+const fetchMechGlobals = async (): Promise<
+  MetricWithStatus<{ requests: number; deliveries: number } | null>
+> => {
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+
   try {
     const results = await Promise.allSettled([
       ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-    ]);
+    ]) as PromiseSettledResult<MechGlobalsResult>[];
+
+    const sources = ['legacyMech', 'gnosis', 'base'];
+    results.forEach((res, index) => {
+      const source = sources[index];
+      if (res.status === 'rejected') {
+        fetchErrors.push(`mech:${source}`);
+      } else if (res.value?._meta?.hasIndexingErrors) {
+        indexingErrors.push(`mech:${source}`);
+      }
+    });
 
     const totals = results.reduce(
       (acc, res) => {
@@ -78,21 +126,30 @@ const fetchMechGlobals = async () => {
       { requests: 0, deliveries: 0 }
     );
 
-    return totals;
+    return {
+      value: totals,
+      status: createStaleStatus(indexingErrors, fetchErrors),
+    };
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['mech:all']),
+    };
   }
 };
 
-type AgentPerformance = {
+type AgentPerformance = WithMeta<{
   agentPerformances: {
     txCount: number;
+    agentId: string;
   }[];
-};
+}>;
 
 // Fetch agents.fun txCount from Base registry subgraph
-const fetchAgentsFunTxCount = async () => {
+const fetchAgentsFunTxCount = async (): Promise<
+  MetricWithStatus<number | null>
+> => {
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
     const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(
@@ -102,32 +159,51 @@ const fetchAgentsFunTxCount = async () => {
       }
     );
     const rows = result?.agentPerformances || [];
-    return rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
+    const txCount = rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
+    return {
+      value: txCount,
+      status: createStaleStatus(
+        result?._meta?.hasIndexingErrors ? ['registry:base'] : [],
+        []
+      ),
+    };
   } catch (error) {
     console.error('Error fetching agents.fun txCount:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['registry:base']),
+    };
   }
 };
 
-type MechResult = {
+
+type MechResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
   requestsPerAgents: { id: string; requestsCount: number }[];
-};
+}>;
 
-type MarketplaceGnosisResult = {
+type MarketplaceGnosisResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
-};
+}>;
 
-type MarketplaceBaseResult = {
+type MarketplaceBaseResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
-};
+}>;
 
 // Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
-const fetchCategorizedRequestTotals = async () => {
+const fetchCategorizedRequestTotals = async (): Promise<
+  MetricWithStatus<{
+    predictTxs: number;
+    contributeTxs: number;
+    governatooorrTxs: number;
+  } | null>
+> => {
   const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
   const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
   const governatooorIds = MECH_AGENT_CLASSIFICATION.governatooor;
   const allIds = [...predictTraderIds, ...contributeIds, ...governatooorIds];
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
     const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
@@ -144,8 +220,25 @@ const fetchCategorizedRequestTotals = async () => {
       ])) as [
         PromiseSettledResult<MechResult>,
         PromiseSettledResult<MarketplaceGnosisResult>,
-        PromiseSettledResult<MarketplaceBaseResult>,
+        PromiseSettledResult<MarketplaceBaseResult>
       ];
+
+    const results = [
+      mechResult,
+      marketplaceGnosisResult,
+      marketplaceBaseResult,
+    ];
+    const sources = ['legacyMech', 'gnosis', 'base'];
+    results.forEach((res, index) => {
+      const source = sources[index];
+      if (res.status === 'rejected') {
+        fetchErrors.push(`mech:${source}`);
+      } else {
+        if (res.value?._meta?.hasIndexingErrors) {
+          indexingErrors.push(`mech:${source}`);
+        }
+      }
+    });
 
     const combinedCounts = new Map();
 
@@ -182,13 +275,19 @@ const fetchCategorizedRequestTotals = async () => {
       );
 
     return {
-      predictTxs: sumCountsForAgentIds(predictTraderIds),
-      contributeTxs: sumCountsForAgentIds(contributeIds),
-      governatooorrTxs: sumCountsForAgentIds(governatooorIds),
+      value: {
+        predictTxs: sumCountsForAgentIds(predictTraderIds),
+        contributeTxs: sumCountsForAgentIds(contributeIds),
+        governatooorrTxs: sumCountsForAgentIds(governatooorIds),
+      },
+      status: createStaleStatus(indexingErrors, fetchErrors),
     };
   } catch (error) {
     console.error('Error fetching categorized mech requests:', error);
-    return null;
+    return {
+      value: null,
+      status: createStaleStatus([], ['mech:all']),
+    };
   }
 };
 
@@ -202,39 +301,69 @@ export const fetchMechMetrics = async () => {
         fetchAgentsFunTxCount(),
       ]);
 
-    if (dailyActiveAgents !== null && globals !== null) {
-      let typeTotals = {
-        predictTxs: null,
-        contributeTxs: null,
-        governatooorrTxs: null,
-        agentsfunTxs: null,
-        otherTxs: null,
-      };
+    const predictTxsValue = categorized.value?.predictTxs ?? 0;
+    const contributeTxsValue = categorized.value?.contributeTxs ?? 0;
+    const governatooorrTxsValue = categorized.value?.governatooorrTxs ?? 0;
+    const agentsfunTxsValue = agentsfunTxs.value ?? 0;
+    const totalRequestsValue = globals.value?.requests ?? 0;
 
-      if (categorized) {
-        const { predictTxs, contributeTxs, governatooorrTxs } = categorized;
-        const known =
-          predictTxs + contributeTxs + governatooorrTxs + (agentsfunTxs ?? 0);
-        const otherTxs = Math.max(0, globals.requests - known);
-        typeTotals = {
-          predictTxs,
-          contributeTxs,
-          governatooorrTxs,
-          agentsfunTxs,
-          otherTxs,
-        };
-      }
+    const known =
+      predictTxsValue +
+      contributeTxsValue +
+      governatooorrTxsValue +
+      agentsfunTxsValue;
+    const otherTxsValue = Math.max(0, totalRequestsValue - known);
 
-      return {
-        dailyActiveAgents,
-        totalRequests: globals.requests,
-        totalDeliveries: globals.deliveries,
-        ...typeTotals,
-      };
-    }
-    return null;
+    return {
+      dailyActiveAgents: dailyActiveAgents,
+      totalRequests: {
+        value: globals.value?.requests ?? null,
+        status: globals.status,
+      },
+      totalDeliveries: {
+        value: globals.value?.deliveries ?? null,
+        status: globals.status,
+      },
+      predictTxs: {
+        value: categorized.value ? predictTxsValue : null,
+        status: categorized.status,
+      },
+      contributeTxs: {
+        value: categorized.value ? contributeTxsValue : null,
+        status: categorized.status,
+      },
+      governatooorrTxs: {
+        value: categorized.value ? governatooorrTxsValue : null,
+        status: categorized.status,
+      },
+      agentsfunTxs: agentsfunTxs,
+      otherTxs: {
+        value: (globals.value && categorized.value) ? otherTxsValue : null,
+        status: createStaleStatus(
+          [
+            ...(globals.status.indexingErrors || []),
+            ...(categorized.status.indexingErrors || []),
+          ],
+          [
+            ...(globals.status.fetchErrors || []),
+            ...(categorized.status.fetchErrors || []),
+          ]
+        ),
+      },
+    };
   } catch (error) {
     console.error('Error fetching all mech metrics:', error);
-    return null;
+    const errorStatus = createStaleStatus([], ['mech:all']);
+    const errorMetric = { value: null, status: errorStatus };
+    return {
+      dailyActiveAgents: errorMetric,
+      totalRequests: errorMetric,
+      totalDeliveries: errorMetric,
+      predictTxs: errorMetric,
+      contributeTxs: errorMetric,
+      governatooorrTxs: errorMetric,
+      agentsfunTxs: errorMetric,
+      otherTxs: errorMetric,
+    };
   }
 };

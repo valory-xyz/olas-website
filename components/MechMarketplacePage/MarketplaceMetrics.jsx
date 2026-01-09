@@ -16,7 +16,8 @@ export const MarketplaceMetrics = ({ metrics }) => {
           {
             key: 'mechFees',
             labelText: 'Total Marketplace Turnover',
-            metric: mechFees ? Number(mechFees).toFixed(0) : null,
+            metric: mechFees?.value ? Number(mechFees.value).toFixed(0) : null,
+            status: mechFees?.status,
             isMoney: true,
             source: '/data#mech-turnover',
             isExternal: false,
@@ -32,7 +33,8 @@ export const MarketplaceMetrics = ({ metrics }) => {
           {
             key: 'ataTransactions',
             labelText: 'Total A2A Transactions',
-            metric: ataTransactions,
+            metric: ataTransactions?.value,
+            status: ataTransactions?.status,
             isMoney: false,
             source: '/data#ata-transactions',
             isExternal: false,

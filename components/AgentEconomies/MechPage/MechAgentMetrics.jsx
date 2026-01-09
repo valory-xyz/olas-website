@@ -1,6 +1,7 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -22,7 +23,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.predictTxs?.toLocaleString(),
+        value: metrics?.predictTxs?.value?.toLocaleString(),
+        status: metrics?.predictTxs?.status,
       },
       {
         id: 'agentsfun',
@@ -40,7 +42,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.agentsfunTxs?.toLocaleString(),
+        value: metrics?.agentsfunTxs?.value?.toLocaleString(),
+        status: metrics?.agentsfunTxs?.status,
       },
       {
         id: 'contribute',
@@ -58,7 +61,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.contributeTxs?.toLocaleString(),
+        value: metrics?.contributeTxs?.value?.toLocaleString(),
+        status: metrics?.contributeTxs?.status,
       },
       {
         id: 'governatooor',
@@ -76,7 +80,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.governatooorrTxs?.toLocaleString(),
+        value: metrics?.governatooorrTxs?.value?.toLocaleString(),
+        status: metrics?.governatooorrTxs?.status,
       },
       {
         id: 'other',
@@ -87,7 +92,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
         ),
         subText: 'requests',
-        value: metrics?.otherTxs?.toLocaleString(),
+        value: metrics?.otherTxs?.value?.toLocaleString(),
+        status: metrics?.otherTxs?.status,
       },
     ],
     [metrics],
@@ -107,14 +113,25 @@ export const MechAgentMetrics = ({ metrics }) => {
             />
             Mech Agent Economy
           </div>
-          {metrics?.dailyActiveAgents ? (
-            <Link
-              className="font-extrabold text-6xl"
-              href="/data#mech-daily-active-agents"
-              hideArrow
-            >
-              {Math.floor(metrics?.dailyActiveAgents).toLocaleString()}
-            </Link>
+          {metrics?.dailyActiveAgents?.value ? (
+            <div className="flex items-center gap-2">
+              <Link
+                className="font-extrabold text-6xl"
+                href="/data#mech-daily-active-agents"
+                hideArrow
+              >
+                <span
+                  className={
+                    metrics.dailyActiveAgents.status?.stale
+                      ? 'text-gray-400'
+                      : ''
+                  }
+                >
+                  {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
+                </span>
+              </Link>
+              <StaleIndicator status={metrics.dailyActiveAgents.status} />
+            </div>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
           )}
@@ -126,18 +143,36 @@ export const MechAgentMetrics = ({ metrics }) => {
         <p className="text-xl text-slate-700 mt-0 mb-4 mx-auto">
           The Olas Mech agent economy is in demand as ever, resulting in more
           than{' '}
-          {typeof metrics?.totalRequests === 'number' ? (
-            <Link className="font-bold" href="/data#mech-globals" hideArrow>
-              {metrics.totalRequests.toLocaleString()}
-            </Link>
+          {typeof metrics?.totalRequests?.value === 'number' ? (
+            <span className="inline-flex items-center gap-1">
+              <Link className="font-bold" href="/data#mech-globals" hideArrow>
+                <span
+                  className={
+                    metrics.totalRequests.status?.stale ? 'text-gray-400' : ''
+                  }
+                >
+                  {metrics.totalRequests.value.toLocaleString()}
+                </span>
+              </Link>
+              <StaleIndicator status={metrics.totalRequests.status} />
+            </span>
           ) : (
             <span className="font-bold">--</span>
           )}{' '}
           requests and{' '}
-          {typeof metrics?.totalDeliveries === 'number' ? (
-            <Link className="font-bold" href="/data#mech-globals" hideArrow>
-              {metrics.totalDeliveries.toLocaleString()}
-            </Link>
+          {typeof metrics?.totalDeliveries?.value === 'number' ? (
+            <span className="inline-flex items-center gap-1">
+              <Link className="font-bold" href="/data#mech-globals" hideArrow>
+                <span
+                  className={
+                    metrics.totalDeliveries.status?.stale ? 'text-gray-400' : ''
+                  }
+                >
+                  {metrics.totalDeliveries.value.toLocaleString()}
+                </span>
+              </Link>
+              <StaleIndicator status={metrics.totalDeliveries.status} />
+            </span>
           ) : (
             <span className="font-bold">--</span>
           )}{' '}
@@ -157,9 +192,20 @@ export const MechAgentMetrics = ({ metrics }) => {
             const getValue = () => {
               if (!item.value) return '--';
               return (
-                <Link href="/data#mech-requests-categorized" hideArrow>
-                  {item.value}
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link href="/data#mech-requests-categorized" hideArrow>
+                    <div className="flex items-center">
+                      <span
+                        className={item.status?.stale ? 'text-gray-400' : ''}
+                      >
+                        {item.value}
+                      </span>
+                      <span className="text-black">
+                        <StaleIndicator status={item.status} />
+                      </span>
+                    </div>
+                  </Link>
+                </div>
               );
             };
 

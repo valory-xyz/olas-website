@@ -57,6 +57,7 @@
     "@babel/preset-react": "^7.23.3",
     "@gradio/client": "^1.14.2",
     "@next/eslint-plugin-next": "^14.2.13",
+    "@types/lodash": "^4.17.21",
     "@types/react": "19.2.7",
     "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.57.0",

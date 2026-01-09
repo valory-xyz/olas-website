@@ -2,10 +2,13 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 
 export const AgentsFunMetrics = ({ metrics }) => {
+  const { value, status } = metrics?.dailyActiveAgents || {};
+
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
       <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">
@@ -20,14 +23,19 @@ export const AgentsFunMetrics = ({ metrics }) => {
             />
             Agents.fun Economy
           </div>
-          {metrics?.dailyActiveAgents ? (
-            <Link
-              className="font-extrabold text-6xl"
-              href="/data#agentsfun-daily-active-agents"
-              hideArrow
-            >
-              {Math.floor(metrics.dailyActiveAgents).toLocaleString()}
-            </Link>
+          {value ? (
+            <div className="flex items-center gap-2">
+              <Link
+                className="font-extrabold text-6xl"
+                href="/data#agentsfun-daily-active-agents"
+                hideArrow
+              >
+                <span className={status?.stale ? 'text-gray-400' : ''}>
+                  {Math.floor(value).toLocaleString()}
+                </span>
+              </Link>
+              <StaleIndicator status={status} />
+            </div>
           ) : (
             <span className="text-purple-600 text-6xl">--</span>
           )}

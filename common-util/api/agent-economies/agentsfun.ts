@@ -1,34 +1,30 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import { dailyAgentsFunPerformancesQuery } from 'common-util/graphql/queries';
+import { WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-type DailyAgentPerformance = {
+type DailyAgentPerformance = WithMeta<{
   dailyAgentPerformances: {
     activeMultisigCount: number;
   }[];
-};
-
-const fetchDailyAgentPerformance = async () => {
-  const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
-  const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
-
-  const result: DailyAgentPerformance =
-    await REGISTRY_GRAPH_CLIENTS.base.request(dailyAgentsFunPerformancesQuery, {
-      timestamp_gt,
-      timestamp_lt,
-    });
-
-  const performances = result.dailyAgentPerformances ?? [];
-  return calculate7DayAverage(performances, 'activeMultisigCount');
-};
+}>;
 
 export const fetchAgentsFunMetrics = async () => {
-  try {
-    const dailyActiveAgents = await fetchDailyAgentPerformance();
-    return { dailyActiveAgents };
-  } catch (error) {
-    console.error('Error fetching agents.fun metrics:', error);
-    return null;
-  }
+  const dailyActiveAgents = await executeGraphQLQuery<DailyAgentPerformance, number>({
+    client: REGISTRY_GRAPH_CLIENTS.base,
+    query: dailyAgentsFunPerformancesQuery,
+    variables: {
+      timestamp_gt: getMidnightUtcTimestampDaysAgo(8),
+      timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
+    },
+    source: 'registry:base',
+    transform: (data) => {
+      const performances = data.dailyAgentPerformances ?? [];
+      return calculate7DayAverage(performances, 'activeMultisigCount');
+    },
+  });
+
+  return { dailyActiveAgents };
 };
