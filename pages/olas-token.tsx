@@ -1,3 +1,4 @@
+import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -18,7 +19,7 @@ export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'other' });
   return {
     props: {
-      metrics: snapshot?.data || null,
+      metrics: (snapshot?.data as OtherMetricsData) || null,
     },
     revalidate: REVALIDATE_DURATION,
   };
