@@ -35,6 +35,7 @@ const isMetricsSnapshot = (data: unknown): data is MetricsSnapshot =>
   'data' in data &&
   'timestamp' in data;
 
+// TODO: refactor this fn to make it more readable.
 const mergeWithFallback = (
   newData: unknown,
   oldData: unknown,
