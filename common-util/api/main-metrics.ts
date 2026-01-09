@@ -37,24 +37,14 @@ const fetchDailyAgentPerformance = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-      REGISTRY_GRAPH_CLIENTS.base.request(dailyAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-      REGISTRY_GRAPH_CLIENTS.mode.request(dailyAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-      REGISTRY_GRAPH_CLIENTS.optimism.request(dailyAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-    ]);
+    const results = await Promise.allSettled(
+      chains.map((chain) =>
+        REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        })
+      )
+    );
 
     const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
       [];
@@ -105,12 +95,9 @@ const fetchTotalOlasStaked = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
-      STAKING_GRAPH_CLIENTS.base.request(stakingGlobalsQuery),
-      STAKING_GRAPH_CLIENTS.mode.request(stakingGlobalsQuery),
-      STAKING_GRAPH_CLIENTS.optimism.request(stakingGlobalsQuery),
-    ]);
+    const results = await Promise.allSettled(
+      chains.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
+    );
 
     const olasStakedByChains: string[] = [];
 
@@ -171,16 +158,9 @@ const fetchTransactions = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      REGISTRY_GRAPH_CLIENTS.gnosis.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.base.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.mode.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.optimism.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.celo.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.ethereum.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.polygon.request(registryGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.arbitrum.request(registryGlobalsQuery),
-    ]);
+    const results = await Promise.allSettled(
+      chains.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery))
+    );
 
     const txCountByChains: string[] = [];
 
@@ -242,16 +222,9 @@ const fetchTotalOperators = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      REGISTRY_GRAPH_CLIENTS.gnosis.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.base.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.mode.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.optimism.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.celo.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.ethereum.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.polygon.request(operatorGlobalsQuery),
-      REGISTRY_GRAPH_CLIENTS.arbitrum.request(operatorGlobalsQuery),
-    ]);
+    const results = await Promise.allSettled(
+      chains.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery))
+    );
 
     const operatorsByChains: number[] = [];
 
@@ -302,11 +275,9 @@ export const fetchAtaTransactions = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      ATA_GRAPH_CLIENTS.gnosis.request(ataTransactionsQuery),
-      ATA_GRAPH_CLIENTS.base.request(ataTransactionsQuery),
-      ATA_GRAPH_CLIENTS.legacyMech.request(ataTransactionsQuery),
-    ]);
+    const results = await Promise.allSettled(
+      sources.map((source) => ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
+    );
 
     const ataTransactionsByChains: string[] = [];
 

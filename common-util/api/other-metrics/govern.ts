@@ -143,38 +143,26 @@ export const fetchGovernMetrics = async () => {
       [fetchLockedBalance(), countActiveDepositors()]
     );
 
-    let lockedOlas: MetricWithStatus<number | null> = {
-      value: null,
-      status: createStaleStatus([], []),
-    };
-    let activeHolders: MetricWithStatus<number | null> = {
-      value: null,
-      status: createStaleStatus([], []),
-    };
-
-    if (lockedBalanceResult.status === 'fulfilled') {
-      const { value, status } = lockedBalanceResult.value;
-      lockedOlas = {
-        value: value ? Number(value) / 1e18 : null,
-        status,
+    const handleResult = <T>(
+      result: PromiseSettledResult<MetricWithStatus<T>>,
+      errorSource: string
+    ): MetricWithStatus<T> => {
+      if (result.status === 'fulfilled') {
+        return result.value;
+      }
+      console.error(`Fetch ${errorSource} failed:`, result.reason);
+      return {
+        value: null,
+        status: createStaleStatus([], [errorSource]),
       };
-    } else {
-      console.error(
-        'Fetch locked balance failed:',
-        lockedBalanceResult.reason
-      );
-      lockedOlas.status = createStaleStatus([], ['govern:lockedBalance']);
-    }
+    };
 
-    if (activeHoldersResult.status === 'fulfilled') {
-      activeHolders = activeHoldersResult.value;
-    } else {
-      console.error(
-        'Fetch active holders failed:',
-        activeHoldersResult.reason
-      );
-      activeHolders.status = createStaleStatus([], ['govern:activeHolders']);
-    }
+    const lockedBalanceRaw = handleResult(lockedBalanceResult, 'govern:lockedBalance');
+    const lockedOlas: MetricWithStatus<number | null> = {
+      value: lockedBalanceRaw.value ? Number(lockedBalanceRaw.value) / 1e18 : null,
+      status: lockedBalanceRaw.status,
+    };
+    const activeHolders = handleResult(activeHoldersResult, 'govern:activeHolders');
 
     return {
       lockedOlas,

@@ -1,4 +1,3 @@
-import { MetricWithStatus } from 'common-util/graphql/types';
 import { fetchBuildMetrics } from './build';
 import { fetchContributeMetrics } from './contribute';
 import { fetchGovernMetrics } from './govern';
@@ -6,24 +5,11 @@ import { fetchProtocolMetrics } from './protocol';
 import { fetchTokenHolders } from './token-holders';
 
 export type OtherMetricsData = {
-  build: {
-    totalBuilders: MetricWithStatus<number | null>;
-  };
-  contribute: {
-    totalOlasContributors: MetricWithStatus<number | null>;
-    dailyActiveContributors: MetricWithStatus<number | null>;
-  };
-  govern: {
-    lockedOlas: MetricWithStatus<number | null>;
-    activeHolders: MetricWithStatus<number | null>;
-  };
-  tokenHolders: {
-    totalTokenHolders: MetricWithStatus<number | null>;
-  };
-  protocol: {
-    totalProtocolOwnedLiquidity: MetricWithStatus<number | null>;
-    totalProtocolRevenue: MetricWithStatus<number | null>;
-  };
+  build: Awaited<ReturnType<typeof fetchBuildMetrics>>;
+  contribute: Awaited<ReturnType<typeof fetchContributeMetrics>>;
+  govern: Awaited<ReturnType<typeof fetchGovernMetrics>>;
+  tokenHolders: Awaited<ReturnType<typeof fetchTokenHolders>>;
+  protocol: Awaited<ReturnType<typeof fetchProtocolMetrics>>;
 };
 
 export type OtherMetricsSnapshot = {
