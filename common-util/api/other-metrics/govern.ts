@@ -47,7 +47,7 @@ type ActiveVeOlasDepositorsResult = WithMeta<Record<string, Depositor[]>>;
 
 const fetchActiveDepositorCount = async (
   { key }: { key: string },
-  unlockAfter: string
+  unlockAfter: string,
 ): Promise<{ count: number; hasIndexingErrors: boolean }> => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
@@ -67,7 +67,7 @@ const fetchActiveDepositorCount = async (
           skip,
           pages: PAGES,
           unlockAfter,
-        })
+        }),
       );
 
       if (response._meta?.hasIndexingErrors) {
@@ -98,10 +98,10 @@ const fetchActiveDepositorCount = async (
 
 const getActiveDepositorCounts = (
   networks: { key: string }[],
-  unlockAfter: string
+  unlockAfter: string,
 ) =>
   Promise.all(
-    networks.map((network) => fetchActiveDepositorCount(network, unlockAfter))
+    networks.map((network) => fetchActiveDepositorCount(network, unlockAfter)),
   );
 
 const countActiveDepositors = async (): Promise<
@@ -140,12 +140,12 @@ const countActiveDepositors = async (): Promise<
 export const fetchGovernMetrics = async () => {
   try {
     const [lockedBalanceResult, activeHoldersResult] = await Promise.allSettled(
-      [fetchLockedBalance(), countActiveDepositors()]
+      [fetchLockedBalance(), countActiveDepositors()],
     );
 
     const handleResult = <T>(
       result: PromiseSettledResult<MetricWithStatus<T>>,
-      errorSource: string
+      errorSource: string,
     ): MetricWithStatus<T> => {
       if (result.status === 'fulfilled') {
         return result.value;
@@ -157,12 +157,20 @@ export const fetchGovernMetrics = async () => {
       };
     };
 
-    const lockedBalanceRaw = handleResult(lockedBalanceResult, 'govern:lockedBalance');
+    const lockedBalanceRaw = handleResult(
+      lockedBalanceResult,
+      'govern:lockedBalance',
+    );
     const lockedOlas: MetricWithStatus<number | null> = {
-      value: lockedBalanceRaw.value ? Number(lockedBalanceRaw.value) / 1e18 : null,
+      value: lockedBalanceRaw.value
+        ? Number(lockedBalanceRaw.value) / 1e18
+        : null,
       status: lockedBalanceRaw.status,
     };
-    const activeHolders = handleResult(activeHoldersResult, 'govern:activeHolders');
+    const activeHolders = handleResult(
+      activeHoldersResult,
+      'govern:activeHolders',
+    );
 
     return {
       lockedOlas,

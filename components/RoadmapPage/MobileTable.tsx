@@ -1,11 +1,11 @@
 import { CheckCheck } from 'lucide-react';
 import { OlasToken } from './OlasToken';
 
-interface TableCellProps {
+type TableCellProps = {
   children: React.ReactNode;
   column: 'pearl' | 'marketplace';
   showCheckmark?: boolean;
-}
+};
 
 const TableCell = ({
   children,
@@ -22,10 +22,10 @@ const TableCell = ({
   );
 };
 
-interface SpanningTableCellProps {
+type SpanningTableCellProps = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 const SpanningTableCell = ({
   children,

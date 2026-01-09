@@ -119,16 +119,22 @@ export const fetchContributeMetrics = async () => {
     } else {
       console.error(
         LEADERBOARD_ERROR_MESSAGE,
-        totalOlasContributorsResult.reason
+        totalOlasContributorsResult.reason,
       );
-      totalOlasContributors.status = createStaleStatus([], ['contribute:total']);
+      totalOlasContributors.status = createStaleStatus(
+        [],
+        ['contribute:total'],
+      );
     }
 
     if (daaResult.status === 'fulfilled') {
       dailyActiveContributors = daaResult.value;
     } else {
       console.error('Fetch DAA for contribute failed:', daaResult.reason);
-      dailyActiveContributors.status = createStaleStatus([], ['contribute:daa']);
+      dailyActiveContributors.status = createStaleStatus(
+        [],
+        ['contribute:daa'],
+      );
     }
 
     return {

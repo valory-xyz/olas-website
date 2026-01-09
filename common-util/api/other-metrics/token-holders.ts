@@ -27,7 +27,7 @@ const fetchHolderCount = async ({
       holderCountsQuery,
       {
         tokenId: tokenAddress,
-      }
+      },
     );
 
     return {

@@ -3,7 +3,10 @@ import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
-import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
+import {
+  isMetricWithStatus,
+  MetricWithStatus,
+} from 'common-util/graphql/types';
 import lodash from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
@@ -24,7 +27,7 @@ type MetricsData =
   | OtherMetricsData
   | AgentEconomiesMetricsData;
 
-type MetricsSnapshot = {
+export type MetricsSnapshot = {
   data: MetricsData;
   timestamp: number;
 };
@@ -39,7 +42,7 @@ const isMetricsSnapshot = (data: unknown): data is MetricsSnapshot =>
 const mergeWithFallback = (
   newData: unknown,
   oldData: unknown,
-  path: string = ''
+  path: string = '',
 ): unknown => {
   if (!newData || typeof newData !== 'object') {
     return newData;
@@ -110,7 +113,7 @@ const mergeWithFallback = (
           key in (oldData as Record<string, unknown>)
           ? (oldData as Record<string, unknown>)[key]
           : undefined,
-        newPath
+        newPath,
       );
     } else if (
       lodash.isPlainObject(oldData) &&
@@ -154,7 +157,7 @@ export const saveSnapshot = async ({
   } catch (error) {
     console.warn(
       `Failed to load previous snapshot for ${category} fallback`,
-      error
+      error,
     );
   }
 
@@ -178,7 +181,7 @@ type GetSnapshotParams = {
  */
 export const getSnapshot = async ({
   category,
-}: GetSnapshotParams): Promise<unknown | null> => {
+}: GetSnapshotParams): Promise<MetricsSnapshot | null> => {
   try {
     const filename = getSnapshotFilename(category);
     const { blobs } = await list({ prefix: filename, limit: 1 });
@@ -196,7 +199,14 @@ export const getSnapshot = async ({
     if (!response.ok)
       throw new Error(`Failed to fetch snapshot from ${blob.url}`);
 
-    return await response.json();
+    const data = await response.json();
+
+    if (isMetricsSnapshot(data)) {
+      return data;
+    }
+
+    console.warn(`Snapshot for ${category} does not match expected structure`);
+    return null;
   } catch (error) {
     console.error(`Error reading snapshot for ${category}:`, error);
     return null;

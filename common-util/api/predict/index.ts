@@ -1,10 +1,10 @@
 import {
   GNOSIS_STAKING_CONTRACTS,
-  PREDICT_AGENT_CLASSIFICATION
+  PREDICT_AGENT_CLASSIFICATION,
 } from 'common-util/constants';
 import {
   REGISTRY_GRAPH_CLIENTS,
-  STAKING_GRAPH_CLIENTS
+  STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
   createStaleStatus,
@@ -13,7 +13,7 @@ import {
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
-  stakingContractsQuery
+  stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
@@ -30,7 +30,6 @@ const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 const ROI_LIMIT = 1000;
 const ROI_PAGES = 10;
-
 
 type DailyPredictPerformancesResponse = WithMeta<{
   dailyAgentPerformances: {
@@ -86,7 +85,7 @@ const fetchPredictDaa7dAvg = async (): Promise<
 
       const total = dayKeys.reduce(
         (acc, k) => acc + (totalsByDay.get(k) || 0),
-        0
+        0,
       );
 
       return Math.floor(total / 7);
@@ -110,13 +109,15 @@ const fetchPredictTxsByAgentType = async (): Promise<
       });
 
       const result: Record<string, number> = {};
-      Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(([category, ids]) => {
-        let sum = 0n;
-        ids.forEach((id) => {
-          sum += idToTx.get(String(Number(id))) || 0n;
-        });
-        result[category] = Number(sum);
-      });
+      Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(
+        ([category, ids]) => {
+          let sum = 0n;
+          ids.forEach((id) => {
+            sum += idToTx.get(String(Number(id))) || 0n;
+          });
+          result[category] = Number(sum);
+        },
+      );
 
       return result;
     },

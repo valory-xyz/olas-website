@@ -8,7 +8,7 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "eslint --fix \"./**/*.{js,jsx}\""
+    "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.17",
@@ -66,7 +66,9 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "ts-migrate": "^0.1.35",
+    "ts-migrate-plugins": "^0.1.35"
   },
   "babel": {
     "presets": [

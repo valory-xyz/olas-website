@@ -23,7 +23,7 @@ import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
-  new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000
+  new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000,
 );
 const EMPTY_APR_METRICS = {
   latestUsdcApr: null,
@@ -88,7 +88,9 @@ const fetchOptimusPopulationMetrics = async (): Promise<
 
       // Exclude today (UTC)
       const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
-      const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+      const filtered = rows.filter(
+        (r) => Number(r.timestamp) < todayMidnightUtc,
+      );
       if (filtered.length < 7) return null;
 
       // Map medianAUM to medianFundedAUM
@@ -127,7 +129,7 @@ const buildAprMetrics = ({
 };
 
 const fetchOptimusMetrics = async (
-  maxOlasApr: MetricWithStatus<number | null>
+  maxOlasApr: MetricWithStatus<number | null>,
 ): Promise<MetricWithStatus<any>> => {
   const { value: populationResult, status: populationStatus } =
     await fetchOptimusPopulationMetrics();
@@ -151,13 +153,13 @@ const fetchOptimusMetrics = async (
       [
         ...(populationStatus.fetchErrors || []),
         ...(maxOlasApr.status.fetchErrors || []),
-      ]
+      ],
     ),
   };
 };
 
 const fetchModiusMetrics = async (
-  maxOlasApr: MetricWithStatus<number | null>
+  maxOlasApr: MetricWithStatus<number | null>,
 ): Promise<MetricWithStatus<any>> => {
   const { value: populationResult, status: populationStatus } =
     await fetchModiusPopulationMetrics();
@@ -194,7 +196,7 @@ const fetchModiusMetrics = async (
       [
         ...(populationStatus.fetchErrors || []),
         ...(maxOlasApr.status.fetchErrors || []),
-      ]
+      ],
     ),
   };
 };
@@ -221,7 +223,7 @@ const fetchDailyAgentPerformance = async (): Promise<
 
     const handleResult = (
       result: PromiseSettledResult<any>,
-      source: string
+      source: string,
     ) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
@@ -238,11 +240,11 @@ const fetchDailyAgentPerformance = async (): Promise<
 
     const modeAverage = calculate7DayAverage(
       modePerformances,
-      'activeMultisigCount'
+      'activeMultisigCount',
     );
     const optimismAverage = calculate7DayAverage(
       optimismPerformances,
-      'activeMultisigCount'
+      'activeMultisigCount',
     );
 
     return {

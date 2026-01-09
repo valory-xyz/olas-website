@@ -26,6 +26,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "migration.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",

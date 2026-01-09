@@ -51,7 +51,7 @@ const fetchDailyAgentPerformance = async (): Promise<
 
     const handleResult = <T>(
       result: PromiseSettledResult<T>,
-      source: string
+      source: string,
     ) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
@@ -67,11 +67,11 @@ const fetchDailyAgentPerformance = async (): Promise<
 
     const gnosisAverage = calculate7DayAverage(
       gnosisPerformances,
-      'activeMultisigCount'
+      'activeMultisigCount',
     );
     const baseAverage = calculate7DayAverage(
       basePerformances,
-      'activeMultisigCount'
+      'activeMultisigCount',
     );
 
     return {
@@ -101,11 +101,11 @@ const fetchMechGlobals = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
+    const results = (await Promise.allSettled([
       ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-    ]) as PromiseSettledResult<MechGlobalsResult>[];
+    ])) as PromiseSettledResult<MechGlobalsResult>[];
 
     const sources = ['legacyMech', 'gnosis', 'base'];
     results.forEach((res, index) => {
@@ -123,7 +123,7 @@ const fetchMechGlobals = async (): Promise<
         acc.deliveries += extractSettledNumber(res, 'global.totalDeliveries');
         return acc;
       },
-      { requests: 0, deliveries: 0 }
+      { requests: 0, deliveries: 0 },
     );
 
     return {
@@ -156,15 +156,18 @@ const fetchAgentsFunTxCount = async (): Promise<
       agentTxCountsQuery,
       {
         agentIds,
-      }
+      },
     );
     const rows = result?.agentPerformances || [];
-    const txCount = rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
+    const txCount = rows.reduce(
+      (sum, row) => sum + Number(row?.txCount ?? 0),
+      0,
+    );
     return {
       value: txCount,
       status: createStaleStatus(
         result?._meta?.hasIndexingErrors ? ['registry:base'] : [],
-        []
+        [],
       ),
     };
   } catch (error) {
@@ -175,7 +178,6 @@ const fetchAgentsFunTxCount = async (): Promise<
     };
   }
 };
-
 
 type MechResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
@@ -209,18 +211,18 @@ const fetchCategorizedRequestTotals = async (): Promise<
     const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
       (await Promise.allSettled([
         ATA_GRAPH_CLIENTS.legacyMech.request(
-          mechRequestsPerAgentOnchainsQuery(allIds.map(String))
+          mechRequestsPerAgentOnchainsQuery(allIds.map(String)),
         ),
         ATA_GRAPH_CLIENTS.gnosis.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
         ),
         ATA_GRAPH_CLIENTS.base.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
         ),
       ])) as [
         PromiseSettledResult<MechResult>,
         PromiseSettledResult<MarketplaceGnosisResult>,
-        PromiseSettledResult<MarketplaceBaseResult>
+        PromiseSettledResult<MarketplaceBaseResult>,
       ];
 
     const results = [
@@ -243,7 +245,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     const combinedCounts = new Map();
 
     const addCounts = (
-      records: { id: string; requestsCount: number }[] | undefined
+      records: { id: string; requestsCount: number }[] | undefined,
     ) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
@@ -253,7 +255,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
         const requestCount = Number(item?.requestsCount ?? 0);
         combinedCounts.set(
           agentId,
-          (combinedCounts.get(agentId) ?? 0) + requestCount
+          (combinedCounts.get(agentId) ?? 0) + requestCount,
         );
       });
     };
@@ -271,7 +273,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     const sumCountsForAgentIds = (agentIds: number[]) =>
       agentIds.reduce(
         (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
-        0
+        0,
       );
 
     return {
@@ -338,7 +340,7 @@ export const fetchMechMetrics = async () => {
       },
       agentsfunTxs: agentsfunTxs,
       otherTxs: {
-        value: (globals.value && categorized.value) ? otherTxsValue : null,
+        value: globals.value && categorized.value ? otherTxsValue : null,
         status: createStaleStatus(
           [
             ...(globals.status.indexingErrors || []),
@@ -347,7 +349,7 @@ export const fetchMechMetrics = async () => {
           [
             ...(globals.status.fetchErrors || []),
             ...(categorized.status.fetchErrors || []),
-          ]
+          ],
         ),
       },
     };
