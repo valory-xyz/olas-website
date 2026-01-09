@@ -70,7 +70,7 @@ const mergeWithFallback = (
     return newData;
   }
 
-  const result: unknown = Array.isArray(newData) ? [] : {};
+  const result: Record<string, unknown> = {};
   if (Array.isArray(newData)) {
     return newData;
   }
@@ -117,7 +117,7 @@ const mergeWithFallback = (
 export const saveSnapshot = async ({
   category,
   data,
-}: SaveSnapshotParams): Promise<string> => {
+}: SaveSnapshotParams): Promise<string | undefined> => {
   if (!isMetricsSnapshot(data)) return;
 
   let dataToSave = data;

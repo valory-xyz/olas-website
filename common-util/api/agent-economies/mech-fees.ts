@@ -32,12 +32,16 @@ export const fetchMechFeeMetrics = async () => {
       MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesTotalsQuery),
       MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesTotalsQuery),
       legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
-    ]);
+    ]) as [
+      PromiseSettledResult<MechFeesResult>,
+      PromiseSettledResult<MechFeesResult>,
+      PromiseSettledResult<LegacyMechFeesResult>,
+    ];
 
-    const getSafe = (
-      res: PromiseSettledResult<any>,
+    const getNewMechFees = (
+      res: PromiseSettledResult<MechFeesResult>,
       source: string
-    ) => {
+    ): MechFeesResult['global'] | null => {
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${source}`);
         return null;
@@ -45,12 +49,26 @@ export const fetchMechFeeMetrics = async () => {
       if (res.value?._meta?.hasIndexingErrors) {
         indexingErrors.push(`mechFees:${source}`);
       }
-      return res.value;
+      return res.value?.global ?? null;
     };
 
-    const gnosisNewGlobal = getSafe(gnosisNew, 'gnosis')?.global;
-    const baseNewGlobal = getSafe(baseNew, 'base')?.global;
-    const legacyGlobal = getSafe(legacy, 'legacy')?.global;
+    const getLegacyMechFees = (
+      res: PromiseSettledResult<LegacyMechFeesResult>,
+      source: string
+    ): LegacyMechFeesResult['global'] | null => {
+      if (res.status === 'rejected') {
+        fetchErrors.push(`mechFees:${source}`);
+        return null;
+      }
+      if (res.value?._meta?.hasIndexingErrors) {
+        indexingErrors.push(`mechFees:${source}`);
+      }
+      return res.value?.global ?? null;
+    };
+
+    const gnosisNewGlobal = getNewMechFees(gnosisNew, 'gnosis');
+    const baseNewGlobal = getNewMechFees(baseNew, 'base');
+    const legacyGlobal = getLegacyMechFees(legacy, 'legacy');
 
     const inUsd =
       Number(gnosisNewGlobal?.totalFeesInUSD || 0) +

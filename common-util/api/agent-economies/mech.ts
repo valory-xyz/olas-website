@@ -301,11 +301,11 @@ export const fetchMechMetrics = async () => {
         fetchAgentsFunTxCount(),
       ]);
 
-    const predictTxsValue = categorized.value?.predictTxs;
-    const contributeTxsValue = categorized.value?.contributeTxs;
-    const governatooorrTxsValue = categorized.value?.governatooorrTxs;
-    const agentsfunTxsValue = agentsfunTxs.value;
-    const totalRequestsValue = globals.value?.requests;
+    const predictTxsValue = categorized.value?.predictTxs ?? 0;
+    const contributeTxsValue = categorized.value?.contributeTxs ?? 0;
+    const governatooorrTxsValue = categorized.value?.governatooorrTxs ?? 0;
+    const agentsfunTxsValue = agentsfunTxs.value ?? 0;
+    const totalRequestsValue = globals.value?.requests ?? 0;
 
     const known =
       predictTxsValue +

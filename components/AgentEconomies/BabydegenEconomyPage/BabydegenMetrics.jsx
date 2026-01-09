@@ -101,7 +101,7 @@ export const BabydegenMetrics = ({ metrics }) => {
               >
                 <span
                   className={
-                    metrics.dailyActiveAgents.status.stale
+                    metrics.dailyActiveAgents.status?.stale
                       ? 'text-gray-400'
                       : ''
                   }

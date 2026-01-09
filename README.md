@@ -80,7 +80,7 @@ During ISR, Next.js expects the stored blob schema to match what the page compon
 
 **To introduce a new blob version:**
 
-1. Update the prefix in `snapshot-storage.ts` (e.g., `metrics-v2-${process.env.NODE_ENV}`)
+1. Update the prefix in `snapshot-storage.ts` (e.g., `metrics-2025-01-30-${process.env.NODE_ENV}`)
 2. On Vercel preview builds, manually trigger the refresh-metrics endpoints. This will populate the new blobs.
 3. Once the build is live, old blobs can be cleaned up from the Vercel Blob dashboard
 

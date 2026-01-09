@@ -20,6 +20,18 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
+const STAKING_CHAINS = ['gnosis', 'base', 'mode', 'optimism'] as const;
+const ALL_REGISTRY_CHAINS = [
+  'gnosis',
+  'base',
+  'mode',
+  'optimism',
+  'celo',
+  'ethereum',
+  'polygon',
+  'arbitrum',
+] as const;
+
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
     id: string;
@@ -32,13 +44,12 @@ const fetchDailyAgentPerformance = async (): Promise<
 > => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
-  const chains = ['gnosis', 'base', 'mode', 'optimism'] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      chains.map((chain) =>
+      STAKING_CHAINS.map((chain) =>
         REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
           timestamp_gt,
           timestamp_lt,
@@ -50,7 +61,7 @@ const fetchDailyAgentPerformance = async (): Promise<
       [];
 
     results.forEach((result, index) => {
-      const chain = chains[index];
+      const chain = STAKING_CHAINS[index];
       if (result.status === 'rejected') {
         console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
@@ -91,19 +102,18 @@ type StakingGlobalsResult = WithMeta<{
 const fetchTotalOlasStaked = async (): Promise<
   MetricWithStatus<string | null>
 > => {
-  const chains = ['gnosis', 'base', 'mode', 'optimism'] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      chains.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
+      STAKING_CHAINS.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
     );
 
     const olasStakedByChains: string[] = [];
 
     results.forEach((result, index) => {
-      const chain = chains[index];
+      const chain = STAKING_CHAINS[index];
       if (result.status === 'rejected') {
         console.error(`staking:${chain}`, result.reason);
         fetchErrors.push(`staking:${chain}`);
@@ -146,28 +156,18 @@ type RegistryGlobalsResult = WithMeta<{
 const fetchTransactions = async (): Promise<
   MetricWithStatus<string | null>
 > => {
-  const chains = [
-    'gnosis',
-    'base',
-    'mode',
-    'optimism',
-    'celo',
-    'ethereum',
-    'polygon',
-    'arbitrum',
-  ] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      chains.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery))
     );
 
     const txCountByChains: string[] = [];
 
     results.forEach((result, index) => {
-      const chain = chains[index];
+      const chain = ALL_REGISTRY_CHAINS[index];
       if (result.status === 'rejected') {
         console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
@@ -210,28 +210,18 @@ type OperatorGlobalsResult = WithMeta<{
 const fetchTotalOperators = async (): Promise<
   MetricWithStatus<number | null>
 > => {
-  const chains = [
-    'gnosis',
-    'base',
-    'mode',
-    'optimism',
-    'celo',
-    'ethereum',
-    'polygon',
-    'arbitrum',
-  ] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      chains.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery))
     );
 
     const operatorsByChains: number[] = [];
 
     results.forEach((result, index) => {
-      const chain = chains[index];
+      const chain = ALL_REGISTRY_CHAINS[index];
       if (result.status === 'rejected') {
         console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
@@ -335,7 +325,9 @@ type LegacyMechFeesResult = WithMeta<{
 export const fetchMechFees = async (): Promise<
   MetricWithStatus<string | null>
 > => {
+  // Sources in order: gnosis (new), base (new), legacy
   const sources = ['gnosis', 'base', 'legacy'] as const;
+  const LEGACY_INDEX = 2; // Index of legacy mech fees in results array
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
@@ -350,27 +342,28 @@ export const fetchMechFees = async (): Promise<
 
     results.forEach((result, index) => {
       const source = sources[index];
+      const isLegacy = index === LEGACY_INDEX;
+
       if (result.status === 'rejected') {
         console.error(`mechFees:${source}`, result.reason);
         fetchErrors.push(`mechFees:${source}`);
       } else {
-        const data =
-          index === 2
-            ? (result.value as LegacyMechFeesResult)
-            : (result.value as MechFeesResult);
+        const data = isLegacy
+          ? (result.value as LegacyMechFeesResult)
+          : (result.value as MechFeesResult);
 
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`mechFees:${source}`);
         }
 
         if (data.global) {
-          if (index === 2) {
-            // Legacy mech fees (index 2) - convert from wei to XDAI
+          if (isLegacy) {
+            // Legacy mech fees - convert from wei to XDAI
             const weiValue = data.global.totalFeesIn || '0';
             const xdaiValue = Number(weiValue) / 10 ** 18;
             totalFees += xdaiValue;
           } else {
-            // New mech fees (indices 0, 1) - already in USD
+            // New mech fees (gnosis, base) - already in USD
             const usdValue = Number(
               (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
             );
