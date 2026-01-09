@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-interface SectionWrapperProps {
+type SectionWrapperProps = {
   backgroundType?:
     | 'SUBTLE_GRADIENT'
     | 'GRAY'
@@ -11,7 +11,7 @@ interface SectionWrapperProps {
   customClasses?: string;
   id?: string;
   customStyle?: object;
-}
+};
 
 const SectionWrapper = ({
   children,

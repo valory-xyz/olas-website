@@ -1,4 +1,4 @@
-interface SectionHeadingProps {
+type SectionHeadingProps = {
   children: React.ReactNode;
   color?: string;
   display?: string;
@@ -6,7 +6,7 @@ interface SectionHeadingProps {
   spacing?: string;
   weight?: string;
   other?: string;
-}
+};
 
 const SectionHeading = ({
   children,

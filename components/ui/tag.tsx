@@ -32,11 +32,11 @@ const tagBordersVariants = cva('absolute w-2 h-2', {
   },
 });
 
-interface TagProps {
+type TagProps = {
   className?: string;
   variant?: 'primary' | 'secondary' | 'tertiary' | 'white';
   children: React.ReactNode;
-}
+};
 
 export const Tag = ({ className, variant, children, ...props }: TagProps) => {
   return (

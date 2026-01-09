@@ -16,12 +16,12 @@ import React from 'react';
 
 const triggerStyle = navigationMenuTriggerStyle();
 
-interface ListItemProps {
+type ListItemProps = {
   className?: string;
   title: string;
   children: React.ReactNode;
   href?: string;
-}
+};
 
 const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
   ({ className, title, children, ...props }, ref) => (
@@ -52,9 +52,9 @@ ListItem.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-interface MenuProps {
+type MenuProps = {
   className?: string;
-}
+};
 
 export function Menu({ className }: MenuProps) {
   return (

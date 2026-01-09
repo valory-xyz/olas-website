@@ -2,14 +2,14 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import { InfoIcon } from 'components/ui/info-icon';
 import { useState } from 'react';
 
-interface PopoverProps {
+type PopoverProps = {
   children: React.ReactNode;
   text?: string;
   className?: string;
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   contentClassName?: string;
-}
+};
 
 export const Popover = ({
   children,

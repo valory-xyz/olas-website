@@ -14,7 +14,7 @@ export const fetchMetrics = async (fetchFunctions) => {
   }
 };
 
-interface MetricsCardProps {
+type MetricsCardProps = {
   metrics: {
     role: string;
     displayMetrics: {
@@ -29,7 +29,7 @@ interface MetricsCardProps {
       imageWidth?: number;
     }[];
   };
-}
+};
 
 export const MetricsCard = ({ metrics }: MetricsCardProps) => {
   return (

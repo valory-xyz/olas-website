@@ -6,7 +6,7 @@ import {
 } from 'common-util/classes';
 import SectionWrapper from './Layout/SectionWrapper';
 
-interface HeroSectionProps {
+type HeroSectionProps = {
   HeroImage: React.ComponentType;
   pageName: string;
   title: string | React.ReactNode;
@@ -21,7 +21,7 @@ interface HeroSectionProps {
     | 'GOVERNATOOORR'
     | 'NONE';
   className?: string;
-}
+};
 
 export const HeroSection = ({
   HeroImage,

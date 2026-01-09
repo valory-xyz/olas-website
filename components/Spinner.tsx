@@ -1,6 +1,6 @@
-interface SpinnerProps {
+type SpinnerProps = {
   customClass?: string;
-}
+};
 
 export const Spinner = ({ customClass = 'h-screen' }: SpinnerProps) => (
   <div className={`flex items-center justify-center ${customClass}`}>

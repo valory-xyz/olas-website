@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 
-interface VideoItem {
+type VideoItem = {
   id?: string;
   platform_link?: string;
   drive_link?: string;
@@ -17,11 +17,11 @@ interface VideoItem {
   imageFilename?: string;
   title?: string;
   date?: string;
-}
+};
 
-interface VideoProps {
+type VideoProps = {
   video: VideoItem;
-}
+};
 
 const Video = ({ video }: VideoProps) => (
   <a
@@ -63,12 +63,12 @@ const Video = ({ video }: VideoProps) => (
   </a>
 );
 
-interface VideosProps {
+type VideosProps = {
   isLoading?: boolean;
   videos?: VideoItem[];
   limit?: number;
   isMain?: boolean;
-}
+};
 
 export const Videos = ({ isLoading, videos, limit, isMain }: VideosProps) => (
   <section>

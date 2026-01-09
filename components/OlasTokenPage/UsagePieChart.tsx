@@ -15,7 +15,7 @@ const verifyLinks = [
   `${READ_PROXY_ETHERSCAN_URL}F33`,
 ];
 
-interface UsagePieChartProps {
+type UsagePieChartProps = {
   epoch?: unknown;
   loading: boolean;
   split: {
@@ -23,7 +23,7 @@ interface UsagePieChartProps {
     developers?: number;
     staking?: number;
   };
-}
+};
 
 export const UsagePieChart = ({
   epoch,

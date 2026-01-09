@@ -2,7 +2,7 @@ import Image from 'next/image';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { H1 } from '../typography';
 
-interface BasicSectionProps {
+type BasicSectionProps = {
   body: React.ReactElement;
   heading: string;
   image: {
@@ -12,7 +12,7 @@ interface BasicSectionProps {
     width?: number;
   };
   sectionId: string;
-}
+};
 
 export const BasicSection = ({
   sectionId,

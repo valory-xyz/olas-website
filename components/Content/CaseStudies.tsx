@@ -11,9 +11,9 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const CASE_STUDIES_FUNNEL_ID = 9;
 
-interface CaseStudiesProps {
+type CaseStudiesProps = {
   limit?: number;
-}
+};
 
 export const CaseStudies = ({ limit }: CaseStudiesProps) => {
   const params = {

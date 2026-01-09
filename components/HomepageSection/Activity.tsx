@@ -49,10 +49,10 @@ const fetchMetrics = async () => {
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
-interface OlasIsBurnedArrowProps {
+type OlasIsBurnedArrowProps = {
   pointsDown?: boolean;
   className?: string;
-}
+};
 
 const OlasIsBurnedArrow = ({
   pointsDown = false,
@@ -90,14 +90,14 @@ const OlasIsBurnedArrow = ({
   </div>
 );
 
-interface ActivityCardLinkProps {
+type ActivityCardLinkProps = {
   text?: React.ReactNode;
   link: string;
   value: string | number;
   isLinkExternal?: boolean;
-}
+};
 
-interface ActivityCardProps {
+type ActivityCardProps = {
   icon: string;
   iconWidth?: number;
   iconHeight?: number;
@@ -106,7 +106,7 @@ interface ActivityCardProps {
   primary: ActivityCardLinkProps;
   secondary?: Partial<ActivityCardLinkProps>;
   tertiary?: Partial<ActivityCardLinkProps>;
-}
+};
 
 const ActivityCard = ({
   icon,
@@ -184,10 +184,10 @@ const ActivityCard = ({
   );
 };
 
-interface UsersCardProps {
+type UsersCardProps = {
   olasStaked?: string;
   totalOperators?: string;
-}
+};
 
 const UsersCard = ({ olasStaked, totalOperators }: UsersCardProps) => (
   <ActivityCard
@@ -221,9 +221,9 @@ const OlasBurnedCard = () => (
   />
 );
 
-interface DailyActiveAgentsCardProps {
+type DailyActiveAgentsCardProps = {
   dailyActiveAgents?: string;
-}
+};
 
 const DailyActiveAgentsCard = ({
   dailyActiveAgents,
@@ -246,10 +246,10 @@ const DailyActiveAgentsCard = ({
   />
 );
 
-interface AgentToAgentCardProps {
+type AgentToAgentCardProps = {
   ataTransactions?: string;
   mechTurnover?: string | number;
-}
+};
 
 const AgentToAgentCard = ({
   ataTransactions,
@@ -281,9 +281,9 @@ const AgentToAgentCard = ({
   />
 );
 
-interface TransactionsCardProps {
+type TransactionsCardProps = {
   transactions?: string;
-}
+};
 
 const TransactionsCard = ({ transactions }: TransactionsCardProps) => (
   <ActivityCard

@@ -2,7 +2,7 @@ import { TEXT_LARGE_CLASS } from 'common-util/classes';
 import Image from 'next/image';
 import { Card } from './ui/card';
 
-interface StarterCardsProps {
+type StarterCardsProps = {
   title: string;
   subtitle?: string;
   content: React.ReactNode;
@@ -13,7 +13,7 @@ interface StarterCardsProps {
   titleClassName?: string;
   contentClassName?: string;
   buttonClassName?: string;
-}
+};
 
 export const StarterCards = ({
   imgUrl,

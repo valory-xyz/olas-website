@@ -15,11 +15,11 @@ const TokenHoldersQuerySnippet = () => (
   </CodeSnippet>
 );
 
-interface TokenEntry {
+type TokenEntry = {
   key?: string;
   name?: string;
   address?: string;
-}
+};
 
 const toNetworkEntry = ({ key, name, address }: TokenEntry) =>
   key && address ? { key, name, tokenAddress: address } : null;

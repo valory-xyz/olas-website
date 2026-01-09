@@ -1,13 +1,13 @@
 import { CARD_CSS, TEXT_CLASS } from 'common-util/classes';
 
-interface InfoCardListProps {
+type InfoCardListProps = {
   wrapperClasses?: string;
   cards?: {
     icon?: unknown;
     title?: string;
     desc?: string | React.ReactNode;
   }[];
-}
+};
 
 export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
   if (!cards) return null;

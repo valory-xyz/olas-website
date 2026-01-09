@@ -2,19 +2,19 @@ import Markdown from 'common-util/Markdown';
 import { Card } from 'components/ui/card';
 import Image from 'next/image';
 
-interface QuoteData {
+type QuoteData = {
   quote?: string;
   userIcon?: string;
   icon?: string;
   xUrl?: string;
   name?: string;
   title?: string;
-}
+};
 
-interface TrusteeProps {
+type TrusteeProps = {
   quote?: QuoteData;
   className?: string;
-}
+};
 
 export const Trustee = ({ quote, className }: TrusteeProps) => (
   <Card

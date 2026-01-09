@@ -1,7 +1,7 @@
-interface LegendItemProps {
+type LegendItemProps = {
   color: string;
   label: string;
-}
+};
 
 export const LegendItem = ({ color, label }: LegendItemProps) => (
   <div className="flex gap-2 items-center">

@@ -9,35 +9,25 @@ import { getApiUrl } from 'common-util/getApiUrl';
 
 const imageDomain = getApiUrl();
 
-interface ArticleProps {
+type ArticleDataType = {
+  attributes?: {
+    formats?: {
+      large?: {
+        url?: string;
+        width?: number;
+        height?: number;
+      };
+    };
+  };
+};
+
+type ArticleProps = {
   article: {
     attributes?: {
       datePublished?: string;
       publishedAt?: string;
       headerImage?: {
-        data?:
-          | {
-              attributes?: {
-                formats?: {
-                  large?: {
-                    url?: string;
-                    width?: number;
-                    height?: number;
-                  };
-                };
-              };
-            }
-          | Array<{
-              attributes?: {
-                formats?: {
-                  large?: {
-                    url?: string;
-                    width?: number;
-                    height?: number;
-                  };
-                };
-              };
-            }>;
+        data?: ArticleDataType | ArticleDataType[];
       };
       slug?: string;
       title?: string;
@@ -47,7 +37,7 @@ interface ArticleProps {
   href: string;
   showReadTime?: boolean;
   showDate?: boolean;
-}
+};
 
 const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
   const [imageError, setImageError] = useState(false);

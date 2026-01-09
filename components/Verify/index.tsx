@@ -1,9 +1,9 @@
 import { ArrowUpRight } from 'lucide-react';
 
-interface VerifyProps {
+type VerifyProps = {
   url: string;
   text?: string;
-}
+};
 
 const Verify = ({ url, text = 'Verify' }: VerifyProps) => (
   <a

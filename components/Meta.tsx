@@ -9,11 +9,11 @@ const SITE_DESCRIPTION =
 const SITE_URL = 'https://olas.network';
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.webp`;
 
-interface MetaProps {
+type MetaProps = {
   pageTitle?: string;
   description?: string;
   siteImageUrl?: string;
-}
+};
 
 const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
   let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;

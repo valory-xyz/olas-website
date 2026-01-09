@@ -137,7 +137,7 @@ const MORE_LINKS = [
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-interface LinksBlockProps {
+type LinksBlockProps = {
   title: string;
   links: {
     title: string;
@@ -145,7 +145,7 @@ interface LinksBlockProps {
     isExternal?: boolean;
   }[];
   className?: string;
-}
+};
 
 const LinksBlock = ({ title, links, className }: LinksBlockProps) => (
   <div>

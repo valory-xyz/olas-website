@@ -1,9 +1,9 @@
 import Footer from './Footer';
 import Header from './Header';
 
-interface PageWrapperProps {
+type PageWrapperProps = {
   children: React.ReactNode;
-}
+};
 
 const PageWrapper = ({ children }: PageWrapperProps) => (
   <>

@@ -2,10 +2,10 @@ import resources from 'data/resources.json';
 import Link from 'next/link';
 import Resource from './Resource';
 
-interface ResourcesProps {
+type ResourcesProps = {
   limit?: number;
   tagFilter?: string;
-}
+};
 
 const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
   const sortedResources = resources.sort((a, b) => {

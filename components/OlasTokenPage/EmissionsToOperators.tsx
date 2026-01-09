@@ -17,15 +17,15 @@ import { LegendItem } from './LegendItem';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 
-interface EmissionData {
+type EmissionData = {
   counter?: number;
   [key: string]: unknown;
-}
+};
 
-interface EmissionsToOperatorsProps {
+type EmissionsToOperatorsProps = {
   emissions: EmissionData[];
   loading: boolean;
-}
+};
 
 export const EmissionsToOperators = memo(
   ({ emissions, loading }: EmissionsToOperatorsProps) => {

@@ -1,10 +1,10 @@
 import { ArrowUpRight } from 'lucide-react';
 import NextLink from 'next/link';
 
-interface H1Props {
+type H1Props = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const H1 = ({ children, className }: H1Props) => (
   <h1
@@ -14,10 +14,10 @@ export const H1 = ({ children, className }: H1Props) => (
   </h1>
 );
 
-interface H2Props {
+type H2Props = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const H2 = ({ children, className = '' }: H2Props) => (
   <h2
@@ -29,10 +29,10 @@ export const H2 = ({ children, className = '' }: H2Props) => (
 
 H1.defaultProps = { className: null };
 
-interface LeadProps {
+type LeadProps = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const Lead = ({ children, className }: LeadProps) => (
   <p className={`text-xl text-muted-foreground ${className}`}>{children}</p>
@@ -40,9 +40,9 @@ export const Lead = ({ children, className }: LeadProps) => (
 
 Lead.defaultProps = { className: null };
 
-interface UpcaseProps {
+type UpcaseProps = {
   children: React.ReactNode;
-}
+};
 
 export const Upcase = ({ children }: UpcaseProps) => (
   <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">
@@ -50,12 +50,12 @@ export const Upcase = ({ children }: UpcaseProps) => (
   </div>
 );
 
-interface ExternalLinkProps {
+type ExternalLinkProps = {
   children: React.ReactNode;
   href: string;
   hideArrow?: boolean;
   className?: string;
-}
+};
 
 export const ExternalLink = ({
   children,
@@ -76,13 +76,13 @@ export const ExternalLink = ({
 
 ExternalLink.defaultProps = { className: null, hideArrow: false };
 
-interface SubsiteLinkProps {
+type SubsiteLinkProps = {
   children: React.ReactNode;
   href: string;
   className?: string;
   isInButton?: boolean;
   isExternal?: boolean;
-}
+};
 
 export const SubsiteLink = ({
   children,
@@ -107,12 +107,12 @@ export const SubsiteLink = ({
   );
 };
 
-interface LinkProps {
+type LinkProps = {
   children: React.ReactNode;
   href: string | object;
   className?: string;
   hideArrow?: boolean;
-}
+};
 
 export const Link = ({ children, className, href }: LinkProps) => (
   <NextLink

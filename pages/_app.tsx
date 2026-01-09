@@ -37,10 +37,10 @@ function PlausibleTracker() {
   return null;
 }
 
-interface AppProps {
+type AppProps = {
   Component: React.ElementType;
   pageProps: object;
-}
+};
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

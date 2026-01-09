@@ -1,10 +1,10 @@
 import { cn } from 'lib/utils';
 import { forwardRef } from 'react';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+type CardProps = React.HTMLAttributes<HTMLDivElement> & {
   children?: React.ReactNode;
   className?: string;
-}
+};
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, ...props }, ref) => (
@@ -20,10 +20,10 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 );
 Card.displayName = 'Card';
 
-interface CardHeaderProps {
+type CardHeaderProps = {
   children?: React.ReactNode;
   className?: string;
-}
+};
 
 const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, ...props }, ref) => (
@@ -36,10 +36,10 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
 );
 CardHeader.displayName = 'CardHeader';
 
-interface CardTitleProps {
+type CardTitleProps = {
   children: React.ReactNode;
   className?: string;
-}
+};
 
 const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, children, ...props }, ref) => (
@@ -57,10 +57,10 @@ const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
 );
 CardTitle.displayName = 'CardTitle';
 
-interface CardDescriptionProps {
+type CardDescriptionProps = {
   children?: React.ReactNode;
   className?: string;
-}
+};
 
 const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className, ...props }, ref) => (
@@ -73,10 +73,10 @@ const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
 );
 CardDescription.displayName = 'CardDescription';
 
-interface CardContentProps {
+type CardContentProps = {
   children?: React.ReactNode;
   className?: string;
-}
+};
 
 const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, ...props }, ref) => (
@@ -89,10 +89,10 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
 );
 CardContent.displayName = 'CardContent';
 
-interface CardFooterProps {
+type CardFooterProps = {
   children?: React.ReactNode;
   className?: string;
-}
+};
 
 const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, ...props }, ref) => (

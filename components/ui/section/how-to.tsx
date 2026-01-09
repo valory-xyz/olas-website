@@ -1,7 +1,7 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
-interface HowToSectionProps {
+type HowToSectionProps = {
   body: {
     extra?: React.ReactElement;
     steps: string[];
@@ -14,7 +14,7 @@ interface HowToSectionProps {
     width?: number;
   };
   sectionId: string;
-}
+};
 
 export const HowToSection = ({
   sectionId,

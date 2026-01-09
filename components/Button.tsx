@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 
 const getPrimaryStyle = (disabled) => `
   bg-purple-900
@@ -19,14 +19,14 @@ const sizeMdStyle = 'px-3 py-2 text-lg lg:text-lg lg:px-3 lg:py-2 rounded-md';
 const disabledStyle =
   'text-gray-500 border-gray-300 bg-white cursor-not-allowed';
 
-interface ButtonProps {
+type ButtonProps = {
   className?: string;
-  href: string | object;
+  href: string | LinkProps['href'];
   isExternal?: boolean;
   size?: string;
   type?: string;
   disabled?: boolean;
-}
+};
 
 /**
  *

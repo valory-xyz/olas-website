@@ -2,7 +2,7 @@ import { SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
 import Image from 'next/image';
 import SectionWrapper from './Layout/SectionWrapper';
 
-interface HowItWorksProps {
+type HowItWorksProps = {
   headerText: string;
   headerClassName?: string;
   description?: React.ReactNode;
@@ -12,7 +12,7 @@ interface HowItWorksProps {
     description: string | React.ReactNode;
     imgSrc: string;
   }>;
-}
+};
 
 export const HowItWorks = ({
   headerText,

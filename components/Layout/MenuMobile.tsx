@@ -23,9 +23,9 @@ const useToggle = (): [boolean, () => void] => {
   return [state, toggle];
 };
 
-interface MenuMobileProps {
+type MenuMobileProps = {
   className?: string;
-}
+};
 
 export const MenuMobile = ({ className }: MenuMobileProps) => {
   const [isOpened, toggleOpen] = useToggle();

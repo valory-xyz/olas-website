@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 
 const transition = 'transition-all duration-300 ease-in-out';
 
-interface AccordionProps {
+type AccordionProps = {
   label: string | React.ReactNode;
   defaultOpen?: boolean;
   titleClass?: string;
   dropdownClass?: string;
   customClass?: string;
   children: React.ReactNode;
-}
+};
 
 export const Accordion = ({
   label,

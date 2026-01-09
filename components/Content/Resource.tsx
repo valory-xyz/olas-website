@@ -1,10 +1,10 @@
-interface ResourceProps {
+type ResourceProps = {
   resource: {
     description?: string;
     title?: string;
     url?: string;
   };
-}
+};
 
 const Resource = ({ resource }: ResourceProps) => (
   <a href={resource.url} target="_blank" rel="noopener noreferrer">

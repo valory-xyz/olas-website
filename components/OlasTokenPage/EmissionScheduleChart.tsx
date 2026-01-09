@@ -42,12 +42,12 @@ const OlasMintInfo = () => (
   </>
 );
 
-interface EmissionScheduleChartProps {
+type EmissionScheduleChartProps = {
   inflationForYear?: string[];
   timeLaunch?: unknown;
   currentYear?: unknown;
   loading: boolean;
-}
+};
 
 export const EmissionScheduleChart = ({
   inflationForYear,

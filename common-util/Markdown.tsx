@@ -6,10 +6,10 @@ import remarkGfm from 'remark-gfm';
 import { markdownComponents } from 'styles/globals';
 import type { PluggableList } from 'unified';
 
-interface MarkdownProps {
+type MarkdownProps = {
   className?: string;
   children?: string | React.ReactElement;
-}
+};
 
 const Markdown = ({ className, children }: MarkdownProps) => {
   let childrenString: string;

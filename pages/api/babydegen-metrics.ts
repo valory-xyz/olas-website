@@ -20,36 +20,36 @@ import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import tokens from 'data/tokens.json';
 
-interface StakingContract {
+type StakingContract = {
   id: string;
   rewardsPerSecond: string;
   minStakingDeposit: string;
   numAgentInstances: string;
-}
+};
 
-interface StakingContractsResponse {
+type StakingContractsResponse = {
   stakingContracts?: StakingContract[];
-}
+};
 
-interface DailyStakingGlobalsSnapshot {
+type DailyStakingGlobalsSnapshot = {
   timestamp: string | number;
   medianCumulativeRewards?: string | number;
   numServices?: number;
-}
+};
 
-interface DailyStakingGlobalsResponse {
+type DailyStakingGlobalsResponse = {
   cumulativeDailyStakingGlobals?: DailyStakingGlobalsSnapshot[];
-}
+};
 
-interface DailyAgentPerformance {
+type DailyAgentPerformance = {
   id: string;
   dayTimestamp: string | number;
   activeMultisigCount: string | number;
-}
+};
 
-interface DailyAgentPerformancesResponse {
+type DailyAgentPerformancesResponse = {
   dailyAgentPerformances?: DailyAgentPerformance[];
-}
+};
 
 const OLAS_ADDRESS = tokens
   .find((item) => item.key === 'optimism')

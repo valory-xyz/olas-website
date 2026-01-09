@@ -7,11 +7,11 @@ import { Button } from 'components/ui/button';
 import servicesData from 'data/agents.json';
 import Image from 'next/image';
 
-interface FieldRowProps {
+type FieldRowProps = {
   fieldName: string;
   value: string;
   last?: boolean;
-}
+};
 
 const FieldRow = ({ fieldName, value }: FieldRowProps) => (
   <div className="p-4 flex justify-between gap-8 text-right">

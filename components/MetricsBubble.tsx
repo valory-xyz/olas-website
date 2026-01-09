@@ -2,7 +2,7 @@ import { Card } from 'components/ui/card';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 
-interface MetricsBubbleProps {
+type MetricsBubbleProps = {
   isUnderConstruction?: boolean;
   metrics?: {
     id: string;
@@ -15,7 +15,7 @@ interface MetricsBubbleProps {
   }[];
   image?: string;
   title: string;
-}
+};
 
 export const MetricsBubble = ({
   isUnderConstruction,

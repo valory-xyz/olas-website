@@ -1,6 +1,6 @@
-interface BadgeProps {
+type BadgeProps = {
   children: React.ReactNode;
-}
+};
 
 // TODO: check what's the difference with components/ui/badge.jsx
 const Badge = ({ children }: BadgeProps) => (

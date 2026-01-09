@@ -40,7 +40,7 @@ const buttonVariants = cva(
   },
 );
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: boolean;
   children?: React.ReactNode;
   className?: string;
@@ -54,7 +54,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | 'ghostPrimary'
     | 'link'
     | 'valory';
-}
+};
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {

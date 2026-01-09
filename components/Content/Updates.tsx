@@ -11,10 +11,10 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const QUARTERLY_UPDATES_FUNNEL_ID = 8;
 
-interface UpdatesProps {
+type UpdatesProps = {
   limit?: number;
   isMain?: boolean;
-}
+};
 
 export const Updates = ({ limit, isMain = false }: UpdatesProps) => {
   const params = {
