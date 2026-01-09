@@ -20,3 +20,11 @@ export type MetricWithStatus<T> = {
     value: T;
     status: MetricStatus;
 };
+
+export const isMetricWithStatus = (
+    data: unknown
+): data is MetricWithStatus<unknown> =>
+    typeof data === 'object' &&
+    data !== null &&
+    'value' in data &&
+    'status' in data;

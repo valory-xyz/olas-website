@@ -1,5 +1,9 @@
 import { list, put } from '@vercel/blob';
-import { MetricWithStatus } from 'common-util/graphql/types';
+import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
+import { MainMetricsData } from 'common-util/api/main-metrics';
+import { OtherMetricsData } from 'common-util/api/other-metrics';
+import { PredictMetricsData } from 'common-util/api/predict';
+import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
 import lodash from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
@@ -14,8 +18,14 @@ type SaveSnapshotParams = {
   data: unknown;
 };
 
+type MetricsData =
+  | MainMetricsData
+  | PredictMetricsData
+  | OtherMetricsData
+  | AgentEconomiesMetricsData;
+
 type MetricsSnapshot = {
-  data: Record<string, any>;
+  data: MetricsData;
   timestamp: number;
 };
 
@@ -34,20 +44,18 @@ const mergeWithFallback = (
     return newData;
   }
 
-  if ('value' in newData && 'status' in newData) {
+  if (isMetricWithStatus(newData)) {
     const newMetric = newData as MetricWithStatus<unknown>;
-    const oldMetric = oldData as MetricWithStatus<unknown>;
+    const oldMetric = isMetricWithStatus(oldData)
+      ? (oldData as MetricWithStatus<unknown>)
+      : null;
 
-    if (
-      newMetric.value === null ||
-      newMetric.value === undefined ||
-      newMetric.status?.stale
-    ) {
-      if (
-        oldMetric &&
-        oldMetric.value !== null &&
-        oldMetric.value !== undefined
-      ) {
+    const newValueIsInvalid =
+      lodash.isNil(newMetric.value) || newMetric.status?.stale;
+
+    if (newValueIsInvalid) {
+      // Try to fall back to old data if available and valid
+      if (oldMetric && !lodash.isNil(oldMetric.value)) {
         return {
           value: oldMetric.value,
           status: {
@@ -57,17 +65,26 @@ const mergeWithFallback = (
           },
         };
       }
-    } else {
+      // No valid fallback - return newData as-is with stale status preserved
       return {
         ...newMetric,
         status: {
           ...newMetric.status,
-          stale: false,
-          lastValidAt: Date.now(),
+          stale: true,
+          lastValidAt: newMetric.status?.lastValidAt ?? null,
         },
       };
     }
-    return newData;
+
+    // New data is valid - update with fresh timestamp
+    return {
+      ...newMetric,
+      status: {
+        ...newMetric.status,
+        stale: false,
+        lastValidAt: Date.now(),
+      },
+    };
   }
 
   const result: Record<string, unknown> = {};
@@ -130,7 +147,7 @@ export const saveSnapshot = async ({
       const mergedData = mergeWithFallback(data.data, oldSnapshot.data);
       dataToSave = {
         ...data,
-        data: mergedData,
+        data: mergedData as MetricsData,
       };
     }
   } catch (error) {

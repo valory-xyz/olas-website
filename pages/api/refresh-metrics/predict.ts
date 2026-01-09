@@ -1,4 +1,4 @@
-import { fetchAllPredictMetrics } from 'common-util/api/predict/predict-metrics';
+import { fetchAllPredictMetrics } from 'common-util/api/predict';
 import { saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 
