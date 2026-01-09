@@ -3,6 +3,50 @@
         "year": "2025",
         "quarters" : [
             {
+                "quarter" : "Quarter 4",
+                "date": "Oct - Dec",
+                "topics" : [
+                    {
+                        "topic" : "Pearl v1 Agents Integrate x402",
+                        "content" : 
+                            "- Olas agents have executed 8.8M+ A2A transactions via the Mech Marketplace (agent bazaar). \n- With x402 integrated, Pearl v1 agents can natively consume low-latency off-chain services and pay for services beyond the Olas ecosystem using A2A flows. \n- Positioned as a major interoperability upgrade for real-time, user-owned AI. \n- Read more: [https://olas.network/blog/pearl-v1-and-x402-user-owned-ai-and-the-benefits-of-agent-interoperability](https://olas.network/blog/pearl-v1-and-x402-user-owned-ai-and-the-benefits-of-agent-interoperability)"
+                        ,
+                        "category" : ["Pearl", "Marketplace", "Activity Metrics", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Agents Unleashed Buenos Aires + Devconnect",
+                        "content" : 
+                            "- Olas DAO founding members hosted another Agents Unleashed event in Buenos Aires alongside [@EFDevcon](https://x.com/efdevcon) / Devconnect week. \n- Full event playlist was published for anyone who could not attend in person: [https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs](https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs) \n- [@valoryag](https://x.com/valoryag)’s [@kupermind](https://x.com/kupermind) presented “Bringing Visibility to Agents,” covering progress on the ERC-8004 standard at Trustless Agents Day. Watch the replay: [https://www.youtube.com/live/XL_Nn4oep6M?si=UF4pebbWDBHCC7h_&t=15470](https://www.youtube.com/live/XL_Nn4oep6M?si=UF4pebbWDBHCC7h_&t=15470)"
+                        ,
+                        "category" : ["Agents Unleashed", "Other events", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Agents.fun Returns (Upgraded Release)",
+                        "content" : 
+                            "- Agents.fun is back on [@base](https://x.com/base) with user-owned influencer agents and more advanced customization. \n- Agents can draft and publish posts, interact with other accounts, and adapt based on account performance over time. \n- New integrations: Olas Marketplace + x402 for A2A commerce/service payments, AI image generation via Marketplace, Safe smart account flows, Web3Auth recovery, and Transak + Relay on-ramping/bridging.",
+                        "category" : ["Pearl", "Operate", "Key milestones"]
+                    },
+                    {
+                        "topic" : "Prediction Trader Agents Report Notable Results",
+                        "content" : 
+                            "- Multiple Prediction Trader agents showed strong Q4 performance signals, including [Agent 2268](https://t.co/mFBBC47WxF). \n- Reported snapshot: 19 predictions total, 14 resolved, 5 unresolved; 71.4% success rate and 85% month-to-date aggregate ROI (with APR projection figures shared in the write-up).",
+                        "category" : ["Pearl", "Operate"]
+                    },
+                    {
+                        "topic" : "Pearl.you Launches",
+                        "content" : 
+                            "- Pearl reached a major milestone in Q4 2025 with the release of Pearl v1. \n- The app expanded its agent lineup (prediction markets, influencer agents, DeFAI portfolio tools, virtual pets) and shipped UX improvements like easier staking selection, in-app support, and clearer performance visibility. \n- Pearl got a dedicated X account: [@pearldotyou](https://x.com/pearldotyou) and a website: [pearl.you](https://www.pearl.you/).",
+                        "category" : ["Pearl", "Key milestones"]
+                    },
+                    {
+                        "topic" : "PettBro Agent Launches on Pearl",
+                        "content" : 
+                            "- First Olas Accelerator agent debuted in Pearl’s gaming category. \n- PettBro (by [@pett_ai](https://x.com/pett_ai)) is live on [@base](https://x.com/base) and is designed to autonomously care for your digital pet.",
+                        "category" : ["Pearl", "Operate", "Key milestones"]
+                    }
+                ]
+            },
+            {
                 "quarter" : "Quarter 3",
                 "date": "Jul - Sep",
                 "topics" : [

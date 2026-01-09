@@ -2,6 +2,7 @@ import { SECTION_BOX_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Tag } from 'components/ui/tag';
 import { MMPearlDiagram } from './MMPearlDiagram';
+import { MobileTable } from './MobileTable';
 
 export const Roadmap = () => (
   <SectionWrapper
@@ -67,6 +68,7 @@ export const Roadmap = () => (
           </Tag>
         </div>
         <MMPearlDiagram />
+        <MobileTable />
       </div>
     </div>
   </SectionWrapper>
