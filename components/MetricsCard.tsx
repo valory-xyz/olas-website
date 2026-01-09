@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { StaleIndicator } from './ui/StaleIndicator';
 import { Card } from './ui/card';
 import { ExternalLink, Link } from './ui/typography';
 
@@ -69,7 +70,13 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
 };
 
 const renderMetricValue = (metric) => {
+  const isStale = metric.status?.stale;
   const valueClassName = 'font-extrabold max-sm:text-4xl text-6xl';
+  const staleIndicator = isStale ? (
+    <span className="ml-2 inline-block align-middle">
+      <StaleIndicator status={metric.status} />
+    </span>
+  ) : null;
 
   if (!metric.metric && metric.metric !== 0) {
     return <span className="text-purple-600 text-6xl">--</span>;
@@ -80,23 +87,42 @@ const renderMetricValue = (metric) => {
 
   if (!metric.source) {
     return (
-      <span className={valueClassName}>
-        {metric.isMoney && <span>$</span>}
-        {formatted}
-      </span>
+      <div className="flex items-center">
+        <span className={valueClassName}>
+          {metric.isMoney && <span>$</span>}
+          {formatted}
+        </span>
+        {staleIndicator}
+      </div>
     );
   }
 
-  return isExternal ? (
-    <ExternalLink className={valueClassName} href={metric.source} hideArrow>
-      {metric.isMoney && <span>$</span>}
-      {formatted}
-      <span className="text-4xl">↗</span>
-    </ExternalLink>
-  ) : (
-    <Link className={valueClassName} href={metric.source}>
-      {metric.isMoney && <span>$</span>}
-      {formatted}
-    </Link>
+  return (
+    <div className="flex items-center">
+      {isExternal ? (
+        <ExternalLink
+          className={valueClassName}
+          href={metric.source}
+          target="_blank"
+          hideArrow
+        >
+          <div
+            className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}
+          >
+            {metric.isMoney && <span>$</span>}
+            {formatted}
+            <span className="text-4xl">↗</span>
+          </div>
+        </ExternalLink>
+      ) : (
+        <Link className={valueClassName} href={metric.source} hideArrow>
+          <span className={isStale ? 'text-gray-400' : ''}>
+            {metric.isMoney && <span>$</span>}
+            {formatted}
+          </span>
+        </Link>
+      )}
+      {staleIndicator}
+    </div>
   );
 };

@@ -38,6 +38,9 @@ export const rewardUpdates = (epochs) => gql`
 
 export const stakingContractsQuery = (addresses) => gql`
   {
+    _meta {
+      hasIndexingErrors
+    }
     stakingContracts(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]}) {
       id
       rewardsPerSecond
@@ -51,6 +54,12 @@ export const totalMechRequestsQuery = gql`
   query TotalMechRequests {
     global(id: "") {
       totalRequests
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -96,6 +105,12 @@ export const getMechRequestsQuery = ({
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }`;
 
 export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
@@ -112,6 +127,12 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
       totalPayout
       totalTraded
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -120,6 +141,12 @@ export const stakingGlobalsQuery = gql`
     global(id: "") {
       totalRewards
       currentOlasStaked
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -200,6 +227,12 @@ export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -291,6 +324,12 @@ export const dailyPredictAgentsPerformancesQuery = gql`
       dayTimestamp
       activeMultisigCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -355,6 +394,12 @@ export const agentTxCountsQuery = gql`
       id
       txCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -373,6 +418,12 @@ export const dailyAgentPerformancesQuery = gql`
       id
       count
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -381,6 +432,12 @@ export const registryGlobalsQuery = gql`
     global(id: "") {
       id
       txCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -391,6 +448,12 @@ export const operatorGlobalsQuery = gql`
       id
       totalOperators
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -399,6 +462,12 @@ export const ataTransactionsQuery = gql`
     globals(where: { id: "" }) {
       id
       totalAtaTransactions
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -409,6 +478,12 @@ export const newMechFeesQuery = gql`
       id
       totalFeesInUSD
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -417,6 +492,12 @@ export const legacyMechFeesQuery = gql`
     global(id: "") {
       id
       totalFeesIn
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -464,6 +545,12 @@ export const holderCountsQuery = gql`
     token(id: $tokenId) {
       holderCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -491,6 +578,12 @@ export const getActiveVeOlasDepositorsQuery = ({
         `;
       })
       .join('\n')}
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -498,6 +591,12 @@ export const veOlasLockedBalanceQuery = gql`
   query VeOlasLockedBalance($tokenId: ID!) {
     token(id: $tokenId) {
       balance
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -507,6 +606,12 @@ export const totalBuildersQuery = gql`
     globals {
       id
       totalBuilders
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -528,6 +633,12 @@ export const dailyActivitiesQuery = gql`
       dayTimestamp
       count
       services
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;

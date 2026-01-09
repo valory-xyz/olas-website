@@ -324,10 +324,10 @@ const Supply = () => {
   );
 };
 
-const OlasToken = () => (
+const OlasToken = ({ metrics }) => (
   <>
     <Hero />
-    <TokenHoldersMetric />
+    <TokenHoldersMetric metrics={metrics} />
     <Supply />
     <OlasProtocol />
     <GetInvolved />

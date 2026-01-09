@@ -6,7 +6,10 @@ import { PoweringAnEconomy } from 'components/AgentEconomies/AgentsFunPage/Power
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const AgentsFun = () => (
+import { REVALIDATE_DURATION } from 'common-util/constants';
+import { getSnapshot } from 'common-util/snapshot-storage';
+
+const AgentsFun = ({ metrics }) => (
   <PageWrapper>
     <Meta
       pageTitle="Agents.fun Economy"
@@ -14,7 +17,7 @@ const AgentsFun = () => (
     />
     <Hero />
     <div className="text-lg">
-      <AgentsFunMetrics />
+      <AgentsFunMetrics metrics={metrics} />
       <PoweringAnEconomy />
       <HowTheEconomyWorks />
       <GetInvolved />
@@ -22,5 +25,17 @@ const AgentsFun = () => (
     </div>
   </PageWrapper>
 );
+
+export const getStaticProps = async () => {
+  const snapshot = await getSnapshot({ category: 'agent-economies' });
+  const metrics = snapshot?.data?.agentsFun || null;
+
+  return {
+    props: {
+      metrics,
+    },
+    revalidate: REVALIDATE_DURATION,
+  };
+};
 
 export default AgentsFun;

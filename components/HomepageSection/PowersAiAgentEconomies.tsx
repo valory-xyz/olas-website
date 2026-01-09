@@ -2,7 +2,9 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Activity } from './Activity';
 import { TokenAddress } from './TokenAddress';
 
-export const PowersAiAgentEconomies = () => (
+import PropTypes from 'prop-types';
+
+export const PowersAiAgentEconomies = ({ metrics }) => (
   <div className="relative">
     <div className="activity-bg h-full" />
     <SectionWrapper
@@ -10,8 +12,12 @@ export const PowersAiAgentEconomies = () => (
       backgroundType="NONE"
       customClasses="bg-slate-100 text-center py-20"
     >
-      <Activity />
+      <Activity metrics={metrics} />
       <TokenAddress />
     </SectionWrapper>
   </div>
 );
+
+PowersAiAgentEconomies.propTypes = {
+  metrics: PropTypes.shape({}),
+};

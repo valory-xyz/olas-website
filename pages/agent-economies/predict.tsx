@@ -1,11 +1,13 @@
-import PageWrapper from 'components/Layout/PageWrapper';
-import Meta from 'components/Meta';
+import { REVALIDATE_DURATION } from 'common-util/constants';
+import { getSnapshot } from 'common-util/snapshot-storage';
 import { Activity } from 'components/AgentEconomies/PredictPage/Activity';
 import { GetInvolved } from 'components/AgentEconomies/PredictPage/GetInvolved';
 import { PredictHero } from 'components/AgentEconomies/PredictPage/PredictHero';
 import { WhatIsOlasPredict } from 'components/AgentEconomies/PredictPage/WhatIsOlasPredict';
+import PageWrapper from 'components/Layout/PageWrapper';
+import Meta from 'components/Meta';
 
-const Predict = () => (
+const Predict = ({ metrics }) => (
   <PageWrapper>
     <Meta
       pageTitle="Predict"
@@ -13,10 +15,22 @@ const Predict = () => (
     />
 
     <PredictHero />
-    <Activity />
+    <Activity metrics={metrics} />
     <WhatIsOlasPredict />
     <GetInvolved />
   </PageWrapper>
 );
+
+export const getStaticProps = async () => {
+  const snapshot = await getSnapshot({ category: 'predict' });
+  const metrics = snapshot?.data || null;
+
+  return {
+    props: {
+      metrics,
+    },
+    revalidate: REVALIDATE_DURATION,
+  };
+};
 
 export default Predict;

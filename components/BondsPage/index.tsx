@@ -4,10 +4,10 @@ import { HowBondingWorks } from './HowBondingWorks';
 import { UnlockBenefits } from './UnlockBenefits';
 import { WhyBondingMatters } from './WhyBondingMatters';
 
-export const Bond = () => (
+export const Bond = ({ metrics }) => (
   <>
     <Hero />
-    <BondMetrics />
+    <BondMetrics metrics={metrics} />
     <UnlockBenefits />
     <WhyBondingMatters />
     <HowBondingWorks />

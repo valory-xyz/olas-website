@@ -1,4 +1,5 @@
 import { Card } from 'components/ui/card';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 
@@ -48,31 +49,42 @@ export const MetricsBubble = ({
         <div className="text-lg font-medium mb-6">{title}</div>
 
         <div className="flex flex-col gap-8">
-          {metrics?.map((item) => {
-            const value =
-              item.value === null || item.value === undefined
-                ? '--'
-                : item.value;
+          {metrics.map((item) => {
+            const value = !metrics || item.value === null ? '--' : item.value;
+            const SourceTag = item.source
+              ? item.source.isExternal
+                ? ExternalLink
+                : Link
+              : 'div';
+            const source =
+              item.source && value !== '--' ? (
+                <SourceTag href={item.source.link} hideArrow>
+                  <span
+                    className={`${item.status?.stale ? 'text-gray-400' : ''}`}
+                  >
+                    {value}
+                  </span>
+                  {item.source.isExternal && (
+                    <span className="text-2xl">↗</span>
+                  )}
+                </SourceTag>
+              ) : (
+                value
+              );
 
             return (
               <div key={item.id} className="flex flex-col gap-3">
                 <span className="block text-base text-slate-700">
                   {item.subText}
                 </span>
-                <span className="block text-2xl font-semibold text-purple-600">
-                  {item.source && value !== '--' ? (
-                    item.source.isExternal ? (
-                      <ExternalLink href={item.source.link} hideArrow>
-                        {value}
-                        <span className="text-2xl">↗</span>
-                      </ExternalLink>
-                    ) : (
-                      <Link href={item.source.link}>{value}</Link>
-                    )
-                  ) : (
-                    value
-                  )}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`block text-2xl font-semibold ${item.status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+                  >
+                    {source}
+                  </span>
+                  <StaleIndicator status={item.status} />
+                </div>
               </div>
             );
           })}

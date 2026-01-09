@@ -1,14 +1,12 @@
-import { getGovernMetrics } from 'common-util/api';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
-import { usePersistentSWR } from 'hooks';
 import { useMemo } from 'react';
 
-export const GovernMetrics = () => {
-  const { data: metrics } = usePersistentSWR('governMetrics', getGovernMetrics);
+export const GovernMetrics = ({ metrics }) => {
+  const governMetrics = metrics?.govern;
 
   const governData = useMemo(() => {
-    if (!metrics) return null;
+    if (!governMetrics) return null;
 
     return {
       role: 'govern',
@@ -18,7 +16,8 @@ export const GovernMetrics = () => {
           imageSrc: 'locked-olas.png',
           labelText: 'OLAS locked in veOLAS',
           source: '/data#govern-veolas',
-          metric: Math.round(metrics.lockedOlas),
+          metric: Math.round(governMetrics.lockedOlas?.value),
+          status: governMetrics.lockedOlas?.status,
           isExternal: false,
         },
         {
@@ -26,12 +25,13 @@ export const GovernMetrics = () => {
           imageSrc: 'veolas-holders.png',
           labelText: 'Total veOLAS holders',
           source: '/data#govern-veolas',
-          metric: metrics.activeHolders,
+          metric: governMetrics.activeHolders?.value,
+          status: governMetrics.activeHolders?.status,
           isExternal: false,
         },
       ],
     };
-  }, [metrics]);
+  }, [governMetrics]);
 
   if (!governData) {
     return null;
