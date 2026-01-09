@@ -52,6 +52,7 @@ const fetchDailyAgentPerformance = async (): Promise<
     results.forEach((result, index) => {
       const chain = chains[index];
       if (result.status === 'rejected') {
+        console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
         const data = result.value as DailyAgentPerformancesResult;
@@ -104,6 +105,7 @@ const fetchTotalOlasStaked = async (): Promise<
     results.forEach((result, index) => {
       const chain = chains[index];
       if (result.status === 'rejected') {
+        console.error(`staking:${chain}`, result.reason);
         fetchErrors.push(`staking:${chain}`);
       } else {
         const data = result.value as StakingGlobalsResult;
@@ -167,7 +169,7 @@ const fetchTransactions = async (): Promise<
     results.forEach((result, index) => {
       const chain = chains[index];
       if (result.status === 'rejected') {
-        console.error(result)
+        console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
         const data = result.value as RegistryGlobalsResult;
@@ -231,6 +233,7 @@ const fetchTotalOperators = async (): Promise<
     results.forEach((result, index) => {
       const chain = chains[index];
       if (result.status === 'rejected') {
+        console.error(`registry:${chain}`, result.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
         const data = result.value as OperatorGlobalsResult;
@@ -284,6 +287,7 @@ export const fetchAtaTransactions = async (): Promise<
     results.forEach((result, index) => {
       const source = sources[index];
       if (result.status === 'rejected') {
+        console.error(`ata:${source}`, result.reason);
         fetchErrors.push(`ata:${source}`);
       } else {
         const data = result.value as AtaTransactionsResult;
@@ -347,6 +351,7 @@ export const fetchMechFees = async (): Promise<
     results.forEach((result, index) => {
       const source = sources[index];
       if (result.status === 'rejected') {
+        console.error(`mechFees:${source}`, result.reason);
         fetchErrors.push(`mechFees:${source}`);
       } else {
         const data =
