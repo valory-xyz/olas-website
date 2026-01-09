@@ -2,6 +2,7 @@ import { list, put } from '@vercel/blob';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import lodash from 'lodash';
 
+// Update this prefix when making breaking changes to the metrics schema.
 const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
 const CONTENT_TYPE = 'application/json';
 
