@@ -224,9 +224,7 @@ export const Activity = ({ metrics: initialMetrics }) => {
             ) : (
               <span className="text-purple-600 text-6xl">--</span>
             )}
-            {metrics?.dailyActiveAgentsStatus?.stale && (
-              <StaleIndicator status={metrics.dailyActiveAgentsStatus} />
-            )}
+            <StaleIndicator status={metrics.dailyActiveAgentsStatus} />
           </div>
           <div className="flex self-center gap-2">
             Daily Active Agents (DAAs)

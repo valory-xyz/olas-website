@@ -70,9 +70,7 @@ export const MetricsBubble = ({
                   >
                     {source}
                   </span>
-                  {item.status?.stale && (
-                    <StaleIndicator status={item.status} />
-                  )}
+                  <StaleIndicator status={item.status} />
                 </div>
               </div>
             );

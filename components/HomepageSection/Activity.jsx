@@ -161,9 +161,7 @@ const UsersCard = ({
       text: (
         <>
           Agents deployed
-          {totalOperatorsStatus?.stale && (
-            <StaleIndicator status={totalOperatorsStatus} />
-          )}
+          <StaleIndicator status={totalOperatorsStatus} />
         </>
       ),
       link: '/data#operators',
@@ -175,9 +173,7 @@ const UsersCard = ({
       text: (
         <>
           OLAS staked
-          {olasStakedStatus?.stale && (
-            <StaleIndicator status={olasStakedStatus} />
-          )}
+          <StaleIndicator status={olasStakedStatus} />
         </>
       ),
       link: '/data#olas-staked',
@@ -247,9 +243,7 @@ const AgentToAgentCard = ({
       text: (
         <>
           A2A txns
-          {ataTransactionsStatus?.stale && (
-            <StaleIndicator status={ataTransactionsStatus} />
-          )}
+          <StaleIndicator status={ataTransactionsStatus} />
         </>
       ),
       link: '/data#ata-transactions',
@@ -261,7 +255,7 @@ const AgentToAgentCard = ({
       text: (
         <>
           turnover
-          {mechFeesStatus?.stale && <StaleIndicator status={mechFeesStatus} />}
+          <StaleIndicator status={mechFeesStatus} />
         </>
       ),
       link: '/data#mech-turnover',
@@ -286,9 +280,7 @@ const TransactionsCard = ({ transactions, transactionsStatus }) => (
       text: (
         <>
           txns
-          {transactionsStatus?.stale && (
-            <StaleIndicator status={transactionsStatus} />
-          )}
+          <StaleIndicator status={transactionsStatus} />
         </>
       ),
       link: '/data#transactions',
