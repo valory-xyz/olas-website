@@ -50,12 +50,10 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
     } = attributes || {};
     const apiUrl = getApiUrl();
     const thumbnailUrl = get(thumbnail, 'data.attributes.url');
-    const imageFilename =
-      thumbnailUrl && apiUrl ? `${apiUrl}${thumbnailUrl}` : '';
+    const imageFilename = thumbnailUrl && apiUrl ? `${apiUrl}${thumbnailUrl}` : '';
 
     const videoUploadedUrl = get(videoUploaded, 'data[0].attributes.url');
-    const video_url =
-      videoUploadedUrl && apiUrl ? `${apiUrl}${videoUploadedUrl}` : '';
+    const video_url = videoUploadedUrl && apiUrl ? `${apiUrl}${videoUploadedUrl}` : '';
 
     return {
       id,

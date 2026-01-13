@@ -33,12 +33,7 @@ export const Trustee = ({ quote, className }: TrusteeProps) => (
         />
       </div>
       <div className="flex flex-col mr-auto">
-        <a
-          href={quote?.xUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold"
-        >
+        <a href={quote?.xUrl} target="_blank" rel="noopener noreferrer" className="font-semibold">
           {quote?.name}
         </a>
         <p className="text-slate-500 text-sm">{quote?.title}</p>

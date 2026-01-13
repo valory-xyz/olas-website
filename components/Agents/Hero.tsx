@@ -3,9 +3,7 @@ import Image from 'next/image';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
-const HeroImage = () => (
-  <Image src="/images/agents/hero.png" alt="hero" width={504} height={454} />
-);
+const HeroImage = () => <Image src="/images/agents/hero.png" alt="hero" width={504} height={454} />;
 
 const ExploreAgents = () => (
   <Button variant="default" size="xl" asChild className="max-md:grow">

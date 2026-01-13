@@ -5,9 +5,7 @@ import { ExternalLink, Link } from './ui/typography';
 
 export const fetchMetrics = async (fetchFunctions) => {
   try {
-    const results = await Promise.all(
-      fetchFunctions.map((fetchFunction) => fetchFunction()),
-    );
+    const results = await Promise.all(fetchFunctions.map((fetchFunction) => fetchFunction()));
     return results || null;
   } catch (error) {
     console.error('Error fetching data: ', error);
@@ -59,9 +57,7 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
               {metric.labelText}
             </div>
             {renderMetricValue(metric)}
-            {metric.subText && (
-              <div className="flex gap-2">{metric.subText}</div>
-            )}
+            {metric.subText && <div className="flex gap-2">{metric.subText}</div>}
           </div>
         );
       })}
@@ -112,9 +108,7 @@ const renderMetricValue = (metric: {
     <div className="flex items-center">
       {isExternal ? (
         <ExternalLink className={valueClassName} href={metric.source} hideArrow>
-          <div
-            className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}
-          >
+          <div className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}>
             {metric.isMoney && <span>$</span>}
             {formatted}
             <span className="text-4xl">↗</span>

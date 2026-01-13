@@ -10,25 +10,16 @@ type HolderCountsResult = WithMeta<{
   };
 }>;
 
-const fetchHolderCount = async ({
-  key,
-  tokenAddress,
-}: {
-  key: string;
-  tokenAddress: string;
-}) => {
+const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddress: string }) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
     return { count: 0, error: null, hasIndexingErrors: false };
   }
 
   try {
-    const response: HolderCountsResult = await client.request(
-      holderCountsQuery,
-      {
-        tokenId: tokenAddress,
-      },
-    );
+    const response: HolderCountsResult = await client.request(holderCountsQuery, {
+      tokenId: tokenAddress,
+    });
 
     return {
       count: Number(response?.token?.holderCount ?? 0),

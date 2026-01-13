@@ -24,11 +24,7 @@ const QuoteIcon = ({ quote }) => {
   return (
     <div>
       <Tooltip.Provider>
-        <Tooltip.Root
-          delayDuration={0}
-          open={isHovered}
-          onOpenChange={setIsHovered}
-        >
+        <Tooltip.Root delayDuration={0} open={isHovered} onOpenChange={setIsHovered}>
           <Tooltip.Trigger
             className={
               'block rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
@@ -38,12 +34,7 @@ const QuoteIcon = ({ quote }) => {
               translate: xPlacement,
             }}
           >
-            <Image
-              src={`/images/homepage/${quote.icon}`}
-              alt={quote.name}
-              width={20}
-              height={20}
-            />
+            <Image src={`/images/homepage/${quote.icon}`} alt={quote.name} width={20} height={20} />
           </Tooltip.Trigger>
           <Tooltip.Content
             side="right"
@@ -78,13 +69,7 @@ const Hero = () => (
     flex-col
     place-items-center"
   >
-    <video
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="homepage-video-bg h-full object-fill w-full"
-    >
+    <video autoPlay loop muted playsInline className="homepage-video-bg h-full object-fill w-full">
       <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
     </video>
     <div className="absolute w-full h-full overflow-hidden">
@@ -99,9 +84,7 @@ const Hero = () => (
       </div>
       <div className="px-4 py-3 flex flex-row place-items-center gap-2 rounded-full bg-opacity-80 cursor-pointer border border-white mb-8 bg-white w-fit mx-auto transition duration-300">
         <Link href="#social-proof" className="inline-flex items-center gap-2">
-          <div className="text-gray-500">
-            Trusted by leading web3 teams and users
-          </div>
+          <div className="text-gray-500">Trusted by leading web3 teams and users</div>
           <ChevronRight size={16} className="text-gray-500" />
         </Link>
         <div className="relative w-[90px] h-[30px] group hidden sm:block">
@@ -111,20 +94,10 @@ const Hero = () => (
         </div>
       </div>
       <div className="flex flex-wrap place-content-center mx-4 gap-4 w-fit mx-auto">
-        <Button
-          variant="default"
-          size="lg"
-          asChild
-          className="inline-flex md:ml-auto max-sm:grow"
-        >
+        <Button variant="default" size="lg" asChild className="inline-flex md:ml-auto max-sm:grow">
           <Link href="/#pearl">Own Your Agent</Link>
         </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          asChild
-          className="inline-flex md:ml-auto max-sm:grow"
-        >
+        <Button variant="outline" size="lg" asChild className="inline-flex md:ml-auto max-sm:grow">
           <Link href="/olas-token#choose-your-role">Get Involved</Link>
         </Button>
       </div>

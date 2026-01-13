@@ -27,9 +27,8 @@ export const HowToApply = () => (
           How to apply to the Olas Accelerator
         </h2>
         <div className="mb-8">
-          We recommend you{' '}
-          <SubsiteLink href={PEARL_YOU_URL}>download and try Pearl</SubsiteLink>
-          , consult the{' '}
+          We recommend you <SubsiteLink href={PEARL_YOU_URL}>download and try Pearl</SubsiteLink>,
+          consult the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">
             Integrating Your AI Agent with Pearl
           </ExternalLink>{' '}
@@ -52,12 +51,10 @@ export const HowToApply = () => (
             <p>Team lead information, team size, and team expertise.</p>
           </div>
           <div>
-            <div className="font-semibold text-xl mb-1">
-              Mission, User Personas & Strategy
-            </div>
+            <div className="font-semibold text-xl mb-1">Mission, User Personas & Strategy</div>
             <p>
-              Agent&apos;s mission, alignment with Pearl, definition of the
-              end-user personas, and the agent&apos;s product strategy.
+              Agent&apos;s mission, alignment with Pearl, definition of the end-user personas, and
+              the agent&apos;s product strategy.
             </p>
           </div>
           <div>
@@ -67,9 +64,7 @@ export const HowToApply = () => (
         </div>
       </div>
       <div className="px-6 md:px-12 mb-4 mt-8">
-        <h2 className="text-3xl font-semibold mb-6">
-          How is your proposal evaluated?
-        </h2>
+        <h2 className="text-3xl font-semibold mb-6">How is your proposal evaluated?</h2>
         {evaluationList.map((item, index) => (
           <div key={index} className="flex flex-row gap-2">
             <SquareCheck size={28} className="text-purple-700" />

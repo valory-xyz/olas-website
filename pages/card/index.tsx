@@ -1,12 +1,4 @@
-import {
-  CheckCircle2,
-  Download,
-  LucideCopy,
-  Repeat2,
-  Shuffle,
-  X,
-  XCircle,
-} from 'lucide-react';
+import { CheckCircle2, Download, LucideCopy, Repeat2, Shuffle, X, XCircle } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,8 +14,7 @@ const TOAST_MESSAGES = {
   ERROR: 'Copying to the clipboard failed, please download the card.',
 };
 
-const IMAGE_SIZES =
-  '(max-width: 1024px) 100vw, (max-width: 1480px) 720px, 920px';
+const IMAGE_SIZES = '(max-width: 1024px) 100vw, (max-width: 1480px) 720px, 920px';
 const IMAGE_CONTAINER_CLASSES =
   'mt-6 md:mt-8 w-full max-w-[920px] xl:max-w-[720px] min-[1480px]:max-w-[920px] 2xl:max-w-[920px]';
 const STEPS_CONTAINER_CLASSES =
@@ -44,15 +35,9 @@ const shimmer = (w, h) => `
 </svg>`;
 
 const toBase64 = (str) =>
-  typeof window === 'undefined'
-    ? Buffer.from(str).toString('base64')
-    : window.btoa(str);
+  typeof window === 'undefined' ? Buffer.from(str).toString('base64') : window.btoa(str);
 
-const ImageCarousel = ({
-  images,
-  sizes = '(max-width: 1024px) 100vw, 920px',
-  index,
-}) => {
+const ImageCarousel = ({ images, sizes = '(max-width: 1024px) 100vw, 920px', index }) => {
   const activeIndex = index ?? 0;
   const placeholder = `data:image/svg+xml;base64,${toBase64(shimmer(920, 518))}`;
 
@@ -87,11 +72,7 @@ function generateShuffledIndices(length, excludeFirstIndex) {
     indices[i] = indices[j];
     indices[j] = tmp;
   }
-  if (
-    length > 1 &&
-    typeof excludeFirstIndex === 'number' &&
-    indices[0] === excludeFirstIndex
-  ) {
+  if (length > 1 && typeof excludeFirstIndex === 'number' && indices[0] === excludeFirstIndex) {
     // Ensure first pick is not the excluded one to avoid immediate repeat
     const swapWith = 1;
     const tmp = indices[0];
@@ -182,27 +163,19 @@ const Toast = ({ message, type, onClose }) => {
 
 const CommunityCardClient = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [order, setOrder] = useState(() =>
-    generateShuffledIndices(IMAGE_PATHS.length, 0),
-  );
+  const [order, setOrder] = useState(() => generateShuffledIndices(IMAGE_PATHS.length, 0));
   const [orderPos, setOrderPos] = useState(0);
   const [toast, setToast] = useState(null);
   const [canCopy, setCanCopy] = useState(false);
 
-  const currentImage = useMemo(
-    () => IMAGE_PATHS[carouselIndex],
-    [carouselIndex],
-  );
+  const currentImage = useMemo(() => IMAGE_PATHS[carouselIndex], [carouselIndex]);
 
   const shuffle = useCallback(() => {
     const needsNewOrder = orderPos >= order.length;
     const activeIndex = carouselIndex;
 
     if (needsNewOrder) {
-      const nextOrder = generateShuffledIndices(
-        IMAGE_PATHS.length,
-        activeIndex,
-      );
+      const nextOrder = generateShuffledIndices(IMAGE_PATHS.length, activeIndex);
       setOrder(nextOrder);
       setOrderPos(1);
       setCarouselIndex(nextOrder[0] ?? activeIndex);
@@ -304,7 +277,7 @@ const CommunityCardClient = () => {
             }
           },
           'image/png',
-          1.0,
+          1.0
         );
       });
 
@@ -325,23 +298,13 @@ const CommunityCardClient = () => {
 
   return (
     <section className="relative isolate px-4 lg:px-6 top-0 top-[-120px] md:top-[-200px]">
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 z-0" />
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center">
           <div className={IMAGE_CONTAINER_CLASSES}>
             <div className="rounded-xl overflow-hidden shadow-xl ring-1 ring-black/5 bg-white relative z-10">
-              <ImageCarousel
-                images={IMAGE_PATHS}
-                index={carouselIndex}
-                sizes={IMAGE_SIZES}
-              />
+              <ImageCarousel images={IMAGE_PATHS} index={carouselIndex} sizes={IMAGE_SIZES} />
             </div>
           </div>
 
@@ -359,9 +322,7 @@ const CommunityCardClient = () => {
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 2" />
               <div className="text-base">
-                {canCopy
-                  ? 'Copy to clipboard or download your card.'
-                  : 'Download your card.'}
+                {canCopy ? 'Copy to clipboard or download your card.' : 'Download your card.'}
               </div>
               <div className="mt-auto pt-6">
                 <div className="flex flex-row gap-2">
@@ -380,16 +341,10 @@ const CommunityCardClient = () => {
             </Card>
             <Card className="p-4 border-none shadow-none h-full flex flex-col">
               <StepLabel label="Step 3" />
-              <div className="text-base w-1/2 md:w-full">
-                Share on X and attach your card.
-              </div>
+              <div className="text-base w-1/2 md:w-full">Share on X and attach your card.</div>
               <div className="mt-auto pt-6">
                 <Button asChild>
-                  <Link
-                    href={shareUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link href={shareUrl} target="_blank" rel="noopener noreferrer">
                     <Repeat2 className="mr-2 h-4 w-4" />
                     Share on X
                   </Link>
@@ -439,8 +394,7 @@ export default function CommunityCardPage() {
               </span>
             </h1>
             <p className="mt-6 text-slate-600 text-base md:text-lg w-3/4 md:w-full">
-              Generate a special community card and share your excitement about
-              Pearl v1 on X!
+              Generate a special community card and share your excitement about Pearl v1 on X!
             </p>
           </div>
         </section>

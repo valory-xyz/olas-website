@@ -22,8 +22,7 @@ const buttonVariants = cva(
         ghostPrimary:
           'hover:bg-purple-100 hover:text-purple-800 dark:hover:bg-purple-800 dark:hover:text-purple-50 border border-purple-600 text-purple-600',
         link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50',
-        valory:
-          'border hover:bg-valory-green hover:text-black hover:border-valory-green',
+        valory: 'border hover:bg-valory-green hover:text-black hover:border-valory-green',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -37,7 +36,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 );
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -60,13 +59,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
     );
-  },
+  }
 );
 
 Button.displayName = 'Button';

@@ -33,20 +33,13 @@ export const StackFaq = () => (
   >
     <div className={`${SCREEN_WIDTH_LG}`}>
       <div className="grid gap-12">
-        <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>
-          Frequently asked questions
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>Frequently asked questions</h2>
       </div>
 
       {faqList.map((faq, faqIndex) => (
-        <div
-          key={faqIndex}
-          className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
-        >
+        <div key={faqIndex} className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}>
           {'name' in faq && faq.name && (
-            <div className="text-2xl font-semibold mt-2 mb-4">
-              {String(faq.name)}
-            </div>
+            <div className="text-2xl font-semibold mt-2 mb-4">{String(faq.name)}</div>
           )}
 
           {faq.list.map((eachFaq, index) => (

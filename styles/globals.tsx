@@ -31,10 +31,7 @@ export const markdownComponents = {
   // Apply tailwind classes to style lists
   ul: ({ node: _node, ...props }) => (
     <>
-      <ul
-        className="list-disc list-inside pl-4 inline-block w-full"
-        {...props}
-      />
+      <ul className="list-disc list-inside pl-4 inline-block w-full" {...props} />
       <br />
     </>
   ),
@@ -43,29 +40,14 @@ export const markdownComponents = {
   ),
 
   li: ({ node: _node, ...props }) => <li className="mb-2" {...props} />,
-  h1: ({ node: _node, ...props }) => (
-    <h2 className="text-3xl font-bold mb-4" {...props} />
-  ),
-  h2: ({ node: _node, ...props }) => (
-    <h2 className="text-2xl font-semibold mb-3" {...props} />
-  ),
-  h3: ({ node: _node, ...props }) => (
-    <h3 className="text-xl font-medium mb-2" {...props} />
-  ),
-  h4: ({ node: _node, ...props }) => (
-    <h4 className="text-lg font-medium mb-2" {...props} />
-  ),
-  h5: ({ node: _node, ...props }) => (
-    <h5 className="text-[17px] font-medium mb-2" {...props} />
-  ),
-  h6: ({ node: _node, ...props }) => (
-    <h6 className="text-sm font-medium mb-2" {...props} />
-  ),
+  h1: ({ node: _node, ...props }) => <h2 className="text-3xl font-bold mb-4" {...props} />,
+  h2: ({ node: _node, ...props }) => <h2 className="text-2xl font-semibold mb-3" {...props} />,
+  h3: ({ node: _node, ...props }) => <h3 className="text-xl font-medium mb-2" {...props} />,
+  h4: ({ node: _node, ...props }) => <h4 className="text-lg font-medium mb-2" {...props} />,
+  h5: ({ node: _node, ...props }) => <h5 className="text-[17px] font-medium mb-2" {...props} />,
+  h6: ({ node: _node, ...props }) => <h6 className="text-sm font-medium mb-2" {...props} />,
   pre: ({ node: _node, ...props }) => (
-    <pre
-      className="p-4 bg-gray-800 border rounded-md overflow-auto"
-      {...props}
-    />
+    <pre className="p-4 bg-gray-800 border rounded-md overflow-auto" {...props} />
   ),
 
   code: ({ node: _node, ...props }) => <code className="text-sm" {...props} />,

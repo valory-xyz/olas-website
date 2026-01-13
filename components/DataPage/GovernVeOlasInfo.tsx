@@ -20,22 +20,18 @@ export const GovernVeOlasInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Counts the number of wallets with an active veOLAS lock on Ethereum.
-          The metric sums all veOLAS depositors where{' '}
-          <code>unlockTimestamp</code> is in the future, using the tokenomics
-          subgraph.
+          Counts the number of wallets with an active veOLAS lock on Ethereum. The metric sums all
+          veOLAS depositors where <code>unlockTimestamp</code> is in the future, using the
+          tokenomics subgraph.
         </p>
 
         <p className="text-sm text-slate-500">
-          The following queries power the veOLAS metrics shown on the Govern
-          page:
+          The following queries power the veOLAS metrics shown on the Govern page:
         </p>
 
         <div className="space-y-6">
           <div>
-            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-              1) Active veOLAS depositors query
-            </h3>
+            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>1) Active veOLAS depositors query</h3>
 
             <p className="text-sm text-slate-500">
               Used for counting wallets with active veOLAS locks where
@@ -46,12 +42,10 @@ export const GovernVeOlasInfo = () => {
           </div>
 
           <div>
-            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-              2) veOLAS token balance
-            </h3>
+            <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) veOLAS token balance</h3>
             <p className="text-sm text-slate-500">
-              Reads the locked OLAS amount directly from the veOLAS token entry
-              in the same subgraph.
+              Reads the locked OLAS amount directly from the veOLAS token entry in the same
+              subgraph.
             </p>
             <CodeSnippet>{veOlasLockedBalanceQuery}</CodeSnippet>
           </div>

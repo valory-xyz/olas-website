@@ -12,8 +12,7 @@ const list = [
     location: 'Buenos Aires, Devconnect',
     date: "Nov 18 '25",
     eventLink: 'https://luma.com/rnj5dc2b',
-    replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs',
+    replayLink: 'https://www.youtube.com/playlist?list=PLoP4p0r-X94pYnfwoEuf_GlxqOTRBB6vs',
   },
   {
     title: 'The Next Wave',
@@ -21,8 +20,7 @@ const list = [
     location: 'Singapore, Token2049',
     date: "Oct 1 '25",
     eventLink: 'https://lu.ma/h0zgn96s',
-    replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94r0Bgrt7PPQIR6vlzOIkg0N',
+    replayLink: 'https://www.youtube.com/playlist?list=PLoP4p0r-X94r0Bgrt7PPQIR6vlzOIkg0N',
   },
   {
     title: 'EthCC Cannes 🇫🇷',
@@ -30,8 +28,7 @@ const list = [
     location: 'Cannes',
     date: "Jun 30 '25",
     eventLink: 'https://lu.ma/tp6rhykz',
-    replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94quxM9EVcheuv--pJB0UfXM',
+    replayLink: 'https://www.youtube.com/playlist?list=PLoP4p0r-X94quxM9EVcheuv--pJB0UfXM',
   },
   {
     title: 'Builders Night',
@@ -39,8 +36,7 @@ const list = [
     location: 'Denver, ETHDenver',
     date: "Mar 1 '25",
     eventLink: 'https://lu.ma/7ulasmk8',
-    replayLink:
-      'https://www.youtube.com/playlist?list=PLoP4p0r-X94q7eRSr-tr79asIfBIqMRtN',
+    replayLink: 'https://www.youtube.com/playlist?list=PLoP4p0r-X94q7eRSr-tr79asIfBIqMRtN',
   },
   {
     title: 'Agents Unleashed Bangkok + The Humans Unleashed Party',
@@ -111,94 +107,71 @@ const CardImage = ({ src }) => (
 export const CTA = () => (
   <SectionWrapper id="events" backgroundType="GRAY">
     <div>
-      <h2
-        className={`${SUB_HEADER_CLASS} mb-12 text-center max-w-[700px] mx-auto`}
-      >
+      <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center max-w-[700px] mx-auto`}>
         Catch the next event or catch up on previous talks
       </h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-[800px] lg:w-[800px] mx-auto">
-        {list.map(
-          (
-            { title, imageSrc, location, date, eventLink, replayLink },
-            index,
-          ) => {
-            let cardClassNames = replayLink
-              ? 'bg-white border-inherit'
-              : 'bg-none border-purple-300';
-            let cardStyle = replayLink
-              ? {}
-              : {
-                  background:
-                    'linear-gradient(90deg, rgba(52, 170, 255, 0.1), rgba(255, 51, 231, 0.1))',
-                };
-            let textClassName = replayLink ? 'text-slate-500' : '';
-            let iconsClassName = replayLink ? '' : 'text-purple-600';
+        {list.map(({ title, imageSrc, location, date, eventLink, replayLink }, index) => {
+          let cardClassNames = replayLink ? 'bg-white border-inherit' : 'bg-none border-purple-300';
+          let cardStyle = replayLink
+            ? {}
+            : {
+                background:
+                  'linear-gradient(90deg, rgba(52, 170, 255, 0.1), rgba(255, 51, 231, 0.1))',
+              };
+          let textClassName = replayLink ? 'text-slate-500' : '';
+          let iconsClassName = replayLink ? '' : 'text-purple-600';
 
-            return (
-              <Card
-                key={index}
-                className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
-                style={cardStyle}
-              >
-                <div className="flex flex-col gap-1 w-full">
-                  <div className="md:hidden mx-auto">
-                    <CardImage src={imageSrc} />
-                  </div>
-
-                  <div
-                    className={`flex flex-row md:items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
-                  >
-                    {!replayLink && (
-                      <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
-                        Upcoming
-                      </div>
-                    )}
-
-                    <span className="flex max-sm:mt-2">
-                      <MapPin className={`mr-2 w-[20px] ${iconsClassName}`} />
-                      {location}
-                    </span>
-                    <span className="flex">
-                      <CalendarIcon
-                        className={`mr-2 w-[20px] ${iconsClassName}`}
-                      />
-                      {date}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold max-w-[500px] my-4">
-                    {title}
-                  </h3>
-                  <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
-                    <a
-                      href={eventLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Event page ↗
-                    </a>
-                    {replayLink ? (
-                      <a
-                        href={replayLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Watch talk replay ↗
-                      </a>
-                    ) : (
-                      <span className="italic text-slate-500">
-                        Talk replay coming soon...
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="hidden md:block">
+          return (
+            <Card
+              key={index}
+              className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
+              style={cardStyle}
+            >
+              <div className="flex flex-col gap-1 w-full">
+                <div className="md:hidden mx-auto">
                   <CardImage src={imageSrc} />
                 </div>
-              </Card>
-            );
-          },
-        )}
+
+                <div
+                  className={`flex flex-row md:items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
+                >
+                  {!replayLink && (
+                    <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
+                      Upcoming
+                    </div>
+                  )}
+
+                  <span className="flex max-sm:mt-2">
+                    <MapPin className={`mr-2 w-[20px] ${iconsClassName}`} />
+                    {location}
+                  </span>
+                  <span className="flex">
+                    <CalendarIcon className={`mr-2 w-[20px] ${iconsClassName}`} />
+                    {date}
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold max-w-[500px] my-4">{title}</h3>
+                <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
+                  <a href={eventLink} target="_blank" rel="noopener noreferrer">
+                    Event page ↗
+                  </a>
+                  {replayLink ? (
+                    <a href={replayLink} target="_blank" rel="noopener noreferrer">
+                      Watch talk replay ↗
+                    </a>
+                  ) : (
+                    <span className="italic text-slate-500">Talk replay coming soon...</span>
+                  )}
+                </div>
+              </div>
+              <div className="hidden md:block">
+                <CardImage src={imageSrc} />
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   </SectionWrapper>

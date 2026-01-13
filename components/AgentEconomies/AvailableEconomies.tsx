@@ -7,9 +7,7 @@ import useCases from 'data/useCases.json';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const agentEconomies = useCases.find(
-  (item) => item.title === 'Agent Economies',
-);
+const agentEconomies = useCases.find((item) => item.title === 'Agent Economies');
 export const AvailableEconomies = () => {
   return (
     <SectionWrapper
@@ -19,12 +17,9 @@ export const AvailableEconomies = () => {
     >
       <div className="max-w-4xl mx-auto flex flex-col">
         <div className="text-center mb-14">
-          <SectionHeading spacing="mb-6">
-            The First Active AI Agent Economies
-          </SectionHeading>
+          <SectionHeading spacing="mb-6">The First Active AI Agent Economies</SectionHeading>
           <p className="text-lg text-slate-600">
-            Many specialized agents interacting autonomously towards a
-            predefined goal.
+            Many specialized agents interacting autonomously towards a predefined goal.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-6 mb-20">
@@ -38,12 +33,7 @@ export const AvailableEconomies = () => {
                   } as React.CSSProperties
                 }
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={64}
-                  height={64}
-                />
+                <Image src={item.image} alt={item.title} width={64} height={64} />
                 <div className="flex flex-col">
                   <h5 className="font-semibold text-xl mb-2">{item.title}</h5>
                   <p className="text-slate-600">{item.description}</p>
@@ -53,23 +43,11 @@ export const AvailableEconomies = () => {
           ))}
         </div>
         <div className="max-sm:flex-col flex gap-4 w-fit mx-auto">
-          <Button
-            variant="default"
-            size="lg"
-            className="w-fit mx-auto max-sm:w-full"
-            asChild
-          >
+          <Button variant="default" size="lg" className="w-fit mx-auto max-sm:w-full" asChild>
             <Link href="/agents">Explore Agents</Link>
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="max-sm:w-full w-fit mx-auto"
-            asChild
-          >
-            <Link href="/deprecated-usecases">
-              Explore Deprecated Use Cases
-            </Link>
+          <Button variant="outline" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
+            <Link href="/deprecated-usecases">Explore Deprecated Use Cases</Link>
           </Button>
         </div>
       </div>

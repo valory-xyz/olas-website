@@ -5,14 +5,11 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
 const SUCCESS_LIMIT = 1000;
 const SUCCESS_PAGES = 10;
-const INVALID_ANSWER_HEX =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
 type ClosedMarketsBetsResponse = WithMeta<Record<string, any[]>>;
 
-export const fetchSuccessRate = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+export const fetchSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
   return executeGraphQLQuery<ClosedMarketsBetsResponse, string>({
     client: predictAgentsGraphClient,
     query: getClosedMarketsBetsQuery({

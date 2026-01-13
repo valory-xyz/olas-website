@@ -6,9 +6,7 @@ import Link from 'next/link';
 
 export const CTA = () => (
   <SectionWrapper backgroundType="SUBTLE_GRADIENT">
-    <h2
-      className={`${SUB_HEADER_CLASS} mb-8 font-semibold text-center lg:mb-14`}
-    >
+    <h2 className={`${SUB_HEADER_CLASS} mb-8 font-semibold text-center lg:mb-14`}>
       Get started with the Mech Marketplace today
     </h2>
     <div className="place-content-center mx-auto flex max-sm:flex-col gap-4">

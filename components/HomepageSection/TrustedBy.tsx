@@ -6,11 +6,7 @@ import Link from 'next/link';
 import { Trustee } from './Trustee';
 
 export const TrustedBy = () => (
-  <SectionWrapper
-    id="social-proof"
-    customClasses="lg:p-24 px-4 py-20 mt-20"
-    backgroundType="NONE"
-  >
+  <SectionWrapper id="social-proof" customClasses="lg:p-24 px-4 py-20 mt-20" backgroundType="NONE">
     <h2 className={`${SUB_HEADER_CLASS} text-center mb-6 lg:mb-14`}>
       Trusted by Leading Web3 Teams and Users
     </h2>

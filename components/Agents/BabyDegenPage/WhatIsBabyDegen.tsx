@@ -8,22 +8,18 @@ export const WhatIsBabyDegen = () => (
       <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left lg:w-6/7">
         <h2 className={`${SUB_HEADER_CLASS} mb-8`}>What is BabyDegen?</h2>
         <p className="mb-20">
-          BabyDegen is your very own autonomous trading agent, designed to
-          navigate the fast-paced world of DeFi. BabyDegen trades on your behalf
-          leveraging various AI models and external data sources with speed and
-          skill. It&apos;s more than just a tool; it&apos;s your companion on
-          your crypto trading journey.
+          BabyDegen is your very own autonomous trading agent, designed to navigate the fast-paced
+          world of DeFi. BabyDegen trades on your behalf leveraging various AI models and external
+          data sources with speed and skill. It&apos;s more than just a tool; it&apos;s your
+          companion on your crypto trading journey.
         </p>
-        <h2 className={`${SUB_HEADER_CLASS} mb-8`}>
-          Get ready to participate in AI agent DeFi
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} mb-8`}>Get ready to participate in AI agent DeFi</h2>
         <p className="mb-8">
-          BabyDegen is designed for anyone ready to embrace the future of
-          autonomous trading. Whether you&apos;re looking to safeguard your edge
-          in an evolving market or eager to explore trading without the steep
-          learning curve, BabyDegen is your gateway to the next generation of
-          effortless trading. Experience hands-free success with this
-          cutting-edge solution.
+          BabyDegen is designed for anyone ready to embrace the future of autonomous trading.
+          Whether you&apos;re looking to safeguard your edge in an evolving market or eager to
+          explore trading without the steep learning curve, BabyDegen is your gateway to the next
+          generation of effortless trading. Experience hands-free success with this cutting-edge
+          solution.
         </p>
       </div>
 

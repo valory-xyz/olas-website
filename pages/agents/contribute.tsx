@@ -15,12 +15,7 @@ import Meta from 'components/Meta';
 import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
-  <Image
-    src="/images/contribute-page/hero.png"
-    alt="Contribute Hero"
-    width={340}
-    height={350}
-  />
+  <Image src="/images/contribute-page/hero.png" alt="Contribute Hero" width={340} height={350} />
 );
 
 const Hero = () => (
@@ -35,15 +30,9 @@ const Hero = () => (
           <HeroImage />
         </div>
         <div className={TEXT_SMALL_CLASS}>
-          Leverage autonomous services to track and enhance the influence of
-          your community.
+          Leverage autonomous services to track and enhance the influence of your community.
         </div>
-        <Button
-          asChild
-          variant="default"
-          size="xl"
-          className="mt-6 w-full md:w-auto"
-        >
+        <Button asChild variant="default" size="xl" className="mt-6 w-full md:w-auto">
           <Link href="/agents/contribute#about">Learn how</Link>
         </Button>
       </div>
@@ -61,27 +50,22 @@ const WhatIsOlasContributeService = () => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12" id="about">
     <div className="grid max-w-screen-xl mx-auto items-start lg:px-12 lg:gap-8 lg:grid-cols-12">
       <div className="pr-0 mb-12 lg:col-span-6 lg:pr-20">
-        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>
-          What is the Olas Contribute Service?
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>What is the Olas Contribute Service?</h2>
 
         <div className="flex flex-col gap-5">
           <p className={TEXT_CLASS}>
-            Olas Contribute is an advanced autonomous service designed to
-            measure and analyze the impact of community interactions within any
-            ecosystem.
+            Olas Contribute is an advanced autonomous service designed to measure and analyze the
+            impact of community interactions within any ecosystem.
           </p>
           <p className={TEXT_CLASS}>
-            At its core, this service consists of four autonomous agents that
-            continuously monitor and analyze X (formerly Twitter) to read and
-            record the contributions of community members of a specific
-            ecosystem, e.g. Olas.
+            At its core, this service consists of four autonomous agents that continuously monitor
+            and analyze X (formerly Twitter) to read and record the contributions of community
+            members of a specific ecosystem, e.g. Olas.
           </p>
           <p className={TEXT_CLASS}>
-            The agents do this by fetching posts on X that mention the ecosystem
-            or use an ecosystem-specific hashtag. The individual posts are then
-            analyzed for their relevance and quality and are then scored to
-            quantify the impact.
+            The agents do this by fetching posts on X that mention the ecosystem or use an
+            ecosystem-specific hashtag. The individual posts are then analyzed for their relevance
+            and quality and are then scored to quantify the impact.
           </p>
         </div>
       </div>
@@ -99,9 +83,7 @@ const WhatIsOlasContributeService = () => (
 );
 
 const howItWorksList = [
-  [
-    'Community members or users start by connecting their wallets and X account on the web app. ',
-  ],
+  ['Community members or users start by connecting their wallets and X account on the web app. '],
   [
     'Upon completion, members are requested to publish an initial post on X that the agents recognize and begin tracking their contributions.',
   ],
@@ -121,15 +103,10 @@ const HowItWorks = () => (
   <SectionWrapper customClasses="px-4 py-12 lg:px-24 lg:py-0" id="how-it-works">
     <div className="max-w-screen-md items-start m-auto">
       <div className="pr-0 lg:pr-12 mb-12">
-        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>
-          How it works
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6 text-center`}>How it works</h2>
         <div className="flex flex-col items-center gap-6">
           {howItWorksList.map((list, index) => (
-            <div
-              key={index}
-              className="flex rounded-lg border border-purple-200"
-            >
+            <div key={index} className="flex rounded-lg border border-purple-200">
               <p
                 className="flex items-center text-5xl p-4  font-bold text-purple-500 border-x border-l-0 border-purple-200 rounded-l-lg"
                 style={{

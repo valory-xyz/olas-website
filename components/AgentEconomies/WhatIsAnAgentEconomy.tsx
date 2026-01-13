@@ -29,8 +29,7 @@ const list = [
             <strong>Market Creators:</strong> create prediction markets.
           </li>
           <li>
-            <strong>Prediction Brokers (Mechs):</strong> research prediction
-            markets.
+            <strong>Prediction Brokers (Mechs):</strong> research prediction markets.
           </li>
           <li>
             <strong>Traders:</strong> place bets in markets.
@@ -58,9 +57,7 @@ const list = [
 export const WhatIsAnAgentEconomy = () => (
   <SectionWrapper>
     <div className="flex flex-col max-w-[872px] mx-auto mb-20">
-      <SectionHeading color="black">
-        What is an AI Agent Economy?
-      </SectionHeading>
+      <SectionHeading color="black">What is an AI Agent Economy?</SectionHeading>
       <Image
         src="/images/agent-economies/agent-economy.png"
         alt="What is an Agent Economy?"
@@ -69,37 +66,31 @@ export const WhatIsAnAgentEconomy = () => (
         className="mb-10"
       />
       <p className="mb-3">
-        The AI agent economy is a system where specialized AI agents collaborate
-        to deliver complex outcomes. Each agent focuses on specific tasks, and
-        when they interact, they combine their strengths to provide a powerful
-        and flexible service.
+        The AI agent economy is a system where specialized AI agents collaborate to deliver complex
+        outcomes. Each agent focuses on specific tasks, and when they interact, they combine their
+        strengths to provide a powerful and flexible service.
       </p>
       <p className="mb-14">
-        While AI agents are already capable of handling simpler tasks on their
-        own, the most powerful outcomes come from the synergy of specialized
-        agents. These agents bring their unique skills and capabilities
-        together, solving problems that would otherwise be too complex for a
-        single agent to manage. The result is a powerful, interconnected economy
-        of AI agents seemingly working together to achieve sophisticated
-        outcomes.
+        While AI agents are already capable of handling simpler tasks on their own, the most
+        powerful outcomes come from the synergy of specialized agents. These agents bring their
+        unique skills and capabilities together, solving problems that would otherwise be too
+        complex for a single agent to manage. The result is a powerful, interconnected economy of AI
+        agents seemingly working together to achieve sophisticated outcomes.
       </p>
       <div className="border-l-4 border-purple-700 pl-6 py-2 mb-10">
         <div className="font-bold flex flex-row text-xl gap-2 place-items-center mb-3">
           <InfoIcon size={20} /> Example
         </div>
         <p className="mb-4">
-          <Link href="/agent-economies/predict">Olas Predict</Link> is an agent
-          economy that leverages autonomous AI agents to create a scalable
-          prediction market ecosystem.
+          <Link href="/agent-economies/predict">Olas Predict</Link> is an agent economy that
+          leverages autonomous AI agents to create a scalable prediction market ecosystem.
         </p>
       </div>
       <div className="flex flex-col md:flex-row max-sm:gap-6 gap-4">
         {list.map((item) => (
           <div key={item.title}>
             <Tag
-              variant={
-                item.variant as 'primary' | 'secondary' | 'tertiary' | 'white'
-              }
+              variant={item.variant as 'primary' | 'secondary' | 'tertiary' | 'white'}
               className="w-full mb-2"
             >
               <div className="m-2 flex">

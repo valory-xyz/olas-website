@@ -1,8 +1,5 @@
 import { autonolasGraphClient } from 'common-util/graphql/client';
-import {
-  createStaleStatus,
-  executeGraphQLQuery,
-} from 'common-util/graphql/metric-utils';
+import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
@@ -10,9 +7,7 @@ type TotalBuildersResult = WithMeta<{
   globals: { totalBuilders: number }[];
 }>;
 
-const fetchTotalBuilders = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<TotalBuildersResult, number | null>({
     client: autonolasGraphClient,
     query: totalBuildersQuery,
@@ -31,9 +26,7 @@ const fetchTotalBuilders = async (): Promise<
 
 export const fetchBuildMetrics = async () => {
   try {
-    const [totalBuildersResult] = await Promise.allSettled([
-      fetchTotalBuilders(),
-    ]);
+    const [totalBuildersResult] = await Promise.allSettled([fetchTotalBuilders()]);
 
     let totalBuilders: MetricWithStatus<number | null> = {
       value: null,

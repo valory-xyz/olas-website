@@ -15,15 +15,7 @@ const categories = [
   },
   {
     name: 'DAO',
-    items: [
-      'Tokenomics',
-      'Operate',
-      'Build',
-      'Contribute',
-      'Govern',
-      'Launch',
-      'Bond',
-    ],
+    items: ['Tokenomics', 'Operate', 'Build', 'Contribute', 'Govern', 'Launch', 'Bond'],
   },
   {
     name: 'Events',
@@ -31,12 +23,7 @@ const categories = [
   },
   {
     name: 'Growth',
-    items: [
-      'Key milestones',
-      'Activity Metrics',
-      'Media appearances',
-      'Fundraising',
-    ],
+    items: ['Key milestones', 'Activity Metrics', 'Media appearances', 'Fundraising'],
   },
 ];
 
@@ -51,9 +38,7 @@ const Categories = ({ filters, toggleFilters }) => {
               key={category.name}
               className="w-full justify-start flex flex-col lg:flex-row lg:place-items-center"
             >
-              <h3 className="font-semibold w-[100px] max-md:pb-4">
-                {category.name}
-              </h3>
+              <h3 className="font-semibold w-[100px] max-md:pb-4">{category.name}</h3>
               <div className="flex gap-2 flex-wrap">
                 {category.items.map((item) => {
                   const isSelected = filters.includes(item);
@@ -90,8 +75,7 @@ const Timeline = ({ filters, setFilters }) => {
             ...quarter,
             topics: quarter.topics.filter((topic) => {
               return (
-                filters.length === 0 ||
-                filters.some((filter) => topic.category.includes(filter))
+                filters.length === 0 || filters.some((filter) => topic.category.includes(filter))
               );
             }),
           }))
@@ -106,26 +90,16 @@ const Timeline = ({ filters, setFilters }) => {
         {filters.length > 0 && (
           <div className="justify-end flex flex-row place-items-center mb-10 gap-4">
             <div>
-              {filters.length} filter{`${filters.length === 1 ? '' : 's'}`}{' '}
-              applied.
+              {filters.length} filter{`${filters.length === 1 ? '' : 's'}`} applied.
             </div>
-            <Button
-              variant="outline"
-              className="px-1"
-              onClick={() => setFilters([])}
-            >
+            <Button variant="outline" className="px-1" onClick={() => setFilters([])}>
               Reset all
             </Button>
           </div>
         )}
         {filteredTimeline.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col md:flex-row gap-12 md:gap-[120px] w-full"
-          >
-            <h3
-              className={`${HEADER_LARGE_CLASS} md:sticky top-[120px] h-fit max-md:text-center`}
-            >
+          <div key={index} className="flex flex-col md:flex-row gap-12 md:gap-[120px] w-full">
+            <h3 className={`${HEADER_LARGE_CLASS} md:sticky top-[120px] h-fit max-md:text-center`}>
               {item.year}
             </h3>
             <div className="w-full flex flex-col">
@@ -136,17 +110,12 @@ const Timeline = ({ filters, setFilters }) => {
                   className="mb-14"
                 >
                   <div className="w-full justify-between bg-slate-100 rounded-lg flex flex-row place-items-center px-6 py-4 mb-4">
-                    <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>
-                      {quarter.quarter}
-                    </h4>
+                    <h4 className={`${TEXT_LARGE_CLASS} font-bold`}>{quarter.quarter}</h4>
                     <p className="text-slate-600">{quarter.date || '???'}</p>
                   </div>
                   <div className="flex flex-col">
                     {quarter.topics.map((topic) => (
-                      <div
-                        key={topic.topic || String(topic)}
-                        className="px-6 py-4 border-b-1.5"
-                      >
+                      <div key={topic.topic || String(topic)} className="px-6 py-4 border-b-1.5">
                         <Accordion
                           titleClass="bg-white px-0 py-0 flex flex-row justify-between w-full"
                           dropdownClass="border-none"
@@ -193,7 +162,7 @@ export const Content = () => {
 
   const toggleFilters = useCallback((label) => {
     setFilters((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label],
+      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]
     );
   }, []);
 

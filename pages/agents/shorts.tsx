@@ -1,16 +1,7 @@
-import {
-  CircleDollarSign,
-  CopyrightIcon,
-  FastForwardIcon,
-  LightbulbIcon,
-} from 'lucide-react';
+import { CircleDollarSign, CopyrightIcon, FastForwardIcon, LightbulbIcon } from 'lucide-react';
 import Image from 'next/image';
 
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import { SHORTS_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -20,12 +11,7 @@ import { Button } from 'components/ui/button';
 import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
-  <Image
-    src="/images/shorts-page/hero.png"
-    alt="Contribute Hero"
-    width={420}
-    height={420}
-  />
+  <Image src="/images/shorts-page/hero.png" alt="Contribute Hero" width={420} height={420} />
 );
 
 const StartCreating = () => (
@@ -90,11 +76,10 @@ const TurnYourIdeas = () => (
 
         <div className="flex flex-col gap-5">
           <p className={TEXT_CLASS}>
-            From concept to complete film in just 30 minutes, Shorts.wtf uses
-            autonomous AI agents that craft detailed narratives from your
-            initial ideas and then turn them into short videos, including audio.
-            Designed for creatives and professionals who need quick, compelling
-            video content without thinking too much.
+            From concept to complete film in just 30 minutes, Shorts.wtf uses autonomous AI agents
+            that craft detailed narratives from your initial ideas and then turn them into short
+            videos, including audio. Designed for creatives and professionals who need quick,
+            compelling video content without thinking too much.
           </p>
         </div>
       </div>
@@ -116,11 +101,7 @@ const Benefits = () => (
     id="benefits"
     className="max-w-screen-xl px-6 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 mt-4"
   >
-    <h2
-      className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
-    >
-      Benefits
-    </h2>
+    <h2 className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}>Benefits</h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       {list.map(({ title, desc, icon }) => (
@@ -128,8 +109,7 @@ const Benefits = () => (
           key={title}
           className="flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6"
           style={{
-            background:
-              'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
+            background: 'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
           }}
         >
           <div className="flex items-center">
@@ -150,12 +130,7 @@ const getStartedList = [
     title: (
       <>
         <span className="font-bold">Visit</span>
-        <a
-          href={SHORTS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-purple-600"
-        >
+        <a href={SHORTS_URL} target="_blank" rel="noopener noreferrer" className="text-purple-600">
           {' '}
           shorts.wtf↗
         </a>
@@ -186,16 +161,12 @@ const getStartedList = [
   {
     id: '5',
     title: <span className="font-bold">Voila!</span>,
-    description:
-      'In no time, your film is ready to watch, share, or even sell.',
+    description: 'In no time, your film is ready to watch, share, or even sell.',
   },
 ];
 
 const GetStarted = () => (
-  <SectionWrapper
-    id="get-started"
-    customClasses={`${SECTION_BOX_CLASS} border-y border-t-0`}
-  >
+  <SectionWrapper id="get-started" customClasses={`${SECTION_BOX_CLASS} border-y border-t-0`}>
     <div className="grid max-w-screen-xl items-start mx-auto lg:px-12 lg:gap-8 lg:grid-cols-12 xl:gap-0">
       <div className="pb-0 pr-0 lg:col-span-6 lg:pr-12">
         <h2 className={`${SUB_HEADER_CLASS} mb-4 lg:mb-6`}>Get started</h2>

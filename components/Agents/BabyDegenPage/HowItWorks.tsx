@@ -26,10 +26,9 @@ const howItWorksSteps = [
     title: 'Strategy Selection',
     description: (
       <>
-        Thanks to a vast and ever-expanding library of trading strategies from
-        ecosystem developers, BabyDegen is adept at learning. It autonomously
-        determines which strategies are most effective under various market
-        conditions.
+        Thanks to a vast and ever-expanding library of trading strategies from ecosystem developers,
+        BabyDegen is adept at learning. It autonomously determines which strategies are most
+        effective under various market conditions.
       </>
     ),
     image: {
@@ -41,9 +40,8 @@ const howItWorksSteps = [
     title: 'Making Moves',
     description: (
       <>
-        Based on its accumulated experience and the real-time market data,
-        BabyDegen decides whether to buy, sell, or hold specific assets. All
-        trading activities are carried out on{' '}
+        Based on its accumulated experience and the real-time market data, BabyDegen decides whether
+        to buy, sell, or hold specific assets. All trading activities are carried out on{' '}
         <ExternalLink href="https://jup.ag/" target="_blank" rel="noreferrer">
           Jupiter Exchange
         </ExternalLink>{' '}
@@ -78,9 +76,9 @@ export const HowItWorks = () => (
 
       <div className="lg:mx-16">
         <div className="list-decimal mb-6 mt-12 mb-12">
-          Once you&apos;ve funded your account and activated BabyDegen,
-          there&apos;s nothing more you need to do. But if you&apos;re curious
-          about what happens behind the scenes, here&apos;s a closer look:
+          Once you&apos;ve funded your account and activated BabyDegen, there&apos;s nothing more
+          you need to do. But if you&apos;re curious about what happens behind the scenes,
+          here&apos;s a closer look:
         </div>
 
         <div className=" lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
@@ -97,9 +95,7 @@ export const HowItWorks = () => (
           </div>
         </div>
 
-        <div className="text-slate-500">
-          BabyDegen is currently in closed Alpha
-        </div>
+        <div className="text-slate-500">BabyDegen is currently in closed Alpha</div>
       </div>
     </div>
   </SectionWrapper>

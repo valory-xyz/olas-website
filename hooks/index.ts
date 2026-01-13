@@ -4,7 +4,7 @@ import useSWR, { SWRConfiguration } from 'swr';
 export const usePersistentSWR = <Data, ErrorType = Error>(
   key: string,
   fetcher: () => Promise<Data>,
-  config?: SWRConfiguration<Data, ErrorType>,
+  config?: SWRConfiguration<Data, ErrorType>
 ) =>
   useSWR<Data, ErrorType>(key, fetcher, {
     revalidateIfStale: false,

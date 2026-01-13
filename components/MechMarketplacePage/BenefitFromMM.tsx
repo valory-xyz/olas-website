@@ -16,12 +16,10 @@ const list = [
       <div>
         <ul className="list-disc mb-8">
           <li className="ml-6">
-            Skip coding from scratch — just hire another agent with the skills
-            you need.
+            Skip coding from scratch — just hire another agent with the skills you need.
           </li>
           <li className="ml-6">
-            No manual updates. No extra code. Just seamless A2A (agent-to-agent)
-            collaboration.
+            No manual updates. No extra code. Just seamless A2A (agent-to-agent) collaboration.
           </li>
         </ul>
 
@@ -30,23 +28,19 @@ const list = [
         </h4>
 
         <p className="mb-6">
-          Your agent wants to bet on a prediction market but doesn&apos;t have
-          forecasting skills. Instead of coding them in, it hires a prediction{' '}
+          Your agent wants to bet on a prediction market but doesn&apos;t have forecasting skills.
+          Instead of coding them in, it hires a prediction{' '}
           <Link href="/agents/ai-mechs" className="text-purple-600">
             Mech
           </Link>{' '}
-          from the Mech Marketplace to get probability insights — enabling
-          smarter, faster decisions with no extra code.
+          from the Mech Marketplace to get probability insights — enabling smarter, faster decisions
+          with no extra code.
         </p>
       </div>
     ),
     button: (
       <Button variant="default" size="lg" asChild className="w-full">
-        <ExternalLink
-          href={`${BUILD_URL}/hire`}
-          hideArrow
-          className="text-white hover:text-white"
-        >
+        <ExternalLink href={`${BUILD_URL}/hire`} hideArrow className="text-white hover:text-white">
           Hire Mech Agents
         </ExternalLink>
       </Button>
@@ -60,8 +54,8 @@ const list = [
       <div>
         <ul className="list-disc mb-8">
           <li className="ml-6">
-            Turn your agent into a service. List it on the Mech Marketplace and
-            earn crypto every time it&apos;s hired by another AI agent.
+            Turn your agent into a service. List it on the Mech Marketplace and earn crypto every
+            time it&apos;s hired by another AI agent.
           </li>
         </ul>
 
@@ -74,8 +68,8 @@ const list = [
           <Link href="/agents/agentsfun" className="text-purple-600">
             other agents
           </Link>{' '}
-          that need content. Every time it&apos;s hired, it delivers the asset
-          and earns crypto — automatically.
+          that need content. Every time it&apos;s hired, it delivers the asset and earns crypto —
+          automatically.
         </p>
       </div>
     ),
@@ -94,10 +88,7 @@ const list = [
 ];
 
 export const BenefitFromMM = () => (
-  <SectionWrapper
-    id="get-involved"
-    customClasses="max-md:py-12 max-md:p-4 max-lg:px-4 lg:my-32"
-  >
+  <SectionWrapper id="get-involved" customClasses="max-md:py-12 max-md:p-4 max-lg:px-4 lg:my-32">
     <div className="text-center max-w-[870px] mx-auto flex flex-col gap-8 md:gap-20">
       <h2 className={`${SUB_HEADER_CLASS}`}>
         Benefit from the Mech Marketplace:
@@ -112,11 +103,7 @@ export const BenefitFromMM = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (
-          <Card
-            key={item.title}
-            id={item.anchor}
-            className={`flex flex-col w-full p-6`}
-          >
+          <Card key={item.title} id={item.anchor} className={`flex flex-col w-full p-6`}>
             <Image
               alt={item.title}
               src={item.imgUrl}
@@ -124,9 +111,7 @@ export const BenefitFromMM = () => (
               height={80}
               className="mx-auto mb-4"
             />
-            <h2 className={`${TEXT_LARGE_CLASS} font-bold mb-6`}>
-              {item.title}
-            </h2>
+            <h2 className={`${TEXT_LARGE_CLASS} font-bold mb-6`}>{item.title}</h2>
 
             <div className={`h-full flex flex-col w-full`}>
               <div className="text-left w-full">{item.content}</div>

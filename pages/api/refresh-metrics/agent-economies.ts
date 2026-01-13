@@ -2,10 +2,7 @@ import { fetchAllAgentEconomiesMetrics } from 'common-util/api/agent-economies';
 import { saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  _req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   try {
     const metrics = await fetchAllAgentEconomiesMetrics();
 
@@ -25,8 +22,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Error refreshing agent economies metrics:', error);
-    return res
-      .status(500)
-      .json({ success: false, error: (error as Error).message });
+    return res.status(500).json({ success: false, error: (error as Error).message });
   }
 }

@@ -15,9 +15,6 @@ export const getOlasContract = () => {
 };
 
 export const getTokenomicsContract = () => {
-  const tokenomicsContract = new web3.eth.Contract(
-    tokenomicsAbi,
-    tokenomicsAddress,
-  );
+  const tokenomicsContract = new web3.eth.Contract(tokenomicsAbi, tokenomicsAddress);
   return tokenomicsContract;
 };

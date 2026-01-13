@@ -1,8 +1,4 @@
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Image from 'next/image';
 
@@ -12,9 +8,7 @@ const DESC =
 export const GetOlas = () => (
   <SectionWrapper id="about" customClasses={SECTION_BOX_CLASS}>
     <div className="grid max-w-[1180px] mx-auto lg:px-8 lg:grid-cols-12">
-      <h2
-        className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-4 lg:pr-6`}
-      >
+      <h2 className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-4 lg:pr-6`}>
         Get OLAS for supporting Olas
       </h2>
       <p className={`${TEXT_CLASS} md:col-span-8 lg:pl-14`}>{DESC}</p>

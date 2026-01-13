@@ -15,7 +15,7 @@ const tagVariants = cva(
     defaultVariants: {
       variant: 'primary',
     },
-  },
+  }
 );
 
 const tagBordersVariants = cva('absolute w-2 h-2', {
@@ -43,27 +43,24 @@ export const Tag = ({ className, variant, children, ...props }: TagProps) => {
     <div className={cn('relative inline-block', className)} {...props}>
       <div className="absolute inset-0 pointer-events-none">
         <div
+          className={cn(tagBordersVariants({ variant }), 'top-0 left-0 border-t-2 border-l-2 z-20')}
+        />
+        <div
           className={cn(
             tagBordersVariants({ variant }),
-            'top-0 left-0 border-t-2 border-l-2 z-20',
+            'top-0 right-0 border-t-2 border-r-2 z-20'
           )}
         />
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'top-0 right-0 border-t-2 border-r-2 z-20',
+            'bottom-0 left-0 border-b-2 border-l-2 z-20'
           )}
         />
         <div
           className={cn(
             tagBordersVariants({ variant }),
-            'bottom-0 left-0 border-b-2 border-l-2 z-20',
-          )}
-        />
-        <div
-          className={cn(
-            tagBordersVariants({ variant }),
-            'bottom-0 right-0 border-b-2 border-r-2 z-20',
+            'bottom-0 right-0 border-b-2 border-r-2 z-20'
           )}
         />
       </div>

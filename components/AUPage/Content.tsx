@@ -36,12 +36,7 @@ const Sponsors = () => (
               (index + 1) % 3 === 2 ? 'md:justify-self-center' : ''
             } ${(index + 1) % 3 === 0 ? 'md:justify-self-end' : ''}`}
           >
-            <Image
-              src={`/images/${iconFileName}`}
-              alt={name}
-              width={width}
-              height={height}
-            />
+            <Image src={`/images/${iconFileName}`} alt={name} width={width} height={height} />
           </div>
         );
       })}
@@ -56,16 +51,8 @@ const Sponsors = () => (
           {row.map((icon) => {
             const { name, iconFileName, width, height } = icon;
             return (
-              <div
-                key={name}
-                className="grayscale flex items-center justify-center md:mb-4"
-              >
-                <Image
-                  src={`/images/${iconFileName}`}
-                  alt={name}
-                  width={width}
-                  height={height}
-                />
+              <div key={name} className="grayscale flex items-center justify-center md:mb-4">
+                <Image src={`/images/${iconFileName}`} alt={name} width={width} height={height} />
               </div>
             );
           })}
@@ -82,16 +69,8 @@ const Sponsors = () => (
           {row.map((icon) => {
             const { name, iconFileName, width, height } = icon;
             return (
-              <div
-                key={name}
-                className="grayscale flex items-center justify-center"
-              >
-                <Image
-                  src={`/images/${iconFileName}`}
-                  alt={name}
-                  width={width}
-                  height={height}
-                />
+              <div key={name} className="grayscale flex items-center justify-center">
+                <Image src={`/images/${iconFileName}`} alt={name} width={width} height={height} />
               </div>
             );
           })}
@@ -113,31 +92,24 @@ export const Content = () => (
         className="rounded-lg mx-auto mt-24 mb-8"
       />
       <p className="mb-4">
-        &apos;Agents Unleashed&apos; showcases the latest developments in AI
-        agents, a booming area at the intersection of crypto and AI. Its
-        organizers believe that{' '}
-        <a
-          href={ACTUAL_BLOG_POST_URL}
-          className="text-purple-600"
-          target="_blank"
-        >
+        &apos;Agents Unleashed&apos; showcases the latest developments in AI agents, a booming area
+        at the intersection of crypto and AI. Its organizers believe that{' '}
+        <a href={ACTUAL_BLOG_POST_URL} className="text-purple-600" target="_blank">
           Artificial General Intelligence will likely be agentic ↗
         </a>
-        . Since AI agents won&apos;t be given bank accounts, crypto (aka the
-        world of digital money) is AI agents&apos; natural home. It is
-        unsurprising then, that some of the brightest minds in AI and in crypto
-        are working on AI agents. Agents Unleashed is the place to learn about
-        AI agents, whether you&apos;re in crypto and curious about AI or in AI,
-        curious about crypto.
+        . Since AI agents won&apos;t be given bank accounts, crypto (aka the world of digital money)
+        is AI agents&apos; natural home. It is unsurprising then, that some of the brightest minds
+        in AI and in crypto are working on AI agents. Agents Unleashed is the place to learn about
+        AI agents, whether you&apos;re in crypto and curious about AI or in AI, curious about
+        crypto.
       </p>{' '}
       <div>
-        The &apos;Agents Unleashed&apos; event series is hosted by Olas and
-        coordinated by <ExternalLink href={VALORY_URL}>Valory</ExternalLink>.
-        Both organizations were established in 2021, dedicated to leveraging AI
-        agents to enable co-owned AI. They started Agents Unleashed as a way to
-        bring together those working on agents to share best practices,
-        innovations and common language, ultimately unleashing AI agents for the
-        betterment of humanity.
+        The &apos;Agents Unleashed&apos; event series is hosted by Olas and coordinated by{' '}
+        <ExternalLink href={VALORY_URL}>Valory</ExternalLink>. Both organizations were established
+        in 2021, dedicated to leveraging AI agents to enable co-owned AI. They started Agents
+        Unleashed as a way to bring together those working on agents to share best practices,
+        innovations and common language, ultimately unleashing AI agents for the betterment of
+        humanity.
       </div>
     </div>
   </SectionWrapper>

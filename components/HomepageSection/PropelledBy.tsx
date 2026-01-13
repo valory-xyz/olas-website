@@ -15,8 +15,10 @@ const FeaturedIn = () => (
     <h3 className="text-2xl md:text-4xl font-bold mb-12">Featured In</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
       {featuredIn.map((item) => {
-        const { id, name, iconFilename, imageWidth, imageHeight } =
-          item as typeof item & { imageWidth?: number; imageHeight?: number };
+        const { id, name, iconFilename, imageWidth, imageHeight } = item as typeof item & {
+          imageWidth?: number;
+          imageHeight?: number;
+        };
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <a target="_blank" rel="noopener noreferrer" href={item.url}>
@@ -41,9 +43,8 @@ const Chains = () => (
   >
     <h3 className="text-2xl md:text-4xl font-bold">Chains</h3>
     <p className="text-slate-700 text-xl max-w-[800px] mx-auto py-12">
-      Olas Protocol is available on a growing list of chains. When Olas Protocol
-      is deployed on a chain, it brings the power of Olas to that chain&apos;s
-      ecosystem.
+      Olas Protocol is available on a growing list of chains. When Olas Protocol is deployed on a
+      chain, it brings the power of Olas to that chain&apos;s ecosystem.
     </p>
 
     <div className="grid grid-cols-2 gap-10  sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
@@ -64,15 +65,11 @@ const Chains = () => (
 );
 
 const Builders = () => (
-  <section
-    id="builders"
-    className="max-w-screen-lg mx-auto text-center pb-16 mb-12 border-b-1.5"
-  >
+  <section id="builders" className="max-w-screen-lg mx-auto text-center pb-16 mb-12 border-b-1.5">
     <h3 className="text-2xl md:text-4xl font-bold mb-4">Builders</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 ">
       {builders.map((builder) => {
-        const { id, name, url, iconFilename, imageWidth, imageHeight } =
-          builder;
+        const { id, name, url, iconFilename, imageWidth, imageHeight } = builder;
         return (
           <div key={id} className="grayscale flex justify-center items-center">
             <a href={url} target="_blank" rel="noopener noreferrer">
@@ -95,20 +92,10 @@ const Builders = () => (
 const filteredFriends = friends.filter((friend) => !friend.hidden);
 const MoreFriends = () => (
   <section id="friends" className="max-w-screen-lg mx-auto text-center">
-    <h3 className="text-2xl md:text-4xl font-bold mb-12">
-      More friends of Olas
-    </h3>
+    <h3 className="text-2xl md:text-4xl font-bold mb-12">More friends of Olas</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-14">
       {filteredFriends.map((friend) => {
-        const {
-          id,
-          name,
-          url,
-          isExternal,
-          imageFilename,
-          imageWidth,
-          imageHeight,
-        } = friend;
+        const { id, name, url, isExternal, imageFilename, imageWidth, imageHeight } = friend;
         const LinkTag = isExternal ? 'a' : Link;
         return (
           <div key={id} className="grayscale flex justify-center items-center">

@@ -21,8 +21,8 @@ const list = [
     desc: (
       <>
         <span className="mb-3 flex">
-          Directly steer Olas&apos;s development, ensuring a future where every
-          update and growth strategy is community-driven and transparent.
+          Directly steer Olas&apos;s development, ensuring a future where every update and growth
+          strategy is community-driven and transparent.
         </span>
         <Link href="/roadmap">View roadmap</Link>
       </>
@@ -36,9 +36,7 @@ export const WhyBecomeGovernor = () => (
       className="max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
       id="why-govern"
     >
-      <h2
-        className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
-      >
+      <h2 className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}>
         Why become an Olas Governor?
       </h2>
       <InfoCardList cards={list} />

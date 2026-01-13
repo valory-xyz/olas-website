@@ -15,7 +15,7 @@ type CaseStudiesProps = {
   limit?: number;
 };
 
-export const CaseStudies = ({ limit }: CaseStudiesProps) => {
+export const CaseStudies = ({ limit = 1000 }: CaseStudiesProps) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -29,7 +29,7 @@ export const CaseStudies = ({ limit }: CaseStudiesProps) => {
 
   const { data, isLoading } = useSWR(
     `${URL}/${subURL}${params ? '?' : ''}${qs.stringify(params)}`,
-    fetcher,
+    fetcher
   );
 
   const caseStudies = data?.data ?? [];
@@ -45,18 +45,10 @@ export const CaseStudies = ({ limit }: CaseStudiesProps) => {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {(limit ? caseStudies.slice(0, limit) : caseStudies).map((item) => (
-            <Article
-              key={item.id}
-              article={item}
-              href={`/blog/${item?.attributes?.slug}`}
-            />
+            <Article key={item.id} article={item} href={`/blog/${item?.attributes?.slug}`} />
           ))}
         </div>
       </div>
     </section>
   );
-};
-
-CaseStudies.defaultProps = {
-  limit: 1000,
 };

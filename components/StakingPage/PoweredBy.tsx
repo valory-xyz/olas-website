@@ -16,20 +16,17 @@ export const PoweredBy = () => (
       <div className="flex flex-col gap-6">
         <p>
           Olas Staking is based on{' '}
-          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
-            Proof-of-Active-Agent (PoAA)
-          </Link>{' '}
-          — a mechanism that rewards real AI agent activity, not passive token
-          lockup.
+          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">Proof-of-Active-Agent (PoAA)</Link>{' '}
+          — a mechanism that rewards real AI agent activity, not passive token lockup.
         </p>
         <p>
-          PoAA combines the strengths of Proof-of-Stake and Proof-of-Work, but
-          shifts rewards to agents that deliver useful, verifiable outcomes —
-          like executing on-chain actions or meeting KPIs.
+          PoAA combines the strengths of Proof-of-Stake and Proof-of-Work, but shifts rewards to
+          agents that deliver useful, verifiable outcomes — like executing on-chain actions or
+          meeting KPIs.
         </p>
         <p>
-          This aligns incentives across the ecosystem and ensures that value
-          flows to meaningful contributions.
+          This aligns incentives across the ecosystem and ensures that value flows to meaningful
+          contributions.
         </p>
       </div>
     </div>

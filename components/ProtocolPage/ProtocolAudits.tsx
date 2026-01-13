@@ -1,9 +1,5 @@
 import { TEXT_LARGE_CLASS } from 'common-util/classes';
-import {
-  VALORY_GIT_URL,
-  X_OLAS_URL,
-  X_VALORY_AG_URL,
-} from 'common-util/constants';
+import { VALORY_GIT_URL, X_OLAS_URL, X_VALORY_AG_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
@@ -20,33 +16,22 @@ const audits = [
           <>
             <ul className="list-disc ml-6 mb-3 space-y-2">
               <li className="text-purple-600">
-                <a
-                  href="https://sourcehat.com/audits/ValoryAgentRegistries/"
-                  target="_blank"
-                >
+                <a href="https://sourcehat.com/audits/ValoryAgentRegistries/" target="_blank">
                   Registries, 15.07.22
                 </a>
               </li>
               <li className="text-purple-600">
-                <a
-                  href="https://sourcehat.com/audits/AutonolasTokenomics/"
-                  target="_blank"
-                >
+                <a href="https://sourcehat.com/audits/AutonolasTokenomics/" target="_blank">
                   Tokenomics, 16.02.23
                 </a>
               </li>
               <li className="text-purple-600">
-                <a
-                  href="https://sourcehat.com/audits/ValoryOLAS/"
-                  target="_blank"
-                >
+                <a href="https://sourcehat.com/audits/ValoryOLAS/" target="_blank">
                   Governance & OLAS, 23.06.22
                 </a>
               </li>
             </ul>
-            <p className="italic text-sm text-[#606F85]">
-              * Formerly known as Solidity Finance
-            </p>
+            <p className="italic text-sm text-[#606F85]">* Formerly known as Solidity Finance</p>
           </>
         ),
       },
@@ -75,26 +60,17 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2">
             <li className="text-purple-600">
-              <a
-                href={`${X_OLAS_URL}/status/1557431064632647680`}
-                target="_blank"
-              >
+              <a href={`${X_OLAS_URL}/status/1557431064632647680`} target="_blank">
                 Governance & OLAS, 08.22
               </a>
             </li>
             <li className="text-purple-600">
-              <a
-                href={`${X_OLAS_URL}/status/1689316293030359040`}
-                target="_blank"
-              >
+              <a href={`${X_OLAS_URL}/status/1689316293030359040`} target="_blank">
                 Tokenomics & Registries, 08.23
               </a>
             </li>
             <li className="text-purple-600">
-              <a
-                href="https://immunefi.com/bug-bounty/autonolas/information/"
-                target="_blank"
-              >
+              <a href="https://immunefi.com/bug-bounty/autonolas/information/" target="_blank">
                 Staking, 08.24
               </a>
             </li>
@@ -108,19 +84,12 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2 text-purple-600">
             <li>
-              <a
-                href="https://code4rena.com/audits/2023-12-olas"
-                target="_blank"
-              >
-                Governance, Tokenomics & Registries on mainnet & contracts on
-                Solana, 12.23
+              <a href="https://code4rena.com/audits/2023-12-olas" target="_blank">
+                Governance, Tokenomics & Registries on mainnet & contracts on Solana, 12.23
               </a>
             </li>
             <li>
-              <a
-                href="https://code4rena.com/audits/2024-05-olas"
-                target="_blank"
-              >
+              <a href="https://code4rena.com/audits/2024-05-olas" target="_blank">
                 Governance, Tokenomics & Registries, 05.24{' '}
               </a>{' '}
               ($90k)
@@ -135,10 +104,7 @@ const audits = [
         content: (
           <ul className="list-disc ml-6 space-y-2 text-purple-600">
             <li>
-              <a
-                href={`${X_VALORY_AG_URL}/status/1769951643330810357`}
-                target="_blank"
-              >
+              <a href={`${X_VALORY_AG_URL}/status/1769951643330810357`} target="_blank">
                 Various contracts on Solana, 03.24
               </a>
             </li>
@@ -158,10 +124,7 @@ const audits = [
 ];
 
 export const ProtocolAudits = () => (
-  <SectionWrapper
-    customClasses="lg:p-24 px-4 py-12 border-y"
-    id="protocol-audits"
-  >
+  <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="protocol-audits">
     <div className={`max-w-[648px] mx-auto gap-5`}>
       <SectionHeading
         size="max-sm:text-5xl"
@@ -173,9 +136,7 @@ export const ProtocolAudits = () => (
       </SectionHeading>
       {audits.map((audit) => (
         <div key={audit.category}>
-          <p className={`${TEXT_LARGE_CLASS} font-bold mb-6 mt-14`}>
-            {audit.category}
-          </p>
+          <p className={`${TEXT_LARGE_CLASS} font-bold mb-6 mt-14`}>{audit.category}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {audit.list.map((auditor) => (
               <Card key={auditor.title}>
@@ -189,9 +150,7 @@ export const ProtocolAudits = () => (
                   <p className="text-xl font-semibold">{auditor.title}</p>
 
                   {auditor.secondary && (
-                    <p className="ml-auto text-[#606F85]">
-                      {auditor.secondary}
-                    </p>
+                    <p className="ml-auto text-[#606F85]">{auditor.secondary}</p>
                   )}
                 </div>
                 <div className="px-6 py-4">{auditor.content}</div>

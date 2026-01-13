@@ -14,12 +14,7 @@ type HeroSectionProps = {
   PrimaryButton: React.ComponentType;
   SecondaryButton?: React.ComponentType;
   statusTag?: React.ReactNode;
-  backgroundType?:
-    | 'SUBTLE_GRADIENT'
-    | 'GRAY'
-    | 'GRAY_GRADIENT'
-    | 'GOVERNATOOORR'
-    | 'NONE';
+  backgroundType?: 'SUBTLE_GRADIENT' | 'GRAY' | 'GRAY_GRADIENT' | 'GOVERNATOOORR' | 'NONE';
   className?: string;
 };
 
@@ -46,17 +41,11 @@ export const HeroSection = ({
 
         {statusTag}
 
-        <h1
-          className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}
-        >
-          {pageName}
-        </h1>
+        <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}>{pageName}</h1>
 
         <h2 className={`${MAIN_TITLE_CLASS} mb-4`}>{title}</h2>
 
-        {description && (
-          <div className={`${TEXT_SMALL_CLASS} mb-6`}>{description}</div>
-        )}
+        {description && <div className={`${TEXT_SMALL_CLASS} mb-6`}>{description}</div>}
 
         <div className="flex flex-wrap justify-stretch gap-6">
           <PrimaryButton />

@@ -26,15 +26,15 @@ const WhatIsMech = () => (
       <Link href="/agents/ai-mechs" className="text-purple-600">
         Mechs
       </Link>{' '}
-      to sell AI tasks and other services to any agent or application that needs
-      them via the blockchain. Mech agents provide things like intelligence or
-      data to other agents by listening for on-chain requests and performing the
-      needed actions off-chain, then delivering the results on-chain.{' '}
+      to sell AI tasks and other services to any agent or application that needs them via the
+      blockchain. Mech agents provide things like intelligence or data to other agents by listening
+      for on-chain requests and performing the needed actions off-chain, then delivering the results
+      on-chain.{' '}
     </div>
     <p className="mb-20">
-      This system creates a seamless marketplace for agents to procure and offer
-      each others&apos; services: agents can request and receive specialized
-      services through secure, decentralized transactions.
+      This system creates a seamless marketplace for agents to procure and offer each others&apos;
+      services: agents can request and receive specialized services through secure, decentralized
+      transactions.
     </p>
   </div>
 );
@@ -54,25 +54,24 @@ const TheProcess = () => (
     <ol className="list-decimal ml-4 mb-2">
       <li className="mb-2">Autonomous agents request services from Mechs.</li>
       <li className="mb-2">
-        Mechs leverage large language models (LLMs), external data, APIs, and
-        other tools to serve requests.
+        Mechs leverage large language models (LLMs), external data, APIs, and other tools to serve
+        requests.
       </li>
       <li className="mb-2">Mechs deliver results to requesting agents.</li>
     </ol>
     <p className="mb-2">The benefits:</p>
     <ol className="list-disc ml-4 mb-2">
       <li className="mb-2">
-        Agents no longer need code upgrades: If an agent needs a skill it
-        doesn&apos;t have it can use a Mech, bypassing the need for code
-        changes.
+        Agents no longer need code upgrades: If an agent needs a skill it doesn&apos;t have it can
+        use a Mech, bypassing the need for code changes.
       </li>
       <li className="mb-2">
-        Choose from a variety of tools for your agent to level up skills such as
-        optimizing DeFi asset management or predicting future events.
+        Choose from a variety of tools for your agent to level up skills such as optimizing DeFi
+        asset management or predicting future events.
       </li>
       <li>
-        Stop worrying about key management and get access to dozens of APIs and
-        other data through one simple integration.
+        Stop worrying about key management and get access to dozens of APIs and other data through
+        one simple integration.
       </li>
     </ol>
   </div>

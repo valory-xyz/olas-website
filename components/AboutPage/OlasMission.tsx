@@ -14,8 +14,8 @@ export const OlasMission = () => (
         Olas Mission
       </Tag>
       <p className={SUB_HEADER_CLASS}>
-        To incentivize and coordinate different parties to launch autonomous
-        agents that form entire AI economies serving all humans
+        To incentivize and coordinate different parties to launch autonomous agents that form entire
+        AI economies serving all humans
       </p>
     </div>
   </SectionWrapper>

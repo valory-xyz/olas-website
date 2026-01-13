@@ -3,18 +3,14 @@ import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
-import {
-  isMetricWithStatus,
-  MetricWithStatus,
-} from 'common-util/graphql/types';
+import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
 import lodash from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
 const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
 const CONTENT_TYPE = 'application/json';
 
-const getSnapshotFilename = (category: string) =>
-  `${METRICS_PREFIX}-${category}.json`;
+const getSnapshotFilename = (category: string) => `${METRICS_PREFIX}-${category}.json`;
 
 type SaveSnapshotParams = {
   category: string;
@@ -33,29 +29,19 @@ export type MetricsSnapshot = {
 };
 
 const isMetricsSnapshot = (data: unknown): data is MetricsSnapshot =>
-  typeof data === 'object' &&
-  data !== null &&
-  'data' in data &&
-  'timestamp' in data;
+  typeof data === 'object' && data !== null && 'data' in data && 'timestamp' in data;
 
 // TODO: refactor this fn to make it more readable.
-const mergeWithFallback = (
-  newData: unknown,
-  oldData: unknown,
-  path: string = '',
-): unknown => {
+const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''): unknown => {
   if (!newData || typeof newData !== 'object') {
     return newData;
   }
 
   if (isMetricWithStatus(newData)) {
     const newMetric = newData as MetricWithStatus<unknown>;
-    const oldMetric = isMetricWithStatus(oldData)
-      ? (oldData as MetricWithStatus<unknown>)
-      : null;
+    const oldMetric = isMetricWithStatus(oldData) ? (oldData as MetricWithStatus<unknown>) : null;
 
-    const newValueIsInvalid =
-      lodash.isNil(newMetric.value) || newMetric.status?.stale;
+    const newValueIsInvalid = lodash.isNil(newMetric.value) || newMetric.status?.stale;
 
     if (newValueIsInvalid) {
       // Try to fall back to old data if available and valid
@@ -103,22 +89,15 @@ const mergeWithFallback = (
 
   for (const key of allKeys) {
     const newPath = path ? `${path}.${key}` : key;
-    if (
-      lodash.isPlainObject(newData) &&
-      key in (newData as Record<string, unknown>)
-    ) {
+    if (lodash.isPlainObject(newData) && key in (newData as Record<string, unknown>)) {
       result[key] = mergeWithFallback(
         (newData as Record<string, unknown>)[key],
-        lodash.isPlainObject(oldData) &&
-          key in (oldData as Record<string, unknown>)
+        lodash.isPlainObject(oldData) && key in (oldData as Record<string, unknown>)
           ? (oldData as Record<string, unknown>)[key]
           : undefined,
-        newPath,
+        newPath
       );
-    } else if (
-      lodash.isPlainObject(oldData) &&
-      key in (oldData as Record<string, unknown>)
-    ) {
+    } else if (lodash.isPlainObject(oldData) && key in (oldData as Record<string, unknown>)) {
       result[key] = (oldData as Record<string, unknown>)[key];
     }
   }
@@ -155,10 +134,7 @@ export const saveSnapshot = async ({
       };
     }
   } catch (error) {
-    console.warn(
-      `Failed to load previous snapshot for ${category} fallback`,
-      error,
-    );
+    console.warn(`Failed to load previous snapshot for ${category} fallback`, error);
   }
 
   const blob = await put(filename, JSON.stringify(dataToSave), {
@@ -196,8 +172,7 @@ export const getSnapshot = async ({
       cache: 'no-store',
     });
 
-    if (!response.ok)
-      throw new Error(`Failed to fetch snapshot from ${blob.url}`);
+    if (!response.ok) throw new Error(`Failed to fetch snapshot from ${blob.url}`);
 
     const data = await response.json();
 

@@ -9,10 +9,9 @@ export const FeesInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks the amount of protocol fees collected and their conversion into
-          OLAS for burning. Currently, protocol fees are set to 0% , which means
-          no fees are generated, no tokens are converted into OLAS, and
-          therefore no OLAS are burned at this time.
+          Tracks the amount of protocol fees collected and their conversion into OLAS for burning.
+          Currently, protocol fees are set to 0% , which means no fees are generated, no tokens are
+          converted into OLAS, and therefore no OLAS are burned at this time.
         </p>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Verify on-chain:</h3>
         <div className="flex gap-2">

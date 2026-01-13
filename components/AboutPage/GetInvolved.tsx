@@ -50,10 +50,8 @@ export const GetInvolved = () => (
 
       <div className="grid md:grid-cols-2 gap-4">
         {cards.map((card, index) => {
-          const cardKey =
-            typeof card.title === 'string' ? card.title : `card-${index}`;
-          const cardAlt =
-            typeof card.title === 'string' ? card.title : 'Card image';
+          const cardKey = typeof card.title === 'string' ? card.title : `card-${index}`;
+          const cardAlt = typeof card.title === 'string' ? card.title : 'Card image';
 
           const cardContent = (
             <Card className="relative activity-card-opaque flex items-center hover:bg-white duration-150 hover:cursor-pointer py-4 px-6 h-[136px] md:max-w-md w-full">

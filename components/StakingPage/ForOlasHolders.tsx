@@ -21,8 +21,7 @@ const list = [
   },
   {
     title: 'Drive Demand',
-    description:
-      'As more AI agents and use cases emerge, demand for OLAS naturally increases.',
+    description: 'As more AI agents and use cases emerge, demand for OLAS naturally increases.',
     url: '/agent-economies',
     urlText: 'Explore real-world use cases',
   },

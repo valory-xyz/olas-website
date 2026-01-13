@@ -75,10 +75,7 @@ const list = [
     type: 'external-link',
     link: `${VALORY_URL}/post/prediction-agent-hackathon-success`,
     status: 'Completed',
-    projectTags: [
-      'Build an Agent Using the Olas Stack',
-      'Modify an Agent Using the Olas Stack',
-    ],
+    projectTags: ['Build an Agent Using the Olas Stack', 'Modify an Agent Using the Olas Stack'],
   },
 ];
 
@@ -131,12 +128,7 @@ const EventLink = ({ link, type }) => (
       </Button>
     )}
     {type == 'external-link' && (
-      <a
-        href={link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-purple-700"
-      >
+      <a href={link} target="_blank" rel="noopener noreferrer" className="text-purple-700">
         Hackathon results ↗
       </a>
     )}
@@ -146,25 +138,13 @@ const EventLink = ({ link, type }) => (
 export const CatchTheNextEvent = () => (
   <SectionWrapper id="events" backgroundType="GRAY">
     <div>
-      <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center mx-auto`}>
-        Catch the Next Hackathon
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-12 text-center mx-auto`}>Catch the Next Hackathon</h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-[640px] lg:w-[640px] mx-auto">
         {list.map(
           (
-            {
-              title,
-              imageSrc,
-              location,
-              date,
-              link,
-              type,
-              status,
-              prizePool,
-              projectTags,
-            },
-            index,
+            { title, imageSrc, location, date, link, type, status, prizePool, projectTags },
+            index
           ) => {
             const statusClass =
               status == 'Completed'
@@ -191,17 +171,11 @@ export const CatchTheNextEvent = () => (
 
                         <EventDetails location={location} date={date} />
 
-                        <h3 className="text-2xl font-bold max-w-[500px]">
-                          {title}
-                        </h3>
+                        <h3 className="text-2xl font-bold max-w-[500px]">{title}</h3>
                         {prizePool && (
                           <div className="flex flex-col gap-1 ">
-                            <span className="text-slate-500 font-medium">
-                              Prize Pool
-                            </span>
-                            <span className="text-black text-xl font-bold">
-                              {prizePool}
-                            </span>
+                            <span className="text-slate-500 font-medium">Prize Pool</span>
+                            <span className="text-black text-xl font-bold">{prizePool}</span>
                           </div>
                         )}
                       </div>
@@ -217,14 +191,12 @@ export const CatchTheNextEvent = () => (
                   {link ? (
                     <EventLink link={link} type={type} />
                   ) : (
-                    <span className="text-slate-500">
-                      No qualifying submissions.
-                    </span>
+                    <span className="text-slate-500">No qualifying submissions.</span>
                   )}
                 </div>
               </Card>
             );
-          },
+          }
         )}
       </div>
     </div>

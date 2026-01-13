@@ -19,12 +19,7 @@ const Header = () => (
         </Link>
         <Menu className="hidden md:block" />
         <MenuMobile className="md:hidden" />
-        <Button
-          variant="default"
-          size="lg"
-          asChild
-          className="hidden md:inline-flex ml-auto"
-        >
+        <Button variant="default" size="lg" asChild className="hidden md:inline-flex ml-auto">
           <Link href="/#pearl">Own Your Agent</Link>
         </Button>
       </div>

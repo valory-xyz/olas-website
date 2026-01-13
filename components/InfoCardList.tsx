@@ -24,9 +24,7 @@ export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
           >
             <div className="flex items-center">
               {icon !== undefined ? (icon as React.ReactNode) : null}
-              <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>
-                {title}
-              </h3>
+              <h3 className={`text-xl font-semibold ${icon ? 'ml-2' : ''}`}>{title}</h3>
             </div>
             <div className={TEXT_CLASS}>{desc}</div>
           </div>

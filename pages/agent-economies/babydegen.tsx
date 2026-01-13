@@ -27,8 +27,7 @@ const Optimus = ({ metrics }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'agent-economies' });
-  const metrics =
-    (snapshot?.data as AgentEconomiesMetricsData)?.babyDegen || null;
+  const metrics = (snapshot?.data as AgentEconomiesMetricsData)?.babyDegen || null;
 
   return {
     props: {

@@ -1,46 +1,32 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SUB_HEADER_CLASS,
-  TEXT_LARGE_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS, TEXT_LARGE_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Link from 'next/link';
 
 const onChainRegistries = [
   {
     title: 'Software registry',
-    subList: [
-      'Register agent systems and the components they are composed from as NFTs.',
-    ],
+    subList: ['Register agent systems and the components they are composed from as NFTs.'],
   },
   {
     title: 'Secure & Manage',
-    subList: [
-      'Maintain agent systems, secure them and coordinate their operators.',
-    ],
+    subList: ['Maintain agent systems, secure them and coordinate their operators.'],
   },
 ];
 
 const tokenomics = [
   {
     title: 'Developer Rewards',
-    subList: [
-      'Permissionless system to reward developers for their code contributions.',
-    ],
+    subList: ['Permissionless system to reward developers for their code contributions.'],
   },
   {
     title: 'Bonding',
-    subList: [
-      'Permissionless system to allow the DAO to acquire protocol-owned liquidity',
-    ],
+    subList: ['Permissionless system to allow the DAO to acquire protocol-owned liquidity'],
   },
   {
     title: 'Staking',
-    subList: [
-      'Coordinate and reward agents for their active contributions to specific use cases.',
-    ],
+    subList: ['Coordinate and reward agents for their active contributions to specific use cases.'],
   },
 ];
 
@@ -58,23 +44,18 @@ const mainList = [
 ];
 
 export const ProtocolKeyFeatures = () => (
-  <SectionWrapper
-    id="key-components"
-    customClasses="lg:p-24 px-4 py-12 border-y"
-  >
+  <SectionWrapper id="key-components" customClasses="lg:p-24 px-4 py-12 border-y">
     <div className={`${SCREEN_WIDTH_LG} gap-5`}>
       <div>
         The Olas Protocol provides a framework for coordinating and managing{' '}
         <Link href="/learn" className="text-purple-600">
           autonomous agent systems
         </Link>
-        . Each part of the Protocol is designed to ensure scalability and
-        security. It provides a mechanism to: one, incentivize developers
-        proportionally to their contributions, two, incentivize operators to run
-        agent systems, and three, incentivize bonders to provide liquidity,
-        collectively supporting the growth of a decentralised ecosystem. Olas
-        Protocol is currently deployed on multiple blockchains, with plans for
-        further expansions.
+        . Each part of the Protocol is designed to ensure scalability and security. It provides a
+        mechanism to: one, incentivize developers proportionally to their contributions, two,
+        incentivize operators to run agent systems, and three, incentivize bonders to provide
+        liquidity, collectively supporting the growth of a decentralised ecosystem. Olas Protocol is
+        currently deployed on multiple blockchains, with plans for further expansions.
       </div>
 
       <h2 className={`${SUB_HEADER_CLASS} mb-2`}>Key Components</h2>

@@ -23,7 +23,7 @@ export default async function handler(req, res) {
           'X-GitHub-Api-Version': '2022-11-28',
           Accept: 'application/octet-stream',
         },
-      },
+      }
     );
 
     if (!response.url) {
@@ -41,9 +41,7 @@ export default async function handler(req, res) {
       },
       (githubRes) => {
         if (githubRes.statusCode !== 200) {
-          res
-            .status(500)
-            .json({ error: 'Failed to stream the file from GitHub' });
+          res.status(500).json({ error: 'Failed to stream the file from GitHub' });
           return;
         }
 
@@ -51,7 +49,7 @@ export default async function handler(req, res) {
         const typedResponse = response as { name?: string };
         res.setHeader(
           'Content-Disposition',
-          `attachment; filename="${typedResponse.name || 'download'}"`,
+          `attachment; filename="${typedResponse.name || 'download'}"`
         );
         res.setHeader('Content-Type', 'application/octet-stream');
         // Caching for a day
@@ -60,7 +58,7 @@ export default async function handler(req, res) {
 
         // Stream the GitHub response directly to the client
         githubRes.pipe(res);
-      },
+      }
     );
   } catch (error) {
     console.error('Error fetching or streaming the file:', error);

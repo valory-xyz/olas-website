@@ -20,8 +20,7 @@ import { AudioLines } from 'lucide-react';
 const LIMIT = 3;
 
 const Podcast = ({ podcast }) => {
-  const watchLink =
-    podcast.platform_link || podcast.drive_link || podcast.video_url;
+  const watchLink = podcast.platform_link || podcast.drive_link || podcast.video_url;
 
   const links = [
     {
@@ -34,9 +33,7 @@ const Podcast = ({ podcast }) => {
   ];
 
   return (
-    <div
-      className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
-    >
+    <div className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}>
       {podcast.imageFilename && (
         <Image
           src={`${podcast.imageFilename}`}
@@ -51,9 +48,7 @@ const Podcast = ({ podcast }) => {
           {podcast.title}
         </h2>
         <div className="text-gray-500 mb-2">
-          <span className="text-sm md:text-xl lg:text-sm">
-            {formatDate(podcast.date)}
-          </span>
+          <span className="text-sm md:text-xl lg:text-sm">{formatDate(podcast.date)}</span>
         </div>
         {watchLink && (
           <Button variant="outline" className="py-2 mt-auto mb-2">
@@ -63,12 +58,7 @@ const Podcast = ({ podcast }) => {
               rel="noopener noreferrer"
               className="flex flex-row gap-1"
             >
-              <Image
-                src="/images/au-page/yt-icon.svg"
-                alt="watch"
-                width={20}
-                height={20}
-              />
+              <Image src="/images/au-page/yt-icon.svg" alt="watch" width={20} height={20} />
               Watch
             </a>
           </Button>
@@ -127,8 +117,7 @@ export const Podcasts = () => {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8 mb-14">
             {podcasts.length === 0 && (
               <div className="rounded-lg col-span-full place-items-center text-center border py-16 text-slate-500">
-                <AudioLines className="mb-2" size={40} /> Agents Unleashed
-                podcasts coming soon.
+                <AudioLines className="mb-2" size={40} /> Agents Unleashed podcasts coming soon.
               </div>
             )}
             {podcasts.map((podcast) => (
@@ -139,9 +128,7 @@ export const Podcasts = () => {
           </div>
         )}
         <div className="w-full py-10 flex flex-col gap-8 text-center place-items-center bg-slate-100 rounded-2xl">
-          <h4 className={SUB_HEADER_MEDIUM_CLASS}>
-            Playlist with All Episodes
-          </h4>
+          <h4 className={SUB_HEADER_MEDIUM_CLASS}>Playlist with All Episodes</h4>
           <div className="flex flex-col md:flex-row gap-4">
             <Button variant="outline" size="lg" className="text-black" asChild>
               <a

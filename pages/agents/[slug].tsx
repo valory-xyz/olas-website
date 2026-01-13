@@ -52,77 +52,37 @@ const ServiceDetail = ({ service }) => {
             )}
             <div className="border rounded-lg mb-8">
               {service.serviceCategory && (
-                <FieldRow
-                  fieldName="Category"
-                  value={service.serviceCategory}
-                />
+                <FieldRow fieldName="Category" value={service.serviceCategory} />
               )}
-              {service.builder && (
-                <FieldRow fieldName="Builder" value={service.builder} />
-              )}
+              {service.builder && <FieldRow fieldName="Builder" value={service.builder} />}
               {service.description && (
-                <FieldRow
-                  fieldName="Description"
-                  value={service.description}
-                  last
-                />
+                <FieldRow fieldName="Description" value={service.description} last />
               )}
             </div>
             {service.appUrl && (
               <Button size="xl" asChild className="w-full lg:w-auto mb-4">
-                <a
-                  href={service.appUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={service.appUrl} target="_blank" rel="noopener noreferrer">
                   View app
                 </a>
               </Button>
             )}
             {service.marketingUrl && (
-              <Button
-                size="xl"
-                variant="outline"
-                asChild
-                className="w-full lg:w-auto mb-4"
-              >
-                <a
-                  href={service.marketingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+              <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
+                <a href={service.marketingUrl} target="_blank" rel="noopener noreferrer">
                   Learn more
                 </a>
               </Button>
             )}
             {service.integrateUrl && (
-              <Button
-                size="xl"
-                variant="outline"
-                asChild
-                className="w-full lg:w-auto mb-4"
-              >
-                <a
-                  href={service.integrateUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+              <Button size="xl" variant="outline" asChild className="w-full lg:w-auto mb-4">
+                <a href={service.integrateUrl} target="_blank" rel="noopener noreferrer">
                   Integrate Mechs
                 </a>
               </Button>
             )}
             {service.buildUrl && (
-              <Button
-                size="xl"
-                variant="outline"
-                asChild
-                className="w-full lg:w-auto"
-              >
-                <a
-                  href={service.buildUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+              <Button size="xl" variant="outline" asChild className="w-full lg:w-auto">
+                <a href={service.buildUrl} target="_blank" rel="noopener noreferrer">
                   Build your own
                 </a>
               </Button>
@@ -147,9 +107,7 @@ export default ServiceDetail;
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
-  const matchedService = servicesData.find(
-    (item) => item.slug === slug && !item.removePage,
-  );
+  const matchedService = servicesData.find((item) => item.slug === slug && !item.removePage);
   if (!matchedService) {
     return {
       notFound: true,

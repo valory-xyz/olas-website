@@ -4,12 +4,7 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
-  <Image
-    src="/images/agent-economies/hero.png"
-    alt="hero"
-    width={648}
-    height={454}
-  />
+  <Image src="/images/agent-economies/hero.png" alt="hero" width={648} height={454} />
 );
 
 const ExploreAgentEconomies = () => (

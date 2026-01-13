@@ -27,21 +27,20 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              Olas enables everyone to own and monetize their AI agents. It is
-              the platform that enables true co-ownership of AI.
+              Olas enables everyone to own and monetize their AI agents. It is the platform that
+              enables true co-ownership of AI.
             </p>
             <p className="mb-3">
-              With Pearl, the first “AI Agent App Store,” any consumer with a
-              laptop can use AI agents they truly own.
+              With Pearl, the first “AI Agent App Store,” any consumer with a laptop can use AI
+              agents they truly own.
             </p>
             <p className="mb-3">
-              With Mech Marketplace, businesses can put their AI agent up for
-              hire to earn crypto and tap into other AI agents&apos; services.
+              With Mech Marketplace, businesses can put their AI agent up for hire to earn crypto
+              and tap into other AI agents&apos; services.
             </p>
             <p>
-              Launched in 2021 as one of the first Crypto x AI projects, Olas
-              today powers multiple active agent economies with millions of
-              transactions to date.
+              Launched in 2021 as one of the first Crypto x AI projects, Olas today powers multiple
+              active agent economies with millions of transactions to date.
             </p>
           </>
         ),
@@ -52,19 +51,17 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              AI is changing the world at breakneck speed — but with this comes
-              the risk of its ownership becoming more and more centralized. Labs
-              like OpenAI, Anthropic, and DeepMind are building AI Agents that
-              they hope will soon run everything.
+              AI is changing the world at breakneck speed — but with this comes the risk of its
+              ownership becoming more and more centralized. Labs like OpenAI, Anthropic, and
+              DeepMind are building AI Agents that they hope will soon run everything.
             </p>
             <p className="mb-3">
-              If unchecked, the best AI will be owned by the few and rented by
-              the many.
+              If unchecked, the best AI will be owned by the few and rented by the many.
             </p>
             <p className="mb-3">
-              For everyone who dreams of AI Agents that could satisfy your every
-              wish or revolutionize industries, there will always be a price:
-              pay the tax forever — or get left behind.
+              For everyone who dreams of AI Agents that could satisfy your every wish or
+              revolutionize industries, there will always be a price: pay the tax forever — or get
+              left behind.
             </p>
           </>
         ),
@@ -74,12 +71,10 @@ const faqList = [
         title: "What is Olas' solution?",
         desc: (
           <p className="mb-3">
-            Olas solves this problem by enabling true co-ownership of AI. With
-            Olas&apos; Pearl, the first “AI Agent App Store”, any consumer with
-            a laptop can use AI agents they truly own. With the Mech
-            Marketplace, the “AI Agent Bazaar”, businesses can put their AI
-            agent up for hire to earn crypto and tap into other AI agents&apos;
-            services.
+            Olas solves this problem by enabling true co-ownership of AI. With Olas&apos; Pearl, the
+            first “AI Agent App Store”, any consumer with a laptop can use AI agents they truly own.
+            With the Mech Marketplace, the “AI Agent Bazaar”, businesses can put their AI agent up
+            for hire to earn crypto and tap into other AI agents&apos; services.
           </p>
         ),
       },
@@ -89,22 +84,20 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              For consumers, Pearl: the AI Agent App Store is a desktop app that
-              lets anyone with a laptop run and own multiple AI agents easily.
+              For consumers, Pearl: the AI Agent App Store is a desktop app that lets anyone with a
+              laptop run and own multiple AI agents easily.
             </p>
             <p className="mb-3">
-              For businesses, Mech Marketplace: the AI Agent Bazaar is where
-              they can offer their AI agents for hire to earn crypto and tap
-              into other AI agents’ services.
+              For businesses, Mech Marketplace: the AI Agent Bazaar is where they can offer their AI
+              agents for hire to earn crypto and tap into other AI agents’ services.
             </p>
             <p className="mb-3">
-              Everyone can co-own a piece of Olas through the OLAS utility
-              token. OLAS grants access to core functions of the network and
-              coordinates autonomous AI agent economies.
+              Everyone can co-own a piece of Olas through the OLAS utility token. OLAS grants access
+              to core functions of the network and coordinates autonomous AI agent economies.
             </p>
             <p className="mb-3">
-              Additionally, the most up-to-date and heavily showcased products
-              can be found on the Olas homepage and{' '}
+              Additionally, the most up-to-date and heavily showcased products can be found on the
+              Olas homepage and{' '}
               <Link href="/timeline" className="text-purple-600">
                 Olas Timeline
               </Link>
@@ -124,8 +117,8 @@ const faqList = [
               <Link href="/quarterly-updates" className="text-purple-600">
                 Quarterly Updates
               </Link>{' '}
-              page summarize progress during the last quarter and what to look
-              out for during the next one.
+              page summarize progress during the last quarter and what to look out for during the
+              next one.
             </p>
             <p className="mb-3">
               <Link
@@ -134,11 +127,10 @@ const faqList = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                The &apos;Week in Olas&apos; Twitter summary thread is updated
-                weekly by autonomous Olas agents
+                The &apos;Week in Olas&apos; Twitter summary thread is updated weekly by autonomous
+                Olas agents
               </Link>
-              , summarizing what&apos;s happened in the Olas ecosystem in the
-              past week.
+              , summarizing what&apos;s happened in the Olas ecosystem in the past week.
             </p>
             <p>
               You can also{' '}
@@ -156,15 +148,14 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              Olas supports a wide variety of multi-agent systems, that is
-              systems of multiple interacting intelligent agents that solve
-              problems that are difficult for individual agents to solve.
+              Olas supports a wide variety of multi-agent systems, that is systems of multiple
+              interacting intelligent agents that solve problems that are difficult for individual
+              agents to solve.
             </p>
             <p>
-              Evidently, any agent economy is a multi-agent system. Moreover,
-              decentralized agents can be a multi-agent system when the
-              individual agent instances in the autonomous service take on
-              differentiated tasks.
+              Evidently, any agent economy is a multi-agent system. Moreover, decentralized agents
+              can be a multi-agent system when the individual agent instances in the autonomous
+              service take on differentiated tasks.
             </p>
           </>
         ),
@@ -179,9 +170,8 @@ const faqList = [
         title: 'When was the DAO founded? When was the TGE?',
         desc: (
           <p>
-            In 2022, Olas DAO was founded with ~50 participants. When the DAO
-            was founded all the founding members paid their share of the costs,
-            in total it was{' '}
+            In 2022, Olas DAO was founded with ~50 participants. When the DAO was founded all the
+            founding members paid their share of the costs, in total it was{' '}
             <Link
               href="https://discord.com/channels/899649805582737479/899649805582737482/1126134102400176229"
               className="text-purple-600"
@@ -199,13 +189,12 @@ const faqList = [
         title: 'When was the first public sale/LBP?',
         desc: (
           <p>
-            In July 2023, the OLAS token launched publicly via a Liquidity
-            Bootstrapping Pool{' '}
+            In July 2023, the OLAS token launched publicly via a Liquidity Bootstrapping Pool{' '}
             <Link href="/blog/lbp-stats" className="text-purple-600">
               (LBP) via Fjord Foundry which ended on 12.7.23 at 6pm UTC
             </Link>
-            . This LBP is the only one planned and was created by Valory to
-            establish initial liquidity in a decentralized manner because{' '}
+            . This LBP is the only one planned and was created by Valory to establish initial
+            liquidity in a decentralized manner because{' '}
             <Link
               href={`${X_OLAS_URL}/status/1675892568905900033?s=20`}
               className="text-purple-600"
@@ -214,8 +203,8 @@ const faqList = [
             >
               the DAO members love decentralization
             </Link>
-            . The Fully Diluted Valuation during the LBP varied between a bottom
-            of $12m and a closing of $74.6m FDV,{' '}
+            . The Fully Diluted Valuation during the LBP varied between a bottom of $12m and a
+            closing of $74.6m FDV,{' '}
             <Link href="/blog/lbp-stats" className="text-purple-600">
               raising a $1.2m total volume from 149 holders
             </Link>
@@ -232,8 +221,8 @@ const faqList = [
         title: "What's this about a seed round?",
         desc: (
           <p>
-            Olas was founded as above and did not have a seed round. Valory, the
-            dev company many of the founding members work from,{' '}
+            Olas was founded as above and did not have a seed round. Valory, the dev company many of
+            the founding members work from,{' '}
             <Link
               href={`${VALORY_URL}/post/autonomous-services-to-power-next-gen-apps-for-crypto-users-and-daos`}
               className="text-purple-600"
@@ -251,8 +240,7 @@ const faqList = [
         title: 'Did Olas have an OTC round?',
         desc: (
           <p>
-            No, Olas DAO itself did not have an OTC round. However, in early
-            2025, core contributor{' '}
+            No, Olas DAO itself did not have an OTC round. However, in early 2025, core contributor{' '}
             <Link
               href="/blog/olas-announces-the-agent-app-store-after-core-contributor-raises-13-8m-led-by-1kx"
               className="text-purple-600"
@@ -268,11 +256,10 @@ const faqList = [
         title: "What's the difference between Olas and Autonolas?",
         desc: (
           <p>
-            Upon its inception, the project was named &apos;Autonolas&apos;, a
-            combination of the words &apos;autonomy&apos; and &apos;olas&apos;;
-            the latter meaning &apos;waves&apos; in Spanish. Today, the project
-            is commonly referred to as &apos;Olas&apos;, and has earned the
-            moniker &apos;crypto&apos;s ocean of agents&apos;.
+            Upon its inception, the project was named &apos;Autonolas&apos;, a combination of the
+            words &apos;autonomy&apos; and &apos;olas&apos;; the latter meaning &apos;waves&apos; in
+            Spanish. Today, the project is commonly referred to as &apos;Olas&apos;, and has earned
+            the moniker &apos;crypto&apos;s ocean of agents&apos;.
           </p>
         ),
       },
@@ -281,11 +268,10 @@ const faqList = [
         title: 'What does the ☴ symbol mean?',
         desc: (
           <p>
-            ☴ is a hexagram from the Yi Ching, the oldest known book. It
-            represents wind and symbolically reinforces &apos;olas&apos; which
-            means waves in Spanish. Together, they create a sense of vibrancy as
-            generated by Olas&apos; autonomous agents, who generate waves of
-            activity on top of the blockchain.
+            ☴ is a hexagram from the Yi Ching, the oldest known book. It represents wind and
+            symbolically reinforces &apos;olas&apos; which means waves in Spanish. Together, they
+            create a sense of vibrancy as generated by Olas&apos; autonomous agents, who generate
+            waves of activity on top of the blockchain.
           </p>
         ),
       },
@@ -325,20 +311,19 @@ const faqList = [
         desc: (
           <>
             <p className="mb-3">
-              Voting rights are granted to holders of locked OLAS, veOLAS token
-              holders. Token holders cannot affect the disposition of the assets
-              of the project team, the project, or any third party. Token
-              holders can use their votes to affect the distribution of token
-              emissions.
+              Voting rights are granted to holders of locked OLAS, veOLAS token holders. Token
+              holders cannot affect the disposition of the assets of the project team, the project,
+              or any third party. Token holders can use their votes to affect the distribution of
+              token emissions.
             </p>{' '}
             <p className="mb-3">
               The introduction of{' '}
               <Link href="/staking" className="text-purple-600">
                 Olas Staking
               </Link>{' '}
-              gave the DAO the ability to direct emissions to useful builders
-              and the DAO treasury, controlling how much OLAS is emitted into
-              the market. For more information on voting, see:{' '}
+              gave the DAO the ability to direct emissions to useful builders and the DAO treasury,
+              controlling how much OLAS is emitted into the market. For more information on voting,
+              see:{' '}
               <Link href="/govern" className="text-purple-600">
                 https://olas.network/govern.
               </Link>
@@ -348,13 +333,12 @@ const faqList = [
       },
       {
         id: 'current-distribution',
-        title:
-          'What is the current OLAS distribution / supply / planned unlocks?',
+        title: 'What is the current OLAS distribution / supply / planned unlocks?',
         desc: (
           <>
             <p className="mb-3">
-              Live token distribution data (inc. total supply, circulating
-              supply, current holders, unlock schedules, and more) is live{' '}
+              Live token distribution data (inc. total supply, circulating supply, current holders,
+              unlock schedules, and more) is live{' '}
               <Link href="/olas-token" className="text-purple-600">
                 here
               </Link>
@@ -379,9 +363,8 @@ const faqList = [
               >
                 here
               </Link>
-              . veOLAS is the governance token, which anyone can get by locking
-              OLAS to participate in governance. Governance proposals can be
-              found for off-chain votes on Snapshot{' '}
+              . veOLAS is the governance token, which anyone can get by locking OLAS to participate
+              in governance. Governance proposals can be found for off-chain votes on Snapshot{' '}
               <ExternalLink href={SNAPSHOT_URL} className="text-purple-600">
                 here
               </ExternalLink>{' '}
@@ -400,30 +383,27 @@ const faqList = [
       },
       {
         id: 'derive-token-allocation',
-        title:
-          'How did you derive the founding member / DAO / treasury token allocation?',
+        title: 'How did you derive the founding member / DAO / treasury token allocation?',
         desc: (
           <>
             <p className="mb-3">
-              At deployment and issuance of the contract to DAO founding members
-              in 2022:
+              At deployment and issuance of the contract to DAO founding members in 2022:
             </p>
             <p className="mb-3">
               {' '}
-              47.35% of the fixed token supply (i.e. 1 billion OLAS) of the
-              first 10 years is programmed to be distributed to the ecosystem,
-              issued as rewards including developer and bonding rewards in the{' '}
+              47.35% of the fixed token supply (i.e. 1 billion OLAS) of the first 10 years is
+              programmed to be distributed to the ecosystem, issued as rewards including developer
+              and bonding rewards in the{' '}
               <Link
                 href="/blog/code-capital-attracting-capital-via-bonding"
                 className="text-purple-600"
               >
                 (code, capital) mechanism
               </Link>
-              . After 10 years the maximum token inflation per annum is capped
-              at 2% and the DAO governance can opt to further reduce it. The aim
-              is to have an s-shaped curve of token emissions to allow for the
-              ecosystem to organically grow over time. The rest of the fixed
-              token supply is distributed as follows:
+              . After 10 years the maximum token inflation per annum is capped at 2% and the DAO
+              governance can opt to further reduce it. The aim is to have an s-shaped curve of token
+              emissions to allow for the ecosystem to organically grow over time. The rest of the
+              fixed token supply is distributed as follows:
             </p>
             <ul className="list-disc ml-6 mb-3">
               <li className="mb-2">DAO Treasury: 10%</li>
@@ -445,21 +425,20 @@ const faqList = [
         title: 'What token allocation does Valory have?',
         desc: (
           <p>
-            Valory, founding member and co-creator of Olas, has a token
-            allocation (see the{' '}
+            Valory, founding member and co-creator of Olas, has a token allocation (see the{' '}
             <Link href="/olas-token" className="text-purple-600">
               Token page
             </Link>{' '}
-            for wallet and amounts). This allocation has never been subject to
-            locking or vesting. Valory stated{' '}
+            for wallet and amounts). This allocation has never been subject to locking or vesting.
+            Valory stated{' '}
             <Link
               href="https://discord.com/channels/899649805582737479/899649805582737482/1187422618408726538"
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
             >
-              “there are no plans to lock or vest, and this is to the sole
-              discretion of Valory, as is the case with any token holder“
+              “there are no plans to lock or vest, and this is to the sole discretion of Valory, as
+              is the case with any token holder“
             </Link>
             .
           </p>
@@ -471,8 +450,7 @@ const faqList = [
           'What is the circulating supply and where can I find the circulating supply of OLAS?',
         desc: (
           <p>
-            The definition of circulating supply is set by Coingecko and other
-            aggregators -{' '}
+            The definition of circulating supply is set by Coingecko and other aggregators -{' '}
             <Link
               href={`${COINGECKO_URL}/en/glossary/circulating-supply`}
               className="text-purple-600"
@@ -500,10 +478,9 @@ const faqList = [
         title: 'What is the Autonolas Deployer contract?',
         desc: (
           <p>
-            “Autonolas Deployer“ is called this way on Etherscan because Valory
-            deployed the Olas (prev. Autonolas) protocol. The deployer has no
-            privileged role in the protocol. The protocol is controlled by the
-            DAO (holders of veOLAS).
+            “Autonolas Deployer“ is called this way on Etherscan because Valory deployed the Olas
+            (prev. Autonolas) protocol. The deployer has no privileged role in the protocol. The
+            protocol is controlled by the DAO (holders of veOLAS).
           </p>
         ),
       },
@@ -512,16 +489,16 @@ const faqList = [
         title: 'What if I want to know about specific transactions?',
         desc: (
           <p>
-            You can use block explorers to find all transactions on-chain. DAO
-            founding member Valory stated they{' '}
+            You can use block explorers to find all transactions on-chain. DAO founding member
+            Valory stated they{' '}
             <Link
               href="https://discord.com/channels/899649805582737479/899649805582737482/1187022092139503626"
               className="text-purple-600"
               target="_blank"
               rel="noopener noreferrer"
             >
-              “never comment on individual transactions unless they are related
-              to a security incident or some governance vote“
+              “never comment on individual transactions unless they are related to a security
+              incident or some governance vote“
             </Link>
             .
           </p>
@@ -609,17 +586,11 @@ const FAQPage = () => (
 
     <div className="mb-8">
       Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
-      <SubsiteLink href={`${PEARL_YOU_URL}FAQ`}>
-        Check out the Pearl FAQ
-      </SubsiteLink>
-      .
+      <SubsiteLink href={`${PEARL_YOU_URL}FAQ`}>Check out the Pearl FAQ</SubsiteLink>.
     </div>
 
     {faqList.map((eachSet, setIndex) => (
-      <div
-        key={eachSet.category}
-        className={setIndex === faqList.length - 1 ? '' : 'mb-8'}
-      >
+      <div key={eachSet.category} className={setIndex === faqList.length - 1 ? '' : 'mb-8'}>
         <h2 className="text-2xl font-semibold mt-2 mb-4 pb-4 border-b-1.5 text-gray-600">
           {eachSet.category}
         </h2>

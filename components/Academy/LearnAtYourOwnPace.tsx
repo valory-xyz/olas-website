@@ -20,13 +20,12 @@ export const LearnAtYourOwnPace = () => (
       <p className="font-medium text-base text-[#ffffff99]">Olas Dev Academy</p>
       <span className="font-bold text-2xl">Learn at Your Own Pace</span>
       <p className="mb-6">
-        Prefer a flexible approach? Our self-paced course on YouTube covers
-        everything you need to know about building agents on the Olas Stack.
-        Complete the course at your own speed, and join our active Discord
-        community for support, questions, and feedback along the way.
+        Prefer a flexible approach? Our self-paced course on YouTube covers everything you need to
+        know about building agents on the Olas Stack. Complete the course at your own speed, and
+        join our active Discord community for support, questions, and feedback along the way.
         <br />
-        This option is ideal for developers who want to explore the Olas Stack
-        without committing to a full-time schedule.
+        This option is ideal for developers who want to explore the Olas Stack without committing to
+        a full-time schedule.
       </p>
       <span className="font-bold text-[#ffffff99]">What you get out of it</span>
       <ul className="list-disc gap-y-2 flex flex-col ml-7 mb-8">

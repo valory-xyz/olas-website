@@ -3,11 +3,7 @@ const { withPlausibleProxy } = require('next-plausible');
 module.exports = withPlausibleProxy()({
   reactStrictMode: true,
   images: {
-    domains: [
-      'cms-backend.staging.autonolas.tech',
-      'cms-backend.autonolas.tech',
-      'localhost',
-    ],
+    domains: ['cms-backend.staging.autonolas.tech', 'cms-backend.autonolas.tech', 'localhost'],
   },
   experimental: {
     scrollRestoration: true,

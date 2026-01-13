@@ -13,9 +13,7 @@ export const MechAgentsInAction = () => (
         <div className="max-sm:mt-2 rounded-full border py-2 px-3 max-w-fit inline bg-white text-slate-600">
           Use Case
         </div>
-        <h2 className={`${SUB_HEADER_CLASS} mt-6`}>
-          Mech Agents in Action - Eolas AI
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} mt-6`}>Mech Agents in Action - Eolas AI</h2>
       </div>
       <Image
         src="/images/mech-marketplace/eolas-AI.png"
@@ -32,20 +30,18 @@ export const MechAgentsInAction = () => (
           >
             CreatorBid agent
           </Link>{' '}
-          built on Olas Mech Agents. It lets users request real-time, AI-driven
-          predictions directly on X (formerly Twitter) — simply by mentioning
-          the agent. From weather and market forecasts to event outcomes,
-          predictions are delivered instantly and autonomously.
+          built on Olas Mech Agents. It lets users request real-time, AI-driven predictions directly
+          on X (formerly Twitter) — simply by mentioning the agent. From weather and market
+          forecasts to event outcomes, predictions are delivered instantly and autonomously.
         </p>
         <p>
           Behind the scenes,{' '}
           <Link href="/agents/ai-mechs" className="text-purple-600">
             Olas Mechs
           </Link>{' '}
-          handle everything: agent-to-agent payments, task delegation, and
-          prediction delivery. What looks like a simple interaction is actually
-          a powerful example of Mechs in action — showcasing real A2A
-          collaboration. Since launch, users have made 57 paid prediction
+          handle everything: agent-to-agent payments, task delegation, and prediction delivery. What
+          looks like a simple interaction is actually a powerful example of Mechs in action —
+          showcasing real A2A collaboration. Since launch, users have made 57 paid prediction
           requests, all fulfilled through the Mech Marketplace.
         </p>
       </div>

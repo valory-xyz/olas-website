@@ -1,7 +1,4 @@
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_MEDIUM_CLASS,
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
 import { DISCORD_INVITE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -18,14 +15,11 @@ const list = [
     cardContent: (
       <>
         <p>
-          Staking can provide a rich set of opportunities to boost your chain,
-          protocol or app activity.
+          Staking can provide a rich set of opportunities to boost your chain, protocol or app
+          activity.
         </p>
         <ul className="list-disc ml-6">
-          <li>
-            Incentivize AI agent activity to boost your chain, protocol or app
-            activity.
-          </li>
+          <li>Incentivize AI agent activity to boost your chain, protocol or app activity.</li>
           <li>Attract builders and agent operators.</li>
           <li>Bring utility to your own token.</li>
         </ul>
@@ -47,15 +41,11 @@ const list = [
   },
   {
     title: 'Builders',
-    description:
-      'Understand what code to work on and earn rewards more sustainably.',
+    description: 'Understand what code to work on and earn rewards more sustainably.',
     cardTitle: 'High-Impact Problems, Clear Incentives',
     cardContent: (
       <>
-        <p>
-          Staking makes it easier to know what to build — and get rewarded for
-          it:
-        </p>
+        <p>Staking makes it easier to know what to build — and get rewarded for it:</p>
         <ul className="list-disc ml-6">
           <li>Signals which problems need solving.</li>
           <li>Shows which areas are likely to be sustainably funded.</li>
@@ -90,9 +80,7 @@ export const ForProtocols = () => (
               className={`flex max-md:flex-col ${order} justify-between max-lg:gap-14`}
             >
               <div className="lg:w-[380px]">
-                <h4 className={`${SUB_HEADER_MEDIUM_CLASS} mb-3`}>
-                  {item.title}
-                </h4>
+                <h4 className={`${SUB_HEADER_MEDIUM_CLASS} mb-3`}>{item.title}</h4>
                 <p className="text-slate-600">{item.description}</p>
               </div>
               <Card className="activity-card-opaque p-8 md:w-[436px]">

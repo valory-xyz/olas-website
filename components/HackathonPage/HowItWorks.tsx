@@ -8,8 +8,7 @@ import { Button } from 'components/ui/button';
 const steps = [
   {
     title: 'Choose a Track',
-    description:
-      'Select from Mech Demand, Mech Supply, Olas SDK, or Stack-based builds.',
+    description: 'Select from Mech Demand, Mech Supply, Olas SDK, or Stack-based builds.',
   },
   {
     title: 'Register for a Hackathon',
@@ -17,8 +16,7 @@ const steps = [
   },
   {
     title: 'Build Autonomously',
-    description:
-      'Use the Olas docs, starter templates, and community support to get building.',
+    description: 'Use the Olas docs, starter templates, and community support to get building.',
   },
   {
     title: 'Submit and Demo',

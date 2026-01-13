@@ -29,8 +29,7 @@ const AgentsFun = ({ metrics }) => (
 
 export const getStaticProps = async () => {
   const snapshot = await getSnapshot({ category: 'agent-economies' });
-  const metrics =
-    (snapshot?.data as AgentEconomiesMetricsData)?.agentsFun || null;
+  const metrics = (snapshot?.data as AgentEconomiesMetricsData)?.agentsFun || null;
 
   return {
     props: {

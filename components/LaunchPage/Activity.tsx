@@ -17,10 +17,7 @@ export const Activity = () => (
         />
         Olas AI Agent Economies
       </div>
-      <Link
-        className="font-extrabold text-6xl"
-        href="/agent-economies#agent-economies"
-      >
+      <Link className="font-extrabold text-6xl" href="/agent-economies#agent-economies">
         {AI_AGENT_ECONOMIES}
       </Link>
     </Card>

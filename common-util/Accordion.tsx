@@ -26,8 +26,7 @@ export const Accordion = ({
     customClass ||
     'flex gap-3 items-center justify-between w-full px-6 py-4 font-medium bg-gray-100 border border-gray-200 hover:bg-gray-100';
   const divClass =
-    dropdownClass ||
-    'px-6 bg-white border border-gray-200 rounded-xl rounded-t-none';
+    dropdownClass || 'px-6 bg-white border border-gray-200 rounded-xl rounded-t-none';
 
   useEffect(() => {
     setAccordionOpen(defaultOpen);
@@ -42,11 +41,7 @@ export const Accordion = ({
         `}
         aria-expanded={accordionOpen ? 'true' : 'false'}
       >
-        {typeof label === 'string' ? (
-          <span className="text-lg">{label}</span>
-        ) : (
-          <div className="text-lg">{label}</div>
-        )}
+        <div className="text-lg">{label}</div>
         <div>
           <ChevronDown
             className={`transform origin-center transition duration-100 ease-out ${accordionOpen && '!rotate-180'}`}

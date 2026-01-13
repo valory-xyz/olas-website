@@ -10,8 +10,7 @@ export const MENU_DATA = [
 ];
 
 export const WHITEPAPER = '/documents/whitepaper/Whitepaper v1.0.pdf';
-export const WHITEPAPER_SUMMARY =
-  '/documents/whitepaper/Whitepaper Summary v1.0.pdf';
+export const WHITEPAPER_SUMMARY = '/documents/whitepaper/Whitepaper Summary v1.0.pdf';
 export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
@@ -82,25 +81,20 @@ export const STAKING_SUBGRAPH_URLS = {
 };
 
 export const REGISTRY_SUBGRAPH_URLS = {
-  ethereum:
-    'https://thegraph.com/explorer/subgraphs/89VhY3d7w6Ran1C86wkchzYNEG3rLBgWvyDUZMEFyjtQ',
+  ethereum: 'https://thegraph.com/explorer/subgraphs/89VhY3d7w6Ran1C86wkchzYNEG3rLBgWvyDUZMEFyjtQ',
   base: 'https://thegraph.com/explorer/subgraphs/Baqj7bPWWQKw8HXwfqbMZnFhkSamuUYFa3JgCRYF8Tcr?view=Query&chain=arbitrum-one',
   celo: 'https://thegraph.com/explorer/subgraphs/BxkMNoiEHdbJDtrmMG1bqVvUfwVUWnf5bn47WnCdB1A4',
   gnosis:
     'https://thegraph.com/explorer/subgraphs/GmDw6a6EfP6z58dzkw5WehpxjaiEKB6aZRk4TNUm3DPn?view=Query&chain=arbitrum-one',
   optimism:
     'https://thegraph.com/explorer/subgraphs/BksA3aj8vX68TVs91ieDoGzFGASuLC7BaYo2HsGCea7p?view=Query&chain=arbitrum-one',
-  polygon:
-    'https://thegraph.com/explorer/subgraphs/HHRBjVWFT2bV7eNSRqbCNDtUVnLPt911hcp8mSe4z6KG',
-  arbitrum:
-    'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
+  polygon: 'https://thegraph.com/explorer/subgraphs/HHRBjVWFT2bV7eNSRqbCNDtUVnLPt911hcp8mSe4z6KG',
+  arbitrum: 'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
 };
 
-export const AUTONOLAS_SUBGRAPH_URL =
-  process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
+export const AUTONOLAS_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
-export const AUTONOLAS_BASE_SUBGRAPH_URL =
-  process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL;
+export const AUTONOLAS_BASE_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL;
 
 export const TOKENOMICS_SUBGRAPH_URLS = [
   {

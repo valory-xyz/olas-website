@@ -31,12 +31,10 @@ export const HowItWorks = () => {
           <Tag variant="primary" className="mb-6">
             How It Works
           </Tag>
-          <h2 className={`${SUB_HEADER_CLASS} mb-10`}>
-            Not Your Ordinary Staking Mechanism
-          </h2>
+          <h2 className={`${SUB_HEADER_CLASS} mb-10`}>Not Your Ordinary Staking Mechanism</h2>
           <p>
-            Staking gives Olas unprecedented control to launch, sustain and
-            benefit from entire autonomous AI agent economies.
+            Staking gives Olas unprecedented control to launch, sustain and benefit from entire
+            autonomous AI agent economies.
           </p>
         </div>
         <div className="flex flex-row mb-14 border rounded-full w-fit p-1 mx-auto">
@@ -62,13 +60,11 @@ export const HowItWorks = () => {
           />
           <Card className="bg-slate-100 p-6 w-[320px] h-fit">
             <ol className="list-decimal ml-6">
-              {(activeTab === 'mechanism' ? mechanismList : exampleList).map(
-                (item, index) => (
-                  <li key={index} className="mb-6">
-                    {item}
-                  </li>
-                ),
-              )}
+              {(activeTab === 'mechanism' ? mechanismList : exampleList).map((item, index) => (
+                <li key={index} className="mb-6">
+                  {item}
+                </li>
+              ))}
             </ol>
           </Card>
         </div>

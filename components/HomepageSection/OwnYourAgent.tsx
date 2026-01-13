@@ -47,9 +47,9 @@ export const OwnYourAgent = () => (
           Pearl: The &quot;AI Agent App-Store&quot;
         </SectionHeading>
         <p className="text-xl text-slate-600">
-          Own your agent with Pearl - the ultimate collection of AI agents.
-          Choose from a variety of AI agents to benefit from their capabilities
-          while earning potential rewards from OLAS staking.
+          Own your agent with Pearl - the ultimate collection of AI agents. Choose from a variety of
+          AI agents to benefit from their capabilities while earning potential rewards from OLAS
+          staking.
         </p>
         <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
           <p>Featured in</p>

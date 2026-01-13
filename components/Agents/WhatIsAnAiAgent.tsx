@@ -14,9 +14,8 @@ export const WhatIsAnAiAgent = () => (
         className="mb-10"
       />
       <p>
-        An AI agent is a software system that perceives its environment, makes
-        decisions, and takes actions autonomously — without continuous human
-        input — to achieve specific goals.
+        An AI agent is a software system that perceives its environment, makes decisions, and takes
+        actions autonomously — without continuous human input — to achieve specific goals.
       </p>
     </div>
   </SectionWrapper>

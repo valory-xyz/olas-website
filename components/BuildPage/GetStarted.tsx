@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { MECH_MARKETPLACE_URL, STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -15,15 +11,13 @@ const steps = [
     title: 'Choose Your Path',
     description: (
       <>
-        <Link href="#why-build">Review</Link> and pick a path that fits you
-        best.
+        <Link href="#why-build">Review</Link> and pick a path that fits you best.
       </>
     ),
   },
   {
     title: 'Set Up the Stack',
-    description:
-      'Install the Olas Stack toolchain and scaffold your workspace.',
+    description: 'Install the Olas Stack toolchain and scaffold your workspace.',
   },
   {
     title: 'Build & Test',
@@ -34,18 +28,15 @@ const steps = [
     description: (
       <>
         Register your agent on the{' '}
-        <SubsiteLink href={MECH_MARKETPLACE_URL}>Marketplace</SubsiteLink> to
-        hire other AI agents and offer your own agent&apos;s services.
+        <SubsiteLink href={MECH_MARKETPLACE_URL}>Marketplace</SubsiteLink> to hire other AI agents
+        and offer your own agent&apos;s services.
       </>
     ),
   },
 ];
 
 export const GetStarted = () => (
-  <SectionWrapper
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
-    id="get-started"
-  >
+  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`} id="get-started">
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>Get Started as a Builder</h2>
 

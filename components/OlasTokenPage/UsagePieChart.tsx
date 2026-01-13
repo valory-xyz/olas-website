@@ -25,27 +25,19 @@ type UsagePieChartProps = {
   };
 };
 
-export const UsagePieChart = ({
-  epoch,
-  split,
-  loading,
-}: UsagePieChartProps) => (
+export const UsagePieChart = ({ epoch, split, loading }: UsagePieChartProps) => (
   <div>
     <div>
-      <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
-        Current Epoch
-      </h2>
+      <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">Current Epoch</h2>
       <div className="text-4xl font-extrabold">
-        <span className="text-gradient">
-          {loading ? '--' : epoch?.toString()}
-        </span>
+        <span className="text-gradient">{loading ? '--' : epoch?.toString()}</span>
       </div>
       <div className="mb-4">
         <Verify url={`${READ_PROXY_ETHERSCAN_URL}F19`} />
       </div>
       <p className="mb-8 text-slate-500">
-        Tokens are distributed to builders, operators and bonders each epoch.
-        Epochs run roughly once a month.
+        Tokens are distributed to builders, operators and bonders each epoch. Epochs run roughly
+        once a month.
       </p>
     </div>
     <div className="flex flex-col">
@@ -54,32 +46,23 @@ export const UsagePieChart = ({
       </h2>
       <div className="flex flex-col gap-2 mx-auto mb-4">
         <div>
-          <span className="text-cyan-500 font-bold">
-            {loading ? '--' : split?.developers}%
-          </span>{' '}
-          of the new tokens are earmarked for{' '}
+          <span className="text-cyan-500 font-bold">{loading ? '--' : split?.developers}%</span> of
+          the new tokens are earmarked for{' '}
           <Link href="/build" className="text-cyan-500 font-bold">
             Builders
           </Link>
         </div>
         <div>
-          <span className="text-purple-600 font-bold">
-            {loading ? '--' : split?.bonders}%
-          </span>{' '}
-          of the new tokens are earmarked for{' '}
+          <span className="text-purple-600 font-bold">{loading ? '--' : split?.bonders}%</span> of
+          the new tokens are earmarked for{' '}
           <Link href="/bond" className="text-purple-600 font-bold">
             Bonders
           </Link>
         </div>
         <div>
-          <span className="text-yellow-600 font-bold">
-            {loading ? '--' : split?.staking}%
-          </span>{' '}
-          of the new tokens are earmarked for{' '}
-          <Link
-            href="/staking"
-            className="text-yellow-600 hover:text-yellow-600 font-bold"
-          >
+          <span className="text-yellow-600 font-bold">{loading ? '--' : split?.staking}%</span> of
+          the new tokens are earmarked for{' '}
+          <Link href="/staking" className="text-yellow-600 hover:text-yellow-600 font-bold">
             Operators
           </Link>
         </div>
@@ -93,11 +76,7 @@ export const UsagePieChart = ({
               labels: ['Builders', 'Bonders', 'Operators'],
               datasets: [
                 {
-                  data: [
-                    split?.developers ?? 0,
-                    split?.bonders ?? 0,
-                    split?.staking ?? 0,
-                  ],
+                  data: [split?.developers ?? 0, split?.bonders ?? 0, split?.staking ?? 0],
                   backgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                   hoverBackgroundColor: ['#06b6d4', '#a855f7', '#ffb347'],
                 },

@@ -30,10 +30,7 @@ const TokenDropdown = ({ activeTab, setActiveTab, setCurrentAddress }) => {
   }, [openDropdown]);
 
   return (
-    <div
-      className="flex md:hidden text-left w-full mb-4 relative"
-      ref={dropdownRef}
-    >
+    <div className="flex md:hidden text-left w-full mb-4 relative" ref={dropdownRef}>
       <button
         type="button"
         className="w-full flex items-center justify-between bg-white rounded-lg p-2"
@@ -94,11 +91,8 @@ const TokenTabs = ({ activeTab, setActiveTab, setCurrentAddress }) => (
   <div className="hidden md:flex flex-row mb-6">
     {addresses.map((address) => {
       const activeClass =
-        activeTab === address.name
-          ? 'border-purple-700 selected-button'
-          : 'border-transparent';
-      const imageSrc =
-        activeTab === address.name ? address.activeSrc : address.src;
+        activeTab === address.name ? 'border-purple-700 selected-button' : 'border-transparent';
+      const imageSrc = activeTab === address.name ? address.activeSrc : address.src;
       return (
         <button
           key={address.name}
@@ -138,12 +132,7 @@ export const TokenAddress = () => {
 
   return (
     <div className="place-items-center mt-20">
-      <Image
-        src="/images/homepage/olas-token.png"
-        alt="OLAS token"
-        width={487}
-        height={444}
-      />
+      <Image src="/images/homepage/olas-token.png" alt="OLAS token" width={487} height={444} />
       <Card className="absolute z-20 card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
         <TokenDropdown
           activeTab={activeTab}
@@ -156,16 +145,9 @@ export const TokenAddress = () => {
           setCurrentAddress={setCurrentAddress}
         />
         <div className="text-left flex flex-col gap-4">
-          <p className="text-slate-600 text-medium">
-            Token address on {activeTab}
-          </p>
+          <p className="text-slate-600 text-medium">Token address on {activeTab}</p>
           <div className="text-lg flex flex-row gap-3 place-items-center">
-            <Image
-              src="/images/olas-token-logo.png"
-              alt="olas-token"
-              width={28}
-              height={32}
-            />
+            <Image src="/images/olas-token-logo.png" alt="olas-token" width={28} height={32} />
             <p className="break-all">{currentAddress}</p>
             <button
               onClick={getTokenAddress}

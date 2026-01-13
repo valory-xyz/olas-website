@@ -12,16 +12,14 @@ export const BuildersInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks the total number of unique builders who have developed on the
-          Olas Stack. This metric represents developers who have created and
-          deployed services or agents on the Olas protocol.
+          Tracks the total number of unique builders who have developed on the Olas Stack. This
+          metric represents developers who have created and deployed services or agents on the Olas
+          protocol.
         </p>
 
         <p>The following query is used to fetch the total builders:</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Total Builders Query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Total Builders Query</h3>
 
         <ExternalLink href={AUTONOLAS_SUBGRAPH_URL}>Subgraph link</ExternalLink>
         <CodeSnippet>{totalBuildersQuery}</CodeSnippet>

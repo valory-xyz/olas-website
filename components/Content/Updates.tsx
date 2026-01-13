@@ -30,7 +30,7 @@ export const Updates = ({ limit, isMain = false }: UpdatesProps) => {
 
   const { data, isLoading } = useSWR(
     `${URL}/${subURL}${params ? '?' : ''}${qs.stringify(params)}`,
-    fetcher,
+    fetcher
   );
 
   const blogItems = data?.data ?? [];
@@ -47,8 +47,8 @@ export const Updates = ({ limit, isMain = false }: UpdatesProps) => {
         )}
 
         <p className="mb-8">
-          Summarizing what happened in the Olas ecosystem in the last quarter
-          and what&apos;s coming next.
+          Summarizing what happened in the Olas ecosystem in the last quarter and what&apos;s coming
+          next.
         </p>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

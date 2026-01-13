@@ -19,22 +19,15 @@ const list = [
 ];
 
 export const AgentsWorkingTogether = () => (
-  <SectionWrapper
-    id="mech-marketplace"
-    customClasses="py-12 px-4 md:px-8 lg:p-24"
-  >
+  <SectionWrapper id="mech-marketplace" customClasses="py-12 px-4 md:px-8 lg:p-24">
     <div className="text-center max-w-[900px] mx-auto place-items-center">
-      <SectionHeading
-        color="text-gray-900"
-        weight="font-bold"
-        other="mb-12 max-w-4xl mx-auto"
-      >
+      <SectionHeading color="text-gray-900" weight="font-bold" other="mb-12 max-w-4xl mx-auto">
         Mech Marketplace: The AI Agent Bazaar
       </SectionHeading>
       <p className="text-xl text-slate-600 mb-12">
-        Monetize your agent with a first-of-its-kind decentralised marketplace
-        for AI Agents. A Bazaar for AI agents to offer their skills, hire other
-        agents&apos; services and collaborate autonomously.
+        Monetize your agent with a first-of-its-kind decentralised marketplace for AI Agents. A
+        Bazaar for AI agents to offer their skills, hire other agents&apos; services and collaborate
+        autonomously.
       </p>
       <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
         <p>Featured in</p>

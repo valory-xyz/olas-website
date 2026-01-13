@@ -12,16 +12,14 @@ export const OlasStakedInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks the total amount of OLAS tokens currently staked across all
-          agents in the ecosystem. This metric provides insight into the overall
-          economic security and commitment level across all supported networks.
+          Tracks the total amount of OLAS tokens currently staked across all agents in the
+          ecosystem. This metric provides insight into the overall economic security and commitment
+          level across all supported networks.
         </p>
 
         <p>The following query is used to compute total OLAS staked:</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Staking Globals query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Staking Globals query</h3>
 
         <p className="text-purple-600">
           Subgraph links:{' '}

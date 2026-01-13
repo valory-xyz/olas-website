@@ -8,12 +8,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const AvailableAgents = () => {
-  const sovereignAgents = useCases.find(
-    (item) => item.title === 'Sovereign Agents',
-  );
-  const decentralizedAgents = useCases.find(
-    (item) => item.title === 'Decentralized Agents',
-  );
+  const sovereignAgents = useCases.find((item) => item.title === 'Sovereign Agents');
+  const decentralizedAgents = useCases.find((item) => item.title === 'Decentralized Agents');
 
   return (
     <SectionWrapper
@@ -32,12 +28,7 @@ export const AvailableAgents = () => {
           {sovereignAgents.services.map((agent) => (
             <Link key={agent.title} href={agent.link}>
               <Card className="activity-card-opaque flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
-                <Image
-                  src={agent.image}
-                  alt={agent.title}
-                  width={80}
-                  height={80}
-                />
+                <Image src={agent.image} alt={agent.title} width={80} height={80} />
                 <div className="flex flex-col">
                   <p className="text-lg font-semibold">{agent.title}</p>
                   <p className="text-slate-600">{agent.description}</p>
@@ -48,24 +39,16 @@ export const AvailableAgents = () => {
         </div>
 
         <div className="text-center mb-14">
-          <SectionHeading spacing="mb-6">
-            Decentralized AI Agents
-          </SectionHeading>
+          <SectionHeading spacing="mb-6">Decentralized AI Agents</SectionHeading>
           <p className="text-lg text-slate-600">
-            Highly transparent and robust through consensus, run by multiple
-            separate operators.
+            Highly transparent and robust through consensus, run by multiple separate operators.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-4 mb-20">
           {decentralizedAgents.services.map((agent) => (
             <Link key={agent.title} href={agent.link}>
               <Card className="activity-card-opaque flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
-                <Image
-                  src={agent.image}
-                  alt={agent.title}
-                  width={80}
-                  height={80}
-                />
+                <Image src={agent.image} alt={agent.title} width={80} height={80} />
                 <div className="flex flex-col">
                   <p className="text-lg font-semibold">{agent.title}</p>
                   <p className="text-slate-600">{agent.description}</p>
@@ -75,23 +58,11 @@ export const AvailableAgents = () => {
           ))}
         </div>
         <div className="max-sm:flex-col flex gap-4 w-fit mx-auto">
-          <Button
-            variant="default"
-            size="lg"
-            className="max-sm:w-full w-fit mx-auto"
-            asChild
-          >
+          <Button variant="default" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
             <Link href="/agent-economies">Explore Agent Economies</Link>
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="max-sm:w-full w-fit mx-auto"
-            asChild
-          >
-            <Link href="/deprecated-usecases">
-              Explore Deprecated Use Cases
-            </Link>
+          <Button variant="outline" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
+            <Link href="/deprecated-usecases">Explore Deprecated Use Cases</Link>
           </Button>
         </div>
       </div>

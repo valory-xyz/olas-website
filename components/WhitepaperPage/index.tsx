@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import {
-  CORE_TECHNICAL_DOCUMENT,
-  WHITEPAPER,
-  WHITEPAPER_SUMMARY,
-} from 'common-util/constants';
+import { CORE_TECHNICAL_DOCUMENT, WHITEPAPER, WHITEPAPER_SUMMARY } from 'common-util/constants';
 import SectionWrapper from '../Layout/SectionWrapper';
 import { H1 } from '../ui/typography';
 

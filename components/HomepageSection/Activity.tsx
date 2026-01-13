@@ -3,10 +3,7 @@ import { formatEthNumber } from 'common-util/numberFormatter';
 import SectionHeading from 'components/SectionHeading';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import {
-  StaleIndicator,
-  StaleMetricContent,
-} from 'components/ui/StaleIndicator';
+import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -15,14 +12,14 @@ const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
-const ActivityValue = ({
-  LinkComponent,
-  href,
-  value,
-  text,
-  status,
-  textSize = 'xl',
-}: {
+type MetricStatus = {
+  stale: boolean;
+  lastValidAt: number | null;
+  indexingErrors: string[];
+  fetchErrors: string[];
+};
+
+type ActivityValueProps = {
   LinkComponent: React.ComponentType<{
     href: string;
     children: React.ReactNode;
@@ -30,14 +27,60 @@ const ActivityValue = ({
   href: string;
   value: string | number;
   text?: React.ReactNode;
-  status?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
+  status?: MetricStatus;
   textSize?: 'xl' | '2xl';
-}) => (
+};
+
+type OlasIsBurnedArrowProps = {
+  pointsDown?: boolean;
+  className?: string;
+};
+
+type UsersCardProps = {
+  olasStaked?: string;
+  totalOperators?: string;
+  totalOperatorsStatus?: MetricStatus;
+  olasStakedStatus?: MetricStatus;
+};
+
+type DailyActiveAgentsCardProps = {
+  dailyActiveAgents?: string;
+  dailyActiveAgentsStatus?: MetricStatus;
+};
+
+type AgentToAgentCardProps = {
+  ataTransactions?: string;
+  mechFees?: string | number;
+  ataTransactionsStatus?: MetricStatus;
+  mechFeesStatus?: MetricStatus;
+};
+
+type TransactionsCardProps = {
+  transactions?: string;
+  transactionsStatus?: MetricStatus;
+};
+
+type ActivityMetrics = {
+  transactions?: { value?: number; status?: MetricStatus };
+  olasStaked?: { value?: number; status?: MetricStatus };
+  dailyActiveAgents?: { value?: number; status?: MetricStatus };
+  mechFees?: { value?: number | string; status?: MetricStatus };
+  ataTransactions?: { value?: number; status?: MetricStatus };
+  totalOperators?: { value?: number; status?: MetricStatus };
+};
+
+type ActivityProps = {
+  metrics?: ActivityMetrics | null;
+};
+
+const ActivityValue = ({
+  LinkComponent,
+  href,
+  value,
+  text,
+  status,
+  textSize = 'xl',
+}: ActivityValueProps) => (
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
       <div
@@ -50,13 +93,7 @@ const ActivityValue = ({
   </div>
 );
 
-const OlasIsBurnedArrow = ({
-  pointsDown = false,
-  className = '',
-}: {
-  pointsDown?: boolean;
-  className?: string;
-}) => (
+const OlasIsBurnedArrow = ({ pointsDown = false, className = '' }: OlasIsBurnedArrowProps) => (
   <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
     <p className="w-[76px] md:ml-[58px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
       OLAS is burned
@@ -75,9 +112,8 @@ const OlasIsBurnedArrow = ({
         side="right"
         contentClassName="w-[382px] text-left font-normal translate-x-2"
       >
-        Fees collected can be turned on or off by the Governors of the Olas
-        Protocol. Currently, fees are turned off to encourage early adoption and
-        growth of the marketplace.
+        Fees collected can be turned on or off by the Governors of the Olas Protocol. Currently,
+        fees are turned off to encourage early adoption and growth of the marketplace.
         <ExternalLink
           href={`${VALORY_GIT_URL}/autonolas-aip/blob/aip-5/content/aips/automate_relayer_marketplace.md`}
           className="mt-2 cursor-pointer"
@@ -94,12 +130,7 @@ type ActivityCardLinkProps = {
   link: string;
   value: string | number;
   isLinkExternal?: boolean;
-  status?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
+  status?: MetricStatus;
 };
 
 type ActivityCardProps = {
@@ -197,22 +228,7 @@ const UsersCard = ({
   totalOperators,
   totalOperatorsStatus,
   olasStakedStatus,
-}: {
-  olasStaked?: string;
-  totalOperators?: string;
-  totalOperatorsStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-  olasStakedStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-}) => (
+}: UsersCardProps) => (
   <ActivityCard
     icon="users.png"
     text="Users"
@@ -259,15 +275,7 @@ const OlasBurnedCard = () => (
 const DailyActiveAgentsCard = ({
   dailyActiveAgents,
   dailyActiveAgentsStatus,
-}: {
-  dailyActiveAgents?: string;
-  dailyActiveAgentsStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-}) => (
+}: DailyActiveAgentsCardProps) => (
   <ActivityCard
     icon="daas.png"
     alt="Daily Active Agents"
@@ -300,22 +308,7 @@ const AgentToAgentCard = ({
   mechFees,
   ataTransactionsStatus,
   mechFeesStatus,
-}: {
-  ataTransactions?: string;
-  mechFees?: string | number;
-  ataTransactionsStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-  mechFeesStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-}) => (
+}: AgentToAgentCardProps) => (
   <ActivityCard
     icon="agent-to-agent.png"
     alt="Agent to Agent"
@@ -354,18 +347,7 @@ const AgentToAgentCard = ({
   />
 );
 
-const TransactionsCard = ({
-  transactions,
-  transactionsStatus,
-}: {
-  transactions?: string;
-  transactionsStatus?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-  };
-}) => (
+const TransactionsCard = ({ transactions, transactionsStatus }: TransactionsCardProps) => (
   <ActivityCard
     icon="txns.png"
     alt="Transactions"
@@ -400,25 +382,7 @@ const AgentsGrid = () => (
   </div>
 );
 
-type MetricStatus = {
-  stale: boolean;
-  lastValidAt: number | null;
-  indexingErrors: string[];
-  fetchErrors: string[];
-};
-
-export const Activity = ({
-  metrics = null,
-}: {
-  metrics?: {
-    transactions?: { value?: number; status?: MetricStatus };
-    olasStaked?: { value?: number; status?: MetricStatus };
-    dailyActiveAgents?: { value?: number; status?: MetricStatus };
-    mechFees?: { value?: number | string; status?: MetricStatus };
-    ataTransactions?: { value?: number; status?: MetricStatus };
-    totalOperators?: { value?: number; status?: MetricStatus };
-  } | null;
-}) => {
+export const Activity = ({ metrics = null }: ActivityProps) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) {
       return {
@@ -442,8 +406,7 @@ export const Activity = ({
       transactionsStatus: metrics.transactions?.status,
       olasStaked: metrics.olasStaked?.value?.toLocaleString() || '--',
       olasStakedStatus: metrics.olasStaked?.status,
-      dailyActiveAgents:
-        metrics.dailyActiveAgents?.value?.toLocaleString() || '--',
+      dailyActiveAgents: metrics.dailyActiveAgents?.value?.toLocaleString() || '--',
       dailyActiveAgentsStatus: metrics.dailyActiveAgents?.status,
       mechFees: metrics.mechFees?.value || '--',
       mechFeesStatus: metrics.mechFees?.status,
@@ -464,18 +427,15 @@ export const Activity = ({
         OLAS: Powers AI Agent Economies
       </SectionHeading>
       <p className="text-lg text-slate-600 mb-20 max-lg:mx-4">
-        The OLAS token is bootstrapping a flywheel birthing larger and larger
-        agent economies: Each Pearl user stakes OLAS to access their
-        agents&apos; benefits. To provide utility to their users Pearl agents
-        use the marketplace. The marketplace charges fees to agents. Fees are
+        The OLAS token is bootstrapping a flywheel birthing larger and larger agent economies: Each
+        Pearl user stakes OLAS to access their agents&apos; benefits. To provide utility to their
+        users Pearl agents use the marketplace. The marketplace charges fees to agents. Fees are
         used to burn OLAS.
       </p>
 
       <div className="flex flex-col max-w-4xl mx-auto text-slate-500 place-items-center hidden md:flex">
         <div className="flex flex-row">
-          <p className="w-[124px] text-sm pt-24">
-            Attracts more builders and users
-          </p>
+          <p className="w-[124px] text-sm pt-24">Attracts more builders and users</p>
           <Image
             src={`${imgPath}arrow5.png`}
             alt="arrow"
@@ -496,9 +456,7 @@ export const Activity = ({
             height={142}
             className="mt-14 mr-2 w-[150px] h-[142px]"
           />
-          <p className="w-[124px] text-sm pt-24">
-            Stake OLAS to use Pearl agents
-          </p>
+          <p className="w-[124px] text-sm pt-24">Stake OLAS to use Pearl agents</p>
         </div>
         <div className="flex flex-row place-items-center w-full justify-between">
           <div className="flex flex-col">
@@ -522,9 +480,7 @@ export const Activity = ({
                 height={124}
                 className="h-[124px] ml-auto"
               />
-              <p className="w-[76px] text-sm mr-[68px] ml-2 my-auto">
-                Agents are active
-              </p>
+              <p className="w-[76px] text-sm mr-[68px] ml-2 my-auto">Agents are active</p>
             </div>
           </div>
         </div>
@@ -606,8 +562,7 @@ export const Activity = ({
         <div className="mx-auto grid place-items-center z-10">
           <AgentsGrid />
           <div>
-            As a result, <Link href="/agent-economies">Agent economies</Link>{' '}
-            are thriving.
+            As a result, <Link href="/agent-economies">Agent economies</Link> are thriving.
           </div>
         </div>
       </div>

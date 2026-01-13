@@ -1,7 +1,4 @@
-import {
-  DEFAULT_MECH_FEE,
-  PREDICT_MARKET_DURATION_DAYS,
-} from 'common-util/constants';
+import { DEFAULT_MECH_FEE, PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   mechGraphClient,
   predictAgentsGraphClient,
@@ -69,7 +66,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
           first: ROI_LIMIT,
           skip,
           pages: ROI_PAGES,
-        }),
+        })
       )) as any;
 
       if (response?._meta?.hasIndexingErrors) {
@@ -110,9 +107,7 @@ export const fetchRoi = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(
-      PREDICT_MARKET_DURATION_DAYS,
-    );
+    const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
 
     const [
       totalRequestsResult,
@@ -122,9 +117,7 @@ export const fetchRoi = async (): Promise<
       mechRequestsResult,
     ] = (await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
-      predictAgentsGraphClient.request(
-        getMarketsAndBetsQuery(marketOpenTimestamp),
-      ),
+      predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
       fetchMechRequests(marketOpenTimestamp),
@@ -153,15 +146,14 @@ export const fetchRoi = async (): Promise<
     }
 
     const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18),
+      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18)
     );
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const lastFourDaysRequests = mechRequestsResult.data;
-    const openMarketTitles =
-      marketsAndBetsResult.fixedProductMarketMakerCreations.map(
-        (market) => market.question,
-      );
+    const openMarketTitles = marketsAndBetsResult.fixedProductMarketMakerCreations.map(
+      (market) => market.question
+    );
 
     let requestsToSubtract = 0;
     lastFourDaysRequests.forEach((request) => {
@@ -175,20 +167,13 @@ export const fetchRoi = async (): Promise<
       BigInt(marketsAndBetsResult.global?.totalFees || 0) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
 
-    const totalMarketPayout = BigInt(
-      marketsAndBetsResult.global?.totalPayout || 0,
-    );
+    const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0);
     const totalOlasRewardsPayoutInUsd =
-      (BigInt(totalRewardsResult.global?.totalRewards || 0) *
-        olasInUsdPriceInEth) /
-      BigInt(1e18);
+      (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasInUsdPriceInEth) / BigInt(1e18);
 
-    const partialRoi =
-      ((totalMarketPayout - totalCosts) * BigInt(100) * SCALE) / totalCosts;
+    const partialRoi = ((totalMarketPayout - totalCosts) * BigInt(100) * SCALE) / totalCosts;
     const finalRoi =
-      ((totalMarketPayout + totalOlasRewardsPayoutInUsd - totalCosts) *
-        BigInt(100) *
-        SCALE) /
+      ((totalMarketPayout + totalOlasRewardsPayoutInUsd - totalCosts) * BigInt(100) * SCALE) /
       totalCosts;
 
     return {

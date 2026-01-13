@@ -20,15 +20,14 @@ export const IntensiveProgram = () => (
       <p className="font-medium text-base text-[#ffffff99]">Olas Dev Academy</p>
       <span className="font-bold text-2xl">Intensive Program</span>
       <p className="mb-6">
-        Our invite-only 4-week intensive program is designed for experienced
-        Python developers who are ready to learn agent creation on the Olas
-        Stack. This full-time program offers hands-on training and direct
-        support from the Olas development team, allowing you to gain a
+        Our invite-only 4-week intensive program is designed for experienced Python developers who
+        are ready to learn agent creation on the Olas Stack. This full-time program offers hands-on
+        training and direct support from the Olas development team, allowing you to gain a
         comprehensive understanding of the Olas Stack.
         <br />
-        Participation is by invite only, ensuring a focused and committed group
-        of learners. If you meet the requirements and are interested in this
-        opportunity, show your interest by filling out the form.
+        Participation is by invite only, ensuring a focused and committed group of learners. If you
+        meet the requirements and are interested in this opportunity, show your interest by filling
+        out the form.
       </p>
       <span className="font-bold text-[#ffffff99]">What you get out of it</span>
       <ul className="list-disc gap-y-2 flex flex-col ml-7 mb-8">
@@ -41,9 +40,9 @@ export const IntensiveProgram = () => (
           .
         </li>
         <li>
-          Academy graduates will be matched with external projects looking for
-          builders to build agents for them, while receiving personalized,
-          expert coaching from the creators of the framework.
+          Academy graduates will be matched with external projects looking for builders to build
+          agents for them, while receiving personalized, expert coaching from the creators of the
+          framework.
         </li>
       </ul>
       <span className="font-bold text-[#ffffff99]">Who this is for</span>
@@ -51,12 +50,10 @@ export const IntensiveProgram = () => (
         <li>Experienced Python developer.</li>
         <li>Able to commit full-time for 4 weeks.</li>
       </ul>
-      <span className="font-bold text-[#ffffff99]">
-        A Track Record of Success
-      </span>
+      <span className="font-bold text-[#ffffff99]">A Track Record of Success</span>
       <p>
-        Since its inception, the Academy has consistently delivered impactful
-        results. Here&apos;s a snapshot of our accomplishments:
+        Since its inception, the Academy has consistently delivered impactful results. Here&apos;s a
+        snapshot of our accomplishments:
       </p>
       <AcademyTable />
       <Button
@@ -64,9 +61,7 @@ export const IntensiveProgram = () => (
         size="xl"
         className="my-6 w-fit rounded-none text-black border-valory-green bg-valory-green hover:border-black hover:bg-black hover:text-white"
       >
-        <Link href="https://forms.gle/GnPABVfd9t7URFyZ6">
-          Show your interest
-        </Link>
+        <Link href="https://forms.gle/GnPABVfd9t7URFyZ6">Show your interest</Link>
       </Button>
     </div>
   </SectionWrapper>

@@ -14,14 +14,11 @@ export const MechGlobalsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Total requests and deliveries are aggregated from two sources: legacy
-          Mech subgraph on Gnosis and Mech Marketplace subgraph on Gnosis and
-          Base.
+          Total requests and deliveries are aggregated from two sources: legacy Mech subgraph on
+          Gnosis and Mech Marketplace subgraph on Gnosis and Base.
         </p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Legacy Mech Globals Query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Legacy Mech Globals Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
           <ExternalLink href={process.env.NEXT_PUBLIC_GNOSIS_LM_SUBGRAPH_URL}>
@@ -30,20 +27,13 @@ export const MechGlobalsInfo = () => {
         </p>
         <CodeSnippet>{mechGlobalsTotalRequestsQuery}</CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Mech Marketplace Globals Query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Mech Marketplace Globals Query</h3>
         <p className="text-purple-600">
           Subgraph links:{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL}
-            className="mr-2"
-          >
+          <ExternalLink href={process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL} className="mr-2">
             Gnosis
           </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL}>
-            Base
-          </ExternalLink>
+          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL}>Base</ExternalLink>
         </p>
         <CodeSnippet>{mechMarketplaceTotalRequestsQuery}</CodeSnippet>
       </div>

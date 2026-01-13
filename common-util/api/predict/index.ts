@@ -1,15 +1,6 @@
-import {
-  GNOSIS_STAKING_CONTRACTS,
-  PREDICT_AGENT_CLASSIFICATION,
-} from 'common-util/constants';
-import {
-  REGISTRY_GRAPH_CLIENTS,
-  STAKING_GRAPH_CLIENTS,
-} from 'common-util/graphql/client';
-import {
-  createStaleStatus,
-  executeGraphQLQuery,
-} from 'common-util/graphql/metric-utils';
+import { GNOSIS_STAKING_CONTRACTS, PREDICT_AGENT_CLASSIFICATION } from 'common-util/constants';
+import { REGISTRY_GRAPH_CLIENTS, STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
@@ -49,9 +40,7 @@ type StakingContractsResponse = WithMeta<{
   stakingContracts: any[];
 }>;
 
-const fetchPredictDaa7dAvg = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchPredictDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
@@ -70,9 +59,7 @@ const fetchPredictDaa7dAvg = async (): Promise<
       const totalsByDay = new Map<string, number>();
 
       rows.forEach((r) => {
-        const key = new Date(Number(r.dayTimestamp) * 1000)
-          .toISOString()
-          .slice(0, 10);
+        const key = new Date(Number(r.dayTimestamp) * 1000).toISOString().slice(0, 10);
         const prev = totalsByDay.get(key) || 0;
         totalsByDay.set(key, prev + Number(r.activeMultisigCount || 0));
       });
@@ -83,10 +70,7 @@ const fetchPredictDaa7dAvg = async (): Promise<
         dayKeys.push(new Date(ts * 1000).toISOString().slice(0, 10));
       }
 
-      const total = dayKeys.reduce(
-        (acc, k) => acc + (totalsByDay.get(k) || 0),
-        0,
-      );
+      const total = dayKeys.reduce((acc, k) => acc + (totalsByDay.get(k) || 0), 0);
 
       return Math.floor(total / 7);
     },
@@ -109,15 +93,13 @@ const fetchPredictTxsByAgentType = async (): Promise<
       });
 
       const result: Record<string, number> = {};
-      Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(
-        ([category, ids]) => {
-          let sum = 0n;
-          ids.forEach((id) => {
-            sum += idToTx.get(String(Number(id))) || 0n;
-          });
-          result[category] = Number(sum);
-        },
-      );
+      Object.entries(PREDICT_AGENT_CLASSIFICATION).forEach(([category, ids]) => {
+        let sum = 0n;
+        ids.forEach((id) => {
+          sum += idToTx.get(String(Number(id))) || 0n;
+        });
+        result[category] = Number(sum);
+      });
 
       return result;
     },
@@ -150,16 +132,10 @@ export type PredictMetricsSnapshot = {
   timestamp: number;
 };
 
-export const fetchAllPredictMetrics =
-  async (): Promise<PredictMetricsSnapshot | null> => {
-    try {
-      const [
-        aprResult,
-        daaResult,
-        txsByTypeResult,
-        roiResult,
-        successRateResult,
-      ] = await Promise.allSettled([
+export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot | null> => {
+  try {
+    const [aprResult, daaResult, txsByTypeResult, roiResult, successRateResult] =
+      await Promise.allSettled([
         fetchOlasApr(),
         fetchPredictDaa7dAvg(),
         fetchPredictTxsByAgentType(),
@@ -167,48 +143,48 @@ export const fetchAllPredictMetrics =
         fetchSuccessRate(),
       ]);
 
-      const data: PredictMetricsData = {
-        apr:
-          aprResult.status === 'fulfilled'
-            ? aprResult.value
-            : { value: null, status: createStaleStatus([], ['predict:apr']) },
-        dailyActiveAgents:
-          daaResult.status === 'fulfilled'
-            ? daaResult.value
-            : { value: null, status: createStaleStatus([], ['predict:daa']) },
-        predictTxsByType:
-          txsByTypeResult.status === 'fulfilled'
-            ? txsByTypeResult.value
-            : { value: null, status: createStaleStatus([], ['predict:txs']) },
-        partialRoi:
-          roiResult.status === 'fulfilled' && roiResult.value.value
-            ? {
-                value: roiResult.value.value.partialRoi,
-                status: roiResult.value.status,
-              }
-            : { value: null, status: createStaleStatus([], ['predict:roi']) },
-        finalRoi:
-          roiResult.status === 'fulfilled' && roiResult.value.value
-            ? {
-                value: roiResult.value.value.finalRoi,
-                status: roiResult.value.status,
-              }
-            : { value: null, status: createStaleStatus([], ['predict:roi']) },
-        successRate:
-          successRateResult.status === 'fulfilled'
-            ? successRateResult.value
-            : {
-                value: null,
-                status: createStaleStatus([], ['predict:successRate']),
-              },
-      };
+    const data: PredictMetricsData = {
+      apr:
+        aprResult.status === 'fulfilled'
+          ? aprResult.value
+          : { value: null, status: createStaleStatus([], ['predict:apr']) },
+      dailyActiveAgents:
+        daaResult.status === 'fulfilled'
+          ? daaResult.value
+          : { value: null, status: createStaleStatus([], ['predict:daa']) },
+      predictTxsByType:
+        txsByTypeResult.status === 'fulfilled'
+          ? txsByTypeResult.value
+          : { value: null, status: createStaleStatus([], ['predict:txs']) },
+      partialRoi:
+        roiResult.status === 'fulfilled' && roiResult.value.value
+          ? {
+              value: roiResult.value.value.partialRoi,
+              status: roiResult.value.status,
+            }
+          : { value: null, status: createStaleStatus([], ['predict:roi']) },
+      finalRoi:
+        roiResult.status === 'fulfilled' && roiResult.value.value
+          ? {
+              value: roiResult.value.value.finalRoi,
+              status: roiResult.value.status,
+            }
+          : { value: null, status: createStaleStatus([], ['predict:roi']) },
+      successRate:
+        successRateResult.status === 'fulfilled'
+          ? successRateResult.value
+          : {
+              value: null,
+              status: createStaleStatus([], ['predict:successRate']),
+            },
+    };
 
-      return {
-        data,
-        timestamp: Date.now(),
-      };
-    } catch (error) {
-      console.error('Error fetching all predict metrics:', error);
-      return null;
-    }
-  };
+    return {
+      data,
+      timestamp: Date.now(),
+    };
+  } catch (error) {
+    console.error('Error fetching all predict metrics:', error);
+    return null;
+  }
+};

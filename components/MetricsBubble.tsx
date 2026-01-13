@@ -42,15 +42,7 @@ export const MetricsBubble = ({
         />
       )}
       <div className="mt-auto">
-        {image && (
-          <Image
-            alt={title}
-            src={image}
-            width="48"
-            height="48"
-            className="mb-4"
-          />
-        )}
+        {image && <Image alt={title} src={image} width="48" height="48" className="mb-4" />}
 
         <div className="text-lg font-medium mb-6">{title}</div>
 
@@ -61,20 +53,12 @@ export const MetricsBubble = ({
               item.source && value !== '--' ? (
                 item.source.isExternal ? (
                   <ExternalLink href={item.source.link} hideArrow>
-                    <span
-                      className={`${item.status?.stale ? 'text-gray-400' : ''}`}
-                    >
-                      {value}
-                    </span>
+                    <span className={`${item.status?.stale ? 'text-gray-400' : ''}`}>{value}</span>
                     <span className="text-2xl">↗</span>
                   </ExternalLink>
                 ) : (
                   <Link href={item.source.link}>
-                    <span
-                      className={`${item.status?.stale ? 'text-gray-400' : ''}`}
-                    >
-                      {value}
-                    </span>
+                    <span className={`${item.status?.stale ? 'text-gray-400' : ''}`}>{value}</span>
                   </Link>
                 )
               ) : (
@@ -83,9 +67,7 @@ export const MetricsBubble = ({
 
             return (
               <div key={item.id} className="flex flex-col gap-3">
-                <span className="block text-base text-slate-700">
-                  {item.subText}
-                </span>
+                <span className="block text-base text-slate-700">{item.subText}</span>
                 <div className="flex items-center gap-2">
                   <span
                     className={`block text-2xl font-semibold ${item.status?.stale ? 'text-gray-400' : 'text-purple-600'}`}

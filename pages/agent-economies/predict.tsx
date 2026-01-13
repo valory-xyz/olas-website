@@ -9,10 +9,7 @@ import Meta from 'components/Meta';
 
 const Predict = ({ metrics }) => (
   <PageWrapper>
-    <Meta
-      pageTitle="Predict"
-      description="On-demand Agent-powered Predictions"
-    />
+    <Meta pageTitle="Predict" description="On-demand Agent-powered Predictions" />
 
     <PredictHero />
     <Activity metrics={metrics} />

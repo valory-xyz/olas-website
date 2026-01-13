@@ -1,8 +1,4 @@
-import {
-  MAIN_TITLE_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
-  TEXT_SMALL_CLASS,
-} from 'common-util/classes';
+import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
 import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -26,11 +22,7 @@ export const Hero = () => (
 
       <div className="mx-auto w-fit mt-12">
         <Button variant="default" size="xl" asChild>
-          <Link
-            href={ACCELERATOR_APPLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link href={ACCELERATOR_APPLY_URL} target="_blank" rel="noopener noreferrer">
             Apply now
           </Link>
         </Button>

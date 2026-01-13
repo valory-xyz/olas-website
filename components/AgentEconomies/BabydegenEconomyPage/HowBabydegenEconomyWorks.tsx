@@ -3,8 +3,7 @@ import { HowItWorks } from 'components/HowItWorks';
 const list = [
   {
     title: 'Data Gathering',
-    description:
-      'BabyDegen pulls real-time market data from CoinGecko to stay up to date.',
+    description: 'BabyDegen pulls real-time market data from CoinGecko to stay up to date.',
     imgSrc: 'data-gathering',
   },
   {

@@ -1,7 +1,4 @@
-import {
-  DUNE_TOTAL_LIQUIDITY_URL,
-  DUNE_TOTAL_PROTOCOL_REVENUE_URL,
-} from 'common-util/constants';
+import { DUNE_TOTAL_LIQUIDITY_URL, DUNE_TOTAL_PROTOCOL_REVENUE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { useMemo } from 'react';
@@ -21,9 +18,7 @@ export const BondMetrics = ({ metrics }) => {
             imageSrc: 'liquidity.png',
             labelText: 'Total Protocol-owned Liquidity',
             source: DUNE_TOTAL_LIQUIDITY_URL,
-            metric: Math.round(
-              protocolMetrics.totalProtocolOwnedLiquidity?.value,
-            ),
+            metric: Math.round(protocolMetrics.totalProtocolOwnedLiquidity?.value),
             status: protocolMetrics.totalProtocolOwnedLiquidity?.status,
             isMoney: true,
           },

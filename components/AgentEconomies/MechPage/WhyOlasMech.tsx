@@ -32,9 +32,7 @@ export const WhyOlasMech = () => (
       className="max-w-screen-xl lg:px-44 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12"
       id="benefits"
     >
-      <h2
-        className={`${SUB_HEADER_LG_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
-      >
+      <h2 className={`${SUB_HEADER_LG_CLASS} text-left mb-8 lg:text-center lg:mb-14`}>
         Why Olas Mech agent economy?
       </h2>
       <InfoCardList wrapperClasses="" cards={list} />

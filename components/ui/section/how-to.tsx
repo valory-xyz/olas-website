@@ -16,12 +16,7 @@ type HowToSectionProps = {
   sectionId: string;
 };
 
-export const HowToSection = ({
-  sectionId,
-  heading,
-  image,
-  body,
-}: HowToSectionProps) => (
+export const HowToSection = ({ sectionId, heading, image, body }: HowToSectionProps) => (
   <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y">
     {sectionId && <div id={sectionId} />}
     <div className="grid max-w-screen-xl lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">

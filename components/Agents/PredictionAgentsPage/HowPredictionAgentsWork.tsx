@@ -16,9 +16,9 @@ const list = [
         <Link href="/mech-marketplace" className="text-purple-600">
           AI Agent Bazaar (Mech Marketplace)
         </Link>{' '}
-        to procure data from trusted information brokers. Mechs use external AI
-        tools to analyze real-time news and data, calculating the most likely
-        outcomes to inform its trading strategy.
+        to procure data from trusted information brokers. Mechs use external AI tools to analyze
+        real-time news and data, calculating the most likely outcomes to inform its trading
+        strategy.
       </div>
     ),
     imgSrc: 'intelligent-predictions',

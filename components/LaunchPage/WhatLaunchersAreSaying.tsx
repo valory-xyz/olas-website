@@ -8,9 +8,8 @@ const quotes = [
     projectUrl: 'https://www.mode.network/',
     quote: (
       <span>
-        AI Agents are a core part of our DeFi mass adoption strategy here at
-        Mode. We are thrilled to be building on the number one AI Agent network,
-        launching Olas Modius with{' '}
+        AI Agents are a core part of our DeFi mass adoption strategy here at Mode. We are thrilled
+        to be building on the number one AI Agent network, launching Olas Modius with{' '}
         <ExternalLink href={X_VALORY_AG_URL} hideArrow>
           @ValoryAG
         </ExternalLink>
@@ -18,10 +17,9 @@ const quotes = [
         <ExternalLink href={X_OLAS_URL} hideArrow>
           @Autonolas
         </ExternalLink>
-        . Olas Modius is an autonomous multi-agent system on Mode focused on
-        intelligently managing your assets. You will soon be able to taste the
-        future of AI agent-powered trading on Mode, leveraging the top DeFi
-        protocols across our ecosystem.
+        . Olas Modius is an autonomous multi-agent system on Mode focused on intelligently managing
+        your assets. You will soon be able to taste the future of AI agent-powered trading on Mode,
+        leveraging the top DeFi protocols across our ecosystem.
       </span>
     ),
     name: 'James Ross',

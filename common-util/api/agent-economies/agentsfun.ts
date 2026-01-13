@@ -12,10 +12,7 @@ type DailyAgentPerformance = WithMeta<{
 }>;
 
 export const fetchAgentsFunMetrics = async () => {
-  const dailyActiveAgents = await executeGraphQLQuery<
-    DailyAgentPerformance,
-    number
-  >({
+  const dailyActiveAgents = await executeGraphQLQuery<DailyAgentPerformance, number>({
     client: REGISTRY_GRAPH_CLIENTS.base,
     query: dailyAgentsFunPerformancesQuery,
     variables: {

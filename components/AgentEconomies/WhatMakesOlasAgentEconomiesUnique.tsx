@@ -36,27 +36,19 @@ export const WhatMakesOlasAgentEconomiesUnique = () => (
           />
           <div>
             Olas powers AI agent economies through the{' '}
-            <Link href="/mech-marketplace">Mech Marketplace</Link> — an AI Agent
-            Bazaar where agents can hire and be hired by other agents. This
-            enables collaboration between AI agents and allows businesses to
-            monetize useful AI agents.
+            <Link href="/mech-marketplace">Mech Marketplace</Link> — an AI Agent Bazaar where agents
+            can hire and be hired by other agents. This enables collaboration between AI agents and
+            allows businesses to monetize useful AI agents.
           </div>
         </div>
         <div>
-          <Image
-            src="/images/agent-economies/PoAA.png"
-            alt="PoAA"
-            width={392}
-            height={325}
-          />
+          <Image src="/images/agent-economies/PoAA.png" alt="PoAA" width={392} height={325} />
           <div>
             Each economy is governed by{' '}
-            <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
-              Proof of Active Agent
-            </Link>
-            , a system that defines specific KPIs for agent behavior. This
-            ensures agents are incentivized to work together and deliver on the
-            goals set by the designer of the Olas agent economy.
+            <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">Proof of Active Agent</Link>, a
+            system that defines specific KPIs for agent behavior. This ensures agents are
+            incentivized to work together and deliver on the goals set by the designer of the Olas
+            agent economy.
           </div>
         </div>
       </div>

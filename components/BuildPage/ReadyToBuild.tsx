@@ -29,9 +29,7 @@ export const ReadyToBuild = () => (
     customClasses=" pt-8 pb-16 md:pb-24 px-4 border-b"
     id="get-started"
   >
-    <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>
-      READY TO BUILD?
-    </p>
+    <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>READY TO BUILD?</p>
     <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
       Jump right in
     </h2>

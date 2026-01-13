@@ -23,47 +23,25 @@ export const Roadmap = () => (
           <span className="text-slate-500">=</span>
           <Tag variant="secondary">
             <p>
-              <span className="text-purple-700 hover:text-purple-800">
-                Crypto:
-              </span>{' '}
-              Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Keys
-              </span>
-              , Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Coins
-              </span>
+              <span className="text-purple-700 hover:text-purple-800">Crypto:</span> Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Keys</span>, Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Coins</span>
             </p>
           </Tag>
           <span className="text-slate-500">+</span>
           <Tag variant="secondary">
             <p>
-              <span className="text-purple-700 hover:text-purple-800">AI:</span>{' '}
-              Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Weights
-              </span>
-              , Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Brain
-              </span>
+              <span className="text-purple-700 hover:text-purple-800">AI:</span> Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Weights</span>, Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Brain</span>
             </p>
           </Tag>
           <span className="text-slate-500">+</span>
           <Tag variant="secondary">
             <p>
-              <span className="text-purple-700 hover:text-purple-800">
-                OSS:
-              </span>{' '}
-              Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Code
-              </span>
-              , Own Your{' '}
-              <span className="text-purple-700 hover:text-purple-800">
-                Destiny
-              </span>
+              <span className="text-purple-700 hover:text-purple-800">OSS:</span> Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Code</span>, Own Your{' '}
+              <span className="text-purple-700 hover:text-purple-800">Destiny</span>
             </p>
           </Tag>
         </div>

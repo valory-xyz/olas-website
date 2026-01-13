@@ -7,13 +7,8 @@ type TableCellProps = {
   showCheckmark?: boolean;
 };
 
-const TableCell = ({
-  children,
-  column,
-  showCheckmark = false,
-}: TableCellProps) => {
-  const colorClass =
-    column === 'pearl' ? 'roadmap-cell-pearl' : 'roadmap-cell-marketplace';
+const TableCell = ({ children, column, showCheckmark = false }: TableCellProps) => {
+  const colorClass = column === 'pearl' ? 'roadmap-cell-pearl' : 'roadmap-cell-marketplace';
   return (
     <td className={`border border-slate-300 p-3 ${colorClass}`}>
       {showCheckmark && <CheckCheck className="inline mr-2" />}
@@ -27,10 +22,7 @@ type SpanningTableCellProps = {
   className?: string;
 };
 
-const SpanningTableCell = ({
-  children,
-  className = '',
-}: SpanningTableCellProps) => (
+const SpanningTableCell = ({ children, className = '' }: SpanningTableCellProps) => (
   <td
     colSpan={2}
     className={`text-center text-slate-600 font-medium p-3 border border-slate-300 ${className}`}
@@ -119,12 +111,8 @@ export const MobileTable = () => (
     <table className="table-fixed w-full border border-slate-300 mobile-roadmap-table">
       <thead className="bg-slate-100 text-center text-lg text-black">
         <tr>
-          <th className="w-1/2 font-medium border border-slate-300 p-3">
-            Pearl
-          </th>
-          <th className="w-1/2 font-medium border border-slate-300 p-3">
-            Marketplace
-          </th>
+          <th className="w-1/2 font-medium border border-slate-300 p-3">Pearl</th>
+          <th className="w-1/2 font-medium border border-slate-300 p-3">Marketplace</th>
         </tr>
       </thead>
       <tbody>
@@ -132,9 +120,7 @@ export const MobileTable = () => (
           if (item.type === 'section') {
             return (
               <tr key={index}>
-                <SpanningTableCell className={item.className || ''}>
-                  {item.label}
-                </SpanningTableCell>
+                <SpanningTableCell className={item.className || ''}>{item.label}</SpanningTableCell>
               </tr>
             );
           }
@@ -143,10 +129,7 @@ export const MobileTable = () => (
               <TableCell column="pearl" showCheckmark={item.showCheckmark}>
                 {item.pearl}
               </TableCell>
-              <TableCell
-                column="marketplace"
-                showCheckmark={item.showCheckmark}
-              >
+              <TableCell column="marketplace" showCheckmark={item.showCheckmark}>
                 {item.marketplace}
               </TableCell>
             </tr>

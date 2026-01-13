@@ -1,8 +1,4 @@
-import {
-  BUILD_MECH_TOOL_URL,
-  DISCORD_INVITE_URL,
-  X_OLAS_URL,
-} from 'common-util/constants';
+import { BUILD_MECH_TOOL_URL, DISCORD_INVITE_URL, X_OLAS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { ExternalLink, SubsiteLink } from 'components/ui/typography';
@@ -16,8 +12,7 @@ export const Paths = () => (
         Find the right path for your Builder journey
       </h4>
       <span className="text-lg">
-        Answer these quick questions to discover which learning path is right
-        for you.
+        Answer these quick questions to discover which learning path is right for you.
       </span>
     </div>
     <Image
@@ -28,29 +23,22 @@ export const Paths = () => (
       className="mx-auto"
     />
     <div className=" flex flex-col gap-3 max-w-[728px] mx-auto py-16 text-lg max-md:mx-6 max-lg:mx-12">
-      <h4 className="font-machina mb-6 max-md:text-3xl text-4xl">
-        Olas Dev Kickstart
-      </h4>
+      <h4 className="font-machina mb-6 max-md:text-3xl text-4xl">Olas Dev Kickstart</h4>
 
       <span className="text-2xl font-bold">
         Build a Mech Tool for a Chance to Start Earning Dev Rewards
       </span>
       <p className="mb-6">
-        Get exposure and hands-on experience to Olas Stack by building Mech
-        tools with our Dev Kickstart workshop. Follow our guided tutorials on
-        YouTube and start building today. Join the Discord community to connect
-        with other developers and get support.
+        Get exposure and hands-on experience to Olas Stack by building Mech tools with our Dev
+        Kickstart workshop. Follow our guided tutorials on YouTube and start building today. Join
+        the Discord community to connect with other developers and get support.
       </p>
 
       <span className="text-slate-600 font-bold">What you get out of it</span>
       <p className="mb-6">
-        By following this workshop, you&apos;ll have a working mech tool and a
-        chance to start earning dev rewards in the Olas ecosystem. To learn more
-        about dev rewards, check out{' '}
-        <SubsiteLink
-          className="underline text-slate-800"
-          href={BUILD_MECH_TOOL_URL}
-        >
+        By following this workshop, you&apos;ll have a working mech tool and a chance to start
+        earning dev rewards in the Olas ecosystem. To learn more about dev rewards, check out{' '}
+        <SubsiteLink className="underline text-slate-800" href={BUILD_MECH_TOOL_URL}>
           this guide
         </SubsiteLink>{' '}
         and{' '}
@@ -79,11 +67,7 @@ export const Paths = () => (
             Start building Mech tools today
           </Link>
         </Button>
-        <Button
-          variant="valory"
-          size="xl"
-          className="my-6 w-fit rounded-none border-black"
-        >
+        <Button variant="valory" size="xl" className="my-6 w-fit rounded-none border-black">
           <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
         </Button>
       </div>

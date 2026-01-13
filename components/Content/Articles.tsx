@@ -35,7 +35,7 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
 
   const { data, isLoading } = useSWR(
     `${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
-    fetcher,
+    fetcher
   );
 
   const blogItems = data?.data ?? [];
@@ -58,9 +58,7 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
                         <div className="p-3 bg-purple-100 rounded-lg">
                           <FolderClosed color="#B972E8" />
                         </div>
-                        <span className="font-medium my-auto ml-3">
-                          {folder.label}
-                        </span>
+                        <span className="font-medium my-auto ml-3">{folder.label}</span>
                       </div>
                       <ChevronRight />
                     </Card>

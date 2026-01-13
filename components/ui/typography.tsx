@@ -7,9 +7,7 @@ type H1Props = {
 };
 
 export const H1 = ({ children, className }: H1Props) => (
-  <h1
-    className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
-  >
+  <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
     {children}
   </h1>
 );
@@ -20,9 +18,7 @@ type H2Props = {
 };
 
 export const H2 = ({ children, className = '' }: H2Props) => (
-  <h2
-    className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
-  >
+  <h2 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
     {children}
   </h2>
 );
@@ -45,9 +41,7 @@ type UpcaseProps = {
 };
 
 export const Upcase = ({ children }: UpcaseProps) => (
-  <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">
-    {children}
-  </div>
+  <div className="mb-6 text-lg tracking-widest uppercase text-slate-700">{children}</div>
 );
 
 type ExternalLinkProps = {
@@ -57,12 +51,7 @@ type ExternalLinkProps = {
   className?: string;
 };
 
-export const ExternalLink = ({
-  children,
-  className,
-  href,
-  hideArrow,
-}: ExternalLinkProps) => (
+export const ExternalLink = ({ children, className, href, hideArrow }: ExternalLinkProps) => (
   <a
     className={`inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}

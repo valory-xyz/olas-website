@@ -13,12 +13,7 @@ export const MechAgentMetrics = ({ metrics }) => {
         id: 'predict',
         label: (
           <div className="flex flex-col gap-2 mb-3">
-            <Image
-              alt="Mech"
-              src="/images/agents/predict.png"
-              width="35"
-              height="35"
-            />
+            <Image alt="Mech" src="/images/agents/predict.png" width="35" height="35" />
             <span className="text-base font-semibold text-black">Predict</span>
           </div>
         ),
@@ -36,9 +31,7 @@ export const MechAgentMetrics = ({ metrics }) => {
               width="35"
               height="35"
             />
-            <span className="text-base font-semibold text-black">
-              Agents.fun
-            </span>
+            <span className="text-base font-semibold text-black">Agents.fun</span>
           </div>
         ),
         subText: 'requests',
@@ -49,15 +42,8 @@ export const MechAgentMetrics = ({ metrics }) => {
         id: 'contribute',
         label: (
           <div className="flex flex-col gap-2 mb-3">
-            <Image
-              alt="Mech"
-              src="/images/agents/contribute.svg"
-              width="35"
-              height="35"
-            />
-            <span className="text-base font-semibold text-black">
-              Contribute
-            </span>
+            <Image alt="Mech" src="/images/agents/contribute.svg" width="35" height="35" />
+            <span className="text-base font-semibold text-black">Contribute</span>
           </div>
         ),
         subText: 'requests',
@@ -68,15 +54,8 @@ export const MechAgentMetrics = ({ metrics }) => {
         id: 'governatooor',
         label: (
           <div className="flex flex-col gap-2 mb-3">
-            <Image
-              alt="Mech"
-              src="/images/agents/governatooorr.svg"
-              width="35"
-              height="35"
-            />
-            <span className="text-base font-semibold text-black">
-              Governatooor
-            </span>
+            <Image alt="Mech" src="/images/agents/governatooorr.svg" width="35" height="35" />
+            <span className="text-base font-semibold text-black">Governatooor</span>
           </div>
         ),
         subText: 'requests',
@@ -96,7 +75,7 @@ export const MechAgentMetrics = ({ metrics }) => {
         status: metrics?.otherTxs?.status,
       },
     ],
-    [metrics],
+    [metrics]
   );
 
   return (
@@ -115,17 +94,8 @@ export const MechAgentMetrics = ({ metrics }) => {
           </div>
           {metrics?.dailyActiveAgents?.value ? (
             <div className="flex items-center gap-2">
-              <Link
-                className="font-extrabold text-6xl"
-                href="/data#mech-daily-active-agents"
-              >
-                <span
-                  className={
-                    metrics.dailyActiveAgents.status?.stale
-                      ? 'text-gray-400'
-                      : ''
-                  }
-                >
+              <Link className="font-extrabold text-6xl" href="/data#mech-daily-active-agents">
+                <span className={metrics.dailyActiveAgents.status?.stale ? 'text-gray-400' : ''}>
                   {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
                 </span>
               </Link>
@@ -135,21 +105,15 @@ export const MechAgentMetrics = ({ metrics }) => {
             <span className="text-purple-600 text-6xl">--</span>
           )}
           <div className="flex gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover>7-day average Daily Active Agents</Popover>
+            Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
         <p className="text-xl text-slate-700 mt-0 mb-4 mx-auto">
-          The Olas Mech agent economy is in demand as ever, resulting in more
-          than{' '}
+          The Olas Mech agent economy is in demand as ever, resulting in more than{' '}
           {typeof metrics?.totalRequests?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
               <Link className="font-bold" href="/data#mech-globals">
-                <span
-                  className={
-                    metrics.totalRequests.status?.stale ? 'text-gray-400' : ''
-                  }
-                >
+                <span className={metrics.totalRequests.status?.stale ? 'text-gray-400' : ''}>
                   {metrics.totalRequests.value.toLocaleString()}
                 </span>
               </Link>
@@ -162,11 +126,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           {typeof metrics?.totalDeliveries?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
               <Link className="font-bold" href="/data#mech-globals">
-                <span
-                  className={
-                    metrics.totalDeliveries.status?.stale ? 'text-gray-400' : ''
-                  }
-                >
+                <span className={metrics.totalDeliveries.status?.stale ? 'text-gray-400' : ''}>
                   {metrics.totalDeliveries.value.toLocaleString()}
                 </span>
               </Link>
@@ -177,16 +137,13 @@ export const MechAgentMetrics = ({ metrics }) => {
           )}{' '}
           deliveries from other AI agent economies.
         </p>
-        <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">
-          Requests are broken up as:
-        </p>
+        <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">Requests are broken up as:</p>
       </div>
       <div className="w-full border-y mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-0 items-end xl:w-max md:mx-auto">
           {data.map((item, index) => {
             let borderClassName = '';
-            if (index !== data.length - 1)
-              borderClassName += ' max-md:border-b-1.5';
+            if (index !== data.length - 1) borderClassName += ' max-md:border-b-1.5';
 
             const getValue = () => {
               if (!item.value) return '--';
@@ -194,9 +151,7 @@ export const MechAgentMetrics = ({ metrics }) => {
                 <div className="flex items-center gap-2">
                   <Link href="/data#mech-requests-categorized">
                     <div className="flex items-center">
-                      <span
-                        className={item.status?.stale ? 'text-gray-400' : ''}
-                      >
+                      <span className={item.status?.stale ? 'text-gray-400' : ''}>
                         {item.value}
                       </span>
                       <span className="text-black">
@@ -217,9 +172,7 @@ export const MechAgentMetrics = ({ metrics }) => {
                 <span className="block text-5xl max-sm:text-4xl font-extrabold mb-4 text-purple-600">
                   {getValue()}
                 </span>
-                <span className="block text-base text-slate-700">
-                  {item.subText}
-                </span>
+                <span className="block text-base text-slate-700">{item.subText}</span>
               </div>
             );
           })}

@@ -1,8 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import {
-  AUTONOLAS_BASE_SUBGRAPH_URL,
-  REGISTRY_SUBGRAPH_URLS,
-} from 'common-util/constants';
+import { AUTONOLAS_BASE_SUBGRAPH_URL, REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
 import {
   dailyActivitiesQuery,
   dailyAgentPerformancesQuery,
@@ -23,19 +20,16 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for all agents
-            across all supported networks. This metric is useful to understand
-            the operational footprint and engagement of specific agents over
-            time. The <strong>active multisig count</strong> reflects the number
-            of unique multisigs that performed at least one on-chain interaction
+            Tracks how many unique multisigs were active each day for all agents across all
+            supported networks. This metric is useful to understand the operational footprint and
+            engagement of specific agents over time. The <strong>active multisig count</strong>{' '}
+            reflects the number of unique multisigs that performed at least one on-chain interaction
             attributed to a given agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Active Multisigs query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Active Multisigs query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -58,19 +52,16 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected
-            agents on Mode and Optimism. This metric is useful to understand the
-            operational footprint and engagement of specific agents over time.
-            The <strong>active multisig count</strong> reflects the number of
-            unique multisigs that performed at least one on-chain interaction
-            attributed to a given agent within the UTC day window.
+            Tracks how many unique multisigs were active each day for selected agents on Mode and
+            Optimism. This metric is useful to understand the operational footprint and engagement
+            of specific agents over time. The <strong>active multisig count</strong> reflects the
+            number of unique multisigs that performed at least one on-chain interaction attributed
+            to a given agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Performance query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -91,17 +82,15 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for Agents.fun
-            agents on Base. The <strong>active multisig count</strong> reflects
-            the number of unique multisigs that performed at least one on-chain
-            interaction attributed to a given agent within the UTC day window.
+            Tracks how many unique multisigs were active each day for Agents.fun agents on Base. The{' '}
+            <strong>active multisig count</strong> reflects the number of unique multisigs that
+            performed at least one on-chain interaction attributed to a given agent within the UTC
+            day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Performance query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -119,29 +108,24 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected
-            agents on Gnosis and Base. This metric is useful to understand the
-            operational footprint and engagement of specific agents over time.
-            The <strong>active multisig count</strong> reflects the number of
-            unique multisigs that performed at least one on-chain interaction
-            attributed to a given agent within the UTC day window.
+            Tracks how many unique multisigs were active each day for selected agents on Gnosis and
+            Base. This metric is useful to understand the operational footprint and engagement of
+            specific agents over time. The <strong>active multisig count</strong> reflects the
+            number of unique multisigs that performed at least one on-chain interaction attributed
+            to a given agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Performance query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.gnosis, REGISTRY_SUBGRAPH_URLS.base].map(
-              (link, index) => (
-                <ExternalLink key={index} href={link} className="mr-2">
-                  {index + 1}
-                </ExternalLink>
-              ),
-            )}
+            {[REGISTRY_SUBGRAPH_URLS.gnosis, REGISTRY_SUBGRAPH_URLS.base].map((link, index) => (
+              <ExternalLink key={index} href={link} className="mr-2">
+                {index + 1}
+              </ExternalLink>
+            ))}
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
         </div>
@@ -151,18 +135,15 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected
-            Predict agents on Gnosis. The <strong>active multisig count</strong>
-            reflects the number of unique multisigs that performed at least one
-            on-chain interaction attributed to a given agent within the UTC day
-            window.
+            Tracks how many unique multisigs were active each day for selected Predict agents on
+            Gnosis. The <strong>active multisig count</strong>
+            reflects the number of unique multisigs that performed at least one on-chain interaction
+            attributed to a given agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Performance query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -180,20 +161,15 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for all agents
-            in the Pearl app. The <strong>active multisig count</strong>{' '}
-            reflects the number of unique multisigs that performed at least one
-            on-chain interaction attributed to these agents within the UTC day
-            window.
+            Tracks how many unique multisigs were active each day for all agents in the Pearl app.
+            The <strong>active multisig count</strong> reflects the number of unique multisigs that
+            performed at least one on-chain interaction attributed to these agents within the UTC
+            day window.
           </p>
 
-          <p>
-            The following queries are used to compute Pearl daily active agents:
-          </p>
+          <p>The following queries are used to compute Pearl daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Pearl Prediction Agents Query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Pearl Prediction Agents Query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -205,9 +181,7 @@ export const DailyActiveAgentsInfo = () => {
           </p>
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Optimus Babydegen Query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Optimus Babydegen Query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -225,16 +199,14 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique agent-41 services received ETH each day on
-            Base. The <strong>count</strong> reflects the number of unique
-            services that were active within the UTC day window.
+            Tracks how many unique agent-41 services received ETH each day on Base. The{' '}
+            <strong>count</strong> reflects the number of unique services that were active within
+            the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Daily Activities Query
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Activities Query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}

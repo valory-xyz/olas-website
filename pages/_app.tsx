@@ -12,7 +12,7 @@ function PlausibleTracker() {
         window as typeof window & {
           plausible?: (
             event: string,
-            options?: { url?: string; props?: Record<string, unknown> },
+            options?: { url?: string; props?: Record<string, unknown> }
           ) => void;
         }
       ).plausible?.('pageview', {

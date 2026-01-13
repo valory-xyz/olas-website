@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import {
   BOND_URL,
   BONDING_PROGRAMS_URL,
@@ -20,12 +16,10 @@ const steps = [
     title: 'Provide liquidity',
     description: (
       <>
-        As a Bonder, you exchange your LP tokens for discounted OLAS to help the
-        Olas ecosystem operate smoothly and sustainably. Simply deposit your LP
-        tokens to your chosen{' '}
-        <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>,
-        exchanging your LP tokens for discounted OLAS, available after the
-        predetermined vesting period.
+        As a Bonder, you exchange your LP tokens for discounted OLAS to help the Olas ecosystem
+        operate smoothly and sustainably. Simply deposit your LP tokens to your chosen{' '}
+        <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>, exchanging your LP
+        tokens for discounted OLAS, available after the predetermined vesting period.
       </>
     ),
   },
@@ -44,20 +38,15 @@ const steps = [
     description: (
       <>
         Follow Olas <ExternalLink href={X_OLAS_URL}>channels</ExternalLink> and{' '}
-        <ExternalLink href={DISCORD_INVITE_URL}>
-          engage with the Olas community
-        </ExternalLink>{' '}
-        to discover resources and say on top of new updates.
+        <ExternalLink href={DISCORD_INVITE_URL}>engage with the Olas community</ExternalLink> to
+        discover resources and say on top of new updates.
       </>
     ),
   },
 ];
 
 export const HowBondingWorks = () => (
-  <SectionWrapper
-    id="how-it-works"
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
-  >
+  <SectionWrapper id="how-it-works" customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}>
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>How bonding works</h2>
 

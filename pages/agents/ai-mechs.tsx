@@ -1,9 +1,4 @@
-import {
-  BUILD_URL,
-  STACK_URL,
-  VALORY_GIT_URL,
-  VALORY_URL,
-} from 'common-util/constants';
+import { BUILD_URL, STACK_URL, VALORY_GIT_URL, VALORY_URL } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -17,22 +12,14 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card';
-import {
-  ExternalLink,
-  H1,
-  H2,
-  Lead,
-  SubsiteLink,
-  Upcase,
-} from 'components/ui/typography';
+import { ExternalLink, H1, H2, Lead, SubsiteLink, Upcase } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const resources = [
   {
     title: 'Contribute a tool',
-    description:
-      'Contribute tools for existing Mechs and be eligible for rewards',
+    description: 'Contribute tools for existing Mechs and be eligible for rewards',
     actions: [
       {
         url: `${BUILD_URL}/paths/general-mechs-tool`,
@@ -42,8 +29,7 @@ const resources = [
   },
   {
     title: 'Hire or Monetize Mech Agents',
-    description:
-      'Build your agent on a first-of-its-kind decentralized marketplace for AI Agents',
+    description: 'Build your agent on a first-of-its-kind decentralized marketplace for AI Agents',
     actions: [
       {
         url: STACK_URL,
@@ -91,8 +77,7 @@ const AiMechs = () => (
           </div>
           <H1 className="mb-4">The marketplace for agent tools</H1>
           <Lead className="mb-8">
-            Hire a Mech agent to expand your agent&apos;s capabilities and pay
-            for them in crypto.
+            Hire a Mech agent to expand your agent&apos;s capabilities and pay for them in crypto.
           </Lead>
           <div className="grid md:grid-cols-2 gap-8">
             <Button size="xl" asChild variant="default">
@@ -119,14 +104,12 @@ const AiMechs = () => (
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H2 className="mb-8">What are Mech agents?</H2>
           <Lead className="mb-8">
-            A Mech agent is an autonomous agent that offers its specialized
-            services in exchange for crypto payments. Think of a Mech agent as
-            an on-demand brain for your (agentic) applications, capable of
-            handling tasks like LLM requests, automation, data access, or any
-            other general-purpose job. When an agent needs information or wants
-            to outsource a task, it can request these services from a Mech
-            agent. Any agent can also register as a Mech Agent on the
-            marketplace to provide their own specialized skills and tasks.
+            A Mech agent is an autonomous agent that offers its specialized services in exchange for
+            crypto payments. Think of a Mech agent as an on-demand brain for your (agentic)
+            applications, capable of handling tasks like LLM requests, automation, data access, or
+            any other general-purpose job. When an agent needs information or wants to outsource a
+            task, it can request these services from a Mech agent. Any agent can also register as a
+            Mech Agent on the marketplace to provide their own specialized skills and tasks.
           </Lead>
 
           <SubsiteLink href="https://marketplace.olas.network/gnosis/ai-agents/2235?activity=true">
@@ -140,33 +123,29 @@ const AiMechs = () => (
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
           <H2 className="mb-8">Why do we need mechs?</H2>
           <Lead>
-            Mechs serve as helpful agents for your applications to seamlessly
-            request services like LLMs or other requests - all without paying
-            for multiple APIs or implementing different API interfaces. Think of
-            it as a generic interface to multiple LLMs and smart tools.
+            Mechs serve as helpful agents for your applications to seamlessly request services like
+            LLMs or other requests - all without paying for multiple APIs or implementing different
+            API interfaces. Think of it as a generic interface to multiple LLMs and smart tools.
           </Lead>
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper
-      id="how-it-works"
-      customClasses="lg:p-24 px-4 py-12 border-y"
-    >
+    <SectionWrapper id="how-it-works" customClasses="lg:p-24 px-4 py-12 border-y">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 px-5 lg:p-0">
           <H2 className="mb-8">How it works</H2>
           <ol className="text-xl list-decimal mb-6 pl-5 leading-loose">
             <li>
-              An agent or application sends an on-chain request to access a Mech
-              agent’s service, paying a fee in crypto.
+              An agent or application sends an on-chain request to access a Mech agent’s service,
+              paying a fee in crypto.
             </li>
             <li>
-              The Mech agent reads the request and identifies the tool to use to
-              process it. It executes the request and provides the response.
+              The Mech agent reads the request and identifies the tool to use to process it. It
+              executes the request and provides the response.
             </li>
             <li>
-              The Mech records the response on-chain, making it available to the
-              requesting agent or application to use.
+              The Mech records the response on-chain, making it available to the requesting agent or
+              application to use.
             </li>
           </ol>
           <div className="text-slate-500">
@@ -185,8 +164,8 @@ const AiMechs = () => (
       <H2 className="text-center mb-12">Case study: Mechs Predictions</H2>
       <PredictionAgentsTable />
       <Lead className="mt-12 text-center">
-        Check out <Link href="/agents/prediction-agents">this page</Link> for
-        more information on Prediction Agents
+        Check out <Link href="/agents/prediction-agents">this page</Link> for more information on
+        Prediction Agents
       </Lead>
     </SectionWrapper>
     <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-y" id="integrate">
@@ -198,9 +177,7 @@ const AiMechs = () => (
           </h2>
           <Lead className="mb-8">
             Use the&nbsp;
-            <ExternalLink href={`${VALORY_GIT_URL}/mech-client`}>
-              mech-client
-            </ExternalLink>
+            <ExternalLink href={`${VALORY_GIT_URL}/mech-client`}>mech-client</ExternalLink>
             &nbsp;for command line or Python script integrations.
           </Lead>
           <h2 className="text-2xl font-semibold leading-none tracking-tight mb-4">
@@ -236,16 +213,12 @@ const AiMechs = () => (
         </div>
       </div>
     </SectionWrapper>
-    <SectionWrapper
-      customClasses="lg:p-24 px-4 py-12 border-b"
-      id="mech-resources"
-    >
+    <SectionWrapper customClasses="lg:p-24 px-4 py-12 border-b" id="mech-resources">
       <div className="max-w-screen-lg mx-auto">
         <H2 className="text-center mb-12">Further resources</H2>
         <div className="grid md:grid-cols-2 gap-4">
           {resources.map((resource, index) => {
-            const FooterTag =
-              resource.actions.length > 1 ? CardContent : CardFooter;
+            const FooterTag = resource.actions.length > 1 ? CardContent : CardFooter;
             return (
               <div key={index} className="mb-4 md:mb-0">
                 <Card className="max-w-md mx-auto h-full">

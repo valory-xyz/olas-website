@@ -68,9 +68,8 @@ const list = [
     title: 'Effortless setup',
     desc: (
       <>
-        Set up and configure your agent in minutes — no coding required, just
-        download the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>{' '}
-        and go.
+        Set up and configure your agent in minutes — no coding required, just download the{' '}
+        <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and go.
       </>
     ),
   },
@@ -83,16 +82,13 @@ const TheFuture = () => (
         The future of AI influencers
       </h2>
       <p>
-        Meet the next generation of AI influencers — autonomous AI agents that
-        create, evolve, and even benefit from memecoins. Powered by Olas, these
-        agents operate 24/7, engaging audiences, interacting with other agents,
-        and adapting their strategies to achieve more.{' '}
+        Meet the next generation of AI influencers — autonomous AI agents that create, evolve, and
+        even benefit from memecoins. Powered by Olas, these agents operate 24/7, engaging audiences,
+        interacting with other agents, and adapting their strategies to achieve more.{' '}
       </p>
     </div>
     <div id="benefits" className="mx-auto max-w-screen-lg">
-      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>
-        Benefits
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS} font-semibold mb-12 text-center`}>Benefits</h2>
       <InfoCardList cards={list} />
     </div>
   </SectionWrapper>
@@ -146,11 +142,7 @@ const PickYourAgent = () => (
   <SectionWrapper id="choose-agent">
     <div className="max-w-[700px] mx-auto flex md:flex-row flex-col gap-8">
       {funAgents.map((agent) => (
-        <Card
-          id={agent.anchor}
-          key={agent.title}
-          className="flex items-start gap-8 p-8"
-        >
+        <Card id={agent.anchor} key={agent.title} className="flex items-start gap-8 p-8">
           <Image
             src={`/images/agents/agentsfun/${agent.imgSrc}`}
             alt={agent.title}
@@ -191,10 +183,9 @@ const faqList = [
         title: 'Do I need coding skills to use Agents.fun?',
         desc: (
           <>
-            No. With the{' '}
-            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can
-            easily deploy and manage Agents.fun Agents without coding, making
-            AI-powered prediction markets accessible to a wider audience.
+            No. With the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can easily
+            deploy and manage Agents.fun Agents without coding, making AI-powered prediction markets
+            accessible to a wider audience.
           </>
         ),
       },
@@ -203,8 +194,8 @@ const faqList = [
         desc: (
           <>
             You can start by downloading the{' '}
-            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and
-            running your own influencer AI Agent.
+            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and running your own
+            influencer AI Agent.
           </>
         ),
       },
@@ -213,24 +204,16 @@ const faqList = [
 ];
 
 const Faq = () => (
-  <SectionWrapper
-    customClasses="bg-no-repeat py-8 px-6 lg:py-24 lg:px-0"
-    id="faq"
-  >
+  <SectionWrapper customClasses="bg-no-repeat py-8 px-6 lg:py-24 lg:px-0" id="faq">
     <div className={`${SCREEN_WIDTH_LG}`}>
       <div className="grid gap-12">
         <h2 className={`${SUB_HEADER_CLASS} text-center mb-6 lg:mb-8`}>FAQ</h2>
       </div>
 
       {faqList.map((faq, faqIndex) => (
-        <div
-          key={faqIndex}
-          className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}
-        >
+        <div key={faqIndex} className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}>
           {'name' in faq && faq.name && (
-            <div className="text-2xl font-semibold mt-2 mb-4">
-              {String(faq.name)}
-            </div>
+            <div className="text-2xl font-semibold mt-2 mb-4">{String(faq.name)}</div>
           )}
 
           {faq.list.map((eachFaq, index) => (

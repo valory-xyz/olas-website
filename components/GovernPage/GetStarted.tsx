@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { GOVERN_URL, SNAPSHOT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -21,8 +17,8 @@ const steps = [
     description: (
       <>
         You can do everything governance related on the{' '}
-        <SubsiteLink href={GOVERN_URL}>Govern App</SubsiteLink>. Simply connect
-        your wallet to start voting.
+        <SubsiteLink href={GOVERN_URL}>Govern App</SubsiteLink>. Simply connect your wallet to start
+        voting.
       </>
     ),
   },
@@ -35,28 +31,19 @@ const steps = [
     title: 'Participate in Proposals',
     description: (
       <>
-        Use the Govern App to access on-chain proposals (off-chain proposals can
-        be found on{' '}
-        <a
-          href={SNAPSHOT_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-purple-600"
-        >
+        Use the Govern App to access on-chain proposals (off-chain proposals can be found on{' '}
+        <a href={SNAPSHOT_URL} target="_blank" rel="noreferrer" className="text-purple-600">
           Snapshot ↗
         </a>
-        ). Here, you can vote on existing proposals or submit your own, shaping
-        the future direction of Olas.
+        ). Here, you can vote on existing proposals or submit your own, shaping the future direction
+        of Olas.
       </>
     ),
   },
 ];
 
 export const GetStarted = () => (
-  <SectionWrapper
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
-    id="get-started"
-  >
+  <SectionWrapper customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`} id="get-started">
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>Get started</h2>
 

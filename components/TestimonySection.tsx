@@ -5,18 +5,8 @@ import SectionWrapper from './Layout/SectionWrapper';
 import { Card } from './ui/card';
 import { ExternalLink } from './ui/typography';
 
-export const TestimonySection = ({
-  id,
-  isQuote = false,
-  folderName,
-  title,
-  list,
-}) => (
-  <SectionWrapper
-    id={id}
-    customClasses="px-4 py-16 border-y"
-    backgroundType="GRAY_GRADIENT"
-  >
+export const TestimonySection = ({ id, isQuote = false, folderName, title, list }) => (
+  <SectionWrapper id={id} customClasses="px-4 py-16 border-y" backgroundType="GRAY_GRADIENT">
     <h2 className={`${SUB_HEADER_CLASS} text-center mb-6`}>{title}</h2>
     {isQuote ? (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto">
@@ -46,11 +36,7 @@ export const TestimonySection = ({
             </div>
             <div className="mt-auto flex flex-row justify-between">
               <div className="flex flex-col w-2/3 max-w-[200px]">
-                <a
-                  href={item.nameUrl}
-                  target="_blank"
-                  className="font-semibold"
-                >
+                <a href={item.nameUrl} target="_blank" className="font-semibold">
                   {item.name}
                 </a>
                 <p className="text-slate-500 text-sm">{item.title}</p>

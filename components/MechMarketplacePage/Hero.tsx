@@ -15,12 +15,7 @@ const HeroImage = () => (
 );
 
 const Explore = () => (
-  <Button
-    variant="default"
-    size="xl"
-    asChild
-    className="max-lg:grow max-sm:text-sm"
-  >
+  <Button variant="default" size="xl" asChild className="max-lg:grow max-sm:text-sm">
     <Link href={MECH_MARKETPLACE_URL}>Explore the Mech Marketplace</Link>
   </Button>
 );

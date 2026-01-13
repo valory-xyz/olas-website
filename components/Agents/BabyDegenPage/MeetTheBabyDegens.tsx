@@ -62,10 +62,7 @@ const optimusKeyFeatures = [
 ];
 
 const ModiusAgent = () => (
-  <div
-    id="modius-agent"
-    className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
-  >
+  <div id="modius-agent" className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto">
     <Image
       src="/images/agents/babydegen/modius.png"
       alt="modius agent"
@@ -81,14 +78,11 @@ const ModiusAgent = () => (
         height={32}
       />
       <div className={TEXT_MEDIUM_LIGHT_CLASS}>MODIUS AGENT</div>
-      <h2 className={SUB_HEADER_LG_CLASS}>
-        Your Personal AI Portfolio Manager
-      </h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
       <p>
-        Modius is a personal DeFAI agent that autonomously manages your
-        portfolio with cutting-edge strategies. It gathers market data, selects
-        optimal trading algorithms, and executes trades seamlessly on Mode
-        mainnet — delivering intelligent, hands-free asset management.
+        Modius is a personal DeFAI agent that autonomously manages your portfolio with cutting-edge
+        strategies. It gathers market data, selects optimal trading algorithms, and executes trades
+        seamlessly on Mode mainnet — delivering intelligent, hands-free asset management.
       </p>
       <div className="text-xl font-semibold">Key features</div>
       <div>
@@ -114,10 +108,7 @@ const ModiusAgent = () => (
 );
 
 const OptimusAgent = () => (
-  <div
-    id="optimus-agent"
-    className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto"
-  >
+  <div id="optimus-agent" className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto">
     <Image
       src="/images/agents/babydegen/optimus.png"
       alt="optimus agent"
@@ -127,15 +118,12 @@ const OptimusAgent = () => (
     />
     <div className="flex flex-col gap-4">
       <div className={TEXT_MEDIUM_LIGHT_CLASS}>OPTIMUS AGENT</div>
-      <h2 className={SUB_HEADER_LG_CLASS}>
-        Your Personal AI Portfolio Manager
-      </h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
       <p>
-        The Optimus Agent is an autonomous AI agent that streamlines your DeFi
-        experience by intelligently managing your assets on specific blockchain
-        platforms. Initially focused on select DeFi protocols on Mode, Optimism
-        Mainnet and Base, it offers a targeted approach to maximizing returns
-        within these ecosystems. Looking ahead, it will expand to support any
+        The Optimus Agent is an autonomous AI agent that streamlines your DeFi experience by
+        intelligently managing your assets on specific blockchain platforms. Initially focused on
+        select DeFi protocols on Mode, Optimism Mainnet and Base, it offers a targeted approach to
+        maximizing returns within these ecosystems. Looking ahead, it will expand to support any
         protocol that wishes to integrate.
       </p>
       <div className="text-xl font-semibold">Key features</div>
@@ -164,10 +152,7 @@ const OptimusAgent = () => (
 );
 
 export const MeetTheBabyDegens = () => (
-  <SectionWrapper
-    id="agents"
-    customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}
-  >
+  <SectionWrapper id="agents" customClasses={`${SECTION_BOX_CLASS} lg:py-12 border-b-1.5`}>
     <div className="text-center">
       <H2>
         Meet the{' '}

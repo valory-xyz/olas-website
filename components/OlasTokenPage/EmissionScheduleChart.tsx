@@ -27,12 +27,11 @@ const BACKUP_INFLATION_FOR_YEAR = [
 const OlasMintInfo = () => (
   <>
     <p className="mb-4">
-      A maximum of 1bn OLAS tokens can be minted in the protocol&apos;s first 10
-      years.
+      A maximum of 1bn OLAS tokens can be minted in the protocol&apos;s first 10 years.
     </p>
     <p className="mb-4">
-      After year 9, an additional 2% can be minted each year. This 2% inflation
-      rate can be reduced by the DAO.
+      After year 9, an additional 2% can be minted each year. This 2% inflation rate can be reduced
+      by the DAO.
     </p>
     <div className="mb-4">
       <Verify
@@ -58,14 +57,10 @@ export const EmissionScheduleChart = ({
   <>
     <div className="flex p-4 border-b">
       <div className="mr-8">
-        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
-          Launch Date
-        </h2>
+        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">Launch Date</h2>
         <div className="text-4xl font-extrabold">
           <span className="text-gradient">
-            {loading
-              ? '--'
-              : dayjs.unix(Number(timeLaunch)).format("DD MMM 'YY")}
+            {loading ? '--' : dayjs.unix(Number(timeLaunch)).format("DD MMM 'YY")}
           </span>
         </div>
         <Verify
@@ -73,13 +68,9 @@ export const EmissionScheduleChart = ({
         />
       </div>
       <div>
-        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
-          Current Year
-        </h2>
+        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">Current Year</h2>
         <div className="text-4xl font-extrabold">
-          <span className="text-gradient">
-            {loading ? '--' : Number(currentYear)}
-          </span>
+          <span className="text-gradient">{loading ? '--' : Number(currentYear)}</span>
         </div>
         <Verify
           url={`${ETHERSCAN_URL}/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readProxyContract#F13`}
@@ -129,8 +120,7 @@ export const EmissionScheduleChart = ({
                   ticks: {
                     callback(value) {
                       // Format y-axis numbers as 20m, not 20,000,000
-                      const numValue =
-                        typeof value === 'number' ? value : Number(value);
+                      const numValue = typeof value === 'number' ? value : Number(value);
                       return `${numValue / 1000000}m`;
                     },
                   },

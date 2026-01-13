@@ -13,7 +13,7 @@ const academyTotals = academyMetrics.reduce(
     graduates: 0,
     placed: 0,
     hired: 0,
-  },
+  }
 );
 
 export const AcademyTable = () => {
@@ -53,8 +53,8 @@ export const AcademyTable = () => {
         </table>
       </div>
       <p className="caption-bottom text-xs text-center mt-8">
-        * Official project placements began with Cohort 7, marking a significant
-        milestone in connecting developers with real-world opportunities.
+        * Official project placements began with Cohort 7, marking a significant milestone in
+        connecting developers with real-world opportunities.
       </p>
     </>
   );

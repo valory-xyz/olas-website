@@ -66,8 +66,7 @@ export const getEmissionsChartOptions = (points) => ({
       enabled: true,
       callbacks: {
         title: (tooltipItems) => `Epoch ${tooltipItems[0].label}`,
-        label: (tooltipItem) =>
-          `${tooltipItem.dataset.label}: ${formatWeiNumber(tooltipItem.raw)}`,
+        label: (tooltipItem) => `${tooltipItem.dataset.label}: ${formatWeiNumber(tooltipItem.raw)}`,
       },
     },
   },
@@ -88,7 +87,7 @@ export const getCumulativeEmissions = (emissions, fieldNames) => {
   for (const emission of emissions) {
     const currentEmissionSum = fieldsToSum.reduce(
       (sum, field) => sum + Number(emission[field] || 0),
-      0,
+      0
     );
     cumulativeSum += currentEmissionSum;
     cumulativeEmissions.push(cumulativeSum);

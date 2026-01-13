@@ -26,26 +26,20 @@ const list = [
           <li>Launch the Prediction agent.</li>
         </strong>
         <p className="mb-4">
-          Choose the Prediction agent from the agent catalog and follow the
-          onboarding steps.
+          Choose the Prediction agent from the agent catalog and follow the onboarding steps.
         </p>
 
         <strong>
           <li>Run Your Agent & Collect Potential Rewards.</li>
         </strong>
         <p>
-          Once activated, the agent posts, benefits from memecoins, and
-          interacts with other influencer agents — 24/7.
+          Once activated, the agent posts, benefits from memecoins, and interacts with other
+          influencer agents — 24/7.
         </p>
       </ol>
     ),
     button: (
-      <Button
-        variant="default"
-        size="xl"
-        asChild
-        className="grow mt-6 max-md:w-full"
-      >
+      <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
         <SubsiteLink href={PEARL_YOU_URL} isInButton>
           Run an Agent
         </SubsiteLink>
@@ -62,31 +56,22 @@ const list = [
             <li className="mb-2">Set up the required components.</li>
             <li className="mb-2">
               Run the{' '}
-              <ExternalLink
-                href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}
-              >
+              <ExternalLink href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}>
                 Quickstart
               </ExternalLink>{' '}
               script.
             </li>
-            <li className="mb-2">
-              Adjust the strategy to maximize performance.
-            </li>
+            <li className="mb-2">Adjust the strategy to maximize performance.</li>
           </strong>
         </ol>
         <p>
-          Once deployed, users can stake OLAS to earn rewards as the agent
-          autonomously bets on prediction markets.
+          Once deployed, users can stake OLAS to earn rewards as the agent autonomously bets on
+          prediction markets.
         </p>
       </>
     ),
     button: (
-      <Button
-        variant="outline"
-        size="xl"
-        asChild
-        className="grow mt-6 max-md:w-full"
-      >
+      <Button variant="outline" size="xl" asChild className="grow mt-6 max-md:w-full">
         <ExternalLink
           hideArrow
           href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}
@@ -101,9 +86,7 @@ const list = [
 export const GetStarted = () => (
   <SectionWrapper id="get-started" customClasses="max-md:p-4 lg:my-32">
     <div className="text-center max-w-[870px] mx-auto">
-      <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>
-        Get Started with the Prediction Agent
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>Get Started with the Prediction Agent</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (

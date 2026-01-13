@@ -8,22 +8,18 @@ const list = [
     title: 'Apply with your agent idea',
     description: (
       <>
-        <ExternalLink href={ACCELERATOR_APPLY_URL}>
-          Submit a proposal
-        </ExternalLink>{' '}
-        detailing your AI agent&apos;s purpose, product strategy, adoption
-        strategy, and alignment with the accelerator program.
+        <ExternalLink href={ACCELERATOR_APPLY_URL}>Submit a proposal</ExternalLink> detailing your
+        AI agent&apos;s purpose, product strategy, adoption strategy, and alignment with the
+        accelerator program.
       </>
     ),
   },
   {
     title: 'Get selected & receive $5K',
-    description:
-      'Awarded to the teams with the highest potential and impactful proposals.',
+    description: 'Awarded to the teams with the highest potential and impactful proposals.',
   },
   {
-    title:
-      'Additional $5K on approval of the design, specification and technical plan',
+    title: 'Additional $5K on approval of the design, specification and technical plan',
     description:
       'Put together all the plans for your MVP within the first 2 weeks of the project start date to earn an additional $5K.',
   },
@@ -34,8 +30,7 @@ const list = [
   },
   {
     title: 'Reach 100 DAA milestone to unlock $10K',
-    description:
-      'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
+    description: 'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
   },
   {
     title: 'Reach 1,000 DAAs to unlock $40K',
@@ -74,9 +69,7 @@ export const HowDoesAcceleratorWork = () => (
               className={`flex gap-2 border-purple-200 lg:gap-4 overflow-hidden ${borderClass}`}
             >
               <div className="border-r-1.5 border-purple-200 w-[80px] h-full max-sm:min-h-[120px] max-sm:min-w-[80px] aspect-square flex justify-center text-center bg-gradient-to-t from-[#FAF0FF]">
-                <span className="text-[56px] font-bold text-purple-400 my-auto">
-                  {index + 1}
-                </span>
+                <span className="text-[56px] font-bold text-purple-400 my-auto">{index + 1}</span>
               </div>
               <div className="my-auto mr-4 py-4">
                 <div className="text-xl font-semibold mb-2">{item.title}</div>

@@ -4,10 +4,7 @@ import Meta from 'components/Meta';
 
 const FAQPage = () => (
   <PageWrapper>
-    <Meta
-      pageTitle="Olas FAQ"
-      description="Frequently asked questions about Olas."
-    />
+    <Meta pageTitle="Olas FAQ" description="Frequently asked questions about Olas." />
     <FAQ />
   </PageWrapper>
 );

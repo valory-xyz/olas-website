@@ -24,7 +24,7 @@ export const BuildMetrics = ({ metrics }) => {
         ],
       },
     ],
-    [buildMetrics],
+    [buildMetrics]
   );
 
   return (

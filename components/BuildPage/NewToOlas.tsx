@@ -23,12 +23,7 @@ const programs = [
     description: (
       <>
         Get exposure and hands-on experience to Olas Stack by building{' '}
-        <Link
-          href="/agents/ai-mechs"
-          target="_blank"
-          rel="noreferrer"
-          className="text-purple-600"
-        >
+        <Link href="/agents/ai-mechs" target="_blank" rel="noreferrer" className="text-purple-600">
           Mech tools
         </Link>{' '}
         with our Dev Kickstart workshop.
@@ -44,16 +39,13 @@ export const NewToOlas = () => (
     id="learn"
   >
     <div className="w-auto lg:max-w-[700px] mx-auto">
-      <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>
-        NEW TO OLAS STACK?
-      </p>
+      <p className={`${TEXT_MEDIUM_LIGHT_CLASS} text-center mb-3`}>NEW TO OLAS STACK?</p>
       <h2 className="font-extrabold text-4xl lg:mb-6 xl:mb-8 my-6 lg:my-auto text-center">
         Learn with Valory structured programs
       </h2>
       <p className="text-gray-600 text-center mx-auto mb-12">
-        If you&apos;re new to the Olas Stack and seeking a guided learning
-        experience, check our Olas Academy Website and choose the right program
-        for you:
+        If you&apos;re new to the Olas Stack and seeking a guided learning experience, check our
+        Olas Academy Website and choose the right program for you:
       </p>
     </div>
 

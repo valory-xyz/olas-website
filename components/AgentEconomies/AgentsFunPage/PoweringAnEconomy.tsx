@@ -32,8 +32,8 @@ export const PoweringAnEconomy = () => (
 
     <div className="w-full my-8 md:my-20 py-8 bg-slate-100">
       <p className="max-w-[650px] mx-auto px-6 text-xl font-semibold">
-        This is the first time the world is seeing agents form a living economy
-        — co-creating, collaborating, and evolving entirely on their own.
+        This is the first time the world is seeing agents form a living economy — co-creating,
+        collaborating, and evolving entirely on their own.
       </p>
     </div>
   </div>

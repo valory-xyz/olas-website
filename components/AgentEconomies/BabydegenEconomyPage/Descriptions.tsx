@@ -13,14 +13,13 @@ const babydegens = [
     desc: (
       <>
         <p className="mb-2">
-          The Modius Economy is a network of personal DeFAI agents that
-          autonomously manage portfolios on Mode.
+          The Modius Economy is a network of personal DeFAI agents that autonomously manage
+          portfolios on Mode.
         </p>
         <p>
-          Each Modius agent gathers market data, selects optimal strategies, and
-          executes trades for individual users — working independently but
-          collectively creating a decentralized, autonomous economy focused on
-          intelligent, hands-free asset management.
+          Each Modius agent gathers market data, selects optimal strategies, and executes trades for
+          individual users — working independently but collectively creating a decentralized,
+          autonomous economy focused on intelligent, hands-free asset management.
         </p>
       </>
     ),
@@ -33,13 +32,12 @@ const babydegens = [
     desc: (
       <>
         <p>
-          The Optimus Economy is built from a network of Optimus agents, each
-          autonomously managing assets across Optimism Mainnet.
+          The Optimus Economy is built from a network of Optimus agents, each autonomously managing
+          assets across Optimism Mainnet.
         </p>
         <p>
-          As they individually seek the best yields, they collectively form an
-          evolving DeFAI economy focused on maximizing returns and expanding
-          into new opportunities.
+          As they individually seek the best yields, they collectively form an evolving DeFAI
+          economy focused on maximizing returns and expanding into new opportunities.
         </p>
       </>
     ),
@@ -54,21 +52,18 @@ const WhatIsOptimus = () => (
     </h2>
     <div className="mb-20">
       <p className="mb-2">
-        The BabyDegen Economy is a network of autonomous AI agents built for one
-        goal: to take over your DeFi asset management and maximize your yields —
-        fully automatically.
+        The BabyDegen Economy is a network of autonomous AI agents built for one goal: to take over
+        your DeFi asset management and maximize your yields — fully automatically.
       </p>
       <p className="mb-2">
-        Each BabyDegen agent acts as an asset manager and trader, continuously
-        scouting opportunities, building and adapting strategies, allocating
-        resources, and executing real-time trades across blockchain networks
-        like Mode, Optimism Mainnet, and Base.
+        Each BabyDegen agent acts as an asset manager and trader, continuously scouting
+        opportunities, building and adapting strategies, allocating resources, and executing
+        real-time trades across blockchain networks like Mode, Optimism Mainnet, and Base.
       </p>
       <p>
-        Together, they form an autonomous economy that powers the future of
-        DeFAI, combining intelligent AI trading with decentralized finance to
-        deliver hands-off, optimized performance — without the need for manual
-        input.
+        Together, they form an autonomous economy that powers the future of DeFAI, combining
+        intelligent AI trading with decentralized finance to deliver hands-off, optimized
+        performance — without the need for manual input.
       </p>
     </div>
   </div>
@@ -76,9 +71,7 @@ const WhatIsOptimus = () => (
 
 const AgentTypes = () => (
   <div id="sub-economies">
-    <h2
-      className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}
-    >
+    <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}>
       Babydegens Live Now
     </h2>
     <div className="flex flex-col md:flex-row gap-4 gap-6 my-8">
@@ -97,16 +90,8 @@ const AgentTypes = () => (
             />
           )}
           <div className="mt-auto flex flex-col lg:h-[400px]">
-            <Image
-              alt={item.title}
-              src={item.src}
-              width="64"
-              height="64"
-              className="mb-6"
-            />
-            <span className="text-2xl font-bold text-black mb-4">
-              {item.title}
-            </span>
+            <Image alt={item.title} src={item.src} width="64" height="64" className="mb-6" />
+            <span className="text-2xl font-bold text-black mb-4">{item.title}</span>
             <div className="mb-4">{item.desc}</div>
 
             <Link href={item.link} className="mt-auto text-purple-600">

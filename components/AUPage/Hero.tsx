@@ -18,16 +18,10 @@ export const Hero = () => (
         />
 
         <h1 className={`text-black max-w-[380px]`}>
-          The premier AI Agent event series, showcasing the cutting-edge of
-          crypto and AI.
+          The premier AI Agent event series, showcasing the cutting-edge of crypto and AI.
         </h1>
 
-        <Button
-          variant="default"
-          size="xl"
-          asChild
-          className="grow w-full md:w-fit"
-        >
+        <Button variant="default" size="xl" asChild className="grow w-full md:w-fit">
           <Link href="/agents-unleashed#events">Don&apos;t miss out</Link>
         </Button>
       </div>

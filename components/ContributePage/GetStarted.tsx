@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { CONTRIBUTE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -15,8 +11,7 @@ const steps = [
     title: 'Sign up to the Contribute app',
     description: (
       <>
-        Go to the{' '}
-        <SubsiteLink href={CONTRIBUTE_URL}>Contribute App</SubsiteLink>
+        Go to the <SubsiteLink href={CONTRIBUTE_URL}>Contribute App</SubsiteLink>
         . <br />
         Link your crypto wallet to get started with Contribute.
       </>
@@ -24,8 +19,7 @@ const steps = [
   },
   {
     title: 'Link your X account',
-    description:
-      'Connect your X profile to the Contribute App in just a few clicks.',
+    description: 'Connect your X profile to the Contribute App in just a few clicks.',
   },
   {
     title: 'Stake OLAS',
@@ -33,13 +27,11 @@ const steps = [
   },
   {
     title: 'Join a campaign',
-    description:
-      'Participate in supported campaigns, and post quality content about Olas on X.',
+    description: 'Participate in supported campaigns, and post quality content about Olas on X.',
   },
   {
     title: 'Earn rewards for quality posts',
-    description:
-      'Collect potential OLAS rewards for high-quality posts and build your influence.',
+    description: 'Collect potential OLAS rewards for high-quality posts and build your influence.',
   },
   {
     title: 'Climb the rankings',
@@ -49,14 +41,9 @@ const steps = [
 ];
 
 export const GetStarted = () => (
-  <SectionWrapper
-    id="get-started"
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}
-  >
+  <SectionWrapper id="get-started" customClasses={`${SECTION_BOX_CLASS} lg:pt-32 border-b`}>
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
-      <h2 className={`${SUB_HEADER_CLASS}`}>
-        Get started as an Olas Contributor
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS}`}>Get started as an Olas Contributor</h2>
 
       {steps.map(({ title, description }) => (
         <Fragment key={title}>

@@ -30,9 +30,7 @@ export const TokenHoldersMetric = ({ metrics }) => {
               >
                 {value?.toLocaleString()}
               </span>
-              <StaleIndicator
-                status={tokenHolders?.totalTokenHolders?.status}
-              />
+              <StaleIndicator status={tokenHolders?.totalTokenHolders?.status} />
             </div>
           </Link>
         ) : (

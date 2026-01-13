@@ -20,9 +20,5 @@ const resources = [
 ];
 
 export const FurtherResources = () => (
-  <GetInvolvedCards
-    id="babydegen-resources"
-    title="Further resources"
-    list={resources}
-  />
+  <GetInvolvedCards id="babydegen-resources" title="Further resources" list={resources} />
 );

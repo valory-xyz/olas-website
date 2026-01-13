@@ -13,10 +13,7 @@ export const DeprecatedUseCases = () => {
   const deprecatedItems = agents.filter((item) => item.deprecated === true);
 
   return (
-    <SectionWrapper
-      backgroundType="NONE"
-      customClasses={`${SECTION_BOX_CLASS} bg-slate-100`}
-    >
+    <SectionWrapper backgroundType="NONE" customClasses={`${SECTION_BOX_CLASS} bg-slate-100`}>
       <div className="max-w-4xl mx-auto flex flex-col">
         <div className="text-center mb-14">
           <h1 className="text-3xl lg:text-[40px] mb-6 text-gray-700 font-semibold">
@@ -43,20 +40,10 @@ export const DeprecatedUseCases = () => {
           ))}
         </div>
         <div className="flex max-sm:flex-col gap-4 w-fit mx-auto">
-          <Button
-            variant="default"
-            size="lg"
-            className="max-sm:w-full w-fit mx-auto"
-            asChild
-          >
+          <Button variant="default" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
             <Link href="/agents">Explore Agents</Link>
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="max-sm:w-full w-fit mx-auto"
-            asChild
-          >
+          <Button variant="outline" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
             <Link href="/agent-economies">Explore Agent Economies</Link>
           </Button>
         </div>

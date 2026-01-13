@@ -18,15 +18,13 @@ export type OtherMetricsSnapshot = {
 };
 
 export const fetchAllOtherMetrics = async (): Promise<OtherMetricsSnapshot> => {
-  const [build, contribute, govern, tokenHolders, protocol] = await Promise.all(
-    [
-      fetchBuildMetrics(),
-      fetchContributeMetrics(),
-      fetchGovernMetrics(),
-      fetchTokenHolders(),
-      fetchProtocolMetrics(),
-    ],
-  );
+  const [build, contribute, govern, tokenHolders, protocol] = await Promise.all([
+    fetchBuildMetrics(),
+    fetchContributeMetrics(),
+    fetchGovernMetrics(),
+    fetchTokenHolders(),
+    fetchProtocolMetrics(),
+  ]);
 
   return {
     data: {

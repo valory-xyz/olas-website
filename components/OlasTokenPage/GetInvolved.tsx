@@ -19,8 +19,7 @@ const GET_INVOLVED_DATA = [
     id: 2,
     imageSrc: '/images/homepage/olas-launch.png',
     title: 'Launch your own agent economy, boost DAAs',
-    description:
-      'Everything you need to launch an AI agent economy on your chain/protocol.',
+    description: 'Everything you need to launch an AI agent economy on your chain/protocol.',
     ctaText: 'Launch',
     href: '/launch',
   },
@@ -37,8 +36,7 @@ const GET_INVOLVED_DATA = [
     id: 4,
     imageSrc: '/images/homepage/olas-govern.png',
     title: 'Direct the future of Olas',
-    description:
-      'Join the decision-making process that drives growth in the Olas ecosystem.',
+    description: 'Join the decision-making process that drives growth in the Olas ecosystem.',
     ctaText: 'Govern',
     href: '/govern',
   },
@@ -46,8 +44,7 @@ const GET_INVOLVED_DATA = [
     id: 5,
     imageSrc: '/images/homepage/olas-bond.png',
     title: 'Provide liquidity, get discounted OLAS',
-    description:
-      'A bonding mechanism rewards providers of liquidity with discounted OLAS.',
+    description: 'A bonding mechanism rewards providers of liquidity with discounted OLAS.',
     ctaText: 'Bond',
     href: '/bond',
   },
@@ -55,8 +52,7 @@ const GET_INVOLVED_DATA = [
     id: 6,
     imageSrc: '/images/homepage/olas-operate.png',
     title: 'Run agents, stake & earn rewards',
-    description:
-      'A unique staking mechanism rewards active agents for their useful contributions.',
+    description: 'A unique staking mechanism rewards active agents for their useful contributions.',
     ctaText: 'Operate',
     href: '/operate',
   },
@@ -89,9 +85,7 @@ const GetInvolvedCard = ({
             />
           </div>
         )}
-        {ctaText && (
-          <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>
-        )}
+        {ctaText && <span className="text-purple-600 text-lg mt-auto">{ctaText}</span>}
         {title && <h3 className="text-2xl font-semibold my-3">{title}</h3>}
         {description && <p className="text-[#4D596A]">{description}</p>}
       </Card>
@@ -118,8 +112,7 @@ export const GetInvolved = () => (
           Get Involved in Growing Olas
         </SectionHeading>
         <p className="text-xl text-[#4D596A] mb-12">
-          Choose a role and benefit from the Olas protocol, no matter what you
-          bring to the table.
+          Choose a role and benefit from the Olas protocol, no matter what you bring to the table.
         </p>
       </div>
 
@@ -135,18 +128,11 @@ export const GetInvolved = () => (
         </div>
 
         {GET_INVOLVED_DATA.map((datum) => {
-          const {
-            imageSrc,
-            imageHeight,
-            imageWidth,
-            title,
-            description,
-            ctaText,
-            href,
-          } = datum as typeof datum & {
-            imageHeight?: number;
-            imageWidth?: number;
-          };
+          const { imageSrc, imageHeight, imageWidth, title, description, ctaText, href } =
+            datum as typeof datum & {
+              imageHeight?: number;
+              imageWidth?: number;
+            };
           return (
             <GetInvolvedCard
               key={datum.id}

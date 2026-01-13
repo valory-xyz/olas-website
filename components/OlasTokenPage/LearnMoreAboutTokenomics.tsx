@@ -1,8 +1,4 @@
-import {
-  CORE_TECHNICAL_DOCUMENT,
-  STACK_URL,
-  WHITEPAPER_SUMMARY,
-} from 'common-util/constants';
+import { CORE_TECHNICAL_DOCUMENT, STACK_URL, WHITEPAPER_SUMMARY } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
 const list = [

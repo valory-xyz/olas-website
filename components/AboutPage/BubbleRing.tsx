@@ -36,9 +36,7 @@ const bubbles = shuffleArray(paddedBubbles);
 
 const Bubble = ({ size = 32, rotation = 0, href, icon }) => {
   const Tag = href ? 'a' : 'div';
-  const tagProps = href
-    ? { href, target: '_blank', rel: 'noopener noreferrer' }
-    : {};
+  const tagProps = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
 
   return (
     <Tag {...tagProps} title={href}>
@@ -93,47 +91,29 @@ export const BubbleRing = () => {
     <div className="flex flex-col items-center gap-2">
       {/* Top */}
       {layout.top.map((count, i) => (
-        <BubbleRow
-          key={`top-${i}`}
-          count={count}
-          bubbles={nextBubbles(count)}
-        />
+        <BubbleRow key={`top-${i}`} count={count} bubbles={nextBubbles(count)} />
       ))}
 
       {/* Middle */}
       <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-4 items-center">
           {layout.middleLeft.map((count, i) => (
-            <BubbleRow
-              key={`ml-${i}`}
-              count={count}
-              bubbles={nextBubbles(count)}
-            />
+            <BubbleRow key={`ml-${i}`} count={count} bubbles={nextBubbles(count)} />
           ))}
         </div>
 
-        <div className="text-center font-semibold text-[#606F85] my-6">
-          ~50 founding members
-        </div>
+        <div className="text-center font-semibold text-[#606F85] my-6">~50 founding members</div>
 
         <div className="flex flex-col gap-4 items-center">
           {layout.middleRight.map((count, i) => (
-            <BubbleRow
-              key={`mr-${i}`}
-              count={count}
-              bubbles={nextBubbles(count)}
-            />
+            <BubbleRow key={`mr-${i}`} count={count} bubbles={nextBubbles(count)} />
           ))}
         </div>
       </div>
 
       {/* Bottom */}
       {layout.bottom.map((count, i) => (
-        <BubbleRow
-          key={`bottom-${i}`}
-          count={count}
-          bubbles={nextBubbles(count)}
-        />
+        <BubbleRow key={`bottom-${i}`} count={count} bubbles={nextBubbles(count)} />
       ))}
     </div>
   );

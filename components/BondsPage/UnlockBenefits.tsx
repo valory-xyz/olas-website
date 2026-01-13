@@ -28,27 +28,19 @@ const list = [
 ];
 
 export const UnlockBenefits = () => (
-  <SectionWrapper
-    id="about"
-    customClasses={`bg-no-repeat ${SECTION_BOX_CLASS}`}
-  >
+  <SectionWrapper id="about" customClasses={`bg-no-repeat ${SECTION_BOX_CLASS}`}>
     <div className={`${SCREEN_WIDTH_LG} px-0lg:px-12`}>
-      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>
-        Unlock benefits as an Olas Bonder
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-6`}>Unlock benefits as an Olas Bonder</h2>
 
       <p>
-        Join as an Olas Bonder to strengthen the network. An Olas Bonder
-        provides liquidity to the Olas ecosystem by participating in bonding
-        programs. By bonding your assets, you help grow the network and in
-        return, receive OLAS at preferential rates. It’s a simple way to support
+        Join as an Olas Bonder to strengthen the network. An Olas Bonder provides liquidity to the
+        Olas ecosystem by participating in bonding programs. By bonding your assets, you help grow
+        the network and in return, receive OLAS at preferential rates. It’s a simple way to support
         and benefit from the growth of the Olas ecosystem.
       </p>
 
       <div id="why-bond">
-        <h2 className={`${SUB_HEADER_CLASS} mt-8 mb-6 lg:mt-36`}>
-          Why become an Olas Bonder?
-        </h2>
+        <h2 className={`${SUB_HEADER_CLASS} mt-8 mb-6 lg:mt-36`}>Why become an Olas Bonder?</h2>
 
         <div className="grid grid-cols-1 gap-6">
           {list.map(({ icon, title, desc }) => (

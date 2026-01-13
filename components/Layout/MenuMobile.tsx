@@ -32,10 +32,7 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
   const [isSubmenuExpanded, toggleSubmenuExpand] = useToggle();
 
   return (
-    <NavigationMenu.Root
-      className={className}
-      value={isOpened ? 'open' : 'closed'}
-    >
+    <NavigationMenu.Root className={className} value={isOpened ? 'open' : 'closed'}>
       <NavigationMenu.List>
         <NavigationMenu.Item>
           <NavigationMenu.Trigger
@@ -46,11 +43,7 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
             {isOpened ? (
               <X size={20} className="ml-3 mr-2" aria-hidden="true" />
             ) : (
-              <AlignJustify
-                size={20}
-                className="ml-3 mr-2"
-                aria-hidden="true"
-              />
+              <AlignJustify size={20} className="ml-3 mr-2" aria-hidden="true" />
             )}
           </NavigationMenu.Trigger>
 
@@ -71,14 +64,9 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
                     return (
                       <NavigationMenu.Item key={index}>
                         <NavigationMenu.Trigger asChild onClick={toggleOpen}>
-                          <LinkTag
-                            href={menuItem.link}
-                            className={linkClassName}
-                          >
+                          <LinkTag href={menuItem.link} className={linkClassName}>
                             {menuItem.text}
-                            {menuItem.isExternal && (
-                              <MoveUpRight size={24} aria-hidden="true" />
-                            )}
+                            {menuItem.isExternal && <MoveUpRight size={24} aria-hidden="true" />}
                           </LinkTag>
                         </NavigationMenu.Trigger>
                       </NavigationMenu.Item>
@@ -102,14 +90,8 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
                           <ul>
                             {item.submenu.map((component) => (
                               <li key={component.title}>
-                                <NavigationMenu.Link
-                                  asChild
-                                  onClick={toggleOpen}
-                                >
-                                  <Link
-                                    href={component.url}
-                                    className={subLinkClassName}
-                                  >
+                                <NavigationMenu.Link asChild onClick={toggleOpen}>
+                                  <Link href={component.url} className={subLinkClassName}>
                                     {component.title}
                                   </Link>
                                 </NavigationMenu.Link>
@@ -125,12 +107,7 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
                 })}
 
                 <NavigationMenu.Item className="p-6 border">
-                  <Button
-                    variant="default"
-                    size="lg"
-                    asChild
-                    className="w-full"
-                  >
+                  <Button variant="default" size="lg" asChild className="w-full">
                     <SubsiteLink href={PEARL_YOU_URL} isInButton>
                       Own Your Agent
                     </SubsiteLink>

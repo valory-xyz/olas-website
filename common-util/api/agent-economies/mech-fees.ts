@@ -1,12 +1,6 @@
-import {
-  MECH_FEES_GRAPH_CLIENTS,
-  legacyMechFeesGraphClient,
-} from 'common-util/graphql/client';
+import { MECH_FEES_GRAPH_CLIENTS, legacyMechFeesGraphClient } from 'common-util/graphql/client';
 import { createStaleStatus } from 'common-util/graphql/metric-utils';
-import {
-  legacyMechFeesTotalsQuery,
-  newMechFeesTotalsQuery,
-} from 'common-util/graphql/queries';
+import { legacyMechFeesTotalsQuery, newMechFeesTotalsQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
 
 type MechFeesResult = WithMeta<{
@@ -40,7 +34,7 @@ export const fetchMechFeeMetrics = async () => {
 
     const getNewMechFees = (
       res: PromiseSettledResult<MechFeesResult>,
-      source: string,
+      source: string
     ): MechFeesResult['global'] | null => {
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${source}`);
@@ -54,7 +48,7 @@ export const fetchMechFeeMetrics = async () => {
 
     const getLegacyMechFees = (
       res: PromiseSettledResult<LegacyMechFeesResult>,
-      source: string,
+      source: string
     ): LegacyMechFeesResult['global'] | null => {
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${source}`);
@@ -73,16 +67,12 @@ export const fetchMechFeeMetrics = async () => {
     const inUsd =
       Number(gnosisNewGlobal?.totalFeesInUSD || 0) +
       Number(baseNewGlobal?.totalFeesInUSD || 0) +
-      Number(
-        (BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString(),
-      );
+      Number((BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString());
 
     const outUsd =
       Number(gnosisNewGlobal?.totalFeesOutUSD || 0) +
       Number(baseNewGlobal?.totalFeesOutUSD || 0) +
-      Number(
-        (BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString(),
-      );
+      Number((BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString());
 
     const unclaimed = Math.max(inUsd - outUsd, 0);
     const status = createStaleStatus(indexingErrors, fetchErrors);

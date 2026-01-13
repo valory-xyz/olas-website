@@ -27,9 +27,7 @@ const DataVerifyPage = () => (
     <div className="p-14 border-b-1.5">
       <h1 className={`${TITLE_CLASS} text-center`}>Data verification</h1>
     </div>
-    <div
-      className={`${SCREEN_WIDTH_XL} divide-y divide-dashed divide-gray-200`}
-    >
+    <div className={`${SCREEN_WIDTH_XL} divide-y divide-dashed divide-gray-200`}>
       <DailyActiveAgentsInfo />
       <BabydegenMetricsInfo />
       <MechGlobalsInfo />

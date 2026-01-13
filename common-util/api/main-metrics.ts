@@ -39,9 +39,7 @@ type DailyAgentPerformancesResult = WithMeta<{
   }[];
 }>;
 
-const fetchDailyAgentPerformance = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
@@ -53,8 +51,8 @@ const fetchDailyAgentPerformance = async (): Promise<
         REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
           timestamp_gt,
           timestamp_lt,
-        }),
-      ),
+        })
+      )
     );
 
     const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
@@ -75,9 +73,8 @@ const fetchDailyAgentPerformance = async (): Promise<
     });
 
     const totalAverage = performanceByChains.reduce(
-      (sum, performanceByChain) =>
-        sum + calculate7DayAverage(performanceByChain, 'count'),
-      0,
+      (sum, performanceByChain) => sum + calculate7DayAverage(performanceByChain, 'count'),
+      0
     );
 
     return {
@@ -99,17 +96,13 @@ type StakingGlobalsResult = WithMeta<{
   };
 }>;
 
-const fetchTotalOlasStaked = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      STAKING_CHAINS.map((chain) =>
-        STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery),
-      ),
+      STAKING_CHAINS.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
     );
 
     const olasStakedByChains: string[] = [];
@@ -130,7 +123,7 @@ const fetchTotalOlasStaked = async (): Promise<
 
     const olasStaked = olasStakedByChains.reduce(
       (sum, olasStakedByChain) => sum + BigInt(olasStakedByChain),
-      BigInt(0),
+      BigInt(0)
     );
 
     return {
@@ -155,17 +148,15 @@ type RegistryGlobalsResult = WithMeta<{
   };
 }>;
 
-const fetchTransactions = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
       ALL_REGISTRY_CHAINS.map((chain) =>
-        REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery),
-      ),
+        REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
+      )
     );
 
     const txCountByChains: string[] = [];
@@ -186,7 +177,7 @@ const fetchTransactions = async (): Promise<
 
     const transactions = txCountByChains.reduce(
       (sum, txCountByChain) => sum + BigInt(txCountByChain),
-      BigInt(0),
+      BigInt(0)
     );
 
     return {
@@ -211,17 +202,15 @@ type OperatorGlobalsResult = WithMeta<{
   }[];
 }>;
 
-const fetchTotalOperators = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
       ALL_REGISTRY_CHAINS.map((chain) =>
-        REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery),
-      ),
+        REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
+      )
     );
 
     const operatorsByChains: number[] = [];
@@ -244,7 +233,7 @@ const fetchTotalOperators = async (): Promise<
 
     const totalOperators = operatorsByChains.reduce(
       (sum, operatorsByChain) => sum + operatorsByChain,
-      0,
+      0
     );
 
     return {
@@ -266,18 +255,14 @@ type AtaTransactionsResult = WithMeta<{
   }[];
 }>;
 
-export const fetchAtaTransactions = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
   const sources = ['gnosis', 'base', 'legacyMech'] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      sources.map((source) =>
-        ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery),
-      ),
+      sources.map((source) => ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
     );
 
     const ataTransactionsByChains: string[] = [];
@@ -295,7 +280,7 @@ export const fetchAtaTransactions = async (): Promise<
         ataTransactionsByChains.push(
           // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
           // to avoid needing to pick the first item
-          data.globals?.[0]?.totalAtaTransactions || '0',
+          data.globals?.[0]?.totalAtaTransactions || '0'
         );
       }
     });
@@ -330,9 +315,7 @@ type LegacyMechFeesResult = WithMeta<{
   };
 }>;
 
-export const fetchMechFees = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> => {
   // Sources in order: gnosis (new), base (new), legacy
   const sources = ['gnosis', 'base', 'legacy'] as const;
   const LEGACY_INDEX = 2; // Index of legacy mech fees in results array
@@ -373,7 +356,7 @@ export const fetchMechFees = async (): Promise<
           } else {
             // New mech fees (gnosis, base) - already in USD
             const usdValue = Number(
-              (data.global as MechFeesResult['global']).totalFeesInUSD || '0',
+              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
             );
             totalFees += usdValue;
           }
@@ -408,38 +391,37 @@ export type MainMetricsSnapshot = {
   timestamp: number;
 };
 
-export const fetchAllAgentMetrics =
-  async (): Promise<MainMetricsSnapshot | null> => {
-    try {
-      const [
-        dailyActiveAgentsResult,
-        olasStakedResult,
-        transactionsResult,
-        ataTransactionsResult,
-        mechFeesResult,
-        totalOperatorsResult,
-      ] = await Promise.all([
-        fetchDailyAgentPerformance(),
-        fetchTotalOlasStaked(),
-        fetchTransactions(),
-        fetchAtaTransactions(),
-        fetchMechFees(),
-        fetchTotalOperators(),
-      ]);
+export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null> => {
+  try {
+    const [
+      dailyActiveAgentsResult,
+      olasStakedResult,
+      transactionsResult,
+      ataTransactionsResult,
+      mechFeesResult,
+      totalOperatorsResult,
+    ] = await Promise.all([
+      fetchDailyAgentPerformance(),
+      fetchTotalOlasStaked(),
+      fetchTransactions(),
+      fetchAtaTransactions(),
+      fetchMechFees(),
+      fetchTotalOperators(),
+    ]);
 
-      return {
-        data: {
-          dailyActiveAgents: dailyActiveAgentsResult,
-          olasStaked: olasStakedResult,
-          transactions: transactionsResult,
-          ataTransactions: ataTransactionsResult,
-          mechFees: mechFeesResult,
-          totalOperators: totalOperatorsResult,
-        },
-        timestamp: Date.now(),
-      };
-    } catch (error) {
-      console.error('Error fetching main metrics:', error);
-      return null;
-    }
-  };
+    return {
+      data: {
+        dailyActiveAgents: dailyActiveAgentsResult,
+        olasStaked: olasStakedResult,
+        transactions: transactionsResult,
+        ataTransactions: ataTransactionsResult,
+        mechFees: mechFeesResult,
+        totalOperators: totalOperatorsResult,
+      },
+      timestamp: Date.now(),
+    };
+  } catch (error) {
+    console.error('Error fetching main metrics:', error);
+    return null;
+  }
+};

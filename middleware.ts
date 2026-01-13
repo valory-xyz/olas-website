@@ -11,10 +11,7 @@ export function middleware(request) {
   const country = request.headers.get('x-vercel-ip-country');
   const region = request.headers.get('x-vercel-ip-country-region');
 
-  if (
-    request.nextUrl.pathname === '/restricted' ||
-    request.nextUrl.pathname === '/disclaimer'
-  ) {
+  if (request.nextUrl.pathname === '/restricted' || request.nextUrl.pathname === '/disclaimer') {
     return NextResponse.next();
   }
 

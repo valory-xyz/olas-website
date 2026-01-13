@@ -39,7 +39,7 @@ type ArticleProps = {
   showDate?: boolean;
 };
 
-const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
+const Article = ({ article, href, showReadTime = false, showDate = true }: ArticleProps) => {
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
@@ -76,9 +76,7 @@ const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
 
   return (
     <Link href={href}>
-      <article
-        className={`${CARD_CLASS} h-full overflow-hidden border-t border-[#0000000d]`}
-      >
+      <article className={`${CARD_CLASS} h-full overflow-hidden border-t border-[#0000000d]`}>
         {!imageError && (url || width || height) && imageDomain ? (
           <div className="flex h-full">
             <Image
@@ -102,19 +100,12 @@ const Article = ({ article, href, showReadTime, showDate }: ArticleProps) => {
           </h2>
 
           {moreInfo && (
-            <span className="text-sm md:text-2xl lg:text-sm text-gray-600">
-              {moreInfo}
-            </span>
+            <span className="text-sm md:text-2xl lg:text-sm text-gray-600">{moreInfo}</span>
           )}
         </div>
       </article>
     </Link>
   );
-};
-
-Article.defaultProps = {
-  showReadTime: false,
-  showDate: true,
 };
 
 export default Article;

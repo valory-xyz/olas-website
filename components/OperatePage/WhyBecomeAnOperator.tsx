@@ -32,10 +32,7 @@ const list = [
     desc: (
       <p>
         Choose from a growing list of{' '}
-        <SubsiteLink href={`${OPERATE_URL}/contracts`}>
-          staking contracts
-        </SubsiteLink>
-        .
+        <SubsiteLink href={`${OPERATE_URL}/contracts`}>staking contracts</SubsiteLink>.
       </p>
     ),
   },
@@ -44,9 +41,7 @@ const list = [
 export const WhyBecomeAnOperator = () => (
   <SectionWrapper id="why-operate">
     <div className="max-w-screen-xl mx-auto lg:px-12">
-      <h2
-        className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}
-      >
+      <h2 className={`${SUB_HEADER_CLASS} text-left mb-8 lg:text-center lg:mb-14`}>
         Why become an Olas Operator?
       </h2>
       <InfoCardList cards={list} />

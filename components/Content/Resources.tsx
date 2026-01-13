@@ -20,9 +20,7 @@ const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
   let newResources = [];
 
   if (tagFilter) {
-    newResources = sortedResources.filter((article) =>
-      article?.tags.includes(tagFilter),
-    );
+    newResources = sortedResources.filter((article) => article?.tags.includes(tagFilter));
   } else {
     newResources = sortedResources;
   }
@@ -45,13 +43,11 @@ const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
         )}
       </div>
       <div className="grid gap-8 lg:grid-cols-3">
-        {(limit ? newResources.slice(0, limit) : newResources).map(
-          (resource) => (
-            <div key={resource.platform_link}>
-              <Resource resource={resource} />
-            </div>
-          ),
-        )}
+        {(limit ? newResources.slice(0, limit) : newResources).map((resource) => (
+          <div key={resource.platform_link}>
+            <Resource resource={resource} />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -22,9 +22,7 @@ const list = [
 export const WhyLaunch = () => (
   <SectionWrapper id="why-launch">
     <div className="flex flex-col gap-14 max-w-2xl mx-auto">
-      <h2 className={`${SUB_HEADER_CLASS} text-center`}>
-        Why Launch a Staking Program?
-      </h2>
+      <h2 className={`${SUB_HEADER_CLASS} text-center`}>Why Launch a Staking Program?</h2>
       {list.map((item) => (
         <div key={item.title}>
           <h4 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>{item.title}</h4>

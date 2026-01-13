@@ -10,8 +10,8 @@ const TokenHoldersQuerySnippet = () => (
   <CodeSnippet>
     {typeof holderCountsQuery === 'string'
       ? holderCountsQuery
-      : (holderCountsQuery as { loc?: { source?: { body?: string } } }).loc
-          ?.source?.body || String(holderCountsQuery)}
+      : (holderCountsQuery as { loc?: { source?: { body?: string } } }).loc?.source?.body ||
+        String(holderCountsQuery)}
   </CodeSnippet>
 );
 
@@ -29,7 +29,7 @@ const selectTokenHolderNetworks = () =>
     .map((token: TokenEntry) => toNetworkEntry(token))
     .filter(
       (entry): entry is NonNullable<ReturnType<typeof toNetworkEntry>> =>
-        entry !== null && entry !== undefined,
+        entry !== null && entry !== undefined
     );
 
 export const TokenHolders = () => {
@@ -41,22 +41,15 @@ export const TokenHolders = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Aggregates the number of unique OLAS token holders across supported
-          networks. Each network&apos;s tokenomics subgraph is queried for the
-          token holder count, and results are summed to obtain the total holders
-          metric shown on the OLAS Token page.
+          Aggregates the number of unique OLAS token holders across supported networks. Each
+          network&apos;s tokenomics subgraph is queried for the token holder count, and results are
+          summed to obtain the total holders metric shown on the OLAS Token page.
         </p>
 
         <p className="text-purple-600">
           Subgraph links:{' '}
           {TOKENOMICS_SUBGRAPH_URLS.map(({ key, url }, index) => (
-            <a
-              key={key}
-              href={url}
-              className="mr-2"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <a key={key} href={url} className="mr-2" rel="noopener noreferrer" target="_blank">
               {index + 1}
             </a>
           ))}
@@ -67,20 +60,17 @@ export const TokenHolders = () => {
           <ul className="list-disc list-inside text-sm text-slate-500">
             {tokenNetworks.map(({ key, tokenAddress, name }) => (
               <li key={key}>
-                <span className="font-semibold">{name}</span>:{' '}
-                <code>{tokenAddress}</code>
+                <span className="font-semibold">{name}</span>: <code>{tokenAddress}</code>
               </li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-            Holder count query (per network)
-          </h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Holder count query (per network)</h3>
           <p className="text-sm text-slate-500">
-            The same query is executed against each tokenomics subgraph with the
-            network&apos;s token address to retrieve the holder count.
+            The same query is executed against each tokenomics subgraph with the network&apos;s
+            token address to retrieve the holder count.
           </p>
           <TokenHoldersQuerySnippet />
         </div>

@@ -19,26 +19,18 @@ const list = [
         <strong>
           <li>Run an Agent.</li>
         </strong>
-        <p className="mb-4">
-          Choose an agent, get it running, and keep it online.
-        </p>
+        <p className="mb-4">Choose an agent, get it running, and keep it online.</p>
 
         <strong>
           <li>Earn OLAS.</li>
         </strong>
         <p>
-          Receive OLAS rewards when your agents complete tasks, contribute
-          value, or stay active.
+          Receive OLAS rewards when your agents complete tasks, contribute value, or stay active.
         </p>
       </ol>
     ),
     button: (
-      <Button
-        variant="default"
-        size="xl"
-        asChild
-        className="grow mt-6 max-md:w-full"
-      >
+      <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
         <SubsiteLink href={PEARL_YOU_URL} isInButton>
           Get Started with Pearl
         </SubsiteLink>
@@ -60,9 +52,7 @@ const list = [
         </strong>
         <p className="mb-4">
           Choose an agent, follow the{' '}
-          <ExternalLink
-            href={`${QUICKSTART_URL}?tab=readme-ov-file#supported-agents`}
-          >
+          <ExternalLink href={`${QUICKSTART_URL}?tab=readme-ov-file#supported-agents`}>
             README guide
           </ExternalLink>{' '}
           to get it running, and keep it online.
@@ -72,18 +62,12 @@ const list = [
           <li>Earn OLAS.</li>
         </strong>
         <p>
-          Receive OLAS rewards when your agents complete tasks, contribute
-          value, or stay active.
+          Receive OLAS rewards when your agents complete tasks, contribute value, or stay active.
         </p>
       </ol>
     ),
     button: (
-      <Button
-        variant="outline"
-        size="xl"
-        asChild
-        className="grow mt-6 max-md:w-full"
-      >
+      <Button variant="outline" size="xl" asChild className="grow mt-6 max-md:w-full">
         <ExternalLink
           hideArrow
           href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}
@@ -96,10 +80,7 @@ const list = [
 ];
 
 export const GetStarted = () => (
-  <SectionWrapper
-    id="get-started"
-    customClasses="max-md:p-4 max-lg:px-4 lg:my-32"
-  >
+  <SectionWrapper id="get-started" customClasses="max-md:p-4 max-lg:px-4 lg:my-32">
     <div className="text-center max-w-[870px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} max-lg:mt-12 mb-8 md:mb-16`}>
         Get Started as an Olas Operator

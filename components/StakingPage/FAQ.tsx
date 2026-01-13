@@ -18,10 +18,7 @@ const faq = [
         />
         <p>
           For full technical detail, check the{' '}
-          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
-            whitepaper
-          </Link>
-          .
+          <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">whitepaper</Link>.
         </p>
       </>
     ),
@@ -30,9 +27,8 @@ const faq = [
     title: 'Where will these emissions come from?',
     desc: (
       <p>
-        They come directly from the Olas protocol. The DAO through on-chain
-        voting manages how much OLAS is emitted into the various staking
-        contracts. For more details, check out{' '}
+        They come directly from the Olas protocol. The DAO through on-chain voting manages how much
+        OLAS is emitted into the various staking contracts. For more details, check out{' '}
         <Link href="/olas-token">Olas tokenomics</Link>.
       </p>
     ),
@@ -45,14 +41,10 @@ const faq = [
     title: 'What is PoAA (Proof-of-Active-Agent)?',
     desc: (
       <p>
-        PoAA is a new staking model that blends Proof-of-Stake and
-        Proof-of-Work. It rewards agents — and the users who run them — for
-        doing useful, verifiable work like making on-chain calls or meeting KPI
-        targets. For more details, check out{' '}
-        <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">
-          PoAA Whitepaper
-        </Link>
-        .
+        PoAA is a new staking model that blends Proof-of-Stake and Proof-of-Work. It rewards agents
+        — and the users who run them — for doing useful, verifiable work like making on-chain calls
+        or meeting KPI targets. For more details, check out{' '}
+        <Link href="/documents/whitepaper/PoAA Whitepaper.pdf">PoAA Whitepaper</Link>.
       </p>
     ),
   },
@@ -67,18 +59,11 @@ const faq = [
 ];
 
 export const FAQ = () => (
-  <SectionWrapper
-    id="faq"
-    customClasses={`${SECTION_BOX_CLASS} max-w-2xl mx-auto`}
-  >
+  <SectionWrapper id="faq" customClasses={`${SECTION_BOX_CLASS} max-w-2xl mx-auto`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-14`}>Frequently Asked Questions</h2>
     {faq.map((eachFaq, index) => (
       <div className="py-2" key={index}>
-        <Accordion
-          label={eachFaq.title}
-          customClass="p-0 bg-white"
-          defaultOpen={false}
-        >
+        <Accordion label={eachFaq.title} customClass="p-0 bg-white" defaultOpen={false}>
           {eachFaq.desc}
         </Accordion>
       </div>

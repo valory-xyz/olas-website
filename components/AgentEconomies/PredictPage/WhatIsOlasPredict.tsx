@@ -1,10 +1,4 @@
-import {
-  BicepsFlexed,
-  Expand,
-  HandCoins,
-  Sparkles,
-  Target,
-} from 'lucide-react';
+import { BicepsFlexed, Expand, HandCoins, Sparkles, Target } from 'lucide-react';
 import Image from 'next/image';
 
 import {
@@ -22,8 +16,7 @@ const agentRolesList = [
     title: 'Market Creators',
     desc: (
       <>
-        Deploy and seed prediction markets using prediction market protocols,
-        currently{' '}
+        Deploy and seed prediction markets using prediction market protocols, currently{' '}
         <a
           href="https://aiomen.eth.limo/"
           target="_blank"
@@ -97,11 +90,10 @@ const WhatIs = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>What is Olas Predict?</h2>
 
     <p>
-      Olas Predict leverages autonomous AI agents to create a seamless and
-      cost-effective prediction market ecosystem. By utilizing advanced
-      technology and eliminating human participation, it has generated
-      significant transaction activity on the Gnosis Chain. Its predictions are
-      focused on current events.
+      Olas Predict leverages autonomous AI agents to create a seamless and cost-effective prediction
+      market ecosystem. By utilizing advanced technology and eliminating human participation, it has
+      generated significant transaction activity on the Gnosis Chain. Its predictions are focused on
+      current events.
     </p>
   </div>
 );
@@ -111,8 +103,8 @@ const HowItWorks = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>How It Works</h2>
 
     <p>
-      In simple terms, Predict delivers predictions through the trading activity
-      of agents on prediction markets.
+      In simple terms, Predict delivers predictions through the trading activity of agents on
+      prediction markets.
     </p>
 
     <Image
@@ -128,28 +120,16 @@ const AgentRoles = () => (
   <div className={`${SCREEN_WIDTH_LG} lg:gap-4 gap-2`}>
     <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Roles</h2>
 
-    <Image
-      src="/images/predict-page/agent-roles.png"
-      alt="Agent Roles"
-      width={800}
-      height={200}
-    />
+    <Image src="/images/predict-page/agent-roles.png" alt="Agent Roles" width={800} height={200} />
 
     {agentRolesList.map(({ img, title, desc }, index) => (
       <div
         key={index}
         className={`flex gap-2 flex-col py-6 ${
-          index !== agentRolesList.length - 1
-            ? 'border-b-[1px] border-dashed'
-            : ''
+          index !== agentRolesList.length - 1 ? 'border-b-[1px] border-dashed' : ''
         }`}
       >
-        <Image
-          src={`/images/predict-page/${img}.png`}
-          alt={title}
-          width={60}
-          height={30}
-        />
+        <Image src={`/images/predict-page/${img}.png`} alt={title} width={60} height={30} />
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>{title}</h3>
         <p>{desc}</p>
@@ -162,12 +142,7 @@ const TheProcess = () => (
   <div id="process" className={`${SCREEN_WIDTH_LG} gap-5 lg:mt-16 mt-8`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-2`}>The Process</h2>
 
-    <Image
-      src="/images/predict-page/the-process.png"
-      alt="The Process"
-      width={800}
-      height={200}
-    />
+    <Image src="/images/predict-page/the-process.png" alt="The Process" width={800} height={200} />
 
     <ol className="flex flex-col gap-2 mt-4 list-decimal list-inside">
       {processList.map(({ title, desc }, index) => (
@@ -181,8 +156,7 @@ const TheProcess = () => (
 );
 
 const eachCardCss = {
-  background:
-    'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
+  background: 'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
 };
 
 const WhyOlasPredict = () => (
@@ -190,17 +164,14 @@ const WhyOlasPredict = () => (
     id="why-predict-economy"
     className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12"
   >
-    <h2
-      className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}
-    >
+    <h2 className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}>
       Why Olas Predict?
     </h2>
 
     <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
       {olasPredictList.map(({ title, desc, icon }, index) => {
         const isLastAndOdd =
-          olasPredictList.length === index + 1 &&
-          olasPredictList.length % 2 === 1;
+          olasPredictList.length === index + 1 && olasPredictList.length % 2 === 1;
 
         return (
           <div

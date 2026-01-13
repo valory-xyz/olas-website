@@ -15,15 +15,13 @@ const list = [
   {
     title: 'Mech Marketplace',
     url: '/mech-marketplace',
-    description:
-      'AI Agent Bazaar for businesses to monetize or hire agents on Olas.',
+    description: 'AI Agent Bazaar for businesses to monetize or hire agents on Olas.',
     imgUrl: 'mm-icon.png',
   },
   {
     title: 'Agent Frameworks',
     url: '/agents',
-    description:
-      'Open-source tools for developers to build and deploy AI agents on Olas.',
+    description: 'Open-source tools for developers to build and deploy AI agents on Olas.',
     imgUrl: 'agent-icon.png',
   },
   {
@@ -39,8 +37,7 @@ export const StackKeyFeatures = () => (
   <SectionWrapper customClasses="xl:p-24 px-4 py-12 border-y" id="key-features">
     <div className="max-w-[872px] mx-auto flex flex-col gap-5">
       <p>
-        The Olas Stack is the technical foundation of Olas. It consists of four
-        core innovations:
+        The Olas Stack is the technical foundation of Olas. It consists of four core innovations:
       </p>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -64,8 +61,7 @@ export const StackKeyFeatures = () => (
       </div>
 
       <p>
-        To learn more about each part of the stack, visit their relevant pages
-        or the{' '}
+        To learn more about each part of the stack, visit their relevant pages or the{' '}
         <SubsiteLink href={DOCS_BASE_URL}>technical documentation.</SubsiteLink>
       </p>
     </div>

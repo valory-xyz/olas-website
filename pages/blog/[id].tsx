@@ -21,18 +21,11 @@ const BlogItem = ({ blog }) => {
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
   const formattedContent = <Markdown>{content}</Markdown>;
-  const description = getLimitedText(
-    formattedContent.props.children,
-    DESC_CHAR_LIMIT,
-  );
+  const description = getLimitedText(formattedContent.props.children, DESC_CHAR_LIMIT);
 
   return (
     <PageWrapper>
-      <Meta
-        pageTitle={title}
-        description={description}
-        siteImageUrl={imageUrl}
-      />
+      <Meta pageTitle={title} description={description} siteImageUrl={imageUrl} />
       <div className="max-w-3xl mx-auto p-4">
         {imagePath && (
           <Image

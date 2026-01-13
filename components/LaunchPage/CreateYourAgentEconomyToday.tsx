@@ -1,10 +1,6 @@
 import { Fragment } from 'react';
 
-import {
-  SCREEN_WIDTH_LG,
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-} from 'common-util/classes';
+import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { LAUNCH_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -39,10 +35,7 @@ const steps = [
 ];
 
 export const CreateYourAgentEconomyToday = () => (
-  <SectionWrapper
-    id="get-started"
-    customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}
-  >
+  <SectionWrapper id="get-started" customClasses={`${SECTION_BOX_CLASS} lg:pt-16 border-b`}>
     <div className={`${SCREEN_WIDTH_LG} gap-2`}>
       <h2 className={`${SUB_HEADER_CLASS}`}>Create your agent economy today</h2>
 

@@ -7,12 +7,7 @@ import { SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 
 const HeroImage = () => (
-  <Image
-    src="/images/babydegen-econ-page/hero.png"
-    alt="hero"
-    width={464}
-    height={432}
-  />
+  <Image src="/images/babydegen-econ-page/hero.png" alt="hero" width={464} height={432} />
 );
 
 const RunAnAgent = () => (

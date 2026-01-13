@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_CLASS,
-  TEXT_CLASS,
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_CLASS, TEXT_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const DESC =
@@ -14,9 +10,7 @@ const DESC =
 export const BringAiAgentsEconomies = () => (
   <SectionWrapper id="about" customClasses={SECTION_BOX_CLASS}>
     <div className="grid max-w-screen-xl mx-auto lg:px-12 lg:grid-cols-12">
-      <h2
-        className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-5 lg:pr-6`}
-      >
+      <h2 className={`${SUB_HEADER_CLASS} mb-4 md:col-span-6 lg:mb-0 lg:col-span-5 lg:pr-6`}>
         Bring AI agents economies to your ecosystem
       </h2>
       <div className="hidden lg:block col-span-1" />

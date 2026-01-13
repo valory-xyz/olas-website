@@ -3,10 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
-import {
-  STAKING_GRAPH_CLIENTS,
-  TOKENOMICS_GRAPH_CLIENTS,
-} from 'common-util/graphql/client';
+import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
 import { getTokenomicsContract, web3 } from 'common-util/web3';
 import { GetInvolved } from 'components/OlasTokenPage/GetInvolved';
@@ -45,9 +42,7 @@ const Supply = () => {
       try {
         setLoading(true);
 
-        const newTimeLaunch = await tokenomicsContract.methods
-          .timeLaunch()
-          .call();
+        const newTimeLaunch = await tokenomicsContract.methods.timeLaunch().call();
         setTimeLaunch(newTimeLaunch);
 
         // Call getActualInflationForYear method repeatedly for 0 through 12
@@ -66,29 +61,21 @@ const Supply = () => {
                   typeof resultValue === 'number' ||
                   typeof resultValue === 'bigint'
                 ) {
-                  newInflationForYear[i] = web3.utils.fromWei(
-                    String(resultValue),
-                    'ether',
-                  );
+                  newInflationForYear[i] = web3.utils.fromWei(String(resultValue), 'ether');
                 }
                 return result;
               })
               .catch((error) => {
                 newInflationForYear.push(undefined); // Push undefined if promise fails
-                console.error(
-                  `Error in getActualInflationForYear for year ${i}:`,
-                  error,
-                );
-              }),
+                console.error(`Error in getActualInflationForYear for year ${i}:`, error);
+              })
           );
         }
 
         await Promise.all(promises);
         setInflationForYear(newInflationForYear);
 
-        const newCurrentYear = await tokenomicsContract.methods
-          .currentYear()
-          .call();
+        const newCurrentYear = await tokenomicsContract.methods.currentYear().call();
         setCurrentYear(newCurrentYear);
 
         // Call epochCounter to get the current epoch
@@ -117,27 +104,25 @@ const Supply = () => {
 
         // emissions
         const emissionsData = (await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(
-          emissionsQuery,
-        )) as { epoches?: Array<{ counter?: number; [key: string]: unknown }> };
+          emissionsQuery
+        )) as {
+          epoches?: Array<{ counter?: number; [key: string]: unknown }>;
+        };
 
         // Fetch rewards updates from all staking subgraphs
-        const stakingRewardsPromises = Object.entries(
-          STAKING_GRAPH_CLIENTS,
-        ).map(async ([chain, client]) => {
-          try {
-            const rewards = await client.request(
-              rewardUpdates(emissionsData.epoches || []),
-            );
-            return { chain, rewards };
-          } catch (error) {
-            console.error(`Error fetching rewards from ${chain}:`, error);
-            return { chain, rewards: null };
+        const stakingRewardsPromises = Object.entries(STAKING_GRAPH_CLIENTS).map(
+          async ([chain, client]) => {
+            try {
+              const rewards = await client.request(rewardUpdates(emissionsData.epoches || []));
+              return { chain, rewards };
+            } catch (error) {
+              console.error(`Error fetching rewards from ${chain}:`, error);
+              return { chain, rewards: null };
+            }
           }
-        });
-
-        const stakingRewardsResults = await Promise.allSettled(
-          stakingRewardsPromises,
         );
+
+        const stakingRewardsResults = await Promise.allSettled(stakingRewardsPromises);
 
         const emissions = (emissionsData.epoches || []).map((epoch, index) => {
           let totalClaimableStakingRewards = BigInt(0);
@@ -148,14 +133,12 @@ const Supply = () => {
             if (result.status === 'fulfilled' && result.value.rewards) {
               const epochRewards = result.value.rewards[`_${index + 1}`] || [];
               totalClaimableStakingRewards += epochRewards.reduce(
-                (acc, item) =>
-                  item.type === 'Claimable' ? acc + BigInt(item.amount) : acc,
-                BigInt(0),
+                (acc, item) => (item.type === 'Claimable' ? acc + BigInt(item.amount) : acc),
+                BigInt(0)
               );
               totalClaimedStakingRewards += epochRewards.reduce(
-                (acc, item) =>
-                  item.type === 'Claimed' ? acc + BigInt(item.amount) : acc,
-                BigInt(0),
+                (acc, item) => (item.type === 'Claimed' ? acc + BigInt(item.amount) : acc),
+                BigInt(0)
               );
             }
           });
@@ -181,9 +164,7 @@ const Supply = () => {
   return (
     <div className="text-black border-b" id="supply">
       <SectionWrapper id="supply">
-        <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">
-          Supply
-        </div>
+        <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">Supply</div>
         <div className="flex-row lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="border rounded-lg mb-8 lg:mb-0">
             <div id="token-supply" />
@@ -193,16 +174,12 @@ const Supply = () => {
             <SupplyPieChart />
           </div>
 
-          <div
-            id="max-emission-schedule"
-            className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0"
-          >
+          <div id="max-emission-schedule" className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0">
             <div id="emission-schedule" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Max Emission Schedule</h2>
               <p className="text-slate-500">
-                What is the maximum amount of OLAS that can be minted by the
-                protocol over time?
+                What is the maximum amount of OLAS that can be minted by the protocol over time?
               </p>
             </div>
             <EmissionScheduleChart
@@ -217,9 +194,7 @@ const Supply = () => {
             <div id="current-usage" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Current Usage</h2>
-              <p className="text-slate-500">
-                What are newly minted tokens used for right now?
-              </p>
+              <p className="text-slate-500">What are newly minted tokens used for right now?</p>
             </div>
             <div className="p-4">
               <UsagePieChart epoch={epoch} split={split} loading={loading} />
@@ -230,9 +205,7 @@ const Supply = () => {
             <div id="emissions-schedule" />
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Actual Emissions</h2>
-              <p className="text-slate-500">
-                What are the OLAS emissions per epoch
-              </p>
+              <p className="text-slate-500">What are the OLAS emissions per epoch</p>
             </div>
             <div className="p-4">
               <ActualEmissionsChart emissions={emissions} loading={loading} />

@@ -7,24 +7,11 @@ import { Button } from 'components/ui/button';
 import useCases from 'data/useCases.json';
 import SectionHeading from '../SectionHeading';
 
-const UseCaseCard = ({
-  title,
-  image,
-  imageWidth,
-  description,
-  services,
-  className,
-}) => (
+const UseCaseCard = ({ title, image, imageWidth, description, services, className }) => (
   <div className={className}>
     <div className="py-12 md:p-4 grid gap-4 md:grid-rows-[194px_88px_144px_70px] lg:grid-rows-[194px_88px_94px_70px]">
       <div className="flex mx-auto">
-        <Image
-          alt={title}
-          src={image}
-          width={imageWidth}
-          height={194}
-          className="object-contain"
-        />
+        <Image alt={title} src={image} width={imageWidth} height={194} className="object-contain" />
       </div>
       <h3 className="max-w-[200px] mx-auto text-3xl font-bold mb-4">{title}</h3>
       <p className="text-xl text-slate-700">{description}</p>
@@ -54,11 +41,7 @@ const UseCaseCard = ({
             <div>
               <h5 className="font-bold">
                 {service.title}{' '}
-                {service.isExternal ? (
-                  <span className="font-normal text-purple-800"> ↗</span>
-                ) : (
-                  ''
-                )}
+                {service.isExternal ? <span className="font-normal text-purple-800"> ↗</span> : ''}
               </h5>
               <p className="text-slate-700 mt-1">{service.description}</p>
             </div>
@@ -81,16 +64,13 @@ UseCaseCard.propTypes = {
       image: PropTypes.string.isRequired,
       link: PropTypes.string.isRequired,
       isExternal: PropTypes.bool,
-    }),
+    })
   ).isRequired,
   className: PropTypes.string.isRequired,
 };
 
 const UseCases = () => (
-  <SectionWrapper
-    customClasses="text-center md:py-24 py-16 px-4"
-    id="use-cases"
-  >
+  <SectionWrapper customClasses="text-center md:py-24 py-16 px-4" id="use-cases">
     <SectionHeading
       other="max-sm:mb-0"
       size="max-sm:text-5xl"
@@ -115,12 +95,7 @@ const UseCases = () => (
     </div>
 
     <div>
-      <Button
-        variant="outline"
-        size="xl"
-        asChild
-        className="mt-12 max-sm:mt-3 col-start-2 mx-auto"
-      >
+      <Button variant="outline" size="xl" asChild className="mt-12 max-sm:mt-3 col-start-2 mx-auto">
         <Link href="/explore">See more use cases</Link>
       </Button>
     </div>

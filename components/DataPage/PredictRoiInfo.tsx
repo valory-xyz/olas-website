@@ -1,8 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import {
-  PREDICT_MARKET_DURATION_DAYS,
-  STAKING_SUBGRAPH_URLS,
-} from 'common-util/constants';
+import { PREDICT_MARKET_DURATION_DAYS, STAKING_SUBGRAPH_URLS } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -15,9 +12,7 @@ import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
 
 export const PredictRoiInfo = () => {
-  const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(
-    PREDICT_MARKET_DURATION_DAYS,
-  );
+  const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
   const stakingGlobals = stakingGlobalsQuery;
@@ -34,10 +29,9 @@ export const PredictRoiInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Total ROI shows your agent&apos;s overall earnings, including profits
-          from predictions and staking rewards, minus all related costs such as
-          bet amounts, gas fees, and Mech request fees. Requests made for
-          unresolved (open) markets are excluded to ensure accuracy.
+          Total ROI shows your agent&apos;s overall earnings, including profits from predictions and
+          staking rewards, minus all related costs such as bet amounts, gas fees, and Mech request
+          fees. Requests made for unresolved (open) markets are excluded to ensure accuracy.
         </p>
 
         <ul className="list-disc list-inside space-y-1">
@@ -45,26 +39,21 @@ export const PredictRoiInfo = () => {
             <strong>Partial ROI</strong>: profit from prediction markets only.
           </li>
           <li>
-            <strong>Final ROI</strong>: includes staking rewards (OLAS converted
-            to USD).
+            <strong>Final ROI</strong>: includes staking rewards (OLAS converted to USD).
           </li>
         </ul>
 
         <p>The following queries are used to define the value:</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          1) Mech Requests query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>1) Mech Requests query</h3>
 
         <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
           <ul className="list-decimal list-inside space-y-1">
+            <li>Total mech requests for all markets, including closed and open</li>
             <li>
-              Total mech requests for all markets, including closed and open
-            </li>
-            <li>
-              All requests with question titles in order to use further to
-              subtract those done for open markets
+              All requests with question titles in order to use further to subtract those done for
+              open markets
             </li>
           </ul>
         </div>
@@ -75,26 +64,20 @@ export const PredictRoiInfo = () => {
           {totalMechRequests} {mechRequests}
         </CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          2) Markets & Bets Query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets & Bets Query</h3>
 
         <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
           <ul className="list-decimal list-inside space-y-1">
             <li>
-              All open markets, needed in order to understand which markets are
-              open and use it to subtract needed amount of mech requests from
-              the total
+              All open markets, needed in order to understand which markets are open and use it to
+              subtract needed amount of mech requests from the total
             </li>
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
         <p className="text-purple-600">
-          API endpoint:{' '}
-          <code>
-            {process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}
-          </code>
+          API endpoint: <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
         </p>
         <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
@@ -105,14 +88,10 @@ export const PredictRoiInfo = () => {
         <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          3) Staking Globals query
-        </h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Globals query</h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
-        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>
-          Subgraph link
-        </ExternalLink>
+        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>Subgraph link</ExternalLink>
         <CodeSnippet>{stakingGlobals}</CodeSnippet>
       </div>
     </SectionWrapper>

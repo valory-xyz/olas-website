@@ -13,23 +13,15 @@ const list = [
       <>
         <p className="mb-2">
           Use Mech agents in your projects via the{' '}
-          <ExternalLink href={`${STACK_URL}/mech-client/`}>
-            mech-client
-          </ExternalLink>
-          . Think of it as plugging powerful AI tools directly into your app or
-          agent.
+          <ExternalLink href={`${STACK_URL}/mech-client/`}>mech-client</ExternalLink>. Think of it
+          as plugging powerful AI tools directly into your app or agent.
         </p>
         <span className="mb-2">Examples:</span>
         <ul className="ml-6 list-disc">
+          <li className="mb-2">DeFi agents using Mech-based market prediction tools.</li>
+          <li className="mb-2">Interfaces powered by Mech-generated summaries.</li>
           <li className="mb-2">
-            DeFi agents using Mech-based market prediction tools.
-          </li>
-          <li className="mb-2">
-            Interfaces powered by Mech-generated summaries.
-          </li>
-          <li className="mb-2">
-            News agents using Mech for text-to-speech, translation, or semantic
-            parsing.
+            News agents using Mech for text-to-speech, translation, or semantic parsing.
           </li>
         </ul>
       </>
@@ -41,16 +33,14 @@ const list = [
     content: (
       <>
         <p className="mb-2">
-          Build and deploy your own Mech agents to the decentralized AI bazaar.
-          Mechs become callable services — invoked by other agents,
-          applications, or DAOs, for a small crypto fee.
+          Build and deploy your own Mech agents to the decentralized AI bazaar. Mechs become
+          callable services — invoked by other agents, applications, or DAOs, for a small crypto
+          fee.
         </p>
         <span className="mb-2">Examples:</span>
         <ul className="ml-6 list-disc">
           <li className="mb-2">Image, audio, or data synthesis agents</li>
-          <li className="mb-2">
-            Research Mechs delivering live API-integrated insights.
-          </li>
+          <li className="mb-2">Research Mechs delivering live API-integrated insights.</li>
         </ul>
       </>
     ),
@@ -60,16 +50,14 @@ const list = [
     content: (
       <>
         <p className="mb-2">
-          Make your agent discoverable, stakable, and composable by integrating
-          the Olas SDK. Bring agents from any stack—so long as they&apos;re
-          interoperable with Olas tools.
+          Make your agent discoverable, stakable, and composable by integrating the Olas SDK. Bring
+          agents from any stack—so long as they&apos;re interoperable with Olas tools.
         </p>
         <span className="mb-2">Examples:</span>
         <ul className="ml-6 list-disc">
           <li className="mb-2">
-            Enable an existing AI agent to interact with Olas staking contracts,
-            ensuring staking rewards are functional, and register it on the Olas
-            registry.
+            Enable an existing AI agent to interact with Olas staking contracts, ensuring staking
+            rewards are functional, and register it on the Olas registry.
           </li>
         </ul>
       </>
@@ -80,17 +68,13 @@ const list = [
     content: (
       <>
         <p className="mb-2">
-          Use the Olas Stack to define, deploy, and operate a self-contained
-          agent or agent service on-chain.
+          Use the Olas Stack to define, deploy, and operate a self-contained agent or agent service
+          on-chain.
         </p>
         <span className="mb-2">Examples:</span>
         <ul className="ml-6 list-disc">
-          <li className="mb-2">
-            DeFi agent that rebalances based on market conditions.
-          </li>
-          <li className="mb-2">
-            Content aggregator that filters and surfaces niche web3 news.
-          </li>
+          <li className="mb-2">DeFi agent that rebalances based on market conditions.</li>
+          <li className="mb-2">Content aggregator that filters and surfaces niche web3 news.</li>
         </ul>
       </>
     ),
@@ -98,20 +82,13 @@ const list = [
 ];
 
 export const WhatCanYouBuild = () => (
-  <SectionWrapper
-    id="what-you-will-build"
-    customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16"
-  >
+  <SectionWrapper id="what-you-will-build" customClasses="py-8 px-5 lg:py-24 lg:px-0 lg:pt-16">
     <div className="max-w-[640px] mx-auto">
-      <h2 className={`${SUB_HEADER_CLASS} text-center mb-8`}>
-        What Will You Build?
-      </h2>
-      <p className="mb-2">
-        Hacking with Olas allows you to choose from 4 tracks.
-      </p>
+      <h2 className={`${SUB_HEADER_CLASS} text-center mb-8`}>What Will You Build?</h2>
+      <p className="mb-2">Hacking with Olas allows you to choose from 4 tracks.</p>
       <p className="mb-8">
-        Create an agent, integrate an agent, or use an agent on the Mech
-        Marketplace: The AI Agent Bazaar.
+        Create an agent, integrate an agent, or use an agent on the Mech Marketplace: The AI Agent
+        Bazaar.
       </p>
       {list.map((item, index) => (
         <Card

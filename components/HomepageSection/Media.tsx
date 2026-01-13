@@ -17,12 +17,7 @@ const Media = () => {
       <div className="max-w-screen-xl mx-auto flex flex-col gap-20">
         <Videos isLoading={isLoading} videos={videos} limit={LIMIT} />
         <div id="blog">
-          <Articles
-            limit={LIMIT}
-            showSeeAll
-            isMain={false}
-            displayFolders={false}
-          />
+          <Articles limit={LIMIT} showSeeAll isMain={false} displayFolders={false} />
         </div>
       </div>
     </SectionWrapper>

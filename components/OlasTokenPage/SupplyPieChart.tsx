@@ -53,9 +53,7 @@ const ADDRESSES = DATA.map((item) => item.address).filter(Boolean);
 const TAILWIND_COLORS = DATA.map((item) => item.tailwindColor);
 const RGB_COLORS = DATA.map((item) => item.rgbColor);
 
-const CIRCULATING_SUPPLY_INDEX = DATA.findIndex(
-  (item) => item.id === 'circulatingSupply',
-);
+const CIRCULATING_SUPPLY_INDEX = DATA.findIndex((item) => item.id === 'circulatingSupply');
 
 function getAddressPrefix(address) {
   return address.slice(0, 6);
@@ -91,9 +89,7 @@ LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
   <div className="flex flex-col gap-2 text-base max-w-md">
-    <span className="font-semibold mb-2">
-      How is the Total Supply calculated?
-    </span>
+    <span className="font-semibold mb-2">How is the Total Supply calculated?</span>
     <span className="italic">
       <span className="font-semibold">Total Supply = On-chain</span> value -{' '}
       <span className="font-semibold">buOLAS</span> value
@@ -104,8 +100,8 @@ const TotalSupplyInfo = () => (
       Verify on-chain value
     </ExternalLink>
     <p>
-      <span className="font-semibold">buOLAS</span> is a portion of tokens that
-      have been burned following the{' '}
+      <span className="font-semibold">buOLAS</span> is a portion of tokens that have been burned
+      following the{' '}
       <ExternalLink href="https://gateway.autonolas.tech/ipfs/bafybeibw3wq7kpodccpsf2cdpnypbr56gjofbxv7cjy6k4h4ychhccnqwm">
         Olas DAO proposal
       </ExternalLink>
@@ -158,9 +154,7 @@ export const SupplyPieChart = () => {
       try {
         const promises = [
           fetch('/api/olas/total_supply'),
-          ...ADDRESSES.map((address) =>
-            olasContract.methods.balanceOf(address).call(),
-          ),
+          ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
         ];
 
         const result = await Promise.allSettled(promises);
@@ -186,9 +180,7 @@ export const SupplyPieChart = () => {
         });
 
         const circulatingSupply =
-          totalSupply > 0
-            ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n)
-            : 0n;
+          totalSupply > 0 ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n) : 0n;
 
         setTotalSupply(formatEthers(totalSupply));
         setData([

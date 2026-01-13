@@ -2,10 +2,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import {
-  StaleIndicator,
-  StaleMetricContent,
-} from 'components/ui/StaleIndicator';
+import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -33,13 +30,10 @@ const processPredictMetrics = (metrics) => {
   const predictTxsByType = metrics.predictTxsByType?.value ?? null;
 
   const traderTxs = predictTxsByType
-    ? (predictTxsByType.valory_trader || 0) +
-      (predictTxsByType.other_trader || 0)
+    ? (predictTxsByType.valory_trader || 0) + (predictTxsByType.other_trader || 0)
     : null;
   const mechTxs = predictTxsByType ? (predictTxsByType.mech ?? 0) : null;
-  const marketCreatorTxs = predictTxsByType
-    ? (predictTxsByType.market_maker ?? 0)
-    : null;
+  const marketCreatorTxs = predictTxsByType ? (predictTxsByType.market_maker ?? 0) : null;
 
   return {
     dailyActiveAgents: metrics.dailyActiveAgents?.value ?? null,
@@ -71,14 +65,12 @@ const AgentPerformanceBubble = ({ metrics, title }) => {
               <Popover>
                 <div className="flex flex-col max-w-[320px] gap-4 text-base ">
                   <p className="text-gray-500">
-                    Total ROI shows your agent&apos;s overall earnings,
-                    including profits from predictions and staking rewards,
-                    minus all related costs such as bet amounts, gas fees, and
-                    Mech request fees.
+                    Total ROI shows your agent&apos;s overall earnings, including profits from
+                    predictions and staking rewards, minus all related costs such as bet amounts,
+                    gas fees, and Mech request fees.
                   </p>
                   <p className="text-gray-500">
-                    Partial ROI reflects only prediction performance, excluding
-                    staking rewards.
+                    Partial ROI reflects only prediction performance, excluding staking rewards.
                   </p>
                   <div className="flex justify-between">
                     <span className="text-gray-900">Partial ROI</span>
@@ -122,7 +114,7 @@ const AgentPerformanceBubble = ({ metrics, title }) => {
         },
       },
     ],
-    [metrics],
+    [metrics]
   );
 
   return <MetricsBubble metrics={data} title={title} />;
@@ -135,12 +127,7 @@ const TransactionsBubble = ({ metrics, title }) => {
         id: 'traders',
         subText: (
           <div className="flex items-center gap-2">
-            <Image
-              alt="Predict"
-              src="/images/predict-page/traders.png"
-              width="48"
-              height="22"
-            />
+            <Image alt="Predict" src="/images/predict-page/traders.png" width="48" height="22" />
             <span>Traders</span>
           </div>
         ),
@@ -155,12 +142,7 @@ const TransactionsBubble = ({ metrics, title }) => {
         id: 'mechs',
         subText: (
           <div className="flex items-center gap-2">
-            <Image
-              alt="Predict"
-              src="/images/predict-page/mechs.png"
-              width="48"
-              height="22"
-            />
+            <Image alt="Predict" src="/images/predict-page/mechs.png" width="48" height="22" />
             <span>Mechs: Prediction Brokers</span>
           </div>
         ),
@@ -182,18 +164,11 @@ const TransactionsBubble = ({ metrics, title }) => {
               height="22"
             />
             <span>Market Creators</span>
-            <Image
-              alt="Predict"
-              src="/images/predict-page/closers.png"
-              width="48"
-              height="22"
-            />
+            <Image alt="Predict" src="/images/predict-page/closers.png" width="48" height="22" />
             <span>Closers</span>
           </div>
         ),
-        value: metrics.marketCreatorTxs
-          ? metrics.marketCreatorTxs.toLocaleString()
-          : null,
+        value: metrics.marketCreatorTxs ? metrics.marketCreatorTxs.toLocaleString() : null,
         status: metrics.txsStatus,
         source: {
           link: '/data#predict-transactions-by-type',
@@ -201,7 +176,7 @@ const TransactionsBubble = ({ metrics, title }) => {
         },
       },
     ],
-    [metrics],
+    [metrics]
   );
 
   return <MetricsBubble metrics={data} title={title} />;
@@ -217,20 +192,12 @@ export const Activity = ({ metrics: initialMetrics }) => {
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
         <Card className="md:col-span-2 flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-full text-xl w-full mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <div className="flex gap-4 items-center">
-            <Image
-              alt="Predict"
-              src="/images/predict-page/predict.svg"
-              width="36"
-              height="36"
-            />
+            <Image alt="Predict" src="/images/predict-page/predict.svg" width="36" height="36" />
             Predict Agent Economy
           </div>
           <div className="flex items-center gap-2">
             {metrics.dailyActiveAgents ? (
-              <Link
-                className="font-extrabold text-6xl"
-                href="/data#predict-daily-active-agents"
-              >
+              <Link className="font-extrabold text-6xl" href="/data#predict-daily-active-agents">
                 <span
                   className={`${metrics.dailyActiveAgentsStatus?.stale ? 'text-gray-400' : ''}`}
                 >
@@ -243,15 +210,11 @@ export const Activity = ({ metrics: initialMetrics }) => {
             <StaleIndicator status={metrics.dailyActiveAgentsStatus} />
           </div>
           <div className="flex self-center gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover>7-day average Daily Active Agents</Popover>
+            Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
         <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
-        <TransactionsBubble
-          title="Transactions by Agent Type"
-          metrics={metrics}
-        />
+        <TransactionsBubble title="Transactions by Agent Type" metrics={metrics} />
       </div>
     </SectionWrapper>
   );

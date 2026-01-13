@@ -26,12 +26,10 @@ const incentives = [
     imgSrc: `stakers.png`,
     description: (
       <>
-        Incentivize Operators to run AI agents in dedicated agent economies as
-        defined by Launchers. Agents are coordinated and rewarded for their
-        active contributions to specific use cases, usually mediated by the{' '}
-        <Link href="/mech-marketplace">Marketplace</Link>. The protocol benefits
-        through the Marketplace which can collect fees as a percentage of
-        turnover.
+        Incentivize Operators to run AI agents in dedicated agent economies as defined by Launchers.
+        Agents are coordinated and rewarded for their active contributions to specific use cases,
+        usually mediated by the <Link href="/mech-marketplace">Marketplace</Link>. The protocol
+        benefits through the Marketplace which can collect fees as a percentage of turnover.
       </>
     ),
     link: '/staking',
@@ -54,8 +52,8 @@ export const OlasProtocol = () => (
           Olas Protocol
         </SectionHeading>
         <p className="text-xl text-center text-[#4D596A]">
-          The Olas Protocol has a number of core mechanisms that coordinate the
-          humans and AI agents using it.
+          The Olas Protocol has a number of core mechanisms that coordinate the humans and AI agents
+          using it.
         </p>
       </div>
 
@@ -74,24 +72,22 @@ export const OlasProtocol = () => (
         />
 
         <p className="mb-3">
-          The protocol is centered around a number of on-chain registries that
-          track AI agents and the open-source code they are composed of:
+          The protocol is centered around a number of on-chain registries that track AI agents and
+          the open-source code they are composed of:
         </p>
         <ul className="list-disc ml-6">
           <li className="mb-3">
-            <strong>
-              Software Registries (Component & Agent Blueprint Registry)
-            </strong>{' '}
-            <br />
-            Register agent software and the software components they are made up
-            from as ERC-721 NFTs.
+            <strong>Software Registries (Component & Agent Blueprint Registry)</strong> <br />
+            Register agent software and the software components they are made up from as ERC-721
+            NFTs.
           </li>
           <li>
             <strong>AI Agent Registry</strong>
             <br />
-            Maintain and secure sovereign and decentralized{' '}
-            <Link href="/agents">AI agents</Link> registered as ERC-721 NFTs,
-            and coordinate their operators.
+            Maintain and secure sovereign and decentralized <Link href="/agents">
+              AI agents
+            </Link>{' '}
+            registered as ERC-721 NFTs, and coordinate their operators.
           </li>
         </ul>
       </div>
@@ -102,11 +98,7 @@ export const OlasProtocol = () => (
           {incentives.map((item, index) => (
             <Card
               key={item.title}
-              className={`p-6 ${
-                incentives.length % 2 !== 0 && index === incentives.length - 1
-                  ? 'md:col-span-2'
-                  : ''
-              }`}
+              className={`p-6 ${incentives.length % 2 !== 0 && index === incentives.length - 1 ? 'md:col-span-2' : ''}`}
             >
               <Image
                 src={`/images/olas-token-page/${item.imgSrc}`}
@@ -122,10 +114,7 @@ export const OlasProtocol = () => (
                 {item.secondaryLink && (
                   <span>
                     {' '}
-                    ·{' '}
-                    <Link href={item.secondaryLink}>
-                      {item.secondaryLinkText}
-                    </Link>
+                    · <Link href={item.secondaryLink}>{item.secondaryLinkText}</Link>
                   </span>
                 )}
               </div>
@@ -133,8 +122,8 @@ export const OlasProtocol = () => (
           ))}
         </div>
         <p>
-          Collectively, these three mechanisms support the growth of a
-          decentralised ecosystem of AI agents.
+          Collectively, these three mechanisms support the growth of a decentralised ecosystem of AI
+          agents.
         </p>
       </div>
 
@@ -147,14 +136,13 @@ export const OlasProtocol = () => (
           className="mb-10"
         />
         <p className="mb-3">
-          Finally, to coordinate all mechanisms, the protocol is governed via a
-          set of governance mechanisms. <Link href="/govern">Governors</Link>{' '}
-          are those holders of OLAS that lock their OLAS in a vote-escrow
-          version of OLAS, called veOLAS.
+          Finally, to coordinate all mechanisms, the protocol is governed via a set of governance
+          mechanisms. <Link href="/govern">Governors</Link> are those holders of OLAS that lock
+          their OLAS in a vote-escrow version of OLAS, called veOLAS.
         </p>
         <p className="mb-3">
-          Olas Protocol is currently deployed on multiple blockchains, with
-          plans for further expansions.
+          Olas Protocol is currently deployed on multiple blockchains, with plans for further
+          expansions.
         </p>
       </div>
     </div>

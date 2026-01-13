@@ -168,9 +168,7 @@ const LinksBlock = ({ title, links, className }: LinksBlockProps) => (
               <span className="whitespace-nowrap">
                 <span className="whitespace-normal">{item.title}</span>
                 &nbsp;
-                {item.isExternal && (
-                  <MoveUpRight className="ml-1 inline" size={8} />
-                )}
+                {item.isExternal && <MoveUpRight className="ml-1 inline" size={8} />}
               </span>
             </LinkTag>
           </span>
@@ -180,26 +178,15 @@ const LinksBlock = ({ title, links, className }: LinksBlockProps) => (
   </div>
 );
 
-LinksBlock.defaultProps = {
-  className: '',
-};
-
 const Footer = () => (
   <footer className="bg-white px-4 lg:px-6 py-16">
     <div className="mx-auto max-w-screen-xl flex max-lg:flex-col gap-8 xl:gap-12 border-b-1.5 pb-12 mb-6 text-slate-700">
       <div className="block md:flex lg:block justify-between md:justify-start">
         <div className="">
           <Link href="/" className="block mb-3">
-            <Image
-              src="/images/olas-logo.svg"
-              alt="logo"
-              width="120"
-              height="60"
-            />
+            <Image src="/images/olas-logo.svg" alt="logo" width="120" height="60" />
           </Link>
-          <span className="whitespace-nowrap">
-            The Network for Co-owning AI
-          </span>
+          <span className="whitespace-nowrap">The Network for Co-owning AI</span>
         </div>
         <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (

@@ -3,7 +3,7 @@ export const formatWeiNumber = (
   options: Intl.NumberFormatOptions = {
     notation: 'compact',
     maximumFractionDigits: 3,
-  },
+  }
 ) => {
   let wei: bigint;
   if (typeof numberInWei === 'bigint') {
@@ -37,7 +37,7 @@ export const formatEthNumber = (
   options: Intl.NumberFormatOptions = {
     notation: 'compact',
     maximumFractionDigits: 3,
-  },
+  }
 ) => {
   const formatter = Intl.NumberFormat('en', options);
   return formatter.format(Number(numberInEth));

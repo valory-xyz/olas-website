@@ -17,10 +17,7 @@ const Markdown = ({ className, children }: MarkdownProps) => {
     childrenString = children;
   } else if (React.isValidElement(children)) {
     const props = children.props as { children?: string };
-    childrenString =
-      typeof props?.children === 'string'
-        ? props.children
-        : String(children || '');
+    childrenString = typeof props?.children === 'string' ? props.children : String(children || '');
   } else {
     childrenString = String(children || '');
   }
@@ -40,11 +37,6 @@ const Markdown = ({ className, children }: MarkdownProps) => {
       {childrenString}
     </ReactMarkdown>
   );
-};
-
-Markdown.defaultProps = {
-  className: '',
-  children: null,
 };
 
 export default Markdown;

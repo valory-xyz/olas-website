@@ -21,13 +21,9 @@ const types = [
     description: (
       <div>
         <p className="mb-3">
-          Run by multiple operators and kept in sync through shared state and
-          consensus.
+          Run by multiple operators and kept in sync through shared state and consensus.
         </p>
-        <p>
-          Suitable for use-cases where the agent should not be controlled by a
-          single party.
-        </p>
+        <p>Suitable for use-cases where the agent should not be controlled by a single party.</p>
       </div>
     ),
   },
@@ -38,30 +34,18 @@ export const TwoTypes = () => {
 
   return (
     <SectionWrapper>
-      <SectionHeading other="text-center">
-        Two Types of Olas Agents
-      </SectionHeading>
+      <SectionHeading other="text-center">Two Types of Olas Agents</SectionHeading>
       <div className="flex flex-col md:flex-row max-lg:gap-10 justify-between max-w-4xl mx-auto">
         {types.map((item) => (
           <div
             key={item.key}
             className="flex flex-col gap-10 w-full md:max-w-[320px] lg:max-w-[396px] mx-auto"
           >
-            <h4 className={`text-center ${SUB_HEADER_MEDIUM_CLASS}`}>
-              {item.title}
-            </h4>
-            <Image
-              src={item.imageUrl}
-              alt={item.title}
-              width={396}
-              height={200}
-            />
+            <h4 className={`text-center ${SUB_HEADER_MEDIUM_CLASS}`}>{item.title}</h4>
+            <Image src={item.imageUrl} alt={item.title} width={396} height={200} />
             <div>{item.description}</div>
 
-            <a
-              className="text-purple-600 cursor-pointer"
-              onClick={() => setOpenModalKey(item.key)}
-            >
+            <a className="text-purple-600 cursor-pointer" onClick={() => setOpenModalKey(item.key)}>
               How it works?
             </a>
           </div>
@@ -85,27 +69,22 @@ export const TwoTypes = () => {
             <div className="overflow-auto h-full p-4">
               {openModalKey === 'sovereign' && (
                 <>
-                  <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-3`}>
-                    How Sovereign Agents Work
-                  </h2>
+                  <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-3`}>How Sovereign Agents Work</h2>
                   <p className="mb-3">
-                    Sovereign agents are lightweight, easy-to-run agents managed
-                    by a single individual or entity. They can operate on a
-                    personal computer or in the cloud, offering flexibility in
-                    deployment.
+                    Sovereign agents are lightweight, easy-to-run agents managed by a single
+                    individual or entity. They can operate on a personal computer or in the cloud,
+                    offering flexibility in deployment.
                   </p>
                   <p className="mb-3">
-                    The main advantages of Sovereign agents include low
-                    operating cost and simplicity, making them ideal for
-                    personal tasks or smaller-scale operations without the need
-                    for extensive coordination. In Olas&apos; technical
-                    language, sovereign agents are referred to as
-                    &quot;autonomous services with a single agent
-                    instance&quot;.
+                    The main advantages of Sovereign agents include low operating cost and
+                    simplicity, making them ideal for personal tasks or smaller-scale operations
+                    without the need for extensive coordination. In Olas&apos; technical language,
+                    sovereign agents are referred to as &quot;autonomous services with a single
+                    agent instance&quot;.
                   </p>
                   <p>
-                    Sovereign agents can be built with Olas&apos; own or
-                    third-party agent frameworks.
+                    Sovereign agents can be built with Olas&apos; own or third-party agent
+                    frameworks.
                   </p>
                 </>
               )}
@@ -124,26 +103,23 @@ export const TwoTypes = () => {
                   />
 
                   <p className="mb-3">
-                    Decentralized agents are made up of multiple agent
-                    instances, each run by different operators. This setup
-                    ensures high transparency and robustness due to their
-                    open-source code and a consensus mechanism that keeps all
-                    agent instances in sync.
+                    Decentralized agents are made up of multiple agent instances, each run by
+                    different operators. This setup ensures high transparency and robustness due to
+                    their open-source code and a consensus mechanism that keeps all agent instances
+                    in sync.
                   </p>
                   <p className="mb-3">
-                    These agent instances and their operator are well-suited for
-                    managing high-value processes and assets, such as governance
-                    in DAOs or delivering AI inference on-chain, because they
-                    minimize reliance on any single operator.
+                    These agent instances and their operator are well-suited for managing high-value
+                    processes and assets, such as governance in DAOs or delivering AI inference
+                    on-chain, because they minimize reliance on any single operator.
                   </p>
                   <p className="mb-3">
-                    In Olas&apos; technical language, decentralized agents are
-                    referred to as &quot;autonomous services with multiple agent
-                    instances&quot;.
+                    In Olas&apos; technical language, decentralized agents are referred to as
+                    &quot;autonomous services with multiple agent instances&quot;.
                   </p>
                   <p>
-                    Only Olas&apos; own agent framework enables Builders to
-                    create decentralized agents.
+                    Only Olas&apos; own agent framework enables Builders to create decentralized
+                    agents.
                   </p>
                 </>
               )}

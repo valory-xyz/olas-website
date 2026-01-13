@@ -28,9 +28,7 @@ const ways = [
         <ul className="list-disc ml-6 mt-4">
           <li>
             Build tools using the{' '}
-            <SubsiteLink href={`${STACK_URL}/mech-tools-dev`}>
-              Mech Tools Dev
-            </SubsiteLink>
+            <SubsiteLink href={`${STACK_URL}/mech-tools-dev`}>Mech Tools Dev</SubsiteLink>
           </li>
           <li>
             Or build you agent with whatever framework you want, wrap it in{' '}
@@ -52,21 +50,15 @@ const ways = [
     description: (
       <>
         <p>
-          Apply for the $1million grants program to build AI Agents for Pearl:
-          The &quot;AI Agent App Store&quot;.
+          Apply for the $1million grants program to build AI Agents for Pearl: The &quot;AI Agent
+          App Store&quot;.
         </p>
         <h3 className="font-semibold mt-4">Get funded</h3>
         <p>Up to $100K in grants to build, launch, and scale your AI agent.</p>
         <h3 className="font-semibold mt-4">Earn rewards</h3>
-        <p>
-          Have a chance to receive ongoing OLAS Dev Rewards for your registered
-          agents.
-        </p>
+        <p>Have a chance to receive ongoing OLAS Dev Rewards for your registered agents.</p>
         <h3 className="font-semibold mt-4">Access support</h3>
-        <p>
-          Leverage technical resources, developer workshops, and marketing
-          support to succeed.
-        </p>
+        <p>Leverage technical resources, developer workshops, and marketing support to succeed.</p>
       </>
     ),
     link: (
@@ -81,25 +73,21 @@ const ways = [
     description: (
       <>
         <p className="mb-4">
-          Contribute valuable code units — like agents or components — to the
-          Olas protocol and have a chance at receiving Developer Rewards.
+          Contribute valuable code units — like agents or components — to the Olas protocol and have
+          a chance at receiving Developer Rewards.
         </p>
         <p className="mb-4">
-          Dev Rewards is a part of the protocol that facilitates the
-          distribution of capital to developers who contribute to various
-          services in the ecosystem.
+          Dev Rewards is a part of the protocol that facilitates the distribution of capital to
+          developers who contribute to various services in the ecosystem.
         </p>
         <p>
-          This system is designed to reward both the contribution of code
-          components and entire agents.
+          This system is designed to reward both the contribution of code components and entire
+          agents.
         </p>
       </>
     ),
     showDevRewards: (setDevRewardsOpen) => (
-      <a
-        className="text-purple-600 cursor-pointer"
-        onClick={() => setDevRewardsOpen(true)}
-      >
+      <a className="text-purple-600 cursor-pointer" onClick={() => setDevRewardsOpen(true)}>
         Learn more about Dev Rewards
       </a>
     ),
@@ -111,25 +99,17 @@ export const WaysToGrow = () => {
   const [isDevRewardsOpen, setDevRewardsOpen] = useState(false);
 
   return (
-    <SectionWrapper
-      backgroundType="NONE"
-      customClasses="py-16 md:py-24 px-4"
-      id="why-build"
-    >
+    <SectionWrapper backgroundType="NONE" customClasses="py-16 md:py-24 px-4" id="why-build">
       <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
         Four ways to grow and earn as an Olas Builder
       </h2>
       <p className="text-gray-600 text-center mb-12">
-        Embark on ways of building to maximize your impact and earnings in the
-        Olas ecosystem.
+        Embark on ways of building to maximize your impact and earnings in the Olas ecosystem.
       </p>
 
       <div className="grid md:grid-cols-2 gap-x-10 md:gap-x-6 gap-y-4 max-w-4xl mx-auto">
         {ways.map((item) => (
-          <Card
-            className="flex flex-col overflow-hidden border rounded-xl"
-            key={item.title}
-          >
+          <Card className="flex flex-col overflow-hidden border rounded-xl" key={item.title}>
             <Image
               src={item.imageSrc}
               alt={item.title}
@@ -143,9 +123,7 @@ export const WaysToGrow = () => {
               </CardTitle>
               <div className="mb-6 text-start">{item.description}</div>
               {item.showDevRewards && (
-                <div className="mt-auto">
-                  {item.showDevRewards(setDevRewardsOpen)}
-                </div>
+                <div className="mt-auto">{item.showDevRewards(setDevRewardsOpen)}</div>
               )}
               {isDevRewardsOpen && (
                 <>
@@ -173,9 +151,7 @@ export const WaysToGrow = () => {
                 </>
               )}
               <div className="mt-auto">{item.link}</div>
-              {item.tip && (
-                <div className="text-sm text-[#606F85] mt-2">{item.tip}</div>
-              )}
+              {item.tip && <div className="text-sm text-[#606F85] mt-2">{item.tip}</div>}
             </div>
           </Card>
         ))}

@@ -36,18 +36,14 @@ const BabydegenMetricsBubble = ({
       {
         id: 'toUSDC',
         subText: 'APR, Relative to USDC - Moving Average 7D',
-        value: metrics?.latestUsdcApr
-          ? formatNumber(metrics.latestUsdcApr)
-          : null,
+        value: metrics?.latestUsdcApr ? formatNumber(metrics.latestUsdcApr) : null,
         source: baseSource,
         status,
       },
       {
         id: 'toETH',
         subText: 'APR, Relative to ETH - Moving Average 7D',
-        value: metrics?.latestEthApr
-          ? formatNumber(metrics.latestEthApr)
-          : null,
+        value: metrics?.latestEthApr ? formatNumber(metrics.latestEthApr) : null,
         source: baseSource,
         status,
       },
@@ -94,17 +90,8 @@ export const BabydegenMetrics = ({ metrics }) => {
           </div>
           {metrics?.dailyActiveAgents?.value ? (
             <div className="flex items-center gap-2">
-              <Link
-                className="font-extrabold text-6xl"
-                href="/data#babydegen-daily-active-agents"
-              >
-                <span
-                  className={
-                    metrics.dailyActiveAgents.status?.stale
-                      ? 'text-gray-400'
-                      : ''
-                  }
-                >
+              <Link className="font-extrabold text-6xl" href="/data#babydegen-daily-active-agents">
+                <span className={metrics.dailyActiveAgents.status?.stale ? 'text-gray-400' : ''}>
                   {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
                 </span>
               </Link>
@@ -114,8 +101,7 @@ export const BabydegenMetrics = ({ metrics }) => {
             <span className="text-purple-600 text-6xl">--</span>
           )}
           <div className="flex gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover>7-day average Daily Active Agents</Popover>
+            Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
         <BabydegenMetricsBubble

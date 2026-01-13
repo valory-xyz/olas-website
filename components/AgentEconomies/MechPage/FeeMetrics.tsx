@@ -24,8 +24,7 @@ export const FeeMetrics = ({ metrics }) => {
       total: {
         id: 'total-fees',
         label: 'Total Task Payments',
-        description:
-          'Micropayments made by agents (demand-side) when requesting tasks.',
+        description: 'Micropayments made by agents (demand-side) when requesting tasks.',
         value: metrics?.totalFees?.value || 0,
         status: metrics?.totalFees?.status,
         color: '#7a9cf7',
@@ -49,8 +48,7 @@ export const FeeMetrics = ({ metrics }) => {
       recieved: {
         id: 'received',
         label: 'Realised Mech Earnings',
-        description:
-          'Micropayments received by mechs (supply-side) after marketplace fees.',
+        description: 'Micropayments received by mechs (supply-side) after marketplace fees.',
         value: metrics?.recievedFees?.value || 0,
         status: metrics?.recievedFees?.status,
         color: '#68bcce',
@@ -66,7 +64,7 @@ export const FeeMetrics = ({ metrics }) => {
         color: '#dab2e4',
       },
     }),
-    [metrics],
+    [metrics]
   );
 
   const CheckOlasBurnt = () => {
@@ -151,20 +149,16 @@ export const FeeMetrics = ({ metrics }) => {
   };
 
   return (
-    <SectionWrapper
-      customClasses="text-center py-16 px-4 border-b"
-      id="fee-flow"
-    >
+    <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="fee-flow">
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
           Mech Marketplace Fee Flow
         </h2>
         <p className="text-base text-left text-slate-700 mx-auto">
-          The Mech Marketplace handles the collection of fees from the delivery
-          of tasks. A Mech triggers the transfer of its accumulated payments
-          from the balance tracker contract, typically at various intervals.
-          Upon this transfer, a small percentage of the payment is taken as a
-          DAO fee, which is subsequently burned. Here&apos;s more on{' '}
+          The Mech Marketplace handles the collection of fees from the delivery of tasks. A Mech
+          triggers the transfer of its accumulated payments from the balance tracker contract,
+          typically at various intervals. Upon this transfer, a small percentage of the payment is
+          taken as a DAO fee, which is subsequently burned. Here&apos;s more on{' '}
           <Link href="#process" className="text-purple-600">
             the process
           </Link>
@@ -197,9 +191,7 @@ export const FeeMetrics = ({ metrics }) => {
             >
               <div className="flex flex-col gap-2 mb-3">
                 <div className="flex flex-wrap gap-2 text-black">
-                  <span className="text-base max-sm:text-sm font-semibold">
-                    {item.label}
-                  </span>
+                  <span className="text-base max-sm:text-sm font-semibold">{item.label}</span>
                   <Popover>{item.description}</Popover>
                 </div>
               </div>

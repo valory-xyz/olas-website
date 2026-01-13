@@ -37,9 +37,7 @@ const Video = ({ video }: VideoProps) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <div
-      className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}
-    >
+    <div className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}>
       {video.imageFilename && (
         <Image
           src={`${video.imageFilename}`}

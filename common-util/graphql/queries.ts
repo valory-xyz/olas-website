@@ -31,7 +31,7 @@ export const rewardUpdates = (epochs) => gql`
           amount
           type
         }
-      `,
+      `
     )}
   }
 `;
@@ -82,12 +82,7 @@ export const mechGlobalsTotalRequestsQuery = gql`
   }
 `;
 
-export const getMechRequestsQuery = ({
-  timestamp_gt,
-  first,
-  skip,
-  pages,
-}) => gql`
+export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gql`
   query MechRequests {
     ${Array.from({ length: pages })
       .map((_, i) => {
@@ -151,14 +146,9 @@ export const stakingGlobalsQuery = gql`
   }
 `;
 
-export const dailyBabydegenPopulationMetricsQuery = ({
-  first = 10,
-  timestampLte,
-}: any = {}) => {
+export const dailyBabydegenPopulationMetricsQuery = ({ first = 10, timestampLte }: any = {}) => {
   const whereClause =
-    typeof timestampLte === 'number'
-      ? `where: { timestamp_lte: ${timestampLte} }`
-      : '';
+    typeof timestampLte === 'number' ? `where: { timestamp_lte: ${timestampLte} }` : '';
 
   return gql`
     {
@@ -180,14 +170,9 @@ export const dailyBabydegenPopulationMetricsQuery = ({
   `;
 };
 
-export const dailyStakingGlobalsSnapshotsQuery = ({
-  first = 10,
-  timestampLte,
-}: any = {}) => {
+export const dailyStakingGlobalsSnapshotsQuery = ({ first = 10, timestampLte }: any = {}) => {
   const whereClause =
-    typeof timestampLte === 'number'
-      ? `where: { timestamp_lte: ${timestampLte} }`
-      : '';
+    typeof timestampLte === 'number' ? `where: { timestamp_lte: ${timestampLte} }` : '';
 
   return gql`
     {
@@ -282,13 +267,7 @@ export const dailyMechAgentPerformancesQuery = gql`
       where: {
         and: [
           {
-            or: [
-              { agentId: 9 }
-              { agentId: 26 }
-              { agentId: 29 }
-              { agentId: 36 }
-              { agentId: 37 }
-            ]
+            or: [{ agentId: 9 }, { agentId: 26 }, { agentId: 29 }, { agentId: 36 }, { agentId: 37 }]
           }
           { dayTimestamp_gt: $timestamp_gt }
           { dayTimestamp_lt: $timestamp_lt }
@@ -304,11 +283,7 @@ export const dailyMechAgentPerformancesQuery = gql`
 `;
 
 export const dailyPredictAgentsPerformancesQuery = gql`
-  query DailyPredictPerformances(
-    $agentIds: [Int!]!
-    $timestamp_gt: Int!
-    $timestamp_lt: Int!
-  ) {
+  query DailyPredictPerformances($agentIds: [Int!]!, $timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
       where: {
         and: [
@@ -364,15 +339,9 @@ export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
 `;
 
 export const checkpointsQuery = gql`
-  query Checkpoints(
-    $contractAddress_in: [String!]!
-    $blockTimestamp_lte: Int!
-  ) {
+  query Checkpoints($contractAddress_in: [String!]!, $blockTimestamp_lte: Int!) {
     checkpoints(
-      where: {
-        contractAddress_in: $contractAddress_in
-        blockTimestamp_lte: $blockTimestamp_lte
-      }
+      where: { contractAddress_in: $contractAddress_in, blockTimestamp_lte: $blockTimestamp_lte }
       orderBy: blockTimestamp
       orderDirection: desc
       first: 1000
@@ -386,11 +355,7 @@ export const checkpointsQuery = gql`
 
 export const agentTxCountsQuery = gql`
   query AgentTxs($agentIds: [Int!]!) {
-    agentPerformances(
-      where: { id_in: $agentIds }
-      orderBy: id
-      orderDirection: asc
-    ) {
+    agentPerformances(where: { id_in: $agentIds }, orderBy: id, orderDirection: asc) {
       id
       txCount
     }
@@ -406,12 +371,7 @@ export const agentTxCountsQuery = gql`
 export const dailyAgentPerformancesQuery = gql`
   query DailyActiveMultisigs($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyActiveMultisigs_collection(
-      where: {
-        and: [
-          { dayTimestamp_gt: $timestamp_gt }
-          { dayTimestamp_lt: $timestamp_lt }
-        ]
-      }
+      where: { and: [{ dayTimestamp_gt: $timestamp_gt }, { dayTimestamp_lt: $timestamp_lt }] }
       orderBy: dayTimestamp
       orderDirection: desc
     ) {
@@ -554,12 +514,7 @@ export const holderCountsQuery = gql`
   }
 `;
 
-export const getActiveVeOlasDepositorsQuery = ({
-  first,
-  skip,
-  pages,
-  unlockAfter,
-}) => gql`
+export const getActiveVeOlasDepositorsQuery = ({ first, skip, pages, unlockAfter }) => gql`
   query ActiveVeOlasDepositors {
     ${Array.from({ length: pages })
       .map((_, i) => {

@@ -25,8 +25,7 @@ const quotes = [
       </>
     ),
     avatar: 'shutter-avatar.png',
-    blogUrl:
-      '/blog/how-peaq-optimized-energy-management-with-ai-agents-built-on-olas-1',
+    blogUrl: '/blog/how-peaq-optimized-energy-management-with-ai-agents-built-on-olas-1',
   },
   {
     projectImage: 'alterscope.png',
@@ -50,16 +49,14 @@ const quotes = [
   },
   {
     projectImage: 'alprina.png',
-    projectUrl:
-      'https://web.archive.org/web/20251218004459/https://www.alprina.com/',
+    projectUrl: 'https://web.archive.org/web/20251218004459/https://www.alprina.com/',
     quote:
       "As the founder of Alprina, an AI agent designed to predict stock movements, I chose Olas for its robust decentralized infrastructure. Olas's open-source framework and multi-chain protocol offer the flexibility and scalability essential for developing sophisticated agent economies. By leveraging Olas, we seamlessly integrate off-chain AI services with on-chain security, fostering innovation in a co-owned and decentralized environment.",
     name: 'Josh Wagenbach',
     nameUrl: 'https://x.com/joshwagenbach',
     title: 'CEO, Alprina',
     avatar: 'alprina-avatar.png',
-    blogUrl:
-      '/blog/how-alprina-built-a-multi-agent-ai-system-on-a-startup-budget-with-olas',
+    blogUrl: '/blog/how-alprina-built-a-multi-agent-ai-system-on-a-startup-budget-with-olas',
   },
   {
     projectImage: 'nevermined.png',

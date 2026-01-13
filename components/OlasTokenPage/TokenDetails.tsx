@@ -1,14 +1,7 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import TOKEN_DETAILS from 'data/tokens.json';
 import SectionHeading from '../SectionHeading';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 /**
  * Truncates an Ethereum address to show the first five characters, a ...,
@@ -17,12 +10,9 @@ import {
  * @returns {string} The truncated address
  */
 export const truncateAddress = (address) =>
-  address
-    ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}`
-    : '--';
+  address ? `${address.substring(0, 7)}...${address.substring(address.length - 5)}` : '--';
 
-const generateExplorerUrl = (token) =>
-  `${token.explorerBaseUrl}${token.address}`;
+const generateExplorerUrl = (token) => `${token.explorerBaseUrl}${token.address}`;
 
 export const TokenDetails = () => (
   <>
@@ -44,12 +34,8 @@ export const TokenDetails = () => (
               <TableRow>
                 <TableHead className="text-left border">Network</TableHead>
                 <TableHead className="text-left border">Get OLAS</TableHead>
-                <TableHead className="text-left border">
-                  Token Address
-                </TableHead>
-                <TableHead className="text-left border">
-                  Bridge from Ethereum to Network
-                </TableHead>
+                <TableHead className="text-left border">Token Address</TableHead>
+                <TableHead className="text-left border">Bridge from Ethereum to Network</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -88,11 +74,7 @@ export const TokenDetails = () => (
                     </TableCell>
                     <TableCell className="border">
                       {token.bridge ? (
-                        <a
-                          href={token.bridge.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={token.bridge.url} target="_blank" rel="noopener noreferrer">
                           {token.bridge.name} ↗
                         </a>
                       ) : (
@@ -144,11 +126,7 @@ export const TokenDetails = () => (
                 <div>
                   <strong>Bridge:</strong>{' '}
                   {token.bridge ? (
-                    <a
-                      href={token.bridge.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={token.bridge.url} target="_blank" rel="noopener noreferrer">
                       {token.bridge.name} ↗
                     </a>
                   ) : (
