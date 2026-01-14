@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -12,63 +12,22 @@ import { getTokenomicsContract, web3 } from 'common-util/web3';
 import { GetInvolved } from 'components/OlasTokenPage/GetInvolved';
 import { ProtocolAudits } from 'components/ProtocolPage/ProtocolAudits';
 import SectionWrapper from '../Layout/SectionWrapper';
+import { ActualEmissionsChart } from './ActualEmissionsChart';
+import { EmissionScheduleChart } from './EmissionScheduleChart';
 import { EmissionsToBonders } from './EmissionsToBonders';
 import { EmissionsToBuilders } from './EmissionsToBuilders';
 import { EmissionsToOperators } from './EmissionsToOperators';
 import { Hero } from './Hero';
 import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { OlasProtocol } from './OlasProtocol';
+import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
 import { TokenHoldersMetric } from './TokenHoldersMetric';
+import { UsagePieChart } from './UsagePieChart';
 
-// Lazy load chart components to reduce initial bundle size
-const SupplyPieChart = dynamic(
-  () =>
-    import('./SupplyPieChart').then((mod) => ({ default: mod.SupplyPieChart })),
-  {
-    loading: () => (
-      <div className="p-4 text-center text-gray-500">Loading chart...</div>
-    ),
-    ssr: false,
-  },
-);
-
-const EmissionScheduleChart = dynamic(
-  () =>
-    import('./EmissionScheduleChart').then((mod) => ({
-      default: mod.EmissionScheduleChart,
-    })),
-  {
-    loading: () => (
-      <div className="p-4 text-center text-gray-500">Loading chart...</div>
-    ),
-    ssr: false,
-  },
-);
-
-const UsagePieChart = dynamic(
-  () =>
-    import('./UsagePieChart').then((mod) => ({ default: mod.UsagePieChart })),
-  {
-    loading: () => (
-      <div className="p-4 text-center text-gray-500">Loading chart...</div>
-    ),
-    ssr: false,
-  },
-);
-
-const ActualEmissionsChart = dynamic(
-  () =>
-    import('./ActualEmissionsChart').then((mod) => ({
-      default: mod.ActualEmissionsChart,
-    })),
-  {
-    loading: () => (
-      <div className="p-4 text-center text-gray-500">Loading chart...</div>
-    ),
-    ssr: false,
-  },
-);
+// manually register arc element, category scale, linear scale,
+// and bar element – required due to chart.js tree shaking
+Chart.register(CategoryScale, LinearScale, BarElement);
 
 const tokenomicsContract = getTokenomicsContract();
 
