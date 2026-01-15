@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       success: true,
       generatedAt: new Date().toISOString(),
       url,
+      metrics,
     });
   } catch (error) {
     console.error('Error refreshing main metrics:', error);
