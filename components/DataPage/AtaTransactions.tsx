@@ -23,14 +23,14 @@ export const AtaTransactionsInfo = () => {
 
         <p className="text-purple-600">
           Subgraph links:{' '}
-          <ExternalLink href={process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL} className="mr-2">
-            Gnosis MM
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Gnosis Marketplace
           </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL} className="mr-2">
-            Base MM
-          </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_GNOSIS_LM_SUBGRAPH_URL}>
-            Gnosis LM
+          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}>
+            Base Marketplace
           </ExternalLink>
         </p>
         <CodeSnippet>{ataTransactionsQuery}</CodeSnippet>

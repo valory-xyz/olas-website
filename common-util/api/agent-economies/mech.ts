@@ -1,14 +1,12 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
-import { ATA_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyMechAgentPerformancesQuery,
-  mechGlobalsTotalRequestsQuery,
   mechMarketplaceRequestsPerAgentsQuery,
   mechMarketplaceTotalRequestsQuery,
-  mechRequestsPerAgentOnchainsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { extractSettledNumber } from 'common-util/promises';
@@ -88,12 +86,11 @@ const fetchMechGlobals = async (): Promise<
 
   try {
     const results = (await Promise.allSettled([
-      ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
-      ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
-      ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
+      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
+      MARKETPLACE_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
     ])) as PromiseSettledResult<MechGlobalsResult>[];
 
-    const sources = ['legacyMech', 'gnosis', 'base'];
+    const sources = ['gnosis', 'base'];
     results.forEach((res, index) => {
       const source = sources[index];
       if (res.status === 'rejected') {
@@ -159,12 +156,9 @@ type MechResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
 }>;
 
-type MarketplaceGnosisResult = WithMeta<{
+type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
-}>;
-
-type MarketplaceBaseResult = WithMeta<{
-  requestsPerAgents: { id: string; requestsCount: number }[];
+  requestsPerAgentOnchains: { id: string; requestsCount: number }[];
 }>;
 
 // Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
@@ -183,18 +177,20 @@ const fetchCategorizedRequestTotals = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] = (await Promise.allSettled([
-      ATA_GRAPH_CLIENTS.legacyMech.request(mechRequestsPerAgentOnchainsQuery(allIds.map(String))),
-      ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))),
-      ATA_GRAPH_CLIENTS.base.request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))),
+    const [marketplaceGnosisResult, marketplaceBaseResult] = (await Promise.allSettled([
+      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
+        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+      ),
+      MARKETPLACE_GRAPH_CLIENTS.base.request(
+        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+      ),
     ])) as [
-      PromiseSettledResult<MechResult>,
-      PromiseSettledResult<MarketplaceGnosisResult>,
-      PromiseSettledResult<MarketplaceBaseResult>,
+      PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
+      PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
     ];
 
-    const results = [mechResult, marketplaceGnosisResult, marketplaceBaseResult];
-    const sources = ['legacyMech', 'gnosis', 'base'];
+    const results = [marketplaceGnosisResult, marketplaceBaseResult];
+    const sources = ['gnosis', 'base'];
     results.forEach((res, index) => {
       const source = sources[index];
       if (res.status === 'rejected') {
@@ -219,14 +215,13 @@ const fetchCategorizedRequestTotals = async (): Promise<
       });
     };
 
-    if (mechResult.status === 'fulfilled') {
-      addCounts(mechResult.value?.requestsPerAgentOnchains);
-    }
     if (marketplaceGnosisResult.status === 'fulfilled') {
       addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
+      addCounts(marketplaceGnosisResult.value?.requestsPerAgentOnchains);
     }
     if (marketplaceBaseResult.status === 'fulfilled') {
       addCounts(marketplaceBaseResult.value?.requestsPerAgents);
+      addCounts(marketplaceBaseResult.value?.requestsPerAgentOnchains);
     }
 
     const sumCountsForAgentIds = (agentIds: number[]) =>

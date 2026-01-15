@@ -73,15 +73,6 @@ export const mechMarketplaceTotalRequestsQuery = gql`
   }
 `;
 
-export const mechGlobalsTotalRequestsQuery = gql`
-  query MechGlobalsTotalRequests {
-    global(id: "") {
-      totalRequests
-      totalDeliveries
-    }
-  }
-`;
-
 export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gql`
   query MechRequests {
     ${Array.from({ length: pages })
@@ -480,20 +471,14 @@ export const legacyMechFeesTotalsQuery = gql`
   }
 `;
 
-// Mech subgraph: per-agent onchain requests
-export const mechRequestsPerAgentOnchainsQuery = (ids) => gql`
-  query MechRequestsPerAgentOnchains {
-    requestsPerAgentOnchains(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
-      id
-      requestsCount
-    }
-  }
-`;
-
 // Mech-Marketplace subgraphs: per-agent total requests
 export const mechMarketplaceRequestsPerAgentsQuery = (ids) => gql`
   query MechMarketplaceRequestsPerAgents {
     requestsPerAgents(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
+      id
+      requestsCount
+    }
+    requestsPerAgentOnchains(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
       id
       requestsCount
     }
