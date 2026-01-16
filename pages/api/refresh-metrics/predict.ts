@@ -2,10 +2,7 @@ import { fetchAllPredictMetrics } from 'common-util/api/predict';
 import { saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -23,6 +20,7 @@ export default async function handler(
       success: true,
       generatedAt: new Date().toISOString(),
       url,
+      metrics,
     });
   } catch (error) {
     console.error('Error refreshing predict metrics:', error);

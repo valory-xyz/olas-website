@@ -1,9 +1,6 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { autonolasBaseGraphClient } from 'common-util/graphql/client';
-import {
-  createStaleStatus,
-  executeGraphQLQuery,
-} from 'common-util/graphql/metric-utils';
+import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import { dailyActivitiesQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -18,9 +15,7 @@ type DailyActivitiesResult = WithMeta<{
   dailyActivities: { count: number }[];
 }>;
 
-const fetchContributeDaa7dAvg = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<DailyActivitiesResult, number>({
     client: autonolasBaseGraphClient,
     query: dailyActivitiesQuery,
@@ -44,9 +39,7 @@ type LeaderboardResult = {
   json_value: { wallet_address: string; points: number };
 };
 
-const fetchTotalOlasContributors = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | null>> => {
   let skip = 0;
   let allResults: LeaderboardResult[] = [];
 
@@ -69,11 +62,7 @@ const fetchTotalOlasContributors = async (): Promise<
       allResults = allResults.concat(pageData);
       skip += LIMIT;
 
-      if (
-        !Array.isArray(pageData) ||
-        pageData.length === 0 ||
-        pageData.length < LIMIT
-      ) {
+      if (!Array.isArray(pageData) || pageData.length === 0 || pageData.length < LIMIT) {
         break;
       }
     }
@@ -117,10 +106,7 @@ export const fetchContributeMetrics = async () => {
     if (totalOlasContributorsResult.status === 'fulfilled') {
       totalOlasContributors = totalOlasContributorsResult.value;
     } else {
-      console.error(
-        LEADERBOARD_ERROR_MESSAGE,
-        totalOlasContributorsResult.reason
-      );
+      console.error(LEADERBOARD_ERROR_MESSAGE, totalOlasContributorsResult.reason);
       totalOlasContributors.status = createStaleStatus([], ['contribute:total']);
     }
 

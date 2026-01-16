@@ -9,10 +9,7 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
-import {
-  createStaleStatus,
-  executeGraphQLQuery,
-} from 'common-util/graphql/metric-utils';
+import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
@@ -22,9 +19,7 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const MODIUS_FIXED_END_TIMESTAMP = Math.floor(
-  new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000
-);
+const MODIUS_FIXED_END_TIMESTAMP = Math.floor(new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000);
 const EMPTY_APR_METRICS = {
   latestUsdcApr: null,
   latestEthApr: null,
@@ -44,9 +39,7 @@ const toNumber = (value: unknown) => {
   return Number.isFinite(num) ? num : 0;
 };
 
-const fetchModiusPopulationMetrics = async (): Promise<
-  MetricWithStatus<any[] | null>
-> => {
+const fetchModiusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | null>> => {
   return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
     client: BABYDEGEN_GRAPH_CLIENTS.mode,
     query: dailyBabydegenPopulationMetricsQuery({
@@ -55,9 +48,7 @@ const fetchModiusPopulationMetrics = async (): Promise<
     } as Parameters<typeof dailyBabydegenPopulationMetricsQuery>[0]),
     source: 'babyDegen:mode',
     transform: (data) => {
-      const rows = Array.isArray(data?.dailyPopulationMetrics)
-        ? data.dailyPopulationMetrics
-        : [];
+      const rows = Array.isArray(data?.dailyPopulationMetrics) ? data.dailyPopulationMetrics : [];
       if (rows.length === 0) return null;
       if (rows.length < 7) {
         console.error('Not enough Modius population snapshots before cutoff.');
@@ -73,17 +64,13 @@ const fetchModiusPopulationMetrics = async (): Promise<
   });
 };
 
-const fetchOptimusPopulationMetrics = async (): Promise<
-  MetricWithStatus<any[] | null>
-> => {
+const fetchOptimusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | null>> => {
   return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
     client: BABYDEGEN_GRAPH_CLIENTS.optimism,
     query: dailyBabydegenPopulationMetricsQuery({ first: 10 }),
     source: 'babyDegen:optimism',
     transform: (data) => {
-      const rows = Array.isArray(data?.dailyPopulationMetrics)
-        ? data.dailyPopulationMetrics
-        : [];
+      const rows = Array.isArray(data?.dailyPopulationMetrics) ? data.dailyPopulationMetrics : [];
       if (rows.length === 0) return null;
 
       // Exclude today (UTC)
@@ -144,14 +131,8 @@ const fetchOptimusMetrics = async (
   return {
     value: metrics ?? { ...EMPTY_APR_METRICS },
     status: createStaleStatus(
-      [
-        ...(populationStatus.indexingErrors || []),
-        ...(maxOlasApr.status.indexingErrors || []),
-      ],
-      [
-        ...(populationStatus.fetchErrors || []),
-        ...(maxOlasApr.status.fetchErrors || []),
-      ]
+      [...(populationStatus.indexingErrors || []), ...(maxOlasApr.status.indexingErrors || [])],
+      [...(populationStatus.fetchErrors || []), ...(maxOlasApr.status.fetchErrors || [])]
     ),
   };
 };
@@ -187,21 +168,13 @@ const fetchModiusMetrics = async (
       latestAvgApr: aprMetrics.latestUsdcApr,
     },
     status: createStaleStatus(
-      [
-        ...(populationStatus.indexingErrors || []),
-        ...(maxOlasApr.status.indexingErrors || []),
-      ],
-      [
-        ...(populationStatus.fetchErrors || []),
-        ...(maxOlasApr.status.fetchErrors || []),
-      ]
+      [...(populationStatus.indexingErrors || []), ...(maxOlasApr.status.indexingErrors || [])],
+      [...(populationStatus.fetchErrors || []), ...(maxOlasApr.status.fetchErrors || [])]
     ),
   };
 };
 
-const fetchDailyAgentPerformance = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
@@ -219,10 +192,7 @@ const fetchDailyAgentPerformance = async (): Promise<
       }),
     ]);
 
-    const handleResult = (
-      result: PromiseSettledResult<any>,
-      source: string
-    ) => {
+    const handleResult = (result: PromiseSettledResult<any>, source: string) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
         return [];
@@ -236,14 +206,8 @@ const fetchDailyAgentPerformance = async (): Promise<
     const modePerformances = handleResult(modeResult, 'mode');
     const optimismPerformances = handleResult(optimismResult, 'optimism');
 
-    const modeAverage = calculate7DayAverage(
-      modePerformances,
-      'activeMultisigCount'
-    );
-    const optimismAverage = calculate7DayAverage(
-      optimismPerformances,
-      'activeMultisigCount'
-    );
+    const modeAverage = calculate7DayAverage(modePerformances, 'activeMultisigCount');
+    const optimismAverage = calculate7DayAverage(optimismPerformances, 'activeMultisigCount');
 
     return {
       value: modeAverage + optimismAverage,
@@ -266,9 +230,7 @@ type StakingContractsResult = WithMeta<{
   }[];
 }>;
 
-const fetchModiusOlasApr = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchModiusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<StakingContractsResult, number | null>({
     client: STAKING_GRAPH_CLIENTS.mode,
     query: stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
@@ -280,9 +242,7 @@ const fetchModiusOlasApr = async (): Promise<
   });
 };
 
-const fetchOptimusOlasApr = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchOptimusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<StakingContractsResult, number | null>({
     client: STAKING_GRAPH_CLIENTS.optimism,
     query: stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
@@ -301,12 +261,11 @@ export const fetchBabyDegenMetrics = async () => {
       fetchOptimusOlasApr(),
     ]);
 
-    const [modiusMetrics, optimusMetrics, dailyActiveAgents] =
-      await Promise.all([
-        fetchModiusMetrics(modiusApr),
-        fetchOptimusMetrics(optimusApr),
-        fetchDailyAgentPerformance(),
-      ]);
+    const [modiusMetrics, optimusMetrics, dailyActiveAgents] = await Promise.all([
+      fetchModiusMetrics(modiusApr),
+      fetchOptimusMetrics(optimusApr),
+      fetchDailyAgentPerformance(),
+    ]);
 
     return {
       optimus: optimusMetrics,

@@ -1,9 +1,6 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
-import {
-  ATA_GRAPH_CLIENTS,
-  REGISTRY_GRAPH_CLIENTS,
-} from 'common-util/graphql/client';
+import { ATA_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
@@ -29,9 +26,7 @@ type BaseResult = {
   }[];
 };
 
-const fetchDailyAgentPerformance = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
@@ -49,10 +44,7 @@ const fetchDailyAgentPerformance = async (): Promise<
       }) as Promise<BaseResult>,
     ]);
 
-    const handleResult = <T>(
-      result: PromiseSettledResult<T>,
-      source: string
-    ) => {
+    const handleResult = <T>(result: PromiseSettledResult<T>, source: string) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
         return null;
@@ -65,14 +57,8 @@ const fetchDailyAgentPerformance = async (): Promise<
     const gnosisPerformances = gnosisData?.dailyAgentPerformances ?? [];
     const basePerformances = baseData?.dailyAgentPerformances ?? [];
 
-    const gnosisAverage = calculate7DayAverage(
-      gnosisPerformances,
-      'activeMultisigCount'
-    );
-    const baseAverage = calculate7DayAverage(
-      basePerformances,
-      'activeMultisigCount'
-    );
+    const gnosisAverage = calculate7DayAverage(gnosisPerformances, 'activeMultisigCount');
+    const baseAverage = calculate7DayAverage(basePerformances, 'activeMultisigCount');
 
     return {
       value: gnosisAverage + baseAverage,
@@ -101,11 +87,11 @@ const fetchMechGlobals = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
+    const results = (await Promise.allSettled([
       ATA_GRAPH_CLIENTS.legacyMech.request(mechGlobalsTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
       ATA_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-    ]) as PromiseSettledResult<MechGlobalsResult>[];
+    ])) as PromiseSettledResult<MechGlobalsResult>[];
 
     const sources = ['legacyMech', 'gnosis', 'base'];
     results.forEach((res, index) => {
@@ -147,25 +133,17 @@ type AgentPerformance = WithMeta<{
 }>;
 
 // Fetch agents.fun txCount from Base registry subgraph
-const fetchAgentsFunTxCount = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>> => {
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
-    const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(
-      agentTxCountsQuery,
-      {
-        agentIds,
-      }
-    );
+    const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(agentTxCountsQuery, {
+      agentIds,
+    });
     const rows = result?.agentPerformances || [];
     const txCount = rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
     return {
       value: txCount,
-      status: createStaleStatus(
-        result?._meta?.hasIndexingErrors ? ['registry:base'] : [],
-        []
-      ),
+      status: createStaleStatus(result?._meta?.hasIndexingErrors ? ['registry:base'] : [], []),
     };
   } catch (error) {
     console.error('Error fetching agents.fun txCount:', error);
@@ -175,7 +153,6 @@ const fetchAgentsFunTxCount = async (): Promise<
     };
   }
 };
-
 
 type MechResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
@@ -206,28 +183,17 @@ const fetchCategorizedRequestTotals = async (): Promise<
   const fetchErrors: string[] = [];
 
   try {
-    const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] =
-      (await Promise.allSettled([
-        ATA_GRAPH_CLIENTS.legacyMech.request(
-          mechRequestsPerAgentOnchainsQuery(allIds.map(String))
-        ),
-        ATA_GRAPH_CLIENTS.gnosis.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-        ),
-        ATA_GRAPH_CLIENTS.base.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-        ),
-      ])) as [
-        PromiseSettledResult<MechResult>,
-        PromiseSettledResult<MarketplaceGnosisResult>,
-        PromiseSettledResult<MarketplaceBaseResult>
-      ];
-
-    const results = [
-      mechResult,
-      marketplaceGnosisResult,
-      marketplaceBaseResult,
+    const [mechResult, marketplaceGnosisResult, marketplaceBaseResult] = (await Promise.allSettled([
+      ATA_GRAPH_CLIENTS.legacyMech.request(mechRequestsPerAgentOnchainsQuery(allIds.map(String))),
+      ATA_GRAPH_CLIENTS.gnosis.request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))),
+      ATA_GRAPH_CLIENTS.base.request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))),
+    ])) as [
+      PromiseSettledResult<MechResult>,
+      PromiseSettledResult<MarketplaceGnosisResult>,
+      PromiseSettledResult<MarketplaceBaseResult>,
     ];
+
+    const results = [mechResult, marketplaceGnosisResult, marketplaceBaseResult];
     const sources = ['legacyMech', 'gnosis', 'base'];
     results.forEach((res, index) => {
       const source = sources[index];
@@ -242,19 +208,14 @@ const fetchCategorizedRequestTotals = async (): Promise<
 
     const combinedCounts = new Map();
 
-    const addCounts = (
-      records: { id: string; requestsCount: number }[] | undefined
-    ) => {
+    const addCounts = (records: { id: string; requestsCount: number }[] | undefined) => {
       if (!Array.isArray(records)) return;
       records.forEach((item) => {
         if (!item?.id) return;
         const agentId = Number(item.id);
         if (!Number.isFinite(agentId)) return;
         const requestCount = Number(item?.requestsCount ?? 0);
-        combinedCounts.set(
-          agentId,
-          (combinedCounts.get(agentId) ?? 0) + requestCount
-        );
+        combinedCounts.set(agentId, (combinedCounts.get(agentId) ?? 0) + requestCount);
       });
     };
 
@@ -269,10 +230,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     }
 
     const sumCountsForAgentIds = (agentIds: number[]) =>
-      agentIds.reduce(
-        (accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0),
-        0
-      );
+      agentIds.reduce((accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0), 0);
 
     return {
       value: {
@@ -293,13 +251,12 @@ const fetchCategorizedRequestTotals = async (): Promise<
 
 export const fetchMechMetrics = async () => {
   try {
-    const [dailyActiveAgents, globals, categorized, agentsfunTxs] =
-      await Promise.all([
-        fetchDailyAgentPerformance(),
-        fetchMechGlobals(),
-        fetchCategorizedRequestTotals(),
-        fetchAgentsFunTxCount(),
-      ]);
+    const [dailyActiveAgents, globals, categorized, agentsfunTxs] = await Promise.all([
+      fetchDailyAgentPerformance(),
+      fetchMechGlobals(),
+      fetchCategorizedRequestTotals(),
+      fetchAgentsFunTxCount(),
+    ]);
 
     const predictTxsValue = categorized.value?.predictTxs ?? 0;
     const contributeTxsValue = categorized.value?.contributeTxs ?? 0;
@@ -307,11 +264,7 @@ export const fetchMechMetrics = async () => {
     const agentsfunTxsValue = agentsfunTxs.value ?? 0;
     const totalRequestsValue = globals.value?.requests ?? 0;
 
-    const known =
-      predictTxsValue +
-      contributeTxsValue +
-      governatooorrTxsValue +
-      agentsfunTxsValue;
+    const known = predictTxsValue + contributeTxsValue + governatooorrTxsValue + agentsfunTxsValue;
     const otherTxsValue = Math.max(0, totalRequestsValue - known);
 
     return {
@@ -338,16 +291,10 @@ export const fetchMechMetrics = async () => {
       },
       agentsfunTxs: agentsfunTxs,
       otherTxs: {
-        value: (globals.value && categorized.value) ? otherTxsValue : null,
+        value: globals.value && categorized.value ? otherTxsValue : null,
         status: createStaleStatus(
-          [
-            ...(globals.status.indexingErrors || []),
-            ...(categorized.status.indexingErrors || []),
-          ],
-          [
-            ...(globals.status.fetchErrors || []),
-            ...(categorized.status.fetchErrors || []),
-          ]
+          [...(globals.status.indexingErrors || []), ...(categorized.status.indexingErrors || [])],
+          [...(globals.status.fetchErrors || []), ...(categorized.status.fetchErrors || [])]
         ),
       },
     };
