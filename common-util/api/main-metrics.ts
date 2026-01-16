@@ -127,7 +127,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
     );
 
     return {
-      value: formatWeiNumber(`${olasStaked}`, {
+      value: formatWeiNumber(olasStaked, {
         notation: 'standard',
         maximumFractionDigits: 0,
       }),
