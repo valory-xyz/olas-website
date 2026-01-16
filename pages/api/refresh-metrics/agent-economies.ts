@@ -19,6 +19,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
       success: true,
       generatedAt: new Date().toISOString(),
       url,
+      metrics,
     });
   } catch (error) {
     console.error('Error refreshing agent economies metrics:', error);
