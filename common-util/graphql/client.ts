@@ -67,10 +67,9 @@ export const predictAgentsGraphClient = new GraphQLClient(
   requestConfig
 );
 
-export const ATA_GRAPH_CLIENTS = {
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_MM_SUBGRAPH_URL, requestConfig),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_MM_SUBGRAPH_URL, requestConfig),
-  legacyMech: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_LM_SUBGRAPH_URL, requestConfig),
+export const MARKETPLACE_GRAPH_CLIENTS = {
+  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL, requestConfig),
+  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL, requestConfig),
 };
 
 export const BABYDEGEN_GRAPH_CLIENTS = {

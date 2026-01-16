@@ -1,7 +1,7 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
-  ATA_GRAPH_CLIENTS,
   legacyMechFeesGraphClient,
+  MARKETPLACE_GRAPH_CLIENTS,
   MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
@@ -127,7 +127,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
     );
 
     return {
-      value: formatWeiNumber(`${olasStaked}`, {
+      value: formatWeiNumber(olasStaked, {
         notation: 'standard',
         maximumFractionDigits: 0,
       }),
@@ -256,13 +256,13 @@ type AtaTransactionsResult = WithMeta<{
 }>;
 
 export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
-  const sources = ['gnosis', 'base', 'legacyMech'] as const;
+  const sources = ['gnosis', 'base'] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      sources.map((source) => ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
+      sources.map((source) => MARKETPLACE_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
     );
 
     const ataTransactionsByChains: string[] = [];
