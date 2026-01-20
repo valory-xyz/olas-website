@@ -12,7 +12,8 @@ export const formatWeiNumber = (
     try {
       wei = BigInt(numberInWei);
     } catch {
-      // Fallback: If it's not a valid bigint string (e.g. has decimals or non-numeric),
+      // Fallback: If it's not a valid bigint string (e.g. has decimals or non-numeric)
+      // or is already a numeric value (e.g. converted from bigint by chart libraries),
       const numValue = Number(numberInWei);
       if (!Number.isFinite(numValue) || Number.isNaN(numValue)) {
         return new Intl.NumberFormat('en', options).format(0);
