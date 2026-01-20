@@ -10,18 +10,14 @@ export const formatWeiNumber = (
     wei = numberInWei;
   } else {
     try {
-      const numValue = Number(numberInWei);
-      if (
-        !Number.isFinite(numValue) ||
-        Number.isNaN(numValue) ||
-        numValue < Number.MIN_SAFE_INTEGER ||
-        numValue > Number.MAX_SAFE_INTEGER
-      ) {
-        return new Intl.NumberFormat('en', options).format(0);
-      }
       wei = BigInt(numberInWei);
     } catch {
-      return new Intl.NumberFormat('en', options).format(0);
+      // Fallback: If it's not a valid bigint string (e.g. has decimals or non-numeric),
+      const numValue = Number(numberInWei);
+      if (!Number.isFinite(numValue) || Number.isNaN(numValue)) {
+        return new Intl.NumberFormat('en', options).format(0);
+      }
+      return new Intl.NumberFormat('en', options).format(numValue / 1e18);
     }
   }
 
