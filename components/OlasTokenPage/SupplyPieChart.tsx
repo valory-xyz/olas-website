@@ -172,6 +172,9 @@ export const SupplyPieChart = () => {
         const distributions = result.slice(1, result.length).map((item) => {
           if (item.status === 'fulfilled') {
             const value = item.value as unknown;
+            if (typeof value === 'bigint') {
+              return value;
+            }
             if (typeof value === 'string' || typeof value === 'number') {
               return BigInt(String(value));
             }
