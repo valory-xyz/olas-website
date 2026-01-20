@@ -1,7 +1,7 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
-  ATA_GRAPH_CLIENTS,
   legacyMechFeesGraphClient,
+  MARKETPLACE_GRAPH_CLIENTS,
   MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
@@ -39,9 +39,7 @@ type DailyAgentPerformancesResult = WithMeta<{
   }[];
 }>;
 
-const fetchDailyAgentPerformance = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
@@ -75,8 +73,7 @@ const fetchDailyAgentPerformance = async (): Promise<
     });
 
     const totalAverage = performanceByChains.reduce(
-      (sum, performanceByChain) =>
-        sum + calculate7DayAverage(performanceByChain, 'count'),
+      (sum, performanceByChain) => sum + calculate7DayAverage(performanceByChain, 'count'),
       0
     );
 
@@ -99,9 +96,7 @@ type StakingGlobalsResult = WithMeta<{
   };
 }>;
 
-const fetchTotalOlasStaked = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
@@ -132,7 +127,7 @@ const fetchTotalOlasStaked = async (): Promise<
     );
 
     return {
-      value: formatWeiNumber(`${olasStaked}`, {
+      value: formatWeiNumber(olasStaked, {
         notation: 'standard',
         maximumFractionDigits: 0,
       }),
@@ -153,15 +148,15 @@ type RegistryGlobalsResult = WithMeta<{
   };
 }>;
 
-const fetchTransactions = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) =>
+        REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
+      )
     );
 
     const txCountByChains: string[] = [];
@@ -207,15 +202,15 @@ type OperatorGlobalsResult = WithMeta<{
   }[];
 }>;
 
-const fetchTotalOperators = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) => REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery))
+      ALL_REGISTRY_CHAINS.map((chain) =>
+        REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
+      )
     );
 
     const operatorsByChains: number[] = [];
@@ -260,16 +255,14 @@ type AtaTransactionsResult = WithMeta<{
   }[];
 }>;
 
-export const fetchAtaTransactions = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
-  const sources = ['gnosis', 'base', 'legacyMech'] as const;
+export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
+  const sources = ['gnosis', 'base'] as const;
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const results = await Promise.allSettled(
-      sources.map((source) => ATA_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
+      sources.map((source) => MARKETPLACE_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
     );
 
     const ataTransactionsByChains: string[] = [];
@@ -322,9 +315,7 @@ type LegacyMechFeesResult = WithMeta<{
   };
 }>;
 
-export const fetchMechFees = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> => {
   // Sources in order: gnosis (new), base (new), legacy
   const sources = ['gnosis', 'base', 'legacy'] as const;
   const LEGACY_INDEX = 2; // Index of legacy mech fees in results array
@@ -400,38 +391,37 @@ export type MainMetricsSnapshot = {
   timestamp: number;
 };
 
-export const fetchAllAgentMetrics =
-  async (): Promise<MainMetricsSnapshot | null> => {
-    try {
-      const [
-        dailyActiveAgentsResult,
-        olasStakedResult,
-        transactionsResult,
-        ataTransactionsResult,
-        mechFeesResult,
-        totalOperatorsResult,
-      ] = await Promise.all([
-        fetchDailyAgentPerformance(),
-        fetchTotalOlasStaked(),
-        fetchTransactions(),
-        fetchAtaTransactions(),
-        fetchMechFees(),
-        fetchTotalOperators(),
-      ]);
+export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null> => {
+  try {
+    const [
+      dailyActiveAgentsResult,
+      olasStakedResult,
+      transactionsResult,
+      ataTransactionsResult,
+      mechFeesResult,
+      totalOperatorsResult,
+    ] = await Promise.all([
+      fetchDailyAgentPerformance(),
+      fetchTotalOlasStaked(),
+      fetchTransactions(),
+      fetchAtaTransactions(),
+      fetchMechFees(),
+      fetchTotalOperators(),
+    ]);
 
-      return {
-        data: {
-          dailyActiveAgents: dailyActiveAgentsResult,
-          olasStaked: olasStakedResult,
-          transactions: transactionsResult,
-          ataTransactions: ataTransactionsResult,
-          mechFees: mechFeesResult,
-          totalOperators: totalOperatorsResult,
-        },
-        timestamp: Date.now(),
-      };
-    } catch (error) {
-      console.error('Error fetching main metrics:', error);
-      return null;
-    }
-  };
+    return {
+      data: {
+        dailyActiveAgents: dailyActiveAgentsResult,
+        olasStaked: olasStakedResult,
+        transactions: transactionsResult,
+        ataTransactions: ataTransactionsResult,
+        mechFees: mechFeesResult,
+        totalOperators: totalOperatorsResult,
+      },
+      timestamp: Date.now(),
+    };
+  } catch (error) {
+    console.error('Error fetching main metrics:', error);
+    return null;
+  }
+};

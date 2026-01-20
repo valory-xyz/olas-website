@@ -6,8 +6,7 @@ export const createStaleStatus = (
   fetchErrors: string[]
 ): MetricStatus => ({
   stale: indexingErrors.length > 0 || fetchErrors.length > 0,
-  lastValidAt:
-    indexingErrors.length === 0 && fetchErrors.length === 0 ? Date.now() : null,
+  lastValidAt: indexingErrors.length === 0 && fetchErrors.length === 0 ? Date.now() : null,
   indexingErrors,
   fetchErrors,
 });
@@ -20,10 +19,7 @@ type GraphQLQueryOptions<TData, TResult> = {
   transform: (data: TData) => TResult;
 };
 
-export async function executeGraphQLQuery<
-  TData extends WithMeta<unknown>,
-  TResult,
->({
+export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResult>({
   client,
   query,
   variables,

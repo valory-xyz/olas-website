@@ -1,9 +1,6 @@
 import { VEOLAS_TOKEN_ID } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import {
-  createStaleStatus,
-  executeGraphQLQuery,
-} from 'common-util/graphql/metric-utils';
+import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
@@ -20,9 +17,7 @@ type VeOlasLockedBalanceResult = WithMeta<{
   };
 }>;
 
-const fetchLockedBalance = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+const fetchLockedBalance = async (): Promise<MetricWithStatus<string | null>> => {
   const client = TOKENOMICS_GRAPH_CLIENTS.ethereum;
   if (!client) {
     return {
@@ -81,11 +76,7 @@ const fetchActiveDepositorCount = async (
       allDepositors = allDepositors.concat(pageData);
       skip += LIMIT * PAGES;
 
-      if (
-        !Array.isArray(pageData) ||
-        pageData.length === 0 ||
-        pageData.length < LIMIT * PAGES
-      ) {
+      if (!Array.isArray(pageData) || pageData.length === 0 || pageData.length < LIMIT * PAGES) {
         break;
       }
     }
@@ -96,17 +87,10 @@ const fetchActiveDepositorCount = async (
   return { count: allDepositors.length, hasIndexingErrors };
 };
 
-const getActiveDepositorCounts = (
-  networks: { key: string }[],
-  unlockAfter: string
-) =>
-  Promise.all(
-    networks.map((network) => fetchActiveDepositorCount(network, unlockAfter))
-  );
+const getActiveDepositorCounts = (networks: { key: string }[], unlockAfter: string) =>
+  Promise.all(networks.map((network) => fetchActiveDepositorCount(network, unlockAfter)));
 
-const countActiveDepositors = async (): Promise<
-  MetricWithStatus<number | null>
-> => {
+const countActiveDepositors = async (): Promise<MetricWithStatus<number | null>> => {
   try {
     // Unlocks after the specified time.
     // If BUFFER_SECONDS = 60, the unlock will occur after 1 minute.
@@ -139,9 +123,10 @@ const countActiveDepositors = async (): Promise<
 
 export const fetchGovernMetrics = async () => {
   try {
-    const [lockedBalanceResult, activeHoldersResult] = await Promise.allSettled(
-      [fetchLockedBalance(), countActiveDepositors()]
-    );
+    const [lockedBalanceResult, activeHoldersResult] = await Promise.allSettled([
+      fetchLockedBalance(),
+      countActiveDepositors(),
+    ]);
 
     const handleResult = <T>(
       result: PromiseSettledResult<MetricWithStatus<T>>,
