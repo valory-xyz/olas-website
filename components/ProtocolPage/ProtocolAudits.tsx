@@ -96,7 +96,7 @@ const audits = [
             </li>
             <li>
               <a href="https://code4rena.com/audits/2026-01-olas" target="_blank">
-                OLAS Smart Contracs Audit, 01.26{' '}
+                OLAS Smart Contracts Audit, 01.26{' '}
               </a>
               ($62k)
             </li>
