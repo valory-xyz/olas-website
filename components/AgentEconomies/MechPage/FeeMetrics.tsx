@@ -67,13 +67,21 @@ export const FeeMetrics = ({ metrics }) => {
     [metrics]
   );
 
+  /**
+   * Function to derive the widths of the Sankey diagram branches
+   * Ensures that the olasBurnedBranch is at least 1% of the claimed payments,
+   * doesn't have anything to do with the actual values
+   */
   const CheckOlasBurnt = () => {
-    const { burned, recieved } = formerData;
+    const { burned, claimed } = formerData;
 
-    const isZero = burned.value === 0;
+    // Ensure that the olasBurnedBranch is at least 1% of the claimed payments
+    const olasBurnedBranch = Math.max(burned.value * 10, claimed.value * 0.01);
+
     return {
-      olasBurnedBranch: isZero ? 0 : burned.value * 10,
-      recievedFeesBranch: isZero ? recieved.value : recieved.value * (90 / 99),
+      olasBurnedBranch,
+      // Subtract the olasBurnedBranch from the claimed payments to get the recievedFeesBranch (in order to keep the input & output values equal)
+      recievedFeesBranch: claimed.value - olasBurnedBranch,
     };
   };
 
@@ -88,7 +96,7 @@ export const FeeMetrics = ({ metrics }) => {
       // To header
       'Unclaimed Payments',
       // Branch thickness
-      formerData.unclaimed.value,
+      Math.max(formerData.unclaimed.value, formerData.total.value * 0.01),
       // Tooltip display
       formatToTooltip({
         from: formerData.total,
@@ -107,7 +115,6 @@ export const FeeMetrics = ({ metrics }) => {
     [
       'Claimed Payments',
       'Marketplace Fees Burned',
-      // Using 10% for visual clarity instead of actual 1% to make the flow visible
       CheckOlasBurnt().olasBurnedBranch,
       formatToTooltip({
         from: formerData.claimed,
@@ -117,7 +124,6 @@ export const FeeMetrics = ({ metrics }) => {
     [
       'Claimed Payments',
       'Realised Mech Earnings',
-      // Using 90% to fit "Claimed Payments" branch
       CheckOlasBurnt().recievedFeesBranch,
       formatToTooltip({
         from: formerData.claimed,
