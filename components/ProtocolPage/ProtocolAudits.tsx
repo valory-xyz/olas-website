@@ -79,7 +79,7 @@ const audits = [
       },
       {
         title: 'code4rena',
-        secondary: '$90k',
+        secondary: '$152k',
         iconSrc: 'code4rena.png',
         content: (
           <ul className="list-disc ml-6 space-y-2 text-purple-600">
