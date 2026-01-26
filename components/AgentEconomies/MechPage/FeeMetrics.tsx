@@ -80,7 +80,7 @@ export const FeeMetrics = ({ metrics }) => {
 
     return {
       olasBurnedBranch,
-      // Subtract the olasBurnedBranch from the claimed payments to get the recievedFeesBranch (in order the keep the input & output values equal)
+      // Subtract the olasBurnedBranch from the claimed payments to get the recievedFeesBranch (in order to keep the input & output values equal)
       recievedFeesBranch: claimed.value - olasBurnedBranch,
     };
   };
