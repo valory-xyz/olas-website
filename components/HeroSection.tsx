@@ -43,7 +43,7 @@ export const HeroSection = ({
 
         <h1 className={`${TEXT_MEDIUM_LIGHT_CLASS} mb-2 text-left max-sm:text-base`}>{pageName}</h1>
 
-        <h2 className={`${MAIN_TITLE_CLASS} mb-4`}>{title}</h2>
+        <h2 className={`${MAIN_TITLE_CLASS} font-semibold mb-4`}>{title}</h2>
 
         {description && <div className={`${TEXT_SMALL_CLASS} mb-6`}>{description}</div>}
 

@@ -23,10 +23,10 @@ const list = [
         </div>
 
         <strong>
-          <li>Launch the Prediction agent.</li>
+          <li>Launch the Omenstrat.</li>
         </strong>
         <p className="mb-4">
-          Choose the Prediction agent from the agent catalog and follow the onboarding steps.
+          Choose Omenstrat from the agent catalog and follow the onboarding steps.
         </p>
 
         <strong>
@@ -86,7 +86,7 @@ const list = [
 export const GetStarted = () => (
   <SectionWrapper id="get-started" customClasses="max-md:p-4 lg:my-32">
     <div className="text-center max-w-[870px] mx-auto">
-      <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>Get Started with the Prediction Agent</h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>Get Started with Omenstrat</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.map((item) => (

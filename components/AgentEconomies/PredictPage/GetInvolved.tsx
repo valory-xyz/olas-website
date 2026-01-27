@@ -1,31 +1,28 @@
-import { BUILD_MECH_TOOL_URL, LAUNCH_URL } from 'common-util/constants';
+import { BUILD_MECH_TOOL_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 
 const list = [
   {
-    title: 'For Builders',
-    desc: 'Build Mech tools and improve Trader strategies.',
+    title: 'For builders',
+    desc: 'Build a Prediction Broker agent and turn it into a service provider for other agents.',
     urlName: 'View path',
     url: BUILD_MECH_TOOL_URL,
     isSubsite: true,
   },
   {
-    title: 'For Operators',
-    desc: 'Run Trader agents using Pearl or manually.',
+    title: 'For operators',
+    desc: 'Run Prediction agents using Pearl or manually via Quickstart.',
     urlName: 'Explore paths',
     url: '/operate',
   },
-  {
-    title: 'For Launchers',
-    desc: 'Launch your own agent economy.',
-    urlName: 'Explore',
-    url: LAUNCH_URL,
-    isSubsite: true,
-  },
 ];
 
-const Content = () => <GetInvolvedCards id="get-started" list={list} />;
+const Content = () => (
+  <div className="mx-auto max-w-[872px]">
+    <GetInvolvedCards id="get-started" list={list} />
+  </div>
+);
 
 export const PredictFooter = () => (
   <SectionWrapper

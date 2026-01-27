@@ -5,7 +5,7 @@ const list = [
   {
     title: 'Find Market Opportunities',
     description:
-      'Prediction Agent constantly scans active prediction markets to identify new opportunities for investment.',
+      'Omenstrat constantly scans active prediction markets to identify new opportunities for investment.',
     imgSrc: 'market-opportunities',
   },
   {
@@ -40,7 +40,7 @@ const list = [
 export const HowPredictionAgentsWork = () => (
   <HowItWorks
     headerText="How It Works"
-    description="Fund the Prediction Agent and benefit from its autonomous labor. It finds markets, places bets, and collects rewards — all without manual input."
+    description="Fund Omenstrat and benefit from its autonomous labor. It finds markets, makes trades, and collects rewards — all without manual input."
     imgFolder="prediction-agents-page"
     list={list}
   />

@@ -1,5 +1,6 @@
 import { AvailableAgents } from './AvailableAgents';
 import { Hero } from './Hero';
+import { TechStacks } from './TechStacks';
 import { TwoTypes } from './TwoTypes';
 import { WhatIsAnAiAgent } from './WhatIsAnAiAgent';
 import { WhatMakesOlasAgentsUnique } from './WhatMakesOlasAgentsUnique';
@@ -11,5 +12,6 @@ export const Agents = () => (
     <WhatMakesOlasAgentsUnique />
     <TwoTypes />
     <AvailableAgents />
+    <TechStacks />
   </>
 );

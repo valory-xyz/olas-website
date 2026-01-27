@@ -1,3 +1,4 @@
+import { FAQ } from 'components/Agents/PredictionAgentsPage/FAQ';
 import { GetInvolved } from 'components/Agents/PredictionAgentsPage/GetInvolved';
 import { GetStarted } from 'components/Agents/PredictionAgentsPage/GetStarted';
 import { Hero } from 'components/Agents/PredictionAgentsPage/Hero';
@@ -20,6 +21,7 @@ const PredictionAgents = () => (
       <HowPredictionAgentsWork />
       <GetStarted />
       <GetInvolved />
+      <FAQ />
       <CTASection
         text="Launch Prediction Trader - unlock tomorrow's opportunities today."
         ctaUrl="/operate"

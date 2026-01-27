@@ -72,7 +72,12 @@ module.exports = withPlausibleProxy()({
       },
       {
         source: '/agents/predict',
-        destination: '/agents/prediction-agents',
+        destination: '/agents/omenstrat',
+        permanent: true,
+      },
+      {
+        source: '/agents/prediction-agents',
+        destination: '/agents/omenstrat',
         permanent: true,
       },
       {
