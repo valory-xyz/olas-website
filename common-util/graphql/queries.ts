@@ -109,9 +109,9 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
     }
 
     global(id: "") {
-      totalFees
+      totalFeesSettled
       totalPayout
-      totalTraded
+      totalTradedSettled
     }
     _meta {
       hasIndexingErrors
