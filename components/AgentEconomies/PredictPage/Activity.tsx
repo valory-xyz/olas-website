@@ -53,7 +53,7 @@ const processPredictMetrics = (metrics) => {
   };
 };
 
-const AgentPerformanceBubble = ({ metrics, title }) => {
+const AgentPerformanceBubble = ({ metrics, title, imgSrc }) => {
   const data = useMemo(
     () => [
       {
@@ -66,7 +66,7 @@ const AgentPerformanceBubble = ({ metrics, title }) => {
                 <div className="flex flex-col max-w-[320px] gap-4 text-base ">
                   <p className="text-gray-500">
                     Total ROI shows your agent&apos;s overall earnings, including profits from
-                    predictions and staking rewards, minus all related costs such as bet amounts,
+                    predictions and staking rewards, minus all related costs such as trade amounts,
                     gas fees, and Mech request fees.
                   </p>
                   <p className="text-gray-500">
@@ -105,7 +105,7 @@ const AgentPerformanceBubble = ({ metrics, title }) => {
       },
       {
         id: 'accuracy',
-        subText: 'Prediction Accuracy -  Average (Last 10K Bets)',
+        subText: 'Prediction Accuracy -  Average (Last 10K Trades)',
         value: metrics.successRate ? `${metrics.successRate}%` : null,
         status: metrics.successRateStatus,
         source: {
@@ -117,7 +117,7 @@ const AgentPerformanceBubble = ({ metrics, title }) => {
     [metrics]
   );
 
-  return <MetricsBubble metrics={data} title={title} />;
+  return <MetricsBubble metrics={data} title={title} image={imgSrc} />;
 };
 
 const TransactionsBubble = ({ metrics, title }) => {
@@ -188,7 +188,7 @@ export const Activity = ({ metrics: initialMetrics }) => {
   }, [initialMetrics]);
 
   return (
-    <SectionWrapper customClasses="py-16 px-4 border-b border-t" id="stats">
+    <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
         <Card className="md:col-span-2 flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-full text-xl w-full mx-auto rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
           <div className="flex gap-4 items-center">
@@ -213,7 +213,11 @@ export const Activity = ({ metrics: initialMetrics }) => {
             Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <AgentPerformanceBubble title="Agent Performance" metrics={metrics} />
+        <AgentPerformanceBubble
+          title="Omenstrat Performance"
+          metrics={metrics}
+          imgSrc="/images/predict-page/omenstrat-icon.png"
+        />
         <TransactionsBubble title="Transactions by Agent Type" metrics={metrics} />
       </div>
     </SectionWrapper>

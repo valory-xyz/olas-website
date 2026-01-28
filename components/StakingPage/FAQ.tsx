@@ -63,7 +63,7 @@ export const FAQ = () => (
     <h2 className={`${SUB_HEADER_CLASS} mb-14`}>Frequently Asked Questions</h2>
     {faq.map((eachFaq, index) => (
       <div className="py-2" key={index}>
-        <Accordion label={eachFaq.title} customClass="p-0 bg-white" defaultOpen={false}>
+        <Accordion label={eachFaq.title} defaultOpen={false}>
           {eachFaq.desc}
         </Accordion>
       </div>

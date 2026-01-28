@@ -18,7 +18,7 @@ export const OlasAgents = () => (
 );
 
 export const WhatMakesOlasAgentsUnique = () => (
-  <SectionWrapper>
+  <SectionWrapper id="unique-agents">
     <div className="flex flex-col max-w-[1320px] mx-auto text-center">
       <SectionHeading>What Makes Olas&apos; AI Agents Unique?</SectionHeading>
       <p className="mb-10">

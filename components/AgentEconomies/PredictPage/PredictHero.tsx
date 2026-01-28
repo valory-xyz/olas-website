@@ -1,6 +1,5 @@
 import Image from 'next/image';
 
-import { PREDICT_URL } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
@@ -16,9 +15,7 @@ const HeroImage = () => (
 
 const OnDemand = (
   <div>
-    On-demand
-    <br />
-    Agent-powered
+    On-demand Agent-Powered
     <br />
     Predictions
   </div>
@@ -30,20 +27,11 @@ const GetInvolved = () => (
   </Button>
 );
 
-const ExplorePredict = () => (
-  <Button variant="ghostPrimary" size="xl" asChild className="max-xl:grow">
-    <a href={PREDICT_URL} rel="noopener noreferrer">
-      Explore Predict UI
-    </a>
-  </Button>
-);
-
 export const PredictHero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="OLAS PREDICT"
     title={OnDemand}
     PrimaryButton={GetInvolved}
-    SecondaryButton={ExplorePredict}
   />
 );

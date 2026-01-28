@@ -13,10 +13,10 @@
         "link": "/agents/babydegen"
       },
       {
-        "title": "Prediction Trader",
+        "title": "Omenstrat",
         "description": "Trades on prediction markets.",
-        "image": "/images/agents/prediction-trader.png",
-        "link": "/agents/prediction-agents"
+        "image": "/images/agents/omenstrat.png",
+        "link": "/agents/omenstrat"
       },
       {
         "title": "Modius Agent",
@@ -35,6 +35,13 @@
         "description": "Posts to X, creates and interacts with other agents.",
         "image": "/images/agents/agentsfun.png",
         "link": "/agents/agentsfun"
+      },
+      {
+        "title": "Pettbro",
+        "description": "Cares for your digital pet and optimizes its growth, helping it survive and thrive.",
+        "image": "/images/agents/pettbro.png",
+        "link": "https://agent.pett.ai/",
+        "isExternal": true
       }
     ]
   },

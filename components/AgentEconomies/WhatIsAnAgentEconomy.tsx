@@ -32,7 +32,7 @@ const list = [
             <strong>Prediction Brokers (Mechs):</strong> research prediction markets.
           </li>
           <li>
-            <strong>Traders:</strong> place bets in markets.
+            <strong>Traders:</strong> execute trades in markets.
           </li>
           <li>
             <strong>Market Closers:</strong> resolve markets.
