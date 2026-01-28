@@ -370,7 +370,11 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
     console.error('Error fetching ATA transactions:', error);
     return {
       value: null,
-      status: createStaleStatus({ indexingErrors: [], fetchErrors: ['ata:all'] }),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['ata:all'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 };

@@ -13,7 +13,10 @@ export const createStaleStatus = ({
   laggingSubgraphs?: string[];
 }): MetricStatus => ({
   stale: indexingErrors.length > 0 || fetchErrors.length > 0 || laggingSubgraphs.length > 0,
-  lastValidAt: indexingErrors.length === 0 && fetchErrors.length === 0 ? Date.now() : null,
+  lastValidAt:
+    indexingErrors.length === 0 && fetchErrors.length === 0 && laggingSubgraphs.length === 0
+      ? Date.now()
+      : null,
   indexingErrors,
   fetchErrors,
   laggingSubgraphs,
