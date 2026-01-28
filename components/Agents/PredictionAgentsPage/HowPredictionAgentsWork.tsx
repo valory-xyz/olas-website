@@ -24,7 +24,7 @@ const list = [
     imgSrc: 'intelligent-predictions',
   },
   {
-    title: 'Place Smart Bets',
+    title: 'Makes Smart Trades',
     description:
       'Based on the AI-generated probabilities, the agent automatically places trades in markets with the highest confidence.',
     imgSrc: 'smart-bets',
@@ -40,7 +40,7 @@ const list = [
 export const HowPredictionAgentsWork = () => (
   <HowItWorks
     headerText="How It Works"
-    description="Fund Omenstrat and benefit from its autonomous labor. It finds markets, makes trades, and collects rewards — all without manual input."
+    description="Fund Omenstrat and benefit from its autonomous labor. It finds markets, execute trades, and collects rewards — all without manual input."
     imgFolder="prediction-agents-page"
     list={list}
   />

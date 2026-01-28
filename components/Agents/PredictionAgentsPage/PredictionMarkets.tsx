@@ -13,7 +13,7 @@ export const PredictionMarkets = () => (
         Omenstrat is an autonomous AI agent that interacts with decentralized forecasting markets —
         platforms where users trade on the outcomes of future events. With Omenstrat, you don’t need
         to manually browse markets or calculate odds. Your agent does all that — getting new
-        markets, AI-powered predictions, making trades, and even collecting rewards. You just run
+        markets, AI-powered predictions, executing trades, and even collecting rewards. You just run
         the agent. It does the rest — hands-free.
       </p>
       <p>

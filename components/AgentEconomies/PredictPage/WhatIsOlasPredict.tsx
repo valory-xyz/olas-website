@@ -37,7 +37,7 @@ const agentRolesList = [
   {
     img: 'traders',
     title: 'Traders',
-    desc: 'Strategically make trades on prediction markets.',
+    desc: 'Strategically execute trade on prediction markets.',
   },
   {
     img: 'mechs',
@@ -63,7 +63,7 @@ const processList = [
     desc: 'Traders identify markets and commission AI predictions from Prediction Brokers by paying for their services via the Mech Marketplace through on-chain payments.',
   },
   { title: 'Research', desc: 'Prediction Brokers deliver predictions to Traders.' },
-  { title: 'Bet Placement', desc: 'Traders place informed bets.' },
+  { title: 'Trading', desc: 'Traders execute informed bets.' },
   { title: 'Closure', desc: 'Closers finalize market results.' },
 ];
 
@@ -80,7 +80,7 @@ const olasPredictList = [
   },
   {
     title: 'Profit Potential',
-    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous betting.',
+    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous trading on prediction markets.',
     icon: <HandCoins />,
   },
   {

@@ -1,4 +1,3 @@
-import { AgentsComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -67,7 +66,7 @@ const AgentPerformanceBubble = ({ metrics, title, imgSrc }) => {
                 <div className="flex flex-col max-w-[320px] gap-4 text-base ">
                   <p className="text-gray-500">
                     Total ROI shows your agent&apos;s overall earnings, including profits from
-                    predictions and staking rewards, minus all related costs such as bet amounts,
+                    predictions and staking rewards, minus all related costs such as trade amounts,
                     gas fees, and Mech request fees.
                   </p>
                   <p className="text-gray-500">
@@ -106,7 +105,7 @@ const AgentPerformanceBubble = ({ metrics, title, imgSrc }) => {
       },
       {
         id: 'accuracy',
-        subText: 'Prediction Accuracy -  Average',
+        subText: 'Prediction Accuracy -  Average (Last 10K Trades)',
         value: metrics.successRate ? `${metrics.successRate}%` : null,
         status: metrics.successRateStatus,
         source: {
@@ -119,6 +118,68 @@ const AgentPerformanceBubble = ({ metrics, title, imgSrc }) => {
   );
 
   return <MetricsBubble metrics={data} title={title} image={imgSrc} />;
+};
+
+const TransactionsBubble = ({ metrics, title }) => {
+  const data = useMemo(
+    () => [
+      {
+        id: 'traders',
+        subText: (
+          <div className="flex items-center gap-2">
+            <Image alt="Predict" src="/images/predict-page/traders.png" width="48" height="22" />
+            <span>Traders</span>
+          </div>
+        ),
+        value: metrics.traderTxs ? metrics.traderTxs.toLocaleString() : null,
+        status: metrics.txsStatus,
+        source: {
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
+        },
+      },
+      {
+        id: 'mechs',
+        subText: (
+          <div className="flex items-center gap-2">
+            <Image alt="Predict" src="/images/predict-page/mechs.png" width="48" height="22" />
+            <span>Mechs: Prediction Brokers</span>
+          </div>
+        ),
+        value: metrics.mechTxs ? metrics.mechTxs.toLocaleString() : null,
+        status: metrics.txsStatus,
+        source: {
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
+        },
+      },
+      {
+        id: 'marketCreatorsAndClosers',
+        subText: (
+          <div className="flex flex-wrap items-center gap-2">
+            <Image
+              alt="Predict"
+              src="/images/predict-page/market-creators.png"
+              width="48"
+              height="22"
+            />
+            <span>Market Creators</span>
+            <Image alt="Predict" src="/images/predict-page/closers.png" width="48" height="22" />
+            <span>Closers</span>
+          </div>
+        ),
+        value: metrics.marketCreatorTxs ? metrics.marketCreatorTxs.toLocaleString() : null,
+        status: metrics.txsStatus,
+        source: {
+          link: '/data#predict-transactions-by-type',
+          isExternal: false,
+        },
+      },
+    ],
+    [metrics]
+  );
+
+  return <MetricsBubble metrics={data} title={title} />;
 };
 
 export const Activity = ({ metrics: initialMetrics }) => {
@@ -157,7 +218,7 @@ export const Activity = ({ metrics: initialMetrics }) => {
           metrics={metrics}
           imgSrc="/images/predict-page/omenstrat-icon.png"
         />
-        <AgentsComingSoon />
+        <TransactionsBubble title="Transactions by Agent Type" metrics={metrics} />
       </div>
     </SectionWrapper>
   );

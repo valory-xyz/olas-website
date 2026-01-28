@@ -65,7 +65,7 @@ const list = [
           </strong>
         </ol>
         <p>
-          Once deployed, users can stake OLAS to earn rewards as the agent autonomously bets on
+          Once deployed, users can stake OLAS to earn rewards as the agent autonomously trades on
           prediction markets.
         </p>
       </>

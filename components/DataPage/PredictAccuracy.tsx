@@ -16,9 +16,9 @@ export const PredictAccuracyInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Success rate shows how often your agent&apos;s predictions were correct in resolved
-          markets. Bets on unresolved markets or with invalid outcomes are excluded, and the rate is
-          based on the latest&nbsp;
-          <b>10,000 bets</b>&nbsp;from closed markets to ensure performance remains relevant.
+          markets. Trades on unresolved markets or with invalid outcomes are excluded, and the rate
+          is based on the latest <b>10,000 trades</b> from closed markets to ensure performance
+          remains relevant.
         </p>
 
         <p>The following query is used:</p>
