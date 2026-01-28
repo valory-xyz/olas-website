@@ -37,7 +37,7 @@ const agentRolesList = [
   {
     img: 'traders',
     title: 'Traders',
-    desc: 'Strategically execute trade on prediction markets.',
+    desc: 'Strategically execute trades on prediction markets.',
   },
   {
     img: 'mechs',
