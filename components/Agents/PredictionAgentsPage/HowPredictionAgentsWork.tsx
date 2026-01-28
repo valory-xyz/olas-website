@@ -40,7 +40,7 @@ const list = [
 export const HowPredictionAgentsWork = () => (
   <HowItWorks
     headerText="How It Works"
-    description="Fund Omenstrat and benefit from its autonomous labor. It finds markets, execute trades, and collects rewards — all without manual input."
+    description="Fund Omenstrat and benefit from its autonomous labor. It finds markets, executes trades, and collects rewards — all without manual input."
     imgFolder="prediction-agents-page"
     list={list}
   />
