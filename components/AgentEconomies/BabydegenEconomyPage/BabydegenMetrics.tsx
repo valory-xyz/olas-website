@@ -7,7 +7,7 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
-import { isNil } from 'lodash';
+import isNil from 'lodash/isNil';
 import Image from 'next/image';
 
 const formatNumber = (num) => {
