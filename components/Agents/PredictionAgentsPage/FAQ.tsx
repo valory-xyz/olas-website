@@ -11,7 +11,7 @@ const faq = [
   },
   {
     title: 'How does Omenstrat benefit DeFi users?',
-    desc: 'By providing accurate, data-driven forecasts, Omenstrat help you to make better decisions in trading, governance, and risk management.',
+    desc: 'By providing accurate, data-driven forecasts, Omenstrat helps you to make better decisions in trading, governance, and risk management.',
   },
   {
     title: 'Do I need coding skills to use Omenstrat?',
