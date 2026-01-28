@@ -75,16 +75,17 @@ export const fetchTokenHolders = async () => {
     const laggingSubgraphs: string[] = [];
     let totalTokenHolders = 0;
 
-    results.forEach((result) => {
+    results.forEach((result, index) => {
+      const network = networks[index].key;
       totalTokenHolders += result.count;
       if (result.error) {
         fetchErrors.push(result.error);
       }
       if (result.hasIndexingErrors) {
-        indexingErrors.push('tokenHolders');
+        indexingErrors.push(`tokenHolders:${network}`);
       }
       if (result.hasLaggingSubgraphs) {
-        laggingSubgraphs.push('tokenHolders');
+        laggingSubgraphs.push(`tokenHolders:${network}`);
       }
     });
 

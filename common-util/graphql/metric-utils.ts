@@ -17,23 +17,18 @@ export const createStaleStatus = ({
     indexingErrors.length === 0 && fetchErrors.length === 0 && laggingSubgraphs.length === 0
       ? Date.now()
       : null,
-  indexingErrors,
-  fetchErrors,
-  laggingSubgraphs,
+  indexingErrors: Array.from(new Set(indexingErrors)),
+  fetchErrors: Array.from(new Set(fetchErrors)),
+  laggingSubgraphs: Array.from(new Set(laggingSubgraphs)),
 });
-
-type GraphQLQueryOptions<TData, TResult> = {
-  client: GraphQLClient;
-  query: RequestDocument;
-  variables?: Variables;
-  source: string;
-  chain: string;
-  transform: (data: TData) => TResult;
-};
 
 const blockCache: Record<string, { block: number; lastUpdated: number }> = {};
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+/**
+ * Function to get the latest block number for a given chain.
+ * Uses in-memory cache to avoid redundant requests.
+ */
 export const getChainBlockNumber = async (chain: string): Promise<number | null> => {
   const chainConfig = CHAIN_CONFIG[chain];
   if (!chainConfig) return null;
@@ -52,8 +47,8 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
     return block;
   } catch (error) {
     console.error(`Error fetching block number for ${chain}:`, error);
+    return null;
   }
-  return null;
 };
 
 export const checkSubgraphLag = (
@@ -73,6 +68,15 @@ export const checkSubgraphLag = (
   } catch {
     return false;
   }
+};
+
+type GraphQLQueryOptions<TData, TResult> = {
+  client: GraphQLClient;
+  query: RequestDocument;
+  variables?: Variables;
+  source: string;
+  chain: string;
+  transform: (data: TData) => TResult;
 };
 
 export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResult>({
