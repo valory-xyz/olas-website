@@ -7,7 +7,7 @@ import { SubsiteLink } from 'components/ui/typography';
 const faq = [
   {
     title: 'What is Omenstrat?',
-    desc: 'Omenstrat is an autonomous AI agent that participates in prediction markets on your behalf autonomously. It is designed to analyze real-time data, discover new markets, and place bets on future events without manual input.',
+    desc: 'Omenstrat is an autonomous AI agent that participates in prediction markets on your behalf. It is designed to analyze real-time data, discover new markets, and place bets on future events without manual input.',
   },
   {
     title: 'How does Omenstrat benefit DeFi users?',
