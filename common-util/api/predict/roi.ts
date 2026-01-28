@@ -4,7 +4,11 @@ import {
   predictAgentsGraphClient,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  checkSubgraphLag,
+  createStaleStatus,
+  getChainBlockNumber,
+} from 'common-util/graphql/metric-utils';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -57,6 +61,9 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
   let lastFourDaysRequests: MechRequestsResponse = [];
   let hasIndexingErrors = false;
+  let hasLaggingSubgraphs = false;
+
+  const gnosisBlock = await getChainBlockNumber('gnosis');
 
   try {
     while (true) {
@@ -71,6 +78,9 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
 
       if (response?._meta?.hasIndexingErrors) {
         hasIndexingErrors = true;
+      }
+      if (checkSubgraphLag(gnosisBlock, response?._meta?.block?.number, 'gnosis')) {
+        hasLaggingSubgraphs = true;
       }
 
       const pageData = Object.entries(response)
@@ -92,12 +102,13 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
     console.error("Couldn't fetch all requests", e);
     return {
       data: lastFourDaysRequests.length > 0 ? lastFourDaysRequests : [],
-      hasIndexingErrors: false,
+      hasIndexingErrors,
+      hasLaggingSubgraphs,
       fetchError: true,
     };
   }
 
-  return { data: lastFourDaysRequests, hasIndexingErrors, fetchError: false };
+  return { data: lastFourDaysRequests, hasIndexingErrors, hasLaggingSubgraphs, fetchError: false };
 };
 
 export const fetchRoi = async (): Promise<
@@ -105,6 +116,7 @@ export const fetchRoi = async (): Promise<
 > => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
     const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
@@ -115,34 +127,49 @@ export const fetchRoi = async (): Promise<
       totalRewardsResult,
       olasInUsdPriceResult,
       mechRequestsResult,
+      gnosisBlock,
     ] = (await Promise.all([
       mechGraphClient.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
       fetchMechRequests(marketOpenTimestamp),
+      getChainBlockNumber('gnosis'),
     ])) as [
       TotalMechRequestsResponse,
       MarketsAndBetsResponse,
       StakingGlobalsResponse,
       OlasInUsdPriceResponse,
       Awaited<ReturnType<typeof fetchMechRequests>>,
+      number | null,
     ];
 
     if (totalRequestsResult._meta?.hasIndexingErrors) {
       indexingErrors.push('mech');
     }
+    if (checkSubgraphLag(gnosisBlock, totalRequestsResult._meta?.block?.number, 'gnosis')) {
+      laggingSubgraphs.push('mech');
+    }
     if (marketsAndBetsResult._meta?.hasIndexingErrors) {
       indexingErrors.push('predictAgents');
     }
+    if (checkSubgraphLag(gnosisBlock, marketsAndBetsResult._meta?.block?.number, 'gnosis')) {
+      laggingSubgraphs.push('predictAgents');
+    }
     if (totalRewardsResult._meta?.hasIndexingErrors) {
       indexingErrors.push('staking:gnosis');
+    }
+    if (checkSubgraphLag(gnosisBlock, totalRewardsResult._meta?.block?.number, 'gnosis')) {
+      laggingSubgraphs.push('staking:gnosis');
     }
     if (mechRequestsResult.hasIndexingErrors) {
       indexingErrors.push('mech:requests');
     }
     if (mechRequestsResult.fetchError) {
       fetchErrors.push('mech:requests');
+    }
+    if (mechRequestsResult.hasLaggingSubgraphs) {
+      laggingSubgraphs.push('mech:requests');
     }
 
     const olasInUsdPriceInEth = BigInt(
@@ -181,13 +208,17 @@ export const fetchRoi = async (): Promise<
         partialRoi: Number(partialRoi) / Number(SCALE),
         finalRoi: Number(finalRoi) / Number(SCALE),
       },
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching Predict ROI:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['predict:roi']),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['predict:roi'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 };

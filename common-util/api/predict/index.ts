@@ -16,12 +16,6 @@ const PREDICT_AGENT_IDS_FLAT = Object.values(PREDICT_AGENT_CLASSIFICATION)
   .flat()
   .map((n) => Number(n));
 
-const SCALE = 100n; // 2 decimals
-const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
-const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
-const ROI_LIMIT = 1000;
-const ROI_PAGES = 10;
-
 type DailyPredictPerformancesResponse = WithMeta<{
   dailyAgentPerformances: {
     dayTimestamp: string;
@@ -46,6 +40,7 @@ const fetchPredictDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> 
 
   return executeGraphQLQuery<DailyPredictPerformancesResponse, number>({
     client: REGISTRY_GRAPH_CLIENTS.gnosis,
+    chain: 'gnosis',
     query: dailyPredictAgentsPerformancesQuery,
     variables: {
       agentIds: PREDICT_AGENT_IDS_FLAT,
@@ -82,6 +77,7 @@ const fetchPredictTxsByAgentType = async (): Promise<
 > => {
   return executeGraphQLQuery<AgentTxCountsResponse, Record<string, number>>({
     client: REGISTRY_GRAPH_CLIENTS.gnosis,
+    chain: 'gnosis',
     query: agentTxCountsQuery,
     variables: { agentIds: PREDICT_AGENT_IDS_FLAT },
     source: 'registry:gnosis',
@@ -109,6 +105,7 @@ const fetchPredictTxsByAgentType = async (): Promise<
 const fetchOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
   return executeGraphQLQuery<StakingContractsResponse, string>({
     client: STAKING_GRAPH_CLIENTS.gnosis,
+    chain: 'gnosis',
     query: stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
     source: 'staking:gnosis',
     transform: (data) => {
@@ -147,35 +144,74 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       apr:
         aprResult.status === 'fulfilled'
           ? aprResult.value
-          : { value: null, status: createStaleStatus([], ['predict:apr']) },
+          : {
+              value: null,
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:apr'],
+                laggingSubgraphs: [],
+              }),
+            },
       dailyActiveAgents:
         daaResult.status === 'fulfilled'
           ? daaResult.value
-          : { value: null, status: createStaleStatus([], ['predict:daa']) },
+          : {
+              value: null,
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:daa'],
+                laggingSubgraphs: [],
+              }),
+            },
       predictTxsByType:
         txsByTypeResult.status === 'fulfilled'
           ? txsByTypeResult.value
-          : { value: null, status: createStaleStatus([], ['predict:txs']) },
+          : {
+              value: null,
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:txs'],
+                laggingSubgraphs: [],
+              }),
+            },
       partialRoi:
         roiResult.status === 'fulfilled' && roiResult.value.value
           ? {
               value: roiResult.value.value.partialRoi,
               status: roiResult.value.status,
             }
-          : { value: null, status: createStaleStatus([], ['predict:roi']) },
+          : {
+              value: null,
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:roi'],
+                laggingSubgraphs: [],
+              }),
+            },
       finalRoi:
         roiResult.status === 'fulfilled' && roiResult.value.value
           ? {
               value: roiResult.value.value.finalRoi,
               status: roiResult.value.status,
             }
-          : { value: null, status: createStaleStatus([], ['predict:roi']) },
+          : {
+              value: null,
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:roi'],
+                laggingSubgraphs: [],
+              }),
+            },
       successRate:
         successRateResult.status === 'fulfilled'
           ? successRateResult.value
           : {
               value: null,
-              status: createStaleStatus([], ['predict:successRate']),
+              status: createStaleStatus({
+                indexingErrors: [],
+                fetchErrors: ['predict:successRate'],
+                laggingSubgraphs: [],
+              }),
             },
     };
 

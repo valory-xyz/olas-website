@@ -10,6 +10,7 @@ type TotalBuildersResult = WithMeta<{
 const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<TotalBuildersResult, number | null>({
     client: autonolasGraphClient,
+    chain: 'ethereum',
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
     transform: (data) => {
@@ -30,14 +31,18 @@ export const fetchBuildMetrics = async () => {
 
     let totalBuilders: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (totalBuildersResult.status === 'fulfilled') {
       totalBuilders = totalBuildersResult.value;
     } else {
       console.error('Fetch Total Builders failed:', totalBuildersResult.reason);
-      totalBuilders.status = createStaleStatus([], ['build:totalBuilders']);
+      totalBuilders.status = createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['build:totalBuilders'],
+        laggingSubgraphs: [],
+      });
     }
 
     return { totalBuilders };
@@ -46,7 +51,11 @@ export const fetchBuildMetrics = async () => {
     return {
       totalBuilders: {
         value: null,
-        status: createStaleStatus([], ['build:all']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['build:all'],
+          laggingSubgraphs: [],
+        }),
       },
     };
   }

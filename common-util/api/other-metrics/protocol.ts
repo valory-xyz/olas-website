@@ -43,7 +43,7 @@ export const fetchProtocolMetrics = async () => {
 
     let polMetric: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (polResponse.status === 'fulfilled') {
@@ -53,12 +53,16 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol owned liquidity:', polResponse.reason);
-      polMetric.status = createStaleStatus([], ['dune:pol']);
+      polMetric.status = createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['dune:pol'],
+        laggingSubgraphs: [],
+      });
     }
 
     let revenueMetric: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (revenueResponse.status === 'fulfilled') {
@@ -68,7 +72,11 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol revenue:', revenueResponse.reason);
-      revenueMetric.status = createStaleStatus([], ['dune:revenue']);
+      revenueMetric.status = createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['dune:revenue'],
+        laggingSubgraphs: [],
+      });
     }
 
     return {
@@ -80,11 +88,19 @@ export const fetchProtocolMetrics = async () => {
     return {
       totalProtocolOwnedLiquidity: {
         value: null,
-        status: createStaleStatus([], ['dune:pol']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['dune:pol'],
+          laggingSubgraphs: [],
+        }),
       },
       totalProtocolRevenue: {
         value: null,
-        status: createStaleStatus([], ['dune:revenue']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['dune:revenue'],
+          laggingSubgraphs: [],
+        }),
       },
     };
   }

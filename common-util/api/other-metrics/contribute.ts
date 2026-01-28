@@ -18,6 +18,7 @@ type DailyActivitiesResult = WithMeta<{
 const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<DailyActivitiesResult, number>({
     client: autonolasBaseGraphClient,
+    chain: 'base',
     query: dailyActivitiesQuery,
     variables: {
       where: {
@@ -53,7 +54,11 @@ const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | n
         console.error(LEADERBOARD_ERROR_MESSAGE);
         return {
           value: null,
-          status: createStaleStatus([], ['contribute:total']),
+          status: createStaleStatus({
+            indexingErrors: [],
+            fetchErrors: ['contribute:total'],
+            laggingSubgraphs: [],
+          }),
         };
       }
 
@@ -75,13 +80,17 @@ const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | n
 
     return {
       value: activeUsers,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
   } catch (error) {
     console.error(LEADERBOARD_ERROR_MESSAGE, error);
     return {
       value: null,
-      status: createStaleStatus([], ['contribute:total']),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['contribute:total'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 };
@@ -95,26 +104,34 @@ export const fetchContributeMetrics = async () => {
 
     let dailyActiveContributors: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     let totalOlasContributors: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (totalOlasContributorsResult.status === 'fulfilled') {
       totalOlasContributors = totalOlasContributorsResult.value;
     } else {
       console.error(LEADERBOARD_ERROR_MESSAGE, totalOlasContributorsResult.reason);
-      totalOlasContributors.status = createStaleStatus([], ['contribute:total']);
+      totalOlasContributors.status = createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['contribute:total'],
+        laggingSubgraphs: [],
+      });
     }
 
     if (daaResult.status === 'fulfilled') {
       dailyActiveContributors = daaResult.value;
     } else {
       console.error('Fetch DAA for contribute failed:', daaResult.reason);
-      dailyActiveContributors.status = createStaleStatus([], ['contribute:daa']);
+      dailyActiveContributors.status = createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['contribute:daa'],
+        laggingSubgraphs: [],
+      });
     }
 
     return {
@@ -126,11 +143,19 @@ export const fetchContributeMetrics = async () => {
     return {
       totalOlasContributors: {
         value: null,
-        status: createStaleStatus([], ['contribute:total']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['contribute:total'],
+          laggingSubgraphs: [],
+        }),
       },
       dailyActiveContributors: {
         value: null,
-        status: createStaleStatus([], ['contribute:daa']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['contribute:daa'],
+          laggingSubgraphs: [],
+        }),
       },
     };
   }

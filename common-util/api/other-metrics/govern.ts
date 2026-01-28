@@ -1,6 +1,11 @@
 import { VEOLAS_TOKEN_ID } from 'common-util/constants';
 import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
+import {
+  checkSubgraphLag,
+  createStaleStatus,
+  executeGraphQLQuery,
+  getChainBlockNumber,
+} from 'common-util/graphql/metric-utils';
 import {
   getActiveVeOlasDepositorsQuery,
   veOlasLockedBalanceQuery,
@@ -22,7 +27,11 @@ const fetchLockedBalance = async (): Promise<MetricWithStatus<string | null>> =>
   if (!client) {
     return {
       value: null,
-      status: createStaleStatus([], ['govern:lockedBalance']),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['govern:lockedBalance'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 
@@ -31,6 +40,7 @@ const fetchLockedBalance = async (): Promise<MetricWithStatus<string | null>> =>
     query: veOlasLockedBalanceQuery,
     variables: { tokenId: VEOLAS_TOKEN_ID },
     source: 'govern:lockedBalance',
+    chain: 'ethereum',
     transform: (data) => data?.token?.balance ?? '0',
   });
 };
@@ -43,15 +53,16 @@ type ActiveVeOlasDepositorsResult = WithMeta<Record<string, Depositor[]>>;
 const fetchActiveDepositorCount = async (
   { key }: { key: string },
   unlockAfter: string
-): Promise<{ count: number; hasIndexingErrors: boolean }> => {
+): Promise<{ count: number; hasIndexingErrors: boolean; hasLaggingSubgraphs: boolean }> => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
   if (!client) {
-    return { count: 0, hasIndexingErrors: false };
+    return { count: 0, hasIndexingErrors: false, hasLaggingSubgraphs: false };
   }
 
   let skip = 0;
   let allDepositors: Depositor[] = [];
   let hasIndexingErrors = false;
+  let hasLaggingSubgraphs = false;
 
   try {
     // eslint-disable-next-line no-constant-condition
@@ -64,9 +75,13 @@ const fetchActiveDepositorCount = async (
           unlockAfter,
         })
       );
+      const chainBlock = await getChainBlockNumber(key);
 
       if (response._meta?.hasIndexingErrors) {
         hasIndexingErrors = true;
+      }
+      if (checkSubgraphLag(chainBlock, response?._meta?.block?.number, key)) {
+        hasLaggingSubgraphs = true;
       }
 
       const pageData = Object.entries(response)
@@ -84,7 +99,7 @@ const fetchActiveDepositorCount = async (
     console.error("Couldn't fetch all depositors", e);
   }
 
-  return { count: allDepositors.length, hasIndexingErrors };
+  return { count: allDepositors.length, hasIndexingErrors, hasLaggingSubgraphs };
 };
 
 const getActiveDepositorCounts = (networks: { key: string }[], unlockAfter: string) =>
@@ -100,23 +115,32 @@ const countActiveDepositors = async (): Promise<MetricWithStatus<number | null>>
 
     let total = 0;
     const indexingErrors: string[] = [];
+    const fetchErrors: string[] = [];
+    const laggingSubgraphs: string[] = [];
 
     results.forEach((res) => {
       total += res.count;
       if (res.hasIndexingErrors) {
         indexingErrors.push('govern:activeHolders');
       }
+      if (res.hasLaggingSubgraphs) {
+        laggingSubgraphs.push('govern:activeHolders');
+      }
     });
 
     return {
       value: total,
-      status: createStaleStatus(indexingErrors, []),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error counting active depositors:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['govern:activeHolders']),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['govern:activeHolders'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 };
@@ -138,7 +162,11 @@ export const fetchGovernMetrics = async () => {
       console.error(`Fetch ${errorSource} failed:`, result.reason);
       return {
         value: null,
-        status: createStaleStatus([], [errorSource]),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: [errorSource],
+          laggingSubgraphs: [],
+        }),
       };
     };
 
@@ -158,11 +186,19 @@ export const fetchGovernMetrics = async () => {
     return {
       lockedOlas: {
         value: null,
-        status: createStaleStatus([], ['govern:lockedBalance']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['govern:lockedBalance'],
+          laggingSubgraphs: [],
+        }),
       },
       activeHolders: {
         value: null,
-        status: createStaleStatus([], ['govern:activeHolders']),
+        status: createStaleStatus({
+          indexingErrors: [],
+          fetchErrors: ['govern:activeHolders'],
+          laggingSubgraphs: [],
+        }),
       },
     };
   }
