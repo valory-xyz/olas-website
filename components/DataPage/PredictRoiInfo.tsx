@@ -83,7 +83,7 @@ export const PredictRoiInfo = () => {
         <CodeSnippet>
           {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '{"query": "{ fixedProductMarketMakerCreations(where: { blockTimestamp_gt: ${marketOpenTimestamp} }) { id question } global(id: \\\"\\\") { totalFees totalPayout totalTraded } }"}'`}
+  -d '${JSON.stringify({ query: marketsAndBets })}'`}
         </CodeSnippet>
         <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>

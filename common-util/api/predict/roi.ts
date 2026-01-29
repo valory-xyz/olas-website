@@ -31,8 +31,8 @@ type MarketsAndBetsResponse = WithMeta<{
     question: string;
   }[];
   global: {
-    totalTraded: number;
-    totalFees: number;
+    totalTradedSettled: number;
+    totalFeesSettled: number;
     totalPayout: number;
   };
 }>;
@@ -163,8 +163,8 @@ export const fetchRoi = async (): Promise<
     });
 
     const totalCosts =
-      BigInt(marketsAndBetsResult.global?.totalTraded || 0) +
-      BigInt(marketsAndBetsResult.global?.totalFees || 0) +
+      BigInt(marketsAndBetsResult.global?.totalTradedSettled || 0) +
+      BigInt(marketsAndBetsResult.global?.totalFeesSettled || 0) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
 
     const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0);
