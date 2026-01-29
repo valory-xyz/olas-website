@@ -8,6 +8,7 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
   getMarketsAndBetsQuery,
@@ -60,8 +61,9 @@ type MechRequestsResponse = {
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
   let lastFourDaysRequests: MechRequestsResponse = [];
-  let hasIndexingErrors = false;
-  let hasLaggingSubgraphs = false;
+
+  const indexingErrors = [];
+  const laggingSubgraphs = [];
 
   const gnosisBlock = await getChainBlockNumber('gnosis');
 
@@ -77,10 +79,10 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
       )) as any;
 
       if (response?._meta?.hasIndexingErrors) {
-        hasIndexingErrors = true;
+        indexingErrors.push('mech:requests');
       }
       if (checkSubgraphLag(gnosisBlock, response?._meta?.block?.number, 'gnosis')) {
-        hasLaggingSubgraphs = true;
+        laggingSubgraphs.push('mech:requests');
       }
 
       const pageData = Object.entries(response)
@@ -102,13 +104,13 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
     console.error("Couldn't fetch all requests", e);
     return {
       data: lastFourDaysRequests.length > 0 ? lastFourDaysRequests : [],
-      hasIndexingErrors,
-      hasLaggingSubgraphs,
+      indexingErrors,
+      laggingSubgraphs,
       fetchError: true,
     };
   }
 
-  return { data: lastFourDaysRequests, hasIndexingErrors, hasLaggingSubgraphs, fetchError: false };
+  return { data: lastFourDaysRequests, indexingErrors, laggingSubgraphs, fetchError: false };
 };
 
 export const fetchRoi = async (): Promise<
@@ -162,14 +164,14 @@ export const fetchRoi = async (): Promise<
     if (checkSubgraphLag(gnosisBlock, totalRewardsResult._meta?.block?.number, 'gnosis')) {
       laggingSubgraphs.push('staking:gnosis');
     }
-    if (mechRequestsResult.hasIndexingErrors) {
-      indexingErrors.push('mech:requests');
+    if (mechRequestsResult.indexingErrors.length > 0) {
+      indexingErrors.push(...mechRequestsResult.indexingErrors);
     }
     if (mechRequestsResult.fetchError) {
       fetchErrors.push('mech:requests');
     }
-    if (mechRequestsResult.hasLaggingSubgraphs) {
-      laggingSubgraphs.push('mech:requests');
+    if (mechRequestsResult.laggingSubgraphs.length > 0) {
+      laggingSubgraphs.push(...mechRequestsResult.laggingSubgraphs);
     }
 
     const olasInUsdPriceInEth = BigInt(
@@ -214,11 +216,7 @@ export const fetchRoi = async (): Promise<
     console.error('Error fetching Predict ROI:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['predict:roi'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('predict:roi'),
     };
   }
 };

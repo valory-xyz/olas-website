@@ -1,6 +1,10 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { autonolasBaseGraphClient } from 'common-util/graphql/client';
-import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import { dailyActivitiesQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -54,11 +58,7 @@ const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | n
         console.error(LEADERBOARD_ERROR_MESSAGE);
         return {
           value: null,
-          status: createStaleStatus({
-            indexingErrors: [],
-            fetchErrors: ['contribute:total'],
-            laggingSubgraphs: [],
-          }),
+          status: getFetchErrorAndCreateStaleStatus('contribute:total'),
         };
       }
 
@@ -86,11 +86,7 @@ const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | n
     console.error(LEADERBOARD_ERROR_MESSAGE, error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['contribute:total'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('contribute:total'),
     };
   }
 };
@@ -116,22 +112,14 @@ export const fetchContributeMetrics = async () => {
       totalOlasContributors = totalOlasContributorsResult.value;
     } else {
       console.error(LEADERBOARD_ERROR_MESSAGE, totalOlasContributorsResult.reason);
-      totalOlasContributors.status = createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['contribute:total'],
-        laggingSubgraphs: [],
-      });
+      totalOlasContributors.status = getFetchErrorAndCreateStaleStatus('contribute:total');
     }
 
     if (daaResult.status === 'fulfilled') {
       dailyActiveContributors = daaResult.value;
     } else {
       console.error('Fetch DAA for contribute failed:', daaResult.reason);
-      dailyActiveContributors.status = createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['contribute:daa'],
-        laggingSubgraphs: [],
-      });
+      dailyActiveContributors.status = getFetchErrorAndCreateStaleStatus('contribute:daa');
     }
 
     return {
@@ -143,19 +131,11 @@ export const fetchContributeMetrics = async () => {
     return {
       totalOlasContributors: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['contribute:total'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('contribute:total'),
       },
       dailyActiveContributors: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['contribute:daa'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('contribute:daa'),
       },
     };
   }

@@ -1,5 +1,9 @@
 import { autonolasGraphClient } from 'common-util/graphql/client';
-import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  executeGraphQLQuery,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
@@ -38,11 +42,7 @@ export const fetchBuildMetrics = async () => {
       totalBuilders = totalBuildersResult.value;
     } else {
       console.error('Fetch Total Builders failed:', totalBuildersResult.reason);
-      totalBuilders.status = createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['build:totalBuilders'],
-        laggingSubgraphs: [],
-      });
+      totalBuilders.status = getFetchErrorAndCreateStaleStatus('build:totalBuilders');
     }
 
     return { totalBuilders };
@@ -51,11 +51,7 @@ export const fetchBuildMetrics = async () => {
     return {
       totalBuilders: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['build:all'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('build:all'),
       },
     };
   }

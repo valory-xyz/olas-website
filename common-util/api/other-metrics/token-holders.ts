@@ -3,6 +3,7 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
@@ -16,6 +17,7 @@ type HolderCountsResult = WithMeta<{
 
 const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddress: string }) => {
   const client = TOKENOMICS_GRAPH_CLIENTS[key];
+
   if (!client) {
     return { count: 0, error: null, hasIndexingErrors: false, hasLaggingSubgraphs: false };
   }
@@ -30,7 +32,7 @@ const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddre
     return {
       count: Number(response?.token?.holderCount ?? 0),
       error: null,
-      hasIndexingErrors: response._meta?.hasIndexingErrors || false,
+      hasIndexingErrors: response._meta?.hasIndexingErrors,
       hasLaggingSubgraphs,
     };
   } catch (error) {
@@ -100,11 +102,7 @@ export const fetchTokenHolders = async () => {
     return {
       totalTokenHolders: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['tokenHolders:all'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('tokenHolders:all'),
       },
     };
   }

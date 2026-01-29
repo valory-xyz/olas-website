@@ -2,7 +2,10 @@ import {
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
 } from 'common-util/constants';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import get from 'lodash/get';
 
@@ -53,11 +56,7 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol owned liquidity:', polResponse.reason);
-      polMetric.status = createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['dune:pol'],
-        laggingSubgraphs: [],
-      });
+      polMetric.status = getFetchErrorAndCreateStaleStatus('dune:pol');
     }
 
     let revenueMetric: MetricWithStatus<number | null> = {
@@ -72,11 +71,7 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol revenue:', revenueResponse.reason);
-      revenueMetric.status = createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['dune:revenue'],
-        laggingSubgraphs: [],
-      });
+      revenueMetric.status = getFetchErrorAndCreateStaleStatus('dune:revenue');
     }
 
     return {
@@ -88,19 +83,11 @@ export const fetchProtocolMetrics = async () => {
     return {
       totalProtocolOwnedLiquidity: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['dune:pol'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('dune:pol'),
       },
       totalProtocolRevenue: {
         value: null,
-        status: createStaleStatus({
-          indexingErrors: [],
-          fetchErrors: ['dune:revenue'],
-          laggingSubgraphs: [],
-        }),
+        status: getFetchErrorAndCreateStaleStatus('dune:revenue'),
       },
     };
   }

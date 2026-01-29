@@ -10,6 +10,7 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
@@ -58,9 +59,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
         timestamp_lt,
       })
     );
-    const blockPromises = STAKING_CHAINS.map((chain) =>
-      getChainBlockNumber(chain)
-    ) as Promise<number>[];
+    const blockPromises = STAKING_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
@@ -101,11 +100,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
     console.error('Error fetching daily agent performances:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['registry:all'],
-        laggingSubgraphs: ['registry:all'],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
@@ -140,7 +135,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
       } else {
         const data = queryResult.value as StakingGlobalsResult;
         const chainBlock =
-          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+          blockResult.status === 'fulfilled' ? (blockResult.value as number | null) : null;
 
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`staking:${chain}`);
@@ -168,11 +163,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
     console.error('Error fetching OLAS staked:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['staking:all'],
-        laggingSubgraphs: ['staking:all'],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('staking:all'),
     };
   }
 };
@@ -235,11 +226,7 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
     console.error('Error fetching transactions:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['registry:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
@@ -301,11 +288,7 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
     console.error('Error fetching total operators:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['registry:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
@@ -370,11 +353,7 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
     console.error('Error fetching ATA transactions:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['ata:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('ata:all'),
     };
   }
 };
@@ -408,9 +387,9 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
       ]);
 
     const gnosisBlock =
-      gnosisBlockResult.status === 'fulfilled' ? (gnosisBlockResult.value as number) : null;
+      gnosisBlockResult.status === 'fulfilled' ? (gnosisBlockResult.value as number | null) : null;
     const baseBlock =
-      baseBlockResult.status === 'fulfilled' ? (baseBlockResult.value as number) : null;
+      baseBlockResult.status === 'fulfilled' ? (baseBlockResult.value as number | null) : null;
 
     let totalFees = 0;
 
@@ -475,11 +454,7 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
     console.error('Error fetching mech fees:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['mechFees:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('mechFees:all'),
     };
   }
 };

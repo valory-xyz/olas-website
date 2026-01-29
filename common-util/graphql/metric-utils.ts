@@ -22,12 +22,24 @@ export const createStaleStatus = ({
   laggingSubgraphs: Array.from(new Set(laggingSubgraphs)),
 });
 
+export const getFetchErrorAndCreateStaleStatus = (errorName: string) =>
+  createStaleStatus({
+    indexingErrors: [],
+    fetchErrors: [errorName],
+    laggingSubgraphs: [],
+  });
+
 const blockCache: Record<string, { block: number; lastUpdated: number }> = {};
+const promiseCache: Record<string, Promise<number | null>> = {};
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Function to get the latest block number for a given chain.
- * Uses in-memory cache to avoid redundant requests.
+ * Implements a Two-Level Cache:
+ * 1. blockCache: Serves fresh data immediately (TTL 5 mins).
+ * 2. promiseCache: Deduplicates in-flight requests. If multiple components
+ *    request the same chain's block simultaneously, they share the same pending promise
+ *    instead of making multiple requests.
  */
 export const getChainBlockNumber = async (chain: string): Promise<number | null> => {
   const chainConfig = CHAIN_CONFIG[chain];
@@ -39,16 +51,29 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
   if (cachedBlock && currentTime - cachedBlock.lastUpdated < CACHE_DURATION)
     return cachedBlock.block;
 
-  try {
-    const web3Instance = new Web3(chainConfig.rpc);
-    const blockNumber = await web3Instance.eth.getBlockNumber();
-    const block = Number(blockNumber);
-    blockCache[chain] = { block, lastUpdated: currentTime };
-    return block;
-  } catch (error) {
-    console.error(`Error fetching block number for ${chain}:`, error);
-    return null;
-  }
+  if (promiseCache[chain]) return promiseCache[chain];
+
+  const promise = (async () => {
+    try {
+      if (!chainConfig.rpc) {
+        console.error(`No RPC URL configured for chain: ${chain}`);
+        return null;
+      }
+      const web3Instance = new Web3(chainConfig.rpc);
+      const blockNumber = await web3Instance.eth.getBlockNumber();
+      const block = Number(blockNumber);
+      blockCache[chain] = { block, lastUpdated: currentTime };
+      return block;
+    } catch (error) {
+      console.error(`Error fetching block number for ${chain}:`, error);
+      return null;
+    } finally {
+      delete promiseCache[chain];
+    }
+  })();
+
+  promiseCache[chain] = promise;
+  return promise;
 };
 
 export const checkSubgraphLag = (
@@ -114,11 +139,7 @@ export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResu
     console.error(`Error fetching from ${source}:`, error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: [source],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus(source),
     };
   }
 }

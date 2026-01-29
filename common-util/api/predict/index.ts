@@ -1,6 +1,9 @@
 import { GNOSIS_STAKING_CONTRACTS, PREDICT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { REGISTRY_GRAPH_CLIENTS, STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
+import {
+  executeGraphQLQuery,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
@@ -146,33 +149,21 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
           ? aprResult.value
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:apr'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:apr'),
             },
       dailyActiveAgents:
         daaResult.status === 'fulfilled'
           ? daaResult.value
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:daa'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:daa'),
             },
       predictTxsByType:
         txsByTypeResult.status === 'fulfilled'
           ? txsByTypeResult.value
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:txs'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:txs'),
             },
       partialRoi:
         roiResult.status === 'fulfilled' && roiResult.value.value
@@ -182,11 +173,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             }
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:roi'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:roi'),
             },
       finalRoi:
         roiResult.status === 'fulfilled' && roiResult.value.value
@@ -196,22 +183,14 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             }
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:roi'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:roi'),
             },
       successRate:
         successRateResult.status === 'fulfilled'
           ? successRateResult.value
           : {
               value: null,
-              status: createStaleStatus({
-                indexingErrors: [],
-                fetchErrors: ['predict:successRate'],
-                laggingSubgraphs: [],
-              }),
+              status: getFetchErrorAndCreateStaleStatus('predict:successRate'),
             },
     };
 

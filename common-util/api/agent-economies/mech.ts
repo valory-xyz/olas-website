@@ -5,6 +5,7 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
@@ -92,11 +93,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
     console.error('Error fetching mech daily agent performances:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['registry:gnosis', 'registry:base'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('registry:gnosis, registry:base'),
     };
   }
 };
@@ -169,11 +166,7 @@ const fetchMechGlobals = async (): Promise<
     console.error('Error fetching mech requests from subgraphs:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['mech:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('mech:all'),
     };
   }
 };
@@ -187,8 +180,8 @@ type AgentPerformance = WithMeta<{
 
 // Fetch agents.fun txCount from Base registry subgraph
 const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>> => {
-  let hasIndexingErrors = false;
-  let hasLaggingSubgraphs = false;
+  const indexingErrors = [];
+  const laggingSubgraphs = [];
 
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
@@ -199,28 +192,28 @@ const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>>
       getChainBlockNumber('base'),
     ]);
 
-    if (result?._meta?.hasIndexingErrors) hasIndexingErrors = true;
-    if (checkSubgraphLag(block, result?._meta?.block?.number, 'base')) hasLaggingSubgraphs = true;
+    if (result?._meta?.hasIndexingErrors) {
+      indexingErrors.push('registry:base');
+    }
+    if (checkSubgraphLag(block, result?._meta?.block?.number, 'base')) {
+      laggingSubgraphs.push('registry:base');
+    }
 
     const rows = result?.agentPerformances || [];
     const txCount = rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
     return {
       value: txCount,
       status: createStaleStatus({
-        indexingErrors: hasIndexingErrors ? ['registry:base'] : [],
+        indexingErrors,
         fetchErrors: [],
-        laggingSubgraphs: hasLaggingSubgraphs ? ['registry:base'] : [],
+        laggingSubgraphs,
       }),
     };
   } catch (error) {
     console.error('Error fetching agents.fun txCount:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['registry:base'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('registry:base'),
     };
   }
 };
@@ -321,11 +314,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     console.error('Error fetching categorized mech requests:', error);
     return {
       value: null,
-      status: createStaleStatus({
-        indexingErrors: [],
-        fetchErrors: ['mech:all'],
-        laggingSubgraphs: [],
-      }),
+      status: getFetchErrorAndCreateStaleStatus('mech:all'),
     };
   }
 };
@@ -391,11 +380,7 @@ export const fetchMechMetrics = async () => {
     };
   } catch (error) {
     console.error('Error fetching all mech metrics:', error);
-    const errorStatus = createStaleStatus({
-      indexingErrors: [],
-      fetchErrors: ['mech:all'],
-      laggingSubgraphs: [],
-    });
+    const errorStatus = getFetchErrorAndCreateStaleStatus('mech:all');
     const errorMetric = { value: null, status: errorStatus };
     return {
       dailyActiveAgents: errorMetric,

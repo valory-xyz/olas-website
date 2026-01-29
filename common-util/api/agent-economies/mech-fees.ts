@@ -37,8 +37,8 @@ export const fetchMechFeeMetrics = async () => {
       PromiseSettledResult<MechFeesResult>,
       PromiseSettledResult<MechFeesResult>,
       PromiseSettledResult<LegacyMechFeesResult>,
-      PromiseSettledResult<number>,
-      PromiseSettledResult<number>,
+      PromiseSettledResult<number | null>,
+      PromiseSettledResult<number | null>,
     ];
 
     const gnosisBlockNumber = gnosisBlock.status === 'fulfilled' ? gnosisBlock.value : null;
