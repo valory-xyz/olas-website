@@ -23,7 +23,7 @@ const PredictionAgents = () => (
       <GetInvolved />
       <FAQ />
       <CTASection
-        text="Launch Prediction Trader - unlock tomorrow's opportunities today."
+        text="Launch Omenstrat - unlock tomorrow's opportunities today."
         ctaUrl="/operate"
         ctaText="Run an Agent Now"
       />
