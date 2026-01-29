@@ -63,7 +63,7 @@ const processList = [
     desc: 'Traders identify markets and commission AI predictions from Prediction Brokers by paying for their services via the Mech Marketplace through on-chain payments.',
   },
   { title: 'Research', desc: 'Prediction Brokers deliver predictions to Traders.' },
-  { title: 'Trading', desc: 'Traders execute informed bets.' },
+  { title: 'Trading', desc: 'Traders execute informed trades.' },
   { title: 'Closure', desc: 'Closers finalize market results.' },
 ];
 
@@ -199,7 +199,7 @@ const JoinTheEconomy = () => (
           </Button>
         </div>
       </Card>
-      <AgentsComingSoon />
+      <AgentsComingSoon description="More prediction markets agents coming soon" />
     </div>
   </div>
 );
