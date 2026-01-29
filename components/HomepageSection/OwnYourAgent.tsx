@@ -69,8 +69,8 @@ export const OwnYourAgent = () => (
 
       <div className="mx-auto w-fit">
         <Image
-          src="/images/homepage/pearl.png"
-          alt="Pearl v1"
+          src="/images/homepage/pearl-screenshot.png"
+          alt="Pearl"
           width={864}
           height={474}
           className="mx-auto"

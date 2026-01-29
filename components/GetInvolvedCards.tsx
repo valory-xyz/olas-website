@@ -36,7 +36,9 @@ export const GetInvolvedCards = ({ id = 'get-involved', title = 'Get Involved', 
             </div>
 
             <p className={TEXT_CLASS}>{desc}</p>
-            {isDisabled ? 'Coming soon' : renderLink({ url, urlName, isExternal, isSubsite })}
+            <div className="mt-auto">
+              {isDisabled ? 'Coming soon' : renderLink({ url, urlName, isExternal, isSubsite })}
+            </div>
           </div>
         ))}
       </div>

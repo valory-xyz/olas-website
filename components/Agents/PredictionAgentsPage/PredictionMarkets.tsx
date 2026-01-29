@@ -10,11 +10,11 @@ export const PredictionMarkets = () => (
       </video>
       <h2 className={SUB_HEADER_CLASS}>Prediction Markets, Without the Manual Grind</h2>
       <p>
-        A Prediction Agent is an autonomous AI agent that interacts with decentralized forecasting
-        markets — platforms where users trade on the outcomes of future events. With the Prediction
-        Agent, you don&apos;t need to manually browse markets or calculate odds. Your agent does all
-        that — getting new markets, AI-powered predictions, placing bets, and even collecting
-        rewards. You just run the agent. It does the rest — hands-free.
+        Omenstrat is an autonomous AI agent that interacts with decentralized forecasting markets —
+        platforms where users trade on the outcomes of future events. With Omenstrat, you don’t need
+        to manually browse markets or calculate odds. Your agent does all that — getting new
+        markets, AI-powered predictions, executing trades, and even collecting rewards. You just run
+        the agent. It does the rest — hands-free.
       </p>
       <p>
         Curious how it fits into a broader autonomous system? Learn more on the{' '}

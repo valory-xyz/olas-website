@@ -4,7 +4,12 @@ import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 
 const HeroImage = () => (
-  <Image src="/images/prediction-agents-page/hero.png" alt="hero" width={400} height={400} />
+  <Image
+    src="/images/prediction-agents-page/omenstrat-hero.png"
+    alt="hero"
+    width={400}
+    height={400}
+  />
 );
 
 const Explore = () => (
@@ -16,7 +21,7 @@ const Explore = () => (
 export const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
-    pageName="PREDICTION AGENTS"
+    pageName="OMENSTRAT"
     title="Trade in Prediction Markets — Without Lifting a Finger"
     PrimaryButton={Explore}
   />

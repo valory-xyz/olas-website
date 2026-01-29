@@ -30,7 +30,7 @@ export const PredictRoiInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Total ROI shows your agent&apos;s overall earnings, including profits from predictions and
-          staking rewards, minus all related costs such as bet amounts, gas fees, and Mech request
+          staking rewards, minus all related costs such as trade amounts, gas fees, and Mech request
           fees. Requests made for unresolved (open) markets are excluded to ensure accuracy.
         </p>
 
@@ -64,7 +64,7 @@ export const PredictRoiInfo = () => {
           {totalMechRequests} {mechRequests}
         </CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets & Bets Query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets & Trades Query</h3>
 
         <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>

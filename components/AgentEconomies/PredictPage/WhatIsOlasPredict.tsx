@@ -8,7 +8,12 @@ import {
   TEXT_CLASS,
   TEXT_MEDIUM_CLASS,
 } from 'common-util/classes';
+import { PEARL_YOU_URL } from 'common-util/constants';
+import { AgentsComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
+import { Card } from 'components/ui/card';
+import { Link, SubsiteLink } from 'components/ui/typography';
 
 const agentRolesList = [
   {
@@ -32,12 +37,17 @@ const agentRolesList = [
   {
     img: 'traders',
     title: 'Traders',
-    desc: 'Strategically place bets on prediction markets.',
+    desc: 'Strategically execute trades on prediction markets.',
   },
   {
     img: 'mechs',
-    title: 'Mechs',
-    desc: 'Provide intelligence and probabilities for market questions.',
+    title: 'Prediction Brokers',
+    desc: (
+      <p>
+        Provide intelligence and probabilities for market questions by offering services as Mechs on
+        the <Link href="/mech-marketplace">Mech Marketplace</Link>.
+      </p>
+    ),
   },
   {
     img: 'closers',
@@ -50,10 +60,10 @@ const processList = [
   { title: 'Market Creation', desc: 'Creators deploy and fund markets.' },
   {
     title: 'Trading',
-    desc: 'Traders identify markets and commission AI predictions from Mechs via on-chain payment.',
+    desc: 'Traders identify markets and commission AI predictions from Prediction Brokers by paying for their services via the Mech Marketplace through on-chain payments.',
   },
-  { title: 'Research', desc: 'Mechs deliver predictions to Traders.' },
-  { title: 'Bet Placement', desc: 'Traders place informed bets.' },
+  { title: 'Research', desc: 'Prediction Brokers deliver predictions to Traders.' },
+  { title: 'Trading', desc: 'Traders execute informed trades.' },
   { title: 'Closure', desc: 'Closers finalize market results.' },
 ];
 
@@ -70,7 +80,7 @@ const olasPredictList = [
   },
   {
     title: 'Profit Potential',
-    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous betting.',
+    desc: 'Operators can run trader agents to potentially earn staking rewards and engage in autonomous trading on prediction markets.',
     icon: <HandCoins />,
   },
   {
@@ -118,9 +128,9 @@ const HowItWorks = () => (
 
 const AgentRoles = () => (
   <div className={`${SCREEN_WIDTH_LG} lg:gap-4 gap-2`}>
-    <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Roles</h2>
+    <h2 className={`${SUB_HEADER_MEDIUM_CLASS} mb-2`}>Agent Types</h2>
 
-    <Image src="/images/predict-page/agent-roles.png" alt="Agent Roles" width={800} height={200} />
+    <Image src="/images/predict-page/agent-roles.png" alt="Agent Types" width={800} height={200} />
 
     {agentRolesList.map(({ img, title, desc }, index) => (
       <div
@@ -132,7 +142,7 @@ const AgentRoles = () => (
         <Image src={`/images/predict-page/${img}.png`} alt={title} width={60} height={30} />
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>{title}</h3>
-        <p>{desc}</p>
+        <div>{desc}</div>
       </div>
     ))}
   </div>
@@ -155,6 +165,45 @@ const TheProcess = () => (
   </div>
 );
 
+const JoinTheEconomy = () => (
+  <div id="join" className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12">
+    <h2 className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}>
+      Join the Olas Predict Agent Economy
+    </h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card className="rounded-2xl flex flex-col gap-6 p-6">
+        <div className="flex gap-3">
+          <Image
+            src="/images/predict-page/omenstrat-icon.png"
+            alt="Omenstrat tile icon"
+            width={48}
+            height={48}
+          />
+          <p className="font-medium text-lg my-auto">Omenstrat</p>
+          <Image
+            src="/images/homepage/addresses/gnosis-color.svg"
+            alt="Gnosis icon"
+            width={16}
+            height={16}
+          />
+        </div>
+        <p>Trades Omen prediction markets for you while you do something else.</p>
+        <div className="flex max-xl:flex-col xl:gap-3">
+          <Button variant="default" asChild className="grow mt-6 max-md:w-full">
+            <SubsiteLink isInButton href={PEARL_YOU_URL}>
+              Run Omenstrat
+            </SubsiteLink>
+          </Button>
+          <Button variant="outline" asChild className="grow mt-6 max-md:w-full">
+            <Link href="/agents/omenstrat">More About Omenstrat</Link>
+          </Button>
+        </div>
+      </Card>
+      <AgentsComingSoon description="More prediction markets agents coming soon" />
+    </div>
+  </div>
+);
+
 const eachCardCss = {
   background: 'linear-gradient(94.05deg, #F2F4F9 0%, rgba(242, 244, 249, 0) 100%)',
 };
@@ -168,17 +217,12 @@ const WhyOlasPredict = () => (
       Why Olas Predict?
     </h2>
 
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {olasPredictList.map(({ title, desc, icon }, index) => {
-        const isLastAndOdd =
-          olasPredictList.length === index + 1 && olasPredictList.length % 2 === 1;
-
         return (
           <div
             key={title}
-            className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6 ${
-              isLastAndOdd ? 'lg:col-start-2 lg:col-span-2' : 'col-span-2'
-            }`}
+            className={`flex flex-col gap-3 bg-gradient-to-r p-4 rounded-xl border lg:p-6`}
             style={eachCardCss}
           >
             <div className="flex items-center">
@@ -203,6 +247,7 @@ export const WhatIsOlasPredict = () => (
     <HowItWorks />
     <AgentRoles />
     <TheProcess />
+    <JoinTheEconomy />
     <WhyOlasPredict />
   </SectionWrapper>
 );

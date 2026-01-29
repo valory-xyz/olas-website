@@ -4,6 +4,7 @@ import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import useCases from 'data/useCases.json';
+import { ArrowUpRightIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -25,17 +26,43 @@ export const AvailableAgents = () => {
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-4 mb-[120px]">
-          {sovereignAgents.services.map((agent) => (
-            <Link key={agent.title} href={agent.link}>
-              <Card className="activity-card-opaque flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
-                <Image src={agent.image} alt={agent.title} width={80} height={80} />
-                <div className="flex flex-col">
-                  <p className="text-lg font-semibold">{agent.title}</p>
-                  <p className="text-slate-600">{agent.description}</p>
-                </div>
-              </Card>
-            </Link>
-          ))}
+          {sovereignAgents.services.map((agent) =>
+            agent.isExternal ? (
+              <a key={agent.title} href={agent.link} target="_blank" rel="noopener noreferrer">
+                <Card className="activity-card-opaque flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
+                  <Image
+                    src={agent.image}
+                    alt={agent.title}
+                    width={80}
+                    height={80}
+                    className="w-[80px] h-[80px]"
+                  />
+                  <div className="flex flex-col">
+                    <div className="text-lg font-semibold inline-flex place-items-center gap-1">
+                      {agent.title} <ArrowUpRightIcon size={18} />
+                    </div>
+                    <p className="text-slate-600">{agent.description}</p>
+                  </div>
+                </Card>
+              </a>
+            ) : (
+              <Link key={agent.title} href={agent.link}>
+                <Card className="activity-card-opaque flex flex-row hover:bg-white duration-150 hover:cursor-pointer gap-4 p-4">
+                  <Image
+                    src={agent.image}
+                    alt={agent.title}
+                    width={80}
+                    height={80}
+                    className="w-[80px] h-[80px]"
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-lg font-semibold">{agent.title}</p>
+                    <p className="text-slate-600">{agent.description}</p>
+                  </div>
+                </Card>
+              </Link>
+            )
+          )}
         </div>
 
         <div className="text-center mb-14">

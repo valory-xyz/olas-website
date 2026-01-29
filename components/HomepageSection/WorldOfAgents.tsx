@@ -10,6 +10,7 @@ const list = [
   'agentsfun.png',
   'governatooorr.png',
   'predict.png',
+  'pettbro.png',
   'contribute.png',
   'more-agents.png',
 ];
