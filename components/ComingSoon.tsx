@@ -19,7 +19,7 @@ export const ComingSoon = ({ text, className }) => {
 };
 
 export const AgentsComingSoon = ({ description }) => (
-  <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
+  <Card className="p-8 border border-slate-200 text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
     <div className="flex flex-col gap-4 text-base text-center place-items-center text-slate-500 max-w-[244px] m-auto">
       <Bot size={48} />
       <p>{description}</p>
