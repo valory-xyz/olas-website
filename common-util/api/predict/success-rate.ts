@@ -12,6 +12,7 @@ type ClosedMarketsBetsResponse = WithMeta<Record<string, any[]>>;
 export const fetchSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
   return executeGraphQLQuery<ClosedMarketsBetsResponse, string>({
     client: predictAgentsGraphClient,
+    chain: 'gnosis',
     query: getClosedMarketsBetsQuery({
       first: SUCCESS_LIMIT,
       pages: SUCCESS_PAGES,

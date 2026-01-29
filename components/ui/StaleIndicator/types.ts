@@ -3,6 +3,7 @@ type MetricStatus = {
   lastValidAt: number | null;
   indexingErrors: string[];
   fetchErrors: string[];
+  laggingSubgraphs: string[];
 };
 
 export type StaleIndicatorProps = {

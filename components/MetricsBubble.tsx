@@ -18,6 +18,7 @@ type MetricsBubbleProps = {
       lastValidAt: number | null;
       indexingErrors: string[];
       fetchErrors: string[];
+      laggingSubgraphs: string[];
     };
   }[];
   image?: string;

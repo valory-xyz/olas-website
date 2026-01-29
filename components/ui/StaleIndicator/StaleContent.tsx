@@ -9,7 +9,11 @@ const formatLocalDate = (timestamp: number | null): string => {
 };
 
 export const StaleMetricContent = ({ status }: StaleIndicatorProps) => {
-  const sources = [...(status?.indexingErrors || []), ...(status?.fetchErrors || [])];
+  const sources = [
+    ...(status?.indexingErrors || []),
+    ...(status?.fetchErrors || []),
+    ...(status?.laggingSubgraphs || []),
+  ];
 
   return (
     <div className="flex flex-col items-start text-left">

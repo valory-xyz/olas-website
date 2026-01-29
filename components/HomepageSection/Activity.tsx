@@ -17,6 +17,7 @@ type MetricStatus = {
   lastValidAt: number | null;
   indexingErrors: string[];
   fetchErrors: string[];
+  laggingSubgraphs: string[];
 };
 
 type ActivityValueProps = {

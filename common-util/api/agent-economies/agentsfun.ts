@@ -14,6 +14,7 @@ type DailyAgentPerformance = WithMeta<{
 export const fetchAgentsFunMetrics = async () => {
   const dailyActiveAgents = await executeGraphQLQuery<DailyAgentPerformance, number>({
     client: REGISTRY_GRAPH_CLIENTS.base,
+    chain: 'base',
     query: dailyAgentsFunPerformancesQuery,
     variables: {
       timestamp_gt: getMidnightUtcTimestampDaysAgo(8),
