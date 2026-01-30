@@ -9,7 +9,12 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
-import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
+import {
+  checkSubgraphLag,
+  createStaleStatus,
+  executeGraphQLQuery,
+  getChainBlockNumber,
+} from 'common-util/graphql/metric-utils';
 import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
@@ -42,6 +47,7 @@ const toNumber = (value: unknown) => {
 const fetchModiusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | null>> => {
   return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
     client: BABYDEGEN_GRAPH_CLIENTS.mode,
+    chain: 'mode',
     query: dailyBabydegenPopulationMetricsQuery({
       first: 7,
       timestampLte: MODIUS_FIXED_END_TIMESTAMP,
@@ -67,6 +73,7 @@ const fetchModiusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | 
 const fetchOptimusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | null>> => {
   return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
     client: BABYDEGEN_GRAPH_CLIENTS.optimism,
+    chain: 'optimism',
     query: dailyBabydegenPopulationMetricsQuery({ first: 10 }),
     source: 'babyDegen:optimism',
     transform: (data) => {
@@ -130,10 +137,20 @@ const fetchOptimusMetrics = async (
 
   return {
     value: metrics ?? { ...EMPTY_APR_METRICS },
-    status: createStaleStatus(
-      [...(populationStatus.indexingErrors || []), ...(maxOlasApr.status.indexingErrors || [])],
-      [...(populationStatus.fetchErrors || []), ...(maxOlasApr.status.fetchErrors || [])]
-    ),
+    status: createStaleStatus({
+      indexingErrors: [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      fetchErrors: [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ],
+      laggingSubgraphs: [
+        ...(populationStatus.laggingSubgraphs || []),
+        ...(maxOlasApr.status.laggingSubgraphs || []),
+      ],
+    }),
   };
 };
 
@@ -167,10 +184,20 @@ const fetchModiusMetrics = async (
       ...aprMetrics,
       latestAvgApr: aprMetrics.latestUsdcApr,
     },
-    status: createStaleStatus(
-      [...(populationStatus.indexingErrors || []), ...(maxOlasApr.status.indexingErrors || [])],
-      [...(populationStatus.fetchErrors || []), ...(maxOlasApr.status.fetchErrors || [])]
-    ),
+    status: createStaleStatus({
+      indexingErrors: [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      fetchErrors: [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ],
+      laggingSubgraphs: [
+        ...(populationStatus.laggingSubgraphs || []),
+        ...(maxOlasApr.status.laggingSubgraphs || []),
+      ],
+    }),
   };
 };
 
@@ -179,9 +206,10 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const [modeResult, optimismResult] = await Promise.allSettled([
+    const [modeResult, optimismResult, modeBlock, optimismBlock] = await Promise.allSettled([
       REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
         timestamp_gt,
         timestamp_lt,
@@ -190,34 +218,55 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
         timestamp_gt,
         timestamp_lt,
       }),
+      getChainBlockNumber('mode'),
+      getChainBlockNumber('optimism'),
     ]);
 
-    const handleResult = (result: PromiseSettledResult<any>, source: string) => {
+    const handleResult = (
+      result: PromiseSettledResult<any>,
+      source: string,
+      chainBlockResult: PromiseSettledResult<number | null>
+    ) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
         return [];
       }
-      if (result.value?._meta?.hasIndexingErrors) {
+
+      const data = result.value;
+      if (data?._meta?.hasIndexingErrors) {
         indexingErrors.push(`registry:${source}`);
       }
-      return result.value?.dailyAgentPerformances ?? [];
+
+      const chainBlock = chainBlockResult.status === 'fulfilled' ? chainBlockResult.value : null;
+      if (
+        chainBlock &&
+        data?._meta?.block?.number &&
+        checkSubgraphLag(chainBlock, data._meta.block.number, source)
+      )
+        laggingSubgraphs.push(`registry:${source}`);
+
+      return data?.dailyAgentPerformances ?? [];
     };
 
-    const modePerformances = handleResult(modeResult, 'mode');
-    const optimismPerformances = handleResult(optimismResult, 'optimism');
+    const modePerformances = handleResult(modeResult, 'mode', modeBlock);
+    const optimismPerformances = handleResult(optimismResult, 'optimism', optimismBlock);
 
     const modeAverage = calculate7DayAverage(modePerformances, 'activeMultisigCount');
     const optimismAverage = calculate7DayAverage(optimismPerformances, 'activeMultisigCount');
 
     return {
       value: modeAverage + optimismAverage,
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching babydegen daily agent performances:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:mode', 'registry:optimism']),
+      status: createStaleStatus({
+        indexingErrors: [],
+        fetchErrors: ['registry:mode', 'registry:optimism'],
+        laggingSubgraphs: [],
+      }),
     };
   }
 };
@@ -233,6 +282,7 @@ type StakingContractsResult = WithMeta<{
 const fetchModiusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<StakingContractsResult, number | null>({
     client: STAKING_GRAPH_CLIENTS.mode,
+    chain: 'mode',
     query: stakingContractsQuery(MODIUS_STAKING_CONTRACTS),
     source: 'staking:mode',
     transform: (data) => {
@@ -245,6 +295,7 @@ const fetchModiusOlasApr = async (): Promise<MetricWithStatus<number | null>> =>
 const fetchOptimusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<StakingContractsResult, number | null>({
     client: STAKING_GRAPH_CLIENTS.optimism,
+    chain: 'optimism',
     query: stakingContractsQuery(OPTIMUS_STAKING_CONTRACTS),
     source: 'staking:optimism',
     transform: (data) => {
@@ -274,7 +325,11 @@ export const fetchBabyDegenMetrics = async () => {
     };
   } catch (error) {
     console.error('Error fetching all babydegen metrics:', error);
-    const errorStatus = createStaleStatus([], ['babyDegen:all']);
+    const errorStatus = createStaleStatus({
+      indexingErrors: [],
+      fetchErrors: ['babyDegen:all'],
+      laggingSubgraphs: [],
+    });
     return {
       optimus: { value: null, status: errorStatus },
       modius: { value: null, status: errorStatus },

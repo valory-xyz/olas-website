@@ -128,6 +128,44 @@ export const TOKENOMICS_SUBGRAPH_URLS = [
   { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
 ];
 
+/**
+ * Lag limits are calibrated so each chain tolerates ~12 hours of subgraph indexing delay
+ */
+export const CHAIN_CONFIG: Record<string, { rpc: string; lagLimit: number }> = {
+  ethereum: {
+    rpc: process.env.ETHEREUM_RPC,
+    lagLimit: 3600, // ~12s blocks → 3600 blocks ≈ 12 hours
+  },
+  gnosis: {
+    rpc: process.env.GNOSIS_RPC,
+    lagLimit: 9000, // ~5s blocks → 9000 blocks ≈ 12 hours
+  },
+  arbitrum: {
+    rpc: process.env.ARBITRUM_RPC,
+    lagLimit: 160000, // ~0.27s blocks → 160000 blocks ≈ 12 hours
+  },
+  optimism: {
+    rpc: process.env.OPTIMISM_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  base: {
+    rpc: process.env.BASE_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  celo: {
+    rpc: process.env.CELO_RPC,
+    lagLimit: 43200, // ~1s blocks → 43200 blocks ≈ 12 hours
+  },
+  polygon: {
+    rpc: process.env.POLYGON_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  mode: {
+    rpc: process.env.MODE_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+};
+
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
 
 export const COINGECKO_URL = 'https://www.coingecko.com';

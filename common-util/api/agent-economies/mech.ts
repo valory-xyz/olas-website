@@ -1,7 +1,12 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  checkSubgraphLag,
+  createStaleStatus,
+  getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
   dailyMechAgentPerformancesQuery,
@@ -12,46 +17,68 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-type GnosisResult = {
+type GnosisResult = WithMeta<{
   dailyAgentPerformances: {
     activeMultisigCount: number;
   }[];
-};
+}>;
 
-type BaseResult = {
+type BaseResult = WithMeta<{
   dailyAgentPerformances: {
     activeMultisigCount: number;
   }[];
-};
+}>;
 
 const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const [gnosisResult, baseResult] = await Promise.allSettled([
-      REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }) as Promise<GnosisResult>,
-      REGISTRY_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }) as Promise<BaseResult>,
-    ]);
+    const [gnosisResult, baseResult, gnosisBlockResult, baseBlockResult] =
+      (await Promise.allSettled([
+        REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        }) as Promise<GnosisResult>,
+        REGISTRY_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        }) as Promise<BaseResult>,
+        getChainBlockNumber('gnosis'),
+        getChainBlockNumber('base'),
+      ])) as [
+        PromiseSettledResult<GnosisResult>,
+        PromiseSettledResult<BaseResult>,
+        PromiseSettledResult<number | null>,
+        PromiseSettledResult<number | null>,
+      ];
 
-    const handleResult = <T>(result: PromiseSettledResult<T>, source: string) => {
+    const handleResult = <T extends { _meta?: WithMeta<unknown>['_meta'] }>(
+      result: PromiseSettledResult<T>,
+      source: string,
+      chainBlock: PromiseSettledResult<number | null>
+    ) => {
       if (result.status === 'rejected') {
         fetchErrors.push(`registry:${source}`);
         return null;
       }
-      return result.value;
+      const data = result.value;
+      const block = chainBlock.status === 'fulfilled' ? chainBlock.value : null;
+      if (
+        block &&
+        data?._meta?.block?.number &&
+        checkSubgraphLag(block, data._meta.block.number, source)
+      )
+        laggingSubgraphs.push(`registry:${source}`);
+
+      return data;
     };
 
-    const gnosisData = handleResult(gnosisResult, 'gnosis');
-    const baseData = handleResult(baseResult, 'base');
+    const gnosisData = handleResult(gnosisResult, 'gnosis', gnosisBlockResult);
+    const baseData = handleResult(baseResult, 'base', baseBlockResult);
     const gnosisPerformances = gnosisData?.dailyAgentPerformances ?? [];
     const basePerformances = baseData?.dailyAgentPerformances ?? [];
 
@@ -60,13 +87,13 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
 
     return {
       value: gnosisAverage + baseAverage,
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:gnosis', 'registry:base']),
+      status: getFetchErrorAndCreateStaleStatus('registry:gnosis, registry:base'),
     };
   }
 };
@@ -83,20 +110,42 @@ const fetchMechGlobals = async (): Promise<
 > => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = (await Promise.allSettled([
-      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
-      MARKETPLACE_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-    ])) as PromiseSettledResult<MechGlobalsResult>[];
+    const [gnosisResult, baseResult, gnosisBlockResult, baseBlockResult] =
+      (await Promise.allSettled([
+        MARKETPLACE_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
+        MARKETPLACE_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
+        getChainBlockNumber('gnosis'),
+        getChainBlockNumber('base'),
+      ])) as [
+        PromiseSettledResult<MechGlobalsResult>,
+        PromiseSettledResult<MechGlobalsResult>,
+        PromiseSettledResult<number | null>,
+        PromiseSettledResult<number | null>,
+      ];
 
+    const results = [gnosisResult, baseResult];
     const sources = ['gnosis', 'base'];
+    const blocks = [
+      gnosisBlockResult.status === 'fulfilled' ? gnosisBlockResult.value : null,
+      baseBlockResult.status === 'fulfilled' ? baseBlockResult.value : null,
+    ];
+
     results.forEach((res, index) => {
       const source = sources[index];
+      const block = blocks[index];
+
       if (res.status === 'rejected') {
         fetchErrors.push(`mech:${source}`);
-      } else if (res.value?._meta?.hasIndexingErrors) {
-        indexingErrors.push(`mech:${source}`);
+      } else {
+        if (res.value?._meta?.hasIndexingErrors) {
+          indexingErrors.push(`mech:${source}`);
+        }
+        if (checkSubgraphLag(block, res.value?._meta?.block?.number, source)) {
+          laggingSubgraphs.push(`mech:${source}`);
+        }
       }
     });
 
@@ -111,13 +160,13 @@ const fetchMechGlobals = async (): Promise<
 
     return {
       value: totals,
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['mech:all']),
+      status: getFetchErrorAndCreateStaleStatus('mech:all'),
     };
   }
 };
@@ -131,30 +180,43 @@ type AgentPerformance = WithMeta<{
 
 // Fetch agents.fun txCount from Base registry subgraph
 const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>> => {
+  const indexingErrors = [];
+  const laggingSubgraphs = [];
+
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
-    const result: AgentPerformance = await REGISTRY_GRAPH_CLIENTS.base.request(agentTxCountsQuery, {
-      agentIds,
-    });
+    const [result, block] = await Promise.all([
+      REGISTRY_GRAPH_CLIENTS.base.request(agentTxCountsQuery, {
+        agentIds,
+      }) as Promise<AgentPerformance>,
+      getChainBlockNumber('base'),
+    ]);
+
+    if (result?._meta?.hasIndexingErrors) {
+      indexingErrors.push('registry:base');
+    }
+    if (checkSubgraphLag(block, result?._meta?.block?.number, 'base')) {
+      laggingSubgraphs.push('registry:base');
+    }
+
     const rows = result?.agentPerformances || [];
     const txCount = rows.reduce((sum, row) => sum + Number(row?.txCount ?? 0), 0);
     return {
       value: txCount,
-      status: createStaleStatus(result?._meta?.hasIndexingErrors ? ['registry:base'] : [], []),
+      status: createStaleStatus({
+        indexingErrors,
+        fetchErrors: [],
+        laggingSubgraphs,
+      }),
     };
   } catch (error) {
     console.error('Error fetching agents.fun txCount:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:base']),
+      status: getFetchErrorAndCreateStaleStatus('registry:base'),
     };
   }
 };
-
-type MechResult = WithMeta<{
-  requestsPerAgentOnchains: { id: string; requestsCount: number }[];
-  requestsPerAgents: { id: string; requestsCount: number }[];
-}>;
 
 type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
@@ -175,30 +237,43 @@ const fetchCategorizedRequestTotals = async (): Promise<
   const allIds = [...predictTraderIds, ...contributeIds, ...governatooorIds];
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const [marketplaceGnosisResult, marketplaceBaseResult] = (await Promise.allSettled([
-      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
-        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-      ),
-      MARKETPLACE_GRAPH_CLIENTS.base.request(
-        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-      ),
-    ])) as [
-      PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
-      PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
-    ];
+    const [marketplaceGnosisResult, marketplaceBaseResult, gnosisBlockResult, baseBlockResult] =
+      (await Promise.allSettled([
+        MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+        ),
+        MARKETPLACE_GRAPH_CLIENTS.base.request(
+          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+        ),
+        getChainBlockNumber('gnosis'),
+        getChainBlockNumber('base'),
+      ])) as [
+        PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
+        PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
+        PromiseSettledResult<number | null>,
+        PromiseSettledResult<number | null>,
+      ];
 
     const results = [marketplaceGnosisResult, marketplaceBaseResult];
     const sources = ['gnosis', 'base'];
+    const blocks = [
+      gnosisBlockResult.status === 'fulfilled' ? gnosisBlockResult.value : null,
+      baseBlockResult.status === 'fulfilled' ? baseBlockResult.value : null,
+    ];
+
     results.forEach((res, index) => {
       const source = sources[index];
+      const block = blocks[index];
+
       if (res.status === 'rejected') {
         fetchErrors.push(`mech:${source}`);
       } else {
-        if (res.value?._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${source}`);
-        }
+        if (res.value?._meta?.hasIndexingErrors) indexingErrors.push(`mech:${source}`);
+        if (checkSubgraphLag(block, res.value?._meta?.block?.number, source))
+          laggingSubgraphs.push(`mech:${source}`);
       }
     });
 
@@ -233,13 +308,13 @@ const fetchCategorizedRequestTotals = async (): Promise<
         contributeTxs: sumCountsForAgentIds(contributeIds),
         governatooorrTxs: sumCountsForAgentIds(governatooorIds),
       },
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching categorized mech requests:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['mech:all']),
+      status: getFetchErrorAndCreateStaleStatus('mech:all'),
     };
   }
 };
@@ -287,15 +362,25 @@ export const fetchMechMetrics = async () => {
       agentsfunTxs: agentsfunTxs,
       otherTxs: {
         value: globals.value && categorized.value ? otherTxsValue : null,
-        status: createStaleStatus(
-          [...(globals.status.indexingErrors || []), ...(categorized.status.indexingErrors || [])],
-          [...(globals.status.fetchErrors || []), ...(categorized.status.fetchErrors || [])]
-        ),
+        status: createStaleStatus({
+          indexingErrors: [
+            ...(globals.status.indexingErrors || []),
+            ...(categorized.status.indexingErrors || []),
+          ],
+          fetchErrors: [
+            ...(globals.status.fetchErrors || []),
+            ...(categorized.status.fetchErrors || []),
+          ],
+          laggingSubgraphs: [
+            ...(globals.status.laggingSubgraphs || []),
+            ...(categorized.status.laggingSubgraphs || []),
+          ],
+        }),
       },
     };
   } catch (error) {
     console.error('Error fetching all mech metrics:', error);
-    const errorStatus = createStaleStatus([], ['mech:all']);
+    const errorStatus = getFetchErrorAndCreateStaleStatus('mech:all');
     const errorMetric = { value: null, status: errorStatus };
     return {
       dailyActiveAgents: errorMetric,
