@@ -5,7 +5,7 @@ import Image from 'next/image';
 const HeroImage = () => (
   <Image
     src="/images/agents/babydegen/babydegen.png"
-    alt="Baby Degen"
+    alt="BabyDegen"
     width={400}
     height={400}
     className="mx-auto rounded-lg"
@@ -14,7 +14,7 @@ const HeroImage = () => (
 
 const ExploreBabydegens = () => (
   <Button variant="default" size="xl" asChild className="max-md:grow">
-    <a href="#agents">Explore Babydegens</a>
+    <a href="#agents">Explore BabyDegens</a>
   </Button>
 );
 

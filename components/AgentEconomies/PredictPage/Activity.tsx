@@ -163,7 +163,7 @@ const TransactionsBubble = ({ metrics, title }) => {
               width="48"
               height="22"
             />
-            <span>Market Creators</span>
+            <span>Market Creators & </span>
             <Image alt="Predict" src="/images/predict-page/closers.png" width="48" height="22" />
             <span>Closers</span>
           </div>
