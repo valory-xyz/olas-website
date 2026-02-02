@@ -9,9 +9,12 @@ import {
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
+import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
 import { CodeSnippet } from './CodeSnippet';
 
 export const PredictRoiInfo = () => {
+  const [copied, setCopied] = useState(false);
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
@@ -22,6 +25,15 @@ export const PredictRoiInfo = () => {
     skip: 0,
     pages: 10,
   });
+
+  const copyEndpointToClipboard = async () => {
+    const url = process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL;
+    if (url) {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <SectionWrapper id="predict-roi">
@@ -76,8 +88,20 @@ export const PredictRoiInfo = () => {
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
-        <p className="text-purple-600">
-          API endpoint: <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+        <p className="text-purple-600 flex items-center gap-2 flex-wrap">
+          <span>API endpoint:</span>
+          <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+          <button
+            onClick={copyEndpointToClipboard}
+            className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check size={16} className="text-green-600" />
+            ) : (
+              <Copy size={16} color="black" />
+            )}
+          </button>
         </p>
         <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
