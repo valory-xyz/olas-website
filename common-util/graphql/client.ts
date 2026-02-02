@@ -35,6 +35,7 @@ export const STAKING_GRAPH_CLIENTS = {
   optimism: new GraphQLClient(process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL, requestConfig),
   gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL, requestConfig),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL, requestConfig),
+  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL, requestConfig),
 };
 
 export const REGISTRY_GRAPH_CLIENTS = {
@@ -70,6 +71,10 @@ export const predictAgentsGraphClient = new GraphQLClient(
 export const MARKETPLACE_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL, requestConfig),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL, requestConfig),
+  polygon: new GraphQLClient(
+    process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL,
+    requestConfig
+  ),
 };
 
 export const BABYDEGEN_GRAPH_CLIENTS = {

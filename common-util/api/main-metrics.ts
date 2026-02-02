@@ -25,17 +25,8 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const STAKING_CHAINS = ['gnosis', 'base', 'mode', 'optimism'] as const;
-const ALL_REGISTRY_CHAINS = [
-  'gnosis',
-  'base',
-  'mode',
-  'optimism',
-  'celo',
-  'ethereum',
-  'polygon',
-  'arbitrum',
-] as const;
+const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
+const REGISTRY_CHAINS = Object.keys(REGISTRY_GRAPH_CLIENTS);
 
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
@@ -180,17 +171,17 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
   const laggingSubgraphs: string[] = [];
 
   try {
-    const queryPromises = ALL_REGISTRY_CHAINS.map((chain) =>
+    const queryPromises = REGISTRY_CHAINS.map((chain) =>
       REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
     );
-    const blockPromises = ALL_REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const txCountByChains: string[] = [];
 
-    ALL_REGISTRY_CHAINS.forEach((chain, index) => {
+    REGISTRY_CHAINS.forEach((chain, index) => {
       const queryResult = results[index];
-      const blockResult = results[index + ALL_REGISTRY_CHAINS.length];
+      const blockResult = results[index + REGISTRY_CHAINS.length];
 
       if (queryResult.status === 'rejected') {
         console.error(`registry:${chain}`, queryResult.reason);
@@ -232,9 +223,9 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
 };
 
 type OperatorGlobalsResult = WithMeta<{
-  globals: {
+  global: {
     totalOperators: number;
-  }[];
+  };
 }>;
 
 const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> => {
@@ -243,17 +234,17 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
   const laggingSubgraphs: string[] = [];
 
   try {
-    const queryPromises = ALL_REGISTRY_CHAINS.map((chain) =>
+    const queryPromises = REGISTRY_CHAINS.map((chain) =>
       REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
     );
-    const blockPromises = ALL_REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const operatorsByChains: number[] = [];
 
-    ALL_REGISTRY_CHAINS.forEach((chain, index) => {
+    REGISTRY_CHAINS.forEach((chain, index) => {
       const queryResult = results[index];
-      const blockResult = results[index + ALL_REGISTRY_CHAINS.length];
+      const blockResult = results[index + REGISTRY_CHAINS.length];
 
       if (queryResult.status === 'rejected') {
         console.error(`registry:${chain}`, queryResult.reason);
@@ -269,9 +260,7 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        // TODO: Update operatorGlobalsQuery to use global(id: '') instead of globals array
-        // to avoid needing to pick the first item
-        operatorsByChains.push(data.globals?.[0]?.totalOperators ?? 0);
+        operatorsByChains.push(data.global?.totalOperators ?? 0);
       }
     });
 
@@ -294,50 +283,46 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
 };
 
 type AtaTransactionsResult = WithMeta<{
-  globals: {
+  global: {
     totalAtaTransactions: string;
-  }[];
+  };
 }>;
 
 export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
-  const sources = ['gnosis', 'base'] as const;
+  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
 
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
 
   try {
-    const queryPromises = sources.map((source) =>
-      MARKETPLACE_GRAPH_CLIENTS[source].request(ataTransactionsQuery)
+    const queryPromises = chains.map((chain) =>
+      MARKETPLACE_GRAPH_CLIENTS[chain].request(ataTransactionsQuery)
     );
-    const blockPromises = sources.map((source) => getChainBlockNumber(source));
+    const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const ataTransactionsByChains: string[] = [];
 
-    sources.forEach((source, index) => {
+    chains.forEach((chain, index) => {
       const queryResult = results[index];
-      const blockResult = results[index + sources.length];
+      const blockResult = results[index + chains.length];
 
       if (queryResult.status === 'rejected') {
-        console.error(`ata:${source}`, queryResult.reason);
-        fetchErrors.push(`ata:${source}`);
+        console.error(`ata:${chain}`, queryResult.reason);
+        fetchErrors.push(`ata:${chain}`);
       } else {
         const data = queryResult.value as AtaTransactionsResult;
         const chainBlock =
           blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`ata:${source}`);
+          indexingErrors.push(`ata:${chain}`);
         }
-        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, source)) {
-          laggingSubgraphs.push(`ata:${source}`);
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`ata:${chain}`);
         }
-        ataTransactionsByChains.push(
-          // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
-          // to avoid needing to pick the first item
-          data.globals?.[0]?.totalAtaTransactions || '0'
-        );
+        ataTransactionsByChains.push(data.global?.totalAtaTransactions || '0');
       }
     });
 

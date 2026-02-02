@@ -443,7 +443,7 @@ export const registryGlobalsQuery = gql`
 
 export const operatorGlobalsQuery = gql`
   query OperatorGlobals {
-    globals {
+    global(id: "") {
       id
       totalOperators
     }
@@ -458,7 +458,7 @@ export const operatorGlobalsQuery = gql`
 
 export const ataTransactionsQuery = gql`
   query AtaTransactions {
-    globals(where: { id: "" }) {
+    global(id: "") {
       id
       totalAtaTransactions
     }
@@ -609,8 +609,7 @@ export const veOlasLockedBalanceQuery = gql`
 
 export const totalBuildersQuery = gql`
   query TotalBuilders {
-    globals {
-      id
+    global(id: "") {
       totalBuilders
     }
     _meta {

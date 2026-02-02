@@ -1,6 +1,7 @@
 import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
-import { GNOSIS_STAKING_CONTRACTS, STAKING_SUBGRAPH_URLS } from 'common-util/constants';
+import { GNOSIS_STAKING_CONTRACTS } from 'common-util/constants';
 import { stakingContractsQuery } from 'common-util/graphql/queries';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
@@ -20,7 +21,11 @@ export const PredictAprInfo = () => {
         </p>
 
         <p>Subgraph used:</p>
-        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>Staking subgraph (Gnosis)</ExternalLink>
+        <ExternalLink
+          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL)}
+        >
+          Staking subgraph (Gnosis)
+        </ExternalLink>
 
         <p>Query:</p>
         <CodeSnippet>{query}</CodeSnippet>

@@ -1,9 +1,5 @@
 {
   "functions": {
-    "pages/api/downloadAsset.js": {
-      "maxDuration": 300,
-      "memory": 3009
-    },
     "pages/api/refresh-metrics/predict.ts": {
       "maxDuration": 300,
       "memory": 512

@@ -14,86 +14,73 @@ import {
   mechMarketplaceTotalRequestsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
-import { extractSettledNumber } from 'common-util/promises';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-type GnosisResult = WithMeta<{
-  dailyAgentPerformances: {
-    activeMultisigCount: number;
-  }[];
-}>;
-
-type BaseResult = WithMeta<{
+type DailyMechAgentPerformancesResult = WithMeta<{
   dailyAgentPerformances: {
     activeMultisigCount: number;
   }[];
 }>;
 
 const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
+  const chains = ['gnosis', 'base', 'polygon'] as const;
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [gnosisResult, baseResult, gnosisBlockResult, baseBlockResult] =
-      (await Promise.allSettled([
-        REGISTRY_GRAPH_CLIENTS.gnosis.request(dailyMechAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }) as Promise<GnosisResult>,
-        REGISTRY_GRAPH_CLIENTS.base.request(dailyMechAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }) as Promise<BaseResult>,
-        getChainBlockNumber('gnosis'),
-        getChainBlockNumber('base'),
-      ])) as [
-        PromiseSettledResult<GnosisResult>,
-        PromiseSettledResult<BaseResult>,
-        PromiseSettledResult<number | null>,
-        PromiseSettledResult<number | null>,
-      ];
+    const queryPromises = chains.map((chain) =>
+      REGISTRY_GRAPH_CLIENTS[chain].request(dailyMechAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      })
+    );
+    const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
-    const handleResult = <T extends { _meta?: WithMeta<unknown>['_meta'] }>(
-      result: PromiseSettledResult<T>,
-      source: string,
-      chainBlock: PromiseSettledResult<number | null>
-    ) => {
-      if (result.status === 'rejected') {
-        fetchErrors.push(`registry:${source}`);
-        return null;
+    const performancesByChains: { activeMultisigCount: number }[][] = [];
+
+    chains.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + chains.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`registry:${chain}`, queryResult.reason);
+        fetchErrors.push(`registry:${chain}`);
+      } else {
+        const data = queryResult.value as DailyMechAgentPerformancesResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`registry:${chain}`);
+        }
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
+        }
+        performancesByChains.push(data.dailyAgentPerformances ?? []);
       }
-      const data = result.value;
-      const block = chainBlock.status === 'fulfilled' ? chainBlock.value : null;
-      if (
-        block &&
-        data?._meta?.block?.number &&
-        checkSubgraphLag(block, data._meta.block.number, source)
-      )
-        laggingSubgraphs.push(`registry:${source}`);
+    });
 
-      return data;
-    };
-
-    const gnosisData = handleResult(gnosisResult, 'gnosis', gnosisBlockResult);
-    const baseData = handleResult(baseResult, 'base', baseBlockResult);
-    const gnosisPerformances = gnosisData?.dailyAgentPerformances ?? [];
-    const basePerformances = baseData?.dailyAgentPerformances ?? [];
-
-    const gnosisAverage = calculate7DayAverage(gnosisPerformances, 'activeMultisigCount');
-    const baseAverage = calculate7DayAverage(basePerformances, 'activeMultisigCount');
+    const totalAverage = performancesByChains.reduce(
+      (sum, performances) => sum + calculate7DayAverage(performances, 'activeMultisigCount'),
+      0
+    );
 
     return {
-      value: gnosisAverage + baseAverage,
+      value: totalAverage,
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching mech daily agent performances:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus('registry:gnosis, registry:base'),
+      status: getFetchErrorAndCreateStaleStatus(
+        chains.map((chain) => `registry:${chain}`).join(', ')
+      ),
     };
   }
 };
@@ -108,65 +95,55 @@ type MechGlobalsResult = WithMeta<{
 const fetchMechGlobals = async (): Promise<
   MetricWithStatus<{ requests: number; deliveries: number } | null>
 > => {
+  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [gnosisResult, baseResult, gnosisBlockResult, baseBlockResult] =
-      (await Promise.allSettled([
-        MARKETPLACE_GRAPH_CLIENTS.gnosis.request(mechMarketplaceTotalRequestsQuery),
-        MARKETPLACE_GRAPH_CLIENTS.base.request(mechMarketplaceTotalRequestsQuery),
-        getChainBlockNumber('gnosis'),
-        getChainBlockNumber('base'),
-      ])) as [
-        PromiseSettledResult<MechGlobalsResult>,
-        PromiseSettledResult<MechGlobalsResult>,
-        PromiseSettledResult<number | null>,
-        PromiseSettledResult<number | null>,
-      ];
+    const queryPromises = chains.map((chain) =>
+      MARKETPLACE_GRAPH_CLIENTS[chain].request(mechMarketplaceTotalRequestsQuery)
+    );
+    const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
-    const results = [gnosisResult, baseResult];
-    const sources = ['gnosis', 'base'];
-    const blocks = [
-      gnosisBlockResult.status === 'fulfilled' ? gnosisBlockResult.value : null,
-      baseBlockResult.status === 'fulfilled' ? baseBlockResult.value : null,
-    ];
+    let totalRequests = 0;
+    let totalDeliveries = 0;
 
-    results.forEach((res, index) => {
-      const source = sources[index];
-      const block = blocks[index];
+    chains.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + chains.length];
 
-      if (res.status === 'rejected') {
-        fetchErrors.push(`mech:${source}`);
+      if (queryResult.status === 'rejected') {
+        console.error(`mech:${chain}`, queryResult.reason);
+        fetchErrors.push(`mech:${chain}`);
       } else {
-        if (res.value?._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${source}`);
+        const data = queryResult.value as MechGlobalsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`mech:${chain}`);
         }
-        if (checkSubgraphLag(block, res.value?._meta?.block?.number, source)) {
-          laggingSubgraphs.push(`mech:${source}`);
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`mech:${chain}`);
         }
+
+        totalRequests += Number(data.global?.totalRequests ?? 0);
+        totalDeliveries += Number(data.global?.totalDeliveries ?? 0);
       }
     });
 
-    const totals = results.reduce(
-      (acc, res) => {
-        acc.requests += extractSettledNumber(res, 'global.totalRequests');
-        acc.deliveries += extractSettledNumber(res, 'global.totalDeliveries');
-        return acc;
-      },
-      { requests: 0, deliveries: 0 }
-    );
-
     return {
-      value: totals,
+      value: { requests: totalRequests, deliveries: totalDeliveries },
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching mech requests from subgraphs:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus('mech:all'),
+      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
     };
   }
 };
@@ -223,7 +200,7 @@ type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
 }>;
 
-// Classified totals derived from subgraphs (Mech + Mech-Marketplace Gnosis + Base)
+// Classified totals derived from subgraphs (Mech + Mech-Marketplace)
 const fetchCategorizedRequestTotals = async (): Promise<
   MetricWithStatus<{
     predictTxs: number;
@@ -231,51 +208,25 @@ const fetchCategorizedRequestTotals = async (): Promise<
     governatooorrTxs: number;
   } | null>
 > => {
+  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+
   const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
   const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
   const governatooorIds = MECH_AGENT_CLASSIFICATION.governatooor;
   const allIds = [...predictTraderIds, ...contributeIds, ...governatooorIds];
+
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [marketplaceGnosisResult, marketplaceBaseResult, gnosisBlockResult, baseBlockResult] =
-      (await Promise.allSettled([
-        MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-        ),
-        MARKETPLACE_GRAPH_CLIENTS.base.request(
-          mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-        ),
-        getChainBlockNumber('gnosis'),
-        getChainBlockNumber('base'),
-      ])) as [
-        PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
-        PromiseSettledResult<MarketplaceRequestsPerAgentsResult>,
-        PromiseSettledResult<number | null>,
-        PromiseSettledResult<number | null>,
-      ];
-
-    const results = [marketplaceGnosisResult, marketplaceBaseResult];
-    const sources = ['gnosis', 'base'];
-    const blocks = [
-      gnosisBlockResult.status === 'fulfilled' ? gnosisBlockResult.value : null,
-      baseBlockResult.status === 'fulfilled' ? baseBlockResult.value : null,
-    ];
-
-    results.forEach((res, index) => {
-      const source = sources[index];
-      const block = blocks[index];
-
-      if (res.status === 'rejected') {
-        fetchErrors.push(`mech:${source}`);
-      } else {
-        if (res.value?._meta?.hasIndexingErrors) indexingErrors.push(`mech:${source}`);
-        if (checkSubgraphLag(block, res.value?._meta?.block?.number, source))
-          laggingSubgraphs.push(`mech:${source}`);
-      }
-    });
+    const queryPromises = chains.map((chain) =>
+      MARKETPLACE_GRAPH_CLIENTS[chain].request(
+        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
+      )
+    );
+    const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const combinedCounts = new Map();
 
@@ -290,14 +241,29 @@ const fetchCategorizedRequestTotals = async (): Promise<
       });
     };
 
-    if (marketplaceGnosisResult.status === 'fulfilled') {
-      addCounts(marketplaceGnosisResult.value?.requestsPerAgents);
-      addCounts(marketplaceGnosisResult.value?.requestsPerAgentOnchains);
-    }
-    if (marketplaceBaseResult.status === 'fulfilled') {
-      addCounts(marketplaceBaseResult.value?.requestsPerAgents);
-      addCounts(marketplaceBaseResult.value?.requestsPerAgentOnchains);
-    }
+    chains.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + chains.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`mech:${chain}`, queryResult.reason);
+        fetchErrors.push(`mech:${chain}`);
+      } else {
+        const data = queryResult.value as MarketplaceRequestsPerAgentsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
+        if (data._meta?.hasIndexingErrors) {
+          indexingErrors.push(`mech:${chain}`);
+        }
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`mech:${chain}`);
+        }
+
+        addCounts(data.requestsPerAgents);
+        addCounts(data.requestsPerAgentOnchains);
+      }
+    });
 
     const sumCountsForAgentIds = (agentIds: number[]) =>
       agentIds.reduce((accumulator, id) => accumulator + (combinedCounts.get(id) ?? 0), 0);
@@ -314,7 +280,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     console.error('Error fetching categorized mech requests:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus('mech:all'),
+      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
     };
   }
 };
