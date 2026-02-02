@@ -39,7 +39,7 @@ const list = [
         </p>
         <span className="mb-2">Examples:</span>
         <ul className="ml-6 list-disc">
-          <li className="mb-2">Image, audio, or data synthesis agents</li>
+          <li className="mb-2">Image, audio, or data synthesis agents.</li>
           <li className="mb-2">Research Mechs delivering live API-integrated insights.</li>
         </ul>
       </>

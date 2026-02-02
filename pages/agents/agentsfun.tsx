@@ -124,7 +124,7 @@ const FirstAgents = () => (
 
 const funAgents = [
   {
-    title: 'Agent Base',
+    title: 'Agents.fun',
     anchor: 'agent-base',
     description:
       'Run your AI influencer on Base. Agent Base offers all the features you love — tweeting, evolving, and interacting autonomously — all powered by the Olas.',

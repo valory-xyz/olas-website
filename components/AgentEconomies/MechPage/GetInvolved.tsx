@@ -1,11 +1,12 @@
+import { BUILD_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
 const list = [
   {
     title: 'For Builders',
     desc: 'Contribute to Mechs AI tools marketplace for agents and have a chance to earn Dev Rewards.',
-    urlName: 'Coming soon',
-    url: '#',
+    urlName: 'Start building',
+    url: BUILD_URL,
     isExternal: false,
     isDisabled: true,
   },

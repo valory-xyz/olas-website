@@ -71,7 +71,7 @@
   {
     "id": "8b677149-dd61-4582-b305-5dec0c737c85",
     "name": "Kleros",
-    "url": "https://hackathon.olas.network/",
+    "url": "https://kleros.io/",
     "isExternal": true,
     "imageFilename": "kleros.png",
     "imageWidth": 90,
@@ -113,13 +113,6 @@
     "imageFilename": "edgeagi.png",
     "imageWidth": 80,
     "imageHeight": 80
-  },
-  {
-    "id": "a352b3f3-2c1d-45d6-b2d8-6f3d94cf9b91",
-    "name": "NimNetwork",
-    "url": "https://twitter.com/nim_network/status/1770812805672816797",
-    "isExternal": true,
-    "imageFilename": "nim.png"
   },
   {
     "id": "f4a02aaf-7e5f-4828-83e7-0c5e3baf9b48",

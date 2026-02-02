@@ -24,7 +24,7 @@ const list = [
   {
     title: 'Easily Run Mulitple Agents on Pearl',
     icon: <Bot />,
-    desc: 'Pearl makes running agents as easy as clicking a button, so youcan get started without technical expertise. Simply choose from a variety of AI agents — prediction agents, AI influencers, asset managers, and more.',
+    desc: 'Pearl makes running agents as easy as clicking a button, so you can get started without technical expertise. Simply choose from a variety of AI agents — prediction agents, AI influencers, asset managers, and more.',
   },
   {
     title: 'Multiple Staking Contracts',
