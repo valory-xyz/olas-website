@@ -47,7 +47,7 @@ export const BabydegenMetricsInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>BabyDegen Population Metrics Query</h3>
         <p className="text-purple-600">
-          Subgraph link{' '}
+          Subgraph link:{' '}
           <ExternalLink
             href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL)}
           >
@@ -58,7 +58,7 @@ export const BabydegenMetricsInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Optimism Staking Snapshots Query</h3>
         <p className="text-purple-600">
-          Subgraph link{' '}
+          Subgraph link:{' '}
           <ExternalLink
             href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL)}
           >
@@ -69,7 +69,7 @@ export const BabydegenMetricsInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>Modius Population Metrics Query</h3>
         <p className="text-purple-600">
-          Subgraph link{' '}
+          Subgraph link:{' '}
           <ExternalLink
             href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL)}
           >
@@ -85,7 +85,7 @@ export const BabydegenMetricsInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Modius Staking Snapshots Query</h3>
         <p className="text-purple-600">
-          Subgraph link{' '}
+          Subgraph link:{' '}
           <ExternalLink href={process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL}>
             Mode Staking
           </ExternalLink>
