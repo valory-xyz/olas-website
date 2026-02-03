@@ -8,7 +8,7 @@ import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
 type TotalBuildersResult = WithMeta<{
-  globals: { totalBuilders: number }[];
+  global: { totalBuilders: number };
 }>;
 
 const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> => {
@@ -17,15 +17,7 @@ const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> =>
     chain: 'ethereum',
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
-    transform: (data) => {
-      const globals = data?.globals || [];
-      if (globals.length === 0) {
-        return null;
-      }
-      // TODO: Update totalBuildersQuery to use global(id: '') instead of globals array
-      // to avoid needing to pick the first item
-      return Number(globals[0]?.totalBuilders || 0);
-    },
+    transform: (data) => Number(data.global?.totalBuilders || 0),
   });
 };
 

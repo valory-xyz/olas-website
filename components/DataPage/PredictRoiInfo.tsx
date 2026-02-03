@@ -1,11 +1,12 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_MARKET_DURATION_DAYS, STAKING_SUBGRAPH_URLS } from 'common-util/constants';
+import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
   stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
@@ -69,7 +70,7 @@ export const PredictRoiInfo = () => {
             </li>
           </ul>
         </div>
-        <ExternalLink href={process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL}>
+        <ExternalLink href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL)}>
           Subgraph link
         </ExternalLink>
         <CodeSnippet>
@@ -115,7 +116,11 @@ export const PredictRoiInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Globals query</h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
-        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>Subgraph link</ExternalLink>
+        <ExternalLink
+          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL)}
+        >
+          Subgraph link
+        </ExternalLink>
         <CodeSnippet>{stakingGlobals}</CodeSnippet>
       </div>
     </SectionWrapper>
