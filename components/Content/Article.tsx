@@ -1,4 +1,4 @@
-import isArray from 'lodash/isArray';
+import { isArray } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';

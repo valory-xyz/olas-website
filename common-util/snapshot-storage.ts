@@ -4,8 +4,7 @@ import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
 import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
-import isNil from 'lodash/isNil';
-import isPlainObject from 'lodash/isPlainObject';
+import { isNil, isPlainObject } from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
 const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
