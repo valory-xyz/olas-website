@@ -45,6 +45,25 @@
       }
     ],
     "react/jsx-no-useless-fragment": [2, { "allowExpressions": true }],
-    "no-untyped-mock-factory": "off"
+    "no-untyped-mock-factory": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "lodash",
+            "importNames": ["default"],
+            "message": "Default import from lodash bundles the entire library. Use named imports like `import { get } from 'lodash'` or modular imports like `import get from 'lodash/get'`."
+          }
+        ],
+        "patterns": [
+          {
+            "group": ["lodash"],
+            "importNamePattern": "^\\*$",
+            "message": "Namespace import from lodash bundles the entire library. Use named imports like `import { get } from 'lodash'` or modular imports like `import get from 'lodash/get'`."
+          }
+        ]
+      }
+    ]
   }
 }
