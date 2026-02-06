@@ -7,6 +7,7 @@ module.exports = withPlausibleProxy()({
   },
   experimental: {
     scrollRestoration: true,
+    optimizePackageImports: ['lodash'],
   },
   async redirects() {
     return [

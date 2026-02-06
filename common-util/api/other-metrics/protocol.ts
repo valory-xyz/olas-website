@@ -2,7 +2,10 @@ import {
   TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID,
   TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID,
 } from 'common-util/constants';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  createStaleStatus,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import get from 'lodash/get';
 
@@ -43,7 +46,7 @@ export const fetchProtocolMetrics = async () => {
 
     let polMetric: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (polResponse.status === 'fulfilled') {
@@ -53,12 +56,12 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol owned liquidity:', polResponse.reason);
-      polMetric.status = createStaleStatus([], ['dune:pol']);
+      polMetric.status = getFetchErrorAndCreateStaleStatus('dune:pol');
     }
 
     let revenueMetric: MetricWithStatus<number | null> = {
       value: null,
-      status: createStaleStatus([], []),
+      status: createStaleStatus({ indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] }),
     };
 
     if (revenueResponse.status === 'fulfilled') {
@@ -68,7 +71,7 @@ export const fetchProtocolMetrics = async () => {
       );
     } else {
       console.error('Error fetching protocol revenue:', revenueResponse.reason);
-      revenueMetric.status = createStaleStatus([], ['dune:revenue']);
+      revenueMetric.status = getFetchErrorAndCreateStaleStatus('dune:revenue');
     }
 
     return {
@@ -80,11 +83,11 @@ export const fetchProtocolMetrics = async () => {
     return {
       totalProtocolOwnedLiquidity: {
         value: null,
-        status: createStaleStatus([], ['dune:pol']),
+        status: getFetchErrorAndCreateStaleStatus('dune:pol'),
       },
       totalProtocolRevenue: {
         value: null,
-        status: createStaleStatus([], ['dune:revenue']),
+        status: getFetchErrorAndCreateStaleStatus('dune:revenue'),
       },
     };
   }

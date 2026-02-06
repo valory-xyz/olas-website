@@ -285,10 +285,11 @@ const faqList = [
         title: 'How does Bonding and liquidity work on Olas?',
         desc: (
           <p>
-            Read more at{' '}
+            Read more on the{' '}
             <Link href="/bond" className="text-purple-600">
-              https://olas.network/bond.
+              bonding page
             </Link>
+            .
           </p>
         ),
       },
@@ -510,7 +511,7 @@ const faqList = [
         desc: (
           <p>
             Yes, you can learn more about the{' '}
-            <Link href="/protocol" className="text-purple-600">
+            <Link href="/olas-token#protocol-audits" className="text-purple-600">
               various audits here
             </Link>
             .
@@ -586,7 +587,7 @@ const FAQPage = () => (
 
     <div className="mb-8">
       Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
-      <SubsiteLink href={`${PEARL_YOU_URL}FAQ`}>Check out the Pearl FAQ</SubsiteLink>.
+      <SubsiteLink href={`${PEARL_YOU_URL}#FAQ`}>Check out the Pearl FAQ</SubsiteLink>.
     </div>
 
     {faqList.map((eachSet, setIndex) => (

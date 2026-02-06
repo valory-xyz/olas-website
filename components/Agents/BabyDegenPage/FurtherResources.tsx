@@ -10,15 +10,10 @@ const resources = [
     urlName: 'Reach out on Discord',
     isExternal: true,
   },
-  {
-    title: 'Join as an Alpha tester',
-    description: 'Keen on being at the forefront of trading innovation?',
-    url: DISCORD_INVITE_URL,
-    urlName: 'Reach out on Discord',
-    isExternal: true,
-  },
 ];
 
 export const FurtherResources = () => (
-  <GetInvolvedCards id="babydegen-resources" title="Further resources" list={resources} />
+  <div className="max-w-[670px] mx-auto">
+    <GetInvolvedCards id="babydegen-resources" title="Further resources" list={resources} />
+  </div>
 );

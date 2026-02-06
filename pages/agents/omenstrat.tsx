@@ -11,7 +11,7 @@ import { CTASection } from 'components/ui/section/cta';
 const PredictionAgents = () => (
   <PageWrapper>
     <Meta
-      pageTitle="Prediction Agents"
+      pageTitle="Omenstrat"
       description="Run an agent designed to trade in prediction markets on your behalf. Predict the future, autonomously."
       siteImageUrl="/images/agents/prediction-agents.png"
     />
@@ -23,7 +23,7 @@ const PredictionAgents = () => (
       <GetInvolved />
       <FAQ />
       <CTASection
-        text="Launch Prediction Trader - unlock tomorrow's opportunities today."
+        text="Launch Omenstrat - unlock tomorrow's opportunities today."
         ctaUrl="/operate"
         ctaText="Run an Agent Now"
       />

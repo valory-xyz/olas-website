@@ -4,7 +4,7 @@ import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
 import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
-import lodash from 'lodash';
+import { isNil, isPlainObject } from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
 const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
@@ -41,11 +41,11 @@ const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''
     const newMetric = newData as MetricWithStatus<unknown>;
     const oldMetric = isMetricWithStatus(oldData) ? (oldData as MetricWithStatus<unknown>) : null;
 
-    const newValueIsInvalid = lodash.isNil(newMetric.value) || newMetric.status?.stale;
+    const newValueIsInvalid = isNil(newMetric.value) || newMetric.status?.stale;
 
     if (newValueIsInvalid) {
       // Try to fall back to old data if available and valid
-      if (oldMetric && !lodash.isNil(oldMetric.value)) {
+      if (oldMetric && !isNil(oldMetric.value)) {
         return {
           value: oldMetric.value,
           status: {
@@ -83,21 +83,21 @@ const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''
   }
 
   const allKeys = new Set([
-    ...Object.keys(lodash.isPlainObject(newData) ? (newData as object) : {}),
-    ...Object.keys(lodash.isPlainObject(oldData) ? (oldData as object) : {}),
+    ...Object.keys(isPlainObject(newData) ? (newData as object) : {}),
+    ...Object.keys(isPlainObject(oldData) ? (oldData as object) : {}),
   ]);
 
   for (const key of allKeys) {
     const newPath = path ? `${path}.${key}` : key;
-    if (lodash.isPlainObject(newData) && key in (newData as Record<string, unknown>)) {
+    if (isPlainObject(newData) && key in (newData as Record<string, unknown>)) {
       result[key] = mergeWithFallback(
         (newData as Record<string, unknown>)[key],
-        lodash.isPlainObject(oldData) && key in (oldData as Record<string, unknown>)
+        isPlainObject(oldData) && key in (oldData as Record<string, unknown>)
           ? (oldData as Record<string, unknown>)[key]
           : undefined,
         newPath
       );
-    } else if (lodash.isPlainObject(oldData) && key in (oldData as Record<string, unknown>)) {
+    } else if (isPlainObject(oldData) && key in (oldData as Record<string, unknown>)) {
       result[key] = (oldData as Record<string, unknown>)[key];
     }
   }

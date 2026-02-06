@@ -8,6 +8,7 @@ import {
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { CodeSnippet } from './CodeSnippet';
@@ -33,14 +34,9 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[
-              REGISTRY_SUBGRAPH_URLS.gnosis,
-              REGISTRY_SUBGRAPH_URLS.base,
-              process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
-              REGISTRY_SUBGRAPH_URLS.optimism,
-            ].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -52,11 +48,11 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected agents on Mode and
-            Optimism. This metric is useful to understand the operational footprint and engagement
-            of specific agents over time. The <strong>active multisig count</strong> reflects the
-            number of unique multisigs that performed at least one on-chain interaction attributed
-            to a given agent within the UTC day window.
+            Tracks how many unique multisigs were active each day for Babydegen agents. This metric
+            is useful to understand the operational footprint and engagement of specific agents over
+            time. The <strong>active multisig count</strong> reflects the number of unique multisigs
+            that performed at least one on-chain interaction attributed to a given agent within the
+            UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
@@ -65,14 +61,13 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[
-              process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
-              REGISTRY_SUBGRAPH_URLS.optimism,
-            ].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
-              </ExternalLink>
-            ))}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => ['mode', 'optimism'].includes(key)).map(
+              ({ key, url }) => (
+                <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </ExternalLink>
+              )
+            )}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
         </div>
@@ -82,7 +77,7 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for Agents.fun agents on Base. The{' '}
+            Tracks how many unique multisigs were active each day for Agents.fun agents. The{' '}
             <strong>active multisig count</strong> reflects the number of unique multisigs that
             performed at least one on-chain interaction attributed to a given agent within the UTC
             day window.
@@ -94,9 +89,9 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.base].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -108,11 +103,11 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected agents on Gnosis and
-            Base. This metric is useful to understand the operational footprint and engagement of
-            specific agents over time. The <strong>active multisig count</strong> reflects the
-            number of unique multisigs that performed at least one on-chain interaction attributed
-            to a given agent within the UTC day window.
+            Tracks how many unique multisigs of Mech agents were active each day. This metric is
+            useful to understand the operational footprint and engagement of specific agents over
+            time. The <strong>active multisig count</strong> reflects the number of unique multisigs
+            that performed at least one on-chain interaction attributed to a given agent within the
+            UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
@@ -121,9 +116,11 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.gnosis, REGISTRY_SUBGRAPH_URLS.base].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) =>
+              ['gnosis', 'base', 'polygon', 'optimism'].includes(key)
+            ).map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -135,8 +132,8 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected Predict agents on
-            Gnosis. The <strong>active multisig count</strong>
+            Tracks how many unique multisigs were active each day for selected Predict agents. The{' '}
+            <strong>active multisig count</strong>
             reflects the number of unique multisigs that performed at least one on-chain interaction
             attributed to a given agent within the UTC day window.
           </p>
@@ -147,9 +144,9 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.gnosis].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -173,9 +170,9 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.gnosis].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -185,9 +182,9 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {[REGISTRY_SUBGRAPH_URLS.optimism].map((link, index) => (
-              <ExternalLink key={index} href={link} className="mr-2">
-                {index + 1}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'optimism').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
@@ -210,8 +207,11 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            <ExternalLink href={AUTONOLAS_BASE_SUBGRAPH_URL} className="mr-2">
-              1
+            <ExternalLink
+              href={getSubgraphExplorerUrl(AUTONOLAS_BASE_SUBGRAPH_URL)}
+              className="mr-2"
+            >
+              Base
             </ExternalLink>
           </p>
           <CodeSnippet>{dailyActivitiesQuery}</CodeSnippet>

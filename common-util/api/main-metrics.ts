@@ -6,7 +6,12 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
-import { createStaleStatus } from 'common-util/graphql/metric-utils';
+import {
+  checkSubgraphLag,
+  createStaleStatus,
+  getChainBlockNumber,
+  getFetchErrorAndCreateStaleStatus,
+} from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
   dailyAgentPerformancesQuery,
@@ -20,17 +25,8 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const STAKING_CHAINS = ['gnosis', 'base', 'mode', 'optimism'] as const;
-const ALL_REGISTRY_CHAINS = [
-  'gnosis',
-  'base',
-  'mode',
-  'optimism',
-  'celo',
-  'ethereum',
-  'polygon',
-  'arbitrum',
-] as const;
+const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
+const REGISTRY_CHAINS = Object.keys(REGISTRY_GRAPH_CLIENTS);
 
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
@@ -42,31 +38,41 @@ type DailyAgentPerformancesResult = WithMeta<{
 const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
+
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled(
-      STAKING_CHAINS.map((chain) =>
-        REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        })
-      )
+    const queryPromises = STAKING_CHAINS.map((chain) =>
+      REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
+        timestamp_gt,
+        timestamp_lt,
+      })
     );
+    const blockPromises = STAKING_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const performanceByChains: DailyAgentPerformancesResult['dailyActiveMultisigs_collection'][] =
       [];
 
-    results.forEach((result, index) => {
-      const chain = STAKING_CHAINS[index];
-      if (result.status === 'rejected') {
-        console.error(`registry:${chain}`, result.reason);
+    STAKING_CHAINS.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + STAKING_CHAINS.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`registry:${chain}`, queryResult.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
-        const data = result.value as DailyAgentPerformancesResult;
+        const data = queryResult.value as DailyAgentPerformancesResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`registry:${chain}`);
+        }
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
         }
         performanceByChains.push(data.dailyActiveMultisigs_collection ?? []);
       }
@@ -79,13 +85,13 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
 
     return {
       value: Math.floor(totalAverage),
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching daily agent performances:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:all']),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
@@ -99,23 +105,34 @@ type StakingGlobalsResult = WithMeta<{
 const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled(
-      STAKING_CHAINS.map((chain) => STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery))
+    const queryPromises = STAKING_CHAINS.map((chain) =>
+      STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery)
     );
+    const blockPromises = STAKING_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const olasStakedByChains: string[] = [];
 
-    results.forEach((result, index) => {
-      const chain = STAKING_CHAINS[index];
-      if (result.status === 'rejected') {
-        console.error(`staking:${chain}`, result.reason);
+    STAKING_CHAINS.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + STAKING_CHAINS.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`staking:${chain}`, queryResult.reason);
         fetchErrors.push(`staking:${chain}`);
       } else {
-        const data = result.value as StakingGlobalsResult;
+        const data = queryResult.value as StakingGlobalsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number | null) : null;
+
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`staking:${chain}`);
+        }
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`staking:${chain}`);
         }
         olasStakedByChains.push(data.global?.currentOlasStaked ?? '0');
       }
@@ -131,13 +148,13 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
         notation: 'standard',
         maximumFractionDigits: 0,
       }),
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching OLAS staked:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['staking:all']),
+      status: getFetchErrorAndCreateStaleStatus('staking:all'),
     };
   }
 };
@@ -151,25 +168,34 @@ type RegistryGlobalsResult = WithMeta<{
 const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) =>
-        REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
-      )
+    const queryPromises = REGISTRY_CHAINS.map((chain) =>
+      REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
     );
+    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const txCountByChains: string[] = [];
 
-    results.forEach((result, index) => {
-      const chain = ALL_REGISTRY_CHAINS[index];
-      if (result.status === 'rejected') {
-        console.error(`registry:${chain}`, result.reason);
+    REGISTRY_CHAINS.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + REGISTRY_CHAINS.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`registry:${chain}`, queryResult.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
-        const data = result.value as RegistryGlobalsResult;
+        const data = queryResult.value as RegistryGlobalsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`registry:${chain}`);
+        }
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
         }
         txCountByChains.push(data.global?.txCount ?? '0');
       }
@@ -185,49 +211,56 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
         notation: 'standard',
         maximumFractionDigits: 0,
       }),
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:all']),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
 
 type OperatorGlobalsResult = WithMeta<{
-  globals: {
+  global: {
     totalOperators: number;
-  }[];
+  };
 }>;
 
 const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled(
-      ALL_REGISTRY_CHAINS.map((chain) =>
-        REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
-      )
+    const queryPromises = REGISTRY_CHAINS.map((chain) =>
+      REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
     );
+    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const operatorsByChains: number[] = [];
 
-    results.forEach((result, index) => {
-      const chain = ALL_REGISTRY_CHAINS[index];
-      if (result.status === 'rejected') {
-        console.error(`registry:${chain}`, result.reason);
+    REGISTRY_CHAINS.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + REGISTRY_CHAINS.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`registry:${chain}`, queryResult.reason);
         fetchErrors.push(`registry:${chain}`);
       } else {
-        const data = result.value as OperatorGlobalsResult;
+        const data = queryResult.value as OperatorGlobalsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
         if (data._meta?.hasIndexingErrors) {
           indexingErrors.push(`registry:${chain}`);
         }
-        // TODO: Update operatorGlobalsQuery to use global(id: '') instead of globals array
-        // to avoid needing to pick the first item
-        operatorsByChains.push(data.globals?.[0]?.totalOperators ?? 0);
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
+        }
+        operatorsByChains.push(data.global?.totalOperators ?? 0);
       }
     });
 
@@ -238,50 +271,58 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
 
     return {
       value: totalOperators,
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching total operators:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['registry:all']),
+      status: getFetchErrorAndCreateStaleStatus('registry:all'),
     };
   }
 };
 
 type AtaTransactionsResult = WithMeta<{
-  globals: {
+  global: {
     totalAtaTransactions: string;
-  }[];
+  };
 }>;
 
 export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
-  const sources = ['gnosis', 'base'] as const;
+  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled(
-      sources.map((source) => MARKETPLACE_GRAPH_CLIENTS[source].request(ataTransactionsQuery))
+    const queryPromises = chains.map((chain) =>
+      MARKETPLACE_GRAPH_CLIENTS[chain].request(ataTransactionsQuery)
     );
+    const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
+    const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const ataTransactionsByChains: string[] = [];
 
-    results.forEach((result, index) => {
-      const source = sources[index];
-      if (result.status === 'rejected') {
-        console.error(`ata:${source}`, result.reason);
-        fetchErrors.push(`ata:${source}`);
+    chains.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + chains.length];
+
+      if (queryResult.status === 'rejected') {
+        console.error(`ata:${chain}`, queryResult.reason);
+        fetchErrors.push(`ata:${chain}`);
       } else {
-        const data = result.value as AtaTransactionsResult;
+        const data = queryResult.value as AtaTransactionsResult;
+        const chainBlock =
+          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`ata:${source}`);
+          indexingErrors.push(`ata:${chain}`);
         }
-        ataTransactionsByChains.push(
-          // TODO: Update ataTransactionsQuery to use global(id: '') instead of globals array
-          // to avoid needing to pick the first item
-          data.globals?.[0]?.totalAtaTransactions || '0'
-        );
+        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`ata:${chain}`);
+        }
+        ataTransactionsByChains.push(data.global?.totalAtaTransactions || '0');
       }
     });
 
@@ -291,13 +332,13 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
 
     return {
       value,
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching ATA transactions:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['ata:all']),
+      status: getFetchErrorAndCreateStaleStatus('ata:all'),
     };
   }
 };
@@ -316,63 +357,89 @@ type LegacyMechFeesResult = WithMeta<{
 }>;
 
 export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> => {
-  // Sources in order: gnosis (new), base (new), legacy
-  const sources = ['gnosis', 'base', 'legacy'] as const;
-  const LEGACY_INDEX = 2; // Index of legacy mech fees in results array
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
 
   try {
-    const results = await Promise.allSettled([
-      MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
-      MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
-      legacyMechFeesGraphClient.request(legacyMechFeesQuery),
-    ]);
+    const [gnosisFeeResult, baseFeeResult, legacyFeeResult, gnosisBlockResult, baseBlockResult] =
+      await Promise.allSettled([
+        MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
+        MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
+        legacyMechFeesGraphClient.request(legacyMechFeesQuery),
+        getChainBlockNumber('gnosis'),
+        getChainBlockNumber('base'),
+      ]);
+
+    const gnosisBlock =
+      gnosisBlockResult.status === 'fulfilled' ? (gnosisBlockResult.value as number | null) : null;
+    const baseBlock =
+      baseBlockResult.status === 'fulfilled' ? (baseBlockResult.value as number | null) : null;
 
     let totalFees = 0;
 
-    results.forEach((result, index) => {
-      const source = sources[index];
-      const isLegacy = index === LEGACY_INDEX;
-
+    const processResult = (
+      result: PromiseSettledResult<MechFeesResult | LegacyMechFeesResult>,
+      source: string,
+      chainBlock: number | null
+    ) => {
+      const isLegacy = source === 'legacy';
       if (result.status === 'rejected') {
         console.error(`mechFees:${source}`, result.reason);
         fetchErrors.push(`mechFees:${source}`);
-      } else {
-        const data = isLegacy
-          ? (result.value as LegacyMechFeesResult)
-          : (result.value as MechFeesResult);
+        return;
+      }
 
-        if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mechFees:${source}`);
-        }
+      const data = isLegacy
+        ? (result.value as LegacyMechFeesResult)
+        : (result.value as MechFeesResult);
 
-        if (data.global) {
-          if (isLegacy) {
-            // Legacy mech fees - convert from wei to XDAI
-            const weiValue = data.global.totalFeesIn || '0';
-            const xdaiValue = Number(weiValue) / 10 ** 18;
-            totalFees += xdaiValue;
-          } else {
-            // New mech fees (gnosis, base) - already in USD
-            const usdValue = Number(
-              (data.global as MechFeesResult['global']).totalFeesInUSD || '0'
-            );
-            totalFees += usdValue;
-          }
+      if (data._meta?.hasIndexingErrors) {
+        indexingErrors.push(`mechFees:${source}`);
+      }
+      if (checkSubgraphLag(chainBlock, data._meta?.block?.number, isLegacy ? 'gnosis' : source)) {
+        laggingSubgraphs.push(`mechFees:${source}`);
+      }
+
+      if (data.global) {
+        if (isLegacy) {
+          // Legacy mech fees - convert from wei to XDAI
+          const weiValue = (data as LegacyMechFeesResult).global.totalFeesIn || '0';
+          const xdaiValue = Number(weiValue) / 10 ** 18;
+          totalFees += xdaiValue;
+        } else {
+          // New mech fees (gnosis, base) - already in USD
+          const usdValue = Number((data as MechFeesResult).global.totalFeesInUSD || '0');
+          totalFees += usdValue;
         }
       }
-    });
+    };
+
+    processResult(
+      gnosisFeeResult as unknown as PromiseSettledResult<MechFeesResult>,
+      'gnosis',
+      gnosisBlock
+    );
+    processResult(
+      baseFeeResult as unknown as PromiseSettledResult<MechFeesResult>,
+      'base',
+      baseBlock
+    );
+    processResult(
+      legacyFeeResult as unknown as PromiseSettledResult<LegacyMechFeesResult>,
+      'legacy',
+      gnosisBlock
+    );
 
     return {
       value: totalFees.toFixed(2),
-      status: createStaleStatus(indexingErrors, fetchErrors),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error('Error fetching mech fees:', error);
     return {
       value: null,
-      status: createStaleStatus([], ['mechFees:all']),
+      status: getFetchErrorAndCreateStaleStatus('mechFees:all'),
     };
   }
 };

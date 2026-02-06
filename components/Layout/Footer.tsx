@@ -186,7 +186,7 @@ const Footer = () => (
           <Link href="/" className="block mb-3">
             <Image src="/images/olas-logo.svg" alt="logo" width="120" height="60" />
           </Link>
-          <span className="whitespace-nowrap">The Network for Co-owning AI</span>
+          <span className="whitespace-nowrap">The platform for true co-ownership of AI</span>
         </div>
         <div className="flex w-full gap-2 items-center max-sm:mt-6 md:justify-end lg:justify-start lg:items-start lg:mt-6">
           {SOCIAL_LINKS.map((item) => (

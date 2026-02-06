@@ -70,6 +70,12 @@ export const mechMarketplaceTotalRequestsQuery = gql`
       totalRequests
       totalDeliveries
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -109,9 +115,9 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
     }
 
     global(id: "") {
-      totalFees
+      totalFeesSettled
       totalPayout
-      totalTraded
+      totalTradedSettled
     }
     _meta {
       hasIndexingErrors
@@ -157,6 +163,12 @@ export const dailyBabydegenPopulationMetricsQuery = ({ first = 10, timestampLte 
         sma7dEthAdjustedProjectedUnrealisedPnL
         medianAUM
       }
+      _meta {
+        hasIndexingErrors
+        block {
+          number
+        }
+      }
     }
   `;
 };
@@ -176,6 +188,12 @@ export const dailyStakingGlobalsSnapshotsQuery = ({ first = 10, timestampLte }: 
         timestamp
         medianCumulativeRewards
         numServices
+      }
+      _meta {
+        hasIndexingErrors
+        block {
+          number
+        }
       }
     }
   `;
@@ -229,6 +247,12 @@ export const dailyBabydegenPerformancesQuery = gql`
       dayTimestamp
       activeMultisigCount
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -248,6 +272,12 @@ export const dailyAgentsFunPerformancesQuery = gql`
       id
       dayTimestamp
       activeMultisigCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -269,6 +299,12 @@ export const dailyMechAgentPerformancesQuery = gql`
     ) {
       id
       activeMultisigCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -326,6 +362,12 @@ export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
         }
       }
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -340,6 +382,12 @@ export const checkpointsQuery = gql`
       contractAddress
       serviceIds
       blockTimestamp
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -395,7 +443,7 @@ export const registryGlobalsQuery = gql`
 
 export const operatorGlobalsQuery = gql`
   query OperatorGlobals {
-    globals {
+    global(id: "") {
       id
       totalOperators
     }
@@ -410,7 +458,7 @@ export const operatorGlobalsQuery = gql`
 
 export const ataTransactionsQuery = gql`
   query AtaTransactions {
-    globals(where: { id: "" }) {
+    global(id: "") {
       id
       totalAtaTransactions
     }
@@ -459,6 +507,12 @@ export const newMechFeesTotalsQuery = gql`
       totalFeesInUSD
       totalFeesOutUSD
     }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
   }
 `;
 
@@ -467,6 +521,12 @@ export const legacyMechFeesTotalsQuery = gql`
     global(id: "") {
       totalFeesIn
       totalFeesOut
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -481,6 +541,12 @@ export const mechMarketplaceRequestsPerAgentsQuery = (ids) => gql`
     requestsPerAgentOnchains(where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
       id
       requestsCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
     }
   }
 `;
@@ -543,8 +609,7 @@ export const veOlasLockedBalanceQuery = gql`
 
 export const totalBuildersQuery = gql`
   query TotalBuilders {
-    globals {
-      id
+    global(id: "") {
       totalBuilders
     }
     _meta {

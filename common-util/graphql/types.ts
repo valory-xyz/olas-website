@@ -11,9 +11,22 @@ export type WithMeta<T> = T & {
 
 export type MetricStatus = {
   stale: boolean;
-  lastValidAt: number | null; // Timestamp when data was last valid
-  indexingErrors: string[]; // Subgraphs with hasIndexingErrors: true
-  fetchErrors: string[]; // Subgraphs where fetch was rejected
+  /**
+   * Timestamp when data was last valid
+   */
+  lastValidAt: number | null;
+  /**
+   * Subgraphs with hasIndexingErrors: true
+   */
+  indexingErrors: string[];
+  /**
+   * Subgraphs where fetch was rejected
+   */
+  fetchErrors: string[];
+  /**
+   * Subgraphs that are lagging behind the chain by a specified number of blocks
+   */
+  laggingSubgraphs: string[];
 };
 
 export type MetricWithStatus<T> = {

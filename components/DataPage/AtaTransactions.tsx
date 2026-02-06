@@ -11,9 +11,9 @@ export const AtaTransactionsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks agent-to-agent transactions across Gnosis and Base networks from multiple subgraph
-          sources. This metric aggregates transaction data from Mech Marketplace and Legacy Mech
-          subgraphs to provide a comprehensive view of autonomous agent interaction volume and
+          Tracks agent-to-agent transactions across Gnosis, Base and Polygon networks from multiple
+          subgraph sources. This metric aggregates transaction data from Mech Marketplace and Legacy
+          Mech subgraphs to provide a comprehensive view of autonomous agent interaction volume and
           cross-chain activity.
         </p>
 

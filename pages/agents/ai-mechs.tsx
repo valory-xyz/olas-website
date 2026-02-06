@@ -121,7 +121,7 @@ const AiMechs = () => (
     <SectionWrapper id="why-mechs">
       <div className="max-w-4xl xl:pr-12 xl:pl-0 lg:px-12 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
         <div className="lg:col-span-6 text-center px-5 lg:p-0 lg:text-left">
-          <H2 className="mb-8">Why do we need mechs?</H2>
+          <H2 className="mb-8">Why do we need Mechs?</H2>
           <Lead>
             Mechs serve as helpful agents for your applications to seamlessly request services like
             LLMs or other requests - all without paying for multiple APIs or implementing different

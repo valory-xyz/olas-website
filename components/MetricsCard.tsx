@@ -72,6 +72,7 @@ const renderMetricValue = (metric: {
     lastValidAt: number | null;
     indexingErrors: string[];
     fetchErrors: string[];
+    laggingSubgraphs: string[];
   };
   isMoney?: boolean;
   source?: string;

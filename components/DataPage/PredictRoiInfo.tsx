@@ -1,17 +1,21 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_MARKET_DURATION_DAYS, STAKING_SUBGRAPH_URLS } from 'common-util/constants';
+import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
   stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
+import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
+import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
 import { CodeSnippet } from './CodeSnippet';
 
 export const PredictRoiInfo = () => {
+  const [copied, setCopied] = useState(false);
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
@@ -22,6 +26,15 @@ export const PredictRoiInfo = () => {
     skip: 0,
     pages: 10,
   });
+
+  const copyEndpointToClipboard = async () => {
+    const url = process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL;
+    if (url) {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <SectionWrapper id="predict-roi">
@@ -57,7 +70,7 @@ export const PredictRoiInfo = () => {
             </li>
           </ul>
         </div>
-        <ExternalLink href={process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL}>
+        <ExternalLink href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL)}>
           Subgraph link
         </ExternalLink>
         <CodeSnippet>
@@ -76,14 +89,26 @@ export const PredictRoiInfo = () => {
             <li>Cumulative payout, trades amounts and fees for open markets</li>
           </ul>
         </div>
-        <p className="text-purple-600">
-          API endpoint: <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+        <p className="text-purple-600 flex items-center gap-2 flex-wrap">
+          <span>API endpoint:</span>
+          <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+          <button
+            onClick={copyEndpointToClipboard}
+            className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check size={16} className="text-green-600" />
+            ) : (
+              <Copy size={16} color="black" />
+            )}
+          </button>
         </p>
         <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
           {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '{"query": "{ fixedProductMarketMakerCreations(where: { blockTimestamp_gt: ${marketOpenTimestamp} }) { id question } global(id: \\\"\\\") { totalFees totalPayout totalTraded } }"}'`}
+  -d '${JSON.stringify({ query: marketsAndBets })}'`}
         </CodeSnippet>
         <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
         <CodeSnippet>{marketsAndBets}</CodeSnippet>
@@ -91,7 +116,11 @@ export const PredictRoiInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Globals query</h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
-        <ExternalLink href={STAKING_SUBGRAPH_URLS.gnosis}>Subgraph link</ExternalLink>
+        <ExternalLink
+          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL)}
+        >
+          Subgraph link
+        </ExternalLink>
         <CodeSnippet>{stakingGlobals}</CodeSnippet>
       </div>
     </SectionWrapper>

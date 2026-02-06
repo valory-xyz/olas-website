@@ -73,25 +73,6 @@ export const ACCELERATOR_APPLY_URL =
 export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
-export const STAKING_SUBGRAPH_URLS = {
-  gnosis:
-    'https://thegraph.com/explorer/subgraphs/F3iqL2iw5UTrP1qbb4S694pGEkBwzoxXp1TRikB2K4e?view=Query&chain=arbitrum-one',
-  optimism:
-    'https://thegraph.com/explorer/subgraphs/2fe1izA4aVvBHVwbPzP1BqxLkoR9ebygWM9iHXwLCnPE?view=Query&chain=arbitrum-one',
-};
-
-export const REGISTRY_SUBGRAPH_URLS = {
-  ethereum: 'https://thegraph.com/explorer/subgraphs/89VhY3d7w6Ran1C86wkchzYNEG3rLBgWvyDUZMEFyjtQ',
-  base: 'https://thegraph.com/explorer/subgraphs/Baqj7bPWWQKw8HXwfqbMZnFhkSamuUYFa3JgCRYF8Tcr?view=Query&chain=arbitrum-one',
-  celo: 'https://thegraph.com/explorer/subgraphs/BxkMNoiEHdbJDtrmMG1bqVvUfwVUWnf5bn47WnCdB1A4',
-  gnosis:
-    'https://thegraph.com/explorer/subgraphs/GmDw6a6EfP6z58dzkw5WehpxjaiEKB6aZRk4TNUm3DPn?view=Query&chain=arbitrum-one',
-  optimism:
-    'https://thegraph.com/explorer/subgraphs/BksA3aj8vX68TVs91ieDoGzFGASuLC7BaYo2HsGCea7p?view=Query&chain=arbitrum-one',
-  polygon: 'https://thegraph.com/explorer/subgraphs/HHRBjVWFT2bV7eNSRqbCNDtUVnLPt911hcp8mSe4z6KG',
-  arbitrum: 'https://thegraph.com/explorer/subgraphs/GpQfE1C5DzXz1KCFvvj6jZkuhpMouwtbf9yYSv2y2V4p',
-};
-
 export const AUTONOLAS_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
 export const AUTONOLAS_BASE_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL;
@@ -103,30 +84,87 @@ export const TOKENOMICS_SUBGRAPH_URLS = [
   },
   {
     key: 'arbitrum',
-    url: 'https://thegraph.com/explorer/subgraphs/EKdR7Xqiz3iEtZuAQPChPku14aSxnb85pVpx9Nb13J2',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
   },
   {
     key: 'base',
-    url: 'https://thegraph.com/explorer/subgraphs/4PfoaqBSC8zJKGSVxKmyQPHLvK4VrHu9ZiLeaGjhN59G',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
   },
   {
     key: 'celo',
-    url: 'https://thegraph.com/explorer/subgraphs/pVCUc7dQYpRFPBjX6trqqvJDedZKPRXn1C1yaihwLRQ',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
   },
   {
     key: 'gnosis',
-    url: 'https://thegraph.com/explorer/subgraphs/CWCQsUk2zfD9JMYmsSYKvwhRjmTxFKRJtZK62w6x3bPX',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
   },
   {
     key: 'optimism',
-    url: 'https://thegraph.com/explorer/subgraphs/6PX6KaJdKtmeB3FmpA9s6PRRdB6yi7LMQipfSiJnNBRH',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
   },
   {
     key: 'polygon',
-    url: 'https://thegraph.com/explorer/subgraphs/B1BF29s7xVhueYcr6ZHhQiiSYr3h3uqpZnnqeP6Wefc3',
+    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
   },
   { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
 ];
+
+export const STAKING_SUBGRAPH_URLS = [
+  { key: 'gnosis', url: process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL },
+  { key: 'optimism', url: process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL },
+  { key: 'base', url: process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL },
+  { key: 'mode', url: process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL },
+  { key: 'polygon', url: process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL },
+];
+
+export const REGISTRY_SUBGRAPH_URLS = [
+  { key: 'ethereum', url: process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL },
+  { key: 'gnosis', url: process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL },
+  { key: 'base', url: process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL },
+  { key: 'mode', url: process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL },
+  { key: 'optimism', url: process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL },
+  { key: 'celo', url: process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL },
+  { key: 'arbitrum', url: process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL },
+  { key: 'polygon', url: process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL },
+];
+
+/**
+ * Lag limits are calibrated so each chain tolerates ~12 hours of subgraph indexing delay
+ */
+export const CHAIN_CONFIG: Record<string, { rpc: string; lagLimit: number }> = {
+  ethereum: {
+    rpc: process.env.ETHEREUM_RPC,
+    lagLimit: 3600, // ~12s blocks → 3600 blocks ≈ 12 hours
+  },
+  gnosis: {
+    rpc: process.env.GNOSIS_RPC,
+    lagLimit: 9000, // ~5s blocks → 9000 blocks ≈ 12 hours
+  },
+  arbitrum: {
+    rpc: process.env.ARBITRUM_RPC,
+    lagLimit: 160000, // ~0.27s blocks → 160000 blocks ≈ 12 hours
+  },
+  optimism: {
+    rpc: process.env.OPTIMISM_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  base: {
+    rpc: process.env.BASE_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  celo: {
+    rpc: process.env.CELO_RPC,
+    lagLimit: 43200, // ~1s blocks → 43200 blocks ≈ 12 hours
+  },
+  polygon: {
+    rpc: process.env.POLYGON_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+  mode: {
+    rpc: process.env.MODE_RPC,
+    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
+  },
+};
 
 export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
 
@@ -150,7 +188,7 @@ export const PREDICT_AGENT_CLASSIFICATION = {
 
 // Mech agent classification used for categorized request counts
 export const MECH_AGENT_CLASSIFICATION = {
-  predict: [14, 25, 13],
+  predict: [14, 25, 13, 86],
   contribute: [6],
   governatooor: [5],
   agentsfun: [43],
