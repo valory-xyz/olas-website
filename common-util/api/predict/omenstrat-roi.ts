@@ -1,5 +1,6 @@
 import { DEFAULT_MECH_FEE, PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
+  MARKETPLACE_GRAPH_CLIENTS,
   mechGraphClient,
   predictAgentsGraphClient,
   STAKING_GRAPH_CLIENTS,
@@ -19,8 +20,8 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const ROI_LIMIT = 1000;
-const ROI_PAGES = 10;
+const LIMIT = 1000;
+const PAGES = 10;
 const SCALE = 100n; // 2 decimals
 const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
@@ -55,7 +56,9 @@ type OlasInUsdPriceResponse = {
 };
 
 type MechRequestsResponse = {
-  questionTitle: string;
+  parsedRequest: {
+    questionTitle: string;
+  };
 }[];
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
@@ -69,20 +72,20 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
 
   try {
     while (true) {
-      const response = (await mechGraphClient.request(
+      const response = (await MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
         getMechRequestsQuery({
           timestamp_gt: marketOpenTimestamp,
-          first: ROI_LIMIT,
+          first: LIMIT,
           skip,
-          pages: ROI_PAGES,
+          pages: PAGES,
         })
       )) as any;
 
       if (response?._meta?.hasIndexingErrors) {
-        indexingErrors.push('mech:requests');
+        indexingErrors.push('marketplace:gnosis');
       }
       if (checkSubgraphLag(gnosisBlock, response?._meta?.block?.number, 'gnosis')) {
-        laggingSubgraphs.push('mech:requests');
+        laggingSubgraphs.push('marketplace:gnosis');
       }
 
       const pageData = Object.entries(response)
@@ -90,13 +93,9 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
         .flatMap(([, value]) => value) as any[];
 
       lastFourDaysRequests = lastFourDaysRequests.concat(pageData);
-      skip += ROI_LIMIT * ROI_PAGES;
+      skip += LIMIT * PAGES;
 
-      if (
-        !Array.isArray(pageData) ||
-        pageData.length === 0 ||
-        pageData.length < ROI_LIMIT * ROI_PAGES
-      ) {
+      if (!Array.isArray(pageData) || pageData.length === 0 || pageData.length < LIMIT * PAGES) {
         break;
       }
     }
@@ -113,7 +112,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
   return { data: lastFourDaysRequests, indexingErrors, laggingSubgraphs, fetchError: false };
 };
 
-export const fetchRoi = async (): Promise<
+export const fetchOmenstratRoi = async (): Promise<
   MetricWithStatus<{ partialRoi: number; finalRoi: number } | null>
 > => {
   const indexingErrors: string[] = [];
@@ -131,7 +130,7 @@ export const fetchRoi = async (): Promise<
       mechRequestsResult,
       gnosisBlock,
     ] = (await Promise.all([
-      mechGraphClient.request(totalMechRequestsQuery),
+      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
@@ -147,16 +146,16 @@ export const fetchRoi = async (): Promise<
     ];
 
     if (totalRequestsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('mech');
+      indexingErrors.push('marketplace:gnosis');
     }
     if (checkSubgraphLag(gnosisBlock, totalRequestsResult._meta?.block?.number, 'gnosis')) {
-      laggingSubgraphs.push('mech');
+      laggingSubgraphs.push('marketplace:gnosis');
     }
     if (marketsAndBetsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('predictAgents');
+      indexingErrors.push('predict:gnosis');
     }
     if (checkSubgraphLag(gnosisBlock, marketsAndBetsResult._meta?.block?.number, 'gnosis')) {
-      laggingSubgraphs.push('predictAgents');
+      laggingSubgraphs.push('predict:gnosis');
     }
     if (totalRewardsResult._meta?.hasIndexingErrors) {
       indexingErrors.push('staking:gnosis');
@@ -168,7 +167,7 @@ export const fetchRoi = async (): Promise<
       indexingErrors.push(...mechRequestsResult.indexingErrors);
     }
     if (mechRequestsResult.fetchError) {
-      fetchErrors.push('mech:requests');
+      fetchErrors.push('marketplace:gnosis');
     }
     if (mechRequestsResult.laggingSubgraphs.length > 0) {
       laggingSubgraphs.push(...mechRequestsResult.laggingSubgraphs);
@@ -186,7 +185,7 @@ export const fetchRoi = async (): Promise<
 
     let requestsToSubtract = 0;
     lastFourDaysRequests.forEach((request) => {
-      if (openMarketTitles.find((title) => title === request.questionTitle)) {
+      if (openMarketTitles.find((title) => title === request.parsedRequest?.questionTitle)) {
         requestsToSubtract += 1;
       }
     });
@@ -195,7 +194,6 @@ export const fetchRoi = async (): Promise<
       BigInt(marketsAndBetsResult.global?.totalTradedSettled || 0) +
       BigInt(marketsAndBetsResult.global?.totalFeesSettled || 0) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
-
     const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0);
     const totalOlasRewardsPayoutInUsd =
       (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasInUsdPriceInEth) / BigInt(1e18);
