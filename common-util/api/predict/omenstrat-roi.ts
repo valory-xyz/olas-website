@@ -1,6 +1,6 @@
 import { DEFAULT_MECH_FEE, PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
-  mechGraphClient,
+  MARKETPLACE_GRAPH_CLIENTS,
   predictAgentsGraphClient,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
@@ -8,7 +8,6 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
-  getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
   getMarketsAndBetsQuery,
@@ -19,8 +18,8 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const ROI_LIMIT = 1000;
-const ROI_PAGES = 10;
+const LIMIT = 1000;
+const PAGES = 10;
 const SCALE = 100n; // 2 decimals
 const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
 const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
@@ -54,9 +53,15 @@ type OlasInUsdPriceResponse = {
   };
 };
 
-type MechRequestsResponse = {
-  questionTitle: string;
-}[];
+type MechRequest = {
+  parsedRequest: {
+    questionTitle: string;
+  };
+};
+
+type MechRequestsResponse = MechRequest[];
+
+type MechRequestsPagedResponse = WithMeta<Record<string, MechRequest[]>>;
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
@@ -69,34 +74,30 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
 
   try {
     while (true) {
-      const response = (await mechGraphClient.request(
+      const response = (await MARKETPLACE_GRAPH_CLIENTS.gnosis.request(
         getMechRequestsQuery({
           timestamp_gt: marketOpenTimestamp,
-          first: ROI_LIMIT,
+          first: LIMIT,
           skip,
-          pages: ROI_PAGES,
+          pages: PAGES,
         })
-      )) as any;
+      )) as MechRequestsPagedResponse;
 
       if (response?._meta?.hasIndexingErrors) {
-        indexingErrors.push('mech:requests');
+        indexingErrors.push('marketplace:gnosis');
       }
       if (checkSubgraphLag(gnosisBlock, response?._meta?.block?.number, 'gnosis')) {
-        laggingSubgraphs.push('mech:requests');
+        laggingSubgraphs.push('marketplace:gnosis');
       }
 
       const pageData = Object.entries(response)
         .filter(([key]) => key !== '_meta')
-        .flatMap(([, value]) => value) as any[];
+        .flatMap(([, value]) => value as MechRequest[]);
 
       lastFourDaysRequests = lastFourDaysRequests.concat(pageData);
-      skip += ROI_LIMIT * ROI_PAGES;
+      skip += LIMIT * PAGES;
 
-      if (
-        !Array.isArray(pageData) ||
-        pageData.length === 0 ||
-        pageData.length < ROI_LIMIT * ROI_PAGES
-      ) {
+      if (!Array.isArray(pageData) || pageData.length === 0 || pageData.length < LIMIT * PAGES) {
         break;
       }
     }
@@ -113,7 +114,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
   return { data: lastFourDaysRequests, indexingErrors, laggingSubgraphs, fetchError: false };
 };
 
-export const fetchRoi = async (): Promise<
+export const fetchOmenstratRoi = async (): Promise<
   MetricWithStatus<{ partialRoi: number; finalRoi: number } | null>
 > => {
   const indexingErrors: string[] = [];
@@ -123,55 +124,102 @@ export const fetchRoi = async (): Promise<
   try {
     const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
 
-    const [
-      totalRequestsResult,
-      marketsAndBetsResult,
-      totalRewardsResult,
-      olasInUsdPriceResult,
-      mechRequestsResult,
-      gnosisBlock,
-    ] = (await Promise.all([
-      mechGraphClient.request(totalMechRequestsQuery),
+    const results = await Promise.allSettled([
+      MARKETPLACE_GRAPH_CLIENTS.gnosis.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('gnosis'),
-    ])) as [
-      TotalMechRequestsResponse,
-      MarketsAndBetsResponse,
-      StakingGlobalsResponse,
-      OlasInUsdPriceResponse,
-      Awaited<ReturnType<typeof fetchMechRequests>>,
-      number | null,
-    ];
+    ]);
 
-    if (totalRequestsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('mech');
+    // Handle totalMechRequests
+    const totalRequestsResult =
+      results[0].status === 'fulfilled' ? (results[0].value as TotalMechRequestsResponse) : null;
+    if (!totalRequestsResult) {
+      fetchErrors.push('marketplace:gnosis:totalRequests');
     }
-    if (checkSubgraphLag(gnosisBlock, totalRequestsResult._meta?.block?.number, 'gnosis')) {
-      laggingSubgraphs.push('mech');
+
+    // Handle marketsAndBets
+    const marketsAndBetsResult =
+      results[1].status === 'fulfilled' ? (results[1].value as MarketsAndBetsResponse) : null;
+    if (!marketsAndBetsResult) {
+      fetchErrors.push('predict:gnosis');
     }
-    if (marketsAndBetsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('predictAgents');
+
+    // Handle totalRewards
+    const totalRewardsResult =
+      results[2].status === 'fulfilled' ? (results[2].value as StakingGlobalsResponse) : null;
+    if (!totalRewardsResult) {
+      fetchErrors.push('staking:gnosis');
     }
-    if (checkSubgraphLag(gnosisBlock, marketsAndBetsResult._meta?.block?.number, 'gnosis')) {
-      laggingSubgraphs.push('predictAgents');
+
+    // Handle olasPrice
+    const olasInUsdPriceResult =
+      results[3].status === 'fulfilled' ? (results[3].value as OlasInUsdPriceResponse) : null;
+    if (!olasInUsdPriceResult) {
+      fetchErrors.push('coingecko:olas-price');
     }
-    if (totalRewardsResult._meta?.hasIndexingErrors) {
+
+    // Handle mechRequests
+    const mechRequestsResult =
+      results[4].status === 'fulfilled'
+        ? (results[4].value as Awaited<ReturnType<typeof fetchMechRequests>>)
+        : { data: [], indexingErrors: [], laggingSubgraphs: [], fetchError: true };
+    if (mechRequestsResult.fetchError) {
+      fetchErrors.push('marketplace:gnosis:mechRequests');
+    }
+
+    // Handle gnosisBlock
+    const gnosisBlock =
+      results[5].status === 'fulfilled' ? (results[5].value as number | null) : null;
+
+    // Check indexing errors and lagging subgraphs
+    if (totalRequestsResult?._meta?.hasIndexingErrors) {
+      indexingErrors.push('marketplace:gnosis:totalRequests');
+    }
+    if (
+      gnosisBlock &&
+      checkSubgraphLag(gnosisBlock, totalRequestsResult?._meta?.block?.number, 'gnosis')
+    ) {
+      laggingSubgraphs.push('marketplace:gnosis:totalRequests');
+    }
+    if (marketsAndBetsResult?._meta?.hasIndexingErrors) {
+      indexingErrors.push('predict:gnosis');
+    }
+    if (
+      gnosisBlock &&
+      checkSubgraphLag(gnosisBlock, marketsAndBetsResult?._meta?.block?.number, 'gnosis')
+    ) {
+      laggingSubgraphs.push('predict:gnosis');
+    }
+    if (totalRewardsResult?._meta?.hasIndexingErrors) {
       indexingErrors.push('staking:gnosis');
     }
-    if (checkSubgraphLag(gnosisBlock, totalRewardsResult._meta?.block?.number, 'gnosis')) {
+    if (
+      gnosisBlock &&
+      checkSubgraphLag(gnosisBlock, totalRewardsResult?._meta?.block?.number, 'gnosis')
+    ) {
       laggingSubgraphs.push('staking:gnosis');
     }
     if (mechRequestsResult.indexingErrors.length > 0) {
       indexingErrors.push(...mechRequestsResult.indexingErrors);
     }
-    if (mechRequestsResult.fetchError) {
-      fetchErrors.push('mech:requests');
-    }
     if (mechRequestsResult.laggingSubgraphs.length > 0) {
       laggingSubgraphs.push(...mechRequestsResult.laggingSubgraphs);
+    }
+
+    // Return early if critical data is missing
+    if (
+      !totalRequestsResult ||
+      !marketsAndBetsResult ||
+      !totalRewardsResult ||
+      !olasInUsdPriceResult
+    ) {
+      return {
+        value: null,
+        status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+      };
     }
 
     const olasInUsdPriceInEth = BigInt(
@@ -186,7 +234,7 @@ export const fetchRoi = async (): Promise<
 
     let requestsToSubtract = 0;
     lastFourDaysRequests.forEach((request) => {
-      if (openMarketTitles.find((title) => title === request.questionTitle)) {
+      if (openMarketTitles.find((title) => title === request.parsedRequest?.questionTitle)) {
         requestsToSubtract += 1;
       }
     });
@@ -195,7 +243,6 @@ export const fetchRoi = async (): Promise<
       BigInt(marketsAndBetsResult.global?.totalTradedSettled || 0) +
       BigInt(marketsAndBetsResult.global?.totalFeesSettled || 0) +
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
-
     const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0);
     const totalOlasRewardsPayoutInUsd =
       (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasInUsdPriceInEth) / BigInt(1e18);
@@ -213,10 +260,11 @@ export const fetchRoi = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching Predict ROI:', error);
+    console.log('indexingErrors', indexingErrors, 'fetchErrors', fetchErrors);
+    console.error('Error fetching Omenstrat ROI:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus('predict:roi'),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   }
 };

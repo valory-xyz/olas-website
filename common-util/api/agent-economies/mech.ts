@@ -116,18 +116,18 @@ const fetchMechGlobals = async (): Promise<
       const blockResult = results[index + chains.length];
 
       if (queryResult.status === 'rejected') {
-        console.error(`mech:${chain}`, queryResult.reason);
-        fetchErrors.push(`mech:${chain}`);
+        console.error(`marketplace:${chain}`, queryResult.reason);
+        fetchErrors.push(`marketplace:${chain}`);
       } else {
         const data = queryResult.value as MechGlobalsResult;
         const chainBlock =
           blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${chain}`);
+          indexingErrors.push(`marketplace:${chain}`);
         }
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(`mech:${chain}`);
+          laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
         totalRequests += Number(data.global?.totalRequests ?? 0);
@@ -140,10 +140,12 @@ const fetchMechGlobals = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching mech requests from subgraphs:', error);
+    console.error('Error fetching marketplace requests from subgraphs:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
+      status: getFetchErrorAndCreateStaleStatus(
+        chains.map((chain) => `marketplace:${chain}`).join(', ')
+      ),
     };
   }
 };
@@ -246,18 +248,18 @@ const fetchCategorizedRequestTotals = async (): Promise<
       const blockResult = results[index + chains.length];
 
       if (queryResult.status === 'rejected') {
-        console.error(`mech:${chain}`, queryResult.reason);
-        fetchErrors.push(`mech:${chain}`);
+        console.error(`marketplace:${chain}`, queryResult.reason);
+        fetchErrors.push(`marketplace:${chain}`);
       } else {
         const data = queryResult.value as MarketplaceRequestsPerAgentsResult;
         const chainBlock =
           blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${chain}`);
+          indexingErrors.push(`marketplace:${chain}`);
         }
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(`mech:${chain}`);
+          laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
         addCounts(data.requestsPerAgents);
@@ -280,7 +282,9 @@ const fetchCategorizedRequestTotals = async (): Promise<
     console.error('Error fetching categorized mech requests:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
+      status: getFetchErrorAndCreateStaleStatus(
+        chains.map((chain) => `marketplace:${chain}`).join(', ')
+      ),
     };
   }
 };

@@ -1,5 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_AGENT_CLASSIFICATION, REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
+import { OMENSTRAT_AGENT_CLASSIFICATION, REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
 import { agentTxCountsQuery, registryGlobalsQuery } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -48,14 +48,14 @@ export const TransactionsInfo = () => {
           <div className="space-y-1">
             <p>
               <strong>Market maker</strong> agent IDs:{' '}
-              {PREDICT_AGENT_CLASSIFICATION.market_maker.join(', ')}
+              {OMENSTRAT_AGENT_CLASSIFICATION.market_maker.join(', ')}
             </p>
             <p>
               <strong>Valory trader</strong> agent IDs:{' '}
-              {PREDICT_AGENT_CLASSIFICATION.valory_trader.join(', ')}
+              {OMENSTRAT_AGENT_CLASSIFICATION.valory_trader.join(', ')}
             </p>
             <p>
-              <strong>Mech</strong> agent IDs: {PREDICT_AGENT_CLASSIFICATION.mech.join(', ')}
+              <strong>Mech</strong> agent IDs: {OMENSTRAT_AGENT_CLASSIFICATION.mech.join(', ')}
             </p>
             {/* Other trader category intentionally excluded */}
           </div>

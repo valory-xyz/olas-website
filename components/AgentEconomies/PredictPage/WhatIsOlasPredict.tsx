@@ -216,6 +216,8 @@ const JoinTheEconomy = () => (
                 <a
                   className="text-purple-600 hover:text-purple-800 transition-colors duration-300 cursor-pointer"
                   href={agent.secondaryLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   More About {agent.title}
                 </a>
