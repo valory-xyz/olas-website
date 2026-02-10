@@ -40,6 +40,9 @@ export const stakingContractsQuery = (addresses) => gql`
   {
     _meta {
       hasIndexingErrors
+      block {
+        number
+      }
     }
     stakingContracts${addresses.length > 0 ? `(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]})` : ''} {
       id
@@ -692,6 +695,9 @@ export const getPolymarketMarketsDataQuery = ({
       }
       _meta {
         hasIndexingErrors
+        block {
+          number
+        }
       }
     }
   `;

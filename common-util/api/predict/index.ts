@@ -5,8 +5,8 @@ import {
 } from 'common-util/constants';
 import { REGISTRY_GRAPH_CLIENTS, STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
-  executeGraphQLQuery,
   createStaleStatus,
+  executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
@@ -285,16 +285,16 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             ? omenstratTxsResult.value
             : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:txs') },
         partialRoi:
-          omenstratRoiResult.status === 'fulfilled' && omenstratRoiResult.value.value
+          omenstratRoiResult.status === 'fulfilled'
             ? {
-                value: omenstratRoiResult.value.value.partialRoi,
+                value: omenstratRoiResult.value.value?.partialRoi ?? null,
                 status: omenstratRoiResult.value.status,
               }
             : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
         finalRoi:
-          omenstratRoiResult.status === 'fulfilled' && omenstratRoiResult.value.value
+          omenstratRoiResult.status === 'fulfilled'
             ? {
-                value: omenstratRoiResult.value.value.finalRoi,
+                value: omenstratRoiResult.value.value?.finalRoi ?? null,
                 status: omenstratRoiResult.value.status,
               }
             : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
@@ -314,16 +314,16 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             ? polystratTxsResult.value
             : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:txs') },
         partialRoi:
-          polystratRoiResult.status === 'fulfilled' && polystratRoiResult.value.value
+          polystratRoiResult.status === 'fulfilled'
             ? {
-                value: polystratRoiResult.value.value.partialRoi,
+                value: polystratRoiResult.value.value?.partialRoi ?? null,
                 status: polystratRoiResult.value.status,
               }
             : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },
         finalRoi:
-          polystratRoiResult.status === 'fulfilled' && polystratRoiResult.value.value
+          polystratRoiResult.status === 'fulfilled'
             ? {
-                value: polystratRoiResult.value.value.finalRoi,
+                value: polystratRoiResult.value.value?.finalRoi ?? null,
                 status: polystratRoiResult.value.status,
               }
             : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },

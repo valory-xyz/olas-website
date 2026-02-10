@@ -42,7 +42,7 @@ export const Popover = ({
           align={align}
           className={`p-3 text-sm bg-white border rounded-lg shadow-lg shadow-gray-500/10 mb-1 ${contentClassName || ''}`}
         >
-          <p>{children}</p>
+          {children}
         </Tooltip.Content>
       </Tooltip.Root>
     </Tooltip.Provider>

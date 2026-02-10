@@ -65,11 +65,15 @@ type OlasInUsdPriceResponse = {
   };
 };
 
-type MechRequestsResponse = {
+type MechRequest = {
   parsedRequest: {
     questionTitle: string;
   };
-}[];
+};
+
+type MechRequestsResponse = MechRequest[];
+
+type MechRequestsPagedResponse = WithMeta<Record<string, MechRequest[]>>;
 
 const fetchMechRequests = async (marketOpenTimestamp: number) => {
   let skip = 0;
@@ -89,7 +93,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
           skip,
           pages: PAGES,
         })
-      )) as any;
+      )) as MechRequestsPagedResponse;
 
       if (response?._meta?.hasIndexingErrors) {
         indexingErrors.push('marketplace:polygon');
@@ -100,7 +104,7 @@ const fetchMechRequests = async (marketOpenTimestamp: number) => {
 
       const pageData = Object.entries(response)
         .filter(([key]) => key !== '_meta')
-        .flatMap(([, value]) => value) as any[];
+        .flatMap(([, value]) => value as MechRequest[]);
 
       lastFourDaysRequests = lastFourDaysRequests.concat(pageData);
       skip += LIMIT * PAGES;
@@ -132,14 +136,7 @@ export const fetchPolystratRoi = async (): Promise<
   try {
     const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
 
-    const [
-      totalRequestsResult,
-      marketsAndBetsResult,
-      totalRewardsResult,
-      olasInUsdPriceResult,
-      mechRequestsResult,
-      polygonBlock,
-    ] = (await Promise.all([
+    const results = await Promise.allSettled([
       MARKETPLACE_GRAPH_CLIENTS.polygon.request(totalMechRequestsQuery),
       polymarketAgentsGraphClient.request(
         getPolymarketMarketsDataQuery({ first: 1000, pages: 10 })
@@ -148,42 +145,96 @@ export const fetchPolystratRoi = async (): Promise<
       fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('polygon'),
-    ])) as [
-      TotalMechRequestsResponse,
-      OpenMarketsResponse,
-      StakingGlobalsResponse,
-      OlasInUsdPriceResponse,
-      Awaited<ReturnType<typeof fetchMechRequests>>,
-      number | null,
-    ];
+    ]);
+
+    // Handle totalMechRequests
+    const totalRequestsResult =
+      results[0].status === 'fulfilled'
+        ? (results[0].value as TotalMechRequestsResponse)
+        : null;
+    if (!totalRequestsResult) {
+      fetchErrors.push('marketplace:polygon:totalRequests');
+    }
+
+    // Handle marketsAndBets
+    const marketsAndBetsResult =
+      results[1].status === 'fulfilled' ? (results[1].value as OpenMarketsResponse) : null;
+    if (!marketsAndBetsResult) {
+      fetchErrors.push('polymarket:polygon');
+    }
+
+    // Handle totalRewards
+    const totalRewardsResult =
+      results[2].status === 'fulfilled' ? (results[2].value as StakingGlobalsResponse) : null;
+    if (!totalRewardsResult) {
+      fetchErrors.push('staking:polygon');
+    }
+
+    // Handle olasPrice
+    const olasInUsdPriceResult =
+      results[3].status === 'fulfilled' ? (results[3].value as OlasInUsdPriceResponse) : null;
+    if (!olasInUsdPriceResult) {
+      fetchErrors.push('coingecko:olas-price');
+    }
+
+    // Handle mechRequests
+    const mechRequestsResult =
+      results[4].status === 'fulfilled'
+        ? (results[4].value as Awaited<ReturnType<typeof fetchMechRequests>>)
+        : { data: [], indexingErrors: [], laggingSubgraphs: [], fetchError: true };
+    if (mechRequestsResult.fetchError) {
+      fetchErrors.push('marketplace:polygon:mechRequests');
+    }
+
+    // Handle polygonBlock
+    const polygonBlock = results[5].status === 'fulfilled' ? (results[5].value as number | null) : null;
 
     // Track indexing errors and lagging subgraphs
-    if (totalRequestsResult._meta?.hasIndexingErrors) {
-      indexingErrors.push('marketplace:polygon');
+    if (totalRequestsResult?._meta?.hasIndexingErrors) {
+      indexingErrors.push('marketplace:polygon:totalRequests');
     }
-    if (checkSubgraphLag(polygonBlock, totalRequestsResult._meta?.block?.number, 'polygon')) {
-      laggingSubgraphs.push('marketplace:polygon');
+    if (
+      polygonBlock &&
+      checkSubgraphLag(polygonBlock, totalRequestsResult?._meta?.block?.number, 'polygon')
+    ) {
+      laggingSubgraphs.push('marketplace:polygon:totalRequests');
     }
-    if (marketsAndBetsResult._meta?.hasIndexingErrors) {
+    if (marketsAndBetsResult?._meta?.hasIndexingErrors) {
       indexingErrors.push('polymarket:polygon');
     }
-    if (checkSubgraphLag(polygonBlock, marketsAndBetsResult._meta?.block?.number, 'polygon')) {
+    if (
+      polygonBlock &&
+      checkSubgraphLag(polygonBlock, marketsAndBetsResult?._meta?.block?.number, 'polygon')
+    ) {
       laggingSubgraphs.push('polymarket:polygon');
     }
-    if (totalRewardsResult._meta?.hasIndexingErrors) {
+    if (totalRewardsResult?._meta?.hasIndexingErrors) {
       indexingErrors.push('staking:polygon');
     }
-    if (checkSubgraphLag(polygonBlock, totalRewardsResult._meta?.block?.number, 'polygon')) {
+    if (
+      polygonBlock &&
+      checkSubgraphLag(polygonBlock, totalRewardsResult?._meta?.block?.number, 'polygon')
+    ) {
       laggingSubgraphs.push('staking:polygon');
     }
     if (mechRequestsResult.indexingErrors.length > 0) {
       indexingErrors.push(...mechRequestsResult.indexingErrors);
     }
-    if (mechRequestsResult.fetchError) {
-      fetchErrors.push('mech:polygon');
-    }
     if (mechRequestsResult.laggingSubgraphs.length > 0) {
       laggingSubgraphs.push(...mechRequestsResult.laggingSubgraphs);
+    }
+
+    // Return early if critical data is missing
+    if (
+      !totalRequestsResult ||
+      !marketsAndBetsResult ||
+      !totalRewardsResult ||
+      !olasInUsdPriceResult
+    ) {
+      return {
+        value: null,
+        status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+      };
     }
 
     const olasInUsdPriceInEth = BigInt(
@@ -239,7 +290,7 @@ export const fetchPolystratRoi = async (): Promise<
     console.error('Error fetching Polystrat ROI:', error);
     return {
       value: null,
-      status: createStaleStatus({ indexingErrors: [], fetchErrors: ['polystrat:roi'] }),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   }
 };

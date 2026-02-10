@@ -70,14 +70,7 @@ export const predictAgentsGraphClient = new GraphQLClient(
 
 export const polymarketAgentsGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL,
-  {
-    ...requestConfig,
-    headers: {
-      ...(process.env.NEXT_PUBLIC_POLYMARKET_SUBGRAPH_API_KEY && {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_POLYMARKET_SUBGRAPH_API_KEY}`,
-      }),
-    },
-  }
+  requestConfig
 );
 
 export const MARKETPLACE_GRAPH_CLIENTS = {

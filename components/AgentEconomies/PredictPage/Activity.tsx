@@ -3,6 +3,7 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
+import { isNil } from 'lodash';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -75,7 +76,7 @@ const processPredictMetrics = (metrics: any) => {
   };
 };
 
-const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
+const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = false }) => {
   const bubbleData = useMemo(() => {
     const performanceMetrics = [
       {
@@ -83,7 +84,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
         subText: (
           <span className="flex items-center gap-2">
             Total ROI - Average{' '}
-            {platformMetrics.partialRoi != null && (
+            {!roiComingSoon && !isNil(platformMetrics.partialRoi) && (
               <Popover>
                 <div className="flex flex-col max-w-[320px] gap-4 text-base">
                   <p className="text-gray-500">
@@ -107,21 +108,25 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
             )}
           </span>
         ),
-        value: platformMetrics.finalRoi != null ? `${platformMetrics.finalRoi}%` : null,
-        status: platformMetrics.roiStatus,
-        source: { link: '/data#predict-roi', isExternal: false },
+        value: roiComingSoon
+          ? 'Coming soon'
+          : isNil(platformMetrics.finalRoi)
+            ? null
+            : `${platformMetrics.finalRoi}%`,
+        status: roiComingSoon ? undefined : platformMetrics.roiStatus,
+        source: roiComingSoon ? undefined : { link: '/data#predict-roi', isExternal: false },
       },
       {
         id: 'apr',
         subText: 'APR, OLAS - Via OLAS Staking',
-        value: platformMetrics.apr ? `${platformMetrics.apr}%` : null,
+        value: isNil(platformMetrics.apr) ? null : `${platformMetrics.apr}%`,
         status: platformMetrics.aprStatus,
         source: { link: '/data#predict-apr', isExternal: false },
       },
       {
         id: 'accuracy',
         subText: 'Prediction Accuracy - Average (Last 10K Trades)',
-        value: platformMetrics.successRate ? `${platformMetrics.successRate}%` : null,
+        value: isNil(platformMetrics.successRate) ? null : `${platformMetrics.successRate}%`,
         status: platformMetrics.successRateStatus,
         source: { link: '/data#predict-accuracy', isExternal: false },
       },
@@ -136,7 +141,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
             <Image alt="Traders" src="/images/predict-page/traders.png" width="32" height="15" />
           </div>
         ),
-        value: platformMetrics.traderTxs ? platformMetrics.traderTxs.toLocaleString() : null,
+        value: isNil(platformMetrics.traderTxs) ? null : platformMetrics.traderTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
         source: { link: '/data#predict-transactions-by-type', isExternal: false },
       },
@@ -148,7 +153,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
             <Image alt="Mechs" src="/images/predict-page/mechs.png" width="32" height="15" />
           </div>
         ),
-        value: platformMetrics.mechTxs ? platformMetrics.mechTxs.toLocaleString() : null,
+        value: isNil(platformMetrics.mechTxs) ? null : platformMetrics.mechTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
         source: { link: '/data#predict-transactions-by-type', isExternal: false },
       },
@@ -170,16 +175,16 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
             <Image alt="Closers" src="/images/predict-page/closers.png" width="32" height="15" />
           </div>
         ),
-        value: platformMetrics.marketCreatorTxs
-          ? platformMetrics.marketCreatorTxs.toLocaleString()
-          : null,
+        value: isNil(platformMetrics.marketCreatorTxs)
+          ? null
+          : platformMetrics.marketCreatorTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
         source: { link: '/data#predict-transactions-by-type', isExternal: false },
       });
     }
 
     return { performanceMetrics, transactionMetrics };
-  }, [platformMetrics]);
+  }, [platformMetrics, roiComingSoon]);
 
   return (
     <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
@@ -200,7 +205,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
                 </Link>
               ) : (
                 <span
-                  className={`text-2xl font-bold ${metric.status?.stale ? 'text-gray-400' : ''}`}
+                  className={`text-2xl font-bold ${metric.status?.stale || metric.value === 'Coming soon' ? 'text-gray-400' : ''}`}
                 >
                   {metric.value || '--'}
                 </span>
@@ -229,7 +234,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
                 </Link>
               ) : (
                 <span
-                  className={`text-2xl font-bold ${metric.status?.stale ? 'text-gray-400' : ''}`}
+                  className={`text-2xl font-bold ${metric.status?.stale || metric.value === 'Coming soon' ? 'text-gray-400' : ''}`}
                 >
                   {metric.value || '--'}
                 </span>
@@ -258,7 +263,9 @@ export const Activity = ({ metrics: initialMetrics }) => {
             Predict Agent Economy
           </div>
           <div className="flex items-center gap-2">
-            {metrics.dailyActiveAgents ? (
+            {isNil(metrics.dailyActiveAgents) ? (
+              <span className="text-purple-600 text-6xl">--</span>
+            ) : (
               <Link className="font-extrabold text-6xl" href="/data#predict-daily-active-agents">
                 <span
                   className={`${metrics.dailyActiveAgentsStatus?.stale ? 'text-gray-400' : ''}`}
@@ -266,8 +273,6 @@ export const Activity = ({ metrics: initialMetrics }) => {
                   {metrics.dailyActiveAgents}
                 </span>
               </Link>
-            ) : (
-              <span className="text-purple-600 text-6xl">--</span>
             )}
             <StaleIndicator status={metrics.dailyActiveAgentsStatus} />
           </div>
@@ -289,6 +294,7 @@ export const Activity = ({ metrics: initialMetrics }) => {
           title="Polystrat Performance"
           platformMetrics={metrics.polystrat}
           imgSrc="/images/predict-page/polystrat-icon.png"
+          roiComingSoon
         />
       </div>
     </SectionWrapper>
