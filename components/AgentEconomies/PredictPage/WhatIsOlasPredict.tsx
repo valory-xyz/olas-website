@@ -9,7 +9,6 @@ import {
   TEXT_MEDIUM_CLASS,
 } from 'common-util/classes';
 import { PEARL_YOU_URL } from 'common-util/constants';
-import { AgentsComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -165,41 +164,70 @@ const TheProcess = () => (
   </div>
 );
 
+const agents = [
+  {
+    title: 'Omenstrat',
+    imgSrc: 'omenstrat-icon.png',
+    chain: 'Gnosis',
+    chainSrc: '/images/homepage/addresses/gnosis-color.svg',
+    description: 'Trades Omen prediction markets for you while you do something else.',
+    link: PEARL_YOU_URL,
+    secondaryLink: '/agents/omenstrat',
+  },
+  {
+    title: 'Polystrat',
+    imgSrc: 'polystrat-icon.png',
+    chain: 'Polygon',
+    chainSrc: '/images/predict-page/polygon.svg',
+    description: 'Trades Polymarket prediction markets for you while you do something else.',
+    link: PEARL_YOU_URL,
+    secondaryLink: `${PEARL_YOU_URL}polystrat`,
+    isSecondaryLinkExternal: true,
+  },
+];
+
 const JoinTheEconomy = () => (
   <div id="join" className="max-w-screen-lg lg:px-12 mx-auto lg:grid-cols-12 lg:pt-24 pt-12">
     <h2 className={`${SUB_HEADER_CLASS} lg:text-center lg:mb-14 text-left mb-8`}>
       Join the Olas Predict Agent Economy
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card className="rounded-2xl flex flex-col gap-6 p-6">
-        <div className="flex gap-3">
-          <Image
-            src="/images/predict-page/omenstrat-icon.png"
-            alt="Omenstrat tile icon"
-            width={48}
-            height={48}
-          />
-          <p className="font-medium text-lg my-auto">Omenstrat</p>
-          <Image
-            src="/images/homepage/addresses/gnosis-color.svg"
-            alt="Gnosis icon"
-            width={16}
-            height={16}
-          />
-        </div>
-        <p>Trades Omen prediction markets for you while you do something else.</p>
-        <div className="flex max-xl:flex-col xl:gap-3">
-          <Button variant="default" asChild className="grow mt-6 max-md:w-full">
-            <SubsiteLink isInButton href={PEARL_YOU_URL}>
-              Run Omenstrat
-            </SubsiteLink>
-          </Button>
-          <Button variant="outline" asChild className="grow mt-6 max-md:w-full">
-            <Link href="/agents/omenstrat">More About Omenstrat</Link>
-          </Button>
-        </div>
-      </Card>
-      <AgentsComingSoon description="More prediction markets agents coming soon" />
+      {agents.map((agent) => (
+        <Card key={agent.title} className="rounded-2xl flex flex-col gap-6 p-6">
+          <div className="flex gap-3">
+            <Image
+              src={`/images/predict-page/${agent.imgSrc}`}
+              alt={agent.title}
+              width={48}
+              height={48}
+            />
+            <p className="font-medium text-lg my-auto">{agent.title}</p>
+            <Image src={agent.chainSrc} alt={agent.chain} width={16} height={16} />
+          </div>
+          <p>{agent.description}</p>
+          <div className="flex max-xl:flex-col xl:gap-3">
+            <Button variant="default" asChild className="grow mt-6 max-md:w-full">
+              <SubsiteLink isInButton href={agent.link}>
+                Run {agent.title}
+              </SubsiteLink>
+            </Button>
+            <Button variant="outline" asChild className="grow mt-6 max-md:w-full">
+              {agent.isSecondaryLinkExternal ? (
+                <a
+                  className="text-purple-600 hover:text-purple-800 transition-colors duration-300 cursor-pointer"
+                  href={agent.secondaryLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  More About {agent.title}
+                </a>
+              ) : (
+                <Link href={agent.secondaryLink}>More About {agent.title}</Link>
+              )}
+            </Button>
+          </div>
+        </Card>
+      ))}
     </div>
   </div>
 );

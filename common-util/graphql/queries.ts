@@ -40,8 +40,11 @@ export const stakingContractsQuery = (addresses) => gql`
   {
     _meta {
       hasIndexingErrors
+      block {
+        number
+      }
     }
-    stakingContracts(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]}) {
+    stakingContracts${addresses.length > 0 ? `(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]})` : ''} {
       id
       rewardsPerSecond
       minStakingDeposit
@@ -91,8 +94,10 @@ export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gq
             where: { blockTimestamp_gt: ${timestamp_gt} }
           ) {
             id
-            questionTitle
             blockTimestamp
+            parsedRequest {
+              questionTitle
+            }
           }
         `;
       })
@@ -647,3 +652,79 @@ export const dailyActivitiesQuery = gql`
     }
   }
 `;
+
+// Query for ROI calculation of polymarket
+export const getPolymarketMarketsDataQuery = ({
+  first,
+  pages,
+}: {
+  first: number;
+  pages: number;
+}) => {
+  const queries = [];
+  for (let i = 0; i < pages; i++) {
+    queries.push(`
+      page${i}: marketParticipants(
+        first: ${first}
+        skip: ${i * first}
+        orderBy: createdAt
+        orderDirection: desc
+      ) {
+        id
+        question {
+          id
+          resolution {
+            id
+            winningIndex
+          }
+          metadata {
+            id
+            title
+          }
+        }
+      }
+    `);
+  }
+
+  return gql`
+    query getPolymarketOpenMarkets {
+      ${queries.join('\n')}
+      global(id: "") {
+        totalPayout
+        totalTradedSettled
+      }
+      _meta {
+        hasIndexingErrors
+        block {
+          number
+        }
+      }
+    }
+  `;
+};
+
+// Query for success rate calculation of polymarket
+export const getPolymarketBetsQuery = ({ first, pages }: { first: number; pages: number }) => {
+  const queries = [];
+  for (let i = 0; i < pages; i++) {
+    queries.push(`
+      page${i}: bets(
+        first: ${first}
+        skip: ${i * first}
+        orderBy: blockTimestamp
+        orderDirection: desc
+      ) {
+        id
+        outcomeIndex
+        question {
+          id
+          resolution {
+            id
+            winningIndex
+          }
+        }
+      }
+    `);
+  }
+  return gql`query getPolymarketClosedMarkets { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
+};

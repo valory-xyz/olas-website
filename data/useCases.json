@@ -7,22 +7,23 @@
     "description": "Lightweight agents that anybody can run locally or in the cloud.",
     "services": [
       {
-        "title": "BabyDegen",
-        "description": "Trades autonomously in DeFi.",
-        "image": "/images/agents/babydegen-icon.svg",
-        "link": "/agents/babydegen"
-      },
-      {
         "title": "Omenstrat",
         "description": "Trades on prediction markets.",
         "image": "/images/agents/omenstrat.png",
         "link": "/agents/omenstrat"
       },
       {
-        "title": "Modius Agent",
-        "description": "Manages your portfolio with cutting-edge strategies on Mode network.",
-        "image": "/images/agents/modius-agent.png",
-        "link": "/agents/babydegen#modius-agent"
+        "title": "Polystrat",
+        "description": "Trades Polymarket prediction markets for you while you do something else.",
+        "image": "/images/agents/polystrat.png",
+        "link": "https://www.pearl.you/polystrat",
+        "isExternal": true
+      },
+      {
+        "title": "BabyDegen",
+        "description": "Trades autonomously in DeFi.",
+        "image": "/images/agents/babydegen-icon.svg",
+        "link": "/agents/babydegen"
       },
       {
         "title": "Optimus Agent",

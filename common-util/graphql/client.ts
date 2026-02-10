@@ -68,6 +68,11 @@ export const predictAgentsGraphClient = new GraphQLClient(
   requestConfig
 );
 
+export const polymarketAgentsGraphClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL,
+  requestConfig
+);
+
 export const MARKETPLACE_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL, requestConfig),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL, requestConfig),

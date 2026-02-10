@@ -3,21 +3,21 @@ import { executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import { getClosedMarketsBetsQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 
-const SUCCESS_LIMIT = 1000;
-const SUCCESS_PAGES = 10;
+const LIMIT = 1000;
+const PAGES = 10;
 const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
 type ClosedMarketsBetsResponse = WithMeta<Record<string, any[]>>;
 
-export const fetchSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
+export const fetchOmenstratSuccessRate = async (): Promise<MetricWithStatus<string | null>> => {
   return executeGraphQLQuery<ClosedMarketsBetsResponse, string>({
     client: predictAgentsGraphClient,
-    chain: 'gnosis',
     query: getClosedMarketsBetsQuery({
-      first: SUCCESS_LIMIT,
-      pages: SUCCESS_PAGES,
+      first: LIMIT,
+      pages: PAGES,
     }),
-    source: 'predictAgents',
+    source: 'predict:gnosis',
+    chain: 'gnosis',
     transform: (data) => {
       const closedMarketsBets = Object.entries(data)
         .filter(([key]) => key !== '_meta')
