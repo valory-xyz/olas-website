@@ -185,7 +185,7 @@ export const DailyActiveAgentsInfo = () => {
           </p>
 
           <p>
-            Note: tThis query uses the following agentId_in parameter:{' '}
+            Note: This query uses the following agentId_in parameter:{' '}
             <code className="bg-gray-100 px-2 py-1 rounded text-sm">
               [{POLYSTRAT_AGENT_CLASSIFICATION.valory_trader.join(', ')}]
             </code>
