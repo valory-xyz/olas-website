@@ -22,13 +22,9 @@ import { fetchOmenstratSuccessRate } from './omenstrat-success-rate';
 import { fetchPolystratRoi } from './polystrat-roi';
 import { fetchPolystratSuccessRate } from './polystrat-success-rate';
 
-const OMENSTRAT_AGENT_IDS_FLAT = Object.values(OMENSTRAT_AGENT_CLASSIFICATION)
-  .flat()
-  .map((n) => Number(n));
+const OMENSTRAT_AGENT_IDS_FLAT = OMENSTRAT_AGENT_CLASSIFICATION.valory_trader;
+const POLYSTRAT_AGENT_IDS_FLAT = POLYSTRAT_AGENT_CLASSIFICATION.valory_trader;
 
-const POLYSTRAT_AGENT_IDS_FLAT = Object.values(POLYSTRAT_AGENT_CLASSIFICATION)
-  .flat()
-  .map((n) => Number(n));
 type DailyPredictPerformancesResponse = WithMeta<{
   dailyAgentPerformances: {
     dayTimestamp: string;
@@ -69,12 +65,14 @@ const transformDaaData = (data: DailyPredictPerformancesResponse, timestamp_lt: 
   return Math.floor(total / 7);
 };
 
-// Fetch combined DAA from both Omenstrat (Gnosis) and Polystrat (Polygon)
-const fetchCombinedPredictDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
+// Fetch DAA from both Omenstrat and Polystrat
+const fetchPredictDaa7dAvg = async (): Promise<{
+  omenstrat: MetricWithStatus<number | null>;
+  polystrat: MetricWithStatus<number | null>;
+}> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
   const timestamp_gt = getMidnightUtcTimestampDaysAgo(8);
 
-  // Fetch both Omenstrat (Gnosis) and Polystrat (Polygon) DAA in parallel
   const [omenstratResult, polystratResult] = await Promise.allSettled([
     executeGraphQLQuery<DailyPredictPerformancesResponse, number>({
       client: REGISTRY_GRAPH_CLIENTS.gnosis,
@@ -94,38 +92,25 @@ const fetchCombinedPredictDaa7dAvg = async (): Promise<MetricWithStatus<number |
     }),
   ]);
 
-  // Combine results and merge stale statuses
   const omenstratDaa =
     omenstratResult.status === 'fulfilled'
       ? omenstratResult.value
       : {
-          value: 0,
+          value: null,
           status: createStaleStatus({ indexingErrors: ['registry:gnosis'], fetchErrors: [] }),
         };
   const polystratDaa =
     polystratResult.status === 'fulfilled'
       ? polystratResult.value
       : {
-          value: 0,
+          value: null,
           status: createStaleStatus({ indexingErrors: ['registry:polygon'], fetchErrors: [] }),
         };
 
-  const combinedValue = (omenstratDaa.value || 0) + (polystratDaa.value || 0);
-  const combinedStatus = {
-    stale: omenstratDaa.status.stale || polystratDaa.status.stale,
-    lastValidAt: Math.min(
-      omenstratDaa.status.lastValidAt || Infinity,
-      polystratDaa.status.lastValidAt || Infinity
-    ),
-    indexingErrors: [...omenstratDaa.status.indexingErrors, ...polystratDaa.status.indexingErrors],
-    fetchErrors: [...omenstratDaa.status.fetchErrors, ...polystratDaa.status.fetchErrors],
-    laggingSubgraphs: [
-      ...(omenstratDaa.status.laggingSubgraphs || []),
-      ...(polystratDaa.status.laggingSubgraphs || []),
-    ],
+  return {
+    omenstrat: omenstratDaa,
+    polystrat: polystratDaa,
   };
-
-  return { value: combinedValue, status: combinedStatus };
 };
 
 const fetchPredictTxsByAgentType = async (): Promise<
@@ -215,11 +200,9 @@ const fetchPolystratOlasApr = async (): Promise<MetricWithStatus<string | null>>
 };
 
 export type PredictMetricsData = {
-  // Combined metrics
-  dailyActiveAgents: MetricWithStatus<number | null>;
-
   // Omenstrat metrics
   omenstrat: {
+    dailyActiveAgents: MetricWithStatus<number | null>;
     apr: MetricWithStatus<string | null>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
     partialRoi: MetricWithStatus<number | null>;
@@ -229,6 +212,7 @@ export type PredictMetricsData = {
 
   // Polystrat metrics
   polystrat: {
+    dailyActiveAgents: MetricWithStatus<number | null>;
     apr: MetricWithStatus<string | null>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
     partialRoi: MetricWithStatus<number | null>;
@@ -245,7 +229,7 @@ export type PredictMetricsSnapshot = {
 export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot | null> => {
   try {
     const [
-      combinedDaaResult,
+      daaResult,
       omenstratAprResult,
       omenstratTxsResult,
       omenstratRoiResult,
@@ -255,8 +239,8 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       polystratRoiResult,
       polystratSuccessRateResult,
     ] = await Promise.allSettled([
-      // Combined
-      fetchCombinedPredictDaa7dAvg(),
+      // DAA
+      fetchPredictDaa7dAvg(),
       // Omenstrat
       fetchOmenstratOlasApr(),
       fetchPredictTxsByAgentType(),
@@ -269,13 +253,24 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       fetchPolystratSuccessRate(),
     ]);
 
-    const data: PredictMetricsData = {
-      dailyActiveAgents:
-        combinedDaaResult.status === 'fulfilled'
-          ? combinedDaaResult.value
-          : { value: null, status: getFetchErrorAndCreateStaleStatus('predict:daa') },
+    // Extract separate DAA values
+    const daa =
+      daaResult.status === 'fulfilled'
+        ? daaResult.value
+        : {
+            omenstrat: {
+              value: null,
+              status: getFetchErrorAndCreateStaleStatus('registry:gnosis'),
+            },
+            polystrat: {
+              value: null,
+              status: getFetchErrorAndCreateStaleStatus('registry:polygon'),
+            },
+          };
 
+    const data: PredictMetricsData = {
       omenstrat: {
+        dailyActiveAgents: daa.omenstrat,
         apr:
           omenstratAprResult.status === 'fulfilled'
             ? omenstratAprResult.value
@@ -305,6 +300,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       },
 
       polystrat: {
+        dailyActiveAgents: daa.polystrat,
         apr:
           polystratAprResult.status === 'fulfilled'
             ? polystratAprResult.value
