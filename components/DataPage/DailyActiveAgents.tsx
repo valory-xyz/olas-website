@@ -1,5 +1,10 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { AUTONOLAS_BASE_SUBGRAPH_URL, REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
+import {
+  AUTONOLAS_BASE_SUBGRAPH_URL,
+  OMENSTRAT_AGENT_CLASSIFICATION,
+  POLYSTRAT_AGENT_CLASSIFICATION,
+  REGISTRY_SUBGRAPH_URLS,
+} from 'common-util/constants';
 import {
   dailyActivitiesQuery,
   dailyAgentPerformancesQuery,
@@ -127,29 +132,65 @@ export const DailyActiveAgentsInfo = () => {
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
-      <SectionWrapper id="predict-daily-active-agents">
-        <h2 className={SUB_HEADER_LG_CLASS}>Predict Daily Active Agents</h2>
+      <SectionWrapper id="omenstrat-daily-active-agents">
+        <h2 className={SUB_HEADER_LG_CLASS}>Omenstrat Daily Active Agents</h2>
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique multisigs were active each day for selected Predict agents. The{' '}
-            <strong>active multisig count</strong>
-            reflects the number of unique multisigs that performed at least one on-chain interaction
-            attributed to a given agent within the UTC day window.
+            Tracks unique multisigs active each day for Omenstrat agents on{' '}
+            <strong>Gnosis chain</strong>. Omenstrat agents participate in Omen prediction markets.
+            The <strong>active multisig count</strong> reflects multisigs that performed at least
+            one on-chain interaction within the UTC day window.
           </p>
-
-          <p>The following query is used to compute daily active agents:</p>
 
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
+            Subgraph link:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
               <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </ExternalLink>
             ))}
           </p>
+          <p>
+            Note: this query uses the following agentId_in parameter:{' '}
+            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+              [{OMENSTRAT_AGENT_CLASSIFICATION.valory_trader.join(', ')}]
+            </code>
+          </p>
+          <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
+        </div>
+      </SectionWrapper>
+      <SectionWrapper id="polystrat-daily-active-agents">
+        <h2 className={SUB_HEADER_LG_CLASS}>Polystrat Daily Active Agents</h2>
+
+        <div className="space-y-6 mt-4">
+          <p>
+            Tracks unique multisigs active each day for Polystrat agents on{' '}
+            <strong>Polygon chain</strong>. Polystrat agents participate in Polymarket. The{' '}
+            <strong>active multisig count</strong> reflects multisigs that performed at least one
+            on-chain interaction within the UTC day window.
+          </p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
+
+          <p className="text-purple-600">
+            Subgraph link:{' '}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'polygon').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </ExternalLink>
+            ))}
+          </p>
+
+          <p>
+            Note: This query uses the following agentId_in parameter:{' '}
+            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+              [{POLYSTRAT_AGENT_CLASSIFICATION.valory_trader.join(', ')}]
+            </code>
+          </p>
+
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>

@@ -10,9 +10,9 @@ import { useMemo } from 'react';
 const processPredictMetrics = (metrics: any) => {
   if (!metrics) {
     return {
-      dailyActiveAgents: null,
-      dailyActiveAgentsStatus: undefined,
       omenstrat: {
+        dailyActiveAgents: null,
+        dailyActiveAgentsStatus: undefined,
         apr: null,
         aprStatus: undefined,
         traderTxs: null,
@@ -26,6 +26,8 @@ const processPredictMetrics = (metrics: any) => {
         successRateStatus: undefined,
       },
       polystrat: {
+        dailyActiveAgents: null,
+        dailyActiveAgentsStatus: undefined,
         apr: null,
         aprStatus: undefined,
         traderTxs: null,
@@ -44,9 +46,9 @@ const processPredictMetrics = (metrics: any) => {
   const polystratTxs = metrics.polystrat?.predictTxsByType?.value ?? null;
 
   return {
-    dailyActiveAgents: metrics.dailyActiveAgents?.value ?? null,
-    dailyActiveAgentsStatus: metrics.dailyActiveAgents?.status,
     omenstrat: {
+      dailyActiveAgents: metrics.omenstrat?.dailyActiveAgents?.value ?? null,
+      dailyActiveAgentsStatus: metrics.omenstrat?.dailyActiveAgents?.status,
       apr: metrics.omenstrat?.apr?.value ?? null,
       aprStatus: metrics.omenstrat?.apr?.status,
       traderTxs: omenstratTxs
@@ -62,6 +64,8 @@ const processPredictMetrics = (metrics: any) => {
       successRateStatus: metrics.omenstrat?.successRate?.status,
     },
     polystrat: {
+      dailyActiveAgents: metrics.polystrat?.dailyActiveAgents?.value ?? null,
+      dailyActiveAgentsStatus: metrics.polystrat?.dailyActiveAgents?.status,
       apr: metrics.polystrat?.apr?.value ?? null,
       aprStatus: metrics.polystrat?.apr?.status,
       traderTxs: polystratTxs ? polystratTxs.valory_trader || 0 : null,
@@ -248,6 +252,30 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = fal
   );
 };
 
+const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText }) => {
+  return (
+    <Card className="flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+      <div className="flex gap-4 items-center">
+        <Image alt={title} src={imgSrc} width="36" height="36" />
+        {title}
+      </div>
+      <div className="flex items-center gap-2">
+        {isNil(daaValue) ? (
+          <span className="text-purple-600 text-6xl">--</span>
+        ) : (
+          <Link className="font-extrabold text-6xl" href={href}>
+            <span className={`${status?.stale ? 'text-gray-400' : ''}`}>{daaValue}</span>
+          </Link>
+        )}
+        <StaleIndicator status={status} />
+      </div>
+      <div className="flex self-center gap-2">
+        Daily Active Agents (DAAs) <Popover>{popoverText}</Popover>
+      </div>
+    </Card>
+  );
+};
+
 export const Activity = ({ metrics: initialMetrics }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
@@ -256,31 +284,25 @@ export const Activity = ({ metrics: initialMetrics }) => {
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
       <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
-        {/* Combined DAA Card */}
-        <Card className="md:col-span-2 flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
-          <div className="flex gap-4 items-center">
-            <Image alt="Predict" src="/images/predict-page/predict.svg" width="36" height="36" />
-            Predict Agent Economy
-          </div>
-          <div className="flex items-center gap-2">
-            {isNil(metrics.dailyActiveAgents) ? (
-              <span className="text-purple-600 text-6xl">--</span>
-            ) : (
-              <Link className="font-extrabold text-6xl" href="/data#predict-daily-active-agents">
-                <span
-                  className={`${metrics.dailyActiveAgentsStatus?.stale ? 'text-gray-400' : ''}`}
-                >
-                  {metrics.dailyActiveAgents}
-                </span>
-              </Link>
-            )}
-            <StaleIndicator status={metrics.dailyActiveAgentsStatus} />
-          </div>
-          <div className="flex self-center gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover>7-day average Daily Active Agents (Omenstrat + Polystrat)</Popover>
-          </div>
-        </Card>
+        {/* Omenstrat DAA Card */}
+        <DaaCard
+          title="Omenstrat Agent Economy"
+          imgSrc="/images/predict-page/omenstrat-icon.png"
+          daaValue={metrics.omenstrat.dailyActiveAgents}
+          status={metrics.omenstrat.dailyActiveAgentsStatus}
+          href="/data#omenstrat-daily-active-agents"
+          popoverText="7-day average Daily Active Agents for Omenstrat (Omen)"
+        />
+
+        {/* Polystrat DAA Card */}
+        <DaaCard
+          title="Polystrat Agent Economy"
+          imgSrc="/images/predict-page/polystrat-icon.png"
+          daaValue={metrics.polystrat.dailyActiveAgents}
+          status={metrics.polystrat.dailyActiveAgentsStatus}
+          href="/data#polystrat-daily-active-agents"
+          popoverText="7-day average Daily Active Agents for Polystrat (Polymarket)"
+        />
 
         {/* Omenstrat Unified Bubble */}
         <PerformanceBubble
