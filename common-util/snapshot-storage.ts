@@ -7,7 +7,7 @@ import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types'
 import { isNil, isPlainObject } from 'lodash';
 
 // Update this prefix when making breaking changes to the metrics schema.
-const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
+const METRICS_PREFIX = `metrics-v1-${process.env.NODE_ENV}`;
 const CONTENT_TYPE = 'application/json';
 
 const getSnapshotFilename = (category: string) => `${METRICS_PREFIX}-${category}.json`;
