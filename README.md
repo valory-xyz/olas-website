@@ -40,10 +40,67 @@ Copy `.env.example` to `.env` and fill in values. Key groups: `NEXT_PUBLIC_API_U
 
 ## Deploy (Vercel)
 
-- **Functions**: `vercel.json` sets resource limits for `pages/api/refresh-metrics/*`.
-- **Crons**: Refresh jobs run on a schedule (e.g. main/predict hourly; agent-economies every 2h; other every 6h).
+### Functions
 
-When you change the metrics schema, update the blob prefix in `common-util/snapshot-storage.ts` so new blobs are written; then trigger the refresh endpoints or wait for cron.
+The `functions` block in `vercel.json` configures resource limits for serverless API routes:
+
+```json
+"functions": {
+  "pages/api/refresh-metrics/main.ts": {
+    "maxDuration": 300,
+    "memory": 512
+  }
+}
+```
+
+| Property | Description |
+|----------|-------------|
+| `maxDuration` | Maximum execution time in seconds |
+| `memory` | Memory allocation in MB |
+
+### Vercel Blobs (Metrics Storage)
+
+Metrics are stored in [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob) to persist data between cron job runs and ISR (Incremental Static Regeneration) page rebuilds.
+
+The blob filename prefix is defined in `common-util/snapshot-storage.ts`:
+
+```typescript
+const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
+```
+
+### Crons
+
+The `crons` block schedules automatic API calls. Cron syntax: `minute hour day-of-month month day-of-week`
+
+| Schedule | Meaning | Example Use |
+|----------|---------|-------------|
+| `0 * * * *` | Every hour at minute 0 | Main metrics, Predict metrics |
+| `0 */2 * * *` | Every 2 hours at minute 0 | Agent economies |
+| `0 */6 * * *` | Every 6 hours at minute 0 | Other metrics |
+
+Current schedules in `vercel.json`:
+- `/api/refresh-metrics/main` — hourly
+- `/api/refresh-metrics/predict` — hourly
+- `/api/refresh-metrics/agent-economies` — every 2 hours
+- `/api/refresh-metrics/other` — every 6 hours
+
+### Breaking Changes
+
+> **⚠️ Important:** When making breaking changes to the metrics schema (adding/removing/renaming fields), you **must update the blob prefix** to create a new version of the blobs.
+
+During ISR, Next.js expects the stored blob schema to match what the page components expect. If you change the schema without updating the prefix, ISR pages may fail to render due to schema mismatches.
+
+**To introduce a new blob version:**
+
+1. Update the prefix in `common-util/snapshot-storage.ts` (e.g., `metrics-2025-01-30-${process.env.NODE_ENV}`)
+2. On Vercel preview builds, manually trigger the refresh-metrics endpoints. This will populate the new blobs.
+3. Once the build is live, old blobs can be cleaned up from the Vercel Blob dashboard
+
+The blob filename prefix is defined in `common-util/snapshot-storage.ts`:
+
+```typescript
+const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
+```
 
 ## Contributing
 
