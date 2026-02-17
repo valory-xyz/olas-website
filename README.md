@@ -1,111 +1,50 @@
-
 # olas-website
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Marketing website for [Olas Network](https://olas.network) — autonomous AI agents, staking, and the Olas protocol. Built with **Next.js 14**, a **Strapi** headless CMS, and multi-chain **GraphQL subgraphs** for on-chain metrics.
 
-## Getting Started
+## Getting started
 
-First, run the development server:
+Use **yarn** (preferred in this repo):
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). See [contribute.md](contribute.md) for workflow and [CLAUDE.md](CLAUDE.md) for detailed architecture and patterns.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Architecture (high level)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- **CMS**: [Strapi](https://strapi.io/) backend — blog posts and education articles. Content is fetched at request time for dynamic routes. To change CMS content, use the [CMS backend repo](https://github.com/valory-xyz/cms-backend).
+- **Subgraphs**: Metrics (staking, registry, tokenomics, etc.) are read from chain-specific GraphQL subgraphs. API routes under `pages/api/` aggregate data across chains and return JSON; the frontend uses these APIs (and SWR) rather than calling subgraphs directly.
+- **Dynamic pages**:
+  - **Blog**: `pages/blog/[id].tsx` — post by ID from CMS
+  - **Education**: `pages/learn/education-articles/[educationArticleId].tsx` — article by ID from CMS
+  - **Agents**: `pages/agents/[slug].tsx` — agent pages by slug (slugs from `data/agents.json`)
+  - **Kits**: `pages/kits/[id].tsx` — kit page by ID (client-side)
+- **Metrics snapshots**: Precomputed metrics are stored in **Vercel Blob**. Cron jobs (`/api/refresh-metrics/*`) run on a schedule and write updated JSON; pages read from Blob for fast, cached metrics. Prefix is in `common-util/snapshot-storage.ts` — change it when you make breaking schema changes so new blobs are used.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+| Command       | Description                    |
+|---------------|--------------------------------|
+| `yarn dev`    | Start dev server               |
+| `yarn build`  | Production build (+ sitemap)    |
+| `yarn start`  | Run production server          |
+| `yarn lint`   | Run ESLint                     |
+| `yarn lint:fix` | ESLint with auto-fix         |
 
-## Learn More
+## Environment
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.example` to `.env` and fill in values. Key groups: `NEXT_PUBLIC_API_URL` (Strapi), `BLOB_READ_WRITE_TOKEN` (Vercel Blob), and the various `NEXT_PUBLIC_*_SUBGRAPH_URL` / RPC URLs for each chain.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy (Vercel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Functions**: `vercel.json` sets resource limits for `pages/api/refresh-metrics/*`.
+- **Crons**: Refresh jobs run on a schedule (e.g. main/predict hourly; agent-economies every 2h; other every 6h).
 
-## Deploy on Vercel
+When you change the metrics schema, update the blob prefix in `common-util/snapshot-storage.ts` so new blobs are written; then trigger the refresh endpoints or wait for cron.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Vercel Configuration (`vercel.json`)
-
-The `vercel.json` file configures serverless functions and scheduled cron jobs for refreshing metrics.
-
-### Functions
-
-The `functions` block configures resource limits for serverless API routes:
-
-```json
-"functions": {
-  "pages/api/refresh-metrics/main.ts": {
-    "maxDuration": 300,
-    "memory": 3009
-  }
-}
-```
-
-| Property | Description |
-|----------|-------------|
-| `maxDuration` | Maximum execution time in seconds |
-| `memory` | Memory allocation in MB |
-
-### Vercel Blobs (Metrics Storage)
-
-Metrics are stored in [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob) to persist data between cron job runs and ISR (Incremental Static Regeneration) page rebuilds.
-
-The blob filename prefix is defined in `common-util/snapshot-storage.ts`:
-
-```typescript
-const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}`;
-```
-
-#### Breaking Changes
-
-> **⚠️ Important:** When making breaking changes to the metrics schema (adding/removing/renaming fields), you **must update the blob prefix** to create a new version of the blobs.
-
-During ISR, Next.js expects the stored blob schema to match what the page components expect. If you change the schema without updating the prefix, ISR pages may fail to render due to schema mismatches.
-
-**To introduce a new blob version:**
-
-1. Update the prefix in `snapshot-storage.ts` (e.g., `metrics-2025-01-30-${process.env.NODE_ENV}`)
-2. On Vercel preview builds, manually trigger the refresh-metrics endpoints. This will populate the new blobs.
-3. Once the build is live, old blobs can be cleaned up from the Vercel Blob dashboard
-
-### Crons
-
-The `crons` block schedules automatic API calls as per following syntax:
-
-```json
-"crons": [
-  {
-    "path": "/api/refresh-metrics/main",
-    "schedule": "0 * * * *"
-  }
-]
-```
-
-**Cron syntax:** `minute hour day-of-month month day-of-week`
-
-| Schedule | Meaning | Example Use |
-|----------|---------|-------------|
-| `0 * * * *` | Every hour at minute 0 | Main metrics, Predict metrics |
-| `0 */2 * * *` | Every 2 hours at minute 0 | Agent economies |
-| `0 */6 * * *` | Every 6 hours at minute 0 | Other metrics |
-
-## Update CMS
-
-This site uses [Strapi](https://strapi.io/) as a CMS. To update the content, run the [CMS backend repo](https://github.com/valory-xyz/cms-backend).
-
+We use **conventional commits** for both commit messages and **PR titles** (e.g. `feat: add X`, `fix: resolve Y`). See [contribute.md](contribute.md) and the [conventional commits reference](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13#types).

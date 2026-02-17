@@ -15,8 +15,8 @@ Thank you for your interest in contributing! This document provides guidelines f
 Before contributing, please:
 
 1. Review the [README](README.md) for setup instructions
-2. Check the Issues page for open tasks
-3. Look for issues labeled `good first issue` or `help wanted` if you're new to the project
+2. Use **yarn** for install and scripts (this repo prefers yarn over npm/pnpm)
+3. Check the Issues page for open tasks
 
 ## Development Workflow
 
@@ -100,24 +100,29 @@ Ensure all checks pass before submitting.
 
 ## Pull Request Process
 
-### Commit Messages
+### PR titles and commit messages
 
-Follow conventional commit format:
+**PR titles** must follow the same conventional commit format as commit messages. See the [conventional commits reference](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13#types) for the full spec.
 
 **Types:**
-- `feat`: New feature
+- `feat`: New feature (API or UI)
 - `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, missing semicolons, etc.)
-- `refactor`: Code refactoring without changing functionality
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks, dependency updates
+- `docs`: Documentation only
+- `style`: Code style (formatting, whitespace, etc.) — no behavior change
+- `refactor`: Restructure code without changing API/UI behavior
+- `perf`: Performance improvement
+- `test`: Add or update tests
+- `build`: Build tooling, dependencies, version
+- `ops`: Infrastructure, CI/CD, deployment, monitoring
+- `chore`: Other tasks (e.g. init, .gitignore)
+
+Use **imperative, lowercase** description; no period at the end. Optional scope in parentheses: `feat(ui): add button`.
 
 **Examples:**
 ```
 feat: add wallet connection feature
 fix: resolve navigation issue on mobile
-docs: update CONTRIBUTING.md with testing guidelines
+docs: update contribute.md with testing guidelines
 ```
 
 ### Before Submitting
@@ -130,11 +135,13 @@ docs: update CONTRIBUTING.md with testing guidelines
 
 2. **Ensure your branch is up to date** with the base branch
 
-3. **Write a clear PR description** explaining what changes you made and why
+3. **Use a conventional commit-style PR title** (e.g. `feat: add X` or `fix: resolve Y`)
 
-4. **Add screenshots/recordings** for UI changes
+4. **Write a clear PR description** explaining what changed and why
 
-5. **Update meta title and description** if modifying pages
+5. **Add screenshots/recordings** for UI changes
+
+6. **Update meta title and description** if modifying pages
 
 ### PR Review Process
 
