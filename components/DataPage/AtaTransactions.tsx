@@ -11,10 +11,10 @@ export const AtaTransactionsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks agent-to-agent transactions across Gnosis, Base and Polygon networks from multiple
-          subgraph sources. This metric aggregates transaction data from Mech Marketplace and Legacy
-          Mech subgraphs to provide a comprehensive view of autonomous agent interaction volume and
-          cross-chain activity.
+          Tracks agent-to-agent transactions across Gnosis, Base, Polygon and Optimism networks from
+          multiple subgraph sources. This metric aggregates transaction data from Mech Marketplace
+          and Legacy Mech subgraphs to provide a comprehensive view of autonomous agent interaction
+          volume and cross-chain activity.
         </p>
 
         <p>The following query aggregates ATA transactions from all sources:</p>
@@ -29,8 +29,20 @@ export const AtaTransactionsInfo = () => {
           >
             Gnosis Marketplace
           </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}>
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}
+            className="mr-2"
+          >
             Base Marketplace
+          </ExternalLink>
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Polygon Marketplace
+          </ExternalLink>
+          <ExternalLink href={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
+            Optimism Marketplace
           </ExternalLink>
         </p>
         <CodeSnippet>{ataTransactionsQuery}</CodeSnippet>
