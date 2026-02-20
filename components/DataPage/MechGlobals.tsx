@@ -11,8 +11,8 @@ export const MechGlobalsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Total requests and deliveries are aggregated from Mech Marketplace subgraphs on Gnosis and
-          Base.
+          Total requests and deliveries are aggregated from Mech Marketplace subgraphs on Gnosis,
+          Base, Polygon and Optimism.
         </p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Mech Marketplace Globals Query</h3>
@@ -24,8 +24,20 @@ export const MechGlobalsInfo = () => {
           >
             Gnosis Marketplace
           </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}>
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}
+            className="mr-2"
+          >
             Base Marketplace
+          </ExternalLink>
+          <ExternalLink
+            href={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
+            className="mr-2"
+          >
+            Polygon Marketplace
+          </ExternalLink>
+          <ExternalLink href={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
+            Optimism Marketplace
           </ExternalLink>
         </p>
         <CodeSnippet>{mechMarketplaceTotalRequestsQuery}</CodeSnippet>
