@@ -11,7 +11,7 @@ yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). See [contribute.md](contribute.md) for workflow and [CLAUDE.md](CLAUDE.md) for detailed architecture and patterns.
+Open [http://localhost:3000](http://localhost:3000). See [CONTRIBUTING.md](CONTRIBUTING.md) for workflow and [CLAUDE.md](CLAUDE.md) for detailed architecture and patterns.
 
 ## Architecture (high level)
 
