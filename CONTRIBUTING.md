@@ -122,7 +122,7 @@ Use **imperative, lowercase** description; no period at the end. Optional scope 
 ```
 feat: add wallet connection feature
 fix: resolve navigation issue on mobile
-docs: update contribute.md with testing guidelines
+docs: update CONTRIBUTING.md with testing guidelines
 ```
 
 ### Before Submitting
