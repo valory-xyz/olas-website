@@ -8,20 +8,21 @@ This is the Olas Network marketing website - a Next.js 14 application that showc
 
 ## Development Commands
 
+Use **yarn** for all commands (preferred in this repo):
+
 ```bash
 # Development
-npm run dev          # Start dev server at http://localhost:3000
+yarn dev            # Start dev server at http://localhost:3000
 
 # Building
-npm run build        # Build for production
-npm run postbuild    # Generates sitemap (runs automatically after build)
+yarn build          # Build for production (postbuild runs next-sitemap automatically)
 
 # Production
-npm start           # Start production server
+yarn start          # Start production server
 
 # Linting
-npm run lint        # Run ESLint
-npm run lint:fix    # Fix ESLint issues automatically
+yarn lint           # Run ESLint
+yarn lint:fix       # Fix ESLint issues automatically
 ```
 
 ## Architecture
@@ -130,10 +131,10 @@ Follow the pattern in `pages/api/main-metrics.js`:
 
 ### Content Management
 
-- Blog posts and educational articles are fetched from Strapi CMS
-- Static content (agents, chains, resources) is stored in `data/*.json`
-- Dynamic agent pages use `pages/agents/[slug].jsx` pattern
-- Sitemap generation includes dynamic routes via `next-sitemap.config.js`
+- **Strapi CMS**: Blog posts (`pages/blog/[id].tsx`) and education articles (`pages/learn/education-articles/[educationArticleId].tsx`) are fetched from the CMS via `getServerSideProps`
+- **Static data**: Agents, chains, resources live in `data/*.json`
+- **Dynamic pages**: Agent pages (`pages/agents/[slug].jsx`, slugs from `data/agents.json`), blog by id, education article by id, kits (`pages/kits/[id].tsx` via client-side router)
+- Sitemap: `next-sitemap.config.js` adds agent paths from `data/agents.json`
 
 ### Performance Considerations
 
@@ -149,6 +150,11 @@ Configured in `next.config.js`:
 - HSTS enabled with includeSubDomains
 - X-Content-Type-Options: nosniff
 - Referrer-Policy: strict-origin-when-cross-origin
+
+## Commit & PR Conventions
+
+- Use **conventional commits** for commit messages and **PR titles** (see [conventional commits reference](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13#types)).
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ops`, `chore`. Use imperative, lowercase, no period at end.
 
 ## Common Gotchas
 
