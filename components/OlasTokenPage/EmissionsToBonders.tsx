@@ -4,9 +4,9 @@ import {
   getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
+import { LegendItem } from 'components/ui/legend-item';
 import { memo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { LegendItem } from './LegendItem';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 

@@ -7,7 +7,7 @@ import {
   getCumulativeEmissions,
   getEmissionsChartOptions,
 } from 'common-util/charts';
-import { LegendItem } from './LegendItem';
+import { LegendItem } from 'components/ui/legend-item';
 
 Chart.register(LineElement, LinearScale, PointElement, Filler, Tooltip);
 

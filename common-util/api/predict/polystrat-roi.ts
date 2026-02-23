@@ -149,9 +149,7 @@ export const fetchPolystratRoi = async (): Promise<
 
     // Handle totalMechRequests
     const totalRequestsResult =
-      results[0].status === 'fulfilled'
-        ? (results[0].value as TotalMechRequestsResponse)
-        : null;
+      results[0].status === 'fulfilled' ? (results[0].value as TotalMechRequestsResponse) : null;
     if (!totalRequestsResult) {
       fetchErrors.push('marketplace:polygon:totalRequests');
     }
@@ -187,7 +185,8 @@ export const fetchPolystratRoi = async (): Promise<
     }
 
     // Handle polygonBlock
-    const polygonBlock = results[5].status === 'fulfilled' ? (results[5].value as number | null) : null;
+    const polygonBlock =
+      results[5].status === 'fulfilled' ? (results[5].value as number | null) : null;
 
     // Track indexing errors and lagging subgraphs
     if (totalRequestsResult?._meta?.hasIndexingErrors) {

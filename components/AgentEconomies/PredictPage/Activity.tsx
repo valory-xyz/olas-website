@@ -6,6 +6,7 @@ import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { RoiDistributionChart } from './RoiDistributionChart';
 
 const processPredictMetrics = (metrics: any) => {
   if (!metrics) {
@@ -276,48 +277,53 @@ const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText }) => {
   );
 };
 
-export const Activity = ({ metrics: initialMetrics }) => {
+export const Activity = ({ metrics: initialMetrics, roiDistribution }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
-      <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
-        {/* Omenstrat DAA Card */}
-        <DaaCard
-          title="Omenstrat Agent Economy"
-          imgSrc="/images/predict-page/omenstrat-icon.png"
-          daaValue={metrics.omenstrat.dailyActiveAgents}
-          status={metrics.omenstrat.dailyActiveAgentsStatus}
-          href="/data#omenstrat-daily-active-agents"
-          popoverText="7-day average Daily Active Agents for Omenstrat (Omen)"
-        />
+      <div className="max-w-[872px] mx-auto">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Omenstrat DAA Card */}
+          <DaaCard
+            title="Omenstrat Agent Economy"
+            imgSrc="/images/predict-page/omenstrat-icon.png"
+            daaValue={metrics.omenstrat.dailyActiveAgents}
+            status={metrics.omenstrat.dailyActiveAgentsStatus}
+            href="/data#omenstrat-daily-active-agents"
+            popoverText="7-day average Daily Active Agents for Omenstrat (Omen)"
+          />
 
-        {/* Polystrat DAA Card */}
-        <DaaCard
-          title="Polystrat Agent Economy"
-          imgSrc="/images/predict-page/polystrat-icon.png"
-          daaValue={metrics.polystrat.dailyActiveAgents}
-          status={metrics.polystrat.dailyActiveAgentsStatus}
-          href="/data#polystrat-daily-active-agents"
-          popoverText="7-day average Daily Active Agents for Polystrat (Polymarket)"
-        />
+          {/* Polystrat DAA Card */}
+          <DaaCard
+            title="Polystrat Agent Economy"
+            imgSrc="/images/predict-page/polystrat-icon.png"
+            daaValue={metrics.polystrat.dailyActiveAgents}
+            status={metrics.polystrat.dailyActiveAgentsStatus}
+            href="/data#polystrat-daily-active-agents"
+            popoverText="7-day average Daily Active Agents for Polystrat (Polymarket)"
+          />
 
-        {/* Omenstrat Unified Bubble */}
-        <PerformanceBubble
-          title="Omenstrat Performance"
-          platformMetrics={metrics.omenstrat}
-          imgSrc="/images/predict-page/omenstrat-icon.png"
-        />
+          {/* Partial ROI Distribution Chart */}
+          <RoiDistributionChart data={roiDistribution} className="col-span-2" />
 
-        {/* Polystrat Unified Bubble */}
-        <PerformanceBubble
-          title="Polystrat Performance"
-          platformMetrics={metrics.polystrat}
-          imgSrc="/images/predict-page/polystrat-icon.png"
-          roiComingSoon
-        />
+          {/* Omenstrat Unified Bubble */}
+          <PerformanceBubble
+            title="Omenstrat Performance"
+            platformMetrics={metrics.omenstrat}
+            imgSrc="/images/predict-page/omenstrat-icon.png"
+          />
+
+          {/* Polystrat Unified Bubble */}
+          <PerformanceBubble
+            title="Polystrat Performance"
+            platformMetrics={metrics.polystrat}
+            imgSrc="/images/predict-page/polystrat-icon.png"
+            roiComingSoon
+          />
+        </div>
       </div>
     </SectionWrapper>
   );
