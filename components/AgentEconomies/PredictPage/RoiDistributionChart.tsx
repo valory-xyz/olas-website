@@ -1,12 +1,12 @@
 'use client';
 
+import { BarElement, Chart as ChartJS, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
-import { BarElement, CategoryScale, Chart as ChartJS, LinearScale, Tooltip } from 'chart.js';
+import { LegendItem } from 'components/ui/legend-item';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { LegendItem } from 'components/ui/legend-item';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
+ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
 type TimeRange = '7D' | '30D' | '90D' | 'Max';
 
@@ -32,57 +32,36 @@ const POLYSTRAT_COLOR_BORDER = 'rgba(46, 92, 255, 1)';
 const ROI_DISTRIBUTION_CHART_OPTIONS = {
   responsive: true,
   maintainAspectRatio: false,
+  parsing: false, // important when using {x,y}
   plugins: {
     legend: {
-      position: 'top' as const,
-      align: 'start' as const,
-      labels: {
-        usePointStyle: true,
-        pointStyle: 'rect',
-        padding: 16,
-        font: { size: 13 },
-      },
+      display: false,
     },
     tooltip: {
+      mode: 'index', // 🔹 show all datasets at the same x-value
+      intersect: false, // 🔹 allows hover anywhere near the x-position
       callbacks: {
-        title: (items) => `ROI: ${items[0]?.label ?? ''}`,
-        label: (item) => {
-          const name = item.dataset.label;
-          const val = item.parsed.y;
-          return ` ${name}: ${val}% of agents`;
-        },
+        title: (items) => items[0]?.raw?.range ?? '',
+        label: (item) => ` ${item.dataset.label}: ${item.raw.y}% of agents`,
       },
     },
   },
   scales: {
     x: {
+      type: 'linear' as const,
+      min: -100,
+      max: 200,
       grid: { display: false },
       ticks: {
-        font: { size: 14 },
-        callback: function (value) {
-          const label = this.getLabelForValue(value);
-
-          // Map the specific range labels to clean integer markers
-          const milestones: Record<string, string> = {
-            '< -100%': '-100%',
-            '-50% to -40%': '-50%',
-            '-10% to 0%': '0%', // Shows '0' at the end of the losing side
-            '40% to 50%': '+50%',
-            '90% to 100%': '+100%',
-            '> 200%': '+200%',
-          };
-
-          return milestones[label] || null;
-        },
-        autoSkip: false, // Prevents Chart.js from randomly skipping others
-        maxRotation: 0, // Keeps it horizontal for a cleaner look
+        stepSize: 50,
+        callback: (value: number) => `${value}%`,
       },
     },
     y: {
       grid: { color: 'rgba(0,0,0,0.06)' },
       ticks: {
         font: { size: 14 },
-        callback: (value) => `${value}%`,
+        callback: (value: number) => `${value}%`,
       },
     },
   },
@@ -93,6 +72,12 @@ type RoiDistributionChartProps = {
   className?: string;
 };
 
+const safeMidpoint = (min: number, max: number) => {
+  if (!isFinite(min)) return -100;
+  if (!isFinite(max)) return 200;
+  return (min + max) / 2;
+};
+
 export const RoiDistributionChart = ({ data, className }: RoiDistributionChartProps) => {
   const [activeRange, setActiveRange] = useState<TimeRange>('7D');
 
@@ -101,23 +86,34 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
   const chartData = bins
     ? {
-        labels: bins.map((bin) => bin.label),
         datasets: [
           {
             label: 'Omenstrat',
-            data: bins.map((bin) => bin.omenstrat),
+            data: bins.map((bin) => ({
+              x: safeMidpoint(bin.min, bin.max),
+              y: bin.omenstrat,
+              range: bin.label,
+            })),
             backgroundColor: OMENSTRAT_COLOR,
             borderColor: OMENSTRAT_COLOR_BORDER,
             borderWidth: 1,
-            borderRadius: 3,
+            borderRadius: 2,
+            barPercentage: 0.9,
+            categoryPercentage: 0.85,
           },
           {
             label: 'Polystrat',
-            data: bins.map((bin) => bin.polystrat),
+            data: bins.map((bin) => ({
+              x: safeMidpoint(bin.min, bin.max),
+              y: bin.polystrat,
+              range: bin.label,
+            })),
             backgroundColor: POLYSTRAT_COLOR,
             borderColor: POLYSTRAT_COLOR_BORDER,
             borderWidth: 1,
-            borderRadius: 3,
+            borderRadius: 2,
+            barPercentage: 0.9,
+            categoryPercentage: 0.85,
           },
         ],
       }
@@ -149,7 +145,7 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
         </div>
       </div>
 
-      {/* Legent row */}
+      {/* Legend row */}
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem color={`bg-[#A755F7]`} label="Omenstrat" />
         <LegendItem color={`bg-[#4D74FF]`} label="Polystrat" />

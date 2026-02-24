@@ -498,15 +498,16 @@ const generateFineGrainedBins = (start: number, end: number, step: number) => {
 };
 
 export const ROI_BINS = [
-  { label: '< -100%', min: -Infinity, max: -100 },
   ...generateFineGrainedBins(-100, 100, 10), // Generates 20 bins: -100 to -90, ..., 90 to 100
   { label: '100% to 150%', min: 100, max: 150 },
   { label: '150% to 200%', min: 150, max: 200 },
-  { label: '> 200%', min: 200, max: Infinity },
+  { label: '> 200%', min: 200, max: 10_000 },
 ];
 
 export type BinData = {
   label: string;
+  min: number;
+  max: number;
   omenstrat: number; // % of agents
   polystrat: number;
 };
@@ -613,6 +614,8 @@ export const computeAllRangeHistograms = (
     const polyBins = polyData ? computeAgentBlueprintHistogram(polyData, days, true) : empty;
     result[key] = ROI_BINS.map((bin, i) => ({
       label: bin.label,
+      min: bin.min,
+      max: bin.max,
       omenstrat: omenBins[i],
       polystrat: polyBins[i],
     }));
