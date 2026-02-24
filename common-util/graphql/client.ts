@@ -80,6 +80,10 @@ export const MARKETPLACE_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL,
     requestConfig
   ),
+  optimism: new GraphQLClient(
+    process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL,
+    requestConfig
+  ),
 };
 
 export const BABYDEGEN_GRAPH_CLIENTS = {

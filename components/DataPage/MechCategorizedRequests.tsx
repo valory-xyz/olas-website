@@ -42,8 +42,17 @@ export const MechCategorizedRequestsInfo = () => (
         >
           Gnosis
         </ExternalLink>
-        <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}>
+        <ExternalLink href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL} className="mr-2">
           Base
+        </ExternalLink>
+        <ExternalLink
+          href={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
+          className="mr-2"
+        >
+          Polygon
+        </ExternalLink>
+        <ExternalLink href={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
+          Optimism
         </ExternalLink>
       </p>
       <CodeSnippet>{MARKETPLACE_QUERY}</CodeSnippet>
