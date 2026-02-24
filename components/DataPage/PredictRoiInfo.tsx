@@ -70,7 +70,9 @@ export const PredictRoiInfo = () => {
             </li>
           </ul>
         </div>
-        <ExternalLink href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OLAS_MECH_SUBGRAPH_URL)}>
+        <ExternalLink
+          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL)}
+        >
           Subgraph link
         </ExternalLink>
         <CodeSnippet>

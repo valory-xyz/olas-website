@@ -1,5 +1,13 @@
 {
   "functions": {
+    "pages/api/refresh-metrics/omenstrat-roi-distribution.ts": {
+      "maxDuration": 300,
+      "memory": 512
+    },
+    "pages/api/refresh-metrics/polystrat-roi-distribution.ts": {
+      "maxDuration": 300,
+      "memory": 512
+    },
     "pages/api/refresh-metrics/predict.ts": {
       "maxDuration": 300,
       "memory": 512
@@ -33,6 +41,14 @@
     {
       "path": "/api/refresh-metrics/other",
       "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/refresh-metrics/predict-roi-distribution?agent=omenstrat",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/refresh-metrics/predict-roi-distribution?agent=polystrat",
+      "schedule": "0 4 * * *"
     }
   ]
 }

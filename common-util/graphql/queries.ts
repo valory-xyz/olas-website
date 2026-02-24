@@ -506,6 +506,119 @@ export const legacyMechFeesQuery = gql`
   }
 `;
 
+export const getOmenDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
+  query OmenDailyProfitStats {
+    dailyProfitStatistics(
+      first: ${first}
+      skip: ${skip}
+      where: { date_gte: ${date_gte}, date_lte: ${date_lte} }
+      orderBy: date
+      orderDirection: asc
+    ) {
+      traderAgent {
+        id
+      }
+      date
+      totalBets
+      totalPayout
+      dailyProfit
+      profitParticipants {
+        question
+      }
+    }
+  }
+`;
+
+export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
+  query PolymarketDailyProfitStats {
+    dailyProfitStatistics(
+      first: ${first}
+      skip: ${skip}
+      where: { date_gte: ${date_gte}, date_lte: ${date_lte} }
+      orderBy: date
+      orderDirection: asc
+    ) {
+      traderAgent {
+        id
+      }
+      date
+      totalBets
+      totalPayout
+      dailyProfit
+      profitParticipants {
+        metadata {
+          title
+        }
+      }
+    }
+  }
+`;
+
+export const getMechRequestsIncrementalQuery = ({
+  timestamp_gt,
+  first,
+  skip,
+}: {
+  timestamp_gt: number;
+  first: number;
+  skip: number;
+}) => gql`
+  query MechRequestsIncremental {
+    requests(
+      first: ${first}
+      skip: ${skip}
+      where: { blockTimestamp_gt: "${timestamp_gt}" }
+      orderBy: blockTimestamp
+      orderDirection: asc
+    ) {
+      sender {
+        id
+      }
+      blockTimestamp
+      parsedRequest {
+        questionTitle
+      }
+    }
+  }
+`;
+
+export const getOmenTraderAgentsQuery = ({ first, skip }: { first: number; skip: number }) => gql`
+  query OmenTraderAgents {
+    traderAgents(first: ${first}, skip: ${skip}) {
+      id
+      totalTradedSettled
+      totalFeesSettled
+      totalPayout
+    }
+  }
+`;
+
+export const getPolymarketTraderAgentsQuery = ({
+  first,
+  skip,
+}: {
+  first: number;
+  skip: number;
+}) => gql`
+  query PolymarketTraderAgents {
+    traderAgents(first: ${first}, skip: ${skip}) {
+      id
+      totalTradedSettled
+      totalPayout
+    }
+  }
+`;
+
+export const getMarketplaceSendersQuery = ({ first, skip }: { first: number; skip: number }) => gql`
+  query MarketplaceSenders {
+    senders(first: ${first}, skip: ${skip}) {
+      id
+      totalLegacyRequests
+      totalMarketplaceRequests
+    }
+  }
+`;
+
 export const newMechFeesTotalsQuery = gql`
   query NewMechFeesTotals {
     global(id: "") {

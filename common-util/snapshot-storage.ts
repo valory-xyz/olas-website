@@ -15,6 +15,7 @@ const getSnapshotFilename = (category: string) => `${METRICS_PREFIX}-${category}
 type SaveSnapshotParams = {
   category: string;
   data: unknown;
+  overwrite?: boolean;
 };
 
 type MetricsData =
@@ -117,24 +118,28 @@ const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''
 export const saveSnapshot = async ({
   category,
   data,
+  overwrite = false,
 }: SaveSnapshotParams): Promise<string | undefined> => {
   if (!isMetricsSnapshot(data)) return;
 
   let dataToSave = data;
   const filename = getSnapshotFilename(category);
 
-  try {
-    const oldSnapshot = await getSnapshot({ category });
+  // Merge data if we are not explicitly overwriting
+  if (!overwrite) {
+    try {
+      const oldSnapshot = await getSnapshot({ category });
 
-    if (isMetricsSnapshot(oldSnapshot)) {
-      const mergedData = mergeWithFallback(data.data, oldSnapshot.data);
-      dataToSave = {
-        ...data,
-        data: mergedData as MetricsData,
-      };
+      if (isMetricsSnapshot(oldSnapshot)) {
+        const mergedData = mergeWithFallback(data.data, oldSnapshot.data);
+        dataToSave = {
+          ...data,
+          data: mergedData as MetricsData,
+        };
+      }
+    } catch (error) {
+      console.warn(`Failed to load previous snapshot for ${category} fallback`, error);
     }
-  } catch (error) {
-    console.warn(`Failed to load previous snapshot for ${category} fallback`, error);
   }
 
   const blob = await put(filename, JSON.stringify(dataToSave), {
