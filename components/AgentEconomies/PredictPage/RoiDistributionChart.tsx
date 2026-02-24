@@ -1,6 +1,6 @@
 'use client';
 
-import { BarElement, Chart as ChartJS, Legend, LinearScale, Tooltip } from 'chart.js';
+import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
 import { LegendItem } from 'components/ui/legend-item';
 import { useState } from 'react';
@@ -17,6 +17,12 @@ type RoiDistributionData = {
   all: BinData[] | null;
 };
 
+type DataPoint = {
+  x: number;
+  y: number;
+  range: string;
+};
+
 const TIME_RANGES: Array<{ label: TimeRange; key: keyof RoiDistributionData }> = [
   { label: '7D', key: 'd7' },
   { label: '30D', key: 'd30' },
@@ -29,7 +35,7 @@ const POLYSTRAT_COLOR = '#4D74FF';
 const OMENSTRAT_COLOR_BORDER = 'rgba(126, 34, 206, 1)';
 const POLYSTRAT_COLOR_BORDER = 'rgba(46, 92, 255, 1)';
 
-const ROI_DISTRIBUTION_CHART_OPTIONS = {
+const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
   responsive: true,
   maintainAspectRatio: false,
   parsing: false, // important when using {x,y}
@@ -41,8 +47,8 @@ const ROI_DISTRIBUTION_CHART_OPTIONS = {
       mode: 'index', // 🔹 show all datasets at the same x-value
       intersect: false, // 🔹 allows hover anywhere near the x-position
       callbacks: {
-        title: (items) => items[0]?.raw?.range ?? '',
-        label: (item) => ` ${item.dataset.label}: ${item.raw.y}% of agents`,
+        title: (items) => (items[0]?.raw as DataPoint)?.range ?? '',
+        label: (item) => ` ${item.dataset.label}: ${(item.raw as DataPoint).y}% of agents`,
       },
     },
   },
@@ -50,7 +56,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS = {
     x: {
       type: 'linear' as const,
       min: -100,
-      max: 200,
+      max: maxX,
       grid: { display: false },
       ticks: {
         stepSize: 50,
@@ -65,7 +71,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS = {
       },
     },
   },
-};
+});
 
 type RoiDistributionChartProps = {
   data: RoiDistributionData | null;
@@ -119,6 +125,15 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
       }
     : null;
 
+  // Get last non-empty bin to ensure the chart always scales to it
+  const maxX = bins
+    ? Math.max(
+        ...bins
+          .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
+          .map((bin) => safeMidpoint(bin.min, bin.max))
+      )
+    : 200;
+
   return (
     <div
       className={`w-full rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className}`}
@@ -154,7 +169,7 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
       {/* Chart area */}
       {chartData ? (
         <div style={{ height: '340px' }}>
-          <Bar key={activeRange} data={chartData} options={ROI_DISTRIBUTION_CHART_OPTIONS} />
+          <Bar key={activeRange} data={chartData} options={getRoiDistibutionChartOptions(maxX)} />
         </div>
       ) : (
         <div className="flex items-center justify-center h-[340px] text-gray-400 text-sm">

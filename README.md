@@ -104,6 +104,8 @@ The `crons` block schedules automatic API calls as per following syntax:
 | `0 * * * *` | Every hour at minute 0 | Main metrics, Predict metrics |
 | `0 */2 * * *` | Every 2 hours at minute 0 | Agent economies |
 | `0 */6 * * *` | Every 6 hours at minute 0 | Other metrics |
+| `0 3 * * *` | Daily refresh at 3AM UTC | Omenstrat ROI Distribution |
+| `0 4 * * *` | Daily refresh at 3AM UTC | Polystrat ROI Distribution |
 
 ## Update CMS
 

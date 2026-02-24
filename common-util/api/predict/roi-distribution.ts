@@ -532,17 +532,19 @@ const computeAgentBlueprintHistogram = (
       // mechFees are already 18 decimals (USD/ETH/XDAI equivalent)
       const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
-      activeAgents++;
 
       // ROI = (Payout - TotalCosts) / TotalCosts
       const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
 
-      // Skip absolute minimum of ROI considering it as "not enough data"
+      // Skip absolute minimum (not enough data / ghost agents)
       if (roi === -100) continue;
 
       // Otherwise add to bin
       const binIdx = assignBin(roi);
-      if (binIdx !== -1) binCounts[binIdx]++;
+      if (binIdx !== -1) {
+        binCounts[binIdx]++;
+        activeAgents++;
+      }
     }
   } else {
     // 7D / 30D / 90D
@@ -575,7 +577,6 @@ const computeAgentBlueprintHistogram = (
       // 3. Add Mech Fees
       const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
       const totalInvestment = tradingCosts + mechFees;
-      activeAgents++;
 
       // 4. Net Gain = Profit (already scaled) - Mech Fees
       const netGain = scaledProfit - mechFees;
@@ -588,7 +589,10 @@ const computeAgentBlueprintHistogram = (
 
       // Otherwise add to bin
       const binIdx = assignBin(roi);
-      if (binIdx !== -1) binCounts[binIdx]++;
+      if (binIdx !== -1) {
+        binCounts[binIdx]++;
+        activeAgents++;
+      }
     }
   }
 
