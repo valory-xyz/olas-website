@@ -498,10 +498,8 @@ const generateFineGrainedBins = (start: number, end: number, step: number) => {
 };
 
 export const ROI_BINS = [
-  ...generateFineGrainedBins(-100, 100, 10), // Generates 20 bins: -100 to -90, ..., 90 to 100
-  { label: '100% to 150%', min: 100, max: 150 },
-  { label: '150% to 200%', min: 150, max: 200 },
-  { label: '> 200%', min: 200, max: 10_000 },
+  ...generateFineGrainedBins(-100, 200, 10), // Generates 40 bins: -100 to -90, ..., 190 to 200
+  { label: '> 200%', min: 200, max: Number.POSITIVE_INFINITY },
 ];
 
 export type BinData = {
@@ -533,10 +531,14 @@ const computeAgentBlueprintHistogram = (
       const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
 
+      // Skip zero costs considering it as "not enough data"
+      if (totalCosts <= 0n) continue;
+
       // ROI = (Payout - TotalCosts) / TotalCosts
       const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
 
-      // Skip absolute minimum (not enough data / ghost agents)
+      // Temp: Skip absolute minimum of ROI considering it as "not enough data"
+      // There's an issue in subgraph that some payout are not recorder.
       if (roi === -100) continue;
 
       // Otherwise add to bin
@@ -549,13 +551,19 @@ const computeAgentBlueprintHistogram = (
   } else {
     // 7D / 30D / 90D
     const scale = isPolystrat ? BigInt('1000000000000') : 1n; // Scale USDC (6) to WEI (18)
-    const todayTs = getMidnightUtcTimestampDaysAgo(0);
-    const cutoffTs = todayTs - daysBack * DAY_SECONDS;
+    const todayTs = getMidnightUtcTimestampDaysAgo(1);
+    // end = yesterday midnight
+    const endTs = todayTs - DAY_SECONDS;
+    // start = N days before yesterday
+    const cutoffTs = endTs - (daysBack - 1) * DAY_SECONDS;
 
     const agentTotals = new Map<string, { profit: bigint; payout: bigint; mechRequests: number }>();
 
     for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
-      if (Number(dayKeyStr) < cutoffTs) continue;
+      const dayTs = Number(dayKeyStr);
+      // Counts [daysBack] full days excluding today
+      if (dayTs < cutoffTs || dayTs > endTs) continue;
+
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
         const prev = agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0 };
         prev.profit += BigInt(entry.profit);
@@ -572,19 +580,22 @@ const computeAgentBlueprintHistogram = (
 
       // 2. Derive Trading Costs
       const tradingCosts = scaledPayout - scaledProfit;
-      if (tradingCosts <= 0n) continue;
 
       // 3. Add Mech Fees
       const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
-      const totalInvestment = tradingCosts + mechFees;
+      const totalCosts = tradingCosts + mechFees;
+
+      // Skip zero costs considering it as "not enough data"
+      if (totalCosts <= 0n) continue;
 
       // 4. Net Gain = Profit (already scaled) - Mech Fees
       const netGain = scaledProfit - mechFees;
 
       // 5. Calculate ROI as percentage
-      const roi = Number((netGain * 10000n) / totalInvestment) / 100;
+      const roi = Number((netGain * 10000n) / totalCosts) / 100;
 
-      // Skip absolute minimum of ROI considering it as "not enough data"
+      // Temp: Skip absolute minimum of ROI considering it as "not enough data"
+      // There's an issue in subgraph that some payout are not recorder.
       if (roi === -100) continue;
 
       // Otherwise add to bin

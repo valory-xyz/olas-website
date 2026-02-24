@@ -81,7 +81,7 @@ const processPredictMetrics = (metrics: any) => {
   };
 };
 
-const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = false }) => {
+const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
   const bubbleData = useMemo(() => {
     const performanceMetrics = [
       {
@@ -89,7 +89,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = fal
         subText: (
           <span className="flex items-center gap-2">
             Total ROI - Average{' '}
-            {!roiComingSoon && !isNil(platformMetrics.partialRoi) && (
+            {!isNil(platformMetrics.partialRoi) && (
               <Popover>
                 <div className="flex flex-col max-w-[320px] gap-4 text-base">
                   <p className="text-gray-500">
@@ -113,13 +113,9 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = fal
             )}
           </span>
         ),
-        value: roiComingSoon
-          ? 'Coming soon'
-          : isNil(platformMetrics.finalRoi)
-            ? null
-            : `${platformMetrics.finalRoi}%`,
-        status: roiComingSoon ? undefined : platformMetrics.roiStatus,
-        source: roiComingSoon ? undefined : { link: '/data#predict-roi', isExternal: false },
+        value: isNil(platformMetrics.finalRoi) ? null : `${platformMetrics.finalRoi}%`,
+        status: platformMetrics.roiStatus,
+        source: { link: '/data#predict-roi', isExternal: false },
       },
       {
         id: 'apr',
@@ -189,7 +185,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, roiComingSoon = fal
     }
 
     return { performanceMetrics, transactionMetrics };
-  }, [platformMetrics, roiComingSoon]);
+  }, [platformMetrics]);
 
   return (
     <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
@@ -321,7 +317,6 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution }) => {
             title="Polystrat Performance"
             platformMetrics={metrics.polystrat}
             imgSrc="/images/predict-page/polystrat-icon.png"
-            roiComingSoon
           />
         </div>
       </div>

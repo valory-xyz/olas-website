@@ -22,8 +22,12 @@ import { fetchOmenstratSuccessRate } from './omenstrat-success-rate';
 import { fetchPolystratRoi } from './polystrat-roi';
 import { fetchPolystratSuccessRate } from './polystrat-success-rate';
 
-const OMENSTRAT_AGENT_IDS_FLAT = OMENSTRAT_AGENT_CLASSIFICATION.valory_trader;
-const POLYSTRAT_AGENT_IDS_FLAT = POLYSTRAT_AGENT_CLASSIFICATION.valory_trader;
+const OMENSTRAT_AGENT_IDS_FLAT = Object.values(OMENSTRAT_AGENT_CLASSIFICATION)
+  .flat()
+  .map((n) => Number(n));
+const POLYSTRAT_AGENT_IDS_FLAT = Object.values(POLYSTRAT_AGENT_CLASSIFICATION)
+  .flat()
+  .map((n) => Number(n));
 
 type DailyPredictPerformancesResponse = WithMeta<{
   dailyAgentPerformances: {
@@ -78,7 +82,11 @@ const fetchPredictDaa7dAvg = async (): Promise<{
       client: REGISTRY_GRAPH_CLIENTS.gnosis,
       chain: 'gnosis',
       query: dailyPredictAgentsPerformancesQuery,
-      variables: { agentIds: OMENSTRAT_AGENT_IDS_FLAT, timestamp_gt, timestamp_lt },
+      variables: {
+        agentIds: OMENSTRAT_AGENT_CLASSIFICATION.valory_trader,
+        timestamp_gt,
+        timestamp_lt,
+      },
       source: 'registry:gnosis',
       transform: (data) => transformDaaData(data, timestamp_lt),
     }),
@@ -86,7 +94,11 @@ const fetchPredictDaa7dAvg = async (): Promise<{
       client: REGISTRY_GRAPH_CLIENTS.polygon,
       chain: 'polygon',
       query: dailyPredictAgentsPerformancesQuery,
-      variables: { agentIds: POLYSTRAT_AGENT_IDS_FLAT, timestamp_gt, timestamp_lt },
+      variables: {
+        agentIds: POLYSTRAT_AGENT_CLASSIFICATION.valory_trader,
+        timestamp_gt,
+        timestamp_lt,
+      },
       source: 'registry:polygon',
       transform: (data) => transformDaaData(data, timestamp_lt),
     }),
