@@ -62,6 +62,8 @@ QuoteIcon.propTypes = {
 const Hero = () => (
   <SectionWrapper
     customClasses="
+    relative
+    overflow-hidden
     homepage-hero-bg
     h-[calc(100vh-150px)]
     max-h-[800px]
