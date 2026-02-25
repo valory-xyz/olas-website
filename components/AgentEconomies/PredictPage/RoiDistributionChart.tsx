@@ -127,11 +127,13 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
   // Get last non-empty bin to ensure the chart always scales to it
   const maxX = bins
-    ? Math.max(
-        ...bins
-          .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
-          .map((bin) => safeMidpoint(bin.min, bin.max))
-      )
+    ? Math.ceil(
+        Math.max(
+          ...bins
+            .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
+            .map((bin) => safeMidpoint(bin.min, bin.max))
+        ) / 50
+      ) * 50
     : 200;
 
   return (
