@@ -62,6 +62,8 @@ QuoteIcon.propTypes = {
 const Hero = () => (
   <SectionWrapper
     customClasses="
+    relative
+    overflow-hidden
     homepage-hero-bg
     h-[calc(100vh-150px)]
     max-h-[800px]
@@ -69,7 +71,7 @@ const Hero = () => (
     flex-col
     place-items-center"
   >
-    <video autoPlay loop muted playsInline className="homepage-video-bg h-full object-fill w-full">
+    <video autoPlay loop muted playsInline className="h-full object-fill w-full">
       <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
     </video>
     <div className="absolute w-full h-full overflow-hidden">
