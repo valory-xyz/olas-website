@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const BANNER_HREF = `${PEARL_YOU_URL}polystrat`;
+const BANNER_HREF = `${PEARL_YOU_URL}polystrat?utm_content=polystrat-banner`;
 
 const PolystratBanner = () => (
   <Link
