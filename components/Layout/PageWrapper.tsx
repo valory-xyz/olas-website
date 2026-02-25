@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import Footer from './Footer';
 import Header from './Header';
 import PolystratBanner from './PolystratBanner';
@@ -7,19 +6,14 @@ type PageWrapperProps = {
   children: React.ReactNode;
 };
 
-const PageWrapper = ({ children }: PageWrapperProps) => {
-  const router = useRouter();
-  const isHomepage = router.pathname === '/';
+const PageWrapper = ({ children }: PageWrapperProps) => (
+  <>
+    <PolystratBanner />
+    <Header />
 
-  return (
-    <>
-      {isHomepage && <PolystratBanner />}
-      <Header />
-
-      {children}
-      <Footer />
-    </>
-  );
-};
+    {children}
+    <Footer />
+  </>
+);
 
 export default PageWrapper;
