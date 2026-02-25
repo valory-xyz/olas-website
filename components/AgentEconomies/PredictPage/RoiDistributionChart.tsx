@@ -172,7 +172,7 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
       {/* Chart area */}
       {chartData ? (
-        <div style={{ height: '340px' }}>
+        <div className="relative w-full aspect-[2/1] md:aspect-[3/1]">
           <Bar key={activeRange} data={chartData} options={getRoiDistibutionChartOptions(maxX)} />
         </div>
       ) : (
