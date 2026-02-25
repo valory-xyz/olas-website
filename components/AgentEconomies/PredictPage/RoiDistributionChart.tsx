@@ -35,6 +35,8 @@ const POLYSTRAT_COLOR = '#4D74FF';
 const OMENSTRAT_COLOR_BORDER = 'rgba(126, 34, 206, 1)';
 const POLYSTRAT_COLOR_BORDER = 'rgba(46, 92, 255, 1)';
 
+const X_AXIS_STEP_SIZE = 50;
+
 const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
   responsive: true,
   maintainAspectRatio: false,
@@ -59,7 +61,7 @@ const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
       max: maxX,
       grid: { display: false },
       ticks: {
-        stepSize: 50,
+        stepSize: X_AXIS_STEP_SIZE,
         callback: (value: number) => `${value}%`,
       },
     },
@@ -127,11 +129,13 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
   // Get last non-empty bin to ensure the chart always scales to it
   const maxX = bins
-    ? Math.max(
-        ...bins
-          .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
-          .map((bin) => safeMidpoint(bin.min, bin.max))
-      )
+    ? Math.ceil(
+        Math.max(
+          ...bins
+            .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
+            .map((bin) => safeMidpoint(bin.min, bin.max))
+        ) / X_AXIS_STEP_SIZE
+      ) * X_AXIS_STEP_SIZE
     : 200;
 
   return (
