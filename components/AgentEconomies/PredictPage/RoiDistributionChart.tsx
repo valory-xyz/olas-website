@@ -37,7 +37,7 @@ const POLYSTRAT_COLOR_BORDER = 'rgba(46, 92, 255, 1)';
 
 const X_AXIS_STEP_SIZE = 50;
 
-const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
+const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
   responsive: true,
   maintainAspectRatio: false,
   parsing: false, // important when using {x,y}
@@ -58,7 +58,7 @@ const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
     x: {
       type: 'linear' as const,
       min: -100,
-      max: maxX,
+      max: 200,
       grid: { display: false },
       ticks: {
         stepSize: X_AXIS_STEP_SIZE,
@@ -73,7 +73,7 @@ const getRoiDistibutionChartOptions = (maxX: number): ChartOptions<'bar'> => ({
       },
     },
   },
-});
+};
 
 type RoiDistributionChartProps = {
   data: RoiDistributionData | null;
@@ -127,17 +127,6 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
       }
     : null;
 
-  // Get last non-empty bin to ensure the chart always scales to it
-  const nonEmptyBinMidpoints = bins
-    ? bins
-        .filter((bin) => (bin.omenstrat ?? 0) > 0 || (bin.polystrat ?? 0) > 0) // only non-empty bins
-        .map((bin) => safeMidpoint(bin.min, bin.max))
-    : [];
-  const maxX =
-    nonEmptyBinMidpoints.length > 0
-      ? Math.ceil(Math.max(...nonEmptyBinMidpoints) / X_AXIS_STEP_SIZE) * X_AXIS_STEP_SIZE
-      : 200;
-
   return (
     <div
       className={`w-full rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className}`}
@@ -173,7 +162,7 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
       {/* Chart area */}
       {chartData ? (
         <div className="relative w-full aspect-[2/1] md:aspect-[3/1]">
-          <Bar key={activeRange} data={chartData} options={getRoiDistibutionChartOptions(maxX)} />
+          <Bar key={activeRange} data={chartData} options={ROI_DISTRIBUTION_CHART_OPTIONS} />
         </div>
       ) : (
         <div className="flex items-center justify-center h-[340px] text-gray-400 text-sm">
