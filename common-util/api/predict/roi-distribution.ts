@@ -551,18 +551,15 @@ const computeAgentBlueprintHistogram = (
   } else {
     // 7D / 30D / 90D
     const scale = isPolystrat ? BigInt('1000000000000') : 1n; // Scale USDC (6) to WEI (18)
-    const todayTs = getMidnightUtcTimestampDaysAgo(1);
-    // end = yesterday midnight
-    const endTs = todayTs - DAY_SECONDS;
-    // start = N days before yesterday
-    const cutoffTs = endTs - (daysBack - 1) * DAY_SECONDS;
+    const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
+    const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
     const agentTotals = new Map<string, { profit: bigint; payout: bigint; mechRequests: number }>();
 
     for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
       const dayTs = Number(dayKeyStr);
       // Counts [daysBack] full days excluding today
-      if (dayTs < cutoffTs || dayTs > endTs) continue;
+      if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
         const prev = agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0 };
