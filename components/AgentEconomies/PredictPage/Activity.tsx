@@ -303,7 +303,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution }) => {
           />
 
           {/* Partial ROI Distribution Chart */}
-          <RoiDistributionChart data={roiDistribution} className="col-span-2" />
+          <RoiDistributionChart data={roiDistribution} className="md:col-span-2" />
 
           {/* Omenstrat Unified Bubble */}
           <PerformanceBubble
