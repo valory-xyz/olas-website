@@ -1,3 +1,4 @@
+import { PayoutOverridesMap } from 'common-util/api/predict/omenstrat-payout-overrides'; // TEMPORARY
 import { DEFAULT_MECH_FEE } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
@@ -516,7 +517,8 @@ const assignBin = (roi: number): number =>
 const computeAgentBlueprintHistogram = (
   agentBlueprintData: AgentBlueprintRoiData,
   daysBack: number | null,
-  isPolystrat: boolean
+  isPolystrat: boolean,
+  payoutOverrides?: PayoutOverridesMap // TEMPORARY: remove when subgraph bug is fixed
 ): number[] => {
   const binCounts = new Array<number>(ROI_BINS.length).fill(0);
   let activeAgents = 0;
@@ -564,13 +566,18 @@ const computeAgentBlueprintHistogram = (
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
         const prev = agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0 };
         prev.profit += BigInt(entry.profit);
-        prev.payout += BigInt(entry.payout);
+        // TEMPORARY: use chain-log override when subgraph recorded 0
+        const resolvedPayout =
+          entry.payout === '0' && payoutOverrides?.[dayKeyStr]?.[agentId]
+            ? payoutOverrides[dayKeyStr][agentId]
+            : entry.payout;
+        prev.payout += BigInt(resolvedPayout);
         prev.mechRequests += entry.mechRequests;
         agentTotals.set(agentId, prev);
       }
     }
 
-    for (const totals of agentTotals.values()) {
+    for (const [agent, totals] of agentTotals.entries()) {
       // 1. Scale everything to 18 decimals (USDC 10^6 * 10^12 = 10^18)
       const scaledPayout = totals.payout * scale;
       const scaledProfit = totals.profit * scale;
@@ -610,7 +617,8 @@ const computeAgentBlueprintHistogram = (
 
 export const computeAllRangeHistograms = (
   omenData: AgentBlueprintRoiData | null,
-  polyData: AgentBlueprintRoiData | null
+  polyData: AgentBlueprintRoiData | null,
+  omenPayoutOverrides?: PayoutOverridesMap // TEMPORARY: remove when subgraph bug is fixed
 ): { d7: BinData[]; d30: BinData[]; d90: BinData[]; all: BinData[] } => {
   const empty = new Array<number>(ROI_BINS.length).fill(0);
   const ranges: Array<{ key: 'd7' | 'd30' | 'd90' | 'all'; days: number | null }> = [
@@ -622,7 +630,9 @@ export const computeAllRangeHistograms = (
 
   const result: Record<string, BinData[]> = {};
   for (const { key, days } of ranges) {
-    const omenBins = omenData ? computeAgentBlueprintHistogram(omenData, days, false) : empty;
+    const omenBins = omenData
+      ? computeAgentBlueprintHistogram(omenData, days, false, omenPayoutOverrides) // TEMPORARY: last arg
+      : empty;
     const polyBins = polyData ? computeAgentBlueprintHistogram(polyData, days, true) : empty;
     result[key] = ROI_BINS.map((bin, i) => ({
       label: bin.label,

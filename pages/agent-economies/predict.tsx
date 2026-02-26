@@ -1,3 +1,4 @@
+import { OmenstratPayoutsData } from 'common-util/api/predict/omenstrat-payout-overrides'; // TEMPORARY
 import {
   computeAllRangeHistograms,
   AgentBlueprintRoiData,
@@ -23,10 +24,11 @@ const Predict = ({ metrics, roiDistribution }) => (
 );
 
 export const getStaticProps = async () => {
-  const [snapshot, omenRoiSnapshot, polyRoiSnapshot] = await Promise.all([
+  const [snapshot, omenRoiSnapshot, polyRoiSnapshot, omenPayoutsSnapshot] = await Promise.all([
     getSnapshot({ category: 'predict' }),
     getSnapshot({ category: 'roi-distribution/omenstrat-main' }),
     getSnapshot({ category: 'roi-distribution/polystrat-main' }),
+    getSnapshot({ category: 'roi-distribution/omenstrat-payouts' }), // TEMPORARY: remove when subgraph bug is fixed
   ]);
 
   const metrics = snapshot?.data || null;
@@ -36,7 +38,8 @@ export const getStaticProps = async () => {
     try {
       roiDistribution = computeAllRangeHistograms(
         (omenRoiSnapshot?.data as unknown as AgentBlueprintRoiData) ?? null,
-        (polyRoiSnapshot?.data as unknown as AgentBlueprintRoiData) ?? null
+        (polyRoiSnapshot?.data as unknown as AgentBlueprintRoiData) ?? null,
+        (omenPayoutsSnapshot?.data as unknown as OmenstratPayoutsData)?.overrides ?? undefined // TEMPORARY
       );
     } catch (e) {
       console.error('Failed to compute ROI distribution histograms', e);

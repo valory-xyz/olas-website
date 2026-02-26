@@ -1,3 +1,8 @@
+import {
+  OMENSTRAT_PAYOUT_OVERRIDES_ENABLED,
+  OmenstratPayoutsData,
+  updatePayoutOverrides,
+} from 'common-util/api/predict/omenstrat-payout-overrides'; // TEMPORARY
 import { updateOmenstratData, updatePolystratData } from 'common-util/api/predict/roi-distribution';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -43,6 +48,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         overwrite: true,
       }),
     ]);
+
+    // TEMPORARY: update payout overrides from chain logs for omenstrat subgraph bug workaround
+    if (agent === 'omenstrat' && OMENSTRAT_PAYOUT_OVERRIDES_ENABLED) {
+      const existingPayoutsOverridesSnapshot = await getSnapshot({
+        category: 'roi-distribution/omenstrat-payouts',
+      });
+      const existingData = (existingPayoutsOverridesSnapshot?.data ??
+        null) as unknown as OmenstratPayoutsData | null;
+      const updatedData = await updatePayoutOverrides(existingData);
+      await saveSnapshot({
+        category: 'roi-distribution/omenstrat-payouts',
+        data: { data: updatedData, timestamp: Date.now() },
+        overwrite: true,
+      });
+    }
 
     return res.status(200).json({
       success: true,
