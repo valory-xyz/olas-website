@@ -7,6 +7,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { RoiDistributionChart } from './RoiDistributionChart';
+import { ToolAccuracyTable } from './ToolAccuracyTable';
 
 const processPredictMetrics = (metrics: any) => {
   if (!metrics) {
@@ -273,7 +274,7 @@ const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText }) => {
   );
 };
 
-export const Activity = ({ metrics: initialMetrics, roiDistribution }) => {
+export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccuracy }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
@@ -318,6 +319,9 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution }) => {
             platformMetrics={metrics.polystrat}
             imgSrc="/images/predict-page/polystrat-icon.png"
           />
+
+          {/* Tool Accuracy Table */}
+          <ToolAccuracyTable data={toolAccuracy} className="md:col-span-2" />
         </div>
       </div>
     </SectionWrapper>

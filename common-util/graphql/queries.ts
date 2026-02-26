@@ -204,7 +204,15 @@ export const dailyStakingGlobalsSnapshotsQuery = ({ first = 10, timestampLte }: 
   `;
 };
 
-export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
+export const getClosedMarketsBetsQuery = ({
+  first,
+  pages,
+  includeBettorDetails = false,
+}: {
+  first: number;
+  pages: number;
+  includeBettorDetails?: boolean;
+}) => gql`
   query ClosedMarketsBets {
     ${Array.from({ length: pages })
       .map((_, i) => {
@@ -217,10 +225,13 @@ export const getClosedMarketsBetsQuery = ({ first, pages }) => gql`
             orderBy: timestamp
             orderDirection: desc
           ) {
+            ${includeBettorDetails ? 'bettor { id }' : ''}
             outcomeIndex
+            ${includeBettorDetails ? 'timestamp' : ''}
             fixedProductMarketMaker {
-              id
+              ${includeBettorDetails ? '' : 'id'}
               currentAnswer
+              ${includeBettorDetails ? 'question' : ''}
             }
           }
         `;
@@ -816,7 +827,34 @@ export const getPolymarketMarketsDataQuery = ({
   `;
 };
 
-// Query for success rate calculation of polymarket
+export const getMechRequestsBySenderWithToolQuery = ({
+  sender,
+  timestamp_gt,
+  first,
+  skip,
+}: {
+  sender: string;
+  timestamp_gt: number;
+  first: number;
+  skip: number;
+}) => gql`
+  query MechRequestsBySender {
+    requests(
+      first: ${first}
+      skip: ${skip}
+      where: { sender: "${sender}", blockTimestamp_gt: "${timestamp_gt}" }
+      orderBy: blockTimestamp
+      orderDirection: desc
+    ) {
+      blockTimestamp
+      parsedRequest {
+        tool
+        questionTitle
+      }
+    }
+  }
+`;
+
 export const getPolymarketBetsQuery = ({ first, pages }: { first: number; pages: number }) => {
   const queries = [];
   for (let i = 0; i < pages; i++) {
