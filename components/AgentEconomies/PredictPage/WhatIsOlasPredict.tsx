@@ -171,7 +171,7 @@ const agents = [
     chain: 'Gnosis',
     chainSrc: '/images/homepage/addresses/gnosis-color.svg',
     description: 'Trades Omen prediction markets for you while you do something else.',
-    link: PEARL_YOU_URL,
+    link: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=predict-economy&utm_content=predict-economy-link`,
     secondaryLink: '/agents/omenstrat',
   },
   {
@@ -180,8 +180,8 @@ const agents = [
     chain: 'Polygon',
     chainSrc: '/images/predict-page/polygon.svg',
     description: 'Trades Polymarket prediction markets for you while you do something else.',
-    link: PEARL_YOU_URL,
-    secondaryLink: `${PEARL_YOU_URL}polystrat`,
+    link: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=predict-economy&utm_content=predict-economy-link`,
+    secondaryLink: `${PEARL_YOU_URL}polystrat?utm_source=olas-site&utm_campaign=predict-economy&utm_content=predict-economy-link`,
     isSecondaryLinkExternal: true,
   },
 ];

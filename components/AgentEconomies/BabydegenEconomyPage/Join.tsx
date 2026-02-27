@@ -20,7 +20,10 @@ export const Join = () => (
       </h2>
       <div className="flex flex-wrap justify-center gap-6 mx-auto">
         <Button variant="default" size="lg" asChild>
-          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          <SubsiteLink
+            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=babydegen-economy&utm_content=babydegen-economy-button`}
+            isInButton
+          >
             Run BabyDegen Agent via Pearl
           </SubsiteLink>
         </Button>

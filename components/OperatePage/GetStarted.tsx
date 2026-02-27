@@ -31,7 +31,10 @@ const list = [
     ),
     button: (
       <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
-        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+        <SubsiteLink
+          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=operate&utm_content=operate-pearl-button`}
+          isInButton
+        >
           Get Started with Pearl
         </SubsiteLink>
       </Button>

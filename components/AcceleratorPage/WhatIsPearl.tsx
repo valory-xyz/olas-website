@@ -67,7 +67,11 @@ const Pearl = () => (
       </p>
       <p>You can build and launch an agent on Pearl — so others can run it and benefit from it.</p>
 
-      <SubsiteLink href={PEARL_YOU_URL}>Explore AI Agents available on Pearl</SubsiteLink>
+      <SubsiteLink
+        href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=accelerator&utm_content=accelerator-link`}
+      >
+        Explore AI Agents available on Pearl
+      </SubsiteLink>
     </div>
     <Image
       src="/images/accelerator/agents.png"

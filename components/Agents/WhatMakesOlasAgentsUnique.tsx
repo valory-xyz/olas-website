@@ -72,7 +72,12 @@ export const WhatMakesOlasAgentsUnique = () => (
               <Image src="/images/agents/pearl.png" alt="Pearl" width={267} height={300} />
               <p className="-top-[30px] relative">
                 They optionally are made accessible to end-users via{' '}
-                <SubsiteLink href={PEARL_YOU_URL}>Pearl, the AI Agent App Store</SubsiteLink>.
+                <SubsiteLink
+                  href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agents&utm_content=agents-link`}
+                >
+                  Pearl, the AI Agent App Store
+                </SubsiteLink>
+                .
               </p>
             </div>
           </div>

@@ -8,7 +8,7 @@ import Link from 'next/link';
 const list = [
   {
     title: 'Pearl',
-    url: PEARL_YOU_URL,
+    url: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=stack&utm_content=stack-link`,
     description: 'AI Agent App Store for consumers to own AI agents.',
     imgUrl: 'pearl-icon.png',
   },

@@ -12,7 +12,9 @@ const PearlContent = () => (
     </strong>
     <div className="mb-4">
       Visit{' '}
-      <SubsiteLink href={PEARL_YOU_URL}>
+      <SubsiteLink
+        href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agent-economies&utm_content=agent-economies-link`}
+      >
         <span className="inline-block max-w-full break-all">{PEARL_YOU_URL}</span>
       </SubsiteLink>{' '}
       to download the Pearl app.
@@ -37,7 +39,10 @@ const PearlContent = () => (
 
 const PearlButton = () => (
   <Button variant="default" size="xl" asChild className="grow mt-6">
-    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+    <SubsiteLink
+      href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agent-economies&utm_content=agent-economies-button`}
+      isInButton
+    >
       Run an Agent
     </SubsiteLink>
   </Button>

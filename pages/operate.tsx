@@ -13,7 +13,9 @@ const OperatePage = ({ metrics }) => {
   useEffect(() => {
     if (window.location.hash === '#download') {
       // redirect to new pearl page
-      router.replace(PEARL_YOU_URL);
+      router.replace(
+        `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=operate&utm_content=operate-page`
+      );
     }
   }, [router]);
 

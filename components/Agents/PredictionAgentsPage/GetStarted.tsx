@@ -16,7 +16,10 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          <SubsiteLink href={PEARL_YOU_URL} className="break-words">
+          <SubsiteLink
+            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+            className="break-words"
+          >
             Pearl.you
           </SubsiteLink>{' '}
           to download the Pearl app.
@@ -40,7 +43,10 @@ const list = [
     ),
     button: (
       <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
-        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+        <SubsiteLink
+          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-button`}
+          isInButton
+        >
           Run an Agent
         </SubsiteLink>
       </Button>

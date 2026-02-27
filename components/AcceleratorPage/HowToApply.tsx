@@ -27,8 +27,13 @@ export const HowToApply = () => (
           How to apply to the Olas Accelerator
         </h2>
         <div className="mb-8">
-          We recommend you <SubsiteLink href={PEARL_YOU_URL}>download and try Pearl</SubsiteLink>,
-          consult the{' '}
+          We recommend you{' '}
+          <SubsiteLink
+            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=accelerator&utm_content=accelerator-link`}
+          >
+            download and try Pearl
+          </SubsiteLink>
+          , consult the{' '}
           <ExternalLink href="https://drive.google.com/file/d/1YPe2RFMjf_YPsrldHuwzBHTYwCCy22C8/view">
             Integrating Your AI Agent with Pearl
           </ExternalLink>{' '}

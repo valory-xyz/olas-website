@@ -42,7 +42,7 @@ const SOCIAL_LINKS = [
 const FOR_USERS_LINKS = [
   {
     title: 'Pearl: The “AI Agent App Store”',
-    link: PEARL_YOU_URL,
+    link: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=footer&utm_content=pearl-link`,
   },
   {
     title: 'Mech Marketplace: The "AI Agent Bazaar"',

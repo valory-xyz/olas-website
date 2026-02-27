@@ -139,7 +139,10 @@ const OptimusAgent = () => (
 
       <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          <SubsiteLink
+            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=babydegen&utm_content=babydegen-button`}
+            isInButton
+          >
             Run via Pearl
           </SubsiteLink>
         </Button>

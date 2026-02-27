@@ -17,9 +17,14 @@ const faq = [
     title: 'Do I need coding skills to use Omenstrat?',
     desc: (
       <p>
-        No. With the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can easily
-        deploy and manage Omenstrat without coding, making AI-powered prediction markets accessible
-        to a wider audience.
+        No. With the{' '}
+        <SubsiteLink
+          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+        >
+          Pearl app
+        </SubsiteLink>
+        , you can easily deploy and manage Omenstrat without coding, making AI-powered prediction
+        markets accessible to a wider audience.
       </p>
     ),
   },
@@ -27,7 +32,12 @@ const faq = [
     title: 'How can I get started with Omenstrat?',
     desc: (
       <p>
-        You can start by downloading the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>{' '}
+        You can start by downloading the{' '}
+        <SubsiteLink
+          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+        >
+          Pearl app
+        </SubsiteLink>{' '}
         and running your own Omenstrat agent.
       </p>
     ),

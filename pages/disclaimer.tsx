@@ -26,8 +26,13 @@ const points = [
           <Link href="/pearl-terms" className="text-purple-600">
             here
           </Link>{' '}
-          and for the Pearl Site ({PEARL_YOU_URL}) see{' '}
-          <Link href={`${PEARL_YOU_URL}disclaimer`} className="text-purple-600">
+          and for the Pearl Site (
+          {`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=disclaimer&utm_content=disclaimer-link`}
+          ) see{' '}
+          <Link
+            href={`${PEARL_YOU_URL}disclaimer?utm_source=olas-site&utm_campaign=disclaimer&utm_content=disclaimer-link`}
+            className="text-purple-600"
+          >
             here
           </Link>
           .

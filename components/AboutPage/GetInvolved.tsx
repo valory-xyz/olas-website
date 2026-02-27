@@ -13,7 +13,7 @@ const cards = [
         Own Your Agent <br /> with Pearl
       </>
     ),
-    link: PEARL_YOU_URL,
+    link: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=about&utm_content=about-link`,
     isExternal: true,
   },
   {

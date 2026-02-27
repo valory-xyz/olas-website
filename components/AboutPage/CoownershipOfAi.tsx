@@ -13,8 +13,14 @@ export const CoownershipOfAi = () => (
           <span className="border-b-4 border-purple-300">true co-ownership of AI</span>
         </h2>
         <p>
-          With Olas&apos; <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink>, the first “AI Agent
-          App Store”, any consumer with a laptop can use AI agents they truly own.
+          With Olas&apos;{' '}
+          <SubsiteLink
+            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=about&utm_content=about-link`}
+          >
+            Pearl
+          </SubsiteLink>
+          , the first “AI Agent App Store”, any consumer with a laptop can use AI agents they truly
+          own.
         </p>
         <p>
           With Olas&apos; <Link href="/mech-marketplace">Mech Marketplace</Link>, the “AI Agent
@@ -43,8 +49,12 @@ export const CoownershipOfAi = () => (
         className="mb-6"
       />
       <span className={TEXT_SMALL_CLASS}>
-        <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink> and{' '}
-        <Link href="/mech-marketplace">Mech Marketplace</Link> help power and scale Olas agent
+        <SubsiteLink
+          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=about&utm_content=about-link`}
+        >
+          Pearl
+        </SubsiteLink>{' '}
+        and <Link href="/mech-marketplace">Mech Marketplace</Link> help power and scale Olas agent
         economies.
       </span>
     </div>

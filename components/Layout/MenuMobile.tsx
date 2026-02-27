@@ -114,7 +114,10 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
 
               <div className="p-6 border" onClick={close}>
                 <Button variant="default" size="lg" asChild className="w-full">
-                  <SubsiteLink href={PEARL_YOU_URL} isInButton>
+                  <SubsiteLink
+                    href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=menu-mobile&utm_content=own-your-agent-button`}
+                    isInButton
+                  >
                     Own Your Agent
                   </SubsiteLink>
                 </Button>
