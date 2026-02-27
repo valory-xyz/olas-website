@@ -1,8 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import {
-  PEARL_YOU_URL,
-  UTM_SOURCE_OLAS_SITE
-} from 'common-util/constants';
+import { PEARL_YOU_URL, UTM_SOURCE_OLAS_SITE } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
