@@ -132,7 +132,7 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
   return (
     <div
       id={id}
-      className={`w-full rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className}`}
+      className={`w-full overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className}`}
     >
       {/* Header row */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
