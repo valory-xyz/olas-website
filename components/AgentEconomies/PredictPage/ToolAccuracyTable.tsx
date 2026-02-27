@@ -18,19 +18,21 @@ export const ToolAccuracyTable = ({ data, className }: ToolAccuracyTableProps) =
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Tool</TableHead>
-            <TableHead className="text-right">Total Bets</TableHead>
-            <TableHead className="text-right">Correct</TableHead>
-            <TableHead className="text-right">Accuracy %</TableHead>
+            <TableHead className="text-base">Tool</TableHead>
+            <TableHead className="text-right text-base">Total Bets</TableHead>
+            <TableHead className="text-right text-base">Correct</TableHead>
+            <TableHead className="text-right text-base">Accuracy %</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((row) => (
             <TableRow key={row.tool}>
-              <TableCell className="font-medium">{row.tool}</TableCell>
-              <TableCell className="text-right">{row.totalBets.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{row.correctBets.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{row.accuracy}%</TableCell>
+              <TableCell className="text-sm font-medium">{row.tool}</TableCell>
+              <TableCell className="text-sm text-right">{row.totalBets.toLocaleString()}</TableCell>
+              <TableCell className="text-sm text-right">
+                {row.correctBets.toLocaleString()}
+              </TableCell>
+              <TableCell className="text-sm text-right">{row.accuracy}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
