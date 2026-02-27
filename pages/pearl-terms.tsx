@@ -1,6 +1,11 @@
 import { AlertTriangle, Link as LinkIcon } from 'lucide-react';
 
-import { PEARL_YOU_URL, VALORY_URL } from 'common-util/constants';
+import {
+  PEARL_YOU_URL,
+  PEARL_YOU_URL_WITH_UTM_SOURCE,
+  UTM_SOURCE_OLAS_SITE,
+  VALORY_URL,
+} from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -37,11 +42,17 @@ const PearlTerms = () => {
               <p className="mt-2">
                 <strong>The Pearl Application</strong> is an open-source desktop application
                 available for download at{' '}
-                <ExternalLink href={PEARL_YOU_URL}>https://www.pearl.you/</ExternalLink> (the “Pearl
-                Site”). By downloading, installing, or using the Pearl Application, you acknowledge
-                and agree to be bound by these Pearl Terms, the Valory Terms, the Pearl Site&apos;s
-                policies (available at{' '}
-                <ExternalLink href={`${PEARL_YOU_URL}/disclaimer`}>
+                <ExternalLink
+                  href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=pearl-terms&utm_content=pearl-terms-link`}
+                >
+                  https://www.pearl.you/
+                </ExternalLink>{' '}
+                (the “Pearl Site”). By downloading, installing, or using the Pearl Application, you
+                acknowledge and agree to be bound by these Pearl Terms, the Valory Terms, the Pearl
+                Site&apos;s policies (available at{' '}
+                <ExternalLink
+                  href={`${PEARL_YOU_URL}disclaimer?${UTM_SOURCE_OLAS_SITE}&utm_campaign=pearl-terms&utm_content=pearl-terms-link`}
+                >
                   https://www.pearl.you/disclaimer
                 </ExternalLink>
                 , herein: “Pearl Site Disclaimer &amp; Privacy Policy”), and any applicable Olas

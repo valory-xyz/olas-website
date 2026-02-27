@@ -1,4 +1,4 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Tag } from 'components/ui/tag';
@@ -13,7 +13,7 @@ const cards = [
         Own Your Agent <br /> with Pearl
       </>
     ),
-    link: PEARL_YOU_URL,
+    link: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=about&utm_content=about-link`,
     isExternal: true,
   },
   {

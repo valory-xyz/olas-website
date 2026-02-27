@@ -3,7 +3,7 @@ import {
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
-import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { H2, SubsiteLink } from 'components/ui/typography';
@@ -139,7 +139,10 @@ const OptimusAgent = () => (
 
       <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <SubsiteLink href={PEARL_YOU_URL} isInButton>
+          <SubsiteLink
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=babydegen&utm_content=babydegen-button`}
+            isInButton
+          >
             Run via Pearl
           </SubsiteLink>
         </Button>

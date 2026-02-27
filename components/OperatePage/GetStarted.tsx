@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
@@ -31,7 +31,10 @@ const list = [
     ),
     button: (
       <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
-        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+        <SubsiteLink
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=operate&utm_content=operate-pearl-button`}
+          isInButton
+        >
           Get Started with Pearl
         </SubsiteLink>
       </Button>

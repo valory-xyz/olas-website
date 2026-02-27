@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { HeroSection } from 'components/HeroSection';
 import { Button } from 'components/ui/button';
 import { SubsiteLink } from 'components/ui/typography';
@@ -12,7 +12,10 @@ const HeroImage = () => (
 
 const RunAnAgent = () => (
   <Button variant="default" size="xl" asChild className="grow max-md:w-full">
-    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+    <SubsiteLink
+      href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=babydegen-economy&utm_content=babydegen-economy-button`}
+      isInButton
+    >
       Run an Agent
     </SubsiteLink>
   </Button>

@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
@@ -12,7 +12,9 @@ const PearlContent = () => (
     </strong>
     <div className="mb-4">
       Visit{' '}
-      <SubsiteLink href={PEARL_YOU_URL}>
+      <SubsiteLink
+        href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun-economy&utm_content=agentsfun-economy-link`}
+      >
         <span className="inline-block max-w-full break-all">{PEARL_YOU_URL}</span>
       </SubsiteLink>{' '}
       to download the Pearl app.
@@ -37,7 +39,10 @@ const PearlContent = () => (
 
 const PearlButton = () => (
   <Button variant="default" size="xl" asChild className="grow mt-6">
-    <SubsiteLink href={PEARL_YOU_URL} isInButton>
+    <SubsiteLink
+      href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun-economy&utm_content=agentsfun-economy-button`}
+      isInButton
+    >
       Run an Agent
     </SubsiteLink>
   </Button>

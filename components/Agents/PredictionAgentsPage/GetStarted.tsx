@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL, QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE, QUICKSTART_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
@@ -16,7 +16,10 @@ const list = [
         </strong>
         <div className="mb-4">
           Visit{' '}
-          <SubsiteLink href={PEARL_YOU_URL} className="break-words">
+          <SubsiteLink
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+            className="break-words"
+          >
             Pearl.you
           </SubsiteLink>{' '}
           to download the Pearl app.
@@ -40,7 +43,10 @@ const list = [
     ),
     button: (
       <Button variant="default" size="xl" asChild className="grow mt-6 max-md:w-full">
-        <SubsiteLink href={PEARL_YOU_URL} isInButton>
+        <SubsiteLink
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-button`}
+          isInButton
+        >
           Run an Agent
         </SubsiteLink>
       </Button>

@@ -8,7 +8,11 @@ import {
   TEXT_CLASS,
   TEXT_MEDIUM_CLASS,
 } from 'common-util/classes';
-import { PEARL_YOU_URL } from 'common-util/constants';
+import {
+  PEARL_YOU_URL,
+  PEARL_YOU_URL_WITH_UTM_SOURCE,
+  UTM_SOURCE_OLAS_SITE,
+} from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -171,7 +175,7 @@ const agents = [
     chain: 'Gnosis',
     chainSrc: '/images/homepage/addresses/gnosis-color.svg',
     description: 'Trades Omen prediction markets for you while you do something else.',
-    link: PEARL_YOU_URL,
+    link: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=predict-economy&utm_content=predict-omenstrat-link`,
     secondaryLink: '/agents/omenstrat',
   },
   {
@@ -180,8 +184,8 @@ const agents = [
     chain: 'Polygon',
     chainSrc: '/images/predict-page/polygon.svg',
     description: 'Trades Polymarket prediction markets for you while you do something else.',
-    link: PEARL_YOU_URL,
-    secondaryLink: `${PEARL_YOU_URL}polystrat`,
+    link: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=predict-economy&utm_content=predict-polystrat-link`,
+    secondaryLink: `${PEARL_YOU_URL}polystrat?${UTM_SOURCE_OLAS_SITE}&utm_campaign=predict-economy&utm_content=predict-polystrat-link`,
     isSecondaryLinkExternal: true,
   },
 ];

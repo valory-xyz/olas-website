@@ -1,9 +1,9 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL, UTM_SOURCE_OLAS_SITE } from 'common-util/constants';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const BANNER_HREF = `${PEARL_YOU_URL}polystrat?utm_content=polystrat-banner`;
+const BANNER_HREF = `${PEARL_YOU_URL}polystrat?${UTM_SOURCE_OLAS_SITE}&utm_campaign=polystrat-banner&utm_content=polystrat-banner-link`;
 
 const PolystratBanner = () => (
   <Link

@@ -1,4 +1,4 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,9 +32,13 @@ export const MMPearlDiagram = () => (
         className="md:max-xl:ml-12"
       >
         <p className="mb-3">
-          <SubsiteLink href={PEARL_YOU_URL}>Pearl</SubsiteLink> today is a world of AI agents owned
-          by you — in one app store — with a simplified UX, human-like utility, and a no-code,
-          open-source experience.
+          <SubsiteLink
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=roadmap&utm_content=roadmap-link`}
+          >
+            Pearl
+          </SubsiteLink>{' '}
+          today is a world of AI agents owned by you — in one app store — with a simplified UX,
+          human-like utility, and a no-code, open-source experience.
         </p>
         <p className="mb-3">
           Pearl’s non-custodial core and convenient Web2 UX bring seamless onboarding via fiat

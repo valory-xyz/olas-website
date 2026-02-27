@@ -1,4 +1,4 @@
-import { MECH_MARKETPLACE_URL, PEARL_YOU_URL } from 'common-util/constants';
+import { MECH_MARKETPLACE_URL, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { ExternalLink, Link, SubsiteLink } from 'components/ui/typography';
@@ -72,7 +72,12 @@ export const WhatMakesOlasAgentsUnique = () => (
               <Image src="/images/agents/pearl.png" alt="Pearl" width={267} height={300} />
               <p className="-top-[30px] relative">
                 They optionally are made accessible to end-users via{' '}
-                <SubsiteLink href={PEARL_YOU_URL}>Pearl, the AI Agent App Store</SubsiteLink>.
+                <SubsiteLink
+                  href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agents&utm_content=agents-link`}
+                >
+                  Pearl, the AI Agent App Store
+                </SubsiteLink>
+                .
               </p>
             </div>
           </div>

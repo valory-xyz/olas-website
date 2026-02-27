@@ -5,7 +5,7 @@ import { LinkIcon } from 'lucide-react';
 import {
   COINGECKO_URL,
   ETHERSCAN_URL,
-  PEARL_YOU_URL,
+  PEARL_YOU_URL_WITH_UTM_SOURCE,
   SNAPSHOT_URL,
   VALORY_URL,
   VEOLAS_URL,
@@ -587,7 +587,12 @@ const FAQPage = () => (
 
     <div className="mb-8">
       Have a question about Pearl: The &quot;AI Agent App Store&quot;?{' '}
-      <SubsiteLink href={`${PEARL_YOU_URL}#FAQ`}>Check out the Pearl FAQ</SubsiteLink>.
+      <SubsiteLink
+        href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=faq&utm_content=faq-link#FAQ`}
+      >
+        Check out the Pearl FAQ
+      </SubsiteLink>
+      .
     </div>
 
     {faqList.map((eachSet, setIndex) => (

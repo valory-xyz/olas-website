@@ -49,6 +49,8 @@ export const VALORY_URL = 'https://www.valory.xyz';
 export const SHORTS_URL = 'https://shorts.wtf';
 export const MECH_MARKETPLACE_URL = 'https://marketplace.olas.network/';
 export const PEARL_YOU_URL = 'https://pearl.you/';
+export const PEARL_YOU_URL_WITH_UTM_SOURCE = `${PEARL_YOU_URL}?utm_source=olas-site`;
+export const UTM_SOURCE_OLAS_SITE = 'utm_source=olas-site';
 
 export const CONTRIBUTE_URL = 'https://contribute.olas.network';
 export const OPERATE_URL = 'https://operate.olas.network';

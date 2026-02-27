@@ -1,6 +1,6 @@
 import { Accordion } from 'common-util/Accordion';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubsiteLink } from 'components/ui/typography';
 
@@ -17,9 +17,14 @@ const faq = [
     title: 'Do I need coding skills to use Omenstrat?',
     desc: (
       <p>
-        No. With the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can easily
-        deploy and manage Omenstrat without coding, making AI-powered prediction markets accessible
-        to a wider audience.
+        No. With the{' '}
+        <SubsiteLink
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-faq-link`}
+        >
+          Pearl app
+        </SubsiteLink>
+        , you can easily deploy and manage Omenstrat without coding, making AI-powered prediction
+        markets accessible to a wider audience.
       </p>
     ),
   },
@@ -27,7 +32,12 @@ const faq = [
     title: 'How can I get started with Omenstrat?',
     desc: (
       <p>
-        You can start by downloading the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>{' '}
+        You can start by downloading the{' '}
+        <SubsiteLink
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-faq-link`}
+        >
+          Pearl app
+        </SubsiteLink>{' '}
         and running your own Omenstrat agent.
       </p>
     ),

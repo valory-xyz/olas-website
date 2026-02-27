@@ -10,7 +10,7 @@ import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
 
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
@@ -69,7 +69,12 @@ const list = [
     desc: (
       <>
         Set up and configure your agent in minutes — no coding required, just download the{' '}
-        <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and go.
+        <SubsiteLink
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+        >
+          Pearl app
+        </SubsiteLink>{' '}
+        and go.
       </>
     ),
   },
@@ -153,7 +158,10 @@ const PickYourAgent = () => (
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
             <Button variant="default" size="lg" className="w-fit mt-4" asChild>
-              <SubsiteLink href={PEARL_YOU_URL} isInButton>
+              <SubsiteLink
+                href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-button`}
+                isInButton
+              >
                 Run Agent via Pearl
               </SubsiteLink>
             </Button>
@@ -183,9 +191,14 @@ const faqList = [
         title: 'Do I need coding skills to use Agents.fun?',
         desc: (
           <>
-            No. With the <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink>, you can easily
-            deploy and manage Agents.fun Agents without coding, making AI-powered prediction markets
-            accessible to a wider audience.
+            No. With the{' '}
+            <SubsiteLink
+              href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+            >
+              Pearl app
+            </SubsiteLink>
+            , you can easily deploy and manage Agents.fun Agents without coding, making AI-powered
+            prediction markets accessible to a wider audience.
           </>
         ),
       },
@@ -194,8 +207,12 @@ const faqList = [
         desc: (
           <>
             You can start by downloading the{' '}
-            <SubsiteLink href={PEARL_YOU_URL}>Pearl app</SubsiteLink> and running your own
-            influencer AI Agent.
+            <SubsiteLink
+              href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+            >
+              Pearl app
+            </SubsiteLink>{' '}
+            and running your own influencer AI Agent.
           </>
         ),
       },
