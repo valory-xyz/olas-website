@@ -1,4 +1,4 @@
-import { PEARL_YOU_URL, REVALIDATE_DURATION } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE, REVALIDATE_DURATION } from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Operate from 'components/OperatePage';
@@ -14,7 +14,7 @@ const OperatePage = ({ metrics }) => {
     if (window.location.hash === '#download') {
       // redirect to new pearl page
       router.replace(
-        `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=operate&utm_content=operate-page`
+        `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=operate&utm_content=operate-page`
       );
     }
   }, [router]);

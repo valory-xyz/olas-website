@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL } from 'common-util/constants';
+import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { ExternalLink, SubsiteLink } from 'components/ui/typography';
@@ -68,7 +68,7 @@ const Pearl = () => (
       <p>You can build and launch an agent on Pearl — so others can run it and benefit from it.</p>
 
       <SubsiteLink
-        href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=accelerator&utm_content=accelerator-link`}
+        href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=accelerator&utm_content=accelerator-link`}
       >
         Explore AI Agents available on Pearl
       </SubsiteLink>

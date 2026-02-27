@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Tag } from 'components/ui/tag';
@@ -10,7 +10,7 @@ const list = [
     title: 'Stake Your OLAS',
     description:
       'Put your tokens to work by running an agent through Pearl — the AI agent app store. Earn staking rewards by participating in agent-based staking contracts tied to real performance.',
-    url: `${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=staking&utm_content=staking-link`,
+    url: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=staking&utm_content=staking-link`,
     urlText: 'Own your AI agent via Pearl',
     cardWidth: 'col-span-2',
   },

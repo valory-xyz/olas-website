@@ -1,4 +1,4 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
@@ -80,7 +80,7 @@ export const OwnYourAgent = () => (
       <div className="w-fit mt-14 mx-auto">
         <Button variant="default" size="xl" asChild>
           <SubsiteLink
-            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=homepage&utm_content=own-your-agent-button`}
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=homepage&utm_content=own-your-agent-button`}
             isInButton
             isExternal
           >

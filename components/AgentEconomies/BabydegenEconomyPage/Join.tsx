@@ -1,4 +1,4 @@
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -21,7 +21,7 @@ export const Join = () => (
       <div className="flex flex-wrap justify-center gap-6 mx-auto">
         <Button variant="default" size="lg" asChild>
           <SubsiteLink
-            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=babydegen-economy&utm_content=babydegen-economy-button`}
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=babydegen-economy&utm_content=babydegen-economy-button`}
             isInButton
           >
             Run BabyDegen Agent via Pearl

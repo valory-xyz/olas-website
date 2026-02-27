@@ -1,6 +1,6 @@
 import { Accordion } from 'common-util/Accordion';
 import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubsiteLink } from 'components/ui/typography';
 
@@ -19,7 +19,7 @@ const faq = [
       <p>
         No. With the{' '}
         <SubsiteLink
-          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-faq-link`}
         >
           Pearl app
         </SubsiteLink>
@@ -34,7 +34,7 @@ const faq = [
       <p>
         You can start by downloading the{' '}
         <SubsiteLink
-          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=prediction-agents&utm_content=prediction-agents-link`}
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=prediction-agents&utm_content=prediction-agents-faq-link`}
         >
           Pearl app
         </SubsiteLink>{' '}

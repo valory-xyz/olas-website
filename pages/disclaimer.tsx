@@ -1,5 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import { PEARL_YOU_URL } from 'common-util/constants';
+import {
+  PEARL_YOU_URL,
+  UTM_SOURCE_OLAS_SITE
+} from 'common-util/constants';
 import PageWrapper from 'components/Layout/PageWrapper';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
@@ -26,11 +29,9 @@ const points = [
           <Link href="/pearl-terms" className="text-purple-600">
             here
           </Link>{' '}
-          and for the Pearl Site (
-          {`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=disclaimer&utm_content=disclaimer-link`}
-          ) see{' '}
+          and for the Pearl Site ({PEARL_YOU_URL}) see{' '}
           <Link
-            href={`${PEARL_YOU_URL}disclaimer?utm_source=olas-site&utm_campaign=disclaimer&utm_content=disclaimer-link`}
+            href={`${PEARL_YOU_URL}disclaimer?${UTM_SOURCE_OLAS_SITE}&utm_campaign=disclaimer&utm_content=disclaimer-link`}
             className="text-purple-600"
           >
             here

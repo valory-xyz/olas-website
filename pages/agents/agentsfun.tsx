@@ -10,7 +10,7 @@ import { Button } from 'components/ui/button';
 import { Card, CardTitle } from 'components/ui/card';
 import Image from 'next/image';
 
-import { PEARL_YOU_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { SubsiteLink } from 'components/ui/typography';
 
 const HeroImage = () => (
@@ -70,7 +70,7 @@ const list = [
       <>
         Set up and configure your agent in minutes — no coding required, just download the{' '}
         <SubsiteLink
-          href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+          href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
         >
           Pearl app
         </SubsiteLink>{' '}
@@ -159,7 +159,7 @@ const PickYourAgent = () => (
             {agent.description}
             <Button variant="default" size="lg" className="w-fit mt-4" asChild>
               <SubsiteLink
-                href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agentsfun&utm_content=agentsfun-button`}
+                href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-button`}
                 isInButton
               >
                 Run Agent via Pearl
@@ -193,7 +193,7 @@ const faqList = [
           <>
             No. With the{' '}
             <SubsiteLink
-              href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+              href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
             >
               Pearl app
             </SubsiteLink>
@@ -208,7 +208,7 @@ const faqList = [
           <>
             You can start by downloading the{' '}
             <SubsiteLink
-              href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=agentsfun&utm_content=agentsfun-link`}
+              href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-link`}
             >
               Pearl app
             </SubsiteLink>{' '}

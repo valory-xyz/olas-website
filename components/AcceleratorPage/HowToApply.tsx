@@ -1,5 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL } from 'common-util/constants';
+import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { Card } from 'components/ui/card';
 import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import { SquareCheck } from 'lucide-react';
@@ -29,7 +29,7 @@ export const HowToApply = () => (
         <div className="mb-8">
           We recommend you{' '}
           <SubsiteLink
-            href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=accelerator&utm_content=accelerator-link`}
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=accelerator&utm_content=accelerator-link`}
           >
             download and try Pearl
           </SubsiteLink>

@@ -1,4 +1,4 @@
-import { MENU_DATA, PEARL_YOU_URL } from 'common-util/constants';
+import { MENU_DATA, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import { Button } from 'components/ui/button';
 import { SubsiteLink } from 'components/ui/typography';
 import { cn } from 'lib/utils';
@@ -115,7 +115,7 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
               <div className="p-6 border" onClick={close}>
                 <Button variant="default" size="lg" asChild className="w-full">
                   <SubsiteLink
-                    href={`${PEARL_YOU_URL}?utm_source=olas-site&utm_campaign=menu-mobile&utm_content=own-your-agent-button`}
+                    href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=menu-mobile&utm_content=own-your-agent-button`}
                     isInButton
                   >
                     Own Your Agent
