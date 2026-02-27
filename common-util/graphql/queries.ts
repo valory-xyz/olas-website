@@ -879,3 +879,68 @@ export const getPolymarketBetsQuery = ({ first, pages }: { first: number; pages:
   }
   return gql`query getPolymarketClosedMarkets { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
 };
+
+export const getPolymarketBetsWithBettorQuery = ({
+  first,
+  pages,
+}: {
+  first: number;
+  pages: number;
+}) => {
+  const queries = [];
+  for (let i = 0; i < pages; i++) {
+    queries.push(`
+      page${i}: bets(
+        first: ${first}
+        skip: ${i * first}
+        orderBy: blockTimestamp
+        orderDirection: desc
+      ) {
+        id
+        blockTimestamp
+        outcomeIndex
+        bettor {
+          id
+        }
+        question {
+          id
+          metadata {
+            title
+          }
+          resolution {
+            winningIndex
+          }
+        }
+      }
+    `);
+  }
+  return gql`query PolymarketBetsWithBettor { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
+};
+
+export const getMechRequestsBySenderEntityQuery = ({
+  sender,
+  timestamp_gt,
+  first,
+  skip,
+}: {
+  sender: string;
+  timestamp_gt: number;
+  first: number;
+  skip: number;
+}) => gql`
+  query MechSenderRequests {
+    sender(id: "${sender}") {
+      requests(
+        first: ${first}
+        skip: ${skip}
+        where: { blockTimestamp_gt: "${timestamp_gt}" }
+      ) {
+        blockTimestamp
+        parsedRequest {
+          tool
+          questionTitle
+        }
+      }
+    }
+  }
+`;

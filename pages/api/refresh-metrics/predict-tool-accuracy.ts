@@ -1,4 +1,4 @@
-import { computeToolAccuracy } from 'common-util/api/predict/tool-accuracy';
+import { computeAllToolAccuracy } from 'common-util/api/predict/tool-accuracy';
 import { saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const toolAccuracy = await computeToolAccuracy();
+    const toolAccuracy = await computeAllToolAccuracy();
 
     const url = await saveSnapshot({
       category: 'predict-tool-accuracy',

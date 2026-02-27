@@ -82,7 +82,7 @@ const processPredictMetrics = (metrics: any) => {
   };
 };
 
-const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
+const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
   const bubbleData = useMemo(() => {
     const performanceMetrics = [
       {
@@ -189,7 +189,10 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
   }, [platformMetrics]);
 
   return (
-    <Card className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col">
+    <Card
+      id={id}
+      className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col"
+    >
       <Image alt={title} src={imgSrc} width="48" height="48" className="mb-4" />
 
       {/* Agent performance metrics */}
@@ -250,9 +253,12 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc }) => {
   );
 };
 
-const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText }) => {
+const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText, id }) => {
   return (
-    <Card className="flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]">
+    <Card
+      id={id}
+      className="flex flex-col items-center gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF]"
+    >
       <div className="flex gap-4 items-center">
         <Image alt={title} src={imgSrc} width="36" height="36" />
         {title}
@@ -285,6 +291,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
         <div className="grid md:grid-cols-2 gap-6">
           {/* Omenstrat DAA Card */}
           <DaaCard
+            id="omenstrat-agent-economy"
             title="Omenstrat Agent Economy"
             imgSrc="/images/predict-page/omenstrat-icon.png"
             daaValue={metrics.omenstrat.dailyActiveAgents}
@@ -295,6 +302,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
 
           {/* Polystrat DAA Card */}
           <DaaCard
+            id="polystrat-agent-economy"
             title="Polystrat Agent Economy"
             imgSrc="/images/predict-page/polystrat-icon.png"
             daaValue={metrics.polystrat.dailyActiveAgents}
@@ -304,10 +312,15 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
           />
 
           {/* Partial ROI Distribution Chart */}
-          <RoiDistributionChart data={roiDistribution} className="md:col-span-2" />
+          <RoiDistributionChart
+            id="roi-distribution"
+            data={roiDistribution}
+            className="md:col-span-2"
+          />
 
           {/* Omenstrat Unified Bubble */}
           <PerformanceBubble
+            id="omenstrat-performance"
             title="Omenstrat Performance"
             platformMetrics={metrics.omenstrat}
             imgSrc="/images/predict-page/omenstrat-icon.png"
@@ -315,13 +328,14 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
 
           {/* Polystrat Unified Bubble */}
           <PerformanceBubble
+            id="polystrat-performance"
             title="Polystrat Performance"
             platformMetrics={metrics.polystrat}
             imgSrc="/images/predict-page/polystrat-icon.png"
           />
 
           {/* Tool Accuracy Table */}
-          <ToolAccuracyTable data={toolAccuracy} className="md:col-span-2" />
+          <ToolAccuracyTable id="tool-accuracy" data={toolAccuracy} className="md:col-span-2" />
         </div>
       </div>
     </SectionWrapper>

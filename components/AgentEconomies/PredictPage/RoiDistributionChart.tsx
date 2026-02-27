@@ -3,6 +3,7 @@
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
 import { LegendItem } from 'components/ui/legend-item';
+import { Tabs } from 'components/ui/tabs';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
@@ -78,6 +79,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
 type RoiDistributionChartProps = {
   data: RoiDistributionData | null;
   className?: string;
+  id?: string;
 };
 
 const safeMidpoint = (min: number, max: number) => {
@@ -86,7 +88,7 @@ const safeMidpoint = (min: number, max: number) => {
   return (min + max) / 2;
 };
 
-export const RoiDistributionChart = ({ data, className }: RoiDistributionChartProps) => {
+export const RoiDistributionChart = ({ data, className, id }: RoiDistributionChartProps) => {
   const [activeRange, setActiveRange] = useState<TimeRange>('7D');
 
   const activeKey = TIME_RANGES.find((range) => range.label === activeRange)?.key ?? 'd7';
@@ -129,28 +131,18 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
   return (
     <div
+      id={id}
       className={`w-full rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className}`}
     >
       {/* Header row */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
         <h3 className="text-lg font-semibold text-gray-900">Partial ROI Distribution</h3>
 
-        {/* Time range tabs */}
-        <div className="flex items-center gap-1 bg-white border border-slate-100 rounded-lg p-1">
-          {TIME_RANGES.map(({ label }) => (
-            <button
-              key={label}
-              onClick={() => setActiveRange(label)}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                activeRange === label
-                  ? 'bg-slate-100 text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          items={TIME_RANGES.map(({ label }) => ({ key: label, label }))}
+          activeKey={activeRange}
+          onChange={(key) => setActiveRange(key as TimeRange)}
+        />
       </div>
 
       {/* Legend row */}
@@ -161,11 +153,11 @@ export const RoiDistributionChart = ({ data, className }: RoiDistributionChartPr
 
       {/* Chart area */}
       {chartData ? (
-        <div className="relative w-full aspect-[2/1] md:aspect-[3/1]">
+        <div className="relative w-full aspect-[2/1]">
           <Bar key={activeRange} data={chartData} options={ROI_DISTRIBUTION_CHART_OPTIONS} />
         </div>
       ) : (
-        <div className="flex items-center justify-center h-[340px] text-gray-400 text-sm">
+        <div className="flex items-center justify-center aspect-[2/1] text-gray-400 text-sm">
           {data === null ? 'Data not yet available' : 'No data for this time range'}
         </div>
       )}

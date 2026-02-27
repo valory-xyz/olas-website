@@ -1,20 +1,43 @@
-import { ToolAccuracyStat } from 'common-util/api/predict/tool-accuracy';
+import { ToolAccuracyData } from 'common-util/api/predict/tool-accuracy';
 import { Card } from 'components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { Tabs } from 'components/ui/tabs';
+import { useState } from 'react';
+
+type AgentBlueprint = 'omenstrat' | 'polystrat';
 
 type ToolAccuracyTableProps = {
-  data: ToolAccuracyStat[] | null;
+  data: ToolAccuracyData | null;
   className?: string;
+  id?: string;
 };
 
-export const ToolAccuracyTable = ({ data, className }: ToolAccuracyTableProps) => {
-  if (!data || data.length === 0) return null;
+const AGENT_BLUEPRINTS = [
+  { key: 'omenstrat', label: 'Omenstrat' },
+  { key: 'polystrat', label: 'Polystrat' },
+];
+
+export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProps) => {
+  const [activeBlueprint, setActiveBlueprint] = useState<AgentBlueprint>('omenstrat');
+
+  const rows = data?.[activeBlueprint] ?? null;
+
+  if (!rows || rows.length === 0) return null;
 
   return (
     <Card
+      id={id}
       className={`p-8 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col ${className ?? ''}`}
     >
-      <div className="text-lg font-semibold mb-6">Omenstrat Tool Accuracy</div>
+      <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
+        <div className="text-lg font-semibold">Tool Accuracy</div>
+        <Tabs
+          items={AGENT_BLUEPRINTS}
+          activeKey={activeBlueprint}
+          onChange={(key) => setActiveBlueprint(key as AgentBlueprint)}
+        />
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -25,7 +48,7 @@ export const ToolAccuracyTable = ({ data, className }: ToolAccuracyTableProps) =
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((row) => (
+          {rows.map((row) => (
             <TableRow key={row.tool}>
               <TableCell className="text-sm font-medium">{row.tool}</TableCell>
               <TableCell className="text-sm text-right">{row.totalBets.toLocaleString()}</TableCell>
