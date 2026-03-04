@@ -2,7 +2,6 @@
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
-import { LegendItem } from 'components/ui/legend-item';
 import { Tabs } from 'components/ui/tabs';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -97,20 +96,20 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
   const chartData = bins
     ? {
         datasets: [
-          {
-            label: 'Omenstrat',
-            data: bins.map((bin) => ({
-              x: safeMidpoint(bin.min, bin.max),
-              y: bin.omenstrat,
-              range: bin.label,
-            })),
-            backgroundColor: OMENSTRAT_COLOR,
-            borderColor: OMENSTRAT_COLOR_BORDER,
-            borderWidth: 1,
-            borderRadius: 2,
-            barPercentage: 0.9,
-            categoryPercentage: 0.85,
-          },
+          // {
+          //   label: 'Omenstrat',
+          //   data: bins.map((bin) => ({
+          //     x: safeMidpoint(bin.min, bin.max),
+          //     y: bin.omenstrat,
+          //     range: bin.label,
+          //   })),
+          //   backgroundColor: OMENSTRAT_COLOR,
+          //   borderColor: OMENSTRAT_COLOR_BORDER,
+          //   borderWidth: 1,
+          //   borderRadius: 2,
+          //   barPercentage: 0.9,
+          //   categoryPercentage: 0.85,
+          // },
           {
             label: 'Polystrat',
             data: bins.map((bin) => ({
@@ -136,7 +135,7 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
     >
       {/* Header row */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-        <h3 className="text-lg font-semibold text-gray-900">Partial ROI Distribution</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Polystrat Partial ROI Distribution</h3>
 
         <Tabs
           items={TIME_RANGES.map(({ label }) => ({ key: label, label }))}
@@ -146,10 +145,10 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
       </div>
 
       {/* Legend row */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
+      {/* <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
         <LegendItem color={`bg-[#A755F7]`} label="Omenstrat" />
         <LegendItem color={`bg-[#4D74FF]`} label="Polystrat" />
-      </div>
+      </div> */}
 
       {/* Chart area */}
       {chartData ? (

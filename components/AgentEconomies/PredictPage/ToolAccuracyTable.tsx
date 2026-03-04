@@ -1,8 +1,6 @@
 import { ToolAccuracyData } from 'common-util/api/predict/tool-accuracy';
 import { Card } from 'components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
-import { Tabs } from 'components/ui/tabs';
-import { useState } from 'react';
 
 type AgentBlueprint = 'omenstrat' | 'polystrat';
 
@@ -18,9 +16,9 @@ const AGENT_BLUEPRINTS = [
 ];
 
 export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProps) => {
-  const [activeBlueprint, setActiveBlueprint] = useState<AgentBlueprint>('omenstrat');
+  // const [activeBlueprint, setActiveBlueprint] = useState<AgentBlueprint>('omenstrat');
 
-  const rows = data?.[activeBlueprint] ?? null;
+  const rows = data?.['polystrat'] ?? null;
 
   if (!rows || rows.length === 0) return null;
 
@@ -32,12 +30,12 @@ export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProp
       className={`p-8 overflow-hidden border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col ${className ?? ''}`}
     >
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-        <div className="text-lg font-semibold">Tool Accuracy</div>
-        <Tabs
+        <div className="text-lg font-semibold">Polystrat Tool Accuracy</div>
+        {/* <Tabs
           items={AGENT_BLUEPRINTS}
           activeKey={activeBlueprint}
           onChange={(key) => setActiveBlueprint(key as AgentBlueprint)}
-        />
+        /> */}
       </div>
 
       <Table>
