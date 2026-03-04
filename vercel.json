@@ -23,6 +23,10 @@
     "pages/api/refresh-metrics/main.ts": {
       "maxDuration": 300,
       "memory": 512
+    },
+    "pages/api/refresh-metrics/predict-tool-accuracy.ts": {
+      "maxDuration": 300,
+      "memory": 512
     }
   },
   "crons": [
@@ -49,6 +53,10 @@
     {
       "path": "/api/refresh-metrics/predict-roi-distribution?agent=polystrat",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/refresh-metrics/predict-tool-accuracy",
+      "schedule": "0 5 * * *"
     }
   ]
 }
