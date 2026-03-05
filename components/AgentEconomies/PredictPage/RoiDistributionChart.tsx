@@ -60,6 +60,11 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
       min: -100,
       max: 200,
       grid: { display: false },
+      title: {
+        display: true,
+        text: 'ROI Distribution',
+        font: { size: 13 },
+      },
       ticks: {
         stepSize: X_AXIS_STEP_SIZE,
         callback: (value: number) => `${value}%`,
@@ -67,6 +72,11 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
     },
     y: {
       grid: { color: 'rgba(0,0,0,0.06)' },
+      title: {
+        display: true,
+        text: '% of Agents',
+        font: { size: 13 },
+      },
       ticks: {
         font: { size: 14 },
         callback: (value: number) => `${value}%`,
