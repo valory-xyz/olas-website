@@ -368,7 +368,7 @@ const updateAgentBlueprintData = async (
 
   // 2: Update byDay (incremental daily stats)
   const startDay = existing?.lastDayTimestamp ? existing.lastDayTimestamp + DAY_SECONDS : genesisTs;
-  const endDay = getMidnightUtcTimestampDaysAgo(0); // today
+  const endDay = getMidnightUtcTimestampDaysAgo(1); // yesterday — only process fully complete days
 
   const byDay: Record<string, { agents: Record<string, DailyAgentEntry> }> = {
     ...(existing?.byDay ?? {}),
@@ -527,12 +527,12 @@ const computeAgentBlueprintHistogram = (
       const payout = BigInt(entry.payout);
       const tradingCosts = BigInt(entry.tradingCosts);
 
+      // Skip zero trading costs considering it as "not enough data"
+      if (tradingCosts <= 0n) continue;
+
       // mechFees are already 18 decimals (USD/ETH/XDAI equivalent)
       const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
-
-      // Skip zero costs considering it as "not enough data"
-      if (totalCosts <= 0n) continue;
 
       // ROI = (Payout - TotalCosts) / TotalCosts
       const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
@@ -578,12 +578,12 @@ const computeAgentBlueprintHistogram = (
       // 2. Derive Trading Costs
       const tradingCosts = scaledPayout - scaledProfit;
 
+      // Skip zero trading costs considering it as "not enough data"
+      if (tradingCosts <= 0n) continue;
+
       // 3. Add Mech Fees
       const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
-
-      // Skip zero costs considering it as "not enough data"
-      if (totalCosts <= 0n) continue;
 
       // 4. Net Gain = Profit (already scaled) - Mech Fees
       const netGain = scaledProfit - mechFees;
