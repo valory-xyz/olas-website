@@ -4,7 +4,7 @@ import { SCREEN_WIDTH_LG, SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-uti
 import {
   BOND_URL,
   BONDING_PROGRAMS_URL,
-  DISCORD_INVITE_URL,
+  TELEGRAM_INVITE_URL,
   X_OLAS_URL,
 } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -38,7 +38,7 @@ const steps = [
     description: (
       <>
         Follow Olas <ExternalLink href={X_OLAS_URL}>channels</ExternalLink> and{' '}
-        <ExternalLink href={DISCORD_INVITE_URL}>engage with the Olas community</ExternalLink> to
+        <ExternalLink href={TELEGRAM_INVITE_URL}>engage with the Olas community</ExternalLink> to
         discover resources and say on top of new updates.
       </>
     ),

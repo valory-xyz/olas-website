@@ -168,7 +168,7 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; lagLimit: number }> = {
   },
 };
 
-export const DISCORD_INVITE_URL = 'https://discord.com/invite/BQzYqhjGjQ';
+export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';

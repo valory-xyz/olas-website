@@ -1,4 +1,4 @@
-import { DISCORD_INVITE_URL } from 'common-util/constants';
+import { TELEGRAM_INVITE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import Image from 'next/image';
@@ -22,7 +22,7 @@ export const LearnAtYourOwnPace = () => (
       <p className="mb-6">
         Prefer a flexible approach? Our self-paced course on YouTube covers everything you need to
         know about building agents on the Olas Stack. Complete the course at your own speed, and
-        join our active Discord community for support, questions, and feedback along the way.
+        join our active Telegram community for support, questions, and feedback along the way.
         <br />
         This option is ideal for developers who want to explore the Olas Stack without committing to
         a full-time schedule.
@@ -48,7 +48,7 @@ export const LearnAtYourOwnPace = () => (
           </Link>
         </Button>
         <Button variant="valory" size="xl" className="my-6 w-fit rounded-none">
-          <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
+          <Link href={TELEGRAM_INVITE_URL}>Join Telegram for support</Link>
         </Button>
       </div>
     </div>

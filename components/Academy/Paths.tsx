@@ -1,4 +1,4 @@
-import { BUILD_MECH_TOOL_URL, DISCORD_INVITE_URL, X_OLAS_URL } from 'common-util/constants';
+import { BUILD_MECH_TOOL_URL, TELEGRAM_INVITE_URL, X_OLAS_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { ExternalLink, SubsiteLink } from 'components/ui/typography';
@@ -31,7 +31,7 @@ export const Paths = () => (
       <p className="mb-6">
         Get exposure and hands-on experience to Olas Stack by building Mech tools with our Dev
         Kickstart workshop. Follow our guided tutorials on YouTube and start building today. Join
-        the Discord community to connect with other developers and get support.
+        the Telegram community to connect with other developers and get support.
       </p>
 
       <span className="text-slate-600 font-bold">What you get out of it</span>
@@ -68,7 +68,7 @@ export const Paths = () => (
           </Link>
         </Button>
         <Button variant="valory" size="xl" className="my-6 w-fit rounded-none border-black">
-          <Link href={DISCORD_INVITE_URL}>Join Discord for support</Link>
+          <Link href={TELEGRAM_INVITE_URL}>Join Telegram for support</Link>
         </Button>
       </div>
     </div>

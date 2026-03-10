@@ -1,12 +1,12 @@
-import { DISCORD_INVITE_URL } from 'common-util/constants';
+import { TELEGRAM_INVITE_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
 
 const list = [
   {
     title: 'Contribute a Strategy',
     desc: 'Built a trading bot? Expert trader? Share your knowledge and add to the strategy library.',
-    urlName: 'Reach out on Discord',
-    url: DISCORD_INVITE_URL,
+    urlName: 'Reach out on Telegram',
+    url: TELEGRAM_INVITE_URL,
     isExternal: true,
   },
   {
