@@ -1,5 +1,5 @@
 import { SECTION_BOX_CLASS, SUB_HEADER_MEDIUM_CLASS } from 'common-util/classes';
-import { DISCORD_INVITE_URL } from 'common-util/constants';
+import { TELEGRAM_INVITE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
@@ -26,7 +26,7 @@ const list = [
         <p>Launch an agent economy on top of your protocol.</p>
       </>
     ),
-    buttonUrl: DISCORD_INVITE_URL,
+    buttonUrl: TELEGRAM_INVITE_URL,
     isExternal: true,
     buttonText: 'Get Community Support',
   },

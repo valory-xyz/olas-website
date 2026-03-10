@@ -1,6 +1,6 @@
 import {
   COINGECKO_URL,
-  DISCORD_INVITE_URL,
+  TELEGRAM_INVITE_URL,
   DOCS_BASE_URL,
   PEARL_YOU_URL_WITH_UTM_SOURCE,
   WHITEPAPER,
@@ -18,9 +18,9 @@ const SOCIAL_LINKS = [
     link: X_OLAS_URL,
   },
   {
-    title: 'Discord',
-    icon: '/images/footer/discord.svg',
-    link: DISCORD_INVITE_URL,
+    title: 'Telegram',
+    icon: '/images/footer/telegram.svg',
+    link: TELEGRAM_INVITE_URL,
   },
   {
     title: 'Coingecko',
