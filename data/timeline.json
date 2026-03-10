@@ -515,6 +515,11 @@
             "date": "Jan - Jun",
             "topics" : [
                 {
+                    "topic": "Olas Marketplace - Early Beginnings",
+                    "content": "- Introduced Mechs on Gnosis Chain — a registry where AI Mechs offer and deliver services on-chain via crypto-native micropayments, enabling autonomous agent-to-agent commerce. This later evolved into Olas Marketplace.",
+                    "category": ["Marketplace", "Build", "Key milestones"]
+                },
+                {
                     "topic": "OLAS Token Launched at $74.6M FDV",
                     "content": "- OLAS launched publicly via a Liquidity Bootstrapping Pool, hitting a $74.6M FDV. \n- By its end at 6pm UTC, Wednesday 12th July 2023, the week-long Liquidity Bootstrapping Pool that facilitated a decentralized launch for the OLAS token saw: \n- 393 swaps totalling $1.2m in volume. \n- 14.84 million OLAS tokens (~1.5% of the network) released to 149 holders. \n- [OLAS is now live](https://v2.info.uniswap.org/pair/0x09d1d767edf8fa23a64c51fa559e0688e526812f) on Uniswap v2.",
                     "category": ["Tokenomics", "Activity Metrics", "Key milestones"]
