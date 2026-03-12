@@ -1,8 +1,8 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
-  getMarketsAndBetsQuery,
   getMechRequestsQuery,
+  getPolymarketMarketsDataQuery,
   stakingGlobalsQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
@@ -14,11 +14,11 @@ import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { CodeSnippet } from './CodeSnippet';
 
-export const PredictRoiInfo = () => {
+export const PolystratRoiInfo = () => {
   const [copied, setCopied] = useState(false);
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
-  const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
+  const marketsData = getPolymarketMarketsDataQuery({ first: 1000, pages: 10 });
   const stakingGlobals = stakingGlobalsQuery;
   const mechRequests = getMechRequestsQuery({
     timestamp_gt: marketOpenTimestamp,
@@ -28,7 +28,7 @@ export const PredictRoiInfo = () => {
   });
 
   const copyEndpointToClipboard = async () => {
-    const url = process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL;
+    const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL;
     if (url) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -37,8 +37,8 @@ export const PredictRoiInfo = () => {
   };
 
   return (
-    <SectionWrapper id="predict-roi">
-      <h2 className={SUB_HEADER_LG_CLASS}>Predict ROI</h2>
+    <SectionWrapper id="polystrat-predict-roi">
+      <h2 className={SUB_HEADER_LG_CLASS}>Polystrat: Predict ROI</h2>
 
       <div className="space-y-6 mt-4">
         <p>
@@ -70,16 +70,19 @@ export const PredictRoiInfo = () => {
             </li>
           </ul>
         </div>
-        <ExternalLink
-          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL)}
-        >
-          Subgraph link
-        </ExternalLink>
+        <p className="text-purple-600">
+          Subgraph link:{' '}
+          <ExternalLink
+            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL)}
+          >
+            Polygon
+          </ExternalLink>
+        </p>
         <CodeSnippet>
           {totalMechRequests} {mechRequests}
         </CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets & Trades Query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets Data Query</h3>
 
         <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
@@ -88,12 +91,12 @@ export const PredictRoiInfo = () => {
               All open markets, needed in order to understand which markets are open and use it to
               subtract needed amount of mech requests from the total
             </li>
-            <li>Cumulative payout, trades amounts and fees for open markets</li>
+            <li>Cumulative payout and traded amounts for settled markets</li>
           </ul>
         </div>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>
-          <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+          <code>{process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL}</code>
           <button
             onClick={copyEndpointToClipboard}
             className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
@@ -106,23 +109,23 @@ export const PredictRoiInfo = () => {
             )}
           </button>
         </p>
-        <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
-          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
+          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ query: marketsAndBets })}'`}
+  -d '${JSON.stringify({ query: marketsData })}'`}
         </CodeSnippet>
-        <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
-        <CodeSnippet>{marketsAndBets}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Globals query</h3>
 
         <p>Used for getting cumulative staking rewards in OLAS</p>
-        <ExternalLink
-          href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL)}
-        >
-          Subgraph link
-        </ExternalLink>
+        <p className="text-purple-600">
+          Subgraph link:{' '}
+          <ExternalLink
+            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL)}
+          >
+            Polygon
+          </ExternalLink>
+        </p>
         <CodeSnippet>{stakingGlobals}</CodeSnippet>
       </div>
     </SectionWrapper>

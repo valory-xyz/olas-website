@@ -1,17 +1,29 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { getClosedMarketsBetsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
 import { CodeSnippet } from './CodeSnippet';
 
-export const PredictAccuracyInfo = () => {
+export const OmenstratAccuracyInfo = () => {
+  const [copied, setCopied] = useState(false);
   const closedMarketsBets = getClosedMarketsBetsQuery({
     first: 1000,
     pages: 10,
   });
 
+  const copyEndpointToClipboard = async () => {
+    const url = process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL;
+    if (url) {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
-    <SectionWrapper id="predict-accuracy">
-      <h2 className={SUB_HEADER_LG_CLASS}>Predict Success Rate</h2>
+    <SectionWrapper id="omenstrat-predict-accuracy">
+      <h2 className={SUB_HEADER_LG_CLASS}>Omenstrat: Predict Success Rate</h2>
 
       <div className="space-y-6 mt-4">
         <p>
@@ -29,17 +41,26 @@ export const PredictAccuracyInfo = () => {
           Used to fetch all bets along with their outcome and the final answer of the associated
           market
         </p>
-        <p className="text-purple-600">
-          API endpoint: <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+        <p className="text-purple-600 flex items-center gap-2 flex-wrap">
+          <span>API endpoint:</span>
+          <code>{process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL}</code>
+          <button
+            onClick={copyEndpointToClipboard}
+            className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check size={16} className="text-green-600" />
+            ) : (
+              <Copy size={16} color="black" />
+            )}
+          </button>
         </p>
-        <p className="text-sm text-gray-600 mt-2">Example curl request:</p>
         <CodeSnippet>
           {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '{"query": "{ bets(first: 5, where: { fixedProductMarketMaker_: { currentAnswer_not: null } }) { outcomeIndex } }"}'`}
+  -d '${JSON.stringify({ query: closedMarketsBets })}'`}
         </CodeSnippet>
-        <p className="text-sm text-gray-600 mt-4">GraphQL query:</p>
-        <CodeSnippet>{closedMarketsBets}</CodeSnippet>
       </div>
     </SectionWrapper>
   );

@@ -82,7 +82,7 @@ const processPredictMetrics = (metrics: any) => {
   };
 };
 
-const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
+const PerformanceBubble = ({ platformMetrics, title, imgSrc, id, platform }) => {
   const bubbleData = useMemo(() => {
     const performanceMetrics = [
       {
@@ -116,21 +116,21 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
         ),
         value: isNil(platformMetrics.finalRoi) ? null : `${platformMetrics.finalRoi}%`,
         status: platformMetrics.roiStatus,
-        source: { link: '/data#predict-roi', isExternal: false },
+        source: { link: `/data#${platform}-predict-roi`, isExternal: false },
       },
       {
         id: 'apr',
         subText: 'APR, OLAS - Via OLAS Staking',
         value: isNil(platformMetrics.apr) ? null : `${platformMetrics.apr}%`,
         status: platformMetrics.aprStatus,
-        source: { link: '/data#predict-apr', isExternal: false },
+        source: { link: `/data#${platform}-predict-apr`, isExternal: false },
       },
       {
         id: 'accuracy',
         subText: 'Prediction Accuracy - Average (Last 10K Trades)',
         value: isNil(platformMetrics.successRate) ? null : `${platformMetrics.successRate}%`,
         status: platformMetrics.successRateStatus,
-        source: { link: '/data#predict-accuracy', isExternal: false },
+        source: { link: `/data#${platform}-predict-accuracy`, isExternal: false },
       },
     ];
 
@@ -145,7 +145,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
         ),
         value: isNil(platformMetrics.traderTxs) ? null : platformMetrics.traderTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
-        source: { link: '/data#predict-transactions-by-type', isExternal: false },
+        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
       },
       {
         id: 'mechs',
@@ -157,7 +157,7 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
         ),
         value: isNil(platformMetrics.mechTxs) ? null : platformMetrics.mechTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
-        source: { link: '/data#predict-transactions-by-type', isExternal: false },
+        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
       },
     ];
 
@@ -181,12 +181,12 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, id }) => {
           ? null
           : platformMetrics.marketCreatorTxs.toLocaleString(),
         status: platformMetrics.txsStatus,
-        source: { link: '/data#predict-transactions-by-type', isExternal: false },
+        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
       });
     }
 
     return { performanceMetrics, transactionMetrics };
-  }, [platformMetrics]);
+  }, [platformMetrics, platform]);
 
   return (
     <Card
@@ -322,6 +322,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
           <PerformanceBubble
             id="omenstrat-performance"
             title="Omenstrat Performance"
+            platform="omenstrat"
             platformMetrics={metrics.omenstrat}
             imgSrc="/images/predict-page/omenstrat-icon.png"
           />
@@ -330,6 +331,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
           <PerformanceBubble
             id="polystrat-performance"
             title="Polystrat Performance"
+            platform="polystrat"
             platformMetrics={metrics.polystrat}
             imgSrc="/images/predict-page/polystrat-icon.png"
           />
