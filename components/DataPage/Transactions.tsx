@@ -1,5 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { OMENSTRAT_AGENT_CLASSIFICATION, REGISTRY_SUBGRAPH_URLS } from 'common-util/constants';
+import {
+  OMENSTRAT_AGENT_CLASSIFICATION,
+  POLYSTRAT_AGENT_CLASSIFICATION,
+  REGISTRY_SUBGRAPH_URLS,
+} from 'common-util/constants';
 import { agentTxCountsQuery, registryGlobalsQuery } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -34,8 +38,8 @@ export const TransactionsInfo = () => {
           <CodeSnippet>{registryGlobalsQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
-      <SectionWrapper id="predict-transactions-by-type">
-        <h2 className={SUB_HEADER_LG_CLASS}>Predict: Transactions by Agent Type</h2>
+      <SectionWrapper id="omenstrat-predict-transactions-by-type">
+        <h2 className={SUB_HEADER_LG_CLASS}>Omenstrat: Transactions by Agent Type</h2>
 
         <div className="space-y-6 mt-4">
           <p>
@@ -71,6 +75,42 @@ export const TransactionsInfo = () => {
               className="mr-2"
             >
               Gnosis
+            </ExternalLink>
+          </p>
+          <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>
+        </div>
+      </SectionWrapper>
+      <SectionWrapper id="polystrat-predict-transactions-by-type">
+        <h2 className={SUB_HEADER_LG_CLASS}>Polystrat: Transactions by Agent Type</h2>
+
+        <div className="space-y-6 mt-4">
+          <p>
+            Breaks down total Polystrat (Polymarket) transactions by agent category using
+            agent-level counters. Categories mirror the UI: Traders and Mechs (Prediction Brokers).
+          </p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Classification used</h3>
+          <div className="space-y-1">
+            <p>
+              <strong>Valory trader</strong> agent IDs:{' '}
+              {POLYSTRAT_AGENT_CLASSIFICATION.valory_trader.join(', ')}
+            </p>
+            <p>
+              <strong>Mech</strong> agent IDs: {POLYSTRAT_AGENT_CLASSIFICATION.mech.join(', ')}
+            </p>
+          </div>
+
+          <p>The following query is used to fetch per-agent tx counts:</p>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Agent Performances query</h3>
+
+          <p className="text-purple-600">
+            Subgraph link:{' '}
+            <ExternalLink
+              href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL)}
+              className="mr-2"
+            >
+              Polygon
             </ExternalLink>
           </p>
           <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>

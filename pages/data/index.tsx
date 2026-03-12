@@ -10,9 +10,12 @@ import { MechGlobalsInfo } from 'components/DataPage/MechGlobals';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import { OperatorsInfo } from 'components/DataPage/Operators';
-import { PredictAccuracyInfo } from 'components/DataPage/PredictAccuracy';
-import { PredictAprInfo } from 'components/DataPage/PredictAprInfo';
-import { PredictRoiInfo } from 'components/DataPage/PredictRoiInfo';
+import { OmenstratAccuracyInfo } from 'components/DataPage/OmenstratAccuracy';
+import { OmenstratAprInfo } from 'components/DataPage/OmenstratAprInfo';
+import { OmenstratRoiInfo } from 'components/DataPage/OmenstratRoiInfo';
+import { PolystratAccuracyInfo } from 'components/DataPage/PolystratAccuracy';
+import { PolystratAprInfo } from 'components/DataPage/PolystratAprInfo';
+import { PolystratRoiInfo } from 'components/DataPage/PolystratRoiInfo';
 import { TokenHolders } from 'components/DataPage/TokenHolders';
 import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -40,9 +43,12 @@ const DataVerifyPage = () => (
       <AtaTransactionsInfo />
       <MechTurnoverInfo />
       <OlasStakedInfo />
-      <PredictRoiInfo />
-      <PredictAprInfo />
-      <PredictAccuracyInfo />
+      <OmenstratRoiInfo />
+      <OmenstratAprInfo />
+      <OmenstratAccuracyInfo />
+      <PolystratRoiInfo />
+      <PolystratAprInfo />
+      <PolystratAccuracyInfo />
       <FeesInfo />
     </div>
     <div className="border-b-1.5" />
