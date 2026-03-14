@@ -8,6 +8,21 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'THE_SYNTHESIS',
+    imageSrc: 'synthesis.png',
+    location: 'Remote',
+    date: 'March 13-22, 2026',
+    link: 'https://synthesis.md/hack/#olas',
+    type: 'button',
+    status: 'Ongoing',
+    prizePool: '3,000 USD',
+    projectTags: [
+      'Mech Marketplace - Demand Side',
+      'Mech Marketplace - Supply Side',
+      'Agent Integration via Olas SDK',
+    ],
+  },
+  {
     title: 'Encode Hackathon @ ETH Lisbon 2025',
     imageSrc: 'ethlisbon.png',
     location: 'Lisbon, Portugal',
