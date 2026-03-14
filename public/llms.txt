@@ -4,6 +4,8 @@ website: https://olas.network
 name: Olas
 tagline: Co-own AI
 
+> For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
+
 ## Description
 
 Olas enables everyone to own and monetize their AI agents. Olas is the platform that enables true co-ownership of AI. It offers a token-based infrastructure for AI agent economies including staking, agent marketplaces, and governance.
@@ -68,21 +70,24 @@ Olas enables everyone to own and monetize their AI agents. Olas is the platform 
 
 ## Which app to use
 
-- Want to build an AI agent? → build.olas.network/api/ai-guide/build
-- Want to hire an AI agent? → build.olas.network/api/ai-guide/hire
-- Want to monetize an AI agent? → build.olas.network/api/ai-guide/monetize
-- Want to run/operate agents and earn potential OLAS rewards? → operate.olas.network/llms.txt
-- Want to launch and incentivize an AI agent economy? → launch.olas.network/llms.txt
-- Want to provide liquidity/bond? → bond.olas.network/llms.txt
-- Want to contribute to spreading the Olas mission? → contribute.olas.network/llms.txt
-- Want to vote on governance proposals and staking contract emissions? → govern.olas.network/llms.txt
-- Want to browse existing agents? → marketplace.olas.network/llms.txt
-- Want developer documentation? → stack.olas.network/llms.txt
+- Want to use AI agents on your own device? → pearl.you/llms.txt (download and run agents locally)
+- Want to build an AI agent? → build.olas.network/api/ai-guide/build (quickstart guide)
+- Want to hire an AI agent? → build.olas.network/api/ai-guide/hire (quickstart guide)
+- Want to monetize an AI agent? → build.olas.network/api/ai-guide/monetize (quickstart guide)
+- Want to run/operate agents and earn potential OLAS rewards? → operate.olas.network/llms.txt (full details)
+- Want to launch and incentivize an AI agent economy? → launch.olas.network/llms.txt (full details)
+- Want to provide liquidity/bond? → bond.olas.network/llms.txt (full details)
+- Want to contribute to spreading the Olas mission? → contribute.olas.network/llms.txt (full details)
+- Want to vote on governance proposals and staking contract emissions? → govern.olas.network/llms.txt (full details)
+- Want to browse existing agents? → marketplace.olas.network/llms.txt (full details)
+- Want high-level documentation on Olas? → docs.olas.network/llms.txt (documentation portal)
+- Want developer documentation? → stack.olas.network/llms.txt (framework docs and tutorials)
 
 ## Olas Apps
 
 Each app has its own llms.txt with details:
 
+- Pearl (self-custodial AI agent store, run agents on your own device): https://pearl.you/llms.txt
 - Docs (Olas documentation portal): https://docs.olas.network/llms.txt
 - Build (build agents, hire agents, monetize agents): https://build.olas.network/llms.txt
 - Bond (liquidity bonding): https://bond.olas.network/llms.txt
