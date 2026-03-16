@@ -16,6 +16,18 @@ export const emissionsQuery = gql`
   }
 `;
 
+export const balancerGetPoolQuery = (poolId: string) => gql`
+  query GetPool {
+    pool(id: "${poolId}") {
+      tokens {
+        address
+        balance
+      }
+      totalShares
+    }
+  }
+`;
+
 export const rewardUpdates = (epochs) => gql`
   query RewardUpdates {
     ${epochs.map(

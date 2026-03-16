@@ -14,6 +14,14 @@ type MetaProps = {
   siteImageUrl?: string;
 };
 
+const toAbsoluteImageUrl = (url: string | undefined): string | undefined => {
+  if (!url) return undefined;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const base = SITE_URL.replace(/\/$/, '');
+  const path = url.startsWith('/') ? url : `/${url}`;
+  return `${base}${path}`;
+};
+
 const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
   let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
 
@@ -22,6 +30,8 @@ const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
 
     title = `${getLimitedText(pageTitle, TITLE_CHAR_MAX)} | Olas`;
   }
+
+  const imageUrl = toAbsoluteImageUrl(siteImageUrl) ?? SITE_DEFAULT_IMAGE_URL;
 
   return (
     <Head>
@@ -34,13 +44,13 @@ const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
       <meta property="og:url" content={SITE_URL} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description || SITE_DESCRIPTION} />
-      <meta property="og:image" content={siteImageUrl} />
+      <meta property="og:image" content={imageUrl} />
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={SITE_URL} />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description || SITE_DESCRIPTION} />
-      <meta property="twitter:image" content={siteImageUrl} />
+      <meta property="twitter:image" content={imageUrl} />
     </Head>
   );
 };

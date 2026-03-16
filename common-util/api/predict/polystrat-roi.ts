@@ -17,12 +17,11 @@ import {
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { fetchOlasPriceInUsdFromBalancer } from 'common-util/api/predict/olas-price';
 
 const LIMIT = 1000;
 const PAGES = 10;
 const SCALE = 100n; // 2 decimals
-const OLAS_ADDRESS = '0xfef5d947472e72efbb2e388c730b7428406f2f95';
-const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/polygon-pos?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 
 type TotalMechRequestsResponse = WithMeta<{
   global: {
@@ -58,12 +57,6 @@ type StakingGlobalsResponse = WithMeta<{
     totalRewards: number;
   };
 }>;
-
-type OlasInUsdPriceResponse = {
-  [OLAS_ADDRESS]: {
-    usd: number;
-  };
-};
 
 type MechRequest = {
   parsedRequest: {
@@ -142,7 +135,7 @@ export const fetchPolystratRoi = async (): Promise<
         getPolymarketMarketsDataQuery({ first: 1000, pages: 10 })
       ),
       STAKING_GRAPH_CLIENTS.polygon.request(stakingGlobalsQuery),
-      fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
+      fetchOlasPriceInUsdFromBalancer(),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('polygon'),
     ]);
@@ -168,11 +161,11 @@ export const fetchPolystratRoi = async (): Promise<
       fetchErrors.push('staking:polygon');
     }
 
-    // Handle olasPrice
+    // Handle olasPrice (on-chain via Balancer pool)
     const olasInUsdPriceResult =
-      results[3].status === 'fulfilled' ? (results[3].value as OlasInUsdPriceResponse) : null;
+      results[3].status === 'fulfilled' ? (results[3].value as bigint | null) : null;
     if (!olasInUsdPriceResult) {
-      fetchErrors.push('coingecko:olas-price');
+      fetchErrors.push('onchain:olas-price');
     }
 
     // Handle mechRequests
@@ -236,9 +229,7 @@ export const fetchPolystratRoi = async (): Promise<
       };
     }
 
-    const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18)
-    );
+    const olasInUsdPriceInEth = olasInUsdPriceResult;
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const lastFourDaysRequests = mechRequestsResult.data;

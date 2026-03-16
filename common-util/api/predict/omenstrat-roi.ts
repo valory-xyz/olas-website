@@ -17,12 +17,11 @@ import {
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { fetchOlasPriceInUsdFromBalancer } from 'common-util/api/predict/olas-price';
 
 const LIMIT = 1000;
 const PAGES = 10;
 const SCALE = 100n; // 2 decimals
-const OLAS_ADDRESS = '0xce11e14225575945b8e6dc0d4f2dd4c570f79d9f';
-const COINGECKO_OLAS_IN_USD_PRICE_URL = `https://api.coingecko.com/api/v3/simple/token_price/xdai?contract_addresses=${OLAS_ADDRESS}&vs_currencies=usd`;
 
 type TotalMechRequestsResponse = WithMeta<{
   global: {
@@ -46,12 +45,6 @@ type StakingGlobalsResponse = WithMeta<{
     totalRewards: number;
   };
 }>;
-
-type OlasInUsdPriceResponse = {
-  [OLAS_ADDRESS]: {
-    usd: number;
-  };
-};
 
 type MechRequest = {
   parsedRequest: {
@@ -128,7 +121,7 @@ export const fetchOmenstratRoi = async (): Promise<
       MARKETPLACE_GRAPH_CLIENTS.gnosis.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
-      fetch(COINGECKO_OLAS_IN_USD_PRICE_URL).then((res) => res.json()),
+      fetchOlasPriceInUsdFromBalancer(),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('gnosis'),
     ]);
@@ -154,11 +147,11 @@ export const fetchOmenstratRoi = async (): Promise<
       fetchErrors.push('staking:gnosis');
     }
 
-    // Handle olasPrice
+    // Handle olasPrice (on-chain via Balancer pool)
     const olasInUsdPriceResult =
-      results[3].status === 'fulfilled' ? (results[3].value as OlasInUsdPriceResponse) : null;
+      results[3].status === 'fulfilled' ? (results[3].value as bigint | null) : null;
     if (!olasInUsdPriceResult) {
-      fetchErrors.push('coingecko:olas-price');
+      fetchErrors.push('onchain:olas-price');
     }
 
     // Handle mechRequests
@@ -222,9 +215,7 @@ export const fetchOmenstratRoi = async (): Promise<
       };
     }
 
-    const olasInUsdPriceInEth = BigInt(
-      Math.floor(Number(olasInUsdPriceResult[OLAS_ADDRESS]?.usd || 0) * 1e18)
-    );
+    const olasInUsdPriceInEth = olasInUsdPriceResult;
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const lastFourDaysRequests = mechRequestsResult.data;
@@ -260,7 +251,6 @@ export const fetchOmenstratRoi = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.log('indexingErrors', indexingErrors, 'fetchErrors', fetchErrors);
     console.error('Error fetching Omenstrat ROI:', error);
     return {
       value: null,
