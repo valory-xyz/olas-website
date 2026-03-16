@@ -174,7 +174,6 @@ export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';
 
-// OLAS token address by chain key (source: data/tokens.json)
 type TokenEntry = { key?: string; address?: string };
 export const OLAS_TOKEN_ADDRESS_BY_CHAIN: Record<string, string> = (tokens as TokenEntry[]).reduce(
   (acc, t) => {

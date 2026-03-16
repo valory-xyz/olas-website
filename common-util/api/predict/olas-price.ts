@@ -23,8 +23,7 @@ type BalancerPoolResponse = {
 /**
  * Fetches the current OLAS price in USD using the OLAS-USDC Balancer pool on Base.
  *
- * Return value is the OLAS price in USD scaled by 1e18 (BigInt),
- * matching how Coingecko prices were previously represented.
+ * Return value is the OLAS price in USD scaled by 1e18 (BigInt).
  */
 export const fetchOlasPriceInUsdFromBalancer = async (): Promise<bigint | null> => {
   const client = BALANCER_GRAPH_CLIENTS.base;
@@ -75,14 +74,12 @@ export const fetchOlasPriceInUsdFromBalancer = async (): Promise<bigint | null> 
     }
 
     // For OLAS-USDC pool, counterparty token is effectively USD stable.
-    // Price in USD = counterpartyBalance / olasBalance.
     const priceInUsd = counterpartyBalance / olasBalance;
 
     if (!Number.isFinite(priceInUsd) || priceInUsd <= 0) {
       return null;
     }
 
-    // Scale to 1e18 to match previous representation
     const scaledPrice = BigInt(Math.floor(priceInUsd * 1e18));
     return scaledPrice;
   } catch (error) {
