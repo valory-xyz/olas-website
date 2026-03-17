@@ -17,7 +17,7 @@ import {
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { fetchOlasPriceInUsdFromBalancer } from 'common-util/api/predict/olas-price';
+import { fetchOlasPriceInUsd } from 'common-util/api/predict/olas-price';
 
 const LIMIT = 1000;
 const PAGES = 10;
@@ -135,7 +135,7 @@ export const fetchPolystratRoi = async (): Promise<
         getPolymarketMarketsDataQuery({ first: 1000, pages: 10 })
       ),
       STAKING_GRAPH_CLIENTS.polygon.request(stakingGlobalsQuery),
-      fetchOlasPriceInUsdFromBalancer(),
+      fetchOlasPriceInUsd('polygon'),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('polygon'),
     ]);

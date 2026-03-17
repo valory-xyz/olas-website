@@ -113,5 +113,5 @@ export const autonolasBaseGraphClient = new GraphQLClient(
 );
 
 export const BALANCER_GRAPH_CLIENTS = {
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_BALANCER_URL, requestConfig),
+  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_BALANCER_URL, requestConfig),
 };

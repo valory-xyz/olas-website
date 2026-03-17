@@ -1,3 +1,4 @@
+import { fetchOlasPriceInUsd } from 'common-util/api/predict/olas-price';
 import { DEFAULT_MECH_FEE, PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
@@ -17,7 +18,6 @@ import {
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { fetchOlasPriceInUsdFromBalancer } from 'common-util/api/predict/olas-price';
 
 const LIMIT = 1000;
 const PAGES = 10;
@@ -121,7 +121,7 @@ export const fetchOmenstratRoi = async (): Promise<
       MARKETPLACE_GRAPH_CLIENTS.gnosis.request(totalMechRequestsQuery),
       predictAgentsGraphClient.request(getMarketsAndBetsQuery(marketOpenTimestamp)),
       STAKING_GRAPH_CLIENTS.gnosis.request(stakingGlobalsQuery),
-      fetchOlasPriceInUsdFromBalancer(),
+      fetchOlasPriceInUsd('gnosis'),
       fetchMechRequests(marketOpenTimestamp),
       getChainBlockNumber('gnosis'),
     ]);
@@ -151,7 +151,7 @@ export const fetchOmenstratRoi = async (): Promise<
     const olasInUsdPriceResult =
       results[3].status === 'fulfilled' ? (results[3].value as bigint | null) : null;
     if (!olasInUsdPriceResult) {
-      fetchErrors.push('onchain:olas-price');
+      fetchErrors.push('balancer:olas-price');
     }
 
     // Handle mechRequests

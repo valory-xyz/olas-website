@@ -1,5 +1,4 @@
 import resources from 'data/resources.json';
-import tokens from 'data/tokens.json';
 
 export const DOCS_BASE_URL = 'https://docs.olas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
@@ -174,18 +173,10 @@ export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';
 
-type TokenEntry = { key?: string; address?: string };
-export const OLAS_TOKEN_ADDRESS_BY_CHAIN: Record<string, string> = (tokens as TokenEntry[]).reduce(
-  (acc, t) => {
-    if (t.key && t.address) acc[t.key] = t.address;
-    return acc;
-  },
-  {} as Record<string, string>
-);
-
-// Balancer pool used for on-chain OLAS/USD price (Base OLAS-USDC). Used by Predict ROI.
-export const BASE_BALANCER_OLAS_USDC_POOL_ID =
-  '0x5332584890d6e415a6dc910254d6430b8aab7e69000200000000000000000103';
+// Balancer pool for on-chain OLAS/USD price. Used by Predict ROI (Omenstrat on Gnosis).
+// Gnosis: OLAS-WXDAI (WXDAI ≈ 1 USD). Polystrat (Polygon) uses this same oracle (no OLAS/USD pool on Polygon).
+export const GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID =
+  '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067';
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 

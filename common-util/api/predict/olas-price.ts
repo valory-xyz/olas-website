@@ -1,12 +1,8 @@
-import {
-  BASE_BALANCER_OLAS_USDC_POOL_ID,
-  OLAS_TOKEN_ADDRESS_BY_CHAIN,
-} from 'common-util/constants';
+import { GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID } from 'common-util/constants';
 import { BALANCER_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { balancerGetPoolQuery } from 'common-util/graphql/queries';
 
-const BASE_CHAIN_KEY = 'base';
-const OLAS_ADDRESS_BASE = OLAS_TOKEN_ADDRESS_BY_CHAIN[BASE_CHAIN_KEY];
+const GNOSIS_OLAS_TOKEN_ADDRESS = '0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f';
 
 type BalancerPoolToken = {
   address: string;
@@ -21,26 +17,24 @@ type BalancerPoolResponse = {
 };
 
 /**
- * Fetches the current OLAS price in USD using the OLAS-USDC Balancer pool on Base.
- *
+ * Fetches the current OLAS price in USD for Predict ROI.
+ * - Omenstrat (Gnosis): uses Gnosis Balancer OLAS-WXDAI (WXDAI ≈ 1 USD).
+ * - Polystrat (Polygon): no OLAS/USD pool on Polygon, so uses the same Gnosis oracle.
  * Return value is the OLAS price in USD scaled by 1e18 (BigInt).
  */
-export const fetchOlasPriceInUsdFromBalancer = async (): Promise<bigint | null> => {
-  const client = BALANCER_GRAPH_CLIENTS.base;
+export const fetchOlasPriceInUsd = async (chain: 'gnosis' | 'polygon'): Promise<bigint | null> => {
+  const client = BALANCER_GRAPH_CLIENTS.gnosis;
 
   if (!client) {
-    console.error('Balancer client for Base is not configured');
+    console.error('Balancer client for Gnosis is not configured');
     return null;
   }
 
-  if (!OLAS_ADDRESS_BASE) {
-    console.error('OLAS token address for Base is not configured in constants');
-    return null;
-  }
+  const olasAddress = GNOSIS_OLAS_TOKEN_ADDRESS;
 
   try {
     const data = (await client.request(
-      balancerGetPoolQuery(BASE_BALANCER_OLAS_USDC_POOL_ID)
+      balancerGetPoolQuery(GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID)
     )) as BalancerPoolResponse;
 
     const poolTokens = data.pool?.tokens || [];
@@ -50,40 +44,34 @@ export const fetchOlasPriceInUsdFromBalancer = async (): Promise<bigint | null> 
     }
 
     const olasToken = poolTokens.find(
-      (token) => token.address.toLowerCase() === OLAS_ADDRESS_BASE.toLowerCase()
+      (token) => token.address.toLowerCase() === olasAddress.toLowerCase()
     );
-    const otherToken = poolTokens.find(
-      (token) => token.address.toLowerCase() !== OLAS_ADDRESS_BASE.toLowerCase()
+    const usdcToken = poolTokens.find(
+      (token) => token.address.toLowerCase() !== olasAddress.toLowerCase()
     );
 
-    if (!olasToken || !otherToken) {
-      console.error('Could not identify OLAS and counterparty token in Balancer pool');
+    if (!olasToken || !usdcToken) {
+      console.error('Could not identify OLAS and USD-stable token in Balancer pool');
       return null;
     }
 
     const olasBalance = Number(olasToken.balance || 0);
-    const counterpartyBalance = Number(otherToken.balance || 0);
+    const usdcBalance = Number(usdcToken.balance || 0);
 
-    if (!Number.isFinite(olasBalance) || !Number.isFinite(counterpartyBalance)) {
+    if (!Number.isFinite(olasBalance) || !Number.isFinite(usdcBalance)) {
       console.error('Invalid Balancer balances for OLAS price');
       return null;
     }
 
-    if (olasBalance <= 0 || counterpartyBalance <= 0) {
+    if (olasBalance <= 0 || usdcBalance <= 0) {
       return null;
     }
 
-    // For OLAS-USDC pool, counterparty token is effectively USD stable.
-    const priceInUsd = counterpartyBalance / olasBalance;
-
-    if (!Number.isFinite(priceInUsd) || priceInUsd <= 0) {
-      return null;
-    }
-
+    const priceInUsd = usdcBalance / olasBalance;
     const scaledPrice = BigInt(Math.floor(priceInUsd * 1e18));
     return scaledPrice;
   } catch (error) {
-    console.error('Error fetching OLAS price from Balancer:', error);
+    console.error(`Error fetching OLAS price from Balancer (${chain}):`, error);
     return null;
   }
 };
