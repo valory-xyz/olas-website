@@ -31,11 +31,14 @@ export const TOKENOMICS_GRAPH_CLIENTS = {
 };
 
 export const STAKING_GRAPH_CLIENTS = {
+  ethereum: new GraphQLClient(process.env.NEXT_PUBLIC_ETHEREUM_STAKING_SUBGRAPH_URL, requestConfig),
   mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL, requestConfig),
   optimism: new GraphQLClient(process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL, requestConfig),
   gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL, requestConfig),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL, requestConfig),
   polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL, requestConfig),
+  arbitrum: new GraphQLClient(process.env.NEXT_PUBLIC_ARBITRUM_STAKING_SUBGRAPH_URL, requestConfig),
+  celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_STAKING_SUBGRAPH_URL, requestConfig),
 };
 
 export const REGISTRY_GRAPH_CLIENTS = {
