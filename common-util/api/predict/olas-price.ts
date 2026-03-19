@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import {
   CHAIN_CONFIG,
   CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD,
@@ -9,6 +8,7 @@ import {
 } from 'common-util/constants';
 import { BALANCER_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { balancerGetPoolQuery } from 'common-util/graphql/queries';
+import Web3 from 'web3';
 
 type BalancerPoolToken = {
   address: string;
@@ -23,6 +23,12 @@ type BalancerPoolResponse = {
 };
 
 const PRICE_SCALE = 10n ** 18n;
+
+const parseBalanceAsBigInt = (balance: string): bigint => {
+  const [intPart, decPart = ''] = balance.split('.');
+  const padded = decPart.padEnd(18, '0').slice(0, 18);
+  return BigInt(intPart + padded);
+};
 
 const CHAINLINK_AGGREGATOR_V3_ABI = [
   {
@@ -112,8 +118,8 @@ export const fetchOlasPriceInUsd = async (chain: 'gnosis' | 'polygon'): Promise<
       return null;
     }
 
-    const olasBalance = BigInt(olasToken.balance);
-    const counterpartyBalance = BigInt(otherToken.balance);
+    const olasBalance = parseBalanceAsBigInt(olasToken.balance);
+    const counterpartyBalance = parseBalanceAsBigInt(otherToken.balance);
 
     if (olasBalance <= 0n || counterpartyBalance <= 0n) {
       return null;
