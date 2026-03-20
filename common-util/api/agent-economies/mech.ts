@@ -148,9 +148,7 @@ const fetchMechGlobals = async (): Promise<
     console.error('Error fetching mech globals from subgraphs:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(
-        chains.map((chain) => `mech:${chain}`).join(', ')
-      ),
+      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
     };
   }
 };
@@ -229,9 +227,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
 
   try {
     const queryPromises = chains.map((chain) =>
-      allClients[chain].request(
-        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-      )
+      allClients[chain].request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)))
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -288,9 +284,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     console.error('Error fetching categorized mech requests:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(
-        chains.map((chain) => `mech:${chain}`).join(', ')
-      ),
+      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
     };
   }
 };

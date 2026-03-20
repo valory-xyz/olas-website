@@ -121,15 +121,9 @@ export const legacyMechFeesGraphClient = new GraphQLClient(
 
 /** Mech activity subgraphs on Ethereum, Celo, Arbitrum */
 export const MECH_ACTIVITY_GRAPH_CLIENTS = {
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ETHEREUM_MECH_SUBGRAPH_URL,
-    requestConfig
-  ),
+  ethereum: new GraphQLClient(process.env.NEXT_PUBLIC_ETHEREUM_MECH_SUBGRAPH_URL, requestConfig),
   celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_MECH_SUBGRAPH_URL, requestConfig),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ARBITRUM_MECH_SUBGRAPH_URL,
-    requestConfig
-  ),
+  arbitrum: new GraphQLClient(process.env.NEXT_PUBLIC_ARBITRUM_MECH_SUBGRAPH_URL, requestConfig),
 };
 
 export const autonolasGraphClient = new GraphQLClient(

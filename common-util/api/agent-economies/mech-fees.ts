@@ -31,27 +31,27 @@ export const fetchMechFeeMetrics = async () => {
       keyof typeof MECH_FEES_GRAPH_CLIENTS
     >;
 
-    const allResults = (await Promise.allSettled([
+    const allResults = await Promise.allSettled([
       ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesTotalsQuery)),
       legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
       ...chainKeys.map((chain) => getChainBlockNumber(chain)),
-    ])) as [
-      ...PromiseSettledResult<MechFeesResult>[],
-      PromiseSettledResult<LegacyMechFeesResult>,
-      ...PromiseSettledResult<number | null>[],
-    ];
+    ]);
 
-    const newFeeResults = allResults.slice(0, chainKeys.length) as PromiseSettledResult<MechFeesResult>[];
+    const newFeeResults = allResults.slice(
+      0,
+      chainKeys.length
+    ) as PromiseSettledResult<MechFeesResult>[];
     const legacyResult = allResults[chainKeys.length] as PromiseSettledResult<LegacyMechFeesResult>;
-    const blockResults = allResults.slice(chainKeys.length + 1) as PromiseSettledResult<number | null>[];
+    const blockResults = allResults.slice(chainKeys.length + 1) as PromiseSettledResult<
+      number | null
+    >[];
 
     let inUsd = 0;
     let outUsd = 0;
 
     chainKeys.forEach((chain, i) => {
       const res = newFeeResults[i];
-      const latestBlock =
-        blockResults[i].status === 'fulfilled' ? blockResults[i].value : null;
+      const latestBlock = blockResults[i].status === 'fulfilled' ? blockResults[i].value : null;
 
       if (res.status === 'rejected') {
         fetchErrors.push(`mechFees:${chain}`);
@@ -83,12 +83,8 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(gnosisBlock, legacy?._meta?.block?.number, 'legacy')) {
         laggingSubgraphs.push('mechFees:legacy');
       }
-      inUsd += Number(
-        (BigInt(legacy?.global?.totalFeesIn || '0') / BigInt(1e18)).toString(),
-      );
-      outUsd += Number(
-        (BigInt(legacy?.global?.totalFeesOut || '0') / BigInt(1e18)).toString(),
-      );
+      inUsd += Number((BigInt(legacy?.global?.totalFeesIn || '0') / BigInt(1e18)).toString());
+      outUsd += Number((BigInt(legacy?.global?.totalFeesOut || '0') / BigInt(1e18)).toString());
     }
 
     const unclaimed = Math.max(inUsd - outUsd, 0);
