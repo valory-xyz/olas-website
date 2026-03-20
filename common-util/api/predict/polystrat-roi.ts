@@ -1,3 +1,4 @@
+import { fetchOlasPriceInUsd } from 'common-util/api/predict/olas-price';
 import { DEFAULT_MECH_FEE, PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
@@ -17,7 +18,6 @@ import {
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { fetchOlasPriceInUsd } from 'common-util/api/predict/olas-price';
 
 const LIMIT = 1000;
 const PAGES = 10;
@@ -229,7 +229,7 @@ export const fetchPolystratRoi = async (): Promise<
       };
     }
 
-    const olasInUsdPriceInEth = olasInUsdPriceResult;
+    const olasUsdPriceScaled = olasInUsdPriceResult;
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const lastFourDaysRequests = mechRequestsResult.data;
@@ -262,7 +262,7 @@ export const fetchPolystratRoi = async (): Promise<
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
     const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0) * BigInt(1e12);
     const totalOlasRewardsPayoutInUsd =
-      (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasInUsdPriceInEth) / BigInt(1e18);
+      (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasUsdPriceScaled) / BigInt(1e18);
 
     const partialRoi = ((totalMarketPayout - totalCosts) * BigInt(100) * SCALE) / totalCosts;
     const finalRoi =

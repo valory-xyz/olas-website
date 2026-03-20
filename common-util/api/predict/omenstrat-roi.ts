@@ -215,7 +215,7 @@ export const fetchOmenstratRoi = async (): Promise<
       };
     }
 
-    const olasInUsdPriceInEth = olasInUsdPriceResult;
+    const olasUsdPriceScaled = olasInUsdPriceResult;
 
     const totalMechRequests = totalRequestsResult.global.totalRequests;
     const lastFourDaysRequests = mechRequestsResult.data;
@@ -236,7 +236,7 @@ export const fetchOmenstratRoi = async (): Promise<
       BigInt(totalMechRequests - requestsToSubtract) * DEFAULT_MECH_FEE;
     const totalMarketPayout = BigInt(marketsAndBetsResult.global?.totalPayout || 0);
     const totalOlasRewardsPayoutInUsd =
-      (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasInUsdPriceInEth) / BigInt(1e18);
+      (BigInt(totalRewardsResult.global?.totalRewards || 0) * olasUsdPriceScaled) / BigInt(1e18);
 
     const partialRoi = ((totalMarketPayout - totalCosts) * BigInt(100) * SCALE) / totalCosts;
     const finalRoi =

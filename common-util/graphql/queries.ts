@@ -23,7 +23,6 @@ export const balancerGetPoolQuery = (poolId: string) => gql`
         address
         balance
       }
-      totalShares
     }
   }
 `;

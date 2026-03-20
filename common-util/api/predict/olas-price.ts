@@ -48,29 +48,57 @@ const CHAINLINK_AGGREGATOR_V3_ABI = [
 
 const pow10 = (exp: number) => 10n ** BigInt(exp);
 
+// Cache POL/USD for a short period to reduce redundant RPC calls.
+const POL_USD_PRICE_CACHE_DURATION_MS = 2 * 60 * 1000; // 2 minutes
+let polUsdCache: { value: bigint | null; lastUpdated: number } | null = null;
+let polUsdPromiseCache: Promise<bigint | null> | null = null;
+
+let polygonPolUsdWeb3: Web3 | null = null;
+let polygonPolUsdFeed: any | null = null;
+let polygonPolUsdFeedRpcUrl: string | null = null;
+
 const getPolygonPolUsdPriceScaled = async (): Promise<bigint | null> => {
   const rpcUrl = CHAIN_CONFIG.polygon?.rpc;
   if (!rpcUrl) return null;
 
-  try {
-    const web3 = new Web3(rpcUrl);
-    const feed = new web3.eth.Contract(
-      CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
-      CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
-    );
+  const currentTime = Date.now();
 
-    const latest: any = await feed.methods.latestRoundData().call();
-    const answerStr = Array.isArray(latest) ? latest[1] : latest?.answer;
-    if (typeof answerStr !== 'string') return null;
-
-    const answer = BigInt(answerStr);
-    if (answer <= 0n) return null;
-
-    return (answer * PRICE_SCALE) / pow10(CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD);
-  } catch (error) {
-    console.error('Error fetching Polygon POL/USD from Chainlink:', error);
-    return null;
+  if (polUsdCache && currentTime - polUsdCache.lastUpdated < POL_USD_PRICE_CACHE_DURATION_MS) {
+    return polUsdCache.value;
   }
+
+  if (polUsdPromiseCache) return polUsdPromiseCache;
+
+  polUsdPromiseCache = (async () => {
+    try {
+      if (!polygonPolUsdWeb3 || polygonPolUsdFeedRpcUrl !== rpcUrl || !polygonPolUsdFeed) {
+        polygonPolUsdWeb3 = new Web3(rpcUrl);
+        polygonPolUsdFeed = new polygonPolUsdWeb3.eth.Contract(
+          CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
+          CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
+        );
+        polygonPolUsdFeedRpcUrl = rpcUrl;
+      }
+
+      const latest: any = await polygonPolUsdFeed.methods.latestRoundData().call();
+      const answerStr = Array.isArray(latest) ? latest[1] : latest?.answer;
+      if (typeof answerStr !== 'string') return null;
+
+      const answer = BigInt(answerStr);
+      if (answer <= 0n) return null;
+
+      return (answer * PRICE_SCALE) / pow10(CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD);
+    } catch (error) {
+      console.error('Error fetching Polygon POL/USD from Chainlink:', error);
+      return null;
+    } finally {
+      polUsdPromiseCache = null;
+    }
+  })();
+
+  const result = await polUsdPromiseCache;
+  polUsdCache = { value: result, lastUpdated: currentTime };
+  return result;
 };
 
 /**
@@ -88,15 +116,9 @@ export const fetchOlasPriceInUsd = async (chain: 'gnosis' | 'polygon'): Promise<
     return null;
   }
 
-  const client =
-    chain === 'gnosis' ? BALANCER_GRAPH_CLIENTS.gnosis : BALANCER_GRAPH_CLIENTS.polygon;
+  const client = BALANCER_GRAPH_CLIENTS[chain];
   const poolId =
     chain === 'gnosis' ? GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID : POLYGON_BALANCER_OLAS_WMATIC_POOL_ID;
-
-  if (!client) {
-    console.error(`Balancer client for ${chain} is not configured`);
-    return null;
-  }
 
   try {
     const data = (await client.request(balancerGetPoolQuery(poolId))) as BalancerPoolResponse;
@@ -119,23 +141,27 @@ export const fetchOlasPriceInUsd = async (chain: 'gnosis' | 'polygon'): Promise<
     }
 
     const olasBalance = parseBalanceAsBigInt(olasToken.balance);
-    const counterpartyBalance = parseBalanceAsBigInt(otherToken.balance);
+    const otherTokenBalance = parseBalanceAsBigInt(otherToken.balance);
 
-    if (olasBalance <= 0n || counterpartyBalance <= 0n) {
+    if (olasBalance <= 0n || otherTokenBalance <= 0n) {
       return null;
     }
 
     if (chain === 'gnosis') {
-      return (counterpartyBalance * PRICE_SCALE) / olasBalance;
+      return (otherTokenBalance * PRICE_SCALE) / olasBalance;
     }
 
-    // `polygon`: WMATIC (18 decimals) -> USD via Chainlink POL/USD
-    const polUsdScaled = await getPolygonPolUsdPriceScaled();
-    if (!polUsdScaled) return null;
+    if (chain === 'polygon') {
+      // `polygon`: WMATIC (18 decimals) -> USD via Chainlink POL/USD
+      const polUsdScaled = await getPolygonPolUsdPriceScaled();
+      if (!polUsdScaled) return null;
 
-    const olasInMaticScaled = (counterpartyBalance * PRICE_SCALE) / olasBalance;
+      const olasInMaticScaled = (otherTokenBalance * PRICE_SCALE) / olasBalance;
 
-    return (olasInMaticScaled * polUsdScaled) / PRICE_SCALE;
+      return (olasInMaticScaled * polUsdScaled) / PRICE_SCALE;
+    }
+
+    return null;
   } catch (error) {
     console.error(`Error fetching OLAS price from Balancer (${chain}):`, error);
     return null;
