@@ -2,7 +2,6 @@ import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
-  MECH_ACTIVITY_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
@@ -99,7 +98,7 @@ type MechGlobalsResult = WithMeta<{
 const fetchMechGlobals = async (): Promise<
   MetricWithStatus<{ requests: number; deliveries: number } | null>
 > => {
-  const allClients = { ...MARKETPLACE_GRAPH_CLIENTS, ...MECH_ACTIVITY_GRAPH_CLIENTS };
+  const allClients = MARKETPLACE_GRAPH_CLIENTS;
   const chains = Object.keys(allClients);
 
   const indexingErrors: string[] = [];
@@ -213,7 +212,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
     governatooorrTxs: number;
   } | null>
 > => {
-  const allClients = { ...MARKETPLACE_GRAPH_CLIENTS, ...MECH_ACTIVITY_GRAPH_CLIENTS };
+  const allClients = MARKETPLACE_GRAPH_CLIENTS;
   const chains = Object.keys(allClients);
 
   const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
