@@ -165,7 +165,7 @@ export const fetchPolystratRoi = async (): Promise<
     const olasInUsdPriceResult =
       results[3].status === 'fulfilled' ? (results[3].value as bigint | null) : null;
     if (!olasInUsdPriceResult) {
-      fetchErrors.push('onchain:olas-price');
+      fetchErrors.push('balancer:olas-price');
     }
 
     // Handle mechRequests
