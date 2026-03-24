@@ -48,11 +48,6 @@ const CHAINLINK_AGGREGATOR_V3_ABI = [
 
 const pow10 = (exp: number) => 10n ** BigInt(exp);
 
-// Cache POL/USD for a short period to reduce redundant RPC calls.
-const POL_USD_PRICE_CACHE_DURATION_MS = 2 * 60 * 1000; // 2 minutes
-let polUsdCache: { value: bigint | null; lastUpdated: number } | null = null;
-let polUsdPromiseCache: Promise<bigint | null> | null = null;
-
 let polygonPolUsdWeb3: Web3 | null = null;
 let polygonPolUsdFeed: any | null = null;
 let polygonPolUsdFeedRpcUrl: string | null = null;
@@ -61,44 +56,28 @@ const getPolygonPolUsdPriceScaled = async (): Promise<bigint | null> => {
   const rpcUrl = CHAIN_CONFIG.polygon?.rpc;
   if (!rpcUrl) return null;
 
-  const currentTime = Date.now();
-
-  if (polUsdCache && currentTime - polUsdCache.lastUpdated < POL_USD_PRICE_CACHE_DURATION_MS) {
-    return polUsdCache.value;
-  }
-
-  if (polUsdPromiseCache) return polUsdPromiseCache;
-
-  polUsdPromiseCache = (async () => {
-    try {
-      if (!polygonPolUsdWeb3 || polygonPolUsdFeedRpcUrl !== rpcUrl || !polygonPolUsdFeed) {
-        polygonPolUsdWeb3 = new Web3(rpcUrl);
-        polygonPolUsdFeed = new polygonPolUsdWeb3.eth.Contract(
-          CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
-          CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
-        );
-        polygonPolUsdFeedRpcUrl = rpcUrl;
-      }
-
-      const latest: any = await polygonPolUsdFeed.methods.latestRoundData().call();
-      const answerStr = Array.isArray(latest) ? latest[1] : latest?.answer;
-      if (typeof answerStr !== 'string') return null;
-
-      const answer = BigInt(answerStr);
-      if (answer <= 0n) return null;
-
-      return (answer * PRICE_SCALE) / pow10(CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD);
-    } catch (error) {
-      console.error('Error fetching Polygon POL/USD from Chainlink:', error);
-      return null;
-    } finally {
-      polUsdPromiseCache = null;
+  try {
+    if (!polygonPolUsdWeb3 || polygonPolUsdFeedRpcUrl !== rpcUrl || !polygonPolUsdFeed) {
+      polygonPolUsdWeb3 = new Web3(rpcUrl);
+      polygonPolUsdFeed = new polygonPolUsdWeb3.eth.Contract(
+        CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
+        CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
+      );
+      polygonPolUsdFeedRpcUrl = rpcUrl;
     }
-  })();
 
-  const result = await polUsdPromiseCache;
-  polUsdCache = { value: result, lastUpdated: currentTime };
-  return result;
+    const latest: any = await polygonPolUsdFeed.methods.latestRoundData().call();
+    const answerRaw = Array.isArray(latest) ? latest[1] : latest?.answer;
+    if (answerRaw === null || answerRaw === undefined) return null;
+
+    const answer = BigInt(answerRaw);
+    if (answer <= 0n) return null;
+
+    return (answer * PRICE_SCALE) / pow10(CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD);
+  } catch (error) {
+    console.error('Error fetching Polygon POL/USD from Chainlink:', error);
+    return null;
+  }
 };
 
 /**
