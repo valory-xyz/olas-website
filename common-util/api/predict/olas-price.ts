@@ -48,25 +48,17 @@ const CHAINLINK_AGGREGATOR_V3_ABI = [
 
 const pow10 = (exp: number) => 10n ** BigInt(exp);
 
-let polygonPolUsdWeb3: Web3 | null = null;
-let polygonPolUsdFeed: any | null = null;
-let polygonPolUsdFeedRpcUrl: string | null = null;
-
 const getPolygonPolUsdPriceScaled = async (): Promise<bigint | null> => {
   const rpcUrl = CHAIN_CONFIG.polygon?.rpc;
   if (!rpcUrl) return null;
 
   try {
-    if (!polygonPolUsdWeb3 || polygonPolUsdFeedRpcUrl !== rpcUrl || !polygonPolUsdFeed) {
-      polygonPolUsdWeb3 = new Web3(rpcUrl);
-      polygonPolUsdFeed = new polygonPolUsdWeb3.eth.Contract(
-        CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
-        CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
-      );
-      polygonPolUsdFeedRpcUrl = rpcUrl;
-    }
-
-    const latest: any = await polygonPolUsdFeed.methods.latestRoundData().call();
+    const web3 = new Web3(rpcUrl);
+    const feed = new web3.eth.Contract(
+      CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
+      CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
+    );
+    const latest: any = await feed.methods.latestRoundData().call();
     const answerRaw = Array.isArray(latest) ? latest[1] : latest?.answer;
     if (answerRaw === null || answerRaw === undefined) return null;
 
