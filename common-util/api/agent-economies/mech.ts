@@ -1,9 +1,6 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
-import {
-  MARKETPLACE_GRAPH_CLIENTS,
-  REGISTRY_GRAPH_CLIENTS,
-} from 'common-util/graphql/client';
+import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -78,7 +75,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching mech daily agent performances:', error);
+    console.error('Error fetching marketplace daily agent performances:', error);
     return {
       value: null,
       status: getFetchErrorAndCreateStaleStatus(
@@ -120,18 +117,18 @@ const fetchMechGlobals = async (): Promise<
       const blockResult = results[index + chains.length];
 
       if (queryResult.status === 'rejected') {
-        console.error(`mech:${chain}`, queryResult.reason);
-        fetchErrors.push(`mech:${chain}`);
+        console.error(`marketplace:${chain}`, queryResult.reason);
+        fetchErrors.push(`marketplace:${chain}`);
       } else {
         const data = queryResult.value as MechGlobalsResult;
         const chainBlock =
           blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${chain}`);
+          indexingErrors.push(`marketplace:${chain}`);
         }
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(`mech:${chain}`);
+          laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
         totalRequests += Number(data.global?.totalRequests ?? 0);
@@ -144,10 +141,12 @@ const fetchMechGlobals = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching mech globals from subgraphs:', error);
+    console.error('Error fetching marketplace globals from subgraphs:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
+      status: getFetchErrorAndCreateStaleStatus(
+        chains.map((chain) => `marketplace:${chain}`).join(', ')
+      ),
     };
   }
 };
@@ -204,7 +203,7 @@ type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
 }>;
 
-// Classified totals derived from subgraphs (Mech + Mech-Marketplace)
+// Classified totals derived from subgraphs (Marketplace)
 const fetchCategorizedRequestTotals = async (): Promise<
   MetricWithStatus<{
     predictTxs: number;
@@ -249,18 +248,18 @@ const fetchCategorizedRequestTotals = async (): Promise<
       const blockResult = results[index + chains.length];
 
       if (queryResult.status === 'rejected') {
-        console.error(`mech:${chain}`, queryResult.reason);
-        fetchErrors.push(`mech:${chain}`);
+        console.error(`marketplace:${chain}`, queryResult.reason);
+        fetchErrors.push(`marketplace:${chain}`);
       } else {
         const data = queryResult.value as MarketplaceRequestsPerAgentsResult;
         const chainBlock =
           blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
         if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`mech:${chain}`);
+          indexingErrors.push(`marketplace:${chain}`);
         }
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(`mech:${chain}`);
+          laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
         addCounts(data.requestsPerAgents);
@@ -280,10 +279,12 @@ const fetchCategorizedRequestTotals = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching categorized mech requests:', error);
+    console.error('Error fetching categorized marketplace requests:', error);
     return {
       value: null,
-      status: getFetchErrorAndCreateStaleStatus(chains.map((chain) => `mech:${chain}`).join(', ')),
+      status: getFetchErrorAndCreateStaleStatus(
+        chains.map((chain) => `marketplace:${chain}`).join(', ')
+      ),
     };
   }
 };
@@ -348,8 +349,8 @@ export const fetchMechMetrics = async () => {
       },
     };
   } catch (error) {
-    console.error('Error fetching all mech metrics:', error);
-    const errorStatus = getFetchErrorAndCreateStaleStatus('mech:all');
+    console.error('Error fetching all marketplace metrics:', error);
+    const errorStatus = getFetchErrorAndCreateStaleStatus('marketplace:all');
     const errorMetric = { value: null, status: errorStatus };
     return {
       dailyActiveAgents: errorMetric,
