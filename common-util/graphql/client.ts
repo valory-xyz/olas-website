@@ -105,20 +105,20 @@ export const MECH_FEES_GRAPH_CLIENTS = {
   ),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL, requestConfig),
   ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_ETHEREUM_SUBGRAPH,
+    process.env.NEXT_PUBLIC_MECH_FEES_ETHEREUM_SUBGRAPH_URL,
     requestConfig
   ),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_CELO_SUBGRAPH, requestConfig),
+  celo: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_CELO_SUBGRAPH_URL, requestConfig),
   arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH,
+    process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH_URL,
     requestConfig
   ),
   polygon: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH,
+    process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL,
     requestConfig
   ),
   optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH,
+    process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH_URL,
     requestConfig
   ),
 };
