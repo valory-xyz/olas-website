@@ -50,8 +50,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const illustrationWidth = definition.illustrationWidth ?? 380;
     const illustration = routeKey
-      ? loadIllustration(`/images/og/${routeKey}.png`, illustrationWidth) ??
-        loadIllustration(`/images/og/${routeKey}/${routeKey.split('/').pop()}.png`, illustrationWidth)
+      ? (loadIllustration(`/images/og/${routeKey}.png`, illustrationWidth) ??
+        loadIllustration(
+          `/images/og/${routeKey}/${routeKey.split('/').pop()}.png`,
+          illustrationWidth
+        ))
       : null;
 
     const imageResponse = new ImageResponse(

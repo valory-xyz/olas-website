@@ -8,7 +8,6 @@ export const OG_SITE_URL = 'https://olas.network';
  */
 export const OG_BACKGROUND_IMAGE_PATH = '/images/og/background.png';
 
-
 export const OG_CACHE_CONTROL = 'public, s-maxage=86400, stale-while-revalidate';
 
 export const absUrl = (path: string) =>

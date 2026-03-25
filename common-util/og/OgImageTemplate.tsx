@@ -18,15 +18,30 @@ const OLAS_TEXT_PATH =
 function olasWordmark(w: number, h: number) {
   return (
     <svg width={w} height={h} viewBox="0 0 154 39" fill="none">
-      <path d={OLAS_TEXT_PATH} fill='#7E22CE' />
-      <path fillRule="evenodd" clipRule="evenodd" d="M0 12.57V3.35059H42.067V12.57H0Z" fill='#7E22CE' />
-      <path fillRule="evenodd" clipRule="evenodd" d="M0 24.4016V15.182H42.067V24.4016H0Z" fill='#7E22CE' />
-      <path fillRule="evenodd" clipRule="evenodd" d="M0 36.2328V27.0132H18.8195V36.2328H0Z" fill='#7E22CE' />
+      <path d={OLAS_TEXT_PATH} fill="#7E22CE" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 12.57V3.35059H42.067V12.57H0Z"
+        fill="#7E22CE"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 24.4016V15.182H42.067V24.4016H0Z"
+        fill="#7E22CE"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 36.2328V27.0132H18.8195V36.2328H0Z"
+        fill="#7E22CE"
+      />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M23.2476 36.2328V27.0132H42.067V36.2328H23.2476Z"
-        fill='#7E22CE'
+        fill="#7E22CE"
       />
     </svg>
   );
@@ -58,7 +73,7 @@ export function OgImageTemplate({
           justifyContent: 'center',
           width: '100%',
           height: '100%',
-          gap: 64
+          gap: 64,
         }}
       >
         {olasWordmark(462, 117)}
@@ -66,7 +81,7 @@ export function OgImageTemplate({
           style={{
             fontSize: 45,
             fontFamily: 'Inter',
-            fontWeight: 550,
+            fontWeight: 500,
             color: '#574C67',
             textAlign: 'center',
           }}

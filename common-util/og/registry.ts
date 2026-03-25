@@ -47,8 +47,7 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
   },
   'agents-unleashed': {
     title: 'Agents Unleashed',
-    description:
-      'Join Olas as a Bonder — discounted OLAS, liquidity, rewards in AI and crypto.',
+    description: 'Join Olas as a Bonder — discounted OLAS, liquidity, rewards in AI and crypto.',
     template: 'page',
     snapshots: [],
   },
