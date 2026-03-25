@@ -82,6 +82,15 @@ export const MARKETPLACE_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL,
     requestConfig
   ),
+  ethereum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_ETHEREUM_MARKETPLACE_SUBGRAPH_URL,
+    requestConfig
+  ),
+  celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_MARKETPLACE_SUBGRAPH_URL, requestConfig),
+  arbitrum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_ARBITRUM_MARKETPLACE_SUBGRAPH_URL,
+    requestConfig
+  ),
 };
 
 export const BABYDEGEN_GRAPH_CLIENTS = {
@@ -98,6 +107,23 @@ export const MECH_FEES_GRAPH_CLIENTS = {
     requestConfig
   ),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL, requestConfig),
+  ethereum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_MECH_FEES_ETHEREUM_SUBGRAPH_URL,
+    requestConfig
+  ),
+  celo: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_CELO_SUBGRAPH_URL, requestConfig),
+  arbitrum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH_URL,
+    requestConfig
+  ),
+  polygon: new GraphQLClient(
+    process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL,
+    requestConfig
+  ),
+  optimism: new GraphQLClient(
+    process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH_URL,
+    requestConfig
+  ),
 };
 
 export const legacyMechFeesGraphClient = new GraphQLClient(

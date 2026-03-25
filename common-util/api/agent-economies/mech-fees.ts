@@ -27,71 +27,65 @@ export const fetchMechFeeMetrics = async () => {
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [gnosisNew, baseNew, legacy, gnosisBlock, baseBlock] = (await Promise.allSettled([
-      MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesTotalsQuery),
-      MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesTotalsQuery),
+    const chainKeys = Object.keys(MECH_FEES_GRAPH_CLIENTS) as Array<
+      keyof typeof MECH_FEES_GRAPH_CLIENTS
+    >;
+
+    const allResults = await Promise.allSettled([
+      ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesTotalsQuery)),
       legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
-      getChainBlockNumber('gnosis'),
-      getChainBlockNumber('base'),
-    ])) as [
-      PromiseSettledResult<MechFeesResult>,
-      PromiseSettledResult<MechFeesResult>,
-      PromiseSettledResult<LegacyMechFeesResult>,
-      PromiseSettledResult<number | null>,
-      PromiseSettledResult<number | null>,
-    ];
+      ...chainKeys.map((chain) => getChainBlockNumber(chain)),
+    ]);
 
-    const gnosisBlockNumber = gnosisBlock.status === 'fulfilled' ? gnosisBlock.value : null;
-    const baseBlockNumber = baseBlock.status === 'fulfilled' ? baseBlock.value : null;
+    const newFeeResults = allResults.slice(
+      0,
+      chainKeys.length
+    ) as PromiseSettledResult<MechFeesResult>[];
+    const legacyResult = allResults[chainKeys.length] as PromiseSettledResult<LegacyMechFeesResult>;
+    const blockResults = allResults.slice(chainKeys.length + 1) as PromiseSettledResult<
+      number | null
+    >[];
 
-    const getNewMechFees = (
-      res: PromiseSettledResult<MechFeesResult>,
-      source: string
-    ): MechFeesResult['global'] | null => {
-      const latestBlockNumber = source === 'gnosis' ? gnosisBlockNumber : baseBlockNumber;
+    let inUsd = 0;
+    let outUsd = 0;
+
+    chainKeys.forEach((chain, i) => {
+      const res = newFeeResults[i];
+      const latestBlock = blockResults[i].status === 'fulfilled' ? blockResults[i].value : null;
+
       if (res.status === 'rejected') {
-        fetchErrors.push(`mechFees:${source}`);
-        return null;
+        fetchErrors.push(`mechFees:${chain}`);
+        return;
       }
       if (res.value?._meta?.hasIndexingErrors) {
-        indexingErrors.push(`mechFees:${source}`);
+        indexingErrors.push(`mechFees:${chain}`);
       }
-      if (checkSubgraphLag(latestBlockNumber, res.value?._meta?.block?.number, source)) {
-        laggingSubgraphs.push(`mechFees:${source}`);
+      if (checkSubgraphLag(latestBlock, res.value?._meta?.block?.number, chain)) {
+        laggingSubgraphs.push(`mechFees:${chain}`);
       }
-      return res.value?.global ?? null;
-    };
+      inUsd += Number(res.value?.global?.totalFeesInUSD || 0);
+      outUsd += Number(res.value?.global?.totalFeesOutUSD || 0);
+    });
 
-    const getLegacyMechFees = (
-      res: PromiseSettledResult<LegacyMechFeesResult>,
-      source: string
-    ): LegacyMechFeesResult['global'] | null => {
-      if (res.status === 'rejected') {
-        fetchErrors.push(`mechFees:${source}`);
-        return null;
+    // Add legacy Gnosis fees (wei-denominated)
+    if (legacyResult.status === 'rejected') {
+      fetchErrors.push('mechFees:legacy');
+    } else {
+      const legacy = legacyResult.value;
+      if (legacy?._meta?.hasIndexingErrors) {
+        indexingErrors.push('mechFees:legacy');
       }
-      if (res.value?._meta?.hasIndexingErrors) {
-        indexingErrors.push(`mechFees:${source}`);
+      const gnosisIdx = chainKeys.indexOf('gnosis');
+      const gnosisBlock =
+        gnosisIdx >= 0 && blockResults[gnosisIdx]?.status === 'fulfilled'
+          ? blockResults[gnosisIdx].value
+          : null;
+      if (checkSubgraphLag(gnosisBlock, legacy?._meta?.block?.number, 'legacy')) {
+        laggingSubgraphs.push('mechFees:legacy');
       }
-      if (checkSubgraphLag(gnosisBlockNumber, res.value?._meta?.block?.number, source)) {
-        laggingSubgraphs.push(`mechFees:${source}`);
-      }
-      return res.value?.global ?? null;
-    };
-
-    const gnosisNewGlobal = getNewMechFees(gnosisNew, 'gnosis');
-    const baseNewGlobal = getNewMechFees(baseNew, 'base');
-    const legacyGlobal = getLegacyMechFees(legacy, 'legacy');
-
-    const inUsd =
-      Number(gnosisNewGlobal?.totalFeesInUSD || 0) +
-      Number(baseNewGlobal?.totalFeesInUSD || 0) +
-      Number((BigInt(legacyGlobal?.totalFeesIn || '0') / BigInt(1e18)).toString());
-
-    const outUsd =
-      Number(gnosisNewGlobal?.totalFeesOutUSD || 0) +
-      Number(baseNewGlobal?.totalFeesOutUSD || 0) +
-      Number((BigInt(legacyGlobal?.totalFeesOut || '0') / BigInt(1e18)).toString());
+      inUsd += Number((BigInt(legacy?.global?.totalFeesIn || '0') / BigInt(1e18)).toString());
+      outUsd += Number((BigInt(legacy?.global?.totalFeesOut || '0') / BigInt(1e18)).toString());
+    }
 
     const unclaimed = Math.max(inUsd - outUsd, 0);
     const status = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });

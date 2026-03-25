@@ -75,7 +75,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching mech daily agent performances:', error);
+    console.error('Error fetching marketplace daily agent performances:', error);
     return {
       value: null,
       status: getFetchErrorAndCreateStaleStatus(
@@ -95,7 +95,8 @@ type MechGlobalsResult = WithMeta<{
 const fetchMechGlobals = async (): Promise<
   MetricWithStatus<{ requests: number; deliveries: number } | null>
 > => {
-  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+  const allClients = MARKETPLACE_GRAPH_CLIENTS;
+  const chains = Object.keys(allClients);
 
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
@@ -103,7 +104,7 @@ const fetchMechGlobals = async (): Promise<
 
   try {
     const queryPromises = chains.map((chain) =>
-      MARKETPLACE_GRAPH_CLIENTS[chain].request(mechMarketplaceTotalRequestsQuery)
+      allClients[chain].request(mechMarketplaceTotalRequestsQuery)
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -140,7 +141,7 @@ const fetchMechGlobals = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching marketplace requests from subgraphs:', error);
+    console.error('Error fetching marketplace globals from subgraphs:', error);
     return {
       value: null,
       status: getFetchErrorAndCreateStaleStatus(
@@ -202,7 +203,7 @@ type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgentOnchains: { id: string; requestsCount: number }[];
 }>;
 
-// Classified totals derived from subgraphs (Mech + Mech-Marketplace)
+// Classified totals derived from subgraphs (Marketplace)
 const fetchCategorizedRequestTotals = async (): Promise<
   MetricWithStatus<{
     predictTxs: number;
@@ -210,7 +211,8 @@ const fetchCategorizedRequestTotals = async (): Promise<
     governatooorrTxs: number;
   } | null>
 > => {
-  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+  const allClients = MARKETPLACE_GRAPH_CLIENTS;
+  const chains = Object.keys(allClients);
 
   const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
   const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
@@ -223,9 +225,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
 
   try {
     const queryPromises = chains.map((chain) =>
-      MARKETPLACE_GRAPH_CLIENTS[chain].request(
-        mechMarketplaceRequestsPerAgentsQuery(allIds.map(String))
-      )
+      allClients[chain].request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)))
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -279,7 +279,7 @@ const fetchCategorizedRequestTotals = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching categorized mech requests:', error);
+    console.error('Error fetching categorized marketplace requests:', error);
     return {
       value: null,
       status: getFetchErrorAndCreateStaleStatus(
@@ -349,8 +349,8 @@ export const fetchMechMetrics = async () => {
       },
     };
   } catch (error) {
-    console.error('Error fetching all mech metrics:', error);
-    const errorStatus = getFetchErrorAndCreateStaleStatus('mech:all');
+    console.error('Error fetching all marketplace metrics:', error);
+    const errorStatus = getFetchErrorAndCreateStaleStatus('marketplace:all');
     const errorMetric = { value: null, status: errorStatus };
     return {
       dailyActiveAgents: errorMetric,
