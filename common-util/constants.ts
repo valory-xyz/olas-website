@@ -1,4 +1,15 @@
 import resources from 'data/resources.json';
+import tokens from 'data/tokens.json';
+
+type TokenEntry = { key?: string; address?: string };
+
+export const OLAS_TOKEN_ADDRESS_BY_CHAIN: Record<string, string> = (tokens as TokenEntry[]).reduce(
+  (acc, t) => {
+    if (t.key && t.address) acc[t.key] = t.address;
+    return acc;
+  },
+  {} as Record<string, string>
+);
 
 export const DOCS_BASE_URL = 'https://docs.olas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
@@ -172,6 +183,20 @@ export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';
+
+// Balancer pools used for on-chain OLAS USD pricing for Predict ROI.
+// - Gnosis: OLAS-WXDAI (WXDAI ≈ 1 USD)
+// - Polygon: OLAS-WMATIC (WMATIC -> USD conversion is done via Polygon POL/USD Chainlink feed)
+export const GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID =
+  '0x79c872ed3acb3fc5770dd8a0cd9cd5db3b3ac985000200000000000000000067';
+
+export const POLYGON_BALANCER_OLAS_WMATIC_POOL_ID =
+  '0x62309056c759c36879cde93693e7903bf415e4bc000200000000000000000d5f';
+
+// Polygon POL/USD Chainlink feed (used to convert WMATIC -> USD).
+export const CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD =
+  '0xAB594600376Ec9fD91F8e885dADF0CE036862dE0';
+export const CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD = 8;
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
