@@ -1,6 +1,7 @@
 import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import type { MainMetricsData } from 'common-util/api/main-metrics';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
+import { fetchOlasTotalSupplyWei } from 'common-util/api/other-metrics/token-supply';
 import type { PredictMetricsData } from 'common-util/api/predict';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
@@ -50,6 +51,15 @@ export async function loadOgSnapshotBundle(
     if (cat === 'other') bundle.other = data as OtherMetricsData | null;
     if (cat === 'predict') bundle.predict = data as PredictMetricsData | null;
     if (cat === 'agent-economies') bundle.agentEconomies = data as AgentEconomiesMetricsData | null;
+  }
+
+  // Backfill total supply from API if the snapshot is missing it
+  if (bundle.other && !bundle.other.olasTotalSupplyWei?.value) {
+    try {
+      bundle.other.olasTotalSupplyWei = await fetchOlasTotalSupplyWei();
+    } catch {
+      // leave as-is
+    }
   }
 
   return bundle;

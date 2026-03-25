@@ -8,15 +8,6 @@ export const OG_SITE_URL = 'https://olas.network';
  */
 export const OG_BACKGROUND_IMAGE_PATH = '/images/og/background.png';
 
-/**
- * Optional per-route hero under `public/`. Only URLs that respond with `200` are used; add entries
- * as you drop assets into `public/images/og/pages/`.
- */
-export const OG_PAGE_ILLUSTRATIONS: Record<string, string> = {
-  // Example (uncomment when files exist):
-  // '': '/images/og/pages/home.png',
-  // 'olas-token': '/images/og/pages/olas-token.png',
-};
 
 export const OG_CACHE_CONTROL = 'public, s-maxage=86400, stale-while-revalidate';
 

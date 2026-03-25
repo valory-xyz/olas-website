@@ -2,13 +2,17 @@ import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies'
 import type { MainMetricsData } from 'common-util/api/main-metrics';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
 import type { PredictMetricsData } from 'common-util/api/predict';
-import { formatWeiNumber } from 'common-util/numberFormatter';
+import {
+  formatOgCompactCount,
+  formatOgIntegerCount,
+  formatOgOlasSupplyWei,
+} from 'common-util/numberFormatter';
 
 export type OgSnapshotCategory = 'main' | 'other' | 'predict' | 'agent-economies';
 
 export type OgMetricLine = { label: string; value: string };
 
-export type OgTemplateMode = 'rich' | 'simple';
+export type OgTemplateMode = 'home' | 'page' | 'simple';
 
 export type OgPageDefinition = {
   title: string;
@@ -16,7 +20,9 @@ export type OgPageDefinition = {
   template: OgTemplateMode;
   /** Which blob snapshots to load for this card */
   snapshots: OgSnapshotCategory[];
-  /** Build metric rows from loaded snapshot data */
+  /** Target width for the illustration image in pixels. Defaults to 380. */
+  illustrationWidth?: number;
+  /** Build metric cards from loaded snapshot data */
   buildMetrics?: (data: {
     main: MainMetricsData | null;
     other: OtherMetricsData | null;
@@ -25,162 +31,94 @@ export type OgPageDefinition = {
   }) => OgMetricLine[];
 };
 
-const m = (value: unknown, suffix = ''): string => {
-  if (value === null || value === undefined) return '—';
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return `${new Intl.NumberFormat('en', { maximumFractionDigits: value >= 100 ? 0 : 2 }).format(value)}${suffix}`;
-  }
-  return `${value}${suffix}`;
-};
-
-const fromMain =
-  (main: MainMetricsData | null): OgMetricLine[] =>
-    main
-      ? [
-          {
-            label: 'Avg. daily active agents (7d)',
-            value: m(main.dailyActiveAgents?.value),
-          },
-          {
-            label: 'OLAS staked',
-            value: main.olasStaked?.value ? `${formatWeiNumber(main.olasStaked.value)} OLAS` : '—',
-          },
-          {
-            label: 'Mech fees (USD)',
-            value: m(main.mechFees?.value, main.mechFees?.value ? ' USD' : ''),
-          },
-        ]
-      : [];
+function ogUsdTurnover(value: string | null | undefined): string {
+  if (value === null || value === undefined || value === '') return '—';
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '—';
+  return `$${formatOgCompactCount(n)}`;
+}
 
 export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
   '': {
     title: 'Olas',
-    description: 'Olas enables everyone to own and monetize their AI agents.',
-    template: 'rich',
-    snapshots: ['main'],
-    buildMetrics: ({ main }) => fromMain(main),
+    description: 'The platform for true co-ownership of AI',
+    template: 'home',
+    snapshots: [],
   },
   'agents-unleashed': {
     title: 'Agents Unleashed',
     description:
       'Join Olas as a Bonder — discounted OLAS, liquidity, rewards in AI and crypto.',
-    template: 'rich',
-    snapshots: ['main'],
-    buildMetrics: ({ main }) => fromMain(main),
+    template: 'page',
+    snapshots: [],
   },
   'agent-economies': {
     title: 'Agent Economies',
     description:
       'Discover active AI agent economies on Olas — Predict, BabyDegen, Mech, Agents.fun.',
-    template: 'rich',
-    snapshots: ['agent-economies'],
-    buildMetrics: ({ agentEconomies }) =>
-      agentEconomies
-        ? [
-            {
-              label: 'Agents.fun DAA (7d avg)',
-              value: m(agentEconomies.agentsFun?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Mech marketplace requests',
-              value: m(agentEconomies.mech?.totalRequests?.value),
-            },
-            {
-              label: 'BabyDegen DAA (7d avg)',
-              value: m(agentEconomies.babyDegen?.dailyActiveAgents?.value),
-            },
-          ]
-        : [],
+    template: 'page',
+    snapshots: [],
   },
   'agent-economies/predict': {
-    title: 'Predict',
+    title: 'Predict Economy',
     description: 'On-demand agent-powered predictions on Olas.',
-    template: 'rich',
+    template: 'page',
+    illustrationWidth: 150,
     snapshots: ['predict'],
     buildMetrics: ({ predict }) =>
       predict
         ? [
             {
-              label: 'Omenstrat DAA (7d avg)',
-              value: m(predict.omenstrat?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Omenstrat max APR',
-              value: predict.omenstrat?.apr?.value != null ? `${predict.omenstrat.apr.value}%` : '—',
-            },
-            {
-              label: 'Omenstrat success rate',
-              value:
-                predict.omenstrat?.successRate?.value != null
-                  ? `${predict.omenstrat.successRate.value}%`
-                  : '—',
+              label: 'Predict DAAs',
+              value: formatOgIntegerCount(predict.omenstrat?.dailyActiveAgents?.value),
             },
           ]
         : [],
   },
   'agent-economies/mech': {
-    title: 'Mech economy',
+    title: 'Mech Economy',
     description: 'Agent-powered marketplace activity across chains.',
-    template: 'rich',
+    template: 'page',
+    illustrationWidth: 120,
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies
         ? [
             {
-              label: 'Mech DAA (7d avg)',
-              value: m(agentEconomies.mech?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Total requests',
-              value: m(agentEconomies.mech?.totalRequests?.value),
-            },
-            {
-              label: 'Total deliveries',
-              value: m(agentEconomies.mech?.totalDeliveries?.value),
+              label: 'A2A transactions',
+              value: formatOgCompactCount(agentEconomies.mech?.totalRequests?.value),
             },
           ]
         : [],
   },
   'agent-economies/agentsfun': {
-    title: 'Agents.fun economy',
+    title: 'Agents.fun Economy',
     description: 'Agents operating on Base toward on-chain goals.',
-    template: 'rich',
+    template: 'page',
+    illustrationWidth: 120,
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies
         ? [
             {
-              label: 'DAA (7d avg)',
-              value: m(agentEconomies.agentsFun?.dailyActiveAgents?.value),
+              label: 'Agents.fun DAAs',
+              value: formatOgIntegerCount(agentEconomies.agentsFun?.dailyActiveAgents?.value),
             },
           ]
         : [],
   },
   'agent-economies/babydegen': {
-    title: 'BabyDegen economy',
+    title: 'BabyDegen Economy',
     description: 'Modius and Optimus agent economies.',
-    template: 'rich',
+    template: 'page',
+    illustrationWidth: 120,
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies
         ? [
             {
-              label: 'DAA (7d avg)',
-              value: m(agentEconomies.babyDegen?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Optimus max OLAS APR',
-              value:
-                agentEconomies.babyDegen?.optimus?.value?.maxOlasApr != null
-                  ? `${agentEconomies.babyDegen.optimus.value.maxOlasApr}%`
-                  : '—',
-            },
-            {
-              label: 'Modius max OLAS APR',
-              value:
-                agentEconomies.babyDegen?.modius?.value?.maxOlasApr != null
-                  ? `${agentEconomies.babyDegen.modius.value.maxOlasApr}%`
-                  : '—',
+              label: 'BabyDegen DAAs',
+              value: formatOgIntegerCount(agentEconomies.babyDegen?.dailyActiveAgents?.value),
             },
           ]
         : [],
@@ -188,118 +126,53 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
   'olas-token': {
     title: 'OLAS Token',
     description: 'Supply, emissions, and protocol metrics.',
-    template: 'rich',
+    template: 'page',
     snapshots: ['other'],
     buildMetrics: ({ other }) =>
       other
         ? [
             {
-              label: 'Protocol owned liquidity (USD)',
-              value: m(other.protocol?.totalProtocolOwnedLiquidity?.value),
+              label: 'Token holders',
+              value: formatOgCompactCount(other.tokenHolders?.totalTokenHolders?.value),
             },
             {
-              label: 'Cumulative protocol revenue',
-              value: m(other.protocol?.totalProtocolRevenue?.value),
-            },
-            {
-              label: 'Token holders (all chains)',
-              value: m(other.tokenHolders?.totalTokenHolders?.value),
+              label: 'Total supply',
+              value: formatOgOlasSupplyWei(other.olasTotalSupplyWei?.value),
             },
           ]
         : [],
   },
   agents: {
-    title: 'Agents',
+    title: 'AI Agents',
     description: "Explore Olas' ecosystem of sovereign and decentralized AI agents.",
-    template: 'rich',
-    snapshots: ['main'],
-    buildMetrics: ({ main }) => fromMain(main),
+    template: 'page',
+    snapshots: [],
   },
   'agents/omenstrat': {
     title: 'Omenstrat',
     description: 'Prediction agents on Gnosis.',
-    template: 'rich',
-    snapshots: ['predict'],
-    buildMetrics: ({ predict }) =>
-      predict
-        ? [
-            {
-              label: 'DAA (7d avg)',
-              value: m(predict.omenstrat?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Max APR',
-              value: predict.omenstrat?.apr?.value != null ? `${predict.omenstrat.apr.value}%` : '—',
-            },
-            {
-              label: 'Success rate',
-              value:
-                predict.omenstrat?.successRate?.value != null
-                  ? `${predict.omenstrat.successRate.value}%`
-                  : '—',
-            },
-          ]
-        : [],
+    template: 'page',
+    snapshots: [],
   },
   'agents/babydegen': {
     title: 'BabyDegen',
     description: 'Modius and Optimus agents.',
-    template: 'rich',
-    snapshots: ['agent-economies'],
-    buildMetrics: ({ agentEconomies }) =>
-      agentEconomies
-        ? [
-            {
-              label: 'DAA (7d avg)',
-              value: m(agentEconomies.babyDegen?.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Optimus max OLAS APR',
-              value:
-                agentEconomies.babyDegen?.optimus?.value?.maxOlasApr != null
-                  ? `${agentEconomies.babyDegen.optimus.value.maxOlasApr}%`
-                  : '—',
-            },
-          ]
-        : [],
+    template: 'page',
+    snapshots: [],
   },
   'agents/agentsfun': {
     title: 'Agents.fun',
     description: 'Agents on Base.',
-    template: 'rich',
-    snapshots: ['agent-economies'],
-    buildMetrics: ({ agentEconomies }) =>
-      agentEconomies
-        ? [
-            {
-              label: 'DAA (7d avg)',
-              value: m(agentEconomies.agentsFun?.dailyActiveAgents?.value),
-            },
-          ]
-        : [],
+    template: 'page',
+    snapshots: [],
   },
   'mech-marketplace': {
     title: 'Mech Marketplace',
     description: 'Hire AI agents or offer yours on the marketplace.',
-    template: 'rich',
+    template: 'page',
     snapshots: ['main'],
     buildMetrics: ({ main }) =>
-      main
-        ? [
-            {
-              label: 'Avg. daily active agents (7d)',
-              value: m(main.dailyActiveAgents?.value),
-            },
-            {
-              label: 'Mech fees (USD)',
-              value: m(main.mechFees?.value, main.mechFees?.value ? ' USD' : ''),
-            },
-            {
-              label: 'Total operators',
-              value: m(main.totalOperators?.value),
-            },
-          ]
-        : [],
+      main ? [{ label: 'Total turnover', value: ogUsdTurnover(main.mechFees?.value) }] : [],
   },
   about: {
     title: 'About',

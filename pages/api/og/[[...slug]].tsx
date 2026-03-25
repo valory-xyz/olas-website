@@ -1,6 +1,6 @@
 import { ImageResponse } from '@vercel/og';
-import { OG_CACHE_CONTROL, OG_PAGE_ILLUSTRATIONS } from 'common-util/og/constants';
-import { getDataUrlForPublicPath, pickBackgroundDataUrl } from 'common-util/og/load-public-image';
+import { OG_CACHE_CONTROL } from 'common-util/og/constants';
+import { loadIllustration, pickBackgroundDataUrl } from 'common-util/og/load-public-image';
 import { loadOgSnapshotBundle } from 'common-util/og/load-snapshots';
 import { OgImageTemplate } from 'common-util/og/OgImageTemplate';
 import { getOgDefinition, getOgRouteKey } from 'common-util/og/registry';
@@ -48,8 +48,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error(`Invalid backgroundSrc for OG (expected data: or http URL)`);
     }
 
-    const illustrationPath = OG_PAGE_ILLUSTRATIONS[routeKey];
-    const illustrationSrc = illustrationPath ? getDataUrlForPublicPath(illustrationPath) : null;
+    const illustrationWidth = definition.illustrationWidth ?? 380;
+    const illustration = routeKey
+      ? loadIllustration(`/images/og/${routeKey}.png`, illustrationWidth) ??
+        loadIllustration(`/images/og/${routeKey}/${routeKey.split('/').pop()}.png`, illustrationWidth)
+      : null;
 
     const imageResponse = new ImageResponse(
       (
@@ -59,7 +62,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           template={definition.template}
           metrics={metrics}
           backgroundSrc={backgroundSrc}
-          illustrationSrc={illustrationSrc}
+          illustration={illustration}
+          illustrationPosition={definition.illustrationWidth ? 'inline' : 'side'}
         />
       ),
       {
