@@ -6,6 +6,9 @@ const TITLE_CHAR_MAX = 55;
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION = 'Olas enables everyone to own and monetize their AI agents.';
 const SITE_URL = 'https://olas.network';
+const OG_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : SITE_URL;
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.webp`;
 
 type MetaProps = {
@@ -27,7 +30,7 @@ const resolveShareImage = (
     return siteImageUrl;
   }
   if (typeof ogPath === 'string') {
-    return `${SITE_URL}/api/og${ogPath === '' ? '' : `/${ogPath}`}`;
+    return `${OG_BASE_URL}/api/og${ogPath === '' ? '' : `/${ogPath}`}`;
   }
   if (siteImageUrl !== undefined && siteImageUrl.length === 0) {
     return SITE_DEFAULT_IMAGE_URL;
