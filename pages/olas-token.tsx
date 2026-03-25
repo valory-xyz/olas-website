@@ -10,6 +10,7 @@ const OlasTokenPage = ({ metrics }) => (
     <Meta
       pageTitle="OLAS Token"
       description="View live data on token supply, emissions schedules, and other key metrics on Olas. Visual charts and statistics to help you track and analyze important trends."
+      ogPath="olas-token"
     />
     <OlasToken metrics={metrics} />
   </PageWrapper>

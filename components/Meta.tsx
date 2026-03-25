@@ -12,9 +12,30 @@ type MetaProps = {
   pageTitle?: string;
   description?: string;
   siteImageUrl?: string;
+  /**
+   * When set, `og:image` (and Twitter image) use Vercel OG at `/api/og/...`.
+   * Use `''` for the home card (`/api/og`). Ignored when `siteImageUrl` is a non-empty URL.
+   */
+  ogPath?: string;
 };
 
-const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
+const resolveShareImage = (
+  siteImageUrl: string | undefined,
+  ogPath: string | undefined
+): string => {
+  if (siteImageUrl !== undefined && siteImageUrl.length > 0) {
+    return siteImageUrl;
+  }
+  if (typeof ogPath === 'string') {
+    return `${SITE_URL}/api/og${ogPath === '' ? '' : `/${ogPath}`}`;
+  }
+  if (siteImageUrl !== undefined && siteImageUrl.length === 0) {
+    return SITE_DEFAULT_IMAGE_URL;
+  }
+  return siteImageUrl ?? SITE_DEFAULT_IMAGE_URL;
+};
+
+const Meta = ({ pageTitle, description, siteImageUrl, ogPath }: MetaProps) => {
   let title = pageTitle ? `${pageTitle} | ${SITE_TITLE}` : SITE_TITLE;
 
   if (title.length > TITLE_CHAR_MAX) {
@@ -22,6 +43,8 @@ const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
 
     title = `${getLimitedText(pageTitle, TITLE_CHAR_MAX)} | Olas`;
   }
+
+  const shareImage = resolveShareImage(siteImageUrl, ogPath);
 
   return (
     <Head>
@@ -34,20 +57,15 @@ const Meta = ({ pageTitle, description, siteImageUrl }: MetaProps) => {
       <meta property="og:url" content={SITE_URL} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description || SITE_DESCRIPTION} />
-      <meta property="og:image" content={siteImageUrl} />
+      <meta property="og:image" content={shareImage} />
 
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={SITE_URL} />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description || SITE_DESCRIPTION} />
-      <meta property="twitter:image" content={siteImageUrl} />
+      <meta property="twitter:image" content={shareImage} />
     </Head>
   );
 };
 
-Meta.defaultProps = {
-  pageTitle: null,
-  description: SITE_DESCRIPTION,
-  siteImageUrl: SITE_DEFAULT_IMAGE_URL,
-};
 export default Meta;

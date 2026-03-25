@@ -13,7 +13,11 @@ import Meta from 'components/Meta';
 
 const Predict = ({ metrics, roiDistribution, toolAccuracy }) => (
   <PageWrapper>
-    <Meta pageTitle="Predict" description="On-demand Agent-powered Predictions" />
+    <Meta
+      pageTitle="Predict"
+      description="On-demand Agent-powered Predictions"
+      ogPath="agent-economies/predict"
+    />
 
     <PredictHero />
     <Activity metrics={metrics} roiDistribution={roiDistribution} toolAccuracy={toolAccuracy} />

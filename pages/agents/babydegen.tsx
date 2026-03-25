@@ -7,7 +7,7 @@ const BabyDegenPage = () => (
     <Meta
       pageTitle="BabyDegen"
       description="BabyDegen is your very own autonomous trading agent, designed to navigate the fast-paced world of DeFi."
-      siteImageUrl="/images/agents/babydegen/babydegen.png"
+      ogPath="agents/babydegen"
     />
     <BabyDegen />
   </PageWrapper>

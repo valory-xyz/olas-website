@@ -16,6 +16,7 @@ const Mech = ({ mech, mechFees }) => (
     <Meta
       pageTitle="Mech"
       description="Access powerful AI services for agent-based economies with Mech. Explore innovative solutions for creating, managing, and optimizing AI agents in the evolving world of crypto and AI technologies."
+      ogPath="agent-economies/mech"
     />
 
     <MechHero />
