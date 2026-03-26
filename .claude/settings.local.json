@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/pm200/Documents/GitHub/olas-website/**)",
-      "Bash(xargs -I{} taskkill //F //PID {})"
-    ]
-  }
-}
