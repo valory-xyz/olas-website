@@ -14,11 +14,6 @@ const MIME: Record<string, string> = {
   '.gif': 'image/gif',
 };
 
-/**
- * Read a file from `public/` and return a data URL for @vercel/og.
- * On the server, `<img src="/images/foo.png">` is invalid — Satori requires `http(s):` or `data:`.
- * Loading from disk avoids wrong Host/port when self-fetching (e.g. dev on :3001).
- */
 export function getDataUrlForPublicPath(publicPath: string): string | null {
   const clean = publicPath.replace(/^\//, '');
   const abs = path.join(process.cwd(), 'public', clean);
@@ -54,10 +49,6 @@ function jpegSize(buf: Buffer): { w: number; h: number } | null {
   return null;
 }
 
-/**
- * Load an image from `public/`, returning a data URL plus dimensions
- * scaled to a fixed `targetWidth` (height calculated proportionally).
- */
 export function loadIllustration(publicPath: string, targetWidth: number): OgImage | null {
   const clean = publicPath.replace(/^\//, '');
   const abs = path.join(process.cwd(), 'public', clean);
@@ -81,7 +72,6 @@ export function loadIllustration(publicPath: string, targetWidth: number): OgIma
 export function pickBackgroundDataUrl(): string {
   return (
     getDataUrlForPublicPath(OG_BACKGROUND_IMAGE_PATH) ||
-    // Minimal valid PNG (1×1) if no files exist under `public/` yet
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
   );
 }

@@ -8,12 +8,25 @@ import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 
-const interMedium = fs.readFileSync(
-  path.join(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-500-normal.woff')
-);
-const interSemiBold = fs.readFileSync(
-  path.join(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-600-normal.woff')
-);
+/**
+ * Load a font file, trying `public/fonts/` first (always traced by Vercel),
+ * then falling back to `node_modules/@fontsource/inter/files/`.
+ * Returns null if neither location has the file.
+ */
+function loadFont(filename: string): Buffer | null {
+  const publicPath = path.join(process.cwd(), 'public', 'fonts', filename);
+  if (fs.existsSync(publicPath)) return fs.readFileSync(publicPath);
+
+  const nmPath = path.join(process.cwd(), 'node_modules', '@fontsource/inter/files', filename);
+  if (fs.existsSync(nmPath)) return fs.readFileSync(nmPath);
+
+  // eslint-disable-next-line no-console
+  console.warn(`[api/og] Font not found: ${filename}`);
+  return null;
+}
+
+const interMedium = loadFont('inter-latin-500-normal.woff');
+const interSemiBold = loadFont('inter-latin-600-normal.woff');
 
 /**
  * Node runtime (not Edge): OG data loads Vercel Blob snapshots via `getSnapshot`, which pulls in
@@ -73,8 +86,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         width: 1200,
         height: 630,
         fonts: [
-          { name: 'Inter', data: interMedium, weight: 500, style: 'normal' },
-          { name: 'Inter', data: interSemiBold, weight: 600, style: 'normal' },
+          ...(interMedium
+            ? [{ name: 'Inter', data: interMedium, weight: 500 as const, style: 'normal' as const }]
+            : []),
+          ...(interSemiBold
+            ? [
+                {
+                  name: 'Inter',
+                  data: interSemiBold,
+                  weight: 600 as const,
+                  style: 'normal' as const,
+                },
+              ]
+            : []),
         ],
       }
     );

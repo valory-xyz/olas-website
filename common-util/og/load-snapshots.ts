@@ -34,7 +34,6 @@ export async function loadOgSnapshotBundle(
   const uniq = [...new Set(categories)];
   if (uniq.length === 0) return bundle;
 
-  // Local dev often has no `BLOB_READ_WRITE_TOKEN`; `list()` would throw before useful metrics load.
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return bundle;
   }
@@ -58,7 +57,6 @@ export async function loadOgSnapshotBundle(
     try {
       bundle.other.olasTotalSupplyWei = await fetchOlasTotalSupplyWei();
     } catch {
-      // leave as-is
     }
   }
 
