@@ -8,6 +8,9 @@ module.exports = withPlausibleProxy()({
   experimental: {
     scrollRestoration: true,
     optimizePackageImports: ['lodash'],
+    outputFileTracingIncludes: {
+      '/api/og/[[...slug]]': ['./public/fonts/**', './public/images/og/**'],
+    },
   },
   async redirects() {
     return [

@@ -57,6 +57,7 @@ export async function loadOgSnapshotBundle(
     try {
       bundle.other.olasTotalSupplyWei = await fetchOlasTotalSupplyWei();
     } catch {
+      // leave as-is
     }
   }
 
