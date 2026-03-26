@@ -1,5 +1,7 @@
-/** Canonical site origin for absolute OG asset URLs (must match Meta / production domain). */
-export const OG_SITE_URL = 'https://olas.network';
+import { getSiteUrl } from 'common-util/getSiteUrl';
+
+/** Canonical site origin for absolute OG asset URLs — adapts to Vercel preview deploys. */
+export const OG_SITE_URL = getSiteUrl();
 
 /**
  * Full-bleed background for all OG cards. Point this at your shared OG background
