@@ -22,6 +22,8 @@ export type OgPageDefinition = {
   snapshots: OgSnapshotCategory[];
   /** Target width for the illustration image in pixels. Defaults to 380. */
   illustrationWidth?: number;
+  /** 'inline' renders above the title; 'side' renders in a right column (default). */
+  illustrationPosition?: 'inline' | 'side';
   /** Build metric cards from loaded snapshot data */
   buildMetrics?: (data: {
     main: MainMetricsData | null;
@@ -63,6 +65,7 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
     description: 'On-demand agent-powered predictions on Olas.',
     template: 'page',
     illustrationWidth: 150,
+    illustrationPosition: 'inline',
     snapshots: ['predict'],
     buildMetrics: ({ predict }) =>
       predict
@@ -79,6 +82,7 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
     description: 'Agent-powered marketplace activity across chains.',
     template: 'page',
     illustrationWidth: 120,
+    illustrationPosition: 'inline',
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies
@@ -95,6 +99,7 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
     description: 'Agents operating on Base toward on-chain goals.',
     template: 'page',
     illustrationWidth: 120,
+    illustrationPosition: 'inline',
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies
@@ -111,6 +116,7 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
     description: 'Modius and Optimus agent economies.',
     template: 'page',
     illustrationWidth: 120,
+    illustrationPosition: 'inline',
     snapshots: ['agent-economies'],
     buildMetrics: ({ agentEconomies }) =>
       agentEconomies

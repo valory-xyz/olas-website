@@ -69,9 +69,14 @@ export function loadIllustration(publicPath: string, targetWidth: number): OgIma
   };
 }
 
+const FALLBACK_1X1_PNG =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+/** Module-level cache — background is the same for every card. */
+let cachedBackground: string | null = null;
+
 export function pickBackgroundDataUrl(): string {
-  return (
-    getDataUrlForPublicPath(OG_BACKGROUND_IMAGE_PATH) ||
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
-  );
+  if (cachedBackground) return cachedBackground;
+  cachedBackground = getDataUrlForPublicPath(OG_BACKGROUND_IMAGE_PATH) || FALLBACK_1X1_PNG;
+  return cachedBackground;
 }

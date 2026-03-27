@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           metrics={metrics}
           backgroundSrc={backgroundSrc}
           illustration={illustration}
-          illustrationPosition={definition.illustrationWidth ? 'inline' : 'side'}
+          illustrationPosition={definition.illustrationPosition ?? 'side'}
         />
       ),
       {

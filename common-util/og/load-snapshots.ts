@@ -35,6 +35,8 @@ export async function loadOgSnapshotBundle(
   if (uniq.length === 0) return bundle;
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    // eslint-disable-next-line no-console
+    console.warn('[og] BLOB_READ_WRITE_TOKEN not set — OG cards will render without live metrics');
     return bundle;
   }
 

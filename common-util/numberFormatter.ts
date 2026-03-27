@@ -47,14 +47,18 @@ const OG_COMPACT: Intl.NumberFormatOptions = {
   maximumFractionDigits: 1,
 };
 
-export const formatOgCompactCount = (value: number | null | undefined): string => {
-  if (value === null || value === undefined || !Number.isFinite(value)) return '—';
-  return new Intl.NumberFormat('en', OG_COMPACT).format(value);
+export const formatOgCompactCount = (value: number | string | null | undefined): string => {
+  if (value === null || value === undefined) return '—';
+  const n = typeof value === 'string' ? Number(value) : value;
+  if (!Number.isFinite(n)) return '—';
+  return new Intl.NumberFormat('en', OG_COMPACT).format(n);
 };
 
-export const formatOgIntegerCount = (value: number | null | undefined): string => {
-  if (value === null || value === undefined || !Number.isFinite(value)) return '—';
-  return String(Math.round(value));
+export const formatOgIntegerCount = (value: number | string | null | undefined): string => {
+  if (value === null || value === undefined) return '—';
+  const n = typeof value === 'string' ? Number(value) : value;
+  if (!Number.isFinite(n)) return '—';
+  return String(Math.round(n));
 };
 
 export const formatOgOlasSupplyWei = (wei: string | null | undefined): string => {

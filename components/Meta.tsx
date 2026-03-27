@@ -24,16 +24,11 @@ const resolveShareImage = (
   siteImageUrl: string | undefined,
   ogPath: string | undefined
 ): string => {
-  if (siteImageUrl !== undefined && siteImageUrl.length > 0) {
-    return siteImageUrl;
-  }
+  if (siteImageUrl) return siteImageUrl;
   if (typeof ogPath === 'string') {
     return `${SITE_URL}/api/og${ogPath === '' ? '' : `/${ogPath}`}`;
   }
-  if (siteImageUrl !== undefined && siteImageUrl.length === 0) {
-    return SITE_DEFAULT_IMAGE_URL;
-  }
-  return siteImageUrl ?? SITE_DEFAULT_IMAGE_URL;
+  return SITE_DEFAULT_IMAGE_URL;
 };
 
 const Meta = ({ pageTitle, description, siteImageUrl, ogPath }: MetaProps) => {
