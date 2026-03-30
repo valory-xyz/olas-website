@@ -24,7 +24,7 @@ export default function Home({ metrics }) {
 
   return (
     <PageWrapper>
-      <Meta />
+      <Meta ogPath="" />
       <Hero />
       <WorldOfAgents />
       <OwnYourAgent />

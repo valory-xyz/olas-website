@@ -39,3 +39,29 @@ export const formatEthNumber = (
   const formatter = Intl.NumberFormat('en', options);
   return formatter.format(Number(numberInEth));
 };
+
+const OG_COMPACT: Intl.NumberFormatOptions = {
+  notation: 'compact',
+  compactDisplay: 'short',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+};
+
+export const formatOgCompactCount = (value: number | string | null | undefined): string => {
+  if (value === null || value === undefined) return '—';
+  const n = typeof value === 'string' ? Number(value) : value;
+  if (!Number.isFinite(n)) return '—';
+  return new Intl.NumberFormat('en', OG_COMPACT).format(n);
+};
+
+export const formatOgIntegerCount = (value: number | string | null | undefined): string => {
+  if (value === null || value === undefined) return '—';
+  const n = typeof value === 'string' ? Number(value) : value;
+  if (!Number.isFinite(n)) return '—';
+  return String(Math.round(n));
+};
+
+export const formatOgOlasSupplyWei = (wei: string | null | undefined): string => {
+  if (wei == null || wei === '') return '—';
+  return formatWeiNumber(wei, OG_COMPACT);
+};

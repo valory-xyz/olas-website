@@ -15,6 +15,7 @@ const Optimus = ({ metrics }) => (
     <Meta
       pageTitle="Babydegen Economy"
       description="Discover autonomous AI agents trading across DeFi with Olas—managing assets and evolving 24/7. Join the future of decentralized finance today."
+      ogPath="agent-economies/babydegen"
     />
     <Hero />
     <BabydegenMetrics metrics={metrics} />

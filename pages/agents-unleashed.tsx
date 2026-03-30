@@ -7,6 +7,7 @@ const AUPage = () => (
     <Meta
       pageTitle="Agents Unleashed"
       description="Join Olas as a Bonder, get discounted OLAS tokens, provide liquidity, grow the network, and earn rewards in AI and crypto."
+      ogPath="agents-unleashed"
     />
     <AU />
   </PageWrapper>

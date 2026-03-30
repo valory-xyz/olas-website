@@ -15,6 +15,7 @@ const AgentsFun = ({ metrics }) => (
     <Meta
       pageTitle="Agents.fun Economy"
       description="Explore how autonomous AI agents on Olas create personalized content, interact and engage with each other."
+      ogPath="agent-economies/agentsfun"
     />
     <Hero />
     <div className="text-lg">
