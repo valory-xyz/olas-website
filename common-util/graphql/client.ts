@@ -141,6 +141,25 @@ export const autonolasBaseGraphClient = new GraphQLClient(
   requestConfig
 );
 
+export const LIQUIDITY_GRAPH_CLIENTS = {
+  ethereum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_LIQUIDITY_ETHEREUM_SUBGRAPH_URL,
+    requestConfig
+  ),
+  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_GNOSIS_SUBGRAPH_URL, requestConfig),
+  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_POLYGON_SUBGRAPH_URL, requestConfig),
+  arbitrum: new GraphQLClient(
+    process.env.NEXT_PUBLIC_LIQUIDITY_ARBITRUM_SUBGRAPH_URL,
+    requestConfig
+  ),
+  optimism: new GraphQLClient(
+    process.env.NEXT_PUBLIC_LIQUIDITY_OPTIMISM_SUBGRAPH_URL,
+    requestConfig
+  ),
+  base: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_BASE_SUBGRAPH_URL, requestConfig),
+  celo: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_CELO_SUBGRAPH_URL, requestConfig),
+};
+
 export const BALANCER_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_BALANCER_URL, requestConfig),
   polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_BALANCER_URL, requestConfig),
