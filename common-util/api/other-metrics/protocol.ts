@@ -15,7 +15,7 @@ import get from 'lodash/get';
 const duneApiFetch = async (queryId: string | number) => {
   const response = await fetch(`https://api.dune.com/api/v1/query/${queryId}/results`, {
     headers: {
-      'X-Dune-API-Key': process.env.NEXT_PUBLIC_DUNE_API_KEY || '',
+      'X-Dune-API-Key': process.env.DUNE_API_KEY || '',
     },
   });
   const data = await response.json();
@@ -79,26 +79,28 @@ const L2_CHAIN_CONFIG: Record<
 > = {
   gnosis: {
     // reserve1 = WXDAI (stablecoin ≈ $1), 18 decimals
-    computeTvl: (pool) => (Number(BigInt(pool.reserve1)) / 1e18) * 2,
+    // Divide by 10^12 in BigInt space to keep 6 decimal places and avoid Number precision loss
+    computeTvl: (pool) => (Number(BigInt(pool.reserve1) / 10n ** 12n) / 1e6) * 2,
   },
   polygon: {
     // reserve0 = WMATIC, 18 decimals
     computeTvl: (pool, prices) => {
       if (prices.matic <= 0) return null;
-      return (Number(BigInt(pool.reserve0)) / 1e18) * 2 * prices.matic;
+      return (Number(BigInt(pool.reserve0) / 10n ** 12n) / 1e6) * 2 * prices.matic;
     },
   },
   arbitrum: {
     // reserve1 = WETH, 18 decimals
-    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve1)) / 1e18) * 2 * prices.eth,
+    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve1) / 10n ** 12n) / 1e6) * 2 * prices.eth,
   },
   optimism: {
     // reserve0 = WETH, 18 decimals
-    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve0)) / 1e18) * 2 * prices.eth,
+    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve0) / 10n ** 12n) / 1e6) * 2 * prices.eth,
   },
   base: {
     // reserve1 = USDC (6 decimals, stablecoin ≈ $1)
-    computeTvl: (pool) => (Number(BigInt(pool.reserve1)) / 1e6) * 2,
+    // Divide by 100 in BigInt space to keep 4 decimal places
+    computeTvl: (pool) => (Number(BigInt(pool.reserve1) / 100n) / 1e4) * 2,
   },
   celo: {
     // reserve0 = CELO, 18 decimals; price from celoUsdPrice (8 decimals, Chainlink on Celo)
@@ -107,7 +109,7 @@ const L2_CHAIN_CONFIG: Record<
       if (r0 === 0n) return null;
       if (!pool.celoUsdPrice || pool.celoUsdPrice === '0') return null;
       const celoPrice = Number(BigInt(pool.celoUsdPrice)) / 1e8;
-      return (Number(r0) / 1e18) * 2 * celoPrice;
+      return (Number(r0 / 10n ** 12n) / 1e6) * 2 * celoPrice;
     },
   },
 };
@@ -241,7 +243,10 @@ async function fetchProtocolOwnedLiquidity(): Promise<MetricWithStatus<number | 
         // Treasury's share = bridged_LP_balance / BPT_total_supply
         const totalSupply = BigInt(pool.totalSupply);
         const bridgedBalance = bridgedBalances[chain] || 0n;
-        const share = totalSupply > 0n ? Number(bridgedBalance) / Number(totalSupply) : 0;
+        // Compute share using BigInt scaling to avoid precision loss from Number(BigInt)
+        const SCALE = 1_000_000_000_000n; // 1e12
+        const shareScaled = totalSupply > 0n ? (bridgedBalance * SCALE) / totalSupply : 0n;
+        const share = Number(shareScaled) / 1e12;
 
         totalPolUsd += tvl * share;
       } catch (error) {
@@ -254,6 +259,8 @@ async function fetchProtocolOwnedLiquidity(): Promise<MetricWithStatus<number | 
     const solBalance = await fetchSolanaVaultBalance();
     if (solBalance !== null && prices.sol > 0) {
       totalPolUsd += solBalance * 2 * prices.sol * SOLANA_TREASURY_SHARE;
+    } else {
+      fetchErrors.push('liquidity:solana');
     }
 
     return {
