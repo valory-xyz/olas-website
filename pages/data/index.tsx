@@ -9,6 +9,10 @@ import { MechCategorizedRequestsInfo } from 'components/DataPage/MechCategorized
 import { MechGlobalsInfo } from 'components/DataPage/MechGlobals';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
+import {
+  ProtocolFeesInfo,
+  ProtocolOwnedLiquidityInfo,
+} from 'components/DataPage/ProtocolOwnedLiquidity';
 import { OperatorsInfo } from 'components/DataPage/Operators';
 import { OmenstratAccuracyInfo } from 'components/DataPage/OmenstratAccuracy';
 import { OmenstratAprInfo } from 'components/DataPage/OmenstratAprInfo';
@@ -49,6 +53,8 @@ const DataVerifyPage = () => (
       <PolystratRoiInfo />
       <PolystratAprInfo />
       <PolystratAccuracyInfo />
+      <ProtocolOwnedLiquidityInfo />
+      <ProtocolFeesInfo />
       <FeesInfo />
     </div>
     <div className="border-b-1.5" />

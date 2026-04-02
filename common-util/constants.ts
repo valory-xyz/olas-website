@@ -26,33 +26,9 @@ export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
 export const DUNE_QUERY_URL = 'https://dune.com/queries';
-export const DUNE_DAAS_QUERY_URL = `${DUNE_QUERY_URL}/4915321/8136719`;
-export const DUNE_TOTAL_SERVICE_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/4915404/8136824`;
-export const DUNE_PREDICT_DAA_QUERY_URL = `${DUNE_QUERY_URL}/5417479/8846100`;
-export const DUNE_PREDICT_CLASSIFIED_TRANSACTIONS_URL = `${DUNE_QUERY_URL}/5417451/8846057`;
-
-export const DUNE_AGENTS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
-export const DUNE_OPERATORS_QUERY_URL = `${DUNE_QUERY_URL}/5200009/8555457?category=decoded_project&namespace=autonolas&blockchain=ethereum`;
-export const DUNE_OLAS_STAKED_URL = `${DUNE_QUERY_URL}/5344501/8755325`;
-export const DUNE_TOTAL_LIQUIDITY_URL = `${DUNE_QUERY_URL}/5383248/8807520`;
 export const DUNE_TOTAL_PROTOCOL_REVENUE_URL = `${DUNE_QUERY_URL}/5409446/8836411`;
 
-export const DAA_QUERY_ID = '4915321';
-export const TOTAL_SERVICE_TRANSACTIONS_QUERY_ID = '4915404';
-export const PREDICTION_DAA_QUERY_ID = '5417479';
-export const PREDICTION_TXS_BY_AGENT_TYPE_QUERY_ID = '5417451';
-export const VEOLAS_CIRCULATING_SUPPLY_ID = '5376597';
-export const TOTAL_PROTOCOL_OWNED_LIQUIDITY_ID = '5383248';
 export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
-export const PROTOCOL_EARNED_FEES_ID = '3511561';
-export const MECH_TXS_QUERY_ID = '5195400';
-
-export const FEE_FLOW_QUERY_ID = '5166975';
-
-export const OLAS_STAKED_QUERY_ID = '5344501';
-
-export const DUNE_URL = 'https://dune.com/adrian0x';
-export const OLAS_ECONOMY_DASHBOARD_URL = `${DUNE_URL}/autonolas-ecosystem-activity`;
 
 export const X_OLAS_URL = 'https://x.com/autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';
@@ -139,6 +115,16 @@ export const REGISTRY_SUBGRAPH_URLS = [
   { key: 'celo', url: process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL },
   { key: 'arbitrum', url: process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL },
   { key: 'polygon', url: process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL },
+];
+
+export const LIQUIDITY_SUBGRAPH_URLS = [
+  { key: 'ethereum', url: process.env.NEXT_PUBLIC_LIQUIDITY_ETHEREUM_SUBGRAPH_URL },
+  { key: 'gnosis', url: process.env.NEXT_PUBLIC_LIQUIDITY_GNOSIS_SUBGRAPH_URL },
+  { key: 'polygon', url: process.env.NEXT_PUBLIC_LIQUIDITY_POLYGON_SUBGRAPH_URL },
+  { key: 'arbitrum', url: process.env.NEXT_PUBLIC_LIQUIDITY_ARBITRUM_SUBGRAPH_URL },
+  { key: 'optimism', url: process.env.NEXT_PUBLIC_LIQUIDITY_OPTIMISM_SUBGRAPH_URL },
+  { key: 'base', url: process.env.NEXT_PUBLIC_LIQUIDITY_BASE_SUBGRAPH_URL },
+  { key: 'celo', url: process.env.NEXT_PUBLIC_LIQUIDITY_CELO_SUBGRAPH_URL },
 ];
 
 /**

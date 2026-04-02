@@ -928,6 +928,49 @@ export const getPolymarketBetsWithBettorQuery = ({
   return gql`query PolymarketBetsWithBettor { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
 };
 
+export const liquidityEthQuery = gql`
+  query LiquidityEth {
+    lptokenMetrics(id: "global") {
+      treasuryPercentage
+      ethUsdPrice
+      maticUsdPrice
+      solUsdPrice
+      poolLiquidityUsd
+      protocolOwnedLiquidityUsd
+    }
+    bridgedPOLHoldings(first: 10) {
+      id
+      originChain
+      pair
+      currentBalance
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
+export const liquidityL2Query = gql`
+  query LiquidityL2 {
+    poolMetrics_collection(first: 1) {
+      id
+      reserve0
+      reserve1
+      totalSupply
+      celoUsdPrice
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const getMechRequestsBySenderEntityQuery = ({
   sender,
   timestamp_gt,
