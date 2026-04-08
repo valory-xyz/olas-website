@@ -38,7 +38,7 @@ export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProp
     >
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
         <div className="text-lg font-semibold">
-          {BLUEPRINT_LABELS[activeBlueprint]} Tool Accuracy
+          Tool Accuracy
         </div>
         <Tabs
           items={AGENT_BLUEPRINTS}
