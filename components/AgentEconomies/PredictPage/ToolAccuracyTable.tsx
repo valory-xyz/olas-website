@@ -37,9 +37,7 @@ export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProp
       className={`p-8 overflow-hidden border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col ${className ?? ''}`}
     >
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-        <div className="text-lg font-semibold">
-          Tool Accuracy
-        </div>
+        <div className="text-lg font-semibold">Tool Accuracy</div>
         <Tabs
           items={AGENT_BLUEPRINTS}
           activeKey={activeBlueprint}
