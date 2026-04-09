@@ -22,6 +22,22 @@ const BLUEPRINT_LABELS: Record<AgentBlueprint, string> = {
   polystrat: 'Polystrat',
 };
 
+const parseIrrelevantTools = (envValue: string | undefined): Set<string> => {
+  if (!envValue) return new Set();
+  try {
+    const parsed = JSON.parse(envValue);
+    if (Array.isArray(parsed)) return new Set(parsed.map((t: string) => t.toLowerCase()));
+  } catch {
+    // ignore malformed env values
+  }
+  return new Set();
+};
+
+const IRRELEVANT_TOOLS: Record<AgentBlueprint, Set<string>> = {
+  omenstrat: parseIrrelevantTools(process.env.NEXT_PUBLIC_OMENSTRAT_IRRELEVANT_TOOLS),
+  polystrat: parseIrrelevantTools(process.env.NEXT_PUBLIC_POLYSTRAT_IRRELEVANT_TOOLS),
+};
+
 export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProps) => {
   const [activeBlueprint, setActiveBlueprint] = useState<AgentBlueprint>('polystrat');
 
@@ -29,7 +45,9 @@ export const ToolAccuracyTable = ({ data, className, id }: ToolAccuracyTableProp
 
   if (!data || (!data.omenstrat?.length && !data.polystrat?.length)) return null;
 
-  const sortedRows = rows ? [...rows].sort((a, b) => b.accuracy - a.accuracy) : [];
+  const irrelevant = IRRELEVANT_TOOLS[activeBlueprint];
+  const filteredRows = rows ? rows.filter((r) => !irrelevant.has(r.tool.toLowerCase())) : [];
+  const sortedRows = filteredRows.sort((a, b) => b.accuracy - a.accuracy);
 
   return (
     <Card
