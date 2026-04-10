@@ -6,12 +6,9 @@ import { useState } from 'react';
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
-import builders from 'data/builders.json';
-import friends from 'data/friends.json';
+import partners from 'data/partners.json';
 import quotes from 'data/trustedBy.json';
 import { Trustee } from './Trustee';
-
-const filteredFriends = friends.filter((friend) => !friend.hidden);
 
 const QuoteCarousel = () => {
   const [index, setIndex] = useState(0);
@@ -54,38 +51,23 @@ export const PropelledBy = () => (
     <section className="max-w-[900px] mx-auto text-center">
       <h2 className={`${SUB_HEADER_CLASS} mb-6 lg:mb-14`}>Trusted by ...</h2>
       <QuoteCarousel />
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-10">
-        {builders.map((builder) => {
-          const { id, name, url, iconFilename, imageWidth, imageHeight } = builder;
-          return (
-            <div key={id} className="grayscale flex justify-center items-center">
-              <a href={url} target="_blank" rel="noopener noreferrer">
-                <Image
-                  src={`/images/builders/${iconFilename}`}
-                  alt={name}
-                  width={imageWidth ?? 150}
-                  height={imageHeight ?? 30}
-                />
-              </a>
-            </div>
-          );
-        })}
-        {filteredFriends.map((friend) => {
-          const { id, name, url, isExternal, imageFilename, imageWidth, imageHeight } = friend;
-          const LinkTag = isExternal ? 'a' : Link;
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10">
+        {partners.map((partner) => {
+          const { id, name, url, imageSrc, imageWidth, imageHeight, isInternal } = partner;
+          const LinkTag = isInternal ? Link : 'a';
           return (
             <div key={id} className="grayscale flex justify-center items-center">
               <LinkTag
                 href={url}
-                {...(isExternal
-                  ? {
+                {...(isInternal
+                  ? {}
+                  : {
                       target: '_blank',
                       rel: 'noopener noreferrer',
-                    }
-                  : {})}
+                    })}
               >
                 <Image
-                  src={`/images/friends/${imageFilename}`}
+                  src={imageSrc}
                   alt={name}
                   width={imageWidth ?? 150}
                   height={imageHeight ?? 30}
