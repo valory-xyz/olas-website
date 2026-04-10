@@ -32,7 +32,7 @@ const tokenomics = [
 
 const governance = [
   {
-    title: 'Decentralised Management',
+    title: 'Decentralized Management',
     subList: [' DAO steers protocol developments'],
   },
 ];
@@ -54,7 +54,7 @@ export const ProtocolKeyFeatures = () => (
         . Each part of the Protocol is designed to ensure scalability and security. It provides a
         mechanism to: one, incentivize developers proportionally to their contributions, two,
         incentivize operators to run agent systems, and three, incentivize bonders to provide
-        liquidity, collectively supporting the growth of a decentralised ecosystem. Olas Protocol is
+        liquidity, collectively supporting the growth of a decentralized ecosystem. Olas Protocol is
         currently deployed on multiple blockchains, with plans for further expansions.
       </div>
 

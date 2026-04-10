@@ -5,6 +5,7 @@ import { Button } from 'components/ui/button';
 import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const list = [
   {
@@ -44,12 +45,12 @@ export const OwnYourAgent = () => (
     >
       <div className="text-center max-w-[900px] mx-auto place-items-center">
         <SectionHeading color="text-gray-900" weight="font-bold" other="mb-12">
-          Pearl: The &quot;AI Agent App-Store&quot;
+          Pearl: The &quot;Agent App-Store&quot;
         </SectionHeading>
         <p className="text-xl text-slate-600">
-          Own your agent with Pearl - the ultimate collection of AI agents. Choose from a variety of
-          AI agents to benefit from their capabilities while earning potential rewards from OLAS
-          staking.
+          The home of agents you actually own. Uniquely, you control your funds whilst your agents
+          work on everything from predicting the future to managing your portfolio. All while
+          earning potential Olas staking rewards.
         </p>
         <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
           <p>Featured in</p>
@@ -77,16 +78,20 @@ export const OwnYourAgent = () => (
         />
       </div>
 
-      <div className="w-fit mt-14 mx-auto">
-        <Button variant="default" size="xl" asChild>
+      <div className="w-fit mt-14 mx-auto gap-4 flex max-md:flex-col">
+        <Button variant="default" size="lg" asChild>
           <SubsiteLink
             href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=homepage&utm_content=own-your-agent-button`}
             isInButton
             isExternal
           >
             Own Your Agent
-            <ArrowUpRight size={24} className="ml-2" />
+            <ArrowUpRight size={20} className="ml-2" />
           </SubsiteLink>
+        </Button>
+
+        <Button variant="outline" size="lg" asChild>
+          <Link href="/agents">Explore Agents</Link>
         </Button>
       </div>
     </SectionWrapper>

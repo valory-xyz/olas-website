@@ -1,110 +1,146 @@
-import * as Tooltip from '@radix-ui/react-tooltip';
 import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
 
-import { TrusteeQuotePropTypes } from 'common-util/propTypes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
-import unsortedTrustedBy from 'data/trustedBy.json';
+import { Tag } from 'components/ui/tag';
+import featuredIn from 'data/featuredIn.json';
 import Image from 'next/image';
-import { Trustee } from './Trustee';
+import Link from 'next/link';
 
-const trustedBy = [...unsortedTrustedBy].sort((a, b) => a.order - b.order);
-const trustedByLength = trustedBy.length;
-const hoverZIndex = (trustedByLength + 1) * 10;
+const outlets = [...featuredIn, ...featuredIn];
 
-const QuoteIcon = ({ quote }) => {
-  const xPlacement = quote.order * 20;
-  const zPlacement = (trustedByLength - quote.order) * 10;
-
-  const [isHovered, setIsHovered] = useState(false);
-  const zIndex = isHovered ? hoverZIndex : zPlacement;
-
-  return (
-    <div>
-      <Tooltip.Provider>
-        <Tooltip.Root delayDuration={0} open={isHovered} onOpenChange={setIsHovered}>
-          <Tooltip.Trigger
-            className={
-              'block rounded-full p-1 absolute bg-white border border-[rgba(0, 0, 0, 0.05)] transition-all duration-300 ease-in-out hover:-translate-y-1 group-hover:blur-[1px] [&:hover]:!blur-0'
-            }
-            style={{
-              zIndex,
-              translate: xPlacement,
-            }}
-          >
-            <Image src={`/images/homepage/${quote.icon}`} alt={quote.name} width={20} height={20} />
-          </Tooltip.Trigger>
-          <Tooltip.Content
-            side="right"
-            align="center"
-            className="relative"
-            style={{
-              zIndex: hoverZIndex,
-            }}
-          >
-            <Trustee
-              quote={quote}
-              className="bg-white p-4 rounded-xl shadow-2xl max-w-[360px] text-left ml-2"
-            />
-          </Tooltip.Content>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+const AsSeenIn = () => (
+  <div className="w-full">
+    <div className="flex justify-center w-full">
+      <Tag variant="primary" className="mb-12">
+        As seen in
+      </Tag>
     </div>
-  );
-};
-
-QuoteIcon.propTypes = {
-  quote: TrusteeQuotePropTypes,
-};
+    <div className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-white to-transparent" />
+      <div className="flex animate-scroll w-max">
+        {outlets.map((item, i) => (
+          <a
+            key={`${item.id}-${i}`}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 px-10"
+          >
+            <Image
+              src={`/images/featured-in/${item.iconFilename}`}
+              alt={item.name}
+              width={180}
+              height={32}
+            />
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const Hero = () => (
-  <SectionWrapper
-    customClasses="
-    relative
-    overflow-hidden
-    homepage-hero-bg
-    h-[calc(100vh-150px)]
-    max-h-[800px]
-    flex
-    flex-col
-    place-items-center"
-  >
-    <video autoPlay loop muted playsInline className="h-full object-fill w-full">
-      <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
-    </video>
-    <div className="absolute w-full h-full overflow-hidden">
-      <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
-    </div>
-    <div className="absolute h-[500px] 2xl:h-[800px] place-content-center mx-auto text-center align-middle">
-      <h1 className="tracking-tight text-5xl md:text-6xl mb-12 text-black font-extrabold lg:mb-4">
-        Co-own AI
-      </h1>
-      <div className="mb-10 text-xl leading-8 text-gray-900">
-        Olas enables everyone to own and monetize their AI agents.
+  <>
+    <SectionWrapper
+      customClasses="
+      relative
+      overflow-hidden
+      homepage-hero-bg
+      h-[calc(100vh-250px)]
+      max-h-[520px]
+      flex
+      flex-col
+      place-items-center"
+    >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="h-full object-cover w-full pointer-events-none"
+      >
+        <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
+      </video>
+      <div className="absolute w-full h-full overflow-hidden pointer-events-none">
+        <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
       </div>
-      <div className="px-4 py-3 flex flex-row place-items-center gap-2 rounded-full bg-opacity-80 cursor-pointer border border-white mb-8 bg-white w-fit mx-auto transition duration-300">
-        <Link href="#social-proof" className="inline-flex items-center gap-2">
-          <div className="text-gray-500">Trusted by leading web3 teams and users</div>
-          <ChevronRight size={16} className="text-gray-500" />
-        </Link>
-        <div className="relative w-[90px] h-[30px] group hidden sm:block">
-          {trustedBy.map((quote) => (
-            <QuoteIcon quote={quote} key={quote.name} />
-          ))}
+
+      <Link href="/blog/uniquely-human" className="hidden lg:block">
+        <div className="absolute right-8 top-1/3 -translate-y-1/2 animate-float">
+          <Image
+            src="/images/homepage/ai-card.png"
+            alt="AI card"
+            width={180}
+            height={206}
+            className="mb-4 shadow-md rounded-2xl"
+          />
+          <div className="flex items-center gap-1 font-medium text-sm justify-center">
+            #UniquelyHuman <ChevronRight size={20} />
+          </div>
         </div>
+      </Link>
+
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 lg:hidden">
+        <h1 className="tracking-tight text-5xl md:text-6xl mb-4 text-black font-extrabold">
+          Co-own AI
+        </h1>
+        <div className="max-md:text-lg text-xl leading-8 text-gray-900 mb-6">
+          Olas enables everyone to own and monetize their AI agents.
+        </div>
+        <Link href="/blog/uniquely-human" className="animate-float">
+          <Image
+            src="/images/homepage/ai-card.png"
+            alt="AI card"
+            width={140}
+            height={160}
+            className="mb-2 shadow-md rounded-2xl mx-auto"
+          />
+          <div className="flex items-center gap-1 font-medium text-sm justify-center">
+            #UniquelyHuman <ChevronRight size={20} />
+          </div>
+        </Link>
       </div>
-      <div className="flex flex-wrap place-content-center mx-4 gap-4 w-fit mx-auto">
-        <Button variant="default" size="lg" asChild className="inline-flex md:ml-auto max-sm:grow">
-          <Link href="/#pearl">Own Your Agent</Link>
-        </Button>
-        <Button variant="outline" size="lg" asChild className="inline-flex md:ml-auto max-sm:grow">
-          <Link href="/olas-token#choose-your-role">Get Involved</Link>
-        </Button>
+
+      <div className="absolute inset-x-0 h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block pointer-events-none">
+        <h1 className="tracking-tight text-5xl md:text-6xl mb-6 lg:mb-12 text-black font-extrabold">
+          Co-own AI
+        </h1>
+        <div className="mb-8 lg:mb-32 text-xl leading-8 text-gray-900">
+          Olas enables everyone to own and monetize their AI agents.
+        </div>
+
+        <Link href="#pearl" className="mx-auto flex flex-col items-center pointer-events-auto">
+          <svg width="24" height="14" viewBox="0 0 24 14" className="animate-scroll-fade">
+            <polyline
+              points="2,2 12,11 22,2"
+              fill="none"
+              stroke="#9333ea"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <svg
+            width="24"
+            height="14"
+            viewBox="0 0 24 14"
+            className="animate-scroll-fade [animation-delay:0.3s]"
+          >
+            <polyline
+              points="2,2 12,11 22,2"
+              fill="none"
+              stroke="#9C48DB"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Link>
       </div>
-    </div>
-  </SectionWrapper>
+    </SectionWrapper>
+    <AsSeenIn />
+  </>
 );
 
 export default Hero;

@@ -25,8 +25,8 @@ export const AgentsWorkingTogether = () => (
         Mech Marketplace: The AI Agent Bazaar
       </SectionHeading>
       <p className="text-xl text-slate-600 mb-12">
-        Monetize your agent with a first-of-its-kind decentralised marketplace for AI Agents. A
-        Bazaar for AI agents to offer their skills, hire other agents&apos; services and collaborate
+        Monetize your agent with a first-of-its-kind decentralized marketplace for AI Agents. A
+        Bazaar for AI agents to offer their skills, hire other agents’ services and collaborate
         autonomously.
       </p>
       <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
@@ -48,13 +48,13 @@ export const AgentsWorkingTogether = () => (
     <Image
       src="/images/mech-marketplace.png"
       alt="Mech Marketplace diagram"
-      width={1056}
-      height={386}
+      width={872}
+      height={520}
       className="mx-auto py-4"
     />
 
     <div className="w-fit mt-14 mx-auto">
-      <Button variant="default" size="xl" asChild>
+      <Button variant="default" size="lg" asChild>
         <Link href="/mech-marketplace">Monetize Your Agent</Link>
       </Button>
     </div>

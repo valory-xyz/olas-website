@@ -91,11 +91,13 @@ const L2_CHAIN_CONFIG: Record<
   },
   arbitrum: {
     // reserve1 = WETH, 18 decimals
-    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve1) / 10n ** 12n) / 1e6) * 2 * prices.eth,
+    computeTvl: (pool, prices) =>
+      (Number(BigInt(pool.reserve1) / 10n ** 12n) / 1e6) * 2 * prices.eth,
   },
   optimism: {
     // reserve0 = WETH, 18 decimals
-    computeTvl: (pool, prices) => (Number(BigInt(pool.reserve0) / 10n ** 12n) / 1e6) * 2 * prices.eth,
+    computeTvl: (pool, prices) =>
+      (Number(BigInt(pool.reserve0) / 10n ** 12n) / 1e6) * 2 * prices.eth,
   },
   base: {
     // reserve1 = USDC (6 decimals, stablecoin ≈ $1)

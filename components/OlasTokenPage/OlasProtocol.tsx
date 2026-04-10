@@ -122,7 +122,7 @@ export const OlasProtocol = () => (
           ))}
         </div>
         <p>
-          Collectively, these three mechanisms support the growth of a decentralised ecosystem of AI
+          Collectively, these three mechanisms support the growth of a decentralized ecosystem of AI
           agents.
         </p>
       </div>

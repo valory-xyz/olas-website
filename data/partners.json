@@ -1,0 +1,247 @@
+[
+  {
+    "id": "8baller",
+    "name": "8baller",
+    "url": "https://twitter.com/8baller11",
+    "imageSrc": "/images/partners/8baller.svg",
+    "imageWidth": 72,
+    "imageHeight": 23
+  },
+  {
+    "id": "valory",
+    "name": "Valory",
+    "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
+    "imageSrc": "/images/partners/valory.png",
+    "imageWidth": 90,
+    "imageHeight": 29
+  },
+  {
+    "id": "nevermined",
+    "name": "Nevermined",
+    "url": "https://nevermined.io/ai-payments-are-hard-smart-subscriptions-fix/",
+    "imageSrc": "/images/partners/nevermined.png"
+  },
+  {
+    "id": "postmint",
+    "name": "Postmint",
+    "url": "https://twitter.com/postmint_xyz/status/1699416224587809023",
+    "imageSrc": "/images/partners/postmint.png",
+    "imageWidth": 101,
+    "imageHeight": 20
+  },
+  {
+    "id": "the-graph",
+    "name": "The Graph",
+    "url": "https://x.com/autonolas/status/1710294338435957248",
+    "imageSrc": "/images/partners/the-graph.png",
+    "imageWidth": 58,
+    "imageHeight": 32
+  },
+  {
+    "id": "gnosis",
+    "name": "Gnosis Chain",
+    "url": "https://twitter.com/gnosischain/status/1720488419145482311",
+    "imageSrc": "/images/partners/gnosis.svg"
+  },
+  {
+    "id": "agentcoin",
+    "name": "Agentcoin",
+    "url": "https://www.agentcoin.org/",
+    "imageSrc": "/images/partners/agentcoin.png"
+  },
+  {
+    "id": "virtuals",
+    "name": "Virtuals",
+    "url": "https://twitter.com/virtuals_io/status/1765504821287858679",
+    "imageSrc": "/images/partners/virtuals.png",
+    "imageWidth": 88,
+    "imageHeight": 30
+  },
+  {
+    "id": "the-keeper",
+    "name": "The Keeper",
+    "url": "https://olas.network/blog/introducing-the-autonomous-keeper-service",
+    "imageSrc": "/images/partners/keeper.png",
+    "imageWidth": 66,
+    "imageHeight": 27
+  },
+  {
+    "id": "isotropic",
+    "name": "Isotropic Solutions",
+    "url": "https://x.com/autonolas/status/1846524083070271535",
+    "imageSrc": "/images/partners/isotrp.svg",
+    "imageWidth": 120
+  },
+  {
+    "id": "creator-bid",
+    "name": "Creator.bid",
+    "url": "https://twitter.com/CreatorBid/status/1777349043317829740",
+    "imageSrc": "/images/partners/creator-bid.png"
+  },
+  {
+    "id": "alterscope",
+    "name": "Alterscope",
+    "url": "https://www.alterscope.org/",
+    "imageSrc": "/images/partners/alterscope.webp"
+  },
+  {
+    "id": "shutter",
+    "name": "Shutter",
+    "url": "https://x.com/autonolas/status/1846524083070271535",
+    "imageSrc": "/images/partners/shutter.svg",
+    "imageWidth": 94,
+    "imageHeight": 23
+  },
+  {
+    "id": "immunefi",
+    "name": "Immunefi",
+    "url": "https://twitter.com/immunefi/status/1557431564564254721",
+    "imageSrc": "/images/partners/immunefi.png",
+    "imageWidth": 105,
+    "imageHeight": 23
+  },
+  {
+    "id": "balancer",
+    "name": "Balancer",
+    "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
+    "imageSrc": "/images/partners/balancer.png",
+    "imageWidth": 96,
+    "imageHeight": 18
+  },
+  {
+    "id": "recall",
+    "name": "Recall",
+    "url": "",
+    "imageSrc": "/images/partners/recall.png",
+    "imageWidth": 73,
+    "imageHeight": 18
+  },
+  {
+    "id": "orbis",
+    "name": "Orbis",
+    "url": "https://www.linkedin.com/posts/charles-levecque-0359a935_its-been-a-little-while-since-i-shared-here-activity-7066360263473557504-Rah7",
+    "imageSrc": "/images/partners/orbis.png",
+    "imageWidth": 77,
+    "imageHeight": 37
+  },
+  {
+    "id": "everclear",
+    "name": "Everclear",
+    "url": "/blog/introducing-the-autonomous-keeper-service",
+    "imageSrc": "/images/partners/everclear.svg",
+    "isInternal": true
+  },
+  {
+    "id": "cow-protocol",
+    "name": "CoW Protocol",
+    "url": "https://forum.cow.fi/t/grant-application-decentralizing-cow-s-watchtower/1681/6",
+    "imageSrc": "/images/partners/cow-protocol.svg",
+    "imageWidth": 80,
+    "imageHeight": 26 
+  },
+  {
+    "id": "keyko",
+    "name": "Keyko",
+    "url": "https://x.com/autonolas/status/1811426625944420501",
+    "imageSrc": "/images/partners/keyko.svg",
+    "imageWidth": 65,
+    "imageHeight": 13
+  },
+  {
+    "id": "wonderland",
+    "name": "DeFi Wonderland",
+    "url": "/blog/introducing-the-autonomous-keeper-service",
+    "imageSrc": "/images/partners/wonderland.png",
+    "isInternal": true,
+    "imageWidth": 128,
+    "imageHeight": 24
+  },
+  {
+    "id": "origin-trail",
+    "name": "Origin Trail",
+    "url": "https://twitter.com/BranaRakic/status/1712474827674808457",
+    "imageSrc": "/images/partners/origin-trail.png"
+  },
+  {
+    "id": "safe",
+    "name": "Safe",
+    "url": "https://safe.mirror.xyz/V965PykKzlE1PCuWxBjsCJR12WscLcnMxuvR9E9bP-Y",
+    "imageSrc": "/images/partners/safe.svg",
+    "imageWidth": 78,
+    "imageHeight": 29
+  },
+  {
+    "id": "kleros",
+    "name": "Kleros",
+    "url": "https://kleros.io/",
+    "imageSrc": "/images/partners/kleros.png",
+    "imageWidth": 90,
+    "imageHeight": 90
+  },
+  {
+    "id": "flockio",
+    "name": "FLock",
+    "url": "https://flock.io/",
+    "imageSrc": "/images/partners/flock.svg",
+    "imageWidth": 86,
+    "imageHeight": 22
+  },
+  {
+    "id": "cantina",
+    "name": "Cantina",
+    "url": "https://twitter.com/cantinaxyz/status/1745483323940467132",
+    "imageSrc": "/images/partners/cantina.svg"
+  },
+  {
+    "id": "code4rena",
+    "name": "Code4Rena",
+    "url": "https://code4rena.com/audits/2023-12-olas",
+    "imageSrc": "/images/partners/code4rena.svg"
+  },
+  {
+    "id": "wormhole",
+    "name": "Wormhole",
+    "url": "https://twitter.com/autonolas/status/1773664354019467297",
+    "imageSrc": "/images/partners/wormhole.png"
+  },
+  {
+    "id": "snapshot",
+    "name": "SnapShotLabs",
+    "url": "https://twitter.com/valoryag/status/1726947470176092206",
+    "imageSrc": "/images/partners/snapshot.png",
+    "imageWidth": 100,
+    "imageHeight": 100
+  },
+  {
+    "id": "solulab",
+    "name": "SoluLab",
+    "url": "https://www.solulab.com/",
+    "imageSrc": "/images/partners/solulab.png",
+    "imageWidth": 102,
+    "imageHeight": 18
+  },
+  {
+    "id": "pett-ai",
+    "name": "Pett.ai",
+    "url": "",
+    "imageSrc": "/images/partners/pett-ai.png",
+    "imageWidth": 58,
+    "imageHeight": 38
+  },
+  {
+    "id": "omen",
+    "name": "Omen",
+    "url": "https://mirror.xyz/oaksprout.eth/3acKEx36a_cPhrcOOndRl0E-IfyZvwhTWwCMXukjOE8",
+    "imageSrc": "/images/partners/omen.png",
+    "imageWidth": 85,
+    "imageHeight": 30
+  },
+  {
+    "id": "edge",
+    "name": "EdgeAGI",
+    "url": "https://autonomous-agent.devpost.com/",
+    "imageSrc": "/images/partners/edge.png",
+    "imageWidth": 68,
+    "imageHeight": 30
+  }
+]

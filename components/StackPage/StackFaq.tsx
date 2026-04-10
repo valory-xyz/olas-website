@@ -7,7 +7,7 @@ const faqList = [
     list: [
       {
         title: 'What is Olas Stack?',
-        desc: 'Olas Stack is a framework for building, deploying, and managing autonomous services and agents. It provides a modular architecture, decentralised governance, and comprehensive interoperability.',
+        desc: 'Olas Stack is a framework for building, deploying, and managing autonomous services and agents. It provides a modular architecture, decentralized governance, and comprehensive interoperability.',
       },
       {
         title: 'How can I get started with Olas Stack?',

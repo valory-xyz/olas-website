@@ -6,8 +6,6 @@ import Media from 'components/HomepageSection/Media';
 import { OwnYourAgent } from 'components/HomepageSection/OwnYourAgent';
 import { PowersAiAgentEconomies } from 'components/HomepageSection/PowersAiAgentEconomies';
 import { PropelledBy } from 'components/HomepageSection/PropelledBy';
-import { TrustedBy } from 'components/HomepageSection/TrustedBy';
-import { WorldOfAgents } from 'components/HomepageSection/WorldOfAgents';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
@@ -26,11 +24,9 @@ export default function Home({ metrics }) {
     <PageWrapper>
       <Meta ogPath="" />
       <Hero />
-      <WorldOfAgents />
       <OwnYourAgent />
       <AgentsWorkingTogether />
       <PowersAiAgentEconomies metrics={metrics} />
-      <TrustedBy />
       <PropelledBy />
       <Media />
     </PageWrapper>

@@ -18,13 +18,12 @@ type TrusteeProps = {
 
 export const Trustee = ({ quote, className }: TrusteeProps) => (
   <Card
-    className={`flex flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-slate-50 ${className}`}
+    className={`flex max-md:flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-slate-50 text-left ${className}`}
   >
-    <div className="text-purple-600">
-      <Markdown className="text-black">{quote?.quote}</Markdown>
-    </div>
-    <div className="mt-auto flex flex-row gap-3">
-      <div className="aspect-square mt-auto">
+    <Markdown className="md:hidden text-black">{quote?.quote}</Markdown>
+
+    <div className="mb-auto flex flex-row gap-3 min-w-[205px]">
+      <div className="aspect-square mt-0 text-start">
         <Image
           src={`/images/homepage/${quote?.userIcon || quote?.icon || ''}`}
           alt="Build"
@@ -39,6 +38,8 @@ export const Trustee = ({ quote, className }: TrusteeProps) => (
         <p className="text-slate-500 text-sm">{quote?.title}</p>
       </div>
     </div>
+
+    <Markdown className="max-md:hidden text-black">{quote?.quote}</Markdown>
   </Card>
 );
 

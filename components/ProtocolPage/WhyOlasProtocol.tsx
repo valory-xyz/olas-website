@@ -14,7 +14,7 @@ export const WhyOlasProtocol = () => (
         Open-source developers often struggle with fair remuneration. Olas Protocol addresses this
         by minting software packages as NFTs, enabling their composition into agents and services.
         This model ensures developers are rewarded for their contributions, fostering a sustainable,
-        decentralised ecosystem.
+        decentralized ecosystem.
       </p>
     </div>
   </SectionWrapper>
