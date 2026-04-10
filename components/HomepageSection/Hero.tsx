@@ -10,8 +10,8 @@ const outlets = [...featuredIn, ...featuredIn];
 
 const AsSeenIn = () => (
   <div className="w-full">
-    <div className="flex w-full">
-      <Tag variant="primary" className="mb-12 w-auto mx-auto">
+    <div className="flex justify-center w-full">
+      <Tag variant="primary" className="mb-12">
         As seen in
       </Tag>
     </div>
@@ -30,9 +30,8 @@ const AsSeenIn = () => (
             <Image
               src={`/images/featured-in/${item.iconFilename}`}
               alt={item.name}
-              width={130}
-              height={24}
-              className="h-10 w-auto object-contain"
+              width={180}
+              height={32}
             />
           </a>
         ))}
@@ -97,7 +96,7 @@ const Hero = () => (
         </Link>
       </div>
 
-      <div className="absolute h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block">
+      <div className="absolute inset-x-0 h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block">
         <h1 className="tracking-tight text-5xl md:text-6xl mb-6 lg:mb-12 text-black font-extrabold">
           Co-own AI
         </h1>
@@ -105,14 +104,32 @@ const Hero = () => (
           Olas enables everyone to own and monetize their AI agents.
         </div>
 
-        <Link href="#pearl">
-          <Image
-            src="/images/homepage/scroll-icon.svg"
-            alt="scroll"
-            width={32}
-            height={36}
-            className="mx-auto animate-bounce-intermittent duration-250"
-          />
+        <Link href="#pearl" className="mx-auto flex flex-col items-center">
+          <svg width="24" height="14" viewBox="0 0 24 14" className="animate-scroll-fade">
+            <polyline
+              points="2,2 12,11 22,2"
+              fill="none"
+              stroke="#9333ea"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <svg
+            width="24"
+            height="14"
+            viewBox="0 0 24 14"
+            className="animate-scroll-fade [animation-delay:0.3s]"
+          >
+            <polyline
+              points="2,2 12,11 22,2"
+              fill="none"
+              stroke="#9C48DB"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </Link>
       </div>
     </SectionWrapper>
