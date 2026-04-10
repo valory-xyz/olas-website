@@ -116,10 +116,7 @@ export const MECH_FEES_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH_URL,
     requestConfig
   ),
-  polygon: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL,
-    requestConfig
-  ),
+  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL, requestConfig),
   optimism: new GraphQLClient(
     process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH_URL,
     requestConfig
