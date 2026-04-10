@@ -53,7 +53,7 @@ const Hero = () => (
       flex-col
       place-items-center"
     >
-      <video autoPlay loop muted playsInline className="h-full object-cover w-full">
+      <video autoPlay loop muted playsInline className="h-full object-cover w-full pointer-events-none">
         <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
       </video>
       <div className="absolute w-full h-full overflow-hidden pointer-events-none">
@@ -96,7 +96,7 @@ const Hero = () => (
         </Link>
       </div>
 
-      <div className="absolute inset-x-0 h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block">
+      <div className="absolute inset-x-0 h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block pointer-events-none">
         <h1 className="tracking-tight text-5xl md:text-6xl mb-6 lg:mb-12 text-black font-extrabold">
           Co-own AI
         </h1>
@@ -104,7 +104,7 @@ const Hero = () => (
           Olas enables everyone to own and monetize their AI agents.
         </div>
 
-        <Link href="#pearl" className="mx-auto flex flex-col items-center">
+        <Link href="#pearl" className="mx-auto flex flex-col items-center pointer-events-auto">
           <svg width="24" height="14" viewBox="0 0 24 14" className="animate-scroll-fade">
             <polyline
               points="2,2 12,11 22,2"
