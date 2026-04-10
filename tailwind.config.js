@@ -114,11 +114,37 @@ module.exports = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        'bounce-intermittent': {
+          '0%, 40%, 100%': {
+            transform: 'translateY(0)',
+          },
+          '10%': {
+            transform: 'translateY(-25%)',
+            animationTimingFunction: 'cubic-bezier(0.8,0,1,1)',
+          },
+          '20%': {
+            transform: 'translateY(0)',
+            animationTimingFunction: 'cubic-bezier(0,0,0.2,1)',
+          },
+          '30%': {
+            transform: 'translateY(-15%)',
+            animationTimingFunction: 'cubic-bezier(0.8,0,1,1)',
+          },
+        },
+        float: {
+          '0%': { transform: 'translate(0, 0)' },
+          '25%': { transform: 'translate(1.5px, -2px)' },
+          '50%': { transform: 'translate(-1px, 1px)' },
+          '75%': { transform: 'translate(2px, 1.5px)' },
+          '100%': { transform: 'translate(0, 0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        scroll: 'scroll 25s linear infinite',
+        scroll: 'scroll 50s linear infinite',
+        'bounce-intermittent': 'bounce-intermittent 4s infinite',
+        float: 'float 12s ease-in-out infinite',
       },
     },
   },
