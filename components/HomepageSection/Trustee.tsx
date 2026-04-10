@@ -21,7 +21,7 @@ export const Trustee = ({ quote, className }: TrusteeProps) => (
     className={`flex max-md:flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-slate-50 text-left ${className}`}
   >
     <Markdown className="md:hidden text-black">{quote?.quote}</Markdown>
-    
+
     <div className="mb-auto flex flex-row gap-3 min-w-[205px]">
       <div className="aspect-square mt-0 text-start">
         <Image

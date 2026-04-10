@@ -10,8 +10,10 @@ const outlets = [...featuredIn, ...featuredIn];
 
 const AsSeenIn = () => (
   <div className="w-full">
-    <div className='flex w-full'>
-    <Tag variant="primary" className="mb-12 w-auto mx-auto">As seen in</Tag>
+    <div className="flex w-full">
+      <Tag variant="primary" className="mb-12 w-auto mx-auto">
+        As seen in
+      </Tag>
     </div>
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-white to-transparent" />
@@ -24,7 +26,7 @@ const AsSeenIn = () => (
             target="_blank"
             rel="noopener noreferrer"
             className="flex-shrink-0 px-10"
-          > 
+          >
             <Image
               src={`/images/featured-in/${item.iconFilename}`}
               alt={item.name}

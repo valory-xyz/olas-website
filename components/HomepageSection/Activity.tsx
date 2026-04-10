@@ -428,10 +428,10 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
         OLAS: Powers AI Agent Economies
       </SectionHeading>
       <p className="text-lg text-slate-600 mb-20 max-lg:mx-4">
-        The OLAS token is bootstrapping a flywheel birthing larger and larger agent economies: Each
-        Pearl user stakes OLAS to access their agents&apos; benefits. To provide utility to their
-        users Pearl agents use the marketplace. The marketplace charges fees to agents. Fees are
-        used to burn OLAS.
+        The OLAS token is powering a flywheel driving larger and larger agent economies: Each Pearl
+        user stakes OLAS to access their agents&apos; benefits. To provide utility to their users,
+        Pearl agents use the marketplace. The marketplace charges fees to agents. Fees are used to
+        burn OLAS.
       </p>
 
       <div className="flex flex-col max-w-4xl mx-auto text-slate-500 place-items-center hidden md:flex">
