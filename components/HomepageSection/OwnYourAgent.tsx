@@ -48,7 +48,9 @@ export const OwnYourAgent = () => (
           Pearl: The &quot;Agent App-Store&quot;
         </SectionHeading>
         <p className="text-xl text-slate-600">
-          The home of agents you actually own. Uniquely, you control of your funds whilst your agents work on everything from predicting the future to managing your portfolio. All while earning potential Olas staking rewards.
+          The home of agents you actually own. Uniquely, you control of your funds whilst your
+          agents work on everything from predicting the future to managing your portfolio. All while
+          earning potential Olas staking rewards.
         </p>
         <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
           <p>Featured in</p>
@@ -89,11 +91,7 @@ export const OwnYourAgent = () => (
         </Button>
 
         <Button variant="outline" size="lg" asChild>
-          <Link
-            href='/agents'
-          >
-            Explore Agents
-          </Link>
+          <Link href="/agents">Explore Agents</Link>
         </Button>
       </div>
     </SectionWrapper>

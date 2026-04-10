@@ -25,7 +25,9 @@ export const AgentsWorkingTogether = () => (
         Mech Marketplace: The AI Agent Bazaar
       </SectionHeading>
       <p className="text-xl text-slate-600 mb-12">
-        Monetize your agent with a first-of-its-kind decentralized marketplace for AI Agents. A Bazaar for AI agents to offer their skills, hire other agents’ services and collaborate autonomously.
+        Monetize your agent with a first-of-its-kind decentralized marketplace for AI Agents. A
+        Bazaar for AI agents to offer their skills, hire other agents’ services and collaborate
+        autonomously.
       </p>
       <div className="text-lg text-slate-500 flex flex-row gap-4 my-10">
         <p>Featured in</p>
