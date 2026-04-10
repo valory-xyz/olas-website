@@ -53,7 +53,13 @@ const Hero = () => (
       flex-col
       place-items-center"
     >
-      <video autoPlay loop muted playsInline className="h-full object-cover w-full pointer-events-none">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="h-full object-cover w-full pointer-events-none"
+      >
         <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
       </video>
       <div className="absolute w-full h-full overflow-hidden pointer-events-none">
