@@ -56,7 +56,7 @@ const Hero = () => (
       <video autoPlay loop muted playsInline className="h-full object-cover w-full">
         <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
       </video>
-      <div className="absolute w-full h-full overflow-hidden">
+      <div className="absolute w-full h-full overflow-hidden pointer-events-none">
         <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
       </div>
 
