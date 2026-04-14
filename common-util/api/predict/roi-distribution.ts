@@ -22,6 +22,10 @@ const DAY_SECONDS = 86400;
 const BYDAY_RETENTION_DAYS = 90;
 // FIX-2: age-out TTL for pending QMR entries (markets resolve in ~4 days)
 const QMR_MAX_AGE_DAYS = 14;
+// Minimum lifetime bets before an agent's ROI is included in the histogram.
+// Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
+// produce statistically meaningless ROIs that distort the tails.
+const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 // Genesis timestamps (UTC midnight) for each agent type
 const OMEN_GENESIS_TS = 1763769600;
@@ -71,6 +75,7 @@ export type AllTimeAgentEntry = {
   payout: string;
   tradingCosts: string;
   mechRequests: number; // senders.total - sum of remaining QMR entries (open markets only)
+  totalBets: number; // lifetime bet count — used for activity threshold filter
 };
 
 /** Main blob type - contains daily and all-time agent statistics */
@@ -105,12 +110,14 @@ type OmenTraderAgentEntry = {
   totalTradedSettled: string;
   totalFeesSettled: string;
   totalPayout: string;
+  totalBets: string;
 };
 
 type PolyTraderAgentEntry = {
   id: string;
   totalTradedSettled: string;
   totalPayout: string;
+  totalBets: string;
 };
 
 type SenderEntry = {
@@ -227,13 +234,16 @@ const fetchIncrementalMechRequests = async (
  */
 const fetchAllTimeAgents = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
-  openQmr: Record<string, Record<string, number>>
+  openQmr: Record<string, Record<string, number[]>>
 ): Promise<Record<string, AllTimeAgentEntry>> => {
   const chain: 'gnosis' | 'polygon' = agentBlueprint === 'omenstrat' ? 'gnosis' : 'polygon';
   const SCALE = agentBlueprint === 'polystrat' ? BigInt('1000000000000') : 1n;
 
   // 1. Paginate traderAgents from predict subgraph (Settled Volume)
-  const agentMap = new Map<string, { payout: bigint; tradingCosts: bigint }>();
+  const agentMap = new Map<
+    string,
+    { payout: bigint; tradingCosts: bigint; totalBets: number }
+  >();
   let skip = 0;
   while (true) {
     try {
@@ -248,7 +258,11 @@ const fetchAllTimeAgents = async (
           // Omenstrat costs = (Traded + Fees) * 10^0
           const tradingCosts =
             (BigInt(agent.totalTradedSettled) + BigInt(agent.totalFeesSettled)) * SCALE;
-          agentMap.set(agentId, { payout: BigInt(agent.totalPayout) * SCALE, tradingCosts });
+          agentMap.set(agentId, {
+            payout: BigInt(agent.totalPayout) * SCALE,
+            tradingCosts,
+            totalBets: Number(agent.totalBets ?? 0),
+          });
         }
       } else {
         const response = (await polymarketAgentsGraphClient.request(
@@ -261,6 +275,7 @@ const fetchAllTimeAgents = async (
           agentMap.set(agentId, {
             payout: BigInt(agent.totalPayout) * SCALE,
             tradingCosts: BigInt(agent.totalTradedSettled) * SCALE,
+            totalBets: Number(agent.totalBets ?? 0),
           });
         }
       }
@@ -310,7 +325,7 @@ const fetchAllTimeAgents = async (
   // This prevents "Unclaimed Wins" or "Inactive Signups" from appearing as -100% ROI.
   const allTimeAgents: Record<string, AllTimeAgentEntry> = {};
 
-  for (const [agentId, { payout, tradingCosts }] of agentMap.entries()) {
+  for (const [agentId, { payout, tradingCosts, totalBets }] of agentMap.entries()) {
     // Skip agents with no settled activity
     if (tradingCosts <= 0n) continue;
 
@@ -324,6 +339,7 @@ const fetchAllTimeAgents = async (
       payout: payout.toString(),
       tradingCosts: tradingCosts.toString(),
       mechRequests: settledMechRequests,
+      totalBets,
     };
   }
 
@@ -406,7 +422,7 @@ const updateAgentBlueprintData = async (
       statsByDay.set(dayKey, list);
     }
 
-    // Helper to ensure a byDay/agent entry exists (used for mech-request attribution)
+    // Helper to create/ensure a byDay/agent entry (used only for TTL flush below)
     const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
       if (!byDay[dKey]) byDay[dKey] = { agents: {} };
       if (!byDay[dKey].agents[aid]) {
@@ -418,6 +434,7 @@ const updateAgentBlueprintData = async (
     for (let dayTs = startDay; dayTs <= processEndDay; dayTs += DAY_SECONDS) {
       const dayKey = String(dayTs);
       const dayStats = statsByDay.get(dayKey) ?? [];
+      const agents: Record<string, DailyAgentEntry> = {};
       const qmrKeysUsedThisDay = new Set<string>();
 
       for (const stat of dayStats) {
@@ -430,7 +447,10 @@ const updateAgentBlueprintData = async (
           if (title) uniqueTitles.add(title);
         }
 
-        // FIX-1: Consume QMR entries and attribute each mech request to its own day
+        // Consume QMR entries onto the settlement day (product intent: all
+        // market costs are grouped on the day the market settles, not on the
+        // day the request was made).
+        let mechRequests = 0;
         for (const title of uniqueTitles) {
           let matchedKey = qmr[title] ? title : null;
           if (!matchedKey) {
@@ -438,26 +458,22 @@ const updateAgentBlueprintData = async (
           }
           const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
           if (matchedKey && tsList && tsList.length > 0) {
-            for (const reqTs of tsList) {
-              const reqDayKey = dayKeyOf(reqTs);
-              ensureEntry(reqDayKey, agentId).mechRequests++;
-            }
+            mechRequests += tsList.length;
             qmr[matchedKey][agentId] = [];
             qmrKeysUsedThisDay.add(matchedKey);
           }
         }
 
-        // Write settlement-day bet/profit/payout, preserving any mechRequests
-        // already attributed to this day from FIX-1.
-        const existingMechRequests =
-          byDay[dayKey]?.agents[agentId]?.mechRequests ?? 0;
-        if (!byDay[dayKey]) byDay[dayKey] = { agents: {} };
-        byDay[dayKey].agents[agentId] = {
+        agents[agentId] = {
           bets: Number(stat.totalBets),
           profit: stat.dailyProfit,
           payout: stat.totalPayout,
-          mechRequests: existingMechRequests,
+          mechRequests,
         };
+      }
+
+      if (Object.keys(agents).length > 0) {
+        byDay[dayKey] = { agents };
       }
 
       // Cleanup QMR: Delete title if all agent lists are empty
@@ -574,7 +590,7 @@ const computeAgentBlueprintHistogram = (
 ): number[] => {
   const binCounts = new Array<number>(ROI_BINS.length).fill(0);
   let activeAgents = 0;
-  let minus100Count = 0; // FIX-6: track (don't drop) agents at exactly -100% ROI
+  let excludedLowActivity = 0;
 
   if (daysBack === null) {
     // "All" range: already scaled in fetchAllTimeAgents
@@ -585,15 +601,19 @@ const computeAgentBlueprintHistogram = (
       // Skip zero trading costs considering it as "not enough data"
       if (tradingCosts <= 0n) continue;
 
+      // Skip agents below the activity threshold — consistent with the
+      // trader skill's "need more data" rule (MIN_TRADES_FOR_ROI_DISPLAY).
+      if ((entry.totalBets ?? 0) < MIN_TRADES_FOR_ROI_DISPLAY) {
+        excludedLowActivity++;
+        continue;
+      }
+
       // mechFees are already 18 decimals (USD/ETH/XDAI equivalent)
       const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
 
       // ROI = (Payout - TotalCosts) / TotalCosts
       const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
-
-      // FIX-6: include -100% agents; track count for telemetry.
-      if (roi === -100) minus100Count++;
 
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
@@ -607,7 +627,8 @@ const computeAgentBlueprintHistogram = (
     const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
     const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
-    const agentTotals = new Map<string, { profit: bigint; payout: bigint; mechRequests: number }>();
+    type Totals = { profit: bigint; payout: bigint; mechRequests: number; bets: number };
+    const agentTotals = new Map<string, Totals>();
 
     for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
       const dayTs = Number(dayKeyStr);
@@ -615,15 +636,23 @@ const computeAgentBlueprintHistogram = (
       if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
-        const prev = agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0 };
+        const prev: Totals =
+          agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0, bets: 0 };
         prev.profit += BigInt(entry.profit);
         prev.payout += BigInt(entry.payout);
         prev.mechRequests += entry.mechRequests;
+        prev.bets += entry.bets ?? 0;
         agentTotals.set(agentId, prev);
       }
     }
 
     for (const totals of agentTotals.values()) {
+      // Apply the same activity threshold as the Max tab, scoped to the window.
+      if (totals.bets < MIN_TRADES_FOR_ROI_DISPLAY) {
+        excludedLowActivity++;
+        continue;
+      }
+
       // 1. Scale everything to 18 decimals (USDC 10^6 * 10^12 = 10^18)
       const scaledPayout = totals.payout * scale;
       const scaledProfit = totals.profit * scale;
@@ -644,9 +673,6 @@ const computeAgentBlueprintHistogram = (
       // 5. Calculate ROI as percentage
       const roi = Number((netGain * 10000n) / totalCosts) / 100;
 
-      // FIX-6: include -100% agents; track count for telemetry.
-      if (roi === -100) minus100Count++;
-
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
         binCounts[binIdx]++;
@@ -655,13 +681,12 @@ const computeAgentBlueprintHistogram = (
     }
   }
 
-  if (minus100Count > 0) {
-    const tabLabel = daysBack === null ? 'all' : `${daysBack}d`;
-    console.log(
-      `[roi-dist:${isPolystrat ? 'polystrat' : 'omenstrat'}:${tabLabel}] ` +
-        `${minus100Count} agents at exactly -100% ROI (suspected subgraph payout gap)`
-    );
-  }
+  const tabLabel = daysBack === null ? 'all' : `${daysBack}d`;
+  console.log(
+    `[roi-dist:${isPolystrat ? 'polystrat' : 'omenstrat'}:${tabLabel}] ` +
+      `included=${activeAgents}, excluded_low_activity=${excludedLowActivity} ` +
+      `(< ${MIN_TRADES_FOR_ROI_DISPLAY} bets)`
+  );
 
   if (activeAgents === 0) return new Array<number>(ROI_BINS.length).fill(0);
   return binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10);
