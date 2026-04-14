@@ -18,20 +18,21 @@ const AsSeenIn = () => (
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-white to-transparent" />
-      <div className="flex animate-scroll w-max">
+      <div className="group flex animate-scroll w-max hover:[animation-play-state:paused]">
         {outlets.map((item, i) => (
           <a
             key={`${item.id}-${i}`}
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 px-10"
+            className="flex-shrink-0 px-8"
           >
             <Image
               src={`/images/featured-in/${item.iconFilename}`}
               alt={item.name}
               width={180}
               height={32}
+              className="transition-all duration-300 hover:brightness-0"
             />
           </a>
         ))}
@@ -46,7 +47,6 @@ const Hero = () => (
       customClasses="
       relative
       overflow-hidden
-      homepage-hero-bg
       h-[calc(100vh-250px)]
       max-h-[520px]
       flex
@@ -63,7 +63,7 @@ const Hero = () => (
         <source src="/videos/homepage/hero-bg.webm" type="video/webm" />
       </video>
       <div className="absolute w-full h-full overflow-hidden pointer-events-none">
-        <div className="transparent-gradient h-[2000px] w-[5000px] bottom-0 -right-[1500px] absolute" />
+        <div className="transparent-gradient h-[2000px] w-[5000px] -bottom-[210px] -right-[1400px] absolute" />
       </div>
 
       <Link href="/blog/uniquely-human" className="hidden lg:block">
@@ -73,7 +73,7 @@ const Hero = () => (
             alt="AI card"
             width={180}
             height={206}
-            className="mb-4 shadow-md rounded-2xl"
+            className="mb-4 shadow-md rounded-2xl transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
           />
           <div className="flex items-center gap-1 font-medium text-sm justify-center">
             #UniquelyHuman <ChevronRight size={20} />
@@ -94,7 +94,7 @@ const Hero = () => (
             alt="AI card"
             width={140}
             height={160}
-            className="mb-2 shadow-md rounded-2xl mx-auto"
+            className="mb-2 shadow-md rounded-2xl mx-auto transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
           />
           <div className="flex items-center gap-1 font-medium text-sm justify-center">
             #UniquelyHuman <ChevronRight size={20} />

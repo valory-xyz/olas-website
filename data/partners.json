@@ -2,7 +2,7 @@
   {
     "id": "8baller",
     "name": "8baller",
-    "url": "https://twitter.com/8baller11",
+    "url": "https://x.com/autonolas/status/1935038049379135890?s=20",
     "imageSrc": "/images/partners/8baller.svg",
     "imageWidth": 72,
     "imageHeight": 23
@@ -10,7 +10,7 @@
   {
     "id": "valory",
     "name": "Valory",
-    "url": "https://medium.com/@BalancerGrants/valory-is-building-smart-managed-pools-on-balancer-1b03a2f4cc89",
+    "url": "https://x.com/autonolas/status/2034600845925601533?s=20",
     "imageSrc": "/images/partners/valory.png",
     "imageWidth": 90,
     "imageHeight": 29
@@ -18,13 +18,13 @@
   {
     "id": "nevermined",
     "name": "Nevermined",
-    "url": "https://nevermined.io/ai-payments-are-hard-smart-subscriptions-fix/",
+    "url": "https://x.com/Nevermined_ai/status/1985724924666003780?s=20",
     "imageSrc": "/images/partners/nevermined.png"
   },
   {
     "id": "postmint",
     "name": "Postmint",
-    "url": "https://twitter.com/postmint_xyz/status/1699416224587809023",
+    "url": "https://x.com/autonolas/status/1699752273478308103?s=20",
     "imageSrc": "/images/partners/postmint.png",
     "imageWidth": 101,
     "imageHeight": 20
@@ -32,7 +32,7 @@
   {
     "id": "the-graph",
     "name": "The Graph",
-    "url": "https://x.com/autonolas/status/1710294338435957248",
+    "url": "https://x.com/graphprotocol/status/1934661157572550837",
     "imageSrc": "/images/partners/the-graph.png",
     "imageWidth": 58,
     "imageHeight": 32
@@ -40,14 +40,16 @@
   {
     "id": "gnosis",
     "name": "Gnosis Chain",
-    "url": "https://twitter.com/gnosischain/status/1720488419145482311",
+    "url": "https://x.com/gnosischain/status/1923102334911119401?s=20",
     "imageSrc": "/images/partners/gnosis.svg"
   },
   {
-    "id": "agentcoin",
-    "name": "Agentcoin",
-    "url": "https://www.agentcoin.org/",
-    "imageSrc": "/images/partners/agentcoin.png"
+    "id": "aitv.gg",
+    "name": "AITV.GG",
+    "url": "https://x.com/aitvgg/status/1927410665175564498?s=20",
+    "imageSrc": "/images/partners/aitv.gg.svg",
+    "imageWidth": 72,
+    "imageHeight": 23
   },
   {
     "id": "virtuals",
@@ -81,7 +83,7 @@
   {
     "id": "alterscope",
     "name": "Alterscope",
-    "url": "https://www.alterscope.org/",
+    "url": "https://x.com/autonolas/status/1775146384649523410?s=20",
     "imageSrc": "/images/partners/alterscope.webp"
   },
   {
@@ -111,7 +113,7 @@
   {
     "id": "recall",
     "name": "Recall",
-    "url": "",
+    "url": "https://x.com/recallnet/status/1985346042162794945?s=20",
     "imageSrc": "/images/partners/recall.png",
     "imageWidth": 73,
     "imageHeight": 18
@@ -134,7 +136,7 @@
   {
     "id": "cow-protocol",
     "name": "CoW Protocol",
-    "url": "https://forum.cow.fi/t/grant-application-decentralizing-cow-s-watchtower/1681/6",
+    "url": "https://x.com/autonolas/status/1662073535353991173?s=20",
     "imageSrc": "/images/partners/cow-protocol.svg",
     "imageWidth": 80,
     "imageHeight": 26 
@@ -142,7 +144,7 @@
   {
     "id": "keyko",
     "name": "Keyko",
-    "url": "https://x.com/autonolas/status/1811426625944420501",
+    "url": "https://x.com/autonolas/status/1831727767768953068?s=20",
     "imageSrc": "/images/partners/keyko.svg",
     "imageWidth": 65,
     "imageHeight": 13
@@ -173,7 +175,7 @@
   {
     "id": "kleros",
     "name": "Kleros",
-    "url": "https://kleros.io/",
+    "url": "https://x.com/Kleros_io/status/1902789073439195511?s=20",
     "imageSrc": "/images/partners/kleros.png",
     "imageWidth": 90,
     "imageHeight": 90
@@ -181,7 +183,7 @@
   {
     "id": "flockio",
     "name": "FLock",
-    "url": "https://flock.io/",
+    "url": "https://x.com/flock_io/status/1762747207017767000?s=20",
     "imageSrc": "/images/partners/flock.svg",
     "imageWidth": 86,
     "imageHeight": 22
@@ -223,7 +225,7 @@
   {
     "id": "pett-ai",
     "name": "Pett.ai",
-    "url": "",
+    "url": "https://agent.pett.ai",
     "imageSrc": "/images/partners/pett-ai.png",
     "imageWidth": 58,
     "imageHeight": 38

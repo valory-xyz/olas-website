@@ -49,7 +49,9 @@ const QuoteCarousel = () => {
 export const PropelledBy = () => (
   <SectionWrapper customClasses="px-4 md:px-8 py-12 md:py-24" id="ecosystem">
     <section className="max-w-[900px] mx-auto text-center">
-      <h2 className={`${SUB_HEADER_CLASS} mb-6 lg:mb-14`}>Trusted by ...</h2>
+      <h2 className={`${SUB_HEADER_CLASS} mb-6 lg:mb-14`}>
+        Trusted by Users and Leading Crypto Teams
+      </h2>
       <QuoteCarousel />
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-10">
         {partners.map((partner) => {
