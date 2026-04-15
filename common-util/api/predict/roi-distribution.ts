@@ -358,6 +358,35 @@ const normalizeTitle = (title: string): string =>
     .replace(/[^a-z0-9]/g, '')
     .slice(0, 100);
 
+/**
+ * Legacy blobs stored QMR values as plain counts (`number`) instead of timestamp
+ * arrays. Normalize on load so the rest of the pipeline only sees the new shape.
+ * Legacy entries have no real per-request timestamps, so we stamp them with
+ * `lastMechRequestTimestamp` — the most recent observed request before this
+ * code was deployed, which bounds their real age from above and lets TTL
+ * behave sensibly instead of flushing everything to epoch day 0.
+ */
+const normalizeQmrShape = (
+  raw: Record<string, Record<string, number[] | number>> | undefined,
+  fallbackTs: number
+): Record<string, Record<string, number[]>> => {
+  const out: Record<string, Record<string, number[]>> = {};
+  if (!raw) return out;
+  for (const [title, agentMap] of Object.entries(raw)) {
+    const normalizedAgents: Record<string, number[]> = {};
+    for (const [agentId, value] of Object.entries(agentMap ?? {})) {
+      if (Array.isArray(value)) {
+        normalizedAgents[agentId] = value;
+      } else {
+        const count = Number(value ?? 0);
+        normalizedAgents[agentId] = count > 0 ? new Array(count).fill(fallbackTs) : [];
+      }
+    }
+    out[title] = normalizedAgents;
+  }
+  return out;
+};
+
 const updateAgentBlueprintData = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
   existing: AgentBlueprintRoiData | null,
@@ -372,9 +401,12 @@ const updateAgentBlueprintData = async (
 
   // 1: Update QMR (incremental mech requests)
   // FIX-1: QMR stores timestamp arrays per (title, agentId).
-  const qmr: Record<string, Record<string, number[]>> = {
-    ...(existingQmr?.questionMechRequests ?? {}),
-  };
+  const qmr = normalizeQmrShape(
+    existingQmr?.questionMechRequests as
+      | Record<string, Record<string, number[] | number>>
+      | undefined,
+    existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
+  );
   const { additions, lastTimestamp: newMechTs } = await fetchIncrementalMechRequests(
     chain,
     existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
