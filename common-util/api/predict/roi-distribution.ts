@@ -20,6 +20,12 @@ const MAX_DAYS_PER_RUN = 30;
 const DAY_SECONDS = 86400;
 // Keep only this many days in byDay (covers the longest non-global tab: 90D)
 const BYDAY_RETENTION_DAYS = 90;
+// FIX-2: age-out TTL for pending QMR entries (markets resolve in ~4 days)
+const QMR_MAX_AGE_DAYS = 14;
+// Minimum lifetime bets before an agent's ROI is included in the histogram.
+// Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
+// produce statistically meaningless ROIs that distort the tails.
+const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 // Genesis timestamps (UTC midnight) for each agent type
 const OMEN_GENESIS_TS = 1763769600;
@@ -27,6 +33,8 @@ const POLYMARKET_GENESIS_TS = 1768867200;
 // Earliest block timestamp to consider when fetching mech requests
 const GNOSIS_MECH_REQUESTS_GENESIS_TS = 1763078400;
 const POLYGON_MECH_REQUESTS_GENESIS_TS = 1763078400;
+
+const dayKeyOf = (ts: number): string => String(Math.floor(ts / DAY_SECONDS) * DAY_SECONDS);
 
 // ─── Blob related query types ────────────────────────────────────────────────────
 
@@ -39,8 +47,13 @@ const POLYGON_MECH_REQUESTS_GENESIS_TS = 1763078400;
  * For such markets its entry is deleted from QMR and the count is materialized
  * into byDay[date].agents[agentId].participants.
  */
+/**
+ * FIX-1: Store per-request blockTimestamps (ascending) instead of a flat count.
+ * On settlement, each request is attributed to the day it was actually made,
+ * instead of being collapsed onto the settlement day.
+ */
 export type QmrData = {
-  questionMechRequests: Record<string, Record<string, number>>; // title → agentId → count
+  questionMechRequests: Record<string, Record<string, number[]>>; // title → agentId → sorted asc timestamps
   lastMechRequestTimestamp: number;
 };
 
@@ -62,6 +75,7 @@ export type AllTimeAgentEntry = {
   payout: string;
   tradingCosts: string;
   mechRequests: number; // senders.total - sum of remaining QMR entries (open markets only)
+  totalBets: number; // lifetime bet count — used for activity threshold filter
 };
 
 /** Main blob type - contains daily and all-time agent statistics */
@@ -96,12 +110,14 @@ type OmenTraderAgentEntry = {
   totalTradedSettled: string;
   totalFeesSettled: string;
   totalPayout: string;
+  totalBets: string;
 };
 
 type PolyTraderAgentEntry = {
   id: string;
   totalTradedSettled: string;
   totalPayout: string;
+  totalBets: string;
 };
 
 type SenderEntry = {
@@ -177,8 +193,9 @@ const fetchPolystratDailyStats = async (
 const fetchIncrementalMechRequests = async (
   chain: 'gnosis' | 'polygon',
   lastTimestamp: number
-): Promise<{ additions: Record<string, Record<string, number>>; lastTimestamp: number }> => {
-  const additions: Record<string, Record<string, number>> = {};
+): Promise<{ additions: Record<string, Record<string, number[]>>; lastTimestamp: number }> => {
+  // FIX-1: additions now stores timestamps per (title, agentId), not just counts.
+  const additions: Record<string, Record<string, number[]>> = {};
   let latestTs = lastTimestamp;
   let skip = 0;
   const client = MARKETPLACE_GRAPH_CLIENTS[chain];
@@ -193,9 +210,10 @@ const fetchIncrementalMechRequests = async (
         const agentId = req.sender?.id?.toLowerCase();
         const questionTitle = req.parsedRequest?.questionTitle;
         const ts = Number(req.blockTimestamp ?? 0);
-        if (!agentId || !questionTitle) continue;
+        if (!agentId || !questionTitle || ts <= 0) continue;
         if (!additions[questionTitle]) additions[questionTitle] = {};
-        additions[questionTitle][agentId] = (additions[questionTitle][agentId] ?? 0) + 1;
+        if (!additions[questionTitle][agentId]) additions[questionTitle][agentId] = [];
+        additions[questionTitle][agentId].push(ts);
         if (ts > latestTs) latestTs = ts;
       }
       if (page.length < LIMIT) break;
@@ -216,13 +234,16 @@ const fetchIncrementalMechRequests = async (
  */
 const fetchAllTimeAgents = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
-  openQmr: Record<string, Record<string, number>>
+  openQmr: Record<string, Record<string, number[]>>
 ): Promise<Record<string, AllTimeAgentEntry>> => {
   const chain: 'gnosis' | 'polygon' = agentBlueprint === 'omenstrat' ? 'gnosis' : 'polygon';
   const SCALE = agentBlueprint === 'polystrat' ? BigInt('1000000000000') : 1n;
 
   // 1. Paginate traderAgents from predict subgraph (Settled Volume)
-  const agentMap = new Map<string, { payout: bigint; tradingCosts: bigint }>();
+  const agentMap = new Map<
+    string,
+    { payout: bigint; tradingCosts: bigint; totalBets: number }
+  >();
   let skip = 0;
   while (true) {
     try {
@@ -237,7 +258,11 @@ const fetchAllTimeAgents = async (
           // Omenstrat costs = (Traded + Fees) * 10^0
           const tradingCosts =
             (BigInt(agent.totalTradedSettled) + BigInt(agent.totalFeesSettled)) * SCALE;
-          agentMap.set(agentId, { payout: BigInt(agent.totalPayout) * SCALE, tradingCosts });
+          agentMap.set(agentId, {
+            payout: BigInt(agent.totalPayout) * SCALE,
+            tradingCosts,
+            totalBets: Number(agent.totalBets ?? 0),
+          });
         }
       } else {
         const response = (await polymarketAgentsGraphClient.request(
@@ -250,6 +275,7 @@ const fetchAllTimeAgents = async (
           agentMap.set(agentId, {
             payout: BigInt(agent.totalPayout) * SCALE,
             tradingCosts: BigInt(agent.totalTradedSettled) * SCALE,
+            totalBets: Number(agent.totalBets ?? 0),
           });
         }
       }
@@ -286,12 +312,11 @@ const fetchAllTimeAgents = async (
   }
 
   // 3. Aggregate "Pending" Mech requests from the current QMR state.
-  // Because the main loop zeroed out settled agents, any non-zero count here
-  // represents a market that hasn't settled/payout yet.
+  // FIX-1: QMR values are now timestamp arrays; count = array length.
   const openRequests: Record<string, number> = {};
   for (const agentCounts of Object.values(openQmr)) {
-    for (const [agentId, count] of Object.entries(agentCounts)) {
-      openRequests[agentId] = (openRequests[agentId] ?? 0) + count;
+    for (const [agentId, tsList] of Object.entries(agentCounts)) {
+      openRequests[agentId] = (openRequests[agentId] ?? 0) + (tsList?.length ?? 0);
     }
   }
 
@@ -300,7 +325,7 @@ const fetchAllTimeAgents = async (
   // This prevents "Unclaimed Wins" or "Inactive Signups" from appearing as -100% ROI.
   const allTimeAgents: Record<string, AllTimeAgentEntry> = {};
 
-  for (const [agentId, { payout, tradingCosts }] of agentMap.entries()) {
+  for (const [agentId, { payout, tradingCosts, totalBets }] of agentMap.entries()) {
     // Skip agents with no settled activity
     if (tradingCosts <= 0n) continue;
 
@@ -314,6 +339,7 @@ const fetchAllTimeAgents = async (
       payout: payout.toString(),
       tradingCosts: tradingCosts.toString(),
       mechRequests: settledMechRequests,
+      totalBets,
     };
   }
 
@@ -332,6 +358,35 @@ const normalizeTitle = (title: string): string =>
     .replace(/[^a-z0-9]/g, '')
     .slice(0, 100);
 
+/**
+ * Legacy blobs stored QMR values as plain counts (`number`) instead of timestamp
+ * arrays. Normalize on load so the rest of the pipeline only sees the new shape.
+ * Legacy entries have no real per-request timestamps, so we stamp them with
+ * `lastMechRequestTimestamp` — the most recent observed request before this
+ * code was deployed, which bounds their real age from above and lets TTL
+ * behave sensibly instead of flushing everything to epoch day 0.
+ */
+const normalizeQmrShape = (
+  raw: Record<string, Record<string, number[] | number>> | undefined,
+  fallbackTs: number
+): Record<string, Record<string, number[]>> => {
+  const out: Record<string, Record<string, number[]>> = {};
+  if (!raw) return out;
+  for (const [title, agentMap] of Object.entries(raw)) {
+    const normalizedAgents: Record<string, number[]> = {};
+    for (const [agentId, value] of Object.entries(agentMap ?? {})) {
+      if (Array.isArray(value)) {
+        normalizedAgents[agentId] = value;
+      } else {
+        const count = Number(value ?? 0);
+        normalizedAgents[agentId] = count > 0 ? new Array(count).fill(fallbackTs) : [];
+      }
+    }
+    out[title] = normalizedAgents;
+  }
+  return out;
+};
+
 const updateAgentBlueprintData = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
   existing: AgentBlueprintRoiData | null,
@@ -345,17 +400,23 @@ const updateAgentBlueprintData = async (
       : POLYGON_MECH_REQUESTS_GENESIS_TS;
 
   // 1: Update QMR (incremental mech requests)
-  const qmr: Record<string, Record<string, number>> = {
-    ...(existingQmr?.questionMechRequests ?? {}),
-  };
+  // FIX-1: QMR stores timestamp arrays per (title, agentId).
+  const qmr = normalizeQmrShape(
+    existingQmr?.questionMechRequests as
+      | Record<string, Record<string, number[] | number>>
+      | undefined,
+    existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
+  );
   const { additions, lastTimestamp: newMechTs } = await fetchIncrementalMechRequests(
     chain,
     existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
   );
-  for (const [title, agentCounts] of Object.entries(additions)) {
+  for (const [title, agentLists] of Object.entries(additions)) {
     if (!qmr[title]) qmr[title] = {};
-    for (const [agentId, count] of Object.entries(agentCounts)) {
-      qmr[title][agentId] = (qmr[title][agentId] ?? 0) + count;
+    for (const [agentId, tsList] of Object.entries(agentLists)) {
+      const existing = qmr[title][agentId] ?? [];
+      // Merge ascending-sorted lists
+      qmr[title][agentId] = [...existing, ...tsList].sort((a, b) => a - b);
     }
   }
 
@@ -393,6 +454,15 @@ const updateAgentBlueprintData = async (
       statsByDay.set(dayKey, list);
     }
 
+    // Helper to create/ensure a byDay/agent entry (used only for TTL flush below)
+    const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
+      if (!byDay[dKey]) byDay[dKey] = { agents: {} };
+      if (!byDay[dKey].agents[aid]) {
+        byDay[dKey].agents[aid] = { bets: 0, profit: '0', payout: '0', mechRequests: 0 };
+      }
+      return byDay[dKey].agents[aid];
+    };
+
     for (let dayTs = startDay; dayTs <= processEndDay; dayTs += DAY_SECONDS) {
       const dayKey = String(dayTs);
       const dayStats = statsByDay.get(dayKey) ?? [];
@@ -409,20 +479,19 @@ const updateAgentBlueprintData = async (
           if (title) uniqueTitles.add(title);
         }
 
+        // Consume QMR entries onto the settlement day (product intent: all
+        // market costs are grouped on the day the market settles, not on the
+        // day the request was made).
         let mechRequests = 0;
         for (const title of uniqueTitles) {
-          // Try exact match first, then normalized prefix match
           let matchedKey = qmr[title] ? title : null;
           if (!matchedKey) {
             matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
           }
-
-          if (matchedKey && qmr[matchedKey]?.[agentId]) {
-            mechRequests += qmr[matchedKey][agentId];
-
-            // Zero out to prevent double counting on future settlements/payouts
-            // Covers for multiple bets on the same markets
-            qmr[matchedKey][agentId] = 0;
+          const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
+          if (matchedKey && tsList && tsList.length > 0) {
+            mechRequests += tsList.length;
+            qmr[matchedKey][agentId] = [];
             qmrKeysUsedThisDay.add(matchedKey);
           }
         }
@@ -439,11 +508,12 @@ const updateAgentBlueprintData = async (
         byDay[dayKey] = { agents };
       }
 
-      // Cleanup QMR: Delete title if all agent counts are zeroed
+      // Cleanup QMR: Delete title if all agent lists are empty
       for (const key of qmrKeysUsedThisDay) {
         if (qmr[key]) {
-          const remaining = Object.values(qmr[key]).reduce((sum, v) => sum + v, 0);
-          if (remaining === 0) {
+          let total = 0;
+          for (const agentList of Object.values(qmr[key])) total += agentList?.length ?? 0;
+          if (total === 0) {
             delete qmr[key];
             normalizedQmrMap.delete(normalizeTitle(key));
           }
@@ -452,6 +522,38 @@ const updateAgentBlueprintData = async (
     }
 
     lastDayTimestamp = processEndDay;
+
+    // FIX-2: Age-out pending QMR entries older than QMR_MAX_AGE_DAYS.
+    // Markets resolve in ~4 days; anything older either never settled or has a
+    // title-mismatch. Flush those timestamps onto their own days so they count
+    // as settled mech requests (not permanently "open").
+    const ttlCutoff = Math.floor(Date.now() / 1000) - QMR_MAX_AGE_DAYS * DAY_SECONDS;
+    let expiredCount = 0;
+    for (const [title, agentMap] of Object.entries(qmr)) {
+      for (const [agentId, tsList] of Object.entries(agentMap)) {
+        if (!tsList || tsList.length === 0) continue;
+        const kept: number[] = [];
+        for (const ts of tsList) {
+          if (ts < ttlCutoff) {
+            ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+            expiredCount++;
+          } else {
+            kept.push(ts);
+          }
+        }
+        if (kept.length === 0) delete agentMap[agentId];
+        else agentMap[agentId] = kept;
+      }
+      if (Object.keys(agentMap).length === 0) {
+        delete qmr[title];
+        normalizedQmrMap.delete(normalizeTitle(title));
+      }
+    }
+    if (expiredCount > 0) {
+      console.log(
+        `[roi-dist:${agentBlueprint}] expired ${expiredCount} QMR entries older than ${QMR_MAX_AGE_DAYS} days`
+      );
+    }
   }
 
   // 3: Prune byDay to BYDAY_RETENTION_DAYS
@@ -520,6 +622,7 @@ const computeAgentBlueprintHistogram = (
 ): number[] => {
   const binCounts = new Array<number>(ROI_BINS.length).fill(0);
   let activeAgents = 0;
+  let excludedLowActivity = 0;
 
   if (daysBack === null) {
     // "All" range: already scaled in fetchAllTimeAgents
@@ -530,6 +633,13 @@ const computeAgentBlueprintHistogram = (
       // Skip zero trading costs considering it as "not enough data"
       if (tradingCosts <= 0n) continue;
 
+      // Skip agents below the activity threshold — consistent with the
+      // trader skill's "need more data" rule (MIN_TRADES_FOR_ROI_DISPLAY).
+      if ((entry.totalBets ?? 0) < MIN_TRADES_FOR_ROI_DISPLAY) {
+        excludedLowActivity++;
+        continue;
+      }
+
       // mechFees are already 18 decimals (USD/ETH/XDAI equivalent)
       const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
       const totalCosts = tradingCosts + mechFees;
@@ -537,11 +647,6 @@ const computeAgentBlueprintHistogram = (
       // ROI = (Payout - TotalCosts) / TotalCosts
       const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
 
-      // Temp: Skip absolute minimum of ROI considering it as "not enough data"
-      // There's an issue in subgraph that some payout are not recorder.
-      if (roi === -100) continue;
-
-      // Otherwise add to bin
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
         binCounts[binIdx]++;
@@ -554,7 +659,8 @@ const computeAgentBlueprintHistogram = (
     const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
     const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
-    const agentTotals = new Map<string, { profit: bigint; payout: bigint; mechRequests: number }>();
+    type Totals = { profit: bigint; payout: bigint; mechRequests: number; bets: number };
+    const agentTotals = new Map<string, Totals>();
 
     for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
       const dayTs = Number(dayKeyStr);
@@ -562,15 +668,23 @@ const computeAgentBlueprintHistogram = (
       if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
-        const prev = agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0 };
+        const prev: Totals =
+          agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0, bets: 0 };
         prev.profit += BigInt(entry.profit);
         prev.payout += BigInt(entry.payout);
         prev.mechRequests += entry.mechRequests;
+        prev.bets += entry.bets ?? 0;
         agentTotals.set(agentId, prev);
       }
     }
 
     for (const totals of agentTotals.values()) {
+      // Apply the same activity threshold as the Max tab, scoped to the window.
+      if (totals.bets < MIN_TRADES_FOR_ROI_DISPLAY) {
+        excludedLowActivity++;
+        continue;
+      }
+
       // 1. Scale everything to 18 decimals (USDC 10^6 * 10^12 = 10^18)
       const scaledPayout = totals.payout * scale;
       const scaledProfit = totals.profit * scale;
@@ -591,11 +705,6 @@ const computeAgentBlueprintHistogram = (
       // 5. Calculate ROI as percentage
       const roi = Number((netGain * 10000n) / totalCosts) / 100;
 
-      // Temp: Skip absolute minimum of ROI considering it as "not enough data"
-      // There's an issue in subgraph that some payout are not recorder.
-      if (roi === -100) continue;
-
-      // Otherwise add to bin
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
         binCounts[binIdx]++;
@@ -603,6 +712,13 @@ const computeAgentBlueprintHistogram = (
       }
     }
   }
+
+  const tabLabel = daysBack === null ? 'all' : `${daysBack}d`;
+  console.log(
+    `[roi-dist:${isPolystrat ? 'polystrat' : 'omenstrat'}:${tabLabel}] ` +
+      `included=${activeAgents}, excluded_low_activity=${excludedLowActivity} ` +
+      `(< ${MIN_TRADES_FOR_ROI_DISPLAY} bets)`
+  );
 
   if (activeAgents === 0) return new Array<number>(ROI_BINS.length).fill(0);
   return binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10);

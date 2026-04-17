@@ -611,6 +611,7 @@ export const getOmenTraderAgentsQuery = ({ first, skip }: { first: number; skip:
       totalTradedSettled
       totalFeesSettled
       totalPayout
+      totalBets
     }
   }
 `;
@@ -627,6 +628,7 @@ export const getPolymarketTraderAgentsQuery = ({
       id
       totalTradedSettled
       totalPayout
+      totalBets
     }
   }
 `;
