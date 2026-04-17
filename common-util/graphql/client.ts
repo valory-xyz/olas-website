@@ -86,7 +86,7 @@ export const MARKETPLACE_GRAPH_CLIENTS = {
     process.env.NEXT_PUBLIC_ETHEREUM_MARKETPLACE_SUBGRAPH_URL,
     requestConfig
   ),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_MARKETPLACE_SUBGRAPH_URL, requestConfig),
+  // celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_MARKETPLACE_SUBGRAPH_URL, requestConfig),
   arbitrum: new GraphQLClient(
     process.env.NEXT_PUBLIC_ARBITRUM_MARKETPLACE_SUBGRAPH_URL,
     requestConfig
