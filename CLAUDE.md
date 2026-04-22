@@ -76,7 +76,6 @@ yarn lint:fix       # Fix ESLint issues automatically
 All environment variables use `NEXT_PUBLIC_` prefix for client-side access. Key categories:
 
 - **CMS**: `NEXT_PUBLIC_API_URL` for Strapi backend
-- **Analytics**: `NEXT_PUBLIC_DUNE_API_KEY`
 - **Subgraphs**: Multiple URLs for different chains and contracts
   - Staking: `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`
   - Registry: `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`

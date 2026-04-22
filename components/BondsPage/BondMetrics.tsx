@@ -1,4 +1,3 @@
-import { DUNE_TOTAL_PROTOCOL_REVENUE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { useMemo } from 'react';
@@ -27,7 +26,8 @@ export const BondMetrics = ({ metrics }) => {
             key: 'fees',
             imageSrc: 'protocol-fees.png',
             labelText: 'Fees from Protocol-owned Liquidity',
-            source: DUNE_TOTAL_PROTOCOL_REVENUE_URL,
+            source: '/data#protocol-liquidity-fees',
+            isExternal: false,
             metric: Math.round(protocolMetrics.totalProtocolRevenue?.value),
             status: protocolMetrics.totalProtocolRevenue?.status,
             isMoney: true,

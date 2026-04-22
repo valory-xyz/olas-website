@@ -939,6 +939,9 @@ export const liquidityEthQuery = gql`
       solUsdPrice
       poolLiquidityUsd
       protocolOwnedLiquidityUsd
+      cumulativeFeesUsd
+      cumulativeProtocolFeesUsd
+      cumulativeExternalFeesUsd
     }
     bridgedPOLHoldings(first: 10) {
       id
@@ -955,14 +958,17 @@ export const liquidityEthQuery = gql`
   }
 `;
 
+// Multi-pool chains (e.g. Base has OLAS-USDC + WETH-OLAS) require first: 10.
 export const liquidityL2Query = gql`
   query LiquidityL2 {
-    poolMetrics_collection(first: 1) {
+    poolMetrics_collection(first: 10) {
       id
       reserve0
       reserve1
       totalSupply
       celoUsdPrice
+      cumulativeFeesToken0
+      cumulativeFeesToken1
     }
     _meta {
       hasIndexingErrors
