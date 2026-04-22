@@ -1,0 +1,104 @@
+name: Lint and Scan
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.x'
+          cache: 'yarn'
+      - name: Activate pinned Yarn via Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+      - name: Install modules
+        run: yarn install --frozen-lockfile
+      - name: Run ESLint
+        run: yarn lint
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    # TODO: flip to blocking (remove `continue-on-error`) once the backlog of
+    # 11 high advisories documented in SUPPLY-CHAIN-SECURITY.md §5 is cleared.
+    # The step-level `continue-on-error` + job-level omission from
+    # `all-checks-passed.needs` keeps the audit output visible without
+    # blocking merges until the next/lodash/tailwindcss/next-sitemap bumps
+    # land in a follow-up PR.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.x'
+          cache: 'yarn'
+      - name: Activate pinned Yarn via Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+      - name: Run yarn audit (fail on high/critical, production deps only)
+        # Yarn 1.x `yarn audit` exit code is a severity bitmask, not a --level
+        # comparison: 1=info, 2=low, 4=moderate, 8=high, 16=critical. Mask
+        # against 24 (8|16) to fail only on high or critical findings.
+        # `|| CODE=$?` captures the exit code without tripping `bash -e`, which
+        # is on by default in GitHub Actions (`bash --noprofile --norc -eo pipefail`).
+        # See SUPPLY-CHAIN-SECURITY.md §5.
+        run: |
+          CODE=0
+          yarn audit --groups dependencies || CODE=$?
+          if [ $((CODE & 24)) -ne 0 ]; then
+            echo "::error::High or critical advisory found (exit code $CODE)"
+            exit 1
+          fi
+          echo "No high/critical advisories (exit code $CODE indicates low/moderate/info only, ignored by policy)"
+
+  lockfile-lint:
+    name: Lockfile lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.x'
+          cache: 'yarn'
+      - name: Activate pinned Yarn via Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+      - name: Install modules
+        run: yarn install --frozen-lockfile
+      - name: Validate yarn.lock registry URLs and integrity
+        run: yarn lint:lockfile
+
+  all-checks-passed:
+    # Single aggregate gate for branch protection. Keep this job's `needs`
+    # list in sync with every mandatory job above — branch protection requires
+    # only this context, so adding/removing a mandatory job is a workflow
+    # edit, not a branch-protection edit.
+    #
+    # `audit` is intentionally absent from `needs` while it runs in
+    # warn-only mode (see the TODO on that job). Add it back when the advisory
+    # backlog is cleared.
+    name: All checks passed
+    needs: [lint, lockfile-lint]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all dependencies succeeded
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]] || \
+             [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "::error::One or more required jobs did not succeed"
+            exit 1
+          fi
