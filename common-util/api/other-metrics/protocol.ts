@@ -180,6 +180,20 @@ const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   },
 };
 
+// ─── Sanity bounds ──────────────────────────────────────────────────────────
+// Generous upper bounds. OLAS POL is ~$2.5M today; anything over these caps is
+// almost certainly a decimals mismatch or similar bug (see the Base WETH-OLAS
+// 18→6 decimal bug that produced $1.14×10²⁰). On a breach we return null and
+// let mergeWithFallback preserve the previous valid snapshot value.
+
+const MAX_POOL_TVL_USD = 500_000_000; // $500M per pool
+const MAX_TOTAL_POL_USD = 1_000_000_000; // $1B across all chains
+const MAX_POOL_FEES_USD = 100_000_000; // $100M lifetime fees per pool
+const MAX_TOTAL_FEES_USD = 500_000_000; // $500M cumulative protocol fees
+
+const isSaneUsd = (n: number, max: number): boolean =>
+  Number.isFinite(n) && n >= 0 && n <= max;
+
 // ─── Solana ─────────────────────────────────────────────────────────────────
 
 const SOL_VAULT_ACCOUNT = 'CLA8hU8SkdCZ9cJVLMfZQfcgAsywZ9txBJ6qrRAqthLx';
@@ -343,6 +357,17 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
           continue;
         }
 
+        // Per-pool sanity: a single pool over $500M almost certainly means a
+        // decimals mismatch. Skip it and surface a fetch error.
+        if (!isSaneUsd(tvl, MAX_POOL_TVL_USD)) {
+          console.error(
+            `[protocol-metrics] ${source} pool ${pool.id} TVL out of bounds: $${tvl} — skipping`
+          );
+          fetchErrors.push(source);
+          anyFeeMissing = true;
+          continue;
+        }
+
         const share = computeShare(
           bridgedBalances[config.originChain] || 0n,
           BigInt(pool.totalSupply)
@@ -351,6 +376,11 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
         const totalFees = config.computeTotalFeesUsd(pool, prices);
         if (totalFees === null) {
+          anyFeeMissing = true;
+        } else if (!isSaneUsd(totalFees, MAX_POOL_FEES_USD)) {
+          console.error(
+            `[protocol-metrics] ${source} pool ${pool.id} fees out of bounds: $${totalFees} — skipping`
+          );
           anyFeeMissing = true;
         } else {
           totalProtocolFeesUsd += totalFees * share;
@@ -371,23 +401,45 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     fetchErrors.push('liquidity:solana');
   }
 
-  const polStatus = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });
-  // Fees share the same subgraph sources; if any chain's fees were missing, mark stale.
-  const feesFetchErrors = anyFeeMissing ? [...fetchErrors, 'liquidity:fees-partial'] : fetchErrors;
-  const feesStatus = createStaleStatus({
-    indexingErrors,
-    fetchErrors: feesFetchErrors,
-    laggingSubgraphs,
-  });
+  // Final-total sanity: even if every per-pool value passed, refuse to publish
+  // totals over hard caps. Returning null triggers mergeWithFallback to keep
+  // the previous valid snapshot value instead of persisting garbage.
+  const polFetchErrors = [...fetchErrors];
+  let polValue: number | null = Math.round(totalPolUsd);
+  if (!isSaneUsd(totalPolUsd, MAX_TOTAL_POL_USD)) {
+    console.error(
+      `[protocol-metrics] total POL out of bounds: $${totalPolUsd} — returning null`
+    );
+    polFetchErrors.push('liquidity:pol-out-of-bounds');
+    polValue = null;
+  }
+
+  const feesFetchErrors = anyFeeMissing ? [...fetchErrors, 'liquidity:fees-partial'] : [...fetchErrors];
+  let feesValue: number | null = Math.round(totalProtocolFeesUsd);
+  if (!isSaneUsd(totalProtocolFeesUsd, MAX_TOTAL_FEES_USD)) {
+    console.error(
+      `[protocol-metrics] total fees out of bounds: $${totalProtocolFeesUsd} — returning null`
+    );
+    feesFetchErrors.push('liquidity:fees-out-of-bounds');
+    feesValue = null;
+  }
 
   return {
     totalProtocolOwnedLiquidity: {
-      value: Math.round(totalPolUsd),
-      status: polStatus,
+      value: polValue,
+      status: createStaleStatus({
+        indexingErrors,
+        fetchErrors: polFetchErrors,
+        laggingSubgraphs,
+      }),
     },
     totalProtocolRevenue: {
-      value: Math.round(totalProtocolFeesUsd),
-      status: feesStatus,
+      value: feesValue,
+      status: createStaleStatus({
+        indexingErrors,
+        fetchErrors: feesFetchErrors,
+        laggingSubgraphs,
+      }),
     },
   };
 }
