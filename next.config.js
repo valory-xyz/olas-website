@@ -1,3 +1,4 @@
+const path = require('path');
 const { withPlausibleProxy } = require('next-plausible');
 
 module.exports = withPlausibleProxy()({
@@ -5,12 +6,17 @@ module.exports = withPlausibleProxy()({
   images: {
     domains: ['cms-backend.staging.autonolas.tech', 'cms-backend.autonolas.tech', 'localhost'],
   },
+  // outputFileTracingRoot: pin the workspace root so Next doesn't climb up
+  // and pick up an unrelated parent yarn.lock (see Next 15 workspace-root
+  // inference warning).
+  outputFileTracingRoot: path.join(__dirname),
+  // Graduated from `experimental` to stable in Next 15.
+  outputFileTracingIncludes: {
+    '/api/og/[[...slug]]': ['./public/fonts/**', './public/images/og/**'],
+  },
   experimental: {
     scrollRestoration: true,
     optimizePackageImports: ['lodash'],
-    outputFileTracingIncludes: {
-      '/api/og/[[...slug]]': ['./public/fonts/**', './public/images/og/**'],
-    },
   },
   async redirects() {
     return [

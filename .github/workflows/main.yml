@@ -30,13 +30,6 @@ jobs:
   audit:
     name: Dependency audit
     runs-on: ubuntu-latest
-    # TODO: flip to blocking (remove `continue-on-error`) once the backlog of
-    # 11 high advisories documented in SUPPLY-CHAIN-SECURITY.md §5 is cleared.
-    # The step-level `continue-on-error` + job-level omission from
-    # `all-checks-passed.needs` keeps the audit output visible without
-    # blocking merges until the next/lodash/tailwindcss/next-sitemap bumps
-    # land in a follow-up PR.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -86,12 +79,8 @@ jobs:
     # list in sync with every mandatory job above — branch protection requires
     # only this context, so adding/removing a mandatory job is a workflow
     # edit, not a branch-protection edit.
-    #
-    # `audit` is intentionally absent from `needs` while it runs in
-    # warn-only mode (see the TODO on that job). Add it back when the advisory
-    # backlog is cleared.
     name: All checks passed
-    needs: [lint, lockfile-lint]
+    needs: [lint, audit, lockfile-lint]
     if: always()
     runs-on: ubuntu-latest
     steps:
