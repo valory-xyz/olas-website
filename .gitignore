@@ -36,6 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# next-sitemap build artifacts — regenerated on every `yarn build` by the
+# postbuild script configured in next-sitemap.config.js, so committing them
+# is pure timestamp noise.
+/public/sitemap.xml
+/public/sitemap-*.xml
+/public/robots.txt
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
