@@ -41,7 +41,7 @@ Any PR that touches `yarn.lock` requires a reviewer to confirm:
 
 Prefer dependency versions that are **at least 7 days old**. Most malicious publishes are caught and unpublished within hours to days.
 
-Enforced by [`renovate.json`](./renovate.json) (`minimumReleaseAge: "7 days"`) once the Renovate GitHub App is installed on the repo. Until then, the rule is enforced by **manual discipline on every PR** — reviewers check `npm view <pkg> time` (or the npm page) and confirm the target version is at least 7 days old. For bumps addressing a disclosed security advisory, the cooldown does not apply ([`renovate.json`](./renovate.json) sets `vulnerabilityAlerts.minimumReleaseAge: "0 days"`); note the advisory ID in the PR description so the override is auditable.
+This is enforced by **manual discipline on every PR** — there is no Renovate or Dependabot bot on this repo. When a PR bumps a dependency, the reviewer checks `npm view <pkg> time` (or the npm page) and confirms the target version is at least 7 days old. If the bump is for a disclosed security advisory, the cooldown does not apply — note the advisory ID in the PR description so the override is auditable.
 
 Vulnerability discovery does not depend on the 7-day rule. Already-disclosed CVEs are caught by the `yarn audit` job in [.github/workflows/main.yml](./.github/workflows/main.yml) on every PR (see [§5](#5-audit-in-ci)), and GitHub sends passive Dependabot alerts (Security tab / email) for advisories affecting our lockfile regardless of any repo configuration.
 
@@ -131,7 +131,6 @@ Before adding a new direct dependency:
 - [x] Add `package-lock.json` and `pnpm-lock.yaml` to [`.gitignore`](./.gitignore) to prevent stray dual-lockfile creation.
 - [x] Declare Vercel install command as `yarn install --frozen-lockfile` in [`vercel.json`](./vercel.json) (overrides any dashboard setting).
 - [x] Stand up `.github/workflows/` with a `lint` job, an `audit` job (`yarn audit --groups dependencies` with bitmask gating for Yarn 1.x, currently warn-only), and a `lockfile-lint` job — all SHA-pinned. See [.github/workflows/main.yml](./.github/workflows/main.yml).
-- [x] Add [`renovate.json`](./renovate.json) with `minimumReleaseAge: "7 days"`. Takes effect once the Renovate GitHub App is installed on the repo.
 - [ ] **Triage the 11 high advisories currently in the dep tree** (see [§5](#5-audit-in-ci) "Known backlog") — patch bumps to `next`, `lodash`, `tailwindcss`, `next-sitemap`.
 - [ ] **Flip the `audit` job to blocking** once the backlog is cleared: delete `continue-on-error: true` and add `audit` back to `all-checks-passed.needs` in [.github/workflows/main.yml](./.github/workflows/main.yml).
 - [ ] Audit Vercel project env-var scoping in the Vercel dashboard: confirm `DUNE_API_KEY`, `BLOB_READ_WRITE_TOKEN`, and all `*_RPC` are **runtime-only**, not build-time.
