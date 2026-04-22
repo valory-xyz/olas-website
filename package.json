@@ -28,7 +28,7 @@
     "dayjs": "1.11.13",
     "graphql": "16.11.0",
     "graphql-request": "7.2.0",
-    "lodash": "4.17.21",
+    "lodash": "4.18.0",
     "lucide-react": "0.414.0",
     "next": "14.2.35",
     "next-plausible": "3.12.4",
@@ -45,7 +45,7 @@
     "remark-gfm": "3.0.1",
     "swr": "2.3.6",
     "tailwind-merge": "2.6.0",
-    "tailwindcss": "3.3.2",
+    "tailwindcss": "3.4.17",
     "tailwindcss-animate": "1.0.7",
     "web3": "4.16.0",
     "web3-types": "1.10.0"

@@ -55,14 +55,14 @@ We also run [`lockfile-lint`](https://github.com/lirantal/lockfile-lint) on ever
 
 **Yarn 1.x audit quirk.** This repo uses Yarn `1.22.22`. Yarn 1.x `yarn audit` exits with a severity bitmask (`1`=info, `2`=low, `4`=moderate, `8`=high, `16`=critical) rather than a threshold comparison against `--level`, so `--level high` filters the *printed* output but does not affect the exit code. The workflow handles this by checking `exit_code & 24` (i.e. `high | critical`) and failing only when that bit is set — see the `audit` job in [.github/workflows/main.yml](./.github/workflows/main.yml). Revisit on a future Yarn Berry migration, which ships `yarn npm audit` with proper severity gating and makes the bitmask dance unnecessary.
 
-**Known backlog (as of enabling this job).** `yarn audit --groups dependencies` currently reports **11 high** advisories (0 critical), cascading primarily from:
+**Known backlog.** `yarn audit --groups dependencies` currently reports **4 high** advisories (0 critical), all of them gated on a single piece of work — a Next.js 14 → 15 migration:
 
-- **`next` 14.2.35** — two Next.js Server Components DoS advisories. Fix: patch bump within the 14.2.x line.
-- **`lodash` 4.17.21** — `_.template` code injection (CVE-2020-8203 family). The app uses `lodash` broadly; audit whether `_.template` is called anywhere before deciding between an upgrade and a resolution override.
-- **`undici`** (transitive via Next.js) — two WebSocket advisories. Clear by bumping `next`.
-- **`minimatch`**, **`picomatch`**, **`glob`** (transitive via `tailwindcss 3.3.2` and `next-sitemap 4.2.3`) — ReDoS and command-injection advisories. Clear by bumping `tailwindcss` to a 3.4.x line and `next-sitemap` to its latest 4.x.
+- **`next` 14.2.35** — two Next.js Server Components DoS advisories (GHSA-h25m-26qc-wcjf, GHSA-q4gf-8mx6-v5v3). Both are patched only in Next `≥15.0.8` / `≥15.5.15`. There is no 14.x patch; the 14.2.x line is at its final release.
+- **`undici`** (transitive via `next`) — two WebSocket advisories (GHSA-vrm6-8vpv-qv8q, GHSA-v9p9-hfj2-hcw8), patched in `≥6.24.0`. Yarn `resolutions` on `undici` conflict with Next 14's own requirement (`undici@^5.28.4`), so this cannot be cleared with a transitive override; it clears automatically when `next` upgrades.
 
-**Temporary warn-only mode.** To avoid blocking every PR while this backlog exists, the `audit` job in [.github/workflows/main.yml](./.github/workflows/main.yml) currently carries `continue-on-error: true` and is omitted from `all-checks-passed.needs`. The job still runs on every PR and its output is fully visible; it just does not gate merges. **Flip to blocking** by deleting that `continue-on-error` line and adding `audit` back to the `needs` list once the four bumps above have landed. Do not mask findings with `--level` or allowlists.
+Next 15 is a migration, not a patch: it requires React 19 (we're on React 18.2.0), makes dynamic-route `params` async, and reworks caching defaults. That work is tracked as a separate TODO below.
+
+**Temporary warn-only mode.** To avoid blocking unrelated PRs while this backlog exists, the `audit` job in [.github/workflows/main.yml](./.github/workflows/main.yml) currently carries `continue-on-error: true` and is omitted from `all-checks-passed.needs`. The job still runs on every PR and its output is fully visible; it just does not gate merges. **Flip to blocking** by deleting that `continue-on-error` line and adding `audit` back to the `needs` list once the Next 15 migration lands. Do not mask findings with `--level` or allowlists.
 
 ### 6. Avoid postinstall-heavy dependencies
 
@@ -131,8 +131,8 @@ Before adding a new direct dependency:
 - [x] Add `package-lock.json` and `pnpm-lock.yaml` to [`.gitignore`](./.gitignore) to prevent stray dual-lockfile creation.
 - [x] Declare Vercel install command as `yarn install --frozen-lockfile` in [`vercel.json`](./vercel.json) (overrides any dashboard setting).
 - [x] Stand up `.github/workflows/` with a `lint` job, an `audit` job (`yarn audit --groups dependencies` with bitmask gating for Yarn 1.x, currently warn-only), and a `lockfile-lint` job — all SHA-pinned. See [.github/workflows/main.yml](./.github/workflows/main.yml).
-- [ ] **Triage the 11 high advisories currently in the dep tree** (see [§5](#5-audit-in-ci) "Known backlog") — patch bumps to `next`, `lodash`, `tailwindcss`, `next-sitemap`.
-- [ ] **Flip the `audit` job to blocking** once the backlog is cleared: delete `continue-on-error: true` and add `audit` back to `all-checks-passed.needs` in [.github/workflows/main.yml](./.github/workflows/main.yml).
+- [ ] **Migrate from Next.js 14.2.x to 15.x** — clears the remaining 4 high advisories (2× `next`, 2× `undici` transitive). Requires: React 18 → 19, async `params` in dynamic routes, caching-defaults review. This is the only work blocking the audit job from going fully blocking.
+- [ ] **Flip the `audit` job to blocking** once the Next 15 migration lands: delete `continue-on-error: true` and add `audit` back to `all-checks-passed.needs` in [.github/workflows/main.yml](./.github/workflows/main.yml).
 - [ ] Audit Vercel project env-var scoping in the Vercel dashboard: confirm `DUNE_API_KEY`, `BLOB_READ_WRITE_TOKEN`, and all `*_RPC` are **runtime-only**, not build-time.
 
 ## References
