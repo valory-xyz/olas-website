@@ -59,7 +59,7 @@ function getAddressPrefix(address) {
   return address.slice(0, 6);
 }
 
-const LegendItem = ({ label, color, address, value }) => (
+const LegendItem = ({ label, color, address = null, value }) => (
   <div className="flex gap-2 items-center w-full">
     <div className={`${color} px-3 py-1 rounded-sm`} />
     <span className="text-gray-500">{label}</span>
@@ -85,7 +85,6 @@ LegendItem.propTypes = {
   address: PropTypes.string,
   value: PropTypes.string.isRequired,
 };
-LegendItem.defaultProps = { address: null };
 
 const TotalSupplyInfo = () => (
   <div className="flex flex-col gap-2 text-base max-w-md">

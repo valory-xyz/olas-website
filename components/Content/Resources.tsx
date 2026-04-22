@@ -53,9 +53,4 @@ const Resources = ({ limit = null, tagFilter = null }: ResourcesProps) => {
   );
 };
 
-Resources.defaultProps = {
-  limit: null,
-  tagFilter: null,
-};
-
 export default Resources;

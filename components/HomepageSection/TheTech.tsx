@@ -105,7 +105,3 @@ export const TheTech = ({ hideLearnMoreButton = false }) => (
 TheTech.propTypes = {
   hideLearnMoreButton: PropTypes.bool,
 };
-
-TheTech.defaultProps = {
-  hideLearnMoreButton: false,
-};

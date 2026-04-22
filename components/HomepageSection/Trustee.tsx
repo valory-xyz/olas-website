@@ -16,7 +16,7 @@ type TrusteeProps = {
   className?: string;
 };
 
-export const Trustee = ({ quote, className }: TrusteeProps) => (
+export const Trustee = ({ quote, className = '' }: TrusteeProps) => (
   <Card
     className={`flex max-md:flex-col p-6 border-2 border-white rounded-2xl shadow-sm bg-white gap-4 bg-slate-50 text-left ${className}`}
   >
@@ -42,7 +42,3 @@ export const Trustee = ({ quote, className }: TrusteeProps) => (
     <Markdown className="max-md:hidden text-black">{quote?.quote}</Markdown>
   </Card>
 );
-
-Trustee.defaultProps = {
-  className: '',
-};

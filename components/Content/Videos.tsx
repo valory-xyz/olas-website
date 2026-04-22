@@ -68,7 +68,7 @@ type VideosProps = {
   isMain?: boolean;
 };
 
-export const Videos = ({ isLoading, videos, limit, isMain }: VideosProps) => (
+export const Videos = ({ isLoading = true, videos = [], limit = null, isMain }: VideosProps) => (
   <section>
     <div>
       <div>
@@ -106,11 +106,5 @@ export const Videos = ({ isLoading, videos, limit, isMain }: VideosProps) => (
     </div>
   </section>
 );
-
-Videos.defaultProps = {
-  isLoading: true,
-  videos: [],
-  limit: null,
-};
 
 export default Videos;

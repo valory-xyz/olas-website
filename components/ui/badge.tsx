@@ -27,13 +27,8 @@ type BadgeProps = React.HTMLAttributes<HTMLDivElement> & {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline';
 };
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className = null, variant = null, ...props }: BadgeProps) {
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
-
-Badge.defaultProps = {
-  className: null,
-  variant: null,
-};
 
 export { Badge, badgeVariants };

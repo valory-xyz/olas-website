@@ -13,10 +13,10 @@ type PopoverProps = {
 
 export const Popover = ({
   children,
-  text,
-  align,
-  side,
-  className,
+  text = undefined,
+  align = 'center',
+  side = 'top',
+  className = '',
   contentClassName,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
@@ -47,11 +47,4 @@ export const Popover = ({
       </Tooltip.Root>
     </Tooltip.Provider>
   );
-};
-
-Popover.defaultProps = {
-  text: undefined,
-  className: '',
-  align: 'center',
-  side: 'top',
 };
