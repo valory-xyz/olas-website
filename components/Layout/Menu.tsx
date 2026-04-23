@@ -67,17 +67,25 @@ export function Menu({ className }: MenuProps) {
         {MENU_DATA.map((item, index) => {
           if (item.link) {
             const menuItem = item as MenuItemWithLink;
-            const LinkTag = menuItem.isExternal ? 'a' : NavigationMenuLink;
             return (
               <NavigationMenuItem key={index}>
-                <Link href={menuItem.link} legacyBehavior passHref>
-                  <LinkTag className={triggerStyle}>
+                {menuItem.isExternal ? (
+                  <a
+                    href={menuItem.link}
+                    className={triggerStyle}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {menuItem.text}
-                    {menuItem.isExternal && (
-                      <MoveUpRight size={12} className="ml-1" aria-hidden="true" />
-                    )}
-                  </LinkTag>
-                </Link>
+                    <MoveUpRight size={12} className="ml-1" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <NavigationMenuLink asChild>
+                    <Link href={menuItem.link} className={triggerStyle}>
+                      {menuItem.text}
+                    </Link>
+                  </NavigationMenuLink>
+                )}
               </NavigationMenuItem>
             );
           }

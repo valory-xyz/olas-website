@@ -9,7 +9,7 @@ type InfoCardListProps = {
   }[];
 };
 
-export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
+export const InfoCardList = ({ cards = [], wrapperClasses = '' }: InfoCardListProps) => {
   if (!cards) return null;
 
   return (
@@ -32,9 +32,4 @@ export const InfoCardList = ({ cards, wrapperClasses }: InfoCardListProps) => {
       })}
     </div>
   );
-};
-
-InfoCardList.defaultProps = {
-  cards: [],
-  wrapperClasses: '',
 };

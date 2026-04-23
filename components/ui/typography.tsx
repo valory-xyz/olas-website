@@ -6,7 +6,7 @@ type H1Props = {
   className?: string;
 };
 
-export const H1 = ({ children, className }: H1Props) => (
+export const H1 = ({ children, className = null }: H1Props) => (
   <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
     {children}
   </h1>
@@ -23,18 +23,14 @@ export const H2 = ({ children, className = '' }: H2Props) => (
   </h2>
 );
 
-H1.defaultProps = { className: null };
-
 type LeadProps = {
   children: React.ReactNode;
   className?: string;
 };
 
-export const Lead = ({ children, className }: LeadProps) => (
+export const Lead = ({ children, className = null }: LeadProps) => (
   <p className={`text-xl text-muted-foreground ${className}`}>{children}</p>
 );
-
-Lead.defaultProps = { className: null };
 
 type UpcaseProps = {
   children: React.ReactNode;
@@ -51,7 +47,12 @@ type ExternalLinkProps = {
   className?: string;
 };
 
-export const ExternalLink = ({ children, className, href, hideArrow }: ExternalLinkProps) => (
+export const ExternalLink = ({
+  children,
+  className = null,
+  href,
+  hideArrow = false,
+}: ExternalLinkProps) => (
   <a
     className={`inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}
@@ -62,8 +63,6 @@ export const ExternalLink = ({ children, className, href, hideArrow }: ExternalL
     {hideArrow ? null : <ArrowUpRight size={16} />}
   </a>
 );
-
-ExternalLink.defaultProps = { className: null, hideArrow: false };
 
 type SubsiteLinkProps = {
   children: React.ReactNode;
@@ -102,7 +101,7 @@ type LinkProps = {
   className?: string;
 };
 
-export const Link = ({ children, className, href }: LinkProps) => (
+export const Link = ({ children, className = null, href }: LinkProps) => (
   <NextLink
     className={`text-purple-600 hover:text-purple-800 transition-colors duration-300 ${className}`}
     href={href}
@@ -110,5 +109,3 @@ export const Link = ({ children, className, href }: LinkProps) => (
     {children}
   </NextLink>
 );
-
-Link.defaultProps = { className: null };

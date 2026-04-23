@@ -38,7 +38,7 @@ type TagProps = {
   children: React.ReactNode;
 };
 
-export const Tag = ({ className, variant, children, ...props }: TagProps) => {
+export const Tag = ({ className = null, variant = null, children, ...props }: TagProps) => {
   return (
     <div className={cn('relative inline-block', className)} {...props}>
       <div className="absolute inset-0 pointer-events-none">
@@ -68,9 +68,4 @@ export const Tag = ({ className, variant, children, ...props }: TagProps) => {
       <div className={cn(tagVariants({ variant }), 'z-10')}>{children}</div>
     </div>
   );
-};
-
-Tag.defaultProps = {
-  className: null,
-  variant: null,
 };

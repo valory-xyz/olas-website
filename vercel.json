@@ -1,4 +1,5 @@
 {
+  "installCommand": "yarn install --frozen-lockfile",
   "functions": {
     "pages/api/refresh-metrics/omenstrat-roi-distribution.ts": {
       "maxDuration": 300,

@@ -10,10 +10,10 @@ type SectionWrapperProps = {
 
 const SectionWrapper = ({
   children,
-  customClasses,
+  customClasses = 'px-8 py-12 lg:p-24',
   backgroundType,
-  id,
-  customStyle,
+  id = '',
+  customStyle = null,
 }: SectionWrapperProps) => {
   const backgroundClasses = useMemo(() => {
     switch (backgroundType) {
@@ -41,12 +41,6 @@ const SectionWrapper = ({
       {children}
     </section>
   );
-};
-
-SectionWrapper.defaultProps = {
-  customClasses: 'px-8 py-12 lg:p-24',
-  id: '',
-  customStyle: null,
 };
 
 export default SectionWrapper;

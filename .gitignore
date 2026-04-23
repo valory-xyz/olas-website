@@ -5,6 +5,11 @@
 /.pnp
 .pnp.js
 
+# non-Yarn lockfiles — yarn.lock is canonical; block stray npm/pnpm installs
+# from landing a competing lockfile. See SUPPLY-CHAIN-SECURITY.md §2.
+package-lock.json
+pnpm-lock.yaml
+
 # testing
 /coverage
 

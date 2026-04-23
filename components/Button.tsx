@@ -31,7 +31,15 @@ type ButtonProps = {
  *
  * @deprecated This component is deprecated and use components/ui/button.jsx instead.
  */
-export function Button({ href, className, size, isExternal, type, ...props }: ButtonProps) {
+export function Button({
+  href,
+  className = null,
+  size = 'lg',
+  isExternal = false,
+  type = 'primary',
+  disabled = false,
+  ...props
+}: ButtonProps) {
   const fullClassName = `
     inline-flex
     items-center
@@ -39,8 +47,8 @@ export function Button({ href, className, size, isExternal, type, ...props }: Bu
     justify-center
     border
     focus:ring-4
-    ${props.disabled && disabledStyle}
-    ${type === 'primary' && getPrimaryStyle(props.disabled)}
+    ${disabled && disabledStyle}
+    ${type === 'primary' && getPrimaryStyle(disabled)}
     ${type === 'secondary' && secondaryStyle}
     ${size === 'lg' && sizeLgStyle}
     ${size === 'md' && sizeMdStyle}
@@ -52,18 +60,9 @@ export function Button({ href, className, size, isExternal, type, ...props }: Bu
       className={fullClassName}
       rel={isExternal && 'noopener noreferrer'}
       target={isExternal && '_blank'}
-      disabled={props.disabled}
       {...props}
     />
   ) : (
-    <button type="button" className={fullClassName} {...props} />
+    <button type="button" className={fullClassName} disabled={disabled} {...props} />
   );
 }
-
-Button.defaultProps = {
-  className: null,
-  isExternal: false,
-  size: 'lg',
-  type: 'primary',
-  disabled: false,
-};

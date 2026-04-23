@@ -25,7 +25,7 @@ type UsagePieChartProps = {
   };
 };
 
-export const UsagePieChart = ({ epoch, split, loading }: UsagePieChartProps) => (
+export const UsagePieChart = ({ epoch = null, split, loading }: UsagePieChartProps) => (
   <div>
     <div>
       <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">Current Epoch</h2>
@@ -101,7 +101,3 @@ export const UsagePieChart = ({ epoch, split, loading }: UsagePieChartProps) => 
     </div>
   </div>
 );
-
-UsagePieChart.defaultProps = {
-  epoch: null,
-};

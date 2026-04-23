@@ -160,9 +160,3 @@ Podcasts.propTypes = {
   podcasts: PropTypes.arrayOf(VideoPropTypes),
   limit: PropTypes.number,
 };
-
-Podcasts.defaultProps = {
-  isLoading: true,
-  podcasts: [],
-  limit: null,
-};

@@ -26,9 +26,9 @@ type MetricsBubbleProps = {
 };
 
 export const MetricsBubble = ({
-  isUnderConstruction,
-  metrics,
-  image,
+  isUnderConstruction = false,
+  metrics = undefined,
+  image = undefined,
   title,
 }: MetricsBubbleProps) => {
   return (
@@ -84,10 +84,4 @@ export const MetricsBubble = ({
       </div>
     </Card>
   );
-};
-
-MetricsBubble.defaultProps = {
-  isUnderConstruction: false,
-  metrics: undefined,
-  image: undefined,
 };

@@ -16,7 +16,7 @@ type UpdatesProps = {
   isMain?: boolean;
 };
 
-export const Updates = ({ limit, isMain = false }: UpdatesProps) => {
+export const Updates = ({ limit = 1000, isMain = false }: UpdatesProps) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -63,8 +63,4 @@ export const Updates = ({ limit, isMain = false }: UpdatesProps) => {
       </div>
     </section>
   );
-};
-
-Updates.defaultProps = {
-  limit: 1000,
 };

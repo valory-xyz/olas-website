@@ -25,7 +25,7 @@ const folders = [
   },
 ];
 
-const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
+const Articles = ({ limit = 1000, showSeeAll = false, displayFolders, isMain }) => {
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
@@ -98,10 +98,6 @@ const Articles = ({ limit, showSeeAll, displayFolders, isMain }) => {
 Articles.propTypes = {
   limit: PropTypes.number,
   showSeeAll: PropTypes.bool,
-};
-Articles.defaultProps = {
-  limit: 1000,
-  showSeeAll: false,
 };
 
 export default Articles;

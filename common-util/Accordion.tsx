@@ -58,7 +58,3 @@ export const Accordion = ({
     </div>
   );
 };
-
-Accordion.defaultProps = {
-  defaultOpen: true,
-};

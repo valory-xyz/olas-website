@@ -49,9 +49,9 @@ type EmissionScheduleChartProps = {
 };
 
 export const EmissionScheduleChart = ({
-  inflationForYear,
-  timeLaunch,
-  currentYear,
+  inflationForYear = [],
+  timeLaunch = null,
+  currentYear = null,
   loading,
 }: EmissionScheduleChartProps) => (
   <>
@@ -135,9 +135,3 @@ export const EmissionScheduleChart = ({
     </div>
   </>
 );
-
-EmissionScheduleChart.defaultProps = {
-  inflationForYear: [],
-  timeLaunch: null,
-  currentYear: null,
-};

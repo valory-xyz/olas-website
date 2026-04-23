@@ -16,7 +16,7 @@ type MenuMobileProps = {
   className?: string;
 };
 
-export const MenuMobile = ({ className }: MenuMobileProps) => {
+export const MenuMobile = ({ className = null }: MenuMobileProps) => {
   const [isOpened, setOpened] = useState(false);
   const [isSubmenuExpanded, setSubmenuExpanded] = useState(false);
 
@@ -132,7 +132,4 @@ export const MenuMobile = ({ className }: MenuMobileProps) => {
 
 MenuMobile.propTypes = {
   className: PropTypes.string,
-};
-MenuMobile.defaultProps = {
-  className: null,
 };

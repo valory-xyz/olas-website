@@ -10,12 +10,12 @@ type SectionHeadingProps = {
 
 const SectionHeading = ({
   children,
-  size,
-  color,
-  spacing,
-  display,
-  weight,
-  other,
+  size = '',
+  color = 'text-gray-700',
+  spacing = 'mb-12',
+  display = '',
+  weight = 'font-semibold',
+  other = '',
 }: SectionHeadingProps) => (
   <h2
     className={`text-3xl lg:text-[40px] ${size} ${spacing} ${color} ${display} ${weight} ${other}`}
@@ -23,14 +23,5 @@ const SectionHeading = ({
     {children}
   </h2>
 );
-
-SectionHeading.defaultProps = {
-  color: 'text-gray-700',
-  display: '',
-  size: '',
-  spacing: 'mb-12',
-  weight: 'font-semibold',
-  other: '',
-};
 
 export default SectionHeading;
