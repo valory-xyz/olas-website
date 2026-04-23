@@ -18,9 +18,9 @@ type EthSubgraphResponse = {
     solUsdPrice: string;
     poolLiquidityUsd: string;
     protocolOwnedLiquidityUsd: string;
-    cumulativeFeesUsd: string | null;
+    // Only cumulativeProtocolFeesUsd is consumed today. The other two cumulative
+    // fee fields are fetched for schema parity / future use — see liquidityEthQuery.
     cumulativeProtocolFeesUsd: string | null;
-    cumulativeExternalFeesUsd: string | null;
   };
   bridgedPOLHoldings: Array<{
     id: string;
@@ -48,15 +48,7 @@ type L2SubgraphResponse = {
 
 type Prices = { eth: number; matic: number; sol: number };
 
-// ─── Per-pool valuation + fee logic (mirrors pol-aggregation.js) ────────────
-// For each pool the paired (non-OLAS) token is priced directly; we never price
-// OLAS. Pool TVL = 2 × paired_reserves × price. Treasury POL = Pool TVL × share.
-
-type PoolConfig = {
-  originChain: string; // key into bridgedPOLHoldings[].originChain
-  computeTvlUsd: (pool: L2Pool, prices: Prices) => number | null;
-  computeTotalFeesUsd: (pool: L2Pool, prices: Prices) => number | null;
-};
+// ─── Helpers ────────────────────────────────────────────────────────────────
 
 // Convert cumulative L2 token-denominated fees to USD. feePriced is in the
 // priced token; feeOlas is in OLAS, converted via pool ratio reservePriced/reserveOlas.
@@ -83,23 +75,63 @@ function l2FeesToUsd(
   return (Number(totalPricedScaled) / Number(outputScale)) * price;
 }
 
+// Scale a raw token reserve to a Number with ≥6-decimal precision regardless
+// of the token's decimals (avoids Number precision loss for 18-decimal reserves).
 function pairedFromReserve(reserve: string, decimals: number): number {
-  // Scale BigInt down to keep precision, then convert to Number.
   const scale = 10n ** BigInt(Math.max(decimals - 6, 0));
   return Number(BigInt(reserve) / scale) / 10 ** Math.min(decimals, 6);
 }
 
-// Single-pool chains: keyed by chain name.
-// Multi-pool chains (Base): keyed by lowercased pool address.
+// Distinguish "no fees yet" ('0') from "field missing" (undefined — e.g. schema
+// regression). Undefined → null from computeTotalFeesUsd, which marks fees partial.
+function parseFeesPair(pool: L2Pool): { f0: bigint; f1: bigint } | null {
+  if (pool.cumulativeFeesToken0 === undefined || pool.cumulativeFeesToken1 === undefined) {
+    return null;
+  }
+  return {
+    f0: BigInt(pool.cumulativeFeesToken0),
+    f1: BigInt(pool.cumulativeFeesToken1),
+  };
+}
+
+// Share = bridged_LP_balance / BPT_total_supply, clamped to [0, 1]. BigInt
+// scaling preserves precision when totalSupply is huge. Clamp guards against
+// a transient subgraph state where currentBalance indexes later than totalSupply.
+function computeShare(bridgedBalance: bigint, totalSupply: bigint): number {
+  if (totalSupply === 0n) return 0;
+  const SCALE = 1_000_000_000_000n; // 1e12
+  const raw = Number((bridgedBalance * SCALE) / totalSupply) / 1e12;
+  if (raw > 1) {
+    console.warn(
+      `[protocol-metrics] share > 1 (${raw}); clamping. balance=${bridgedBalance} supply=${totalSupply}`
+    );
+    return 1;
+  }
+  return raw;
+}
+
+// ─── Per-pool valuation + fee logic (mirrors pol-aggregation.js) ────────────
+// For each pool the paired (non-OLAS) token is priced directly; we never price
+// OLAS. Pool TVL = 2 × paired_reserves × price. Treasury POL = Pool TVL × share.
+
+type PoolConfig = {
+  originChain: string; // key into bridgedPOLHoldings[].originChain
+  computeTvlUsd: (pool: L2Pool, prices: Prices) => number | null;
+  computeTotalFeesUsd: (pool: L2Pool, prices: Prices) => number | null;
+};
+
+// Every ETH-priced config guards `prices.eth <= 0`. This is deliberately
+// per-config (not a top-level bail) so that a missing ETH price doesn't take
+// down chains that don't depend on it (Gnosis/Celo/Base-USDC).
 const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   gnosis: {
     originChain: 'gnosis',
     // OLAS-WXDAI: reserve0=OLAS, reserve1=WXDAI (stablecoin ≈ $1)
     computeTvlUsd: (pool) => pairedFromReserve(pool.reserve1, 18) * 2,
     computeTotalFeesUsd: (pool) => {
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f1, f0, BigInt(pool.reserve1), BigInt(pool.reserve0), 1.0);
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(fees.f1, fees.f0, BigInt(pool.reserve1), BigInt(pool.reserve0), 1.0);
     },
   },
   polygon: {
@@ -111,29 +143,55 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
     },
     computeTotalFeesUsd: (pool, prices) => {
       if (prices.matic <= 0) return null;
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f0, f1, BigInt(pool.reserve0), BigInt(pool.reserve1), prices.matic);
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(
+        fees.f0,
+        fees.f1,
+        BigInt(pool.reserve0),
+        BigInt(pool.reserve1),
+        prices.matic
+      );
     },
   },
   arbitrum: {
     originChain: 'arbitrum',
     // OLAS-WETH: reserve0=OLAS, reserve1=WETH
-    computeTvlUsd: (pool, prices) => pairedFromReserve(pool.reserve1, 18) * 2 * prices.eth,
+    computeTvlUsd: (pool, prices) => {
+      if (prices.eth <= 0) return null;
+      return pairedFromReserve(pool.reserve1, 18) * 2 * prices.eth;
+    },
     computeTotalFeesUsd: (pool, prices) => {
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f1, f0, BigInt(pool.reserve1), BigInt(pool.reserve0), prices.eth);
+      if (prices.eth <= 0) return null;
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(
+        fees.f1,
+        fees.f0,
+        BigInt(pool.reserve1),
+        BigInt(pool.reserve0),
+        prices.eth
+      );
     },
   },
   optimism: {
     originChain: 'optimism',
     // WETH-OLAS: reserve0=WETH, reserve1=OLAS
-    computeTvlUsd: (pool, prices) => pairedFromReserve(pool.reserve0, 18) * 2 * prices.eth,
+    computeTvlUsd: (pool, prices) => {
+      if (prices.eth <= 0) return null;
+      return pairedFromReserve(pool.reserve0, 18) * 2 * prices.eth;
+    },
     computeTotalFeesUsd: (pool, prices) => {
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f0, f1, BigInt(pool.reserve0), BigInt(pool.reserve1), prices.eth);
+      if (prices.eth <= 0) return null;
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(
+        fees.f0,
+        fees.f1,
+        BigInt(pool.reserve0),
+        BigInt(pool.reserve1),
+        prices.eth
+      );
     },
   },
   celo: {
@@ -149,33 +207,47 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
     computeTotalFeesUsd: (pool) => {
       if (!pool.celoUsdPrice || pool.celoUsdPrice === '0') return null;
       const celoPrice = Number(BigInt(pool.celoUsdPrice)) / 1e8;
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f0, f1, BigInt(pool.reserve0), BigInt(pool.reserve1), celoPrice);
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(fees.f0, fees.f1, BigInt(pool.reserve0), BigInt(pool.reserve1), celoPrice);
     },
   },
 };
 
-// Base has two pools in one subgraph, dispatched by pool address.
+// Base has two pools in one subgraph, dispatched by pool address. Addresses
+// are lowercased to match the normalization in the dispatch site.
+const BASE_POOL_OLAS_USDC = '0x5332584890d6e415a6dc910254d6430b8aab7e69';
+const BASE_POOL_WETH_OLAS = '0x2da6e67c45af2aaa539294d9fa27ea50ce4e2c5f';
+
 const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   // OLAS-USDC: reserve0=OLAS(18), reserve1=USDC(6)
-  '0x5332584890d6e415a6dc910254d6430b8aab7e69': {
+  [BASE_POOL_OLAS_USDC]: {
     originChain: 'base',
-    computeTvlUsd: (pool) => (Number(BigInt(pool.reserve1)) / 1e6) * 2,
+    computeTvlUsd: (pool) => pairedFromReserve(pool.reserve1, 6) * 2,
     computeTotalFeesUsd: (pool) => {
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f1, f0, BigInt(pool.reserve1), BigInt(pool.reserve0), 1.0, 6);
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(fees.f1, fees.f0, BigInt(pool.reserve1), BigInt(pool.reserve0), 1.0, 6);
     },
   },
   // WETH-OLAS: reserve0=WETH(18), reserve1=OLAS(18)
-  '0x2da6e67c45af2aaa539294d9fa27ea50ce4e2c5f': {
+  [BASE_POOL_WETH_OLAS]: {
     originChain: 'base-weth',
-    computeTvlUsd: (pool, prices) => pairedFromReserve(pool.reserve0, 18) * 2 * prices.eth,
+    computeTvlUsd: (pool, prices) => {
+      if (prices.eth <= 0) return null;
+      return pairedFromReserve(pool.reserve0, 18) * 2 * prices.eth;
+    },
     computeTotalFeesUsd: (pool, prices) => {
-      const f0 = BigInt(pool.cumulativeFeesToken0 || '0');
-      const f1 = BigInt(pool.cumulativeFeesToken1 || '0');
-      return l2FeesToUsd(f0, f1, BigInt(pool.reserve0), BigInt(pool.reserve1), prices.eth);
+      if (prices.eth <= 0) return null;
+      const fees = parseFeesPair(pool);
+      if (!fees) return null;
+      return l2FeesToUsd(
+        fees.f0,
+        fees.f1,
+        BigInt(pool.reserve0),
+        BigInt(pool.reserve1),
+        prices.eth
+      );
     },
   },
 };
@@ -191,8 +263,7 @@ const MAX_TOTAL_POL_USD = 1_000_000_000; // $1B across all chains
 const MAX_POOL_FEES_USD = 100_000_000; // $100M lifetime fees per pool
 const MAX_TOTAL_FEES_USD = 500_000_000; // $500M cumulative protocol fees
 
-const isSaneUsd = (n: number, max: number): boolean =>
-  Number.isFinite(n) && n >= 0 && n <= max;
+const isSaneUsd = (n: number, max: number): boolean => Number.isFinite(n) && n >= 0 && n <= max;
 
 // ─── Solana ─────────────────────────────────────────────────────────────────
 
@@ -222,19 +293,10 @@ async function fetchSolanaVaultBalance(): Promise<number | null> {
   }
 }
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-// Share = bridged_LP_balance / BPT_total_supply, as a plain number in [0,1].
-// BigInt scaling preserves precision when totalSupply is huge.
-function computeShare(bridgedBalance: bigint, totalSupply: bigint): number {
-  if (totalSupply === 0n) return 0;
-  const SCALE = 1_000_000_000_000n; // 1e12
-  return Number((bridgedBalance * SCALE) / totalSupply) / 1e12;
-}
-
 // ─── POL + fees fetcher (from subgraphs) ────────────────────────────────────
 
 const L2_CHAINS = ['gnosis', 'polygon', 'arbitrum', 'optimism', 'base', 'celo'] as const;
+type L2Chain = (typeof L2_CHAINS)[number];
 
 type ProtocolMetricsResult = {
   totalProtocolOwnedLiquidity: MetricWithStatus<number | null>;
@@ -246,15 +308,30 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
 
+  // `polPartial` / `feesPartial` track whether *any* per-pool contribution
+  // dropped out of the respective total. Split because a fees-only failure
+  // (e.g. subgraph schema drops cumulativeFeesToken*) should not mark POL
+  // stale, and vice versa.
+  let polPartial = false;
+  let feesPartial = false;
+
   const ethClient = LIQUIDITY_GRAPH_CLIENTS.ethereum;
 
-  const [ethResult, ...l2Results] = await Promise.allSettled([
+  // Kick off subgraph fetches AND chain-block lookups in parallel. Previously
+  // getChainBlockNumber() was serialized inside the L2 loop, costing ~6 RPC
+  // round-trips on the critical path.
+  const [ethResult, ethBlockResult, solBalanceResult, ...l2Results] = await Promise.allSettled([
     ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
-    ...L2_CHAINS.map(async (chain) => {
-      const client = LIQUIDITY_GRAPH_CLIENTS[chain];
-      const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
-      return { chain, data };
-    }),
+    getChainBlockNumber('ethereum'),
+    fetchSolanaVaultBalance(),
+    ...L2_CHAINS.flatMap((chain) => [
+      (async () => {
+        const client = LIQUIDITY_GRAPH_CLIENTS[chain];
+        const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
+        return { chain, data };
+      })(),
+      getChainBlockNumber(chain) as Promise<number | null>,
+    ]),
   ]);
 
   // Ethereum subgraph is required for prices, bridged balances, and ETH POL/fees.
@@ -270,12 +347,8 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   const ethData = ethResult.value;
 
   if (ethData._meta?.hasIndexingErrors) indexingErrors.push('liquidity:ethereum');
-  try {
-    const ethBlock = await getChainBlockNumber('ethereum');
-    if (checkSubgraphLag(ethBlock, ethData._meta?.block?.number, 'ethereum')) {
-      laggingSubgraphs.push('liquidity:ethereum');
-    }
-  } catch {
+  const ethBlock = ethBlockResult.status === 'fulfilled' ? ethBlockResult.value : null;
+  if (checkSubgraphLag(ethBlock, ethData._meta?.block?.number, 'ethereum')) {
     laggingSubgraphs.push('liquidity:ethereum');
   }
 
@@ -289,12 +362,18 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   // Ethereum POL (pre-computed by subgraph)
   const ethPolUsd = Number(BigInt(ethData.lptokenMetrics.protocolOwnedLiquidityUsd)) / 1e8;
 
-  // Ethereum fees (pre-computed by subgraph, 8 decimals)
+  // Ethereum fees (pre-computed by subgraph, 8 decimals).
+  // `!= null` (loose) intentionally catches both null and undefined, since the
+  // field is typed as `string | null` but older deployments may omit it entirely.
   const ethProtocolFeesRaw = ethData.lptokenMetrics.cumulativeProtocolFeesUsd;
   const ethProtocolFeesUsd =
     ethProtocolFeesRaw != null ? Number(BigInt(ethProtocolFeesRaw)) / 1e8 : null;
+  if (ethProtocolFeesUsd === null) feesPartial = true;
 
-  // Bridged LP balances keyed by originChain (e.g. 'base', 'base-weth')
+  // Bridged LP balances keyed by originChain (e.g. 'base', 'base-weth').
+  // If a configured originChain is missing, we warn — either the subgraph
+  // stopped emitting that key, or we added a pool config without a matching
+  // bridged holding. Either way, share = 0 and POL is silently underreported.
   const bridgedBalances: Record<string, bigint> = {};
   for (const holding of ethData.bridgedPOLHoldings) {
     bridgedBalances[holding.originChain] = BigInt(holding.currentBalance);
@@ -302,38 +381,44 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
   let totalPolUsd = ethPolUsd;
   let totalProtocolFeesUsd = ethProtocolFeesUsd ?? 0;
-  let anyFeeMissing = ethProtocolFeesUsd === null;
 
-  // Process each L2 chain
-  for (let i = 0; i < L2_CHAINS.length; i++) {
-    const chain = L2_CHAINS[i];
-    const result = l2Results[i];
+  // l2Results is flattened: for each L2 chain we have [subgraphResult, blockResult].
+  const l2ResultPairs = L2_CHAINS.map((chain, i) => ({
+    chain,
+    subgraphResult: l2Results[i * 2] as PromiseSettledResult<{
+      chain: L2Chain;
+      data: L2SubgraphResponse;
+    }>,
+    blockResult: l2Results[i * 2 + 1] as PromiseSettledResult<number | null>,
+  }));
+
+  for (const { chain, subgraphResult, blockResult } of l2ResultPairs) {
     const source = `liquidity:${chain}`;
 
-    if (result.status !== 'fulfilled') {
+    if (subgraphResult.status !== 'fulfilled') {
+      console.error(`Error fetching ${chain} liquidity subgraph:`, subgraphResult.reason);
       fetchErrors.push(source);
-      console.error(`Error fetching ${chain} liquidity subgraph:`, result.reason);
-      anyFeeMissing = true;
+      polPartial = true;
+      feesPartial = true;
       continue;
     }
 
     try {
-      const { data } = result.value;
+      const { data } = subgraphResult.value;
 
       if (data._meta?.hasIndexingErrors) indexingErrors.push(source);
-      try {
-        const chainBlock = await getChainBlockNumber(chain);
-        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(source);
-        }
-      } catch {
+      const chainBlock = blockResult.status === 'fulfilled' ? blockResult.value : null;
+      if (blockResult.status !== 'fulfilled') {
+        laggingSubgraphs.push(source);
+      } else if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
         laggingSubgraphs.push(source);
       }
 
       const pools = data.poolMetrics_collection || [];
       if (pools.length === 0) {
         fetchErrors.push(source);
-        anyFeeMissing = true;
+        polPartial = true;
+        feesPartial = true;
         continue;
       }
 
@@ -342,8 +427,18 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
       const poolsToProcess: Array<{ pool: L2Pool; config: PoolConfig }> = [];
       if (chain === 'base') {
         for (const pool of pools) {
-          const config = BASE_POOL_CONFIG[pool.id.toLowerCase()];
-          if (config) poolsToProcess.push({ pool, config });
+          const poolId = pool.id.toLowerCase();
+          const config = BASE_POOL_CONFIG[poolId];
+          if (config) {
+            poolsToProcess.push({ pool, config });
+          } else {
+            // New pools show up here when Balancer subgraph indexes them before
+            // we've added a PoolConfig. Warn loudly so POL doesn't silently
+            // under-report the newly-launched pool.
+            console.warn(
+              `[protocol-metrics] ${source} unknown pool ${poolId} — no config; skipping`
+            );
+          }
         }
       } else {
         const config = POOL_CONFIG_BY_CHAIN[chain];
@@ -351,20 +446,37 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
       }
 
       for (const { pool, config } of poolsToProcess) {
+        const poolId = pool.id.toLowerCase();
+        const poolSource = `${source}:${poolId}`;
+
+        if (bridgedBalances[config.originChain] === undefined) {
+          console.warn(
+            `[protocol-metrics] ${poolSource} no bridged balance for originChain='${config.originChain}' — share=0`
+          );
+        }
+
         const tvl = config.computeTvlUsd(pool, prices);
+
+        // TVL null (missing price / uninitialized reserve) invalidates BOTH
+        // POL and fees for this pool — the pool data is not reliable.
         if (tvl === null) {
-          anyFeeMissing = true;
+          console.warn(
+            `[protocol-metrics] ${poolSource} TVL unavailable (missing price or reserves) — skipping`
+          );
+          fetchErrors.push(poolSource);
+          polPartial = true;
+          feesPartial = true;
           continue;
         }
 
-        // Per-pool sanity: a single pool over $500M almost certainly means a
-        // decimals mismatch. Skip it and surface a fetch error.
+        // Per-pool TVL sanity: a single pool over $500M almost certainly means
+        // a decimals mismatch. Drop the pool and flag both POL + fees partial
+        // (same rationale as null TVL — the pool data is suspect).
         if (!isSaneUsd(tvl, MAX_POOL_TVL_USD)) {
-          console.error(
-            `[protocol-metrics] ${source} pool ${pool.id} TVL out of bounds: $${tvl} — skipping`
-          );
-          fetchErrors.push(source);
-          anyFeeMissing = true;
+          console.error(`[protocol-metrics] ${poolSource} TVL out of bounds: $${tvl} — skipping`);
+          fetchErrors.push(poolSource);
+          polPartial = true;
+          feesPartial = true;
           continue;
         }
 
@@ -376,12 +488,16 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
         const totalFees = config.computeTotalFeesUsd(pool, prices);
         if (totalFees === null) {
-          anyFeeMissing = true;
+          // Fee field missing / price gone — fees-only signal, POL already counted.
+          feesPartial = true;
         } else if (!isSaneUsd(totalFees, MAX_POOL_FEES_USD)) {
+          // Per-pool fee breach only marks fees partial — intentionally NOT
+          // pushed to fetchErrors, because a fees-side decimals bug shouldn't
+          // invalidate the pool's (already validated) POL contribution.
           console.error(
-            `[protocol-metrics] ${source} pool ${pool.id} fees out of bounds: $${totalFees} — skipping`
+            `[protocol-metrics] ${poolSource} fees out of bounds: $${totalFees} — skipping`
           );
-          anyFeeMissing = true;
+          feesPartial = true;
         } else {
           totalProtocolFeesUsd += totalFees * share;
         }
@@ -389,34 +505,36 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     } catch (error) {
       console.error(`Error processing ${chain} liquidity:`, error);
       fetchErrors.push(source);
-      anyFeeMissing = true;
+      polPartial = true;
+      feesPartial = true;
     }
   }
 
   // Solana: 2 × SOL_vault × SOL/USD × treasury_share (~99.995%). No fees (no subgraph).
-  const solBalance = await fetchSolanaVaultBalance();
+  const solBalance = solBalanceResult.status === 'fulfilled' ? solBalanceResult.value : null;
   if (solBalance !== null && prices.sol > 0) {
     totalPolUsd += solBalance * 2 * prices.sol * SOLANA_TREASURY_SHARE;
   } else {
     fetchErrors.push('liquidity:solana');
+    polPartial = true;
   }
 
-  // Final-total sanity: even if every per-pool value passed, refuse to publish
-  // totals over hard caps. Returning null triggers mergeWithFallback to keep
-  // the previous valid snapshot value instead of persisting garbage.
-  const polFetchErrors = [...fetchErrors];
+  // ─── POL: sanity-clamp totals before publishing ──────────────────────────
+  // polFetchErrors is the base set + partial/out-of-bounds tags specific to POL.
+  const polFetchErrors = [...fetchErrors, ...(polPartial ? ['liquidity:pol-partial'] : [])];
   let polValue: number | null = Math.round(totalPolUsd);
   if (!isSaneUsd(totalPolUsd, MAX_TOTAL_POL_USD)) {
-    console.error(
-      `[protocol-metrics] total POL out of bounds: $${totalPolUsd} — returning null`
-    );
+    console.error(`[protocol-metrics] total POL out of bounds: $${totalPolUsd} — returning null`);
     polFetchErrors.push('liquidity:pol-out-of-bounds');
     polValue = null;
   }
 
-  const feesFetchErrors = anyFeeMissing ? [...fetchErrors, 'liquidity:fees-partial'] : [...fetchErrors];
-  let feesValue: number | null = Math.round(totalProtocolFeesUsd);
-  if (!isSaneUsd(totalProtocolFeesUsd, MAX_TOTAL_FEES_USD)) {
+  // ─── Fees: null-out explicitly on any partiality ─────────────────────────
+  // Previously we relied on mergeWithFallback's stale→old-value path. Explicit
+  // null is locally obvious and removes the indirection.
+  const feesFetchErrors = [...fetchErrors, ...(feesPartial ? ['liquidity:fees-partial'] : [])];
+  let feesValue: number | null = feesPartial ? null : Math.round(totalProtocolFeesUsd);
+  if (feesValue !== null && !isSaneUsd(totalProtocolFeesUsd, MAX_TOTAL_FEES_USD)) {
     console.error(
       `[protocol-metrics] total fees out of bounds: $${totalProtocolFeesUsd} — returning null`
     );

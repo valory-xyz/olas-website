@@ -2,6 +2,11 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { useMemo } from 'react';
 
+// Preserves null — Math.round(null) coerces to 0, which would render "$0"
+// instead of letting the MetricsCard render its stale/empty state.
+const roundOrNull = (v: number | null | undefined): number | null =>
+  v == null ? null : Math.round(v);
+
 export const BondMetrics = ({ metrics }) => {
   const protocolMetrics = metrics?.protocol;
 
@@ -18,7 +23,7 @@ export const BondMetrics = ({ metrics }) => {
             labelText: 'Total Protocol-owned Liquidity',
             source: '/data#protocol-owned-liquidity',
             isExternal: false,
-            metric: Math.round(protocolMetrics.totalProtocolOwnedLiquidity?.value),
+            metric: roundOrNull(protocolMetrics.totalProtocolOwnedLiquidity?.value),
             status: protocolMetrics.totalProtocolOwnedLiquidity?.status,
             isMoney: true,
           },
@@ -28,7 +33,7 @@ export const BondMetrics = ({ metrics }) => {
             labelText: 'Fees from Protocol-owned Liquidity',
             source: '/data#protocol-liquidity-fees',
             isExternal: false,
-            metric: Math.round(protocolMetrics.totalProtocolRevenue?.value),
+            metric: roundOrNull(protocolMetrics.totalProtocolRevenue?.value),
             status: protocolMetrics.totalProtocolRevenue?.status,
             isMoney: true,
           },

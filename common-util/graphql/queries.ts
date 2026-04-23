@@ -930,6 +930,9 @@ export const getPolymarketBetsWithBettorQuery = ({
   return gql`query PolymarketBetsWithBettor { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
 };
 
+// cumulativeFeesUsd / cumulativeExternalFeesUsd are fetched for schema parity
+// with pol-aggregation.js but not consumed by the app today. Only
+// cumulativeProtocolFeesUsd is read (it's already Treasury-share-scaled).
 export const liquidityEthQuery = gql`
   query LiquidityEth {
     lptokenMetrics(id: "global") {
@@ -939,9 +942,7 @@ export const liquidityEthQuery = gql`
       solUsdPrice
       poolLiquidityUsd
       protocolOwnedLiquidityUsd
-      cumulativeFeesUsd
       cumulativeProtocolFeesUsd
-      cumulativeExternalFeesUsd
     }
     bridgedPOLHoldings(first: 10) {
       id
@@ -959,9 +960,10 @@ export const liquidityEthQuery = gql`
 `;
 
 // Multi-pool chains (e.g. Base has OLAS-USDC + WETH-OLAS) require first: 10.
+// orderBy: id keeps dispatch deterministic across reindexes.
 export const liquidityL2Query = gql`
   query LiquidityL2 {
-    poolMetrics_collection(first: 10) {
+    poolMetrics_collection(first: 10, orderBy: id, orderDirection: asc) {
       id
       reserve0
       reserve1
