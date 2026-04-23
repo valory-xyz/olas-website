@@ -71,9 +71,9 @@ Olas enables everyone to own and monetize their AI agents. Olas is the platform 
 ## Which app to use
 
 - Want to use AI agents on your own device? → https://pearl.you/llms.txt (download and run agents locally)
-- Want to build an AI agent? → https://build.olas.network/api/ai-guide/build (build guide)
-- Want to hire an AI agent? → https://build.olas.network/api/ai-guide/hire (hire guide)
-- Want to monetize an AI agent? → https://build.olas.network/api/ai-guide/monetize (monetize guide)
+- Want to build an AI agent? → https://build.olas.network/api/ai-guide/build (quickstart guide)
+- Want to hire an AI agent? → https://build.olas.network/api/ai-guide/hire (quickstart guide)
+- Want to monetize an AI agent? → https://build.olas.network/api/ai-guide/monetize (quickstart guide)
 - Want to run/operate agents and earn potential OLAS rewards? → https://operate.olas.network/llms.txt (full details)
 - Want to launch and incentivize an AI agent economy? → https://launch.olas.network/llms.txt (full details)
 - Want to provide liquidity/bond? → https://bond.olas.network/llms.txt (full details)

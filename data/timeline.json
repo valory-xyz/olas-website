@@ -292,12 +292,12 @@
                 },
                 {
                     "topic" : "More People Running Agents Than Ever",
-                    "content" : "- 500 Daily Active Agents (DAAs) marked a new high for operator engagement. \n- 1,681 agents have now been deployed across 46 registered agent types. \n- Operators used user-friendly tools like Pearl to drive this growth.",
+                    "content" : "- 500 Daily Active Agents (DAAs) marked a new high for operator engagement. \n- 1,681 agents have now been deployed across 46 registered agent types. \n- Operators used user-friendly tools like Pearl and the more advanced Quickstart to drive this growth.",
                     "category" : ["Operate", "Key milestones"]
                 },
                 {
                     "topic" : "Olas Staking Grew in Size and Scope",
-                    "content" : "- At the end of the year, 2,632,474 OLAS was staked across multiple chains. \n- Staking expanded to Mode, Celo, and Base, with 100+ new staking slots added across Pearl. \n- Staking was also introduced to Olas Contribute, enabling more ecosystem participation.",
+                    "content" : "- At the end of the year, 2,632,474 OLAS was staked across multiple chains. \n- Staking expanded to Mode, Celo, and Base, with 100+ new staking slots added across Pearl and Quickstart. \n- Staking was also introduced to Olas Contribute, enabling more ecosystem participation.",
                     "category" : ["Activity Metrics", "Tokenomics", "Operate", "Key milestones"]
                 },
                 {
@@ -358,7 +358,7 @@
                 },
                 {
                     "topic": "Olas Staking Launch",
-                    "content": "- Operators staked over **71,000 OLAS** using **Pearl**.",
+                    "content": "- Operators staked over **71,000 OLAS** using **Pearl** and **Quickstart**.",
                     "category": ["Operate", "Pearl", "Tokenomics", "Activity Metrics", "Key milestones"]
                 },
                 {
