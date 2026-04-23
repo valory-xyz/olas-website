@@ -75,7 +75,7 @@ const Hero = () => (
             height={206}
             className="mb-4 shadow-md rounded-2xl transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
           />
-          <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-purple-600">
+          <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-black">
             Read the blog <ChevronRight size={16} />
           </div>
         </Link>
@@ -83,7 +83,7 @@ const Hero = () => (
           href="https://www.instagram.com/ai.cant.replace/"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-purple-600"
+          className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-black"
         >
           View on Instagram <SquareArrowOutUpRight size={14} />
         </a>
@@ -105,7 +105,7 @@ const Hero = () => (
               height={160}
               className="mb-2 shadow-md rounded-2xl mx-auto transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
             />
-            <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-purple-600">
+            <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-black">
               Read the blog <ChevronRight size={16} />
             </div>
           </Link>
@@ -113,7 +113,7 @@ const Hero = () => (
             href="https://www.instagram.com/ai.cant.replace/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-purple-600"
+            className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-black"
           >
             View on Instagram <SquareArrowOutUpRight size={14} />
           </a>
