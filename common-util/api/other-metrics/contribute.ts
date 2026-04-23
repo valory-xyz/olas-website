@@ -1,5 +1,5 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
-import { autonolasBaseGraphClient } from 'common-util/graphql/client';
+import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   createStaleStatus,
   executeGraphQLQuery,
@@ -15,13 +15,13 @@ const LIMIT = 1000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
-type DailyActivitiesResult = WithMeta<{
-  dailyActivities: { count: number }[];
+type DailyUniqueAgentsResult = WithMeta<{
+  dailyUniqueAgents: { count: number }[];
 }>;
 
 const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
-  return executeGraphQLQuery<DailyActivitiesResult, number>({
-    client: autonolasBaseGraphClient,
+  return executeGraphQLQuery<DailyUniqueAgentsResult, number>({
+    client: REGISTRY_GRAPH_CLIENTS.base,
     chain: 'base',
     query: dailyActivitiesQuery,
     variables: {
@@ -34,7 +34,7 @@ const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null
     },
     source: 'contribute:daa',
     transform: (data) => {
-      const rows = data?.dailyActivities || [];
+      const rows = data?.dailyUniqueAgents || [];
       return Math.floor(calculate7DayAverage(rows, 'count'));
     },
   });

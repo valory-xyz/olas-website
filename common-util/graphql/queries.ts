@@ -763,14 +763,20 @@ export const totalBuildersQuery = gql`
   }
 `;
 
+// Daily active agents on Base, sourced from the service-registry subgraph's
+// `DailyUniqueAgents` entity. The previous target was an older standalone
+// "autonolas base" subgraph exposing a `DailyActivity` entity; it has been
+// retired, and this query was migrated to the entity introduced in the
+// service-registry subgraph by autonolas-subgraph-studio PR #17
+// ("Feature/Daa-subgraphs-with-agent-ids").
 export const dailyActivitiesQuery = gql`
-  query DailyActivities(
+  query DailyUniqueAgents(
     $first: Int
-    $where: DailyActivity_filter
-    $orderBy: DailyActivity_orderBy
+    $where: DailyUniqueAgents_filter
+    $orderBy: DailyUniqueAgents_orderBy
     $orderDirection: OrderDirection
   ) {
-    dailyActivities(
+    dailyUniqueAgents(
       first: $first
       where: $where
       orderBy: $orderBy
@@ -779,7 +785,6 @@ export const dailyActivitiesQuery = gql`
       id
       dayTimestamp
       count
-      services
     }
     _meta {
       hasIndexingErrors

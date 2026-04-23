@@ -63,7 +63,10 @@ export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 
 export const AUTONOLAS_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
-export const AUTONOLAS_BASE_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL;
+// Displayed on the DataPage as the source of daily-active-agents metrics.
+// Points at the Base service-registry subgraph (same data the cron now reads
+// from via REGISTRY_GRAPH_CLIENTS.base).
+export const AUTONOLAS_BASE_SUBGRAPH_URL = process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL;
 
 export const TOKENOMICS_SUBGRAPH_URLS = [
   {
