@@ -1,9 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { PEARL_YOU_URL_WITH_UTM_SOURCE, QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { StarterCards } from 'components/StarterCards';
 import { Button } from 'components/ui/button';
-import { ExternalLink, SubsiteLink } from 'components/ui/typography';
+import { SubsiteLink } from 'components/ui/typography';
 
 const list = [
   {
@@ -52,41 +52,6 @@ const list = [
       </Button>
     ),
   },
-  {
-    title: 'Run via Quickstart',
-    imgUrl: '/images/prediction-agents-page/quickstart.png',
-    content: (
-      <>
-        <ol className="list-decimal ml-6 mb-6">
-          <strong>
-            <li className="mb-2">Set up the required components.</li>
-            <li className="mb-2">
-              Run the{' '}
-              <ExternalLink href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}>
-                Quickstart
-              </ExternalLink>{' '}
-              script.
-            </li>
-            <li className="mb-2">Adjust the strategy to maximize performance.</li>
-          </strong>
-        </ol>
-        <p>
-          Once deployed, users can stake OLAS to earn rewards as the agent autonomously trades on
-          prediction markets.
-        </p>
-      </>
-    ),
-    button: (
-      <Button variant="outline" size="xl" asChild className="grow mt-6 max-md:w-full">
-        <ExternalLink
-          hideArrow
-          href={`${QUICKSTART_URL}?tab=readme-ov-file#olas-agents---quickstart`}
-        >
-          Run via Quickstart
-        </ExternalLink>
-      </Button>
-    ),
-  },
 ];
 
 export const GetStarted = () => (
@@ -94,7 +59,7 @@ export const GetStarted = () => (
     <div className="text-center max-w-[870px] mx-auto">
       <h2 className={`${SUB_HEADER_CLASS} mb-8 md:mb-16`}>Get Started with Omenstrat</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
         {list.map((item) => (
           <div key={item.title} className="flex">
             <StarterCards

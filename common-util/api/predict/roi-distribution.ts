@@ -240,10 +240,7 @@ const fetchAllTimeAgents = async (
   const SCALE = agentBlueprint === 'polystrat' ? BigInt('1000000000000') : 1n;
 
   // 1. Paginate traderAgents from predict subgraph (Settled Volume)
-  const agentMap = new Map<
-    string,
-    { payout: bigint; tradingCosts: bigint; totalBets: number }
-  >();
+  const agentMap = new Map<string, { payout: bigint; tradingCosts: bigint; totalBets: number }>();
   let skip = 0;
   while (true) {
     try {
@@ -668,8 +665,12 @@ const computeAgentBlueprintHistogram = (
       if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
       for (const [agentId, entry] of Object.entries(dayData.agents)) {
-        const prev: Totals =
-          agentTotals.get(agentId) ?? { profit: 0n, payout: 0n, mechRequests: 0, bets: 0 };
+        const prev: Totals = agentTotals.get(agentId) ?? {
+          profit: 0n,
+          payout: 0n,
+          mechRequests: 0,
+          bets: 0,
+        };
         prev.profit += BigInt(entry.profit);
         prev.payout += BigInt(entry.payout);
         prev.mechRequests += entry.mechRequests;
