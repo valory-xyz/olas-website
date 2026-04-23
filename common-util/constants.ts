@@ -25,11 +25,6 @@ export const WHITEPAPER_SUMMARY = '/documents/whitepaper/Whitepaper Summary v1.0
 export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
-export const DUNE_QUERY_URL = 'https://dune.com/queries';
-export const DUNE_TOTAL_PROTOCOL_REVENUE_URL = `${DUNE_QUERY_URL}/5409446/8836411`;
-
-export const TOTAL_PROTOCOL_REVENUE_FROM_FEES_ID = '5409446';
-
 export const X_OLAS_URL = 'https://x.com/autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';
 export const VALORY_URL = 'https://www.valory.xyz';

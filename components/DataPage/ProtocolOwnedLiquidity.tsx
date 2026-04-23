@@ -1,5 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { DUNE_TOTAL_PROTOCOL_REVENUE_URL, LIQUIDITY_SUBGRAPH_URLS } from 'common-util/constants';
+import { LIQUIDITY_SUBGRAPH_URLS } from 'common-util/constants';
 import { liquidityEthQuery, liquidityL2Query } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -70,8 +70,17 @@ export const ProtocolFeesInfo = () => {
         </p>
 
         <p>
-          This metric is currently sourced from{' '}
-          <ExternalLink href={DUNE_TOTAL_PROTOCOL_REVENUE_URL}>Dune Analytics</ExternalLink>.
+          Computed from the same liquidity subgraphs used for Total POL. On Ethereum the subgraph
+          stores <code>cumulativeProtocolFeesUsd</code> directly (already scaled by Treasury share).
+          On each L2 the cumulative token-denominated fees (<code>cumulativeFeesToken0</code>,{' '}
+          <code>cumulativeFeesToken1</code>) are converted to USD by pricing the paired (non-OLAS)
+          fee token directly and valuing the OLAS-denominated fee via the live pool ratio:{' '}
+          <code>
+            total_fees_usd = (fee_priced + fee_olas &times; reserve_priced / reserve_olas) &times;
+            price
+          </code>
+          . That total is then multiplied by the Treasury&apos;s pool share (
+          <code>bridged_LP_balance / total_supply</code>) to isolate the protocol-earned portion.
         </p>
       </div>
     </SectionWrapper>

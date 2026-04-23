@@ -76,7 +76,6 @@ yarn lint:fix       # Fix ESLint issues automatically
 All environment variables use `NEXT_PUBLIC_` prefix for client-side access. Key categories:
 
 - **CMS**: `NEXT_PUBLIC_API_URL` for Strapi backend
-- **Analytics**: `NEXT_PUBLIC_DUNE_API_KEY`
 - **Subgraphs**: Multiple URLs for different chains and contracts
   - Staking: `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`
   - Registry: `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`
@@ -128,6 +127,12 @@ Follow the pattern in `pages/api/main-metrics.js`:
 - Convert Wei to Ether: divide by `10**18` or use `formatWeiNumber()`
 - Aggregate cross-chain data by summing BigInt values, then format
 - Handle missing/null data gracefully - subgraphs may be temporarily unavailable
+- When aggregating USD values **across pools/chains with different token decimals**
+  (e.g. USDC=6, WETH=18) — not for single-chain calcs — **sanity-clamp the result
+  before publishing**. A decimals mismatch silently produces huge values rather
+  than errors. Return `null` with a fetchError on breach so `mergeWithFallback`
+  preserves the previous valid snapshot. See
+  `common-util/api/other-metrics/protocol.ts` for the pattern.
 
 ### Content Management
 
