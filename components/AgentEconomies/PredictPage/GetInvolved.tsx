@@ -12,7 +12,7 @@ const list = [
   },
   {
     title: 'For operators',
-    desc: 'Run Prediction agents using Pearl or manually via Quickstart.',
+    desc: 'Run Prediction agents using Pearl.',
     urlName: 'Explore paths',
     url: '/operate',
   },

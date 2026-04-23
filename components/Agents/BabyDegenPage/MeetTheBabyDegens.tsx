@@ -3,7 +3,7 @@ import {
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
-import { PEARL_YOU_URL_WITH_UTM_SOURCE, QUICKSTART_URL } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { H2, SubsiteLink } from 'components/ui/typography';
@@ -94,15 +94,6 @@ const ModiusAgent = () => (
           ))}
         </ul>
       </div>
-
-      {/* <div className="flex flex-wrap gap-4">
-        <Button variant="default" size="xl" className="max-md:grow w-fit">
-          <Link href="/pearl#download">Run via Pearl</Link>
-        </Button>
-        <Button variant="outline" size="xl" className="max-md:grow w-fit">
-          <a href={QUICKSTART_URL}>Run via Quickstart</a>
-        </Button>
-      </div> */}
     </div>
   </div>
 );
@@ -145,9 +136,6 @@ const OptimusAgent = () => (
           >
             Run via Pearl
           </SubsiteLink>
-        </Button>
-        <Button variant="outline" size="xl" className="max-md:grow w-fit">
-          <a href={QUICKSTART_URL}>Run via Quickstart</a>
         </Button>
       </div>
     </div>

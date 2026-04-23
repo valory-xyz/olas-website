@@ -60,7 +60,6 @@ export const ACCELERATOR_APPLY_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSed_jc5XNlnib0m9yG2IRo8_PKFNPwp0DFTdbph4LpR9E9uhg/viewform';
 
 export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
-export const QUICKSTART_URL = `${VALORY_GIT_URL}/quickstart`;
 
 export const AUTONOLAS_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 

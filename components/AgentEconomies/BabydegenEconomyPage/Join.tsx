@@ -27,11 +27,6 @@ export const Join = () => (
             Run BabyDegen Agent via Pearl
           </SubsiteLink>
         </Button>
-        {/* <Button variant="outline" size="lg" asChild>
-          <ExternalLink hideArrow href={QUICKSTART_URL} className="text-black">
-            Run Optimus via Quickstart
-          </ExternalLink>
-        </Button> */}
       </div>
     </Card>
   </SectionWrapper>
