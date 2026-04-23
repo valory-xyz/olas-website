@@ -133,11 +133,6 @@ export const autonolasGraphClient = new GraphQLClient(
   requestConfig
 );
 
-export const autonolasBaseGraphClient = new GraphQLClient(
-  process.env.NEXT_PUBLIC_AUTONOLAS_BASE_SUBGRAPH_URL,
-  requestConfig
-);
-
 export const LIQUIDITY_GRAPH_CLIENTS = {
   ethereum: new GraphQLClient(
     process.env.NEXT_PUBLIC_LIQUIDITY_ETHEREUM_SUBGRAPH_URL,

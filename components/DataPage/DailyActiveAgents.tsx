@@ -1,15 +1,14 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  AUTONOLAS_BASE_SUBGRAPH_URL,
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
   REGISTRY_SUBGRAPH_URLS,
 } from 'common-util/constants';
 import {
-  dailyActivitiesQuery,
   dailyAgentPerformancesQuery,
   dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
+  dailyContributePerformancesQuery,
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
@@ -237,25 +236,25 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique agent-41 services received ETH each day on Base. The{' '}
-            <strong>count</strong> reflects the number of unique services that were active within
-            the UTC day window.
+            Tracks unique multisigs active each day for Contribute agents on <strong>Base</strong>,
+            scoped by <code>agentId = 41</code>. The <strong>active multisig count</strong> reflects
+            multisigs that performed at least one on-chain interaction attributed to the Contribute
+            agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Activities Query</h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            <ExternalLink
-              href={getSubgraphExplorerUrl(AUTONOLAS_BASE_SUBGRAPH_URL)}
-              className="mr-2"
-            >
-              Base
-            </ExternalLink>
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </ExternalLink>
+            ))}
           </p>
-          <CodeSnippet>{dailyActivitiesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyContributePerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>

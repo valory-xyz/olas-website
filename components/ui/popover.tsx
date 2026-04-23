@@ -13,7 +13,7 @@ type PopoverProps = {
 
 export const Popover = ({
   children,
-  text = undefined,
+  text,
   align = 'center',
   side = 'top',
   className = '',

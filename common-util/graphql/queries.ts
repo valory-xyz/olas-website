@@ -763,23 +763,22 @@ export const totalBuildersQuery = gql`
   }
 `;
 
-export const dailyActivitiesQuery = gql`
-  query DailyActivities(
-    $first: Int
-    $where: DailyActivity_filter
-    $orderBy: DailyActivity_orderBy
-    $orderDirection: OrderDirection
-  ) {
-    dailyActivities(
-      first: $first
-      where: $where
-      orderBy: $orderBy
-      orderDirection: $orderDirection
+export const dailyContributePerformancesQuery = gql`
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 41 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
     ) {
       id
       dayTimestamp
-      count
-      services
+      activeMultisigCount
     }
     _meta {
       hasIndexingErrors
