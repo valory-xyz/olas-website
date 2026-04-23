@@ -8,9 +8,9 @@ import {
   dailyAgentPerformancesQuery,
   dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
+  dailyContributePerformancesQuery,
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
-  dailyUniqueAgentsQuery,
 } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -236,15 +236,15 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks the number of unique Olas agents that executed at least one multisig transaction
-            each day on Base, sourced from the Base service-registry subgraph&apos;s{' '}
-            <code>DailyUniqueAgents</code> entity. The <strong>count</strong> reflects unique agent
-            IDs active within the UTC day window, across all services.
+            Tracks unique multisigs active each day for Contribute agents on <strong>Base</strong>,
+            scoped by <code>agentId = 41</code>. The <strong>active multisig count</strong> reflects
+            multisigs that performed at least one on-chain interaction attributed to the Contribute
+            agent within the UTC day window.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Unique Agents Query</h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -254,7 +254,7 @@ export const DailyActiveAgentsInfo = () => {
               </ExternalLink>
             ))}
           </p>
-          <CodeSnippet>{dailyUniqueAgentsQuery}</CodeSnippet>
+          <CodeSnippet>{dailyContributePerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>

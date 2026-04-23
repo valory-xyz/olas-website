@@ -5,7 +5,7 @@ import {
   executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { dailyUniqueAgentsQuery } from 'common-util/graphql/queries';
+import { dailyContributePerformancesQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -15,27 +15,23 @@ const LIMIT = 1000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
-type DailyUniqueAgentsResult = WithMeta<{
-  dailyUniqueAgents: { count: number }[];
+type DailyContributePerformancesResult = WithMeta<{
+  dailyAgentPerformances: { activeMultisigCount: number }[];
 }>;
 
 const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
-  return executeGraphQLQuery<DailyUniqueAgentsResult, number>({
+  return executeGraphQLQuery<DailyContributePerformancesResult, number>({
     client: REGISTRY_GRAPH_CLIENTS.base,
     chain: 'base',
-    query: dailyUniqueAgentsQuery,
+    query: dailyContributePerformancesQuery,
     variables: {
-      where: {
-        dayTimestamp_gt: String(getMidnightUtcTimestampDaysAgo(8)),
-        dayTimestamp_lt: String(getMidnightUtcTimestampDaysAgo(0)),
-      },
-      orderBy: 'dayTimestamp',
-      orderDirection: 'desc',
+      timestamp_gt: getMidnightUtcTimestampDaysAgo(8),
+      timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
     },
     source: 'contribute:daa',
     transform: (data) => {
-      const rows = data?.dailyUniqueAgents || [];
-      return Math.floor(calculate7DayAverage(rows, 'count'));
+      const rows = data?.dailyAgentPerformances ?? [];
+      return Math.floor(calculate7DayAverage(rows, 'activeMultisigCount'));
     },
   });
 };

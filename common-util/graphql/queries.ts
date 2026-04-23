@@ -763,28 +763,33 @@ export const totalBuildersQuery = gql`
   }
 `;
 
-// Daily active agents on Base, sourced from the service-registry subgraph's
-// `DailyUniqueAgents` entity. The previous target was an older standalone
-// "autonolas base" subgraph exposing a `DailyActivity` entity; it has been
-// retired, and this query was migrated to the entity introduced in the
-// service-registry subgraph by autonolas-subgraph-studio PR #17
-// ("Feature/Daa-subgraphs-with-agent-ids").
-export const dailyUniqueAgentsQuery = gql`
-  query DailyUniqueAgents(
-    $first: Int
-    $where: DailyUniqueAgents_filter
-    $orderBy: DailyUniqueAgents_orderBy
-    $orderDirection: OrderDirection
-  ) {
-    dailyUniqueAgents(
-      first: $first
-      where: $where
-      orderBy: $orderBy
-      orderDirection: $orderDirection
+// Contribute Daily Active Agents — agent-41 scoped performance on Base.
+//
+// Sourced from the service-registry subgraph's `DailyAgentPerformance` entity
+// (introduced by autonolas-subgraph-studio PR #17), filtered to agentId=41
+// which is the Contribute service's agent id. `activeMultisigCount` is the
+// per-day count of unique multisigs that executed at least one transaction
+// attributed to that agent. Mirrors the shape of the agentsfun (id=43) and
+// mech agent-performance queries.
+//
+// The previous target was an older standalone "autonolas base" subgraph
+// exposing a `DailyActivity` entity; it has been retired.
+export const dailyContributePerformancesQuery = gql`
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 41 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
     ) {
       id
       dayTimestamp
-      count
+      activeMultisigCount
     }
     _meta {
       hasIndexingErrors
