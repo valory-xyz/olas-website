@@ -763,17 +763,6 @@ export const totalBuildersQuery = gql`
   }
 `;
 
-// Contribute Daily Active Agents — agent-41 scoped performance on Base.
-//
-// Sourced from the service-registry subgraph's `DailyAgentPerformance` entity
-// (introduced by autonolas-subgraph-studio PR #17), filtered to agentId=41
-// which is the Contribute service's agent id. `activeMultisigCount` is the
-// per-day count of unique multisigs that executed at least one transaction
-// attributed to that agent. Mirrors the shape of the agentsfun (id=43) and
-// mech agent-performance queries.
-//
-// The previous target was an older standalone "autonolas base" subgraph
-// exposing a `DailyActivity` entity; it has been retired.
 export const dailyContributePerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
