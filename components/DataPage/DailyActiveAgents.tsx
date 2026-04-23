@@ -1,17 +1,16 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
-  AUTONOLAS_BASE_SUBGRAPH_URL,
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
   REGISTRY_SUBGRAPH_URLS,
 } from 'common-util/constants';
 import {
-  dailyActivitiesQuery,
   dailyAgentPerformancesQuery,
   dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
+  dailyUniqueAgentsQuery,
 } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
@@ -237,25 +236,25 @@ export const DailyActiveAgentsInfo = () => {
 
         <div className="space-y-6 mt-4">
           <p>
-            Tracks how many unique agent-41 services received ETH each day on Base. The{' '}
-            <strong>count</strong> reflects the number of unique services that were active within
-            the UTC day window.
+            Tracks the number of unique Olas agents that executed at least one multisig transaction
+            each day on Base, sourced from the Base service-registry subgraph&apos;s{' '}
+            <code>DailyUniqueAgents</code> entity. The <strong>count</strong> reflects unique agent
+            IDs active within the UTC day window, across all services.
           </p>
 
           <p>The following query is used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Activities Query</h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Unique Agents Query</h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            <ExternalLink
-              href={getSubgraphExplorerUrl(AUTONOLAS_BASE_SUBGRAPH_URL)}
-              className="mr-2"
-            >
-              Base
-            </ExternalLink>
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </ExternalLink>
+            ))}
           </p>
-          <CodeSnippet>{dailyActivitiesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyUniqueAgentsQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>

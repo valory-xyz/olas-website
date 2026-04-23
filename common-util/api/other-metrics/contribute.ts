@@ -5,7 +5,7 @@ import {
   executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { dailyActivitiesQuery } from 'common-util/graphql/queries';
+import { dailyUniqueAgentsQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -23,7 +23,7 @@ const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null
   return executeGraphQLQuery<DailyUniqueAgentsResult, number>({
     client: REGISTRY_GRAPH_CLIENTS.base,
     chain: 'base',
-    query: dailyActivitiesQuery,
+    query: dailyUniqueAgentsQuery,
     variables: {
       where: {
         dayTimestamp_gt: String(getMidnightUtcTimestampDaysAgo(8)),

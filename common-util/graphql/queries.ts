@@ -769,7 +769,7 @@ export const totalBuildersQuery = gql`
 // retired, and this query was migrated to the entity introduced in the
 // service-registry subgraph by autonolas-subgraph-studio PR #17
 // ("Feature/Daa-subgraphs-with-agent-ids").
-export const dailyActivitiesQuery = gql`
+export const dailyUniqueAgentsQuery = gql`
   query DailyUniqueAgents(
     $first: Int
     $where: DailyUniqueAgents_filter
