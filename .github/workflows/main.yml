@@ -7,6 +7,13 @@ on:
     branches:
       - main
 
+# Least-privilege default for GITHUB_TOKEN: every job in this workflow only
+# needs to read the repo (checkout + install + run local tooling). Any job
+# that later needs to write (e.g. commenting on PRs, creating releases) must
+# opt in explicitly at the job level.
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
