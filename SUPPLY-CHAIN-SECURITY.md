@@ -125,7 +125,7 @@ Before adding a new direct dependency:
 - [x] Declare Vercel install command as `yarn install --frozen-lockfile` in [`vercel.json`](./vercel.json) (overrides any dashboard setting).
 - [x] Stand up `.github/workflows/` with a `lint` job, an `audit` job (`yarn audit --groups dependencies` with bitmask gating for Yarn 1.x, **blocking on high/critical**), and a `lockfile-lint` job — all SHA-pinned. See [.github/workflows/main.yml](./.github/workflows/main.yml).
 - [x] Migrate from Next.js 14.2.x to 15.x (React 18 → 19, `outputFileTracingIncludes` graduated out of `experimental`, `outputFileTracingRoot` pinned). Cleared the last 4 high advisories.
-- [ ] Audit Vercel project env-var scoping in the Vercel dashboard: confirm `DUNE_API_KEY`, `BLOB_READ_WRITE_TOKEN`, and all `*_RPC` are **runtime-only**, not build-time.
+- [ ] **Audit Vercel env-var scoping — highest-value remaining item.** Every secret enumerated in [§7](#7-secrets-hygiene-in-the-build-environment) (`DUNE_API_KEY`, `BLOB_READ_WRITE_TOKEN`, 8× EVM `*_RPC`, `SOLANA_RPC`) must be marked **runtime-only** in the Vercel dashboard, not build-time. Build-time exposure is exactly what a compromised `postinstall` script exfiltrates, so this is the single biggest gap between policy-on-paper and policy-in-practice. Track under a GitHub issue and link it here when opened.
 
 ## References
 

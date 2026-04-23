@@ -1,4 +1,3 @@
-const path = require('path');
 const { withPlausibleProxy } = require('next-plausible');
 
 module.exports = withPlausibleProxy()({
@@ -9,7 +8,7 @@ module.exports = withPlausibleProxy()({
   // outputFileTracingRoot: pin the workspace root so Next doesn't climb up
   // and pick up an unrelated parent yarn.lock (see Next 15 workspace-root
   // inference warning).
-  outputFileTracingRoot: path.join(__dirname),
+  outputFileTracingRoot: __dirname,
   // Graduated from `experimental` to stable in Next 15.
   outputFileTracingIncludes: {
     '/api/og/[[...slug]]': ['./public/fonts/**', './public/images/og/**'],

@@ -79,6 +79,11 @@ jobs:
     # list in sync with every mandatory job above — branch protection requires
     # only this context, so adding/removing a mandatory job is a workflow
     # edit, not a branch-protection edit.
+    #
+    # The step below treats `failure`, `cancelled`, AND `skipped` as non-pass.
+    # None of the jobs above use `if:` conditions today, so they cannot skip —
+    # but if one is ever added, this guard prevents a `skipped` result from
+    # silently satisfying the required status check.
     name: All checks passed
     needs: [lint, audit, lockfile-lint]
     if: always()
@@ -87,7 +92,8 @@ jobs:
       - name: Verify all dependencies succeeded
         run: |
           if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]] || \
-             [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+             [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]] || \
+             [[ "${{ contains(needs.*.result, 'skipped') }}" == "true" ]]; then
             echo "::error::One or more required jobs did not succeed"
             exit 1
           fi
