@@ -151,7 +151,7 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
             Polystrat Partial ROI Distribution
           </h3>
           <WarningIndicator>
-            <p>Due to recent updates on Polymarket this metric temporarily shows incorrect values</p>
+            <p>Due to recent updates on Polymarket this chart temporarily shows incorrect values</p>
           </WarningIndicator>
         </div>
 
