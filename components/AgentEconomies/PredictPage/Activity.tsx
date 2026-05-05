@@ -1,7 +1,7 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
+import { StaleIndicator, StaleMetricContent, WarningIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
@@ -215,7 +215,16 @@ const PerformanceBubble = ({ platformMetrics, title, imgSrc, id, platform }) => 
                   {metric.value || '--'}
                 </span>
               )}
-              <StaleIndicator status={metric.status} />
+              {platform === 'polystrat' && metric.id === 'roi' ? (
+                <WarningIndicator>
+                  <p>
+                    Due to recent updates on Polymarket this metric temporarily shows incorrect
+                    values
+                  </p>
+                </WarningIndicator>
+              ) : (
+                <StaleIndicator status={metric.status} />
+              )}
             </div>
           </div>
         ))}

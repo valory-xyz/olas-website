@@ -2,6 +2,7 @@
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
+import { WarningIndicator } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -145,7 +146,14 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
     >
       {/* Header row */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-        <h3 className="text-lg font-semibold text-gray-900">Polystrat Partial ROI Distribution</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Polystrat Partial ROI Distribution
+          </h3>
+          <WarningIndicator>
+            <p>Due to recent updates on Polymarket this chart temporarily shows incorrect values</p>
+          </WarningIndicator>
+        </div>
 
         <Tabs
           items={TIME_RANGES.map(({ label }) => ({ key: label, label }))}
