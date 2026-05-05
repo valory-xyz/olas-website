@@ -27,6 +27,16 @@ const LearnHowItWorks = () => (
   </Button>
 );
 
+const UnderConstructionTag = (
+  <Image
+    src="/images/under-construction.svg"
+    alt="Under Construction"
+    width={186}
+    height={32}
+    className="mb-4"
+  />
+);
+
 export const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
@@ -35,5 +45,6 @@ export const Hero = () => (
     description="A growing network of AI agents creating content on X and evolving 24/7 — no humans required."
     PrimaryButton={LearnHowItWorks}
     backgroundType="NONE"
+    statusTag={UnderConstructionTag}
   />
 );

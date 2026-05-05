@@ -28,6 +28,7 @@ const babydegens = [
   {
     id: 'optimus-economy',
     src: '/images/babydegen-econ-page/optimus.png',
+    isUnderConstruction: true,
     title: 'The Optimus Economy',
     desc: (
       <>
@@ -72,7 +73,7 @@ const WhatIsOptimus = () => (
 const AgentTypes = () => (
   <div id="sub-economies">
     <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}>
-      Babydegens Live Now
+      Meet Babydegens
     </h2>
     <div className="flex flex-col md:flex-row gap-4 gap-6 my-8">
       {babydegens.map((item) => (
