@@ -1,9 +1,6 @@
 import { MAIN_TITLE_CLASS, TEXT_MEDIUM_LIGHT_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { NotAcceptingAlert } from './NotAcceptingAlert';
 
@@ -24,13 +21,13 @@ export const Hero = () => (
         <NotAcceptingAlert className="mx-auto mt-6" />
       </div>
 
-      <div className="mx-auto w-fit mt-12">
+      {/* <div className="mx-auto w-fit mt-12">
         <Button variant="default" size="xl" asChild>
           <Link href={ACCELERATOR_APPLY_URL} target="_blank" rel="noopener noreferrer">
             Apply now
           </Link>
         </Button>
-      </div>
+      </div> */}
     </SectionWrapper>
     <div className="w-full text-center bg-black text-white py-3">
       Sponsored by
