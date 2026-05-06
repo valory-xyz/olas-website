@@ -5,6 +5,8 @@ import { Button } from 'components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { NotAcceptingAlert } from './NotAcceptingAlert';
+
 export const Hero = () => (
   <>
     <SectionWrapper backgroundType="SUBTLE_GRADIENT">
@@ -18,6 +20,8 @@ export const Hero = () => (
         <div className={TEXT_SMALL_CLASS}>
           Build AI agents for Pearl: The AI Agent App Store & get paid.
         </div>
+
+        <NotAcceptingAlert className="mx-auto mt-6" />
       </div>
 
       <div className="mx-auto w-fit mt-12">
