@@ -1,4 +1,3 @@
-import { AgentsFunMetrics } from 'components/AgentEconomies/AgentsFunPage/AgentsFunMetrics';
 import { GetInvolved } from 'components/AgentEconomies/AgentsFunPage/GetInvolved';
 import { Hero } from 'components/AgentEconomies/AgentsFunPage/Hero';
 import { HowTheEconomyWorks } from 'components/AgentEconomies/AgentsFunPage/HowItWorks';
@@ -9,6 +8,7 @@ import Meta from 'components/Meta';
 import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
+import { AgentsFunMetrics } from 'components/AgentEconomies/AgentsFunPage/AgentsFunMetrics';
 
 const AgentsFun = ({ metrics }) => (
   <PageWrapper>

@@ -25,11 +25,22 @@ const StepIntoDefAI = (
   </div>
 );
 
+const UnderConstructionTag = (
+  <Image
+    src="/images/under-construction.svg"
+    alt="Under Construction"
+    width={186}
+    height={32}
+    className="mb-4"
+  />
+);
+
 export const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
     pageName="BABY DEGEN"
     title={StepIntoDefAI}
     PrimaryButton={ExploreBabydegens}
+    statusTag={UnderConstructionTag}
   />
 );

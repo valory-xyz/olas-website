@@ -3,10 +3,8 @@ import {
   SUB_HEADER_LG_CLASS,
   TEXT_MEDIUM_LIGHT_CLASS,
 } from 'common-util/classes';
-import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Button } from 'components/ui/button';
-import { H2, SubsiteLink } from 'components/ui/typography';
+import { H2 } from 'components/ui/typography';
 import Image from 'next/image';
 
 const TaggedItem = ({ item }) => (
@@ -108,6 +106,12 @@ const OptimusAgent = () => (
       className="mb-auto"
     />
     <div className="flex flex-col gap-4">
+      <Image
+        src="/images/under-construction.svg"
+        alt="Under Construction"
+        width={186}
+        height={32}
+      />
       <div className={TEXT_MEDIUM_LIGHT_CLASS}>OPTIMUS AGENT</div>
       <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
       <p>
@@ -128,7 +132,7 @@ const OptimusAgent = () => (
         </ul>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      {/* <div className="flex flex-wrap gap-4">
         <Button variant="default" size="xl" className="max-md:grow w-fit">
           <SubsiteLink
             href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=babydegen&utm_content=babydegen-button`}
@@ -137,7 +141,7 @@ const OptimusAgent = () => (
             Run via Pearl
           </SubsiteLink>
         </Button>
-      </div>
+      </div> */}
     </div>
   </div>
 );

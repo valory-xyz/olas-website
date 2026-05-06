@@ -38,8 +38,18 @@ export const AvailableAgents = () => {
                     className="w-[80px] h-[80px]"
                   />
                   <div className="flex flex-col">
-                    <div className="text-lg font-semibold inline-flex place-items-center gap-1">
-                      {agent.title} <ArrowUpRightIcon size={18} />
+                    <div className="text-lg font-semibold inline-flex flex-wrap place-items-center gap-x-2 gap-y-1 w-full justify-between mb-1">
+                      <span className="inline-flex place-items-center gap-1">
+                        {agent.title} <ArrowUpRightIcon size={18} />
+                      </span>
+                      {agent.isUnderConstruction && (
+                        <Image
+                          src="/images/under-construction.svg"
+                          alt="Under Construction"
+                          width={140}
+                          height={24}
+                        />
+                      )}
                     </div>
                     <p className="text-slate-600">{agent.description}</p>
                   </div>
@@ -55,8 +65,18 @@ export const AvailableAgents = () => {
                     height={80}
                     className="w-[80px] h-[80px]"
                   />
-                  <div className="flex flex-col">
-                    <p className="text-lg font-semibold">{agent.title}</p>
+                  <div className="flex flex-col w-full">
+                    <div className="text-lg font-semibold inline-flex flex-wrap place-items-center gap-x-2 gap-y-1 w-full justify-between mb-1">
+                      <span>{agent.title}</span>
+                      {agent.isUnderConstruction && (
+                        <Image
+                          src="/images/under-construction.svg"
+                          alt="Under Construction"
+                          width={140}
+                          height={24}
+                        />
+                      )}
+                    </div>
                     <p className="text-slate-600">{agent.description}</p>
                   </div>
                 </Card>

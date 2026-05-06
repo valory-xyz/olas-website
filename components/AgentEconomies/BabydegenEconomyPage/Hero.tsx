@@ -22,9 +22,19 @@ const RunAnAgent = () => (
 );
 
 const LearnHowItWorks = () => (
-  <Button variant="ghostPrimary" size="xl" asChild className="grow">
+  <Button variant="outline" size="xl" asChild>
     <Link href="#about">Learn How it Works</Link>
   </Button>
+);
+
+const UnderConstructionTag = (
+  <Image
+    src="/images/under-construction.svg"
+    alt="Under Construction"
+    width={186}
+    height={32}
+    className="mb-4"
+  />
 );
 
 export const Hero = () => (
@@ -35,7 +45,7 @@ export const Hero = () => (
     description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
           24/7 without human input."
-    PrimaryButton={RunAnAgent}
-    SecondaryButton={LearnHowItWorks}
+    PrimaryButton={LearnHowItWorks}
+    statusTag={UnderConstructionTag}
   />
 );
