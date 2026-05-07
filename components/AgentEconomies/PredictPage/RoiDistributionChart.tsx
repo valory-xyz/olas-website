@@ -88,6 +88,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
 
 type RoiDistributionChartProps = {
   data: RoiDistributionData | null;
+  platform: 'polystrat' | 'omenstrat';
   className?: string;
   id?: string;
 };
@@ -98,38 +99,44 @@ const safeMidpoint = (min: number, max: number) => {
   return (min + max) / 2;
 };
 
-export const RoiDistributionChart = ({ data, className, id }: RoiDistributionChartProps) => {
+export const RoiDistributionChart = ({
+  data,
+  platform,
+  className,
+  id,
+}: RoiDistributionChartProps) => {
   const [activeRange, setActiveRange] = useState<TimeRange>('7D');
 
   const activeKey = TIME_RANGES.find((range) => range.label === activeRange)?.key ?? 'd7';
   const bins = data?.[activeKey] ?? null;
 
+  const isOmen = platform === 'omenstrat';
+  const datasetMeta = isOmen
+    ? {
+        label: 'Omenstrat',
+        background: OMENSTRAT_COLOR,
+        border: OMENSTRAT_COLOR_BORDER,
+        pick: (bin: BinData) => bin.omenstrat,
+      }
+    : {
+        label: 'Polystrat',
+        background: POLYSTRAT_COLOR,
+        border: POLYSTRAT_COLOR_BORDER,
+        pick: (bin: BinData) => bin.polystrat,
+      };
+
   const chartData = bins
     ? {
         datasets: [
-          // {
-          //   label: 'Omenstrat',
-          //   data: bins.map((bin) => ({
-          //     x: safeMidpoint(bin.min, bin.max),
-          //     y: bin.omenstrat,
-          //     range: bin.label,
-          //   })),
-          //   backgroundColor: OMENSTRAT_COLOR,
-          //   borderColor: OMENSTRAT_COLOR_BORDER,
-          //   borderWidth: 1,
-          //   borderRadius: 2,
-          //   barPercentage: 0.9,
-          //   categoryPercentage: 0.85,
-          // },
           {
-            label: 'Polystrat',
+            label: datasetMeta.label,
             data: bins.map((bin) => ({
               x: safeMidpoint(bin.min, bin.max),
-              y: bin.polystrat,
+              y: datasetMeta.pick(bin),
               range: bin.label,
             })),
-            backgroundColor: POLYSTRAT_COLOR,
-            borderColor: POLYSTRAT_COLOR_BORDER,
+            backgroundColor: datasetMeta.background,
+            borderColor: datasetMeta.border,
             borderWidth: 1,
             borderRadius: 2,
             barPercentage: 0.9,
@@ -148,11 +155,15 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-gray-900">
-            Polystrat Partial ROI Distribution
+            {datasetMeta.label} Partial ROI Distribution
           </h3>
-          <WarningIndicator>
-            <p>Due to recent updates on Polymarket this chart temporarily shows incorrect values</p>
-          </WarningIndicator>
+          {!isOmen && (
+            <WarningIndicator>
+              <p>
+                Due to recent updates on Polymarket this chart temporarily shows incorrect values
+              </p>
+            </WarningIndicator>
+          )}
         </div>
 
         <Tabs
@@ -161,12 +172,6 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
           onChange={(key) => setActiveRange(key as TimeRange)}
         />
       </div>
-
-      {/* Legend row */}
-      {/* <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
-        <LegendItem color={`bg-[#A755F7]`} label="Omenstrat" />
-        <LegendItem color={`bg-[#4D74FF]`} label="Polystrat" />
-      </div> */}
 
       {/* Chart area */}
       {chartData ? (

@@ -1,0 +1,230 @@
+'use client';
+
+import { Card } from 'components/ui/card';
+import { Popover } from 'components/ui/popover';
+import { StaleIndicator, StaleMetricContent, WarningIndicator } from 'components/ui/StaleIndicator';
+import { Tabs } from 'components/ui/tabs';
+import { Link } from 'components/ui/typography';
+import { isNil } from 'lodash';
+import Image from 'next/image';
+import { ReactNode, useState } from 'react';
+
+export type Platform = 'polystrat' | 'omenstrat';
+
+type MetricStatus = { stale?: boolean } | undefined;
+
+export type PlatformMetrics = {
+  apr: number | null;
+  aprStatus: MetricStatus;
+  partialRoi: number | null;
+  finalRoi: number | null;
+  roiStatus: MetricStatus;
+  successRate: number | null;
+  successRateStatus: MetricStatus;
+  traderTxs: number | null;
+  mechTxs: number | null;
+  marketCreatorTxs?: number | null;
+  txsStatus: MetricStatus;
+};
+
+type PlatformActivitySectionProps = {
+  metrics: { polystrat: PlatformMetrics; omenstrat: PlatformMetrics };
+  platform: Platform;
+  onPlatformChange: (next: Platform) => void;
+  className?: string;
+};
+
+const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
+  {
+    key: 'omenstrat',
+    label: 'Omenstrat',
+    icon: '/images/predict-page/omenstrat-icon.png',
+  },
+  {
+    key: 'polystrat',
+    label: 'Polystrat',
+    icon: '/images/predict-page/polystrat-icon.png',
+  },
+];
+
+const TIME_RANGE_TABS = [
+  { key: '7d', label: '7D', disabled: true, tooltip: 'Coming soon' },
+  { key: '30d', label: '30D', disabled: true, tooltip: 'Coming soon' },
+  { key: '90d', label: '90D', disabled: true, tooltip: 'Coming soon' },
+  { key: 'max', label: 'Max' },
+];
+
+type MetricItemProps = {
+  label: ReactNode;
+  value: string | null;
+  status?: MetricStatus;
+  href?: string;
+  warning?: ReactNode;
+};
+
+const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) => {
+  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : ''}`;
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="text-sm text-slate-500">{label}</div>
+      <div className="flex items-center gap-2">
+        {href ? (
+          <Link href={href} className="text-2xl font-bold">
+            <span className={status?.stale ? 'text-gray-400' : ''}>{value || '--'}</span>
+          </Link>
+        ) : (
+          <span className={valueClass}>{value || '--'}</span>
+        )}
+        {warning ? (
+          <WarningIndicator>{warning}</WarningIndicator>
+        ) : (
+          <StaleIndicator status={status} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const PlatformSwitcher = ({
+  platform,
+  onChange,
+}: {
+  platform: Platform;
+  onChange: (next: Platform) => void;
+}) => (
+  <div className="flex items-stretch gap-1 bg-white border border-slate-200 rounded-xl p-1">
+    {PLATFORM_TABS.map(({ key, label, icon }) => {
+      const isActive = platform === key;
+      return (
+        <button
+          key={key}
+          type="button"
+          onClick={() => onChange(key)}
+          className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors ${
+            isActive ? 'bg-slate-200 text-gray-900' : 'text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          <Image src={icon} alt="" width={28} height={28} />
+          <span>
+            {label}
+            <span className="hidden sm:inline"> Agent Economy</span>
+          </span>
+        </button>
+      );
+    })}
+  </div>
+);
+
+export const PlatformActivitySection = ({
+  metrics,
+  platform,
+  onPlatformChange,
+  className,
+}: PlatformActivitySectionProps) => {
+  const [timeRange, setTimeRange] = useState('max');
+  const m = metrics[platform];
+
+  const performanceItems: MetricItemProps[] = [
+    {
+      label: (
+        <span className="flex items-center gap-2">
+          Total ROI - Average{' '}
+          {!isNil(m.partialRoi) && (
+            <Popover>
+              <div className="flex flex-col max-w-[320px] gap-4 text-base">
+                <p className="text-gray-500">
+                  Total ROI shows your agent&apos;s overall earnings, including profits from
+                  predictions and staking rewards, minus all related costs.
+                </p>
+                <p className="text-gray-500">
+                  Partial ROI reflects only prediction performance, excluding staking rewards.
+                </p>
+                <div className="flex justify-between">
+                  <span className="text-gray-900">Partial ROI</span>
+                  <span className={m.roiStatus?.stale ? 'text-gray-400' : ''}>
+                    {`${m.partialRoi}%`}
+                  </span>
+                </div>
+                <div className="text-sm">
+                  <StaleMetricContent status={m.roiStatus} />
+                </div>
+              </div>
+            </Popover>
+          )}
+        </span>
+      ),
+      value: isNil(m.finalRoi) ? null : `${m.finalRoi}%`,
+      status: m.roiStatus,
+      href: `/data#${platform}-predict-roi`,
+      warning:
+        platform === 'polystrat' ? (
+          <p>Due to recent updates on Polymarket this metric temporarily shows incorrect values</p>
+        ) : undefined,
+    },
+    {
+      label: 'OLAS Staking APR',
+      value: isNil(m.apr) ? null : `${m.apr}%`,
+      status: m.aprStatus,
+      href: `/data#${platform}-predict-apr`,
+    },
+    {
+      label: 'Prediction Accuracy - Average (Last 10K Trades)',
+      value: isNil(m.successRate) ? null : `${m.successRate}%`,
+      status: m.successRateStatus,
+      href: `/data#${platform}-predict-accuracy`,
+    },
+  ];
+
+  const lifetimeItems: MetricItemProps[] = [
+    {
+      label: 'Traders',
+      value: isNil(m.traderTxs) ? null : m.traderTxs.toLocaleString(),
+      status: m.txsStatus,
+      href: `/data#${platform}-predict-transactions-by-type`,
+    },
+    {
+      label: 'Mechs: Prediction Brokers',
+      value: isNil(m.mechTxs) ? null : m.mechTxs.toLocaleString(),
+      status: m.txsStatus,
+      href: `/data#${platform}-predict-transactions-by-type`,
+    },
+  ];
+
+  if (platform === 'omenstrat' && m.marketCreatorTxs !== undefined) {
+    lifetimeItems.push({
+      label: 'Market Creators & Closers',
+      value: isNil(m.marketCreatorTxs) ? null : m.marketCreatorTxs.toLocaleString(),
+      status: m.txsStatus,
+      href: `/data#${platform}-predict-transactions-by-type`,
+    });
+  }
+
+  return (
+    <div className={`flex flex-col gap-6 ${className ?? ''}`}>
+      <PlatformSwitcher platform={platform} onChange={onPlatformChange} />
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="text-lg font-semibold">Performance</div>
+            <Tabs items={TIME_RANGE_TABS} activeKey={timeRange} onChange={setTimeRange} />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {performanceItems.map((item, i) => (
+              <MetricItem key={i} {...item} />
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
+          <div className="text-lg font-semibold">Transactions by Agent Type</div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {lifetimeItems.map((item, i) => (
+              <MetricItem key={i} {...item} />
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+};

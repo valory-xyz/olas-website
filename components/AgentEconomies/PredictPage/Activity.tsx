@@ -1,15 +1,27 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { StaleIndicator, StaleMetricContent, WarningIndicator } from 'components/ui/StaleIndicator';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { Platform, PlatformActivitySection, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
 import { ToolAccuracyTable } from './ToolAccuracyTable';
 
-const processPredictMetrics = (metrics: any) => {
+const processPredictMetrics = (
+  metrics: any
+): {
+  omenstrat: PlatformMetrics & {
+    dailyActiveAgents: number | null;
+    dailyActiveAgentsStatus: any;
+  };
+  polystrat: PlatformMetrics & {
+    dailyActiveAgents: number | null;
+    dailyActiveAgentsStatus: any;
+  };
+} => {
   if (!metrics) {
     return {
       omenstrat: {
@@ -82,186 +94,6 @@ const processPredictMetrics = (metrics: any) => {
   };
 };
 
-const PerformanceBubble = ({ platformMetrics, title, imgSrc, id, platform }) => {
-  const bubbleData = useMemo(() => {
-    const performanceMetrics = [
-      {
-        id: 'roi',
-        subText: (
-          <span className="flex items-center gap-2">
-            Total ROI - Average{' '}
-            {!isNil(platformMetrics.partialRoi) && (
-              <Popover>
-                <div className="flex flex-col max-w-[320px] gap-4 text-base">
-                  <p className="text-gray-500">
-                    Total ROI shows your agent&apos;s overall earnings, including profits from
-                    predictions and staking rewards, minus all related costs.
-                  </p>
-                  <p className="text-gray-500">
-                    Partial ROI reflects only prediction performance, excluding staking rewards.
-                  </p>
-                  <div className="flex justify-between">
-                    <span className="text-gray-900">Partial ROI</span>
-                    <span className={`${platformMetrics.roiStatus?.stale ? 'text-gray-400' : ''}`}>
-                      {`${platformMetrics.partialRoi}%`}
-                    </span>
-                  </div>
-                  <div className="text-sm">
-                    <StaleMetricContent status={platformMetrics.roiStatus} />
-                  </div>
-                </div>
-              </Popover>
-            )}
-          </span>
-        ),
-        value: isNil(platformMetrics.finalRoi) ? null : `${platformMetrics.finalRoi}%`,
-        status: platformMetrics.roiStatus,
-        source: { link: `/data#${platform}-predict-roi`, isExternal: false },
-      },
-      {
-        id: 'apr',
-        subText: 'APR, OLAS - Via OLAS Staking',
-        value: isNil(platformMetrics.apr) ? null : `${platformMetrics.apr}%`,
-        status: platformMetrics.aprStatus,
-        source: { link: `/data#${platform}-predict-apr`, isExternal: false },
-      },
-      {
-        id: 'accuracy',
-        subText: 'Prediction Accuracy - Average (Last 10K Trades)',
-        value: isNil(platformMetrics.successRate) ? null : `${platformMetrics.successRate}%`,
-        status: platformMetrics.successRateStatus,
-        source: { link: `/data#${platform}-predict-accuracy`, isExternal: false },
-      },
-    ];
-
-    const transactionMetrics = [
-      {
-        id: 'traders',
-        subText: (
-          <div className="flex items-center gap-2">
-            <span>Traders</span>
-            <Image alt="Traders" src="/images/predict-page/traders.png" width="32" height="15" />
-          </div>
-        ),
-        value: isNil(platformMetrics.traderTxs) ? null : platformMetrics.traderTxs.toLocaleString(),
-        status: platformMetrics.txsStatus,
-        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
-      },
-      {
-        id: 'mechs',
-        subText: (
-          <div className="flex items-center gap-2">
-            <span>Mechs: Prediction Brokers</span>
-            <Image alt="Mechs" src="/images/predict-page/mechs.png" width="32" height="15" />
-          </div>
-        ),
-        value: isNil(platformMetrics.mechTxs) ? null : platformMetrics.mechTxs.toLocaleString(),
-        status: platformMetrics.txsStatus,
-        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
-      },
-    ];
-
-    if (platformMetrics.marketCreatorTxs !== undefined) {
-      transactionMetrics.push({
-        id: 'marketCreatorsAndClosers',
-        subText: (
-          <div className="flex flex-wrap items-center gap-2">
-            <span>Market Creators</span>
-            <Image
-              alt="Market Creators"
-              src="/images/predict-page/market-creators.png"
-              width="32"
-              height="15"
-            />
-            <span>Closers</span>
-            <Image alt="Closers" src="/images/predict-page/closers.png" width="32" height="15" />
-          </div>
-        ),
-        value: isNil(platformMetrics.marketCreatorTxs)
-          ? null
-          : platformMetrics.marketCreatorTxs.toLocaleString(),
-        status: platformMetrics.txsStatus,
-        source: { link: `/data#${platform}-predict-transactions-by-type`, isExternal: false },
-      });
-    }
-
-    return { performanceMetrics, transactionMetrics };
-  }, [platformMetrics, platform]);
-
-  return (
-    <Card
-      id={id}
-      className="p-8 border border-slate-200 rounded-full text-xl w-full rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col"
-    >
-      <Image alt={title} src={imgSrc} width="48" height="48" className="mb-4" />
-
-      {/* Agent performance metrics */}
-      <div className="text-lg font-semibold mb-6">{title}</div>
-      <div className="flex flex-col gap-4">
-        {bubbleData.performanceMetrics.map((metric) => (
-          <div key={metric.id} className="flex flex-col gap-1">
-            <div className="text-sm text-gray-600">{metric.subText}</div>
-            <div className="flex items-center gap-2">
-              {metric.source?.link ? (
-                <Link href={metric.source.link} className="text-2xl font-bold">
-                  <span className={metric.status?.stale ? 'text-gray-400' : ''}>
-                    {metric.value || '--'}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  className={`text-2xl font-bold ${metric.status?.stale || metric.value === 'Coming soon' ? 'text-gray-400' : ''}`}
-                >
-                  {metric.value || '--'}
-                </span>
-              )}
-              {platform === 'polystrat' && metric.id === 'roi' ? (
-                <WarningIndicator>
-                  <p>
-                    Due to recent updates on Polymarket this metric temporarily shows incorrect
-                    values
-                  </p>
-                </WarningIndicator>
-              ) : (
-                <StaleIndicator status={metric.status} />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Divider */}
-      <div className="border-t border-[#D7DDEA] my-8" />
-
-      {/* Transaction metrics */}
-      <div className="text-lg font-semibold mb-6">Transactions by Agent Type</div>
-      <div className="flex flex-col gap-4">
-        {bubbleData.transactionMetrics.map((metric) => (
-          <div key={metric.id} className="flex flex-col gap-1">
-            <div className="text-sm text-gray-600">{metric.subText}</div>
-            <div className="flex items-center gap-2">
-              {metric.source?.link ? (
-                <Link href={metric.source.link} className="text-2xl font-bold">
-                  <span className={metric.status?.stale ? 'text-gray-400' : ''}>
-                    {metric.value || '--'}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  className={`text-2xl font-bold ${metric.status?.stale || metric.value === 'Coming soon' ? 'text-gray-400' : ''}`}
-                >
-                  {metric.value || '--'}
-                </span>
-              )}
-              <StaleIndicator status={metric.status} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-};
-
 const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText, id }) => {
   return (
     <Card
@@ -293,6 +125,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
+  const [platform, setPlatform] = useState<Platform>('omenstrat');
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
@@ -320,33 +153,29 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
             popoverText="7-day average Daily Active Agents for Polystrat (Polymarket)"
           />
 
-          {/* Partial ROI Distribution Chart */}
-          <RoiDistributionChart
-            id="roi-distribution"
-            data={roiDistribution}
+          {/* Switcher-driven per-platform performance & lifetime activity */}
+          <PlatformActivitySection
+            metrics={{ omenstrat: metrics.omenstrat, polystrat: metrics.polystrat }}
+            platform={platform}
+            onPlatformChange={setPlatform}
             className="md:col-span-2"
           />
 
-          {/* Omenstrat Unified Bubble */}
-          <PerformanceBubble
-            id="omenstrat-performance"
-            title="Omenstrat Performance"
-            platform="omenstrat"
-            platformMetrics={metrics.omenstrat}
-            imgSrc="/images/predict-page/omenstrat-icon.png"
+          {/* ROI Distribution Chart — filtered to the selected platform */}
+          <RoiDistributionChart
+            id="roi-distribution"
+            data={roiDistribution}
+            platform={platform}
+            className="md:col-span-2"
           />
 
-          {/* Polystrat Unified Bubble */}
-          <PerformanceBubble
-            id="polystrat-performance"
-            title="Polystrat Performance"
-            platform="polystrat"
-            platformMetrics={metrics.polystrat}
-            imgSrc="/images/predict-page/polystrat-icon.png"
+          {/* Tool Accuracy Table — filtered to the selected platform */}
+          <ToolAccuracyTable
+            id="tool-accuracy"
+            data={toolAccuracy}
+            platform={platform}
+            className="md:col-span-2"
           />
-
-          {/* Tool Accuracy Table */}
-          <ToolAccuracyTable id="tool-accuracy" data={toolAccuracy} className="md:col-span-2" />
         </div>
       </div>
     </SectionWrapper>
