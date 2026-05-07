@@ -2,7 +2,12 @@
 
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
-import { StaleIndicator, StaleMetricContent, WarningIndicator } from 'components/ui/StaleIndicator';
+import {
+  StaleIndicator,
+  StaleIndicatorProps,
+  StaleMetricContent,
+  WarningIndicator,
+} from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
@@ -11,7 +16,7 @@ import { ReactNode, useState } from 'react';
 
 export type Platform = 'polystrat' | 'omenstrat';
 
-type MetricStatus = { stale?: boolean } | undefined;
+type MetricStatus = StaleIndicatorProps['status'];
 
 export type PlatformMetrics = {
   apr: number | null;
