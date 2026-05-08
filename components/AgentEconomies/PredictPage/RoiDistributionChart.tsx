@@ -9,7 +9,7 @@ import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
-type TimeRange = '7D' | '30D' | '90D' | 'Max';
+type TimeRange = '7d' | '30d' | '90d' | 'max';
 
 type RoiDistributionData = {
   d7: BinData[] | null;
@@ -24,11 +24,15 @@ type DataPoint = {
   range: string;
 };
 
-const TIME_RANGES: Array<{ label: TimeRange; key: keyof RoiDistributionData }> = [
-  { label: '7D', key: 'd7' },
-  { label: '30D', key: 'd30' },
-  { label: '90D', key: 'd90' },
-  { label: 'Max', key: 'all' },
+const TIME_RANGES: Array<{
+  key: TimeRange;
+  label: string;
+  dataKey: keyof RoiDistributionData;
+}> = [
+  { key: '7d', label: '7D', dataKey: 'd7' },
+  { key: '30d', label: '30D', dataKey: 'd30' },
+  { key: '90d', label: '90D', dataKey: 'd90' },
+  { key: 'max', label: 'Max', dataKey: 'all' },
 ];
 
 const OMENSTRAT_COLOR = '#A755F7';
@@ -105,10 +109,10 @@ export const RoiDistributionChart = ({
   className,
   id,
 }: RoiDistributionChartProps) => {
-  const [activeRange, setActiveRange] = useState<TimeRange>('7D');
+  const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
-  const activeKey = TIME_RANGES.find((range) => range.label === activeRange)?.key ?? 'd7';
-  const bins = data?.[activeKey] ?? null;
+  const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
+  const bins = data?.[activeDataKey] ?? null;
 
   const isOmen = platform === 'omenstrat';
   const datasetMeta = isOmen
@@ -167,7 +171,7 @@ export const RoiDistributionChart = ({
         </div>
 
         <Tabs
-          items={TIME_RANGES.map(({ label }) => ({ key: label, label }))}
+          items={TIME_RANGES.map(({ key, label }) => ({ key, label }))}
           activeKey={activeRange}
           onChange={(key) => setActiveRange(key as TimeRange)}
         />

@@ -6,7 +6,8 @@ import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
-import { Platform, PlatformActivitySection, PlatformMetrics } from './PlatformActivitySection';
+import { PlatformActivitySection } from './PlatformActivitySection';
+import type { Platform, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
 import { ToolAccuracyTable } from './ToolAccuracyTable';
 

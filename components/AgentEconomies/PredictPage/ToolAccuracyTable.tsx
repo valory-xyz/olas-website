@@ -1,7 +1,7 @@
 import { ToolAccuracyData } from 'common-util/api/predict/tool-accuracy';
 import { Card } from 'components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
-import { Platform } from './PlatformActivitySection';
+import type { Platform } from './PlatformActivitySection';
 
 type ToolAccuracyTableProps = {
   data: ToolAccuracyData | null;

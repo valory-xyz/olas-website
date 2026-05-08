@@ -12,7 +12,7 @@ import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 export type Platform = 'polystrat' | 'omenstrat';
 
@@ -126,7 +126,8 @@ export const PlatformActivitySection = ({
   onPlatformChange,
   className,
 }: PlatformActivitySectionProps) => {
-  const [timeRange, setTimeRange] = useState('max');
+  // Time-range tabs are placeholder UI for upcoming work — only "Max" is
+  // selectable today, so the active key is hardcoded and onChange is a no-op.
   const m = metrics[platform];
 
   const performanceItems: MetricItemProps[] = [
@@ -195,7 +196,7 @@ export const PlatformActivitySection = ({
     },
   ];
 
-  if (platform === 'omenstrat' && m.marketCreatorTxs !== undefined) {
+  if (m.marketCreatorTxs !== undefined) {
     lifetimeItems.push({
       label: 'Market Creators & Closers',
       value: isNil(m.marketCreatorTxs) ? null : m.marketCreatorTxs.toLocaleString(),
@@ -212,7 +213,7 @@ export const PlatformActivitySection = ({
         <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="text-lg font-semibold">Performance</div>
-            <Tabs items={TIME_RANGE_TABS} activeKey={timeRange} onChange={setTimeRange} />
+            <Tabs items={TIME_RANGE_TABS} activeKey="max" onChange={() => {}} />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {performanceItems.map((item, i) => (

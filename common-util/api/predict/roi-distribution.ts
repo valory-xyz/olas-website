@@ -679,9 +679,11 @@ const computeAgentBlueprintHistogram = (
       // Activity threshold uses lifetime bets from traderAgents, not bets in
       // the window — the floor means "agent has enough history to be
       // statistically meaningful," which is a property of the agent, not the
-      // window.
-      const lifetimeBets = agentBlueprintData.allTimeAgents?.[agentId]?.totalBets ?? 0;
-      if (lifetimeBets < MIN_TRADES_FOR_ROI_DISPLAY) {
+      // window. Only apply the threshold when a lifetime total is present;
+      // a missing entry (partial allTimeAgents snapshot) shouldn't silently
+      // drop the agent and risk emptying the histogram.
+      const lifetimeEntry = agentBlueprintData.allTimeAgents?.[agentId];
+      if (lifetimeEntry !== undefined && lifetimeEntry.totalBets < MIN_TRADES_FOR_ROI_DISPLAY) {
         excludedLowActivity++;
         continue;
       }
