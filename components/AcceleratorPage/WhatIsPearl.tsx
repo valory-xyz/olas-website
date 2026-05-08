@@ -1,8 +1,8 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL, PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
-import { ExternalLink, SubsiteLink } from 'components/ui/typography';
+import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 const steps = [
@@ -38,9 +38,8 @@ const Only10Teams = () => (
     </h2>
     <p>
       The Olas Accelerator is awarding $1M (USDC) in grants + OLAS Dev Rewards to developers
-      building AI Agents for Pearl — The AI Agent App Store. The top 10 teams will receive
-      milestone-based funding to develop, launch, and scale their agents. Spots are limited —{' '}
-      <ExternalLink href={ACCELERATOR_APPLY_URL}>apply today</ExternalLink>!
+      building AI Agents for Pearl: The “AI Agent App Store”. The top 10 teams will receive
+      milestone-based funding to develop, launch, and scale their agents.
     </p>
   </div>
 );
