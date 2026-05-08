@@ -9,7 +9,7 @@ import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
-type TimeRange = '7D' | '30D' | '90D' | 'Max';
+type TimeRange = '7d' | '30d' | '90d' | 'max';
 
 type RoiDistributionData = {
   d7: BinData[] | null;
@@ -24,11 +24,15 @@ type DataPoint = {
   range: string;
 };
 
-const TIME_RANGES: Array<{ label: TimeRange; key: keyof RoiDistributionData }> = [
-  { label: '7D', key: 'd7' },
-  { label: '30D', key: 'd30' },
-  { label: '90D', key: 'd90' },
-  { label: 'Max', key: 'all' },
+const TIME_RANGES: Array<{
+  key: TimeRange;
+  label: string;
+  dataKey: keyof RoiDistributionData;
+}> = [
+  { key: '7d', label: '7D', dataKey: 'd7' },
+  { key: '30d', label: '30D', dataKey: 'd30' },
+  { key: '90d', label: '90D', dataKey: 'd90' },
+  { key: 'max', label: 'Max', dataKey: 'all' },
 ];
 
 const OMENSTRAT_COLOR = '#A755F7';
@@ -88,6 +92,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
 
 type RoiDistributionChartProps = {
   data: RoiDistributionData | null;
+  platform: 'polystrat' | 'omenstrat';
   className?: string;
   id?: string;
 };
@@ -98,38 +103,44 @@ const safeMidpoint = (min: number, max: number) => {
   return (min + max) / 2;
 };
 
-export const RoiDistributionChart = ({ data, className, id }: RoiDistributionChartProps) => {
-  const [activeRange, setActiveRange] = useState<TimeRange>('7D');
+export const RoiDistributionChart = ({
+  data,
+  platform,
+  className,
+  id,
+}: RoiDistributionChartProps) => {
+  const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
-  const activeKey = TIME_RANGES.find((range) => range.label === activeRange)?.key ?? 'd7';
-  const bins = data?.[activeKey] ?? null;
+  const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
+  const bins = data?.[activeDataKey] ?? null;
+
+  const isOmen = platform === 'omenstrat';
+  const datasetMeta = isOmen
+    ? {
+        label: 'Omenstrat',
+        background: OMENSTRAT_COLOR,
+        border: OMENSTRAT_COLOR_BORDER,
+        pick: (bin: BinData) => bin.omenstrat,
+      }
+    : {
+        label: 'Polystrat',
+        background: POLYSTRAT_COLOR,
+        border: POLYSTRAT_COLOR_BORDER,
+        pick: (bin: BinData) => bin.polystrat,
+      };
 
   const chartData = bins
     ? {
         datasets: [
-          // {
-          //   label: 'Omenstrat',
-          //   data: bins.map((bin) => ({
-          //     x: safeMidpoint(bin.min, bin.max),
-          //     y: bin.omenstrat,
-          //     range: bin.label,
-          //   })),
-          //   backgroundColor: OMENSTRAT_COLOR,
-          //   borderColor: OMENSTRAT_COLOR_BORDER,
-          //   borderWidth: 1,
-          //   borderRadius: 2,
-          //   barPercentage: 0.9,
-          //   categoryPercentage: 0.85,
-          // },
           {
-            label: 'Polystrat',
+            label: datasetMeta.label,
             data: bins.map((bin) => ({
               x: safeMidpoint(bin.min, bin.max),
-              y: bin.polystrat,
+              y: datasetMeta.pick(bin),
               range: bin.label,
             })),
-            backgroundColor: POLYSTRAT_COLOR,
-            borderColor: POLYSTRAT_COLOR_BORDER,
+            backgroundColor: datasetMeta.background,
+            borderColor: datasetMeta.border,
             borderWidth: 1,
             borderRadius: 2,
             barPercentage: 0.9,
@@ -148,25 +159,23 @@ export const RoiDistributionChart = ({ data, className, id }: RoiDistributionCha
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-gray-900">
-            Polystrat Partial ROI Distribution
+            {datasetMeta.label} Partial ROI Distribution
           </h3>
-          <WarningIndicator>
-            <p>Due to recent updates on Polymarket this chart temporarily shows incorrect values</p>
-          </WarningIndicator>
+          {!isOmen && (
+            <WarningIndicator>
+              <p>
+                Due to recent updates on Polymarket this chart temporarily shows incorrect values
+              </p>
+            </WarningIndicator>
+          )}
         </div>
 
         <Tabs
-          items={TIME_RANGES.map(({ label }) => ({ key: label, label }))}
+          items={TIME_RANGES.map(({ key, label }) => ({ key, label }))}
           activeKey={activeRange}
           onChange={(key) => setActiveRange(key as TimeRange)}
         />
       </div>
-
-      {/* Legend row */}
-      {/* <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
-        <LegendItem color={`bg-[#A755F7]`} label="Omenstrat" />
-        <LegendItem color={`bg-[#4D74FF]`} label="Polystrat" />
-      </div> */}
 
       {/* Chart area */}
       {chartData ? (
