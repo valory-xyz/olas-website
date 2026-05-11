@@ -1,56 +1,48 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
-import { ACCELERATOR_APPLY_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+
+import { NotAcceptingAlert } from './NotAcceptingAlert';
 
 const list = [
   {
-    title: 'Apply with your agent idea',
+    title: 'Apply with Your Agent Idea',
     description: (
       <>
-        <ExternalLink href={ACCELERATOR_APPLY_URL}>Submit a proposal</ExternalLink> detailing your
-        AI agent&apos;s purpose, product strategy, adoption strategy, and alignment with the
-        accelerator program.
+        Submit a proposal detailing your AI agent&apos;s concept, integration with Pearl, and user
+        adoption plan.
+        <NotAcceptingAlert className="mt-3" />
       </>
     ),
   },
   {
-    title: 'Get selected & receive $5K',
-    description: 'Awarded to the teams with the highest potential and impactful proposals.',
-  },
-  {
-    title: 'Additional $5K on approval of the design, specification and technical plan',
+    title: 'Get selected & receive $10,000',
     description:
-      'Put together all the plans for your MVP within the first 2 weeks of the project start date to earn an additional $5K.',
+      'Awarded to the teams with the most promising agent concepts and detailed implementation plans.',
   },
   {
-    title: '$40K for delivering the MVP',
+    title: '$40,000 for delivering agent MVP on Pearl',
     description:
-      'Deliver the agent MVP on Pearl within 90 days from the project start date to earn $40K. The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
+      'The Agent MVP must be usable, meet integration requirements, and pass quality assurance checks.',
   },
   {
-    title: 'Reach 100 DAA milestone to unlock $10K',
-    description: 'Awarded on achieving 100 Daily Active Agents within 90 days of the MVP delivery.',
-  },
-  {
-    title: 'Reach 1,000 DAAs to unlock $40K',
+    title: 'Reach 100 DAA milestones & unlock $10K',
     description:
-      'Awarded on achieving 1,000 Daily Active Agents within 90 days of the MVP delivery.',
+      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
   },
-  // {
-  //   title: 'Earn additional OLAS rewards',
-  //   description: (
-  //     <>
-  //       Teams that register their agent code in the Olas Protocol can also
-  //       receive ongoing OLAS Dev Rewards. Top developers are already earning
-  //       thousands of OLAS each month.{' '}
-  //       <Link className="text-purple-600" href="/build">
-  //         Learn more
-  //       </Link>
-  //       .
-  //     </>
-  //   ),
-  // },
+  {
+    title: 'Unlock $40K for 1000 DAAs',
+    description:
+      'Awarded on achieving 100 users of this agent, this is measured as 100 Daily Active Agents per Olas Staking.',
+  },
+  {
+    title: 'Earn additional OLAS rewards',
+    description: (
+      <>
+        Teams that register their agent code in the Olas Protocol can also receive ongoing OLAS Dev
+        Rewards. Top developers are already earning thousands of OLAS each month.
+      </>
+    ),
+  },
 ];
 
 export const HowDoesAcceleratorWork = () => (
@@ -71,9 +63,9 @@ export const HowDoesAcceleratorWork = () => (
               <div className="border-r-1.5 border-purple-200 w-[80px] h-full max-sm:min-h-[120px] max-sm:min-w-[80px] aspect-square flex justify-center text-center bg-gradient-to-t from-[#FAF0FF]">
                 <span className="text-[56px] font-bold text-purple-400 my-auto">{index + 1}</span>
               </div>
-              <div className="my-auto mr-4 py-4">
+              <div className="my-auto flex-1 min-w-0 pr-4 py-4">
                 <div className="text-xl font-semibold mb-2">{item.title}</div>
-                <p className="text-base">{item.description}</p>
+                <div className="text-base">{item.description}</div>
               </div>
             </div>
           );
