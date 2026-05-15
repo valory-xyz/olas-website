@@ -18,7 +18,7 @@ export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node: _node, ...props }) => (
     <a
-      className="text-purple-800 hover:text-blue-800"
+      className="text-purple-700 hover:text-purple-800"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
@@ -47,7 +47,7 @@ export const markdownComponents = {
     <h2 className="text-3xl font-bold text-gray-900 mt-8 mb-4 first:mt-0" {...props} />
   ),
   h2: ({ node: _node, ...props }) => (
-    <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-3 first:mt-0" {...props} />
+    <h2 className="text-2xl font-semibold text-gray-900 mt-12 mb-3 first:mt-0" {...props} />
   ),
   h3: ({ node: _node, ...props }) => (
     <h3 className="text-xl font-medium text-gray-900 mt-6 mb-2 first:mt-0" {...props} />
