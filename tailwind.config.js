@@ -11,6 +11,7 @@ module.exports = {
     './common-util/**/*.{js,jsx,ts,tsx}',
     './app/**/*.{js,jsx,ts,tsx}',
     './src/**/*.{js,jsx,ts,tsx}',
+    './styles/**/*.{js,jsx,ts,tsx}',
   ],
   prefix: '',
   theme: {
