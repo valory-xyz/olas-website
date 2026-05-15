@@ -18,42 +18,58 @@ export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node: _node, ...props }) => (
     <a
-      className="text-purple-800 hover:text-blue-800"
+      className="text-purple-700 hover:text-purple-800"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
     />
   ),
   // Apply margin to paragraphs to create space between them
-  p: ({ node: _node, ...props }) => <p {...props} />,
+  p: ({ node: _node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
 
   strong: ({ node: _node, ...props }) => <strong {...props}></strong>,
   // Apply tailwind classes to style lists
   ul: ({ node: _node, ...props }) => (
-    <>
-      <ul className="list-disc list-inside pl-4 inline-block w-full" {...props} />
-      <br />
-    </>
+    <ul className="list-disc list-outside pl-6 mb-4 last:mb-0" {...props} />
   ),
   ol: ({ node: _node, ...props }) => (
-    <ol className="list-decimal list-inside inline-block" {...props} />
+    <ol
+      className="list-decimal list-outside pl-6 mb-4 last:mb-0 marker:text-purple-800 marker:font-medium"
+      {...props}
+    />
   ),
 
-  li: ({ node: _node, ...props }) => <li className="mb-2" {...props} />,
-  h1: ({ node: _node, ...props }) => <h2 className="text-3xl font-bold mb-4" {...props} />,
-  h2: ({ node: _node, ...props }) => <h2 className="text-2xl font-semibold mb-3" {...props} />,
-  h3: ({ node: _node, ...props }) => <h3 className="text-xl font-medium mb-2" {...props} />,
-  h4: ({ node: _node, ...props }) => <h4 className="text-lg font-medium mb-2" {...props} />,
-  h5: ({ node: _node, ...props }) => <h5 className="text-[17px] font-medium mb-2" {...props} />,
-  h6: ({ node: _node, ...props }) => <h6 className="text-sm font-medium mb-2" {...props} />,
+  li: ({ node: _node, ...props }) => <li className="mb-2 pl-1 last:mb-0" {...props} />,
+  h1: ({ node: _node, ...props }) => (
+    <h2 className="text-3xl font-bold text-gray-900 mt-8 mb-4 first:mt-0" {...props} />
+  ),
+  h2: ({ node: _node, ...props }) => (
+    <h2 className="text-2xl font-semibold text-gray-900 mt-12 mb-3 first:mt-0" {...props} />
+  ),
+  h3: ({ node: _node, ...props }) => (
+    <h3 className="text-xl font-medium text-gray-900 mt-6 mb-2 first:mt-0" {...props} />
+  ),
+  h4: ({ node: _node, ...props }) => (
+    <h4 className="text-lg font-medium text-gray-900 mt-6 mb-2 first:mt-0" {...props} />
+  ),
+  h5: ({ node: _node, ...props }) => (
+    <h5 className="text-[17px] font-medium text-gray-900 mt-4 mb-2 first:mt-0" {...props} />
+  ),
+  h6: ({ node: _node, ...props }) => (
+    <h6 className="text-base font-medium text-gray-900 mt-4 mb-2 first:mt-0" {...props} />
+  ),
   pre: ({ node: _node, ...props }) => (
-    <pre className="p-4 bg-gray-800 border rounded-md overflow-auto" {...props} />
+    <pre className="p-4 bg-gray-800 border rounded-md overflow-auto mb-4 last:mb-0" {...props} />
   ),
 
   code: ({ node: _node, ...props }) => <code className="text-sm" {...props} />,
+  img: ({ node: _node, ...props }) => (
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    <img className="rounded-lg my-8 first:mt-0 last:mb-0 max-w-full h-auto" {...props} />
+  ),
   blockquote: ({ node: _node, children, className, ...props }) => (
     <blockquote
-      className={`border-l-4 border-gray-800 pl-6 mb-4 italic ${className || ''}`}
+      className={`border-l-4 border-gray-800 pl-6 my-4 last:mb-0 italic ${className || ''}`}
       {...props}
     >
       {children}
