@@ -37,7 +37,7 @@ export const markdownComponents = {
   ),
   ol: ({ node: _node, ...props }) => (
     <ol
-      className="list-none pl-0 mb-4 last:mb-0 [counter-reset:list-counter] [&>li]:[counter-increment:list-counter] [&>li]:relative [&>li]:pl-12 [&>li]:mb-3 [&>li:last-child]:mb-0 [&>li]:before:[content:counter(list-counter,decimal-leading-zero)] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:top-0 [&>li]:before:flex [&>li]:before:items-center [&>li]:before:justify-center [&>li]:before:w-8 [&>li]:before:h-8 [&>li]:before:rounded-full [&>li]:before:bg-purple-100 [&>li]:before:text-purple-800 [&>li]:before:text-xs [&>li]:before:font-semibold"
+      className="list-decimal list-outside pl-6 mb-4 last:mb-0 marker:text-purple-800 marker:font-medium"
       {...props}
     />
   ),
