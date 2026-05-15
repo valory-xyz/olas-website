@@ -30,10 +30,7 @@ export const markdownComponents = {
   strong: ({ node: _node, ...props }) => <strong {...props}></strong>,
   // Apply tailwind classes to style lists
   ul: ({ node: _node, ...props }) => (
-    <ul
-      className="list-disc list-outside pl-6 mb-4 last:mb-0 marker:text-purple-800"
-      {...props}
-    />
+    <ul className="list-disc list-outside pl-6 mb-4 last:mb-0" {...props} />
   ),
   ol: ({ node: _node, ...props }) => (
     <ol
