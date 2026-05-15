@@ -21,7 +21,7 @@ const BlogItem = ({ blog }) => {
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
   const formattedContent = (
-    <Markdown className="text-lg font-light text-gray-600">{content}</Markdown>
+    <Markdown className="text-lg text-gray-700 leading-relaxed">{content}</Markdown>
   );
   const description = getLimitedText(formattedContent.props.children, DESC_CHAR_LIMIT);
 
