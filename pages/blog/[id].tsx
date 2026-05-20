@@ -20,24 +20,26 @@ const BlogItem = ({ blog }) => {
   const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
-  const formattedContent = <Markdown>{content}</Markdown>;
+  const formattedContent = (
+    <Markdown className="text-lg text-gray-700 leading-relaxed">{content}</Markdown>
+  );
   const description = getLimitedText(formattedContent.props.children, DESC_CHAR_LIMIT);
 
   return (
     <PageWrapper>
       <Meta pageTitle={title} description={description} siteImageUrl={imageUrl} />
-      <div className="max-w-3xl mx-auto p-4">
+      <div className="max-w-3xl mx-auto px-4 py-8 md:py-10">
         {imagePath && (
           <Image
             src={imageUrl}
             width={headerImage.data[0].attributes.formats.large.width}
             height={headerImage.data[0].attributes.formats.large.height}
             alt={title}
-            className="border mb-4 rounded-lg"
+            className="border mb-12 rounded-lg"
           />
         )}
-        <h1 className={`${TITLE.SMALL} mb-4`}>{title}</h1>
-        <div className={`${TEXT} mb-4`}>{formattedDate}</div>
+        <h1 className={`${TITLE.SMALL} mb-3`}>{title}</h1>
+        <div className={`${TEXT} mb-8`}>{formattedDate}</div>
         {formattedContent}
       </div>
     </PageWrapper>

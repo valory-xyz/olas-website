@@ -1,6 +1,5 @@
 import Footer from './Footer';
 import Header from './Header';
-import PolystratBanner from './PolystratBanner';
 
 type PageWrapperProps = {
   children: React.ReactNode;
@@ -8,7 +7,7 @@ type PageWrapperProps = {
 
 const PageWrapper = ({ children }: PageWrapperProps) => (
   <>
-    <PolystratBanner />
+    {/* <PolystratBanner /> */}
     <Header />
 
     {children}

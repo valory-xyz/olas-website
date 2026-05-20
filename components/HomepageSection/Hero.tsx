@@ -1,5 +1,3 @@
-import { ChevronRight, SquareArrowOutUpRight } from 'lucide-react';
-
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Tag } from 'components/ui/tag';
 import featuredIn from 'data/featuredIn.json';
@@ -66,57 +64,12 @@ const Hero = () => (
         <div className="transparent-gradient h-[2000px] w-[5000px] -bottom-[210px] -right-[1400px] absolute" />
       </div>
 
-      <div className="absolute right-8 top-1/3 -translate-y-1/2 animate-float hidden lg:block">
-        <Link href="/blog/uniquely-human">
-          <Image
-            src="/images/homepage/ai-card.png"
-            alt="AI card"
-            width={180}
-            height={206}
-            className="mb-4 shadow-md rounded-2xl transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
-          />
-          <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-black">
-            Read the blog <ChevronRight size={16} />
-          </div>
-        </Link>
-        <a
-          href="https://www.instagram.com/ai.cant.replace/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-black"
-        >
-          View on Instagram <SquareArrowOutUpRight size={14} />
-        </a>
-      </div>
-
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 lg:hidden">
         <h1 className="tracking-tight text-5xl md:text-6xl mb-4 text-black font-extrabold">
           Co-own AI
         </h1>
         <div className="max-md:text-lg text-xl leading-8 text-gray-900 mb-6">
           Olas enables everyone to own and monetize their AI agents.
-        </div>
-        <div className="animate-float">
-          <Link href="/blog/uniquely-human">
-            <Image
-              src="/images/homepage/ai-card.png"
-              alt="AI card"
-              width={140}
-              height={160}
-              className="mb-2 shadow-md rounded-2xl mx-auto transition-all duration-300 ease-in-out hover:scale-[1.01] hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]"
-            />
-            <div className="flex items-center gap-1 font-medium text-sm justify-center hover:text-black">
-              Read the blog <ChevronRight size={16} />
-            </div>
-          </Link>
-          <a
-            href="https://www.instagram.com/ai.cant.replace/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 flex items-center gap-1.5 font-medium text-sm justify-center hover:text-black"
-          >
-            View on Instagram <SquareArrowOutUpRight size={14} />
-          </a>
         </div>
       </div>
 

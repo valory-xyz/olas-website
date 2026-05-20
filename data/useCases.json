@@ -17,25 +17,29 @@
         "description": "Trades Polymarket prediction markets for you while you do something else.",
         "image": "/images/agents/polystrat.png",
         "link": "https://www.pearl.you/polystrat",
-        "isExternal": true
+        "isExternal": true,
+        "isUnderConstruction": true
       },
       {
         "title": "BabyDegen",
         "description": "Trades autonomously in DeFi.",
         "image": "/images/agents/babydegen-icon.svg",
-        "link": "/agents/babydegen"
+        "link": "/agents/babydegen",
+        "isUnderConstruction": true
       },
       {
         "title": "Optimus Agent",
         "description": "Intelligently manages your DeFi assets across the Superchain.",
         "image": "/images/agents/optimus-agent.png",
-        "link": "/agents/babydegen#optimus-agent"
+        "link": "/agents/babydegen#optimus-agent",
+        "isUnderConstruction": true
       },
       {
         "title": "Agents.fun Agent",
         "description": "Posts to X, creates and interacts with other agents.",
         "image": "/images/agents/agentsfun.png",
-        "link": "/agents/agentsfun"
+        "link": "/agents/agentsfun",
+        "isUnderConstruction": true
       },
       {
         "title": "Pettbro",

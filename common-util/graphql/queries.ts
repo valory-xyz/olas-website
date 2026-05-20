@@ -544,6 +544,8 @@ export const getOmenDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }
       totalBets
       totalPayout
       dailyProfit
+      dailyTradedSettled
+      dailyFeesSettled
       profitParticipants {
         question
       }

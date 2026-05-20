@@ -59,7 +59,6 @@ export type QmrData = {
 
 /** Per-agent daily aggregates, used for 'd7' | 'd30' | 'd90' distributions */
 export type DailyAgentEntry = {
-  bets: number;
   profit: string;
   payout: string;
   /**
@@ -68,6 +67,14 @@ export type DailyAgentEntry = {
    * market's requests entry once, not once per bet.
    */
   mechRequests: number;
+  /**
+   * Omenstrat-only: cost basis (stake + fees) of bets that *settled* on this day.
+   * Lets windowed ROI use `profit / (tradedSettled + feesSettled)` instead of
+   * the broken `payout - profit` derivation, which mixed bet/resolution/redeem
+   * days. Missing on polystrat entries (subgraph doesn't expose fees there).
+   */
+  tradedSettled?: string;
+  feesSettled?: string;
 };
 
 /** Per-agent all-time aggregates — used for 'max' distribution. */
@@ -96,6 +103,9 @@ type DailyStatEntry = {
   totalBets: number;
   totalPayout: string;
   dailyProfit: string;
+  // Omenstrat-only fields (returned by getOmenDailyProfitStatsQuery).
+  dailyTradedSettled?: string;
+  dailyFeesSettled?: string;
   profitParticipants: Array<{ question?: string; metadata?: { title: string } }>;
 };
 
@@ -455,7 +465,7 @@ const updateAgentBlueprintData = async (
     const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
       if (!byDay[dKey]) byDay[dKey] = { agents: {} };
       if (!byDay[dKey].agents[aid]) {
-        byDay[dKey].agents[aid] = { bets: 0, profit: '0', payout: '0', mechRequests: 0 };
+        byDay[dKey].agents[aid] = { profit: '0', payout: '0', mechRequests: 0 };
       }
       return byDay[dKey].agents[aid];
     };
@@ -494,10 +504,15 @@ const updateAgentBlueprintData = async (
         }
 
         agents[agentId] = {
-          bets: Number(stat.totalBets),
           profit: stat.dailyProfit,
           payout: stat.totalPayout,
           mechRequests,
+          ...(agentBlueprint === 'omenstrat'
+            ? {
+                tradedSettled: stat.dailyTradedSettled ?? '0',
+                feesSettled: stat.dailyFeesSettled ?? '0',
+              }
+            : {}),
         };
       }
 
@@ -656,7 +671,13 @@ const computeAgentBlueprintHistogram = (
     const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
     const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
-    type Totals = { profit: bigint; payout: bigint; mechRequests: number; bets: number };
+    type Totals = {
+      profit: bigint;
+      payout: bigint;
+      mechRequests: number;
+      tradedSettled: bigint; // omenstrat only — 0n for polystrat
+      feesSettled: bigint;
+    };
     const agentTotals = new Map<string, Totals>();
 
     for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
@@ -669,19 +690,27 @@ const computeAgentBlueprintHistogram = (
           profit: 0n,
           payout: 0n,
           mechRequests: 0,
-          bets: 0,
+          tradedSettled: 0n,
+          feesSettled: 0n,
         };
         prev.profit += BigInt(entry.profit);
         prev.payout += BigInt(entry.payout);
         prev.mechRequests += entry.mechRequests;
-        prev.bets += entry.bets ?? 0;
+        if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
+        if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
         agentTotals.set(agentId, prev);
       }
     }
 
-    for (const totals of agentTotals.values()) {
-      // Apply the same activity threshold as the Max tab, scoped to the window.
-      if (totals.bets < MIN_TRADES_FOR_ROI_DISPLAY) {
+    for (const [agentId, totals] of agentTotals.entries()) {
+      // Activity threshold uses lifetime bets from traderAgents, not bets in
+      // the window — the floor means "agent has enough history to be
+      // statistically meaningful," which is a property of the agent, not the
+      // window. Only apply the threshold when a lifetime total is present;
+      // a missing entry (partial allTimeAgents snapshot) shouldn't silently
+      // drop the agent and risk emptying the histogram.
+      const lifetimeEntry = agentBlueprintData.allTimeAgents?.[agentId];
+      if (lifetimeEntry !== undefined && lifetimeEntry.totalBets < MIN_TRADES_FOR_ROI_DISPLAY) {
         excludedLowActivity++;
         continue;
       }
@@ -690,8 +719,15 @@ const computeAgentBlueprintHistogram = (
       const scaledPayout = totals.payout * scale;
       const scaledProfit = totals.profit * scale;
 
-      // 2. Derive Trading Costs
-      const tradingCosts = scaledPayout - scaledProfit;
+      // 2. Trading costs basis.
+      //   Omenstrat: use the per-day settled fields (cost basis of bets that
+      //   resolved that day), summed over the window. Already 18 decimals.
+      //   Polystrat: keep the legacy `payout - profit` derivation. The settled
+      //   fields aren't backfilled there yet; revisit when polymarket exposes
+      //   dailyTradedSettled per the same subgraph PR.
+      const tradingCosts = isPolystrat
+        ? scaledPayout - scaledProfit
+        : totals.tradedSettled + totals.feesSettled;
 
       // Skip zero trading costs considering it as "not enough data"
       if (tradingCosts <= 0n) continue;

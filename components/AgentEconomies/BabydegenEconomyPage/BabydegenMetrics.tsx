@@ -112,6 +112,7 @@ export const BabydegenMetrics = ({ metrics }) => {
           status={metrics?.modius?.status}
         />
         <BabydegenMetricsBubble
+          isUnderConstruction
           title="Optimus Agent Economy"
           image="/images/babydegen-econ-page/optimus.png"
           metrics={metrics?.optimus?.value}

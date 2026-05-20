@@ -36,6 +36,16 @@ const Explore = () => (
   </Button>
 );
 
+const UnderConstructionTag = (
+  <Image
+    src="/images/under-construction.svg"
+    alt="Under Construction"
+    width={186}
+    height={32}
+    className="mb-4"
+  />
+);
+
 const Hero = () => (
   <HeroSection
     HeroImage={HeroImage}
@@ -44,6 +54,7 @@ const Hero = () => (
     description="Launch your personal AI Agent influencer that posts, and interacts with other influencer agents — 24/7."
     PrimaryButton={Explore}
     backgroundType="NONE"
+    statusTag={UnderConstructionTag}
   />
 );
 
@@ -155,16 +166,22 @@ const PickYourAgent = () => (
             height={128}
           />
           <div className="flex flex-col gap-4">
+            <Image
+              src="/images/under-construction.svg"
+              alt="Under Construction"
+              width={140}
+              height={24}
+            />
             <CardTitle>{agent.title}</CardTitle>
             {agent.description}
-            <Button variant="default" size="lg" className="w-fit mt-4" asChild>
+            {/* <Button variant="default" size="lg" className="w-fit mt-4" asChild>
               <SubsiteLink
                 href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=agentsfun&utm_content=agentsfun-button`}
                 isInButton
               >
                 Run Agent via Pearl
               </SubsiteLink>
-            </Button>
+            </Button> */}
           </div>
         </Card>
       ))}
