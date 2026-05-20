@@ -29,6 +29,8 @@ yarn lint:lockfile  # Validate yarn.lock integrity (lockfile-lint)
   - `pages/api/refresh-metrics/*.ts` — cron-driven endpoints that fetch from subgraphs and write Vercel Blob snapshots
   - `pages/api/og/[[...slug]].tsx` — dynamic Open Graph image generation (`@vercel/og`)
   - `pages/api/olas/[endpoint].ts` — thin proxy to `OLAS_API_URL` (api.olas.autonolas.tech)
+  - `pages/data/index.tsx` — "Data Verification" page; documents the provenance/methodology behind published metrics (e.g. `DailyActiveAgentsInfo`, `BabydegenMetricsInfo`, `MechGlobalsInfo`)
+  - `pages/card/index.tsx` — shareable agent/card page
   - Dynamic routes use bracket notation: `[slug].tsx`, `[id].tsx`, `[[...slug]].tsx`
 - `components/` — React components organized by page (e.g., `BuildPage/`, `AgentEconomies/`, `HomepageSection/`, `StakingPage/`, `PredictionAgentsTable/`)
   - `components/ui/` — Reusable UI primitives (shadcn/ui patterns over Radix)
@@ -150,7 +152,7 @@ ISR pages expect the blob shape they were built against — schema drift will su
 
 - **Strapi CMS**: blog posts (`pages/blog/[id].tsx`) and education articles (`pages/learn/education-articles/[educationArticleId].tsx`) are fetched via `getServerSideProps` using helpers in `common-util/api/index.ts`.
 - **Static data**: agents, chains, kits, resources, etc. live in `data/*.json`.
-- **Dynamic agent pages**: `pages/agents/[slug].tsx` uses slugs from `data/agents.json`; `next-sitemap.config.js` adds these to the sitemap. Several agents also have dedicated routes (e.g. `pages/agents/babydegen.tsx`, `pages/agents/omenstrat.tsx`, `pages/agents/ai-mechs.tsx`) — `next.config.js` redirects legacy slugs (e.g. `/agents/optimus` → `/agents/babydegen`).
+- **Dynamic agent pages**: `pages/agents/[slug].tsx` uses slugs from `data/agents.json`; `next-sitemap.config.js` adds these to the sitemap. The `/agents` index lives in `pages/agents/index.tsx`, and several agents have dedicated routes (e.g. `babydegen.tsx`, `omenstrat.tsx`, `ai-mechs.tsx`, `agentsfun.tsx`, `contribute.tsx`, `shorts.tsx`) — `next.config.js` redirects legacy slugs (e.g. `/agents/optimus` → `/agents/babydegen`).
 - **Kits**: `pages/kits/[id].tsx` (client-side, sourced from `data/kits.json`).
 - **Agent economies**: `pages/agent-economies/{index,babydegen,mech,predict,agentsfun}.tsx`.
 
