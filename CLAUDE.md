@@ -14,7 +14,8 @@ Use **yarn** for all commands (preferred in this repo):
 
 ```bash
 yarn dev            # Start dev server at http://localhost:3000
-yarn build          # Production build (postbuild runs next-sitemap)
+yarn build          # Production build; postbuild runs next-sitemap, then the
+                    # robots Content-Signal injector and the agent-skills index generator
 yarn start          # Start production server
 yarn lint           # ESLint
 yarn lint:fix       # ESLint with auto-fix
@@ -31,21 +32,28 @@ yarn lint:lockfile  # Validate yarn.lock integrity (lockfile-lint)
   - `pages/api/olas/[endpoint].ts` — thin proxy to `OLAS_API_URL` (api.olas.autonolas.tech)
   - `pages/data/index.tsx` — "Data Verification" page; documents the provenance/methodology behind published metrics (e.g. `DailyActiveAgentsInfo`, `BabydegenMetricsInfo`, `MechGlobalsInfo`)
   - `pages/card/index.tsx` — shareable agent/card page
+  - `pages/api/agent-tools/metrics.ts` — read-only public JSON of the `main` snapshot; backs the `get_olas_metrics` WebMCP tool
+  - `pages/api/md/{blog,education-articles}.ts` — markdown variants of CMS content pages (see "Agent discovery & readiness")
   - Dynamic routes use bracket notation: `[slug].tsx`, `[id].tsx`, `[[...slug]].tsx`
 - `components/` — React components organized by page (e.g., `BuildPage/`, `AgentEconomies/`, `HomepageSection/`, `StakingPage/`, `PredictionAgentsTable/`)
   - `components/ui/` — Reusable UI primitives (shadcn/ui patterns over Radix)
   - `components/Layout/` — `Header`, `Footer`, `Menu`, `MenuMobile`, `PageWrapper`, `SectionWrapper`, banners
+  - `components/WebMcp/` — registers browser WebMCP tools (mounted globally in `pages/_app.tsx`)
 - `common-util/` — Shared utilities and business logic
   - `common-util/api/` — Subgraph aggregation logic per category (`main-metrics.ts`, `predict/`, `agent-economies/`, `other-metrics/`) plus `index.ts` for Strapi calls (blogs, education articles)
   - `common-util/graphql/` — `client.ts` (GraphQL clients per chain), `queries.ts`, `types.ts` (`MetricWithStatus`, `WithMeta`, `SubgraphMeta`), `metric-utils.ts` (lag detection / stale status helpers)
   - `common-util/snapshot-storage.ts` — Vercel Blob save/get with `mergeWithFallback` semantics
+  - `common-util/markdownForAgents.ts` — `sendMarkdown()` helper for the markdown content-negotiation routes
   - Other helpers: `numberFormatter.ts`, `time.ts`, `web3.ts`, `charts.ts`, `og/`, `useFetchApi.ts`, `olasApr.ts`, `calculate7DayAverage.ts`, `subgraph.ts`
 - `data/` — Static JSON: `agents.json`, `chains.json`, `tokens.json`, `kits.json`, `useCases.json`, `resources.json`, ABIs in `data/ABIs/`, etc.
 - `hooks/` — `usePersistentSWR`, `useWindowWidth`, `useHash`
 - `lib/` — `utils.ts` (only the `cn()` helper today)
+- `scripts/` — build-time Node scripts run from `postbuild`: `inject-robots-content-signal.js`, `build-agent-skills-index.js`
 - `styles/` — Global CSS and Tailwind layers
 - `public/` — Static assets (fonts, images, OG images, documents)
-- `middleware.ts` — Edge middleware (geo-blocking)
+  - `public/llms.txt` — curated machine-readable site summary for agents
+  - `public/.well-known/agent-skills/` — agent-skills discovery `index.json` + per-skill `SKILL.md` files (generated digests)
+- `middleware.ts` — Edge middleware (geo-blocking + markdown content negotiation)
 - `vercel.json` — Function limits + cron schedules
 - `next-sitemap.config.js` — Adds `/agents/<slug>` paths from `data/agents.json`
 
@@ -73,9 +81,19 @@ Categories: `main`, `predict`, `agent-economies`, `other`. Plus daily snapshots 
 - `pages/blog/[id].tsx` and `pages/learn/education-articles/[educationArticleId].tsx` use `getServerSideProps` (blog ID can be numeric or slug — see `isIdUsedToFetchBlog`).
 - Videos / podcasts use `useFetchVideos` (SWR-backed).
 
-**Regional restrictions** (`middleware.ts`):
-- Blocks OFAC-sanctioned countries (CU, IR, KP, SY, RU, BY) and Ukrainian regions (UA-14, UA-09, UA-43, UA-65, UA-23 — Donetsk, Luhansk, Crimea, Sevastopol) using `x-vercel-ip-country` / `x-vercel-ip-country-region` headers.
-- Redirects to `/restricted`. `/restricted` and `/disclaimer` are excluded; the matcher also excludes `/api`, `_next/*`, and static assets.
+**Regional restrictions + content negotiation** (`middleware.ts`):
+- Geo-blocks OFAC-sanctioned countries (CU, IR, KP, SY, RU, BY) and Ukrainian regions (UA-14, UA-09, UA-43, UA-65, UA-23 — Donetsk, Luhansk, Crimea, Sevastopol) using `x-vercel-ip-country` / `x-vercel-ip-country-region` headers, redirecting to `/restricted`. `/restricted` and `/disclaimer` are excluded; the matcher also excludes `/api`, `_next/*`, and static assets.
+- After the geo check, performs **markdown content negotiation**: if `Accept` contains `text/markdown` on a content route (`/blog/<id>`, `/learn/education-articles/<id>`), it rewrites to the matching `pages/api/md/*` route (see "Agent discovery & readiness"). Normal traffic (including `Accept: */*` and `text/html`) is untouched and falls through to `NextResponse.next()`.
+
+### Agent discovery & readiness
+
+The site exposes several agent-facing affordances. These are additive and must not change behavior for normal browser/crawler traffic.
+
+- **Link headers (RFC 8288)** — `next.config.js` `headers()` adds a `Link` header on `/` advertising `describedby` (`/llms.txt`), `service-doc` (docs.olas.network), `terms-of-service` (`/pearl-terms`), and `author` (valory.xyz).
+- **Content-Signals** — `robots.txt` carries a `Content-Signal:` directive (contentsignals.org). `robots.txt` is generated by `next-sitemap`, so the directive is injected by `scripts/inject-robots-content-signal.js` at `postbuild` (idempotent). Edit the policy string there.
+- **Agent skills** — `public/.well-known/agent-skills/index.json` (Agent Skills Discovery RFC v0.2.0) lists `SKILL.md` files, each with a `digest: "sha256:<hex>"`. **Never hand-edit the index** — run `scripts/build-agent-skills-index.js` (also runs at `postbuild`), which recomputes digests from the on-disk `SKILL.md` files so they can't drift. To add a skill: create `public/.well-known/agent-skills/<name>/SKILL.md` (with `name`/`description` frontmatter) and re-run the script.
+- **WebMCP** — `components/WebMcp/` registers read-mostly tools via `navigator.modelContext.registerTool` (`navigate_to_section`, `list_olas_agents`, `get_olas_facts`, `get_olas_metrics`). Feature-detected and unregistered on unmount; a no-op in browsers without the API. `get_olas_metrics` calls `pages/api/agent-tools/metrics.ts`.
+- **Markdown for agents** — `pages/api/md/{blog,education-articles}.ts` return the post's native CMS markdown (`body`) with `Content-Type: text/markdown`, `Vary: Accept`, and an `x-markdown-tokens` hint via `sendMarkdown()`. Reached only through the middleware rewrite; HTML stays the default. `next.config.js` adds `Vary: Accept` to the HTML content routes too.
 
 ### Vercel Configuration (`vercel.json`)
 
@@ -185,6 +203,8 @@ Applied to all paths: `Content-Security-Policy: frame-ancestors 'none'`, `X-Cont
 6. **Lodash imports**: default and namespace imports are ESLint-blocked — use `import { x } from 'lodash'` or `import x from 'lodash/x'`.
 7. **Middleware runs on the Edge runtime**: keep it lightweight; no Node.js APIs.
 8. **TypeScript strictness**: `strict: false` in `tsconfig.json`, `allowJs: true`. New code in `common-util/` should still be typed (per CONTRIBUTING.md).
+9. **Middleware rewrites drop path params and query strings**: a `NextResponse.rewrite()` into an API route makes the handler see the *original* `req.url`, so neither dynamic segments nor appended query params reach `req.query`. Pass data via a request header instead (e.g. the markdown routes use `x-olas-md-id` set through `NextResponse.rewrite(url, { request: { headers } })`).
+10. **Generated files**: `robots.txt`, sitemaps, and `public/.well-known/agent-skills/index.json` are produced at `postbuild`. Don't hand-edit them — change the source (`next-sitemap.config.js`, `scripts/inject-robots-content-signal.js`, the `SKILL.md` files). `robots.txt` is committed, so re-run the relevant script if you change the policy.
 
 ## Testing Considerations
 
