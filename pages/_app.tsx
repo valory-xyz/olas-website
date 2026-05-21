@@ -1,3 +1,4 @@
+import WebMcp from 'components/WebMcp';
 import PlausibleProvider from 'next-plausible';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -60,6 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
       }
     >
       <PlausibleTracker />
+      <WebMcp />
       <Component {...pageProps} />
     </PlausibleProvider>
   );

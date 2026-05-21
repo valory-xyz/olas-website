@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "find-olas-agent",
+      "type": "skill-md",
+      "description": "Discover Olas AI agents — browse the agent catalog, look up an individual agent by slug, and find the right agent for a use case (prediction markets, DeFi, automation, social).",
+      "url": "https://olas.network/.well-known/agent-skills/find-olas-agent/SKILL.md",
+      "digest": "sha256:c152c6ae09d62ae29db4b431c89de3f523f79083c0ded9926b71c6a03770b618"
+    },
+    {
+      "name": "get-olas-metrics",
+      "type": "skill-md",
+      "description": "Retrieve live Olas network metrics — daily active agents, OLAS staked, transactions, agent-to-agent transactions, mech fees, and operators — and per-economy breakdowns.",
+      "url": "https://olas.network/.well-known/agent-skills/get-olas-metrics/SKILL.md",
+      "digest": "sha256:4e77d0632ccb97622b572f43ef6777b2f23ca967aa72e8e59be02020e9564db1"
+    },
+    {
+      "name": "get-started-pearl",
+      "type": "skill-md",
+      "description": "Get started with Pearl, the self-custodial \"AI Agent App Store\" — download it, set up an agent on your own device, and earn potential OLAS staking rewards.",
+      "url": "https://olas.network/.well-known/agent-skills/get-started-pearl/SKILL.md",
+      "digest": "sha256:72573a8f88774bd7c46003c3f4f5019acc433b0182202ed6417568888388fc5b"
+    },
+    {
+      "name": "stake-olas",
+      "type": "skill-md",
+      "description": "Stake OLAS and earn potential rewards by running Olas agents — via the Pearl app (consumer) or operate.olas.network (advanced), including where to find available staking contracts.",
+      "url": "https://olas.network/.well-known/agent-skills/stake-olas/SKILL.md",
+      "digest": "sha256:141362b193c36e43f69602b2cb461135d52a4a38cf833da144013abbcc8a5cd8"
+    }
+  ]
+}

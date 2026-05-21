@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && node scripts/inject-robots-content-signal.js && node scripts/build-agent-skills-index.js",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\"",

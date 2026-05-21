@@ -177,6 +177,32 @@ module.exports = withPlausibleProxy()({
   async headers() {
     return [
       {
+        // RFC 8288 Link headers for agent discovery — advertise the agent
+        // summary, docs, terms and author from the homepage.
+        source: '/',
+        headers: [
+          {
+            key: 'Link',
+            value: [
+              '</llms.txt>; rel="describedby"; type="text/plain"',
+              '<https://docs.olas.network>; rel="service-doc"',
+              '</pearl-terms>; rel="terms-of-service"',
+              '<https://www.valory.xyz>; rel="author"',
+            ].join(', '),
+          },
+        ],
+      },
+      {
+        // Content negotiation: blog/education-article routes serve a markdown
+        // variant for `Accept: text/markdown`, so caches must vary on Accept.
+        source: '/blog/:id*',
+        headers: [{ key: 'Vary', value: 'Accept' }],
+      },
+      {
+        source: '/learn/education-articles/:id*',
+        headers: [{ key: 'Vary', value: 'Accept' }],
+      },
+      {
         source: '/:path*',
         headers: [
           {
