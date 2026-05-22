@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\"",
-    "lint:lockfile": "lockfile-lint --path yarn.lock --type yarn --allowed-hosts yarn npm --allowed-schemes https: --validate-integrity"
+    "lint:lockfile": "lockfile-lint --path yarn.lock --type yarn --allowed-hosts yarn npm --allowed-schemes https: --validate-integrity",
+    "audit:prod": "node scripts/audit.mjs",
+    "audit:install-hooks": "node scripts/audit-install-hooks.mjs",
+    "audit:install-hooks:update": "node scripts/audit-install-hooks.mjs --update"
   },
   "dependencies": {
     "@fontsource/inter": "5.2.6",
@@ -71,10 +74,10 @@
     "prettier": "3.6.2"
   },
   "resolutions": {
-    "flatted": "^3.3.4",
-    "mdast-util-to-hast": "^13.2.1",
-    "yaml": "^2.8.3",
-    "diff": "^5.2.2"
+    "flatted": "3.3.4",
+    "mdast-util-to-hast": "13.2.1",
+    "yaml": "2.8.3",
+    "diff": "5.2.2"
   },
   "babel": {
     "presets": [
