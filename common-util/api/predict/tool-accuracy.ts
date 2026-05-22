@@ -108,7 +108,9 @@ async function fetchMechRequestsForSender(
 }
 
 function matchBetToMechRequest(bet: Bet, mechRequests: MechRequest[]): string | null {
-  const betQuestion = normalizeQuestion(bet.fixedProductMarketMaker.question);
+  const fpmmQuestion = bet.fixedProductMarketMaker?.question;
+  if (!fpmmQuestion) return null;
+  const betQuestion = normalizeQuestion(fpmmQuestion);
   const betTimestamp = Number(bet.timestamp);
 
   // Find the latest mech request before the bet timestamp whose question matches
@@ -180,6 +182,9 @@ export async function computeOmenstratToolAccuracy(): Promise<ToolAccuracyStat[]
     if (mechRequests.length === 0) continue;
 
     for (const bet of bettorBets) {
+      // Guard against bets with a null `fixedProductMarketMaker` — same
+      // null-nested-entity hazard as the Polymarket `question` field.
+      if (!bet.fixedProductMarketMaker) continue;
       const currentAnswer = bet.fixedProductMarketMaker.currentAnswer;
       if (currentAnswer === INVALID_ANSWER_HEX) continue;
 
