@@ -77,7 +77,9 @@
     "flatted": "3.3.4",
     "mdast-util-to-hast": "13.2.1",
     "yaml": "2.8.3",
-    "diff": "5.2.2"
+    "diff": "5.2.2",
+    "postcss": "8.5.10",
+    "@babel/plugin-transform-modules-systemjs": "7.29.4"
   },
   "babel": {
     "presets": [
