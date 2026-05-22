@@ -10,7 +10,9 @@ useDefault = true
 
 [[allowlists]]
 description = "EVM addresses (0x + 40 hex) are public on-chain identifiers, not secrets"
-regexTarget = "line"
+# regexTarget "match" (not "line") so only the address itself is allowlisted —
+# a real secret sharing a line with an address would still be reported.
+regexTarget = "match"
 regexes = ['''0x[a-fA-F0-9]{40}''']
 
 [[allowlists]]
