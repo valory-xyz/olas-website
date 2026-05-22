@@ -108,7 +108,9 @@ async function fetchMechRequestsForSender(
 }
 
 function matchBetToMechRequest(bet: Bet, mechRequests: MechRequest[]): string | null {
-  const betQuestion = normalizeQuestion(bet.fixedProductMarketMaker.question);
+  const fpmmQuestion = bet.fixedProductMarketMaker?.question;
+  if (!fpmmQuestion) return null;
+  const betQuestion = normalizeQuestion(fpmmQuestion);
   const betTimestamp = Number(bet.timestamp);
 
   // Find the latest mech request before the bet timestamp whose question matches
@@ -180,6 +182,9 @@ export async function computeOmenstratToolAccuracy(): Promise<ToolAccuracyStat[]
     if (mechRequests.length === 0) continue;
 
     for (const bet of bettorBets) {
+      // Guard against bets with a null `fixedProductMarketMaker` — same
+      // null-nested-entity hazard as the Polymarket `question` field.
+      if (!bet.fixedProductMarketMaker) continue;
       const currentAnswer = bet.fixedProductMarketMaker.currentAnswer;
       if (currentAnswer === INVALID_ANSWER_HEX) continue;
 
@@ -225,8 +230,10 @@ async function fetchPolymarketResolvedBets(): Promise<PolymarketBet[]> {
     .filter(([key]) => key !== '_meta')
     .flatMap(([, value]) => value) as PolymarketBet[];
 
-  // Only keep resolved bets
-  return allBets.filter((bet) => bet.question.resolution !== null);
+  // Only keep resolved bets. Guard against bets whose `question` is null
+  // (the subgraph started returning these ~2026-05; an unguarded
+  // `bet.question.resolution` throws and the whole snapshot computation fails).
+  return allBets.filter((bet) => bet.question?.resolution != null);
 }
 
 async function fetchPolygonMechRequestsForSender(

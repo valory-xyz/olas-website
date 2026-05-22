@@ -245,8 +245,13 @@ export const fetchPolystratRoi = async (): Promise<
       return hasNoResolution;
     });
 
-    // Get open market titles and sum totalPayout
-    const openMarketTitles = openMarketParticipants.map((p) => p.question.metadata.title);
+    // Get open market titles and sum totalPayout. Guard against participants
+    // whose `question` (or its metadata) is null — the subgraph started
+    // returning these ~2026-05, and an unguarded access throws and fails the
+    // whole ROI computation (manifesting as a frozen/stale ROI value).
+    const openMarketTitles = openMarketParticipants
+      .map((p) => p.question?.metadata?.title)
+      .filter((title): title is string => Boolean(title));
 
     let requestsToSubtract = 0;
     lastFourDaysRequests.forEach((request) => {
