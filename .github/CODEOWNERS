@@ -1,13 +1,11 @@
 # CODEOWNERS — routes reviews for sensitive paths to their owners.
 #
-# Security-owned paths route to @Tanya-atatakai and @atepem.
-# NOTE: the default-owner handle below is still a placeholder — replace
-# @valory-xyz/REPLACE-frontend-team with the real default review team.
-# CODEOWNERS only *enforces* review when branch protection has
-# "Require review from Code Owners" enabled.
+# Owned by @Tanya-atatakai and @atepem. CODEOWNERS only *enforces* review when
+# branch protection has "Require review from Code Owners" enabled, and only
+# routes to users with write access to the repo.
 
 # Default owner for everything not matched more specifically.
-*                                   @valory-xyz/REPLACE-frontend-team
+*                                   @Tanya-atatakai @atepem
 
 # Supply-chain config — an owner from the security group must approve any change.
 /.yarnrc                            @Tanya-atatakai @atepem
