@@ -1,0 +1,24 @@
+# CODEOWNERS — routes reviews for sensitive paths to their owners.
+#
+# Security-owned paths route to @Tanya-atatakai and @atepem.
+# NOTE: the default-owner handle below is still a placeholder — replace
+# @valory-xyz/REPLACE-frontend-team with the real default review team.
+# CODEOWNERS only *enforces* review when branch protection has
+# "Require review from Code Owners" enabled.
+
+# Default owner for everything not matched more specifically.
+*                                   @valory-xyz/REPLACE-frontend-team
+
+# Supply-chain config — an owner from the security group must approve any change.
+/.yarnrc                            @Tanya-atatakai @atepem
+/.nvmrc                             @Tanya-atatakai @atepem
+/.supply-chain/                     @Tanya-atatakai @atepem
+/scripts/audit.mjs                  @Tanya-atatakai @atepem
+/scripts/audit-install-hooks.mjs    @Tanya-atatakai @atepem
+/.github/workflows/                 @Tanya-atatakai @atepem
+/.github/CODEOWNERS                 @Tanya-atatakai @atepem
+/SECURITY.md                        @Tanya-atatakai @atepem
+/SUPPLY-CHAIN-SECURITY.md           @Tanya-atatakai @atepem
+/package.json                       @Tanya-atatakai @atepem
+/yarn.lock                          @Tanya-atatakai @atepem
+/vercel.json                        @Tanya-atatakai @atepem

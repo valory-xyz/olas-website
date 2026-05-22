@@ -1,0 +1,9 @@
+# Install-hook allowlist — packages with preinstall/install/postinstall scripts.
+# Regenerate with `yarn audit:install-hooks:update`, then justify each entry.
+# Format: <package> # <what the hook does and why it is acceptable>
+# An entry tagged "TODO: justify" is unreviewed — replace it with a real reason.
+
+bufferutil # install: node-gyp-build — optional native speedup for `ws` websockets; prebuilt binary when available, JS fallback otherwise. Benign.
+msw # postinstall: copies the mock service worker script (transitive dev/test tooling). Benign, no network/binary fetch.
+sharp # install: verifies the libvips native binary; ships prebuilt @img/sharp-* platform packages so the hook is a no-op when prebuilt are present. Used by next/image. Benign.
+unrs-resolver # postinstall: napi-postinstall resolves the prebuilt native binding for the eslint import resolver (eslint-config-next). Prebuilt napi binaries, no compile. Benign.

@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '22.x'
+          node-version-file: .nvmrc
           cache: 'yarn'
       - name: Activate pinned Yarn via Corepack
         run: |
@@ -41,27 +41,16 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '22.x'
+          node-version-file: .nvmrc
           cache: 'yarn'
       - name: Activate pinned Yarn via Corepack
         run: |
           corepack enable
           corepack prepare yarn@1.22.22 --activate
-      - name: Run yarn audit (fail on high/critical, production deps only)
-        # Yarn 1.x `yarn audit` exit code is a severity bitmask, not a --level
-        # comparison: 1=info, 2=low, 4=moderate, 8=high, 16=critical. Mask
-        # against 24 (8|16) to fail only on high or critical findings.
-        # `|| CODE=$?` captures the exit code without tripping `bash -e`, which
-        # is on by default in GitHub Actions (`bash --noprofile --norc -eo pipefail`).
-        # See SUPPLY-CHAIN-SECURITY.md §5.
-        run: |
-          CODE=0
-          yarn audit --groups dependencies || CODE=$?
-          if [ $((CODE & 24)) -ne 0 ]; then
-            echo "::error::High or critical advisory found (exit code $CODE)"
-            exit 1
-          fi
-          echo "No high/critical advisories (exit code $CODE indicates low/moderate/info only, ignored by policy)"
+      - name: Run audit gate
+        # Wrapper handles the Yarn 1.x severity bitmask and the
+        # .supply-chain/audit-allowlist.json suppressions. See SUPPLY-CHAIN-SECURITY.md §5.
+        run: yarn audit:prod
 
   lockfile-lint:
     name: Lockfile lint
@@ -70,7 +59,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '22.x'
+          node-version-file: .nvmrc
           cache: 'yarn'
       - name: Activate pinned Yarn via Corepack
         run: |
@@ -80,6 +69,24 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Validate yarn.lock registry URLs and integrity
         run: yarn lint:lockfile
+
+  install-hooks:
+    name: Install-hook diff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+      - name: Activate pinned Yarn via Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+      - name: Install (skip lifecycle scripts)
+        run: yarn install --frozen-lockfile --ignore-scripts
+      - name: Diff install-hook surface
+        run: yarn audit:install-hooks
 
   all-checks-passed:
     # Single aggregate gate for branch protection. Keep this job's `needs`
@@ -92,7 +99,7 @@ jobs:
     # but if one is ever added, this guard prevents a `skipped` result from
     # silently satisfying the required status check.
     name: All checks passed
-    needs: [lint, audit, lockfile-lint]
+    needs: [lint, audit, lockfile-lint, install-hooks]
     if: always()
     runs-on: ubuntu-latest
     steps:
