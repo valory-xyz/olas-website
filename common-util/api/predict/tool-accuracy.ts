@@ -225,8 +225,10 @@ async function fetchPolymarketResolvedBets(): Promise<PolymarketBet[]> {
     .filter(([key]) => key !== '_meta')
     .flatMap(([, value]) => value) as PolymarketBet[];
 
-  // Only keep resolved bets
-  return allBets.filter((bet) => bet.question.resolution !== null);
+  // Only keep resolved bets. Guard against bets whose `question` is null
+  // (the subgraph started returning these ~2026-05; an unguarded
+  // `bet.question.resolution` throws and the whole snapshot computation fails).
+  return allBets.filter((bet) => bet.question?.resolution != null);
 }
 
 async function fetchPolygonMechRequestsForSender(
