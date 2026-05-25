@@ -39,7 +39,7 @@ const quotes = [
   },
   {
     projectImage: 'creator-bid.png',
-    projectUrl: 'https://creator.bid/',
+    projectUrl: 'https://og.creator.bid/agents',
     quote:
       "We're building Creator.bid on the cutting-edge Olas Stack to be one the first Olas-powered project en-route to deliver no-code ACA (AI Creator Agents) at scale. The Olas Stack has proven to be a fantastic choice for us to run our agents in a decentralized fashion with off-chain consensus at scale.",
     name: 'Philipp Kothe',
@@ -60,7 +60,7 @@ const quotes = [
   },
   {
     projectImage: 'nevermined.png',
-    projectUrl: 'https://nevermined.io/',
+    projectUrl: 'https://nevermined.ai/',
     quote:
       'We are building on Olas to allow AI agents to get paid across the different networks that agents are deployed to. Nevermined will work to bring Olas AI agents to life through R&D and mutual integrations. The Olas Stack enables all agents to be interoperable and composable with one another so that our payment mechanism can work seamlessly.',
     name: 'Don Gossen',
