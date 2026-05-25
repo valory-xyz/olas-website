@@ -1,0 +1,20 @@
+# gitleaks configuration.
+# Extends the upstream default ruleset and allowlists this repo's PUBLIC
+# on-chain identifiers, which the high-entropy `generic-api-key` rule otherwise
+# flags. These are blockchain addresses / pool IDs — public by definition, never
+# secrets. Real credentials live only in env vars (see SUPPLY-CHAIN-SECURITY.md
+# §7) and are gitignored, so they are never in the tree gitleaks scans.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "EVM addresses (0x + 40 hex) are public on-chain identifiers, not secrets"
+# regexTarget "match" (not "line") so only the address itself is allowlisted —
+# a real secret sharing a line with an address would still be reported.
+regexTarget = "match"
+regexes = ['''0x[a-fA-F0-9]{40}''']
+
+[[allowlists]]
+description = "data/tokens.json is a public token/LP registry (EVM + Solana base58 addresses only)"
+paths = ['''data/tokens\.json''']

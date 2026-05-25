@@ -1,0 +1,22 @@
+# CODEOWNERS — routes reviews for sensitive paths to their owners.
+#
+# Owned by @Tanya-atatakai and @atepem. CODEOWNERS only *enforces* review when
+# branch protection has "Require review from Code Owners" enabled, and only
+# routes to users with write access to the repo.
+
+# Default owner for everything not matched more specifically.
+*                                   @Tanya-atatakai @atepem
+
+# Supply-chain config — an owner from the security group must approve any change.
+/.yarnrc                            @Tanya-atatakai @atepem
+/.nvmrc                             @Tanya-atatakai @atepem
+/.supply-chain/                     @Tanya-atatakai @atepem
+/scripts/audit.mjs                  @Tanya-atatakai @atepem
+/scripts/audit-install-hooks.mjs    @Tanya-atatakai @atepem
+/.github/workflows/                 @Tanya-atatakai @atepem
+/.github/CODEOWNERS                 @Tanya-atatakai @atepem
+/SECURITY.md                        @Tanya-atatakai @atepem
+/SUPPLY-CHAIN-SECURITY.md           @Tanya-atatakai @atepem
+/package.json                       @Tanya-atatakai @atepem
+/yarn.lock                          @Tanya-atatakai @atepem
+/vercel.json                        @Tanya-atatakai @atepem
