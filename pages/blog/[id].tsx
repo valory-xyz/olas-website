@@ -14,9 +14,9 @@ const DESC_CHAR_LIMIT = 160;
 const BlogItem = ({ blog }) => {
   if (!blog) return <Spinner />;
 
-  const { title, datePublished, body: content, headerImage } = blog.attributes;
+  const { title, datePublished, body: content, headerImage } = blog;
   const formattedDate = formatDate(datePublished);
-  const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
+  const imagePath = headerImage?.[0]?.formats?.large?.url;
   const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
@@ -32,8 +32,8 @@ const BlogItem = ({ blog }) => {
         {imagePath && (
           <Image
             src={imageUrl}
-            width={headerImage.data[0].attributes.formats.large.width}
-            height={headerImage.data[0].attributes.formats.large.height}
+            width={headerImage[0].formats.large.width}
+            height={headerImage[0].formats.large.height}
             alt={title}
             className="border mb-12 rounded-lg"
           />

@@ -21,8 +21,8 @@ const EducationArticle = () => {
 
   if (!educationArticle) return <Spinner />;
 
-  const { title, body: content, headerImage } = educationArticle.attributes;
-  const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
+  const { title, body: content, headerImage } = educationArticle;
+  const imagePath = headerImage?.[0]?.formats?.large?.url;
   const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 

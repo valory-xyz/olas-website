@@ -45,7 +45,7 @@ export const CaseStudies = ({ limit = 1000 }: CaseStudiesProps) => {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {(limit ? caseStudies.slice(0, limit) : caseStudies).map((item) => (
-            <Article key={item.id} article={item} href={`/blog/${item?.attributes?.slug}`} />
+            <Article key={item.id} article={item} href={`/blog/${item?.slug}`} />
           ))}
         </div>
       </div>
