@@ -17,6 +17,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
 import { fetchOmenstratRoi } from './omenstrat-roi';
 import { fetchOmenstratSuccessRate } from './omenstrat-success-rate';
 import { fetchPolystratRoi } from './polystrat-roi';
@@ -211,6 +212,8 @@ const fetchPolystratOlasApr = async (): Promise<MetricWithStatus<string | null>>
   });
 };
 
+export type { WindowKey, WindowedMetric } from './omenstrat-brier';
+
 export type PredictMetricsData = {
   // Omenstrat metrics
   omenstrat: {
@@ -220,6 +223,8 @@ export type PredictMetricsData = {
     partialRoi: MetricWithStatus<number | null>;
     finalRoi: MetricWithStatus<number | null>;
     successRate: MetricWithStatus<string | null>;
+    // Windowed mean Brier score (predict-omen only). Lower is better; ~0.25 = a 50/50 guess.
+    brierScore: MetricWithStatus<WindowedMetric<number | null>>;
   };
 
   // Polystrat metrics
@@ -246,6 +251,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       omenstratTxsResult,
       omenstratRoiResult,
       omenstratSuccessRateResult,
+      omenstratBrierResult,
       polystratAprResult,
       polystratTxsResult,
       polystratRoiResult,
@@ -258,6 +264,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       fetchPredictTxsByAgentType(),
       fetchOmenstratRoi(),
       fetchOmenstratSuccessRate(),
+      fetchOmenstratBrier(),
       // Polystrat
       fetchPolystratOlasApr(),
       fetchPolystratTxsByAgentType(),
@@ -309,6 +316,13 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
           omenstratSuccessRateResult.status === 'fulfilled'
             ? omenstratSuccessRateResult.value
             : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:successRate') },
+        brierScore:
+          omenstratBrierResult.status === 'fulfilled'
+            ? omenstratBrierResult.value
+            : {
+                value: { '7d': null, '30d': null, '90d': null, max: null },
+                status: getFetchErrorAndCreateStaleStatus('omenstrat:brier'),
+              },
       },
 
       polystrat: {
