@@ -17,7 +17,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
+import { emptyWindows, fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
 import { fetchOmenstratRoi } from './omenstrat-roi';
 import { fetchOmenstratSuccessRate } from './omenstrat-success-rate';
 import { fetchPolystratRoi } from './polystrat-roi';
@@ -320,7 +320,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
           omenstratBrierResult.status === 'fulfilled'
             ? omenstratBrierResult.value
             : {
-                value: { '7d': null, '30d': null, '90d': null, max: null },
+                value: emptyWindows(),
                 status: getFetchErrorAndCreateStaleStatus('omenstrat:brier'),
               },
       },
