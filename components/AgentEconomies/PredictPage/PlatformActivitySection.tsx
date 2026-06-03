@@ -216,12 +216,14 @@ export const PlatformActivitySection = ({
     status: m.brierStatus,
   };
 
-  // Omenstrat replaces OLAS Staking APR with the windowed Brier score; Polystrat
-  // keeps APR until predict-polymarket ships Brier data.
-  const performanceItems: MetricItemProps[] =
-    platform === 'omenstrat'
-      ? [roiItem, accuracyItem, brierItem]
-      : [roiItem, aprItem, accuracyItem];
+  // Both economies show ROI / APR / Accuracy. Brier score is an additional 4th
+  // metric on Omenstrat only (predict-polymarket doesn't index Brier yet).
+  const performanceItems: MetricItemProps[] = [
+    roiItem,
+    aprItem,
+    accuracyItem,
+    ...(platform === 'omenstrat' ? [brierItem] : []),
+  ];
 
   const lifetimeItems: MetricItemProps[] = [
     {
