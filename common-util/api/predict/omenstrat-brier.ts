@@ -39,11 +39,14 @@ type DailyBrierStatsResponse = WithMeta<{ dailyProfitStatistics: DailyBrierStat[
 type BrierBucket = { sum: string; count: number };
 type BrierAccumulator = {
   // dayTimestamp (UTC midnight, string) -> settlement-day Brier accumulators,
-  // summed across all trader agents. Contiguous over [backfilledTo, yesterday].
+  // summed across all trader agents. Contiguous over [backfilledTo, coveredTo].
   buckets: Record<string, BrierBucket>;
   // Oldest day processed so far. Window N is "covered" once backfilledTo <= its
   // cutoff; Max is covered once backfilledTo <= OMEN_GENESIS_DAY.
   backfilledTo: number;
+  // Newest day processed so far. Lets the head refresh bridge any gap (e.g. a
+  // cron outage longer than the trailing window) instead of silently skipping days.
+  coveredTo: number;
 };
 
 export const emptyWindows = (): WindowedMetric<number | null> => ({
@@ -129,6 +132,9 @@ export const fetchOmenstratBrier = async (): Promise<
     const buckets: Record<string, BrierBucket> = { ...(existing?.buckets ?? {}) };
     // Sentinel for a fresh accumulator: nothing processed yet (just above the head).
     let backfilledTo = existing?.backfilledTo ?? yesterday + DAY;
+    // Treat a fresh accumulator as "caught up to yesterday" so the head refresh is
+    // just the trailing window and history is filled by the backward backfill.
+    const prevCoveredTo = existing?.coveredTo ?? yesterday;
 
     const applyBuckets = (perDay: Map<number, { sum: bigint; count: number }>) => {
       for (const [day, { sum, count }] of perDay.entries()) {
@@ -136,12 +142,18 @@ export const fetchOmenstratBrier = async (): Promise<
       }
     };
 
-    // 1. Head refresh: reprocess the trailing window (new complete days + re-answers).
-    const trailStart = Math.max(OMEN_GENESIS_DAY, yesterday - (TRAIL_DAYS - 1) * DAY);
-    applyBuckets(
-      await fetchDayBuckets(trailStart, yesterday, gnosisBlock, indexingErrors, laggingSubgraphs)
+    // 1. Head refresh up to yesterday. Normally this is just the trailing window
+    //    (new complete days + late re-answers). If a cron outage left coveredTo
+    //    well below yesterday, headStart drops to bridge the gap — no missed days.
+    const trailStart = yesterday - (TRAIL_DAYS - 1) * DAY;
+    const headStart = Math.max(
+      OMEN_GENESIS_DAY,
+      Math.min(trailStart, prevCoveredTo - (TRAIL_DAYS - 1) * DAY)
     );
-    backfilledTo = Math.min(backfilledTo, trailStart);
+    applyBuckets(
+      await fetchDayBuckets(headStart, yesterday, gnosisBlock, indexingErrors, laggingSubgraphs)
+    );
+    backfilledTo = Math.min(backfilledTo, headStart);
 
     // 2. Historical backfill: extend the covered range one chunk toward genesis.
     if (backfilledTo > OMEN_GENESIS_DAY) {
@@ -185,7 +197,10 @@ export const fetchOmenstratBrier = async (): Promise<
     // not a metric that benefits from mergeWithFallback).
     await saveSnapshot({
       category: ACCUMULATOR_CATEGORY,
-      data: { data: { buckets, backfilledTo } as BrierAccumulator, timestamp: Date.now() },
+      data: {
+        data: { buckets, backfilledTo, coveredTo: yesterday } as BrierAccumulator,
+        timestamp: Date.now(),
+      },
       overwrite: true,
     });
 
