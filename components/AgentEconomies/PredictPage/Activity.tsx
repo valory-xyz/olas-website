@@ -39,6 +39,8 @@ const processPredictMetrics = (
         roiStatus: undefined,
         successRate: null,
         successRateStatus: undefined,
+        brierScore: null,
+        brierStatus: undefined,
       },
       polystrat: {
         dailyActiveAgents: null,
@@ -77,6 +79,8 @@ const processPredictMetrics = (
       roiStatus: metrics.omenstrat?.finalRoi?.status,
       successRate: metrics.omenstrat?.successRate?.value ?? null,
       successRateStatus: metrics.omenstrat?.successRate?.status,
+      brierScore: metrics.omenstrat?.brierScore?.value ?? null,
+      brierStatus: metrics.omenstrat?.brierScore?.status,
     },
     polystrat: {
       dailyActiveAgents: metrics.polystrat?.dailyActiveAgents?.value ?? null,
