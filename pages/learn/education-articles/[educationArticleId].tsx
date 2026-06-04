@@ -4,6 +4,7 @@ import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
+import { isArray } from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { TEXT, TITLE } from 'styles/globals';
@@ -22,7 +23,10 @@ const EducationArticle = () => {
   if (!educationArticle) return <Spinner />;
 
   const { title, body: content, headerImage } = educationArticle;
-  const imagePath = headerImage?.[0]?.formats?.large?.url;
+  // education articles use single-media headerImage (object); blogs use
+  // multiple-media (array). Tolerate both.
+  const headerImageData = isArray(headerImage) ? headerImage?.[0] : headerImage;
+  const imagePath = headerImageData?.formats?.large?.url;
   const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
