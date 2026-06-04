@@ -81,7 +81,9 @@ type MetricItemProps = {
 };
 
 const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) => {
-  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : ''}`;
+  // Match the brand colour of the linked metrics (Link is text-purple-600) so an
+  // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
+  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`;
   return (
     <div className="flex flex-col gap-1">
       <div className="text-sm text-slate-500">{label}</div>
@@ -214,6 +216,7 @@ export const PlatformActivitySection = ({
     ),
     value: isNil(brierValue) ? null : brierValue.toFixed(2),
     status: m.brierStatus,
+    href: `/data#${platform}-predict-brier`,
   };
 
   // Both economies show ROI / APR / Accuracy. Brier score is an additional 4th
