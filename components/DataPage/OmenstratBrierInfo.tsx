@@ -29,26 +29,29 @@ export const OmenstratBrierInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          The Brier score measures how well-calibrated an agent&apos;s predictions are — not just
-          whether it was right, but whether the confidence it implied matched reality. It is the
-          mean squared error between the market-implied probability of the outcome the agent bought
-          (its prediction) and what actually happened (<b>1</b> if that outcome won, <b>0</b> if it
-          lost, or <b>0.5</b> for markets that resolve invalid). <b>Lower is better:</b> 0 is a
-          perfect forecast, ~0.25 is no better than a 50/50 guess, and 1 is maximally wrong.
+          The Brier score shows how well-calibrated your agent&apos;s predictions are — it rewards
+          being confident when right and cautious when wrong, not just being right on average. For
+          every trade it compares the probability the market implied for the outcome your agent
+          backed against what actually happened, then averages the result across all resolved
+          markets. Lower is better:
         </p>
 
-        <p>
-          Only <b>buy</b> trades on <b>settled</b> markets are scored — sells rebalance a position
-          rather than express a prediction, so they are excluded. Each bet&apos;s implied
-          probability is captured at trade time, and its squared error is accumulated on the day its
-          market resolves.
-        </p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>
+            <strong>0</strong>: a perfect forecast.
+          </li>
+          <li>
+            <strong>~0.25</strong>: no better than a 50/50 guess.
+          </li>
+          <li>
+            <strong>1</strong>: confidently wrong every time.
+          </li>
+        </ul>
 
         <p>
-          The subgraph stores these as per-day accumulators (<code>brierSum</code>,{' '}
-          <code>brierCount</code>). The score shown for a period is the count-weighted mean over
-          that window — <code>sum(brierSum) / sum(brierCount)</code> (1e18-scaled) — so the 7D / 30D
-          / 90D / Max tabs simply sum the daily buckets over the corresponding range.
+          Only buy trades on resolved markets are counted — selling adjusts a position rather than
+          making a prediction, so sells are excluded. Each time range (7D / 30D / 90D / Max)
+          averages the trades whose markets resolved within that period.
         </p>
 
         <p>The following query is used:</p>
