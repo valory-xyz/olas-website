@@ -216,6 +216,7 @@ export const PlatformActivitySection = ({
     ),
     value: isNil(brierValue) ? null : brierValue.toFixed(2),
     status: m.brierStatus,
+    href: `/data#${platform}-predict-brier`,
   };
 
   // Both economies show ROI / APR / Accuracy. Brier score is an additional 4th

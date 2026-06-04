@@ -16,6 +16,7 @@ import {
 import { OperatorsInfo } from 'components/DataPage/Operators';
 import { OmenstratAccuracyInfo } from 'components/DataPage/OmenstratAccuracy';
 import { OmenstratAprInfo } from 'components/DataPage/OmenstratAprInfo';
+import { OmenstratBrierInfo } from 'components/DataPage/OmenstratBrierInfo';
 import { OmenstratRoiInfo } from 'components/DataPage/OmenstratRoiInfo';
 import { PolystratAccuracyInfo } from 'components/DataPage/PolystratAccuracy';
 import { PolystratAprInfo } from 'components/DataPage/PolystratAprInfo';
@@ -50,6 +51,7 @@ const DataVerifyPage = () => (
       <OmenstratRoiInfo />
       <OmenstratAprInfo />
       <OmenstratAccuracyInfo />
+      <OmenstratBrierInfo />
       <PolystratRoiInfo />
       <PolystratAprInfo />
       <PolystratAccuracyInfo />
