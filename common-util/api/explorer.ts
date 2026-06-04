@@ -7,9 +7,9 @@ import {
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
+import { explorerOmenstratSeriesQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { gql } from 'graphql-request';
 
 /** Two aligned daily series (same dates, same length) for the Explorer heatmap. */
 export type ExplorerSeries = {
@@ -46,39 +46,6 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 // (agent, day) → a few years × 2 trader agents fits in ~2 pages; cap as a backstop.
 const PAGE_SIZE = 1000;
 const MAX_PAGES = 8;
-
-const explorerOmenstratSeriesQuery = gql`
-  query ExplorerOmenstratSeries(
-    $agentIds: [Int!]!
-    $timestamp_gt: Int!
-    $timestamp_lt: Int!
-    $skip: Int!
-  ) {
-    dailyAgentPerformances(
-      where: {
-        and: [
-          { agentId_in: $agentIds }
-          { dayTimestamp_gt: $timestamp_gt }
-          { dayTimestamp_lt: $timestamp_lt }
-        ]
-      }
-      orderBy: dayTimestamp
-      orderDirection: asc
-      first: 1000
-      skip: $skip
-    ) {
-      dayTimestamp
-      activeMultisigCount
-      txCount
-    }
-    _meta {
-      hasIndexingErrors
-      block {
-        number
-      }
-    }
-  }
-`;
 
 /**
  * Build two gap-filled daily series (DAA + transactions) from the per-agent daily
@@ -121,7 +88,8 @@ const transformExplorerSeries = (
 /**
  * Fetch Omenstrat's full daily history as two aligned series (DAA + transactions)
  * for the Explorer heatmap. Queries the Gnosis registry subgraph directly (paged,
- * since it caps `first` at 1000) — it retains daily history, so no snapshot/cron.
+ * since it caps `first` at 1000). Called once a day by the `refresh-metrics/explorer`
+ * cron, which persists the result to a Vercel Blob snapshot that the page reads.
  */
 export const fetchOmenstratExplorerSeries = async (): Promise<
   MetricWithStatus<ExplorerSeries | null>

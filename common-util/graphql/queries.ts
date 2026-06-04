@@ -362,6 +362,41 @@ export const dailyPredictAgentsPerformancesQuery = gql`
   }
 `;
 
+// Like dailyPredictAgentsPerformancesQuery, but also pulls txCount and is paged
+// (skip) so the Explorer can build the full daily DAA + transactions history.
+export const explorerOmenstratSeriesQuery = gql`
+  query ExplorerOmenstratSeries(
+    $agentIds: [Int!]!
+    $timestamp_gt: Int!
+    $timestamp_lt: Int!
+    $skip: Int!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId_in: $agentIds }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: asc
+      first: 1000
+      skip: $skip
+    ) {
+      dayTimestamp
+      activeMultisigCount
+      txCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
   query DailyPredictAgentPerformancesWithMultisigs(
     $agentId_in: [Int!]!
