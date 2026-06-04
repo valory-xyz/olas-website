@@ -553,6 +553,31 @@ export const getOmenDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }
   }
 `;
 
+// Lean per-day Brier accumulators for windowed Brier-score aggregation.
+// brierSum/brierCount are 1e18-scaled and summable across days; windowed mean
+// Brier = sum(brierSum) / sum(brierCount). No traderAgent filter → platform-wide.
+export const getOmenDailyBrierStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
+  query OmenDailyBrierStats {
+    dailyProfitStatistics(
+      first: ${first}
+      skip: ${skip}
+      where: { date_gte: ${date_gte}, date_lte: ${date_lte} }
+      orderBy: date
+      orderDirection: asc
+    ) {
+      date
+      brierSum
+      brierCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
   query PolymarketDailyProfitStats {
     dailyProfitStatistics(
