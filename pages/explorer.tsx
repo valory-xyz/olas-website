@@ -1,6 +1,6 @@
-import { fetchOmenstratExplorerSeries } from 'common-util/api/explorer';
-import type { ExplorerSeries } from 'common-util/api/explorer';
+import type { ExplorerMetricsData, ExplorerSeries } from 'common-util/api/explorer';
 import type { MetricStatus } from 'common-util/graphql/types';
+import { getSnapshot } from 'common-util/snapshot-storage';
 import Explorer from 'components/ExplorerPage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
@@ -21,16 +21,18 @@ const ExplorerPage = ({ series, status }: ExplorerPageProps) => (
 );
 
 export const getStaticProps = async () => {
-  // Query the Gnosis registry subgraph directly — it retains daily history, so no
-  // snapshot/cron is needed (and mergeWithFallback would clobber a series anyway).
-  const { value, status } = await fetchOmenstratExplorerSeries();
+  // Read the daily explorer snapshot (Vercel Blob, written by the explorer cron),
+  // not the subgraph — so visits/ISR never hit the registry directly.
+  const snapshot = await getSnapshot({ category: 'explorer' });
+  const metric = (snapshot?.data as ExplorerMetricsData)?.omenstrat ?? null;
 
   return {
     props: {
-      series: value ?? { daa: [], transactions: [] },
-      status,
+      series: metric?.value ?? { daa: [], transactions: [] },
+      status: metric?.status ?? null,
     },
-    // Registry data updates ~daily; revalidate hourly.
+    // Snapshot refreshes daily; revalidate hourly so the (future) predict-derived
+    // Accuracy/ROI tiles can stay hourly-fresh without a new explorer job.
     revalidate: 60 * 60,
   };
 };

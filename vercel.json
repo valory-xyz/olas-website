@@ -28,6 +28,10 @@
     "pages/api/refresh-metrics/predict-tool-accuracy.ts": {
       "maxDuration": 300,
       "memory": 512
+    },
+    "pages/api/refresh-metrics/explorer.ts": {
+      "maxDuration": 300,
+      "memory": 512
     }
   },
   "crons": [
@@ -58,6 +62,10 @@
     {
       "path": "/api/refresh-metrics/predict-tool-accuracy",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/refresh-metrics/explorer",
+      "schedule": "0 6 * * *"
     }
   ]
 }

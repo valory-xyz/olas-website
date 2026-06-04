@@ -42,14 +42,6 @@ const ONE_DAY_SECONDS = 24 * 60 * 60;
 const REQUEST_ATTEMPTS = 2;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-// In-memory cache so dev (where getStaticProps re-runs per request) doesn't re-hit
-// the subgraph on every refresh. Prod relies on ISR; this is per-process.
-const CACHE_TTL_MS = 30 * 60 * 1000;
-type SeriesCache = { at: number; result: MetricWithStatus<ExplorerSeries | null> };
-// Stored on globalThis so the cache survives Next dev HMR recompiles (a module-level
-// `let` resets on every edit). Prod relies on ISR.
-const cacheHost = globalThis as typeof globalThis & { __aeeExplorerCache?: SeriesCache | null };
-
 // The subgraph caps `first` at 1000, so we page through with skip. One row per
 // (agent, day) → a few years × 2 trader agents fits in ~2 pages; cap as a backstop.
 const PAGE_SIZE = 1000;
@@ -134,9 +126,6 @@ const transformExplorerSeries = (
 export const fetchOmenstratExplorerSeries = async (): Promise<
   MetricWithStatus<ExplorerSeries | null>
 > => {
-  const cached = cacheHost.__aeeExplorerCache;
-  if (cached && Date.now() - cached.at < CACHE_TTL_MS) return cached.result;
-
   const timestampLt = getMidnightUtcTimestampDaysAgo(0);
   const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
 
@@ -175,17 +164,42 @@ export const fetchOmenstratExplorerSeries = async (): Promise<
       ? [SOURCE]
       : [];
 
-    const result = {
+    return {
       value: transformExplorerSeries(rows, timestampGt, timestampLt),
       status: createStaleStatus({ indexingErrors, fetchErrors: [], laggingSubgraphs }),
     };
-    cacheHost.__aeeExplorerCache = { at: Date.now(), result };
-    return result;
   } catch (error) {
     console.error(`Error fetching from ${SOURCE}:`, error);
-    // Stale-while-revalidate: the subgraph is flaky (504 / "database unavailable"),
-    // so serve the last good result rather than blanking the page.
-    if (cacheHost.__aeeExplorerCache) return cacheHost.__aeeExplorerCache.result;
+    // Return null/stale; saveSnapshot's mergeWithFallback keeps the last good
+    // series in the blob, so a flaky-subgraph run never blanks the page.
     return { value: null, status: getFetchErrorAndCreateStaleStatus(SOURCE) };
+  }
+};
+
+/** Snapshot persisted to Vercel Blob under the `explorer` category. */
+export type ExplorerMetricsData = {
+  omenstrat: MetricWithStatus<ExplorerSeries | null>;
+};
+
+export type ExplorerMetricsSnapshot = {
+  data: ExplorerMetricsData;
+  timestamp: number;
+};
+
+/**
+ * Build the Explorer snapshot for the daily `refresh-metrics/explorer` cron.
+ *
+ * Today this does a full-history refetch — cheap (~2 paged requests) and
+ * self-healing (re-fetching recent days corrects lag/re-index gaps). If the
+ * history ever gets large, swap `fetchOmenstratExplorerSeries` for a trailing-
+ * window fetch that merges into the previous blob; this builder stays the same.
+ */
+export const fetchAllExplorerMetrics = async (): Promise<ExplorerMetricsSnapshot | null> => {
+  try {
+    const omenstrat = await fetchOmenstratExplorerSeries();
+    return { data: { omenstrat }, timestamp: Date.now() };
+  } catch (error) {
+    console.error('Error building explorer metrics snapshot:', error);
+    return null;
   }
 };

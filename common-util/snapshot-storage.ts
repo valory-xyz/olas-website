@@ -1,5 +1,6 @@
 import { list, put } from '@vercel/blob';
 import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
+import { ExplorerMetricsData } from 'common-util/api/explorer';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
@@ -22,7 +23,8 @@ type MetricsData =
   | MainMetricsData
   | PredictMetricsData
   | OtherMetricsData
-  | AgentEconomiesMetricsData;
+  | AgentEconomiesMetricsData
+  | ExplorerMetricsData;
 
 export type MetricsSnapshot = {
   data: MetricsData;
