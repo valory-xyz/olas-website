@@ -1,22 +1,42 @@
 import { OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
-import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { predictAgentsGraphClient, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { explorerOmenstratSeriesQuery } from 'common-util/graphql/queries';
+import {
+  explorerOmenstratSeriesQuery,
+  getExplorerBetsQuery,
+  getExplorerDailyProfitStatsQuery,
+} from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-/** Two aligned daily series (same dates, same length) for the Explorer heatmap. */
-export type ExplorerSeries = {
+/** Registry-derived daily series (DAA + transactions), aligned to the same dates. */
+type RegistrySeries = {
   /** Daily Active Agents — active multisigs summed across the trader agents per day. */
   daa: DaaSeriesPoint[];
   /** On-chain transactions per day. */
   transactions: DaaSeriesPoint[];
+};
+
+/** Every daily series the Explorer heatmap can render. */
+export type ExplorerSeries = RegistrySeries & {
+  /**
+   * Prediction Accuracy — daily win-rate (%) of resolved bets. Sparse: only days
+   * with at least MIN_BETS_PER_DAY resolved bets are included; thinner days are
+   * omitted and render as no-data cells.
+   */
+  accuracy: DaaSeriesPoint[];
+  /**
+   * Return on Investment — daily partial ROI (%), `profit / (payout − profit)`
+   * summed across agents. Can be negative. Sparse, bounded to a recent window
+   * (ROI_WINDOW_DAYS) since the per-agent daily rows are high-volume.
+   */
+  roi: DaaSeriesPoint[];
 };
 
 type DailyOmenstratRow = {
@@ -42,6 +62,21 @@ const ONE_DAY_SECONDS = 24 * 60 * 60;
 const REQUEST_ATTEMPTS = 2;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// Retry a request with backoff — the predict-agents gateway occasionally
+// rate-limits / 502s a page during a long backfill.
+const requestWithRetry = async <T>(fn: () => Promise<T>, attempts = 3): Promise<T> => {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await sleep(500 * attempt);
+    }
+  }
+  throw lastError;
+};
+
 // The subgraph caps `first` at 1000, so we page through with skip. One row per
 // (agent, day) → a few years × 2 trader agents fits in ~2 pages; cap as a backstop.
 const PAGE_SIZE = 1000;
@@ -59,7 +94,7 @@ const transformExplorerSeries = (
   rows: DailyOmenstratRow[],
   timestampGt: number,
   timestampLt: number
-): ExplorerSeries => {
+): RegistrySeries => {
   const daaByDay = new Map<string, number>();
   const txByDay = new Map<string, number>();
 
@@ -85,18 +120,11 @@ const transformExplorerSeries = (
   return { daa, transactions };
 };
 
-/**
- * Fetch Omenstrat's full daily history as two aligned series (DAA + transactions)
- * for the Explorer heatmap. Queries the Gnosis registry subgraph directly (paged,
- * since it caps `first` at 1000). Called once a day by the `refresh-metrics/explorer`
- * cron, which persists the result to a Vercel Blob snapshot that the page reads.
- */
-export const fetchOmenstratExplorerSeries = async (): Promise<
-  MetricWithStatus<ExplorerSeries | null>
-> => {
-  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
-  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
-
+// Registry-derived DAA + transactions (paged; the subgraph caps `first` at 1000).
+const fetchRegistrySeries = async (
+  timestampGt: number,
+  timestampLt: number
+): Promise<MetricWithStatus<RegistrySeries | null>> => {
   try {
     const rows: DailyOmenstratRow[] = [];
     let meta: DailyOmenstratResponse['_meta'];
@@ -144,6 +172,226 @@ export const fetchOmenstratExplorerSeries = async (): Promise<
   }
 };
 
+// ── Prediction Accuracy (predict-agents subgraph) ────────────────────────────
+const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+const ACCURACY_SOURCE = 'predict:gnosis:explorer-accuracy';
+const ACCURACY_BET_PAGE_SIZE = 1000;
+// Daily cron pages a shallow recent window (self-heals the last ~2 weeks); a one-time
+// backfill passes a much larger count to reach deep history. Hard backstop on top.
+const ACCURACY_DEFAULT_PAGES = 12;
+const ACCURACY_MAX_PAGES = 800;
+const ACCURACY_CURSOR_START = 4102444800; // year 2100 — newer than any bet
+// Below this many resolved bets, a day's win-rate is statistical noise → omit it.
+const MIN_BETS_PER_DAY = 10;
+
+type ClosedBet = {
+  timestamp: string;
+  outcomeIndex: string;
+  fixedProductMarketMaker: { currentAnswer: string } | null;
+};
+
+/**
+ * Daily Prediction Accuracy — for each UTC day, the win-rate (%) of resolved bets
+ * (same population as the Predict page's success-rate tile, just bucketed by day).
+ * Pages from newest backward up to `maxPages` — shallow for the daily cron, deep for
+ * a one-time backfill. Sparse: only days with ≥ MIN_BETS_PER_DAY resolved bets are
+ * returned, so thin days render as no-data rather than a noisy 0%/100%.
+ */
+const fetchOmenstratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesPoint[]> => {
+  const bets: ClosedBet[] = [];
+  const pages = Math.min(maxPages, ACCURACY_MAX_PAGES);
+  let cursor = ACCURACY_CURSOR_START;
+  for (let page = 0; page < pages; page += 1) {
+    let pageRows: ClosedBet[];
+    try {
+      const data = (await requestWithRetry(() =>
+        predictAgentsGraphClient.request(
+          getExplorerBetsQuery({ first: ACCURACY_BET_PAGE_SIZE, timestamp_lt: cursor })
+        )
+      )) as { bets: ClosedBet[] };
+      pageRows = data?.bets ?? [];
+    } catch (error) {
+      console.error(
+        `${ACCURACY_SOURCE}: page ${page} failed after retries; keeping ${bets.length} bets`,
+        error
+      );
+      break;
+    }
+    if (pageRows.length === 0) break;
+    bets.push(...pageRows);
+    // Next page: bets strictly older than the last (oldest) in this page.
+    cursor = Number(pageRows[pageRows.length - 1].timestamp);
+    if (pageRows.length < ACCURACY_BET_PAGE_SIZE) break;
+  }
+
+  const byDay = new Map<string, { correct: number; total: number }>();
+  bets.forEach((bet) => {
+    const answer = bet?.fixedProductMarketMaker?.currentAnswer;
+    if (!answer || answer === INVALID_ANSWER_HEX) return;
+    const date = new Date(Number(bet.timestamp) * 1000).toISOString().slice(0, 10);
+    const entry = byDay.get(date) ?? { correct: 0, total: 0 };
+    entry.total += 1;
+    if (Number(answer) === Number(bet.outcomeIndex)) entry.correct += 1;
+    byDay.set(date, entry);
+  });
+
+  return Array.from(byDay.entries())
+    .filter(([, e]) => e.total >= MIN_BETS_PER_DAY)
+    .map(([date, e]) => ({ date, count: Math.round((e.correct / e.total) * 100) }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+};
+
+// ── Return on Investment (predict-agents subgraph) ───────────────────────────
+const ROI_SOURCE = 'predict:gnosis:explorer-roi';
+// dailyProfitStatistics is per-agent-per-day (~250 rows/day). Daily cron fetches a
+// shallow recent window (self-heals late-settling markets); a backfill passes a much
+// larger window. Page cap derives from the window + a per-day row estimate.
+const ROI_DEFAULT_WINDOW_DAYS = 30;
+const ROI_PAGE_SIZE = 1000;
+const ROI_ROWS_PER_DAY_EST = 300;
+// Below this many bets across all agents, a day's ROI is statistical noise → omit.
+const MIN_BETS_PER_DAY_ROI = 20;
+
+type DailyProfitRow = {
+  date: string; // UTC-midnight unix timestamp (string)
+  totalBets: string;
+  totalPayout: string;
+  dailyProfit: string;
+};
+
+/**
+ * Daily Return on Investment — for each UTC day, partial ROI (%) across all trader
+ * agents: `profit / cost`, with `cost = payout − profit` (the fields this subgraph
+ * version exposes; the per-day traded+fees cost basis isn't available here). Can be
+ * negative. Fetches a `windowDays` range — shallow for the cron, deep for a backfill.
+ */
+const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoint[]> => {
+  const dateLte = getMidnightUtcTimestampDaysAgo(0);
+  const dateGte = getMidnightUtcTimestampDaysAgo(windowDays);
+  // The query returns rows newest-first, so if this page cap ever truncates (rows/day
+  // outgrows the estimate), it drops the OLDEST days — never the recent ones the cron
+  // needs to self-heal.
+  const maxPages = Math.ceil((windowDays * ROI_ROWS_PER_DAY_EST) / ROI_PAGE_SIZE) + 5;
+
+  const rows: DailyProfitRow[] = [];
+  for (let page = 0; page < maxPages; page += 1) {
+    let pageRows: DailyProfitRow[];
+    try {
+      const data = (await requestWithRetry(() =>
+        predictAgentsGraphClient.request(
+          getExplorerDailyProfitStatsQuery({
+            date_gte: dateGte,
+            date_lte: dateLte,
+            first: ROI_PAGE_SIZE,
+            skip: page * ROI_PAGE_SIZE,
+          })
+        )
+      )) as { dailyProfitStatistics: DailyProfitRow[] };
+      pageRows = data?.dailyProfitStatistics ?? [];
+    } catch (error) {
+      console.error(
+        `${ROI_SOURCE}: page ${page} failed after retries; keeping ${rows.length} rows`,
+        error
+      );
+      break;
+    }
+    rows.push(...pageRows);
+    if (pageRows.length < ROI_PAGE_SIZE) break;
+  }
+
+  const byDay = new Map<string, { profit: bigint; payout: bigint; bets: number }>();
+  rows.forEach((r) => {
+    const date = new Date(Number(r.date) * 1000).toISOString().slice(0, 10);
+    const entry = byDay.get(date) ?? { profit: 0n, payout: 0n, bets: 0 };
+    entry.profit += BigInt(r.dailyProfit || '0');
+    entry.payout += BigInt(r.totalPayout || '0');
+    entry.bets += Number(r.totalBets || 0);
+    byDay.set(date, entry);
+  });
+
+  const series: DaaSeriesPoint[] = [];
+  byDay.forEach((entry, date) => {
+    const cost = entry.payout - entry.profit;
+    if (entry.bets < MIN_BETS_PER_DAY_ROI || cost <= 0n) return;
+    series.push({ date, count: Math.round(Number((entry.profit * 10000n) / cost) / 100) });
+  });
+  return series.sort((a, b) => a.date.localeCompare(b.date));
+};
+
+export type ExplorerFetchOptions = {
+  /** Prior stored series to merge fresh windows into — preserves a deep backfill. */
+  previous?: ExplorerSeries | null;
+  /** Accuracy bet pages to fetch (shallow cron default; large for a backfill). */
+  accuracyPages?: number;
+  /** ROI window in days (shallow cron default; large for a backfill). */
+  roiDays?: number;
+};
+
+/**
+ * Merge a freshly-fetched (recent) window into the stored full series: fresh days
+ * overwrite the stored value (self-heal), genuinely new days append, and older
+ * stored days are kept untouched. An empty `fresh` (failed fetch) keeps `previous`.
+ */
+const mergeSeries = (
+  previous: DaaSeriesPoint[] | undefined,
+  fresh: DaaSeriesPoint[]
+): DaaSeriesPoint[] => {
+  const byDate = new Map<string, number>();
+  (previous ?? []).forEach((p) => byDate.set(p.date, p.count));
+  fresh.forEach((p) => byDate.set(p.date, p.count));
+  return Array.from(byDate, ([date, count]) => ({ date, count })).sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+};
+
+/**
+ * Fetch Omenstrat's daily series for the Explorer heatmap: DAA + transactions from the
+ * Gnosis registry subgraph (full, cheap), and Prediction Accuracy + ROI from the
+ * predict-agents subgraph (a recent window, merged into the prior stored series so a
+ * one-time deep backfill is preserved). Driven by the `refresh-metrics/explorer` cron.
+ */
+export const fetchOmenstratExplorerSeries = async (
+  options: ExplorerFetchOptions = {}
+): Promise<MetricWithStatus<ExplorerSeries | null>> => {
+  const {
+    previous = null,
+    accuracyPages = ACCURACY_DEFAULT_PAGES,
+    roiDays = ROI_DEFAULT_WINDOW_DAYS,
+  } = options;
+
+  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+
+  // Fetch in parallel; isolate each predict-agents query's failure so a flaky run
+  // never blanks DAA/Transactions (a failed accuracy/roi window keeps prior history).
+  const [registry, accuracy, roi] = await Promise.all([
+    fetchRegistrySeries(timestampGt, timestampLt),
+    fetchOmenstratDailyAccuracy(accuracyPages).catch((error) => {
+      console.error(`Error fetching ${ACCURACY_SOURCE}:`, error);
+      return null;
+    }),
+    fetchOmenstratDailyRoi(roiDays).catch((error) => {
+      console.error(`Error fetching ${ROI_SOURCE}:`, error);
+      return null;
+    }),
+  ]);
+
+  if (!registry.value) {
+    return { value: null, status: registry.status };
+  }
+
+  return {
+    value: {
+      ...registry.value,
+      // Window-merge into prior history: a failed fetch ([]) leaves `previous` intact.
+      accuracy: mergeSeries(previous?.accuracy, accuracy ?? []),
+      roi: mergeSeries(previous?.roi, roi ?? []),
+    },
+    // Registry drives staleness; accuracy/roi are best-effort.
+    status: registry.status,
+  };
+};
+
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
@@ -155,16 +403,15 @@ export type ExplorerMetricsSnapshot = {
 };
 
 /**
- * Build the Explorer snapshot for the daily `refresh-metrics/explorer` cron.
- *
- * Today this does a full-history refetch — cheap (~2 paged requests) and
- * self-healing (re-fetching recent days corrects lag/re-index gaps). If the
- * history ever gets large, swap `fetchOmenstratExplorerSeries` for a trailing-
- * window fetch that merges into the previous blob; this builder stays the same.
+ * Build the Explorer snapshot. DAA/Transactions are full-refetched each run (cheap);
+ * Accuracy/ROI fetch a recent window and merge into `options.previous` so a one-time
+ * deep backfill is preserved. Pass large `accuracyPages`/`roiDays` for that backfill.
  */
-export const fetchAllExplorerMetrics = async (): Promise<ExplorerMetricsSnapshot | null> => {
+export const fetchAllExplorerMetrics = async (
+  options: ExplorerFetchOptions = {}
+): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const omenstrat = await fetchOmenstratExplorerSeries();
+    const omenstrat = await fetchOmenstratExplorerSeries(options);
     return { data: { omenstrat }, timestamp: Date.now() };
   } catch (error) {
     console.error('Error building explorer metrics snapshot:', error);

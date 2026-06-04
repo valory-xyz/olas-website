@@ -81,16 +81,65 @@ const levelFor = (count: number, thresholds: number[]): number => {
   return Math.min(lvl, LEVELS);
 };
 
+// Diverging red↓/green↑ ramp for signed metrics (ROI): losses red, gains green,
+// deeper = larger magnitude, ~0 neutral. Each side gets DIVERGING_SIDE_LEVELS
+// quantile buckets so both tails spread across their ramp.
+const DIVERGING_SIDE_LEVELS = 4;
+export const HEATMAP_DIVERGING_COLORS = {
+  neg: ['#fbe3e1', '#f1a8a3', '#e26d65', '#c5372f'], // loss — light → deep red
+  pos: ['#d9efdd', '#9fd6ab', '#54b56f', '#2e9e49'], // profit — light → deep green
+  zero: '#dfe5ee', // ~0 / neutral (matches the empty cell)
+};
+
+// Quantile cut points (levels-1) for an arbitrary level count — used per diverging side.
+const quantileThresholdsN = (sorted: number[], levels: number): number[] => {
+  if (sorted.length === 0) return [];
+  const t: number[] = [];
+  for (let i = 1; i < levels; i += 1) {
+    const idx = Math.floor((i / levels) * sorted.length);
+    t.push(sorted[Math.min(idx, sorted.length - 1)]);
+  }
+  return t;
+};
+
+// Bucket a non-negative magnitude into 0..thresholds.length by quantile.
+const sideBucket = (magnitude: number, thresholds: number[]): number => {
+  let lvl = 0;
+  for (let i = 0; i < thresholds.length; i += 1) {
+    if (magnitude >= thresholds[i]) lvl = i + 1;
+    else break;
+  }
+  return lvl;
+};
+
+const divergingColor = (
+  value: number,
+  negThresholds: number[],
+  posThresholds: number[]
+): string => {
+  if (value > 0) return HEATMAP_DIVERGING_COLORS.pos[sideBucket(value, posThresholds)];
+  if (value < 0) return HEATMAP_DIVERGING_COLORS.neg[sideBucket(-value, negThresholds)];
+  return HEATMAP_DIVERGING_COLORS.zero;
+};
+
+type ColorScale = 'sequential' | 'diverging';
+
 type Cell = {
   key: string;
   date: string | null;
   count: number;
   inRange: boolean;
+  /** True only for real calendar days present in the series (vs gap-filled days
+   *  with no value — sparse metrics like accuracy leave thin days out). No-data
+   *  cells render empty and aren't hoverable. */
+  hasData: boolean;
   year: number;
   monthKey: string;
   col: number;
   row: number;
   level: number;
+  /** Resolved background colour (sequential ramp or diverging red/green). */
+  color: string;
 };
 
 type MonthTick = { key: string; label: string; x: number; year: number; isYearStart: boolean };
@@ -113,7 +162,7 @@ const EMPTY_MODEL: Model = {
   lastRealCol: 0,
 };
 
-const buildModel = (series: DaaSeriesPoint[]): Model => {
+const buildModel = (series: DaaSeriesPoint[], colorScale: ColorScale = 'sequential'): Model => {
   if (series.length === 0) return EMPTY_MODEL;
 
   const countByDate = new Map(series.map((point) => [point.date, point.count]));
@@ -134,24 +183,36 @@ const buildModel = (series: DaaSeriesPoint[]): Model => {
       date: null,
       count: 0,
       inRange: false,
+      hasData: false,
       year: 0,
       monthKey: '',
       col,
       row,
       level: 0,
+      color: '',
     }))
   );
 
   const monthTicks: MonthTick[] = [];
   const monthCells: Record<string, { col: number; row: number }[]> = {};
   const yearSpan: Record<number, { start: number; end: number }> = {};
-  const nonZero: number[] = [];
+  // Values feeding the colour ramps. Sequential ranks positive days on one purple
+  // ramp (0 = empty); diverging splits data days into negative/positive magnitudes.
+  const rampValues: number[] = [];
+  const negValues: number[] = [];
+  const posValues: number[] = [];
 
   for (let i = 0; i < totalDays; i += 1) {
     const day = start.add(i, 'day');
     const date = day.format('YYYY-MM-DD');
+    const hasData = countByDate.has(date);
     const count = countByDate.get(date) ?? 0;
-    if (count > 0) nonZero.push(count);
+    if (colorScale === 'diverging') {
+      if (hasData && count > 0) posValues.push(count);
+      else if (hasData && count < 0) negValues.push(-count);
+    } else if (count > 0) {
+      rampValues.push(count);
+    }
     const g = startOffset + i;
     const col = Math.floor(g / ROWS);
     const row = g % ROWS;
@@ -163,11 +224,13 @@ const buildModel = (series: DaaSeriesPoint[]): Model => {
       date,
       count,
       inRange: true,
+      hasData,
       year,
       monthKey,
       col,
       row,
       level: 0,
+      color: '',
     };
     (monthCells[monthKey] ||= []).push({ col, row });
 
@@ -183,13 +246,35 @@ const buildModel = (series: DaaSeriesPoint[]): Model => {
     monthTicks.push({ key: `tick-${col}`, label: '', x: col * PITCH, year: 0, isYearStart: false });
   }
 
-  // Quantile levels across all active days.
-  const thresholds = quantileThresholds(nonZero.sort((a, b) => a - b));
-  columns.forEach((col) =>
-    col.forEach((cell) => {
-      if (cell.inRange) cell.level = levelFor(cell.count, thresholds);
-    })
-  );
+  // Resolve each cell's colour. Diverging: red (loss) / green (profit) by quantile
+  // per side, no-data → empty. Sequential: purple ramp by quantile, ≤0 → empty.
+  if (colorScale === 'diverging') {
+    const negT = quantileThresholdsN(
+      negValues.sort((a, b) => a - b),
+      DIVERGING_SIDE_LEVELS
+    );
+    const posT = quantileThresholdsN(
+      posValues.sort((a, b) => a - b),
+      DIVERGING_SIDE_LEVELS
+    );
+    columns.forEach((col) =>
+      col.forEach((cell) => {
+        if (!cell.inRange) return;
+        cell.color = cell.hasData
+          ? divergingColor(cell.count, negT, posT)
+          : HEATMAP_LEVEL_COLORS[0];
+      })
+    );
+  } else {
+    const thresholds = quantileThresholds(rampValues.sort((a, b) => a - b));
+    columns.forEach((col) =>
+      col.forEach((cell) => {
+        if (!cell.inRange) return;
+        cell.level = levelFor(cell.count, thresholds);
+        cell.color = HEATMAP_LEVEL_COLORS[cell.level];
+      })
+    );
+  }
 
   return {
     columns,
@@ -216,6 +301,10 @@ type DaaCalendarHeatmapProps = {
   highlightYear?: number | null;
   /** Noun shown in the tooltip, e.g. "active agents" or "transactions". */
   unitLabel?: string;
+  /** How the tooltip value reads: "658 active agents" vs "62% accuracy". */
+  valueKind?: 'count' | 'percent';
+  /** 'diverging' = red/green for signed values (ROI); 'sequential' = purple, ≤0 empty. */
+  colorScale?: ColorScale;
   /** "Mode" — bucket colours from the visible window, not the whole history. */
   localMode?: boolean;
   className?: string;
@@ -226,13 +315,15 @@ export const DaaCalendarHeatmap = ({
   series,
   highlightYear = null,
   unitLabel = 'active agents',
+  valueKind = 'count',
+  colorScale = 'sequential',
   localMode = false,
   className,
   id,
 }: DaaCalendarHeatmapProps) => {
   const { columns, monthTicks, monthCells, yearSpan, contentWidth, lastRealCol } = useMemo(
-    () => buildModel(series),
-    [series]
+    () => buildModel(series, colorScale),
+    [series, colorScale]
   );
 
   // All cells, flat — each Cell already carries its own col/row.
@@ -343,7 +434,7 @@ export const DaaCalendarHeatmap = ({
   // ---- Tooltip ---- (stable handler so the memoized grid never re-creates its cells)
   const onCellEnter = useCallback(
     (cell: Cell) => (e: React.MouseEvent<HTMLDivElement>) => {
-      if (dragRef.current || !cell.inRange || !cell.date) return;
+      if (dragRef.current || !cell.hasData || !cell.date) return;
       const wrap = wrapperRef.current?.getBoundingClientRect();
       if (!wrap) return;
       const box = e.currentTarget.getBoundingClientRect();
@@ -438,8 +529,12 @@ export const DaaCalendarHeatmap = ({
     () =>
       flatCells.map((cell) => {
         const dimmed = highlightYear !== null && cell.inRange && cell.year !== highlightYear;
-        const colorIdx =
-          localMode && localThresholds ? levelFor(cell.count, localThresholds) : cell.level;
+        // Local "Mode" only reshades sequential metrics; diverging (ROI) keeps its
+        // precomputed red/green colour. Otherwise use the cell's resolved colour.
+        const bg =
+          colorScale === 'sequential' && localMode && localThresholds
+            ? HEATMAP_LEVEL_COLORS[levelFor(cell.count, localThresholds)]
+            : cell.color;
         const waveDelay =
           WAVE_START_DELAY + Math.max(0, cell.col - (lastRealCol - VISIBLE_COLS)) * WAVE_STAGGER;
         const anim =
@@ -449,8 +544,8 @@ export const DaaCalendarHeatmap = ({
         return (
           <div
             key={cell.key}
-            className={cell.inRange ? 'heatmap-cell' : undefined}
-            onMouseEnter={cell.inRange ? onCellEnter(cell) : undefined}
+            className={cell.hasData ? 'heatmap-cell' : undefined}
+            onMouseEnter={cell.hasData ? onCellEnter(cell) : undefined}
             style={{
               position: 'absolute',
               left: cell.col * PITCH,
@@ -459,9 +554,8 @@ export const DaaCalendarHeatmap = ({
               height: CELL_SIZE,
               boxSizing: 'border-box',
               borderRadius: 7,
-              cursor: cell.inRange ? 'pointer' : 'default',
-              backgroundColor:
-                cell.inRange && !dimmed ? HEATMAP_LEVEL_COLORS[colorIdx] : 'transparent',
+              cursor: cell.hasData ? 'pointer' : 'default',
+              backgroundColor: cell.inRange && !dimmed ? bg : 'transparent',
               border: dimmed ? '1px dashed #c3ccdb' : undefined,
               animation: anim,
             }}
@@ -473,6 +567,7 @@ export const DaaCalendarHeatmap = ({
       highlightYear,
       localMode,
       localThresholds,
+      colorScale,
       lastRealCol,
       reduced,
       firstWave,
@@ -663,7 +758,9 @@ export const DaaCalendarHeatmap = ({
             {dayjs(hovered.date).format('DD MMM, YYYY')}
           </span>
           <span className="text-[14px] font-medium leading-5 text-black">
-            {hovered.count.toLocaleString('en-US')} {unitLabel}
+            {valueKind === 'percent'
+              ? `${hovered.count}% ${unitLabel}`
+              : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
           </span>
         </div>
       )}

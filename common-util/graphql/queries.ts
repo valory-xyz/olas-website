@@ -257,6 +257,31 @@ export const getClosedMarketsBetsQuery = ({
   }
 `;
 
+// Lean, cursor-paged resolved bets for the Explorer accuracy series. Uses a
+// `timestamp_lt` cursor (not skip) so a deep one-time backfill stays O(1) per page —
+// skip pagination is O(skip) on The Graph and the gateway rejects deep skips.
+export const getExplorerBetsQuery = ({ first, timestamp_lt }) => gql`
+  query ExplorerBets {
+    bets(
+      first: ${first}
+      where: {
+        and: [
+          { fixedProductMarketMaker_: { currentAnswer_not: null } }
+          { timestamp_lt: ${timestamp_lt} }
+        ]
+      }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      outcomeIndex
+      fixedProductMarketMaker {
+        currentAnswer
+      }
+    }
+  }
+`;
+
 export const dailyBabydegenPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
@@ -584,6 +609,26 @@ export const getOmenDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }
       profitParticipants {
         question
       }
+    }
+  }
+`;
+
+// Lean daily profit stats for the Explorer ROI series — only the fields needed to
+// derive partial ROI (profit / (payout − profit)). Omits dailyTradedSettled /
+// dailyFeesSettled so it works on subgraph versions that predate those fields.
+export const getExplorerDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
+  query ExplorerDailyProfitStats {
+    dailyProfitStatistics(
+      first: ${first}
+      skip: ${skip}
+      where: { date_gte: ${date_gte}, date_lte: ${date_lte} }
+      orderBy: date
+      orderDirection: desc
+    ) {
+      date
+      totalBets
+      totalPayout
+      dailyProfit
     }
   }
 `;

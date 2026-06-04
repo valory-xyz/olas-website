@@ -28,7 +28,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      series: metric?.value ?? { daa: [], transactions: [] },
+      series: metric?.value ?? { daa: [], transactions: [], accuracy: [], roi: [] },
       status: metric?.status ?? null,
     },
     // Snapshot refreshes daily; revalidate hourly so the (future) predict-derived

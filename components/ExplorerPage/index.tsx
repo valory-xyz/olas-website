@@ -6,6 +6,7 @@ import type { ExplorerSeries } from 'common-util/api/explorer';
 import type { MetricStatus } from 'common-util/graphql/types';
 import {
   DaaCalendarHeatmap,
+  HEATMAP_DIVERGING_COLORS,
   HEATMAP_LEVEL_COLORS,
 } from 'components/ExplorerPage/DaaCalendarHeatmap';
 import { EconomySelector } from 'components/ExplorerPage/EconomySelector';
@@ -17,31 +18,59 @@ type ExplorerProps = {
   status?: MetricStatus | null;
 };
 
-// Metric → the daily series it drives + the noun used in the header/tooltip. Only
-// DAA and Transactions have a real daily series today (both from one query).
+// Metric → the daily series it drives, the noun used in the header/tooltip, how the
+// tooltip value reads (count vs percent), and the heatmap colour scale (sequential
+// purple for non-negative counts/%, diverging red/green for ROI which can go negative).
 const METRIC_CONFIG = {
-  daa: { label: 'Daily Active Agents', unit: 'active agents' },
-  transactions: { label: 'Transactions', unit: 'transactions' },
+  daa: { label: 'Daily Active Agents', unit: 'active agents', kind: 'count', scale: 'sequential' },
+  transactions: { label: 'Transactions', unit: 'transactions', kind: 'count', scale: 'sequential' },
+  accuracy: {
+    label: 'Prediction Accuracy',
+    unit: 'accuracy',
+    kind: 'percent',
+    scale: 'sequential',
+  },
+  roi: { label: 'Return on Investment', unit: 'ROI', kind: 'percent', scale: 'diverging' },
 } as const;
 
 type SeriesMetricKey = keyof typeof METRIC_CONFIG;
 
 const formatCount = (n: number) => n.toLocaleString('en-US');
 
-const Legend = () => (
-  <div className="flex items-center justify-center gap-4 pt-2 text-sm text-[#606f85]">
-    <span>Less</span>
-    <div className="flex items-center gap-1">
-      {HEATMAP_LEVEL_COLORS.map((color) => (
-        <span
-          key={color}
-          style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: color }}
-        />
-      ))}
-    </div>
-    <span>More</span>
+const LegendSwatches = ({ colors }: { colors: string[] }) => (
+  <div className="flex items-center gap-1">
+    {colors.map((color, i) => (
+      <span
+        key={`${color}-${i}`}
+        style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: color }}
+      />
+    ))}
   </div>
 );
+
+const Legend = ({ scale }: { scale: 'sequential' | 'diverging' }) => {
+  const wrap = 'flex items-center justify-center gap-4 pt-2 text-sm text-[#606f85]';
+  if (scale === 'diverging') {
+    // deep red → light red → neutral → light green → deep green
+    const colors = [...HEATMAP_DIVERGING_COLORS.neg]
+      .reverse()
+      .concat(HEATMAP_DIVERGING_COLORS.zero, HEATMAP_DIVERGING_COLORS.pos);
+    return (
+      <div className={wrap}>
+        <span>Loss</span>
+        <LegendSwatches colors={colors} />
+        <span>Profit</span>
+      </div>
+    );
+  }
+  return (
+    <div className={wrap}>
+      <span>Less</span>
+      <LegendSwatches colors={HEATMAP_LEVEL_COLORS} />
+      <span>More</span>
+    </div>
+  );
+};
 
 // tabler:filter-filled — matches the filled funnel in the Figma filter pill.
 const FilterIcon = () => (
@@ -69,18 +98,36 @@ const Explorer = ({ series, status }: ExplorerProps) => {
     [activeSeries]
   );
 
-  // Headline tile values from the real series. ROI/accuracy have no daily series
-  // yet → placeholder, not selectable (see the AEE feasibility map).
+  // Headline tile values from the real series.
   const daaSeries = series?.daa ?? [];
   const txSeries = series?.transactions ?? [];
+  const accuracySeries = series?.accuracy ?? [];
+  const roiSeries = series?.roi ?? [];
   const latestDaa = daaSeries.length ? daaSeries[daaSeries.length - 1].count : 0;
   const totalTx = txSeries.reduce((sum, p) => sum + p.count, 0);
+  // Headline accuracy/ROI = mean of the daily values we have data for (unweighted).
+  const avgAccuracy = accuracySeries.length
+    ? Math.round(accuracySeries.reduce((sum, p) => sum + p.count, 0) / accuracySeries.length)
+    : null;
+  const avgRoi = roiSeries.length
+    ? Math.round(roiSeries.reduce((sum, p) => sum + p.count, 0) / roiSeries.length)
+    : null;
 
   const metrics: ExplorerMetric[] = [
     { key: 'daa', label: 'Daily Active Agents', value: formatCount(latestDaa), selectable: true },
     { key: 'transactions', label: 'Transactions', value: formatCount(totalTx), selectable: true },
-    { key: 'accuracy', label: 'Prediction Accuracy', value: '68%', selectable: false },
-    { key: 'roi', label: 'Return on Investment', value: '27%', selectable: false },
+    {
+      key: 'accuracy',
+      label: 'Prediction Accuracy',
+      value: avgAccuracy === null ? '--' : `${avgAccuracy}%`,
+      selectable: accuracySeries.length > 0,
+    },
+    {
+      key: 'roi',
+      label: 'Return on Investment',
+      value: avgRoi === null ? '--' : `${avgRoi}%`,
+      selectable: roiSeries.length > 0,
+    },
   ];
 
   const handleMetric = (key: string) => {
@@ -149,12 +196,14 @@ const Explorer = ({ series, status }: ExplorerProps) => {
           series={activeSeries}
           highlightYear={activeYear}
           unitLabel={METRIC_CONFIG[activeMetric].unit}
+          valueKind={METRIC_CONFIG[activeMetric].kind}
+          colorScale={METRIC_CONFIG[activeMetric].scale}
         />
       </div>
 
       {/* Legend — centered, below the heatmap */}
       <div className="mx-auto mb-20 mt-4 w-full max-w-[872px] px-4">
-        <Legend />
+        <Legend scale={METRIC_CONFIG[activeMetric].scale} />
       </div>
     </>
   );
