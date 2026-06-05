@@ -219,7 +219,9 @@ const fetchOmenstratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesP
     }
     if (pageRows.length === 0) break;
     bets.push(...pageRows);
-    // Next page: bets strictly older than the last (oldest) in this page.
+    // Next page: bets strictly older than this page's last (oldest) bet. `timestamp_lt`
+    // can drop bets sharing that exact second at the boundary — negligible for a daily
+    // win-rate (it's a sample) and avoids a tie-induced re-fetch loop.
     cursor = Number(pageRows[pageRows.length - 1].timestamp);
     if (pageRows.length < ACCURACY_BET_PAGE_SIZE) break;
   }
@@ -251,6 +253,9 @@ const ROI_PAGE_SIZE = 1000;
 // ~500 rows ≈ 3.5k rows/chunk → max skip ~3k, comfortably under the gateway's cap.
 const ROI_CHUNK_DAYS = 7;
 const ROI_CHUNK_MAX_PAGES = 20;
+// Cap caller-supplied roiDays (the endpoint is unauthenticated) so a backfill request
+// can't drive unbounded chunk/subgraph load. 800d covers the full available history.
+const ROI_MAX_WINDOW_DAYS = 800;
 // Below this many bets across all agents, a day's ROI is statistical noise → omit.
 const MIN_BETS_PER_DAY_ROI = 20;
 
@@ -269,7 +274,7 @@ type DailyProfitRow = {
  */
 const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoint[]> => {
   const newest = getMidnightUtcTimestampDaysAgo(0);
-  const oldest = getMidnightUtcTimestampDaysAgo(windowDays);
+  const oldest = getMidnightUtcTimestampDaysAgo(Math.min(windowDays, ROI_MAX_WINDOW_DAYS));
 
   // Page the window in non-overlapping date-range chunks, newest → oldest. Each chunk's
   // skip stays shallow (no deep-skip rejection), and ranges don't overlap so a date's

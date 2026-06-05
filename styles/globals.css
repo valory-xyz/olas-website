@@ -283,34 +283,6 @@ tr, th {
   color: #7e22ce;
 }
 
-/* Subtle custom scrollbar (explorer heatmap + similar horizontal scrollers).
-   Thin, rounded, #d7ddea thumb (Figma border/default) on a transparent track;
-   the 2px transparent border + padding-box clip keeps the visible thumb hairline. */
-.scrollbar-subtle {
-  scrollbar-width: thin;
-  scrollbar-color: #d7ddea transparent;
-}
-
-.scrollbar-subtle::-webkit-scrollbar {
-  height: 5px;
-  width: 5px;
-}
-
-.scrollbar-subtle::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar-subtle::-webkit-scrollbar-thumb {
-  background-color: #d7ddea;
-  background-clip: padding-box;
-  border: 2px solid transparent;
-  border-radius: 9999px;
-}
-
-.scrollbar-subtle:hover::-webkit-scrollbar-thumb {
-  background-color: #b9c2d4;
-}
-
 /* Explorer heatmap — cells lay down like tiles on load (scale + fade, a wave). */
 @keyframes heatmap-cell-in {
   from {

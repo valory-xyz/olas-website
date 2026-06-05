@@ -141,7 +141,11 @@ const Explorer = ({ series, status }: ExplorerProps) => {
   ];
 
   const handleMetric = (key: string) => {
-    if (key in METRIC_CONFIG) setActiveMetric(key as SeriesMetricKey);
+    if (!(key in METRIC_CONFIG)) return;
+    setActiveMetric(key as SeriesMetricKey);
+    // Reset the year filter: the new metric may not cover the selected year, which
+    // would otherwise dim every cell (blank heatmap) with no visible tab to un-toggle.
+    setActiveYear(null);
   };
 
   return (
