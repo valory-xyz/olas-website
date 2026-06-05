@@ -35,7 +35,6 @@ const METRIC_CONFIG = {
     kind: 'percent',
     scale: 'sequential',
   },
-  roi: { label: 'Avg Trading ROI', unit: 'ROI', kind: 'percent', scale: 'diverging' },
 } as const;
 
 type SeriesMetricKey = keyof typeof METRIC_CONFIG;
@@ -107,15 +106,11 @@ const Explorer = ({ series, status }: ExplorerProps) => {
   const daaSeries = series?.daa ?? [];
   const txSeries = series?.transactions ?? [];
   const accuracySeries = series?.accuracy ?? [];
-  const roiSeries = series?.roi ?? [];
   const latestDaa = daaSeries.length ? daaSeries[daaSeries.length - 1].count : 0;
   const totalTx = txSeries.reduce((sum, p) => sum + p.count, 0);
-  // Headline accuracy/ROI = mean of the daily values we have data for (unweighted).
+  // Headline accuracy = mean of the daily win-rates we have data for (unweighted).
   const avgAccuracy = accuracySeries.length
     ? Math.round(accuracySeries.reduce((sum, p) => sum + p.count, 0) / accuracySeries.length)
-    : null;
-  const avgRoi = roiSeries.length
-    ? Math.round(roiSeries.reduce((sum, p) => sum + p.count, 0) / roiSeries.length)
     : null;
 
   const metrics: ExplorerMetric[] = [
@@ -131,12 +126,6 @@ const Explorer = ({ series, status }: ExplorerProps) => {
       label: 'Avg Prediction Accuracy',
       value: avgAccuracy === null ? '--' : `${avgAccuracy}%`,
       selectable: accuracySeries.length > 0,
-    },
-    {
-      key: 'roi',
-      label: 'Avg Trading ROI',
-      value: avgRoi === null ? '--' : `${avgRoi}%`,
-      selectable: roiSeries.length > 0,
     },
   ];
 
