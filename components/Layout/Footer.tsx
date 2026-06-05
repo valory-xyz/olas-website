@@ -109,6 +109,10 @@ const RESOURCES_LINKS = [
     title: 'Stack',
     link: '/stack',
   },
+  {
+    title: 'Agent Economy Explorer',
+    link: '/explorer',
+  },
 ];
 
 const MORE_LINKS = [
