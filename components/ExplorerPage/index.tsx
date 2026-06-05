@@ -23,14 +23,19 @@ type ExplorerProps = {
 // purple for non-negative counts/%, diverging red/green for ROI which can go negative).
 const METRIC_CONFIG = {
   daa: { label: 'Daily Active Agents', unit: 'active agents', kind: 'count', scale: 'sequential' },
-  transactions: { label: 'Transactions', unit: 'transactions', kind: 'count', scale: 'sequential' },
+  transactions: {
+    label: 'Total Transactions',
+    unit: 'transactions',
+    kind: 'count',
+    scale: 'sequential',
+  },
   accuracy: {
-    label: 'Prediction Accuracy',
+    label: 'Avg Prediction Accuracy',
     unit: 'accuracy',
     kind: 'percent',
     scale: 'sequential',
   },
-  roi: { label: 'Return on Investment', unit: 'ROI', kind: 'percent', scale: 'diverging' },
+  roi: { label: 'Avg Trading ROI', unit: 'ROI', kind: 'percent', scale: 'diverging' },
 } as const;
 
 type SeriesMetricKey = keyof typeof METRIC_CONFIG;
@@ -115,16 +120,21 @@ const Explorer = ({ series, status }: ExplorerProps) => {
 
   const metrics: ExplorerMetric[] = [
     { key: 'daa', label: 'Daily Active Agents', value: formatCount(latestDaa), selectable: true },
-    { key: 'transactions', label: 'Transactions', value: formatCount(totalTx), selectable: true },
+    {
+      key: 'transactions',
+      label: 'Total Transactions',
+      value: formatCount(totalTx),
+      selectable: true,
+    },
     {
       key: 'accuracy',
-      label: 'Prediction Accuracy',
+      label: 'Avg Prediction Accuracy',
       value: avgAccuracy === null ? '--' : `${avgAccuracy}%`,
       selectable: accuracySeries.length > 0,
     },
     {
       key: 'roi',
-      label: 'Return on Investment',
+      label: 'Avg Trading ROI',
       value: avgRoi === null ? '--' : `${avgRoi}%`,
       selectable: roiSeries.length > 0,
     },
