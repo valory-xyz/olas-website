@@ -243,12 +243,14 @@ const fetchOmenstratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesP
 
 // ── Return on Investment (predict-agents subgraph) ───────────────────────────
 const ROI_SOURCE = 'predict:gnosis:explorer-roi';
-// dailyProfitStatistics is per-agent-per-day (~250 rows/day). Daily cron fetches a
-// shallow recent window (self-heals late-settling markets); a backfill passes a much
-// larger window. Page cap derives from the window + a per-day row estimate.
 const ROI_DEFAULT_WINDOW_DAYS = 30;
 const ROI_PAGE_SIZE = 1000;
-const ROI_ROWS_PER_DAY_EST = 300;
+// dailyProfitStatistics is per-(agent, day) (~500 rows/day). We page the window in
+// non-overlapping date-range chunks so each chunk's skip stays shallow — deep skip is
+// O(skip) and The Graph rejects it (the same reason accuracy uses a cursor). 7 days ×
+// ~500 rows ≈ 3.5k rows/chunk → max skip ~3k, comfortably under the gateway's cap.
+const ROI_CHUNK_DAYS = 7;
+const ROI_CHUNK_MAX_PAGES = 20;
 // Below this many bets across all agents, a day's ROI is statistical noise → omit.
 const MIN_BETS_PER_DAY_ROI = 20;
 
@@ -266,37 +268,45 @@ type DailyProfitRow = {
  * negative. Fetches a `windowDays` range — shallow for the cron, deep for a backfill.
  */
 const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoint[]> => {
-  const dateLte = getMidnightUtcTimestampDaysAgo(0);
-  const dateGte = getMidnightUtcTimestampDaysAgo(windowDays);
-  // The query returns rows newest-first, so if this page cap ever truncates (rows/day
-  // outgrows the estimate), it drops the OLDEST days — never the recent ones the cron
-  // needs to self-heal.
-  const maxPages = Math.ceil((windowDays * ROI_ROWS_PER_DAY_EST) / ROI_PAGE_SIZE) + 5;
+  const newest = getMidnightUtcTimestampDaysAgo(0);
+  const oldest = getMidnightUtcTimestampDaysAgo(windowDays);
 
+  // Page the window in non-overlapping date-range chunks, newest → oldest. Each chunk's
+  // skip stays shallow (no deep-skip rejection), and ranges don't overlap so a date's
+  // per-agent rows are counted exactly once. On a chunk failure we keep what we have —
+  // i.e. the most-recent chunks, never just the oldest.
   const rows: DailyProfitRow[] = [];
-  for (let page = 0; page < maxPages; page += 1) {
-    let pageRows: DailyProfitRow[];
-    try {
-      const data = (await requestWithRetry(() =>
-        predictAgentsGraphClient.request(
-          getExplorerDailyProfitStatsQuery({
-            date_gte: dateGte,
-            date_lte: dateLte,
-            first: ROI_PAGE_SIZE,
-            skip: page * ROI_PAGE_SIZE,
-          })
-        )
-      )) as { dailyProfitStatistics: DailyProfitRow[] };
-      pageRows = data?.dailyProfitStatistics ?? [];
-    } catch (error) {
-      console.error(
-        `${ROI_SOURCE}: page ${page} failed after retries; keeping ${rows.length} rows`,
-        error
-      );
-      break;
+  let chunkLte = newest;
+  while (chunkLte >= oldest) {
+    const chunkGte = Math.max(oldest, chunkLte - (ROI_CHUNK_DAYS - 1) * ONE_DAY_SECONDS);
+    let chunkFailed = false;
+    for (let page = 0; page < ROI_CHUNK_MAX_PAGES; page += 1) {
+      let pageRows: DailyProfitRow[];
+      try {
+        const data = (await requestWithRetry(() =>
+          predictAgentsGraphClient.request(
+            getExplorerDailyProfitStatsQuery({
+              date_gte: chunkGte,
+              date_lte: chunkLte,
+              first: ROI_PAGE_SIZE,
+              skip: page * ROI_PAGE_SIZE,
+            })
+          )
+        )) as { dailyProfitStatistics: DailyProfitRow[] };
+        pageRows = data?.dailyProfitStatistics ?? [];
+      } catch (error) {
+        console.error(
+          `${ROI_SOURCE}: chunk ≤${chunkLte} page ${page} failed; keeping ${rows.length} rows`,
+          error
+        );
+        chunkFailed = true;
+        break;
+      }
+      rows.push(...pageRows);
+      if (pageRows.length < ROI_PAGE_SIZE) break;
     }
-    rows.push(...pageRows);
-    if (pageRows.length < ROI_PAGE_SIZE) break;
+    if (chunkFailed) break;
+    chunkLte = chunkGte - ONE_DAY_SECONDS; // next chunk ends the day before this one
   }
 
   const byDay = new Map<string, { profit: bigint; payout: bigint; bets: number }>();

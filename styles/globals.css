@@ -361,10 +361,9 @@ tr, th {
   background-color: #b9c2d4;
 }
 
-/* Explorer heatmap — plain cell hover (Dock-style proximity temporarily off; flip
-   USE_PROXIMITY_HOVER in DaaCalendarHeatmap.tsx to restore it). Fast but smooth:
-   150ms, a spring (stiffness 1280 / damping 80 / mass 1 — slightly overdamped, no
-   overshoot) approximated as a snappy ease-out. */
+/* Explorer heatmap — per-cell hover lift. Fast but smooth: 150ms, a spring
+   (stiffness 1280 / damping 80 / mass 1 — slightly overdamped, no overshoot)
+   approximated as a snappy ease-out. */
 .heatmap-cell {
   transform-origin: center;
   /* transform → hover lift; background-color → seamless recolour on a metric switch. */

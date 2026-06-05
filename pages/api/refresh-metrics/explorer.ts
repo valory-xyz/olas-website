@@ -15,7 +15,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Accuracy/ROI fetch a recent window and merge into the prior stored series, so a
     // one-time deep backfill is preserved. Default (cron) = shallow window. A backfill
-    // passes large windows: /api/refresh-metrics/explorer?accuracyPages=240&roiDays=365
+    // passes large windows: /api/refresh-metrics/explorer?accuracyPages=400&roiDays=365
+    // Keep params under what fits the 300s function limit (≈ accuracyPages 400 / roiDays
+    // 365) — if the invocation overruns it's killed before saveSnapshot and nothing is
+    // written. Go deeper by re-running with larger windows (each run merges into prior).
     const previousSnapshot = await getSnapshot({ category: 'explorer' });
     const previous = (previousSnapshot?.data as ExplorerMetricsData)?.omenstrat?.value ?? null;
 
