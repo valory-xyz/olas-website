@@ -59,13 +59,20 @@ export const EconomySelector = ({ activeKey, onChange, className }: EconomySelec
             className={cn(
               // flex-1 + min-w-0 + truncated label = thirds can never overflow on mobile;
               // tight padding + a smaller icon keep the full "Babydegen" label visible.
-              'flex min-w-0 flex-1 items-center justify-center gap-1 rounded-lg px-1 py-1.5 text-sm transition-colors sm:flex-initial sm:gap-2 sm:px-10 sm:text-base',
+              // min-h-[44px] gives a proper mobile touch target; reset at sm: (pointer).
+              'flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-1 rounded-lg px-1 py-1.5 text-sm transition-colors sm:min-h-0 sm:flex-initial sm:gap-2 sm:px-10 sm:text-base',
               isActive ? 'bg-[#dfe5ee] text-black' : 'text-[#606f85]',
               disabled ? 'cursor-not-allowed' : !isActive && 'hover:bg-slate-50'
             )}
           >
             <span className="relative size-5 shrink-0 overflow-hidden rounded-md sm:size-7">
-              <Image src={icon} alt="" fill sizes="28px" className="object-cover" />
+              <Image
+                src={icon}
+                alt=""
+                fill
+                sizes="(min-width: 640px) 28px, 20px"
+                className="object-cover"
+              />
             </span>
             <span className="truncate">{label}</span>
           </button>
