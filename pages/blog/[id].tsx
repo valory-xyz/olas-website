@@ -6,6 +6,7 @@ import Markdown from 'common-util/Markdown';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
+import { isArray } from 'lodash';
 import Image from 'next/image';
 import { TEXT, TITLE } from 'styles/globals';
 
@@ -14,9 +15,12 @@ const DESC_CHAR_LIMIT = 160;
 const BlogItem = ({ blog }) => {
   if (!blog) return <Spinner />;
 
-  const { title, datePublished, body: content, headerImage } = blog.attributes;
+  const { title, datePublished, body: content, headerImage } = blog;
   const formattedDate = formatDate(datePublished);
-  const imagePath = headerImage?.data?.[0]?.attributes?.formats?.large?.url;
+  // blogs use multiple-media headerImage (array); tolerate single-media (object) too.
+  const headerImageData = isArray(headerImage) ? headerImage?.[0] : headerImage;
+  const image = headerImageData?.formats?.large;
+  const imagePath = image?.url;
   const apiUrl = getApiUrl();
   const imageUrl = apiUrl && imagePath ? `${apiUrl}${imagePath}` : '';
 
@@ -32,8 +36,8 @@ const BlogItem = ({ blog }) => {
         {imagePath && (
           <Image
             src={imageUrl}
-            width={headerImage.data[0].attributes.formats.large.width}
-            height={headerImage.data[0].attributes.formats.large.height}
+            width={image.width}
+            height={image.height}
             alt={title}
             className="border mb-12 rounded-lg"
           />

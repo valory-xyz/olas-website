@@ -10,29 +10,23 @@ import { getApiUrl } from 'common-util/getApiUrl';
 const imageDomain = getApiUrl();
 
 type ArticleDataType = {
-  attributes?: {
-    formats?: {
-      large?: {
-        url?: string;
-        width?: number;
-        height?: number;
-      };
+  formats?: {
+    large?: {
+      url?: string;
+      width?: number;
+      height?: number;
     };
   };
 };
 
 type ArticleProps = {
   article: {
-    attributes?: {
-      datePublished?: string;
-      publishedAt?: string;
-      headerImage?: {
-        data?: ArticleDataType | ArticleDataType[];
-      };
-      slug?: string;
-      title?: string;
-      readTime?: number;
-    };
+    datePublished?: string;
+    publishedAt?: string;
+    headerImage?: ArticleDataType | ArticleDataType[];
+    slug?: string;
+    title?: string;
+    readTime?: number;
   };
   href: string;
   showReadTime?: boolean;
@@ -43,20 +37,15 @@ const Article = ({ article, href, showReadTime = false, showDate = true }: Artic
   const [imageError, setImageError] = useState(false);
 
   const image = useMemo(() => {
-    const imageData = article?.attributes?.headerImage?.data;
+    const imageData = article?.headerImage;
     const data = isArray(imageData) ? imageData?.[0] : imageData;
 
     if (!data) return null;
 
-    return data?.attributes?.formats?.large;
+    return data?.formats?.large;
   }, [article]);
 
-  const {
-    title,
-    readTime,
-    datePublished: datePublishedFromArticle,
-    publishedAt,
-  } = article.attributes || {};
+  const { title, readTime, datePublished: datePublishedFromArticle, publishedAt } = article || {};
   const { url, width, height } = image || {};
   const datePublished = formatDate(datePublishedFromArticle || publishedAt);
 
@@ -83,7 +72,7 @@ const Article = ({ article, href, showReadTime = false, showDate = true }: Artic
               src={imageDomain + url}
               width={width}
               height={height}
-              alt={article.attributes.title}
+              alt={article.title}
               className="rounded-t-lg py-auto object-cover"
               onError={() => {
                 setImageError(true);

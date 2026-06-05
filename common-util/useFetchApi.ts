@@ -34,9 +34,8 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
   const rawVideos = get(data, 'data') || [];
 
   const videos = rawVideos.map((video) => {
-    const id = get(video, 'id');
-    const attributes = get(video, 'attributes');
     const {
+      id,
       title,
       date,
       platform_link,
@@ -47,12 +46,12 @@ export const useFetchVideos = ({ limit = 1000, isPodcast = false }) => {
       rss_link,
       thumbnail,
       video: videoUploaded,
-    } = attributes || {};
+    } = video || {};
     const apiUrl = getApiUrl();
-    const thumbnailUrl = get(thumbnail, 'data.attributes.url');
+    const thumbnailUrl = get(thumbnail, 'url');
     const imageFilename = thumbnailUrl && apiUrl ? `${apiUrl}${thumbnailUrl}` : '';
 
-    const videoUploadedUrl = get(videoUploaded, 'data[0].attributes.url');
+    const videoUploadedUrl = get(videoUploaded, '[0].url');
     const video_url = videoUploadedUrl && apiUrl ? `${apiUrl}${videoUploadedUrl}` : '';
 
     return {
