@@ -40,7 +40,9 @@ export const EconomySelector = ({ activeKey, onChange, className }: EconomySelec
       role="tablist"
       aria-label="Agent economy"
       className={cn(
-        'inline-flex items-center gap-0.5 rounded-[10px] border border-[#d7ddea] bg-white p-0.5',
+        // Mobile: full-width, equal thirds so 3 economies always fit (no overflow).
+        // sm+: revert to the auto-width centered pill from Figma.
+        'flex w-full items-center gap-0.5 rounded-[10px] border border-[#d7ddea] bg-white p-0.5 sm:inline-flex sm:w-auto',
         className
       )}
     >
@@ -55,15 +57,17 @@ export const EconomySelector = ({ activeKey, onChange, className }: EconomySelec
             aria-disabled={disabled || undefined}
             onClick={() => !disabled && onChange(key)}
             className={cn(
-              'flex items-center justify-center gap-2 rounded-lg px-10 py-1.5 text-base transition-colors',
+              // flex-1 + min-w-0 + truncated label = thirds can never overflow on mobile;
+              // tight padding + a smaller icon keep the full "Babydegen" label visible.
+              'flex min-w-0 flex-1 items-center justify-center gap-1 rounded-lg px-1 py-1.5 text-sm transition-colors sm:flex-initial sm:gap-2 sm:px-10 sm:text-base',
               isActive ? 'bg-[#dfe5ee] text-black' : 'text-[#606f85]',
               disabled ? 'cursor-not-allowed' : !isActive && 'hover:bg-slate-50'
             )}
           >
-            <span className="relative size-7 shrink-0 overflow-hidden rounded-md">
+            <span className="relative size-5 shrink-0 overflow-hidden rounded-md sm:size-7">
               <Image src={icon} alt="" fill sizes="28px" className="object-cover" />
             </span>
-            {label}
+            <span className="truncate">{label}</span>
           </button>
         );
 

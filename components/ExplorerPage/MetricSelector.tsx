@@ -30,7 +30,7 @@ export const MetricSelector = ({
   className,
 }: MetricSelectorProps) => (
   <div className={cn('flex w-full justify-center border-y border-[#e8eaee]', className)}>
-    <div className="flex w-full max-w-[872px] border-x border-[#e8eaee]">
+    <div className="flex w-full max-w-[872px] flex-col border-x border-[#e8eaee] md:flex-row">
       {metrics.map((metric, i) => {
         const isActive = metric.key === activeKey;
         return (
@@ -44,7 +44,8 @@ export const MetricSelector = ({
             onClick={() => metric.selectable && onChange(metric.key)}
             className={cn(
               'flex flex-1 flex-col items-start justify-center gap-2 p-6 text-left transition-colors',
-              i < metrics.length - 1 && 'border-r border-[#e8eaee]',
+              // Stacked on mobile → divider runs along the bottom; row on md+ → divider on the right.
+              i < metrics.length - 1 && 'border-b border-[#e8eaee] md:border-b-0 md:border-r',
               metric.selectable ? 'cursor-pointer hover:bg-slate-100' : 'cursor-default'
             )}
           >

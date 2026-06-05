@@ -150,7 +150,7 @@ const Explorer = ({ series, status }: ExplorerProps) => {
       </div>
 
       {/* Economy selector */}
-      <div className="flex justify-center pb-10 pt-12">
+      <div className="flex justify-center px-3 pb-10 pt-12">
         <EconomySelector activeKey={activeEconomy} onChange={setActiveEconomy} />
       </div>
 
@@ -159,7 +159,7 @@ const Explorer = ({ series, status }: ExplorerProps) => {
 
       {/* Series header + filter pill — centered 872 column (Figma 20754:3512).
           Keyed by metric so the copy re-reveals on a DAA ↔ Transactions switch. */}
-      <div className="flex w-full justify-center px-10 py-8">
+      <div className="flex w-full justify-center px-6 py-8 md:px-10">
         <div
           key={activeMetric}
           className="explorer-reveal flex w-full max-w-[872px] flex-col gap-6"
@@ -193,8 +193,8 @@ const Explorer = ({ series, status }: ExplorerProps) => {
         </div>
       </div>
 
-      {/* Heatmap — full-bleed left; 40px free on the right (past the weekday axis) */}
-      <div className="w-full pr-10">
+      {/* Heatmap — full-bleed left; right gutter past the weekday axis (16px mobile, 40px md+) */}
+      <div className="w-full pr-4 md:pr-10">
         <DaaCalendarHeatmap
           series={activeSeries}
           highlightYear={activeYear}
