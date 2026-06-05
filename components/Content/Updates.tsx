@@ -53,11 +53,7 @@ export const Updates = ({ limit = 1000, isMain = false }: UpdatesProps) => {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {(limit ? blogItems.slice(0, limit) : blogItems).map((blogItem) => (
-            <Article
-              key={blogItem.id}
-              article={blogItem}
-              href={`/blog/${blogItem?.attributes?.slug}`}
-            />
+            <Article key={blogItem.id} article={blogItem} href={`/blog/${blogItem?.slug}`} />
           ))}
         </div>
       </div>
