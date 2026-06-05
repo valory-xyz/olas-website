@@ -40,6 +40,11 @@ module.exports = withPlausibleProxy()({
         permanent: true,
       },
       {
+        source: '/explorer',
+        destination: '/agent-economies/explorer',
+        permanent: true,
+      },
+      {
         source: '/dev-rewards',
         destination: '/build',
         permanent: true,
