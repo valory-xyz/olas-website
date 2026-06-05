@@ -10,9 +10,10 @@ import {
 } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
+import type { WindowedMetric, WindowKey } from 'common-util/api/predict';
 import { isNil } from 'lodash';
 import Image from 'next/image';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 export type Platform = 'polystrat' | 'omenstrat';
 
@@ -30,6 +31,9 @@ export type PlatformMetrics = {
   mechTxs: number | null;
   marketCreatorTxs?: number | null;
   txsStatus: MetricStatus;
+  // Windowed mean Brier score (Omenstrat only today). Lower is better.
+  brierScore?: WindowedMetric<number | null> | null;
+  brierStatus?: MetricStatus;
 };
 
 type PlatformActivitySectionProps = {
@@ -52,12 +56,21 @@ const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
   },
 ];
 
-const TIME_RANGE_TABS = [
-  { key: '7d', label: '7D', disabled: true, tooltip: 'Coming soon' },
-  { key: '30d', label: '30D', disabled: true, tooltip: 'Coming soon' },
-  { key: '90d', label: '90D', disabled: true, tooltip: 'Coming soon' },
+const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
+  { key: '7d', label: '7D' },
+  { key: '30d', label: '30D' },
+  { key: '90d', label: '90D' },
   { key: 'max', label: 'Max' },
 ];
+
+// Only Omenstrat exposes a windowed metric (Brier score) today. On Polystrat the
+// tabs stay disabled until predict-polymarket ships per-window data.
+const getTimeRangeTabs = (windowed: boolean) =>
+  TIME_RANGE_KEYS.map(({ key, label }) =>
+    windowed || key === 'max'
+      ? { key, label }
+      : { key, label, disabled: true, tooltip: 'Coming soon' }
+  );
 
 type MetricItemProps = {
   label: ReactNode;
@@ -68,7 +81,9 @@ type MetricItemProps = {
 };
 
 const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) => {
-  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : ''}`;
+  // Match the brand colour of the linked metrics (Link is text-purple-600) so an
+  // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
+  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`;
   return (
     <div className="flex flex-col gap-1">
       <div className="text-sm text-slate-500">{label}</div>
@@ -126,59 +141,91 @@ export const PlatformActivitySection = ({
   onPlatformChange,
   className,
 }: PlatformActivitySectionProps) => {
-  // Time-range tabs are placeholder UI for upcoming work — only "Max" is
-  // selectable today, so the active key is hardcoded and onChange is a no-op.
   const m = metrics[platform];
 
-  const performanceItems: MetricItemProps[] = [
-    {
-      label: (
-        <span className="flex items-center gap-2">
-          Total ROI - Average{' '}
-          {!isNil(m.partialRoi) && (
-            <Popover>
-              <div className="flex flex-col max-w-[320px] gap-4 text-base">
-                <p className="text-gray-500">
-                  Total ROI shows your agent&apos;s overall earnings, including profits from
-                  predictions and staking rewards, minus all related costs.
-                </p>
-                <p className="text-gray-500">
-                  Partial ROI reflects only prediction performance, excluding staking rewards.
-                </p>
-                <div className="flex justify-between">
-                  <span className="text-gray-900">Partial ROI</span>
-                  <span className={m.roiStatus?.stale ? 'text-gray-400' : ''}>
-                    {`${m.partialRoi}%`}
-                  </span>
-                </div>
-                <div className="text-sm">
-                  <StaleMetricContent status={m.roiStatus} />
-                </div>
+  // Brier score is the only windowed metric today, and it exists for Omenstrat only.
+  const isWindowed = platform === 'omenstrat' && !isNil(m.brierScore);
+  const [activeWindow, setActiveWindow] = useState<WindowKey>('max');
+
+  const roiItem: MetricItemProps = {
+    label: (
+      <span className="flex items-center gap-2">
+        Total ROI - Average{' '}
+        {!isNil(m.partialRoi) && (
+          <Popover>
+            <div className="flex flex-col max-w-[320px] gap-4 text-base">
+              <p className="text-gray-500">
+                Total ROI shows your agent&apos;s overall earnings, including profits from
+                predictions and staking rewards, minus all related costs.
+              </p>
+              <p className="text-gray-500">
+                Partial ROI reflects only prediction performance, excluding staking rewards.
+              </p>
+              <div className="flex justify-between">
+                <span className="text-gray-900">Partial ROI</span>
+                <span className={m.roiStatus?.stale ? 'text-gray-400' : ''}>
+                  {`${m.partialRoi}%`}
+                </span>
               </div>
-            </Popover>
-          )}
-        </span>
-      ),
-      value: isNil(m.finalRoi) ? null : `${m.finalRoi}%`,
-      status: m.roiStatus,
-      href: `/data#${platform}-predict-roi`,
-      warning:
-        platform === 'polystrat' ? (
-          <p>Due to recent updates on Polymarket this metric temporarily shows incorrect values</p>
-        ) : undefined,
-    },
-    {
-      label: 'OLAS Staking APR',
-      value: isNil(m.apr) ? null : `${m.apr}%`,
-      status: m.aprStatus,
-      href: `/data#${platform}-predict-apr`,
-    },
-    {
-      label: 'Prediction Accuracy - Average (Last 10K Trades)',
-      value: isNil(m.successRate) ? null : `${m.successRate}%`,
-      status: m.successRateStatus,
-      href: `/data#${platform}-predict-accuracy`,
-    },
+              <div className="text-sm">
+                <StaleMetricContent status={m.roiStatus} />
+              </div>
+            </div>
+          </Popover>
+        )}
+      </span>
+    ),
+    value: isNil(m.finalRoi) ? null : `${m.finalRoi}%`,
+    status: m.roiStatus,
+    href: `/data#${platform}-predict-roi`,
+    warning:
+      platform === 'polystrat' ? (
+        <p>Due to recent updates on Polymarket this metric temporarily shows incorrect values</p>
+      ) : undefined,
+  };
+
+  const accuracyItem: MetricItemProps = {
+    label: 'Prediction Accuracy - Average (Last 10K Trades)',
+    value: isNil(m.successRate) ? null : `${m.successRate}%`,
+    status: m.successRateStatus,
+    href: `/data#${platform}-predict-accuracy`,
+  };
+
+  const aprItem: MetricItemProps = {
+    label: 'OLAS Staking APR',
+    value: isNil(m.apr) ? null : `${m.apr}%`,
+    status: m.aprStatus,
+    href: `/data#${platform}-predict-apr`,
+  };
+
+  const brierValue = m.brierScore?.[activeWindow] ?? null;
+  const brierItem: MetricItemProps = {
+    label: (
+      <span className="flex items-center gap-2">
+        Brier Score{' '}
+        <Popover>
+          <div className="flex flex-col max-w-[320px] gap-2 text-base text-gray-500">
+            <p>
+              The Brier score measures how well-calibrated the agent&apos;s predictions are.{' '}
+              <span className="text-gray-900">Lower is better</span> — 0 is a perfect forecast,
+              ~0.25 is no better than a 50/50 guess, and 1 is maximally wrong.
+            </p>
+          </div>
+        </Popover>
+      </span>
+    ),
+    value: isNil(brierValue) ? null : brierValue.toFixed(2),
+    status: m.brierStatus,
+    href: `/data#${platform}-predict-brier`,
+  };
+
+  // Both economies show ROI / APR / Accuracy. Brier score is an additional 4th
+  // metric on Omenstrat only (predict-polymarket doesn't index Brier yet).
+  const performanceItems: MetricItemProps[] = [
+    roiItem,
+    aprItem,
+    accuracyItem,
+    ...(platform === 'omenstrat' ? [brierItem] : []),
   ];
 
   const lifetimeItems: MetricItemProps[] = [
@@ -213,7 +260,11 @@ export const PlatformActivitySection = ({
         <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="text-lg font-semibold">Performance</div>
-            <Tabs items={TIME_RANGE_TABS} activeKey="max" onChange={() => {}} />
+            <Tabs
+              items={getTimeRangeTabs(isWindowed)}
+              activeKey={isWindowed ? activeWindow : 'max'}
+              onChange={(key) => setActiveWindow(key as WindowKey)}
+            />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {performanceItems.map((item, i) => (
