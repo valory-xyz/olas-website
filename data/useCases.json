@@ -17,8 +17,7 @@
         "description": "Trades Polymarket prediction markets for you while you do something else.",
         "image": "/images/agents/polystrat.png",
         "link": "https://www.pearl.you/polystrat",
-        "isExternal": true,
-        "isUnderConstruction": true
+        "isExternal": true
       },
       {
         "title": "BabyDegen",
