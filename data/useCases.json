@@ -17,8 +17,7 @@
         "description": "Trades Polymarket prediction markets for you while you do something else.",
         "image": "/images/agents/polystrat.png",
         "link": "https://www.pearl.you/polystrat",
-        "isExternal": true,
-        "isUnderConstruction": true
+        "isExternal": true
       },
       {
         "title": "BabyDegen",
@@ -46,7 +45,8 @@
         "description": "Cares for your digital pet and optimizes its growth, helping it survive and thrive.",
         "image": "/images/agents/pettbro.png",
         "link": "https://agent.pett.ai/",
-        "isExternal": true
+        "isExternal": true,
+        "isUnderConstruction": true
       }
     ]
   },
