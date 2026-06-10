@@ -70,11 +70,9 @@ function loadAllowlist() {
   }
   const validateEntry = (entry, kind, keyField) => {
     const errors = [];
-    if (typeof entry[keyField] !== 'string' || !entry[keyField].trim())
-      errors.push(`\`${keyField}\` is required`);
+    if (typeof entry[keyField] !== 'string' || !entry[keyField].trim()) errors.push(`\`${keyField}\` is required`);
     if (typeof entry.spdx !== 'string' || !entry.spdx.trim()) errors.push('`spdx` is required');
-    if (typeof entry.reason !== 'string' || !entry.reason.trim())
-      errors.push('`reason` is required');
+    if (typeof entry.reason !== 'string' || !entry.reason.trim()) errors.push('`reason` is required');
     if (typeof entry.added !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(entry.added)) {
       errors.push('`added` must be YYYY-MM-DD');
     }
@@ -82,17 +80,13 @@ function loadAllowlist() {
       errors.push('`review` must be YYYY-MM-DD');
     }
     if (errors.length) {
-      console.error(
-        `::error::malformed ${kind} entry in ${ALLOWLIST_PATH}: ${errors.join('; ')} — ${JSON.stringify(entry)}`
-      );
+      console.error(`::error::malformed ${kind} entry in ${ALLOWLIST_PATH}: ${errors.join('; ')} — ${JSON.stringify(entry)}`);
       process.exit(2);
     }
   };
-  for (const entry of data.licenseOverrides || [])
-    validateEntry(entry, 'licenseOverrides', 'package');
+  for (const entry of data.licenseOverrides || []) validateEntry(entry, 'licenseOverrides', 'package');
   for (const entry of data.exemptions || []) validateEntry(entry, 'exemptions', 'package');
-  for (const entry of data.exemptionPrefixes || [])
-    validateEntry(entry, 'exemptionPrefixes', 'prefix');
+  for (const entry of data.exemptionPrefixes || []) validateEntry(entry, 'exemptionPrefixes', 'prefix');
   return data;
 }
 
@@ -106,14 +100,12 @@ for (const e of allowlist.exemptions || []) exemptByName.set(e.package, e);
 // Most-specific-wins: sort by prefix length desc so a future `@img/sharp-` entry
 // resolves before `@img/`. Without this, ordering is implicit and easy to get wrong.
 const exemptPrefixes = [...(allowlist.exemptionPrefixes || [])].sort(
-  (a, b) => b.prefix.length - a.prefix.length
+  (a, b) => b.prefix.length - a.prefix.length,
 );
 
 const scope = allowlist.scope || 'production';
 if (scope !== 'production' && scope !== 'all') {
-  console.error(
-    `::error::invalid scope "${scope}" in ${ALLOWLIST_PATH} (must be "production" or "all")`
-  );
+  console.error(`::error::invalid scope "${scope}" in ${ALLOWLIST_PATH} (must be "production" or "all")`);
   process.exit(2);
 }
 
@@ -122,7 +114,7 @@ if (scope === 'production') initOpts.production = true;
 
 const timeoutHandle = setTimeout(() => {
   console.error(
-    `::error::license-checker did not finish within ${CHECKER_TIMEOUT_MS / 1000}s — aborting.`
+    `::error::license-checker did not finish within ${CHECKER_TIMEOUT_MS / 1000}s — aborting.`,
   );
   process.exit(2);
 }, CHECKER_TIMEOUT_MS);
@@ -130,30 +122,37 @@ const timeoutHandle = setTimeout(() => {
 checker.init(initOpts, (err, report) => {
   clearTimeout(timeoutHandle);
   if (err) {
-    console.error(
-      '::error::license-checker failed to scan the dependency tree:',
-      err.message || err
-    );
+    console.error('::error::license-checker failed to scan the dependency tree:', err.message || err);
     process.exit(2);
   }
 
   // Scan-completeness guard (fail loud, never false-green): if the scan didn't
-  // even surface most of the repo's own direct production dependencies, the
-  // dependency-tree read is broken — do NOT report a pass.
+  // surface the repo's own direct production dependencies, the dependency-tree
+  // read is broken — do NOT report a pass.
   const scannedNames = new Set(
     Object.keys(report)
       .filter((k) => k !== SELF_PKG)
-      .map((k) => (k.lastIndexOf('@') > 0 ? k.slice(0, k.lastIndexOf('@')) : k))
+      .map((k) => (k.lastIndexOf('@') > 0 ? k.slice(0, k.lastIndexOf('@')) : k)),
   );
   if (DIRECT_PROD_DEPS.length > 0) {
-    const present = DIRECT_PROD_DEPS.filter((d) => scannedNames.has(d)).length;
-    if (present < Math.ceil(DIRECT_PROD_DEPS.length / 2)) {
+    // Two independent floors, both must hold for the scan to be trusted:
+    //   (1) EVERY direct production dependency must appear in the scan. They are
+    //       explicitly declared and installed, so a correct production scan
+    //       cannot omit one. Even a single miss means the tree read is broken
+    //       (the false-green symptom is a near-empty report). A half-floor let
+    //       a badly truncated scan through; PARANOID demands all-present.
+    //   (2) the total scanned count must be at least the direct-dep count — a
+    //       belt-and-braces absolute floor against the degenerate ~1-package read.
+    const missing = DIRECT_PROD_DEPS.filter((d) => !scannedNames.has(d));
+    if (missing.length > 0 || scannedNames.size < DIRECT_PROD_DEPS.length) {
+      const present = DIRECT_PROD_DEPS.length - missing.length;
       console.error(
         `::error::license-check: scan looks incomplete — only ${present}/${DIRECT_PROD_DEPS.length} ` +
           `direct production dependencies were found in a scan of ${scannedNames.size} package(s). ` +
+          (missing.length ? `Missing: ${missing.join(', ')}. ` : '') +
           `The dependency tree could not be read reliably (often a transitive ` +
           `read-installed-packages conflict). Refusing to report a pass. ` +
-          `Try a clean reinstall (rm -rf node_modules && yarn install).`
+          `Try a clean reinstall (rm -rf node_modules && yarn install).`,
       );
       process.exit(2);
     }
@@ -238,8 +237,7 @@ checker.init(initOpts, (err, report) => {
     if (!matchedNames.has(e.package)) stale.push({ kind: 'exemption', name: e.package, entry: e });
   }
   for (const e of allowlist.exemptionPrefixes || []) {
-    if (!matchedPrefixes.has(e.prefix))
-      stale.push({ kind: 'exemptionPrefix', name: e.prefix, entry: e });
+    if (!matchedPrefixes.has(e.prefix)) stale.push({ kind: 'exemptionPrefix', name: e.prefix, entry: e });
   }
 
   if (overridden.length) {
@@ -265,8 +263,7 @@ checker.init(initOpts, (err, report) => {
     for (const [prefix, hits] of prefixHits) {
       const entry = exemptPrefixes.find((p) => p.prefix === prefix);
       console.log(`  prefix ${prefix} → exempt (${entry.spdx}); ${hits.length} package(s)`);
-      for (const h of hits)
-        console.log(`    ${h.pkgVersion}  declared=${JSON.stringify(h.declared)}`);
+      for (const h of hits) console.log(`    ${h.pkgVersion}  declared=${JSON.stringify(h.declared)}`);
       console.log(`    ${entry.reason}`);
       console.log(`    added ${entry.added}, review by ${entry.review}`);
     }
@@ -275,12 +272,12 @@ checker.init(initOpts, (err, report) => {
 
   for (const e of expired) {
     console.log(
-      `::warning::License ${e.kind} for ${e.name} expired on ${e.entry.review}. Re-justify with a fresh review date or remove if the upstream license has been corrected.`
+      `::warning::License ${e.kind} for ${e.name} expired on ${e.entry.review}. Re-justify with a fresh review date or remove if the upstream license has been corrected.`,
     );
   }
   for (const s of stale) {
     console.log(
-      `::warning::License ${s.kind} for ${s.name} is no longer matched by any installed package. Remove it from .supply-chain/license-allowlist.json.`
+      `::warning::License ${s.kind} for ${s.name} is no longer matched by any installed package. Remove it from .supply-chain/license-allowlist.json.`,
     );
   }
 
@@ -290,8 +287,7 @@ checker.init(initOpts, (err, report) => {
     for (const v of violations) {
       console.error(`  [${v.cls}] ${v.pkgVersion}`);
       console.error(`    license: ${JSON.stringify(v.declared)}`);
-      if (v.effective !== v.declared)
-        console.error(`    effective: ${JSON.stringify(v.effective)}`);
+      if (v.effective !== v.declared) console.error(`    effective: ${JSON.stringify(v.effective)}`);
       if (v.repository) console.error(`    repo: ${v.repository}`);
       if (v.path) console.error(`    path: ${v.path}`);
     }
@@ -301,14 +297,14 @@ checker.init(initOpts, (err, report) => {
         '  (b) declared but mis-mapped  → add a licenseOverrides[] entry (CORRECTION; not a policy exception)\n' +
         '  (c) accepted copyleft        → add to exemptions[] (exact name) with reason + dated review\n' +
         '  (d) removable                → drop the dependency\n' +
-        'Config: .supply-chain/license-allowlist.json\n'
+        'Config: .supply-chain/license-allowlist.json\n',
     );
     process.exit(1);
   }
 
   const acceptedSummary = `${overridden.length} overridden, ${exempted.length} exempted by name, ${prefixHits.size} prefix group(s)`;
   console.log(
-    `license-check: OK (${scannedNames.size} pkgs scanned, ${acceptedSummary}, 0 violations) — scope=${scope}.`
+    `license-check: OK (${scannedNames.size} pkgs scanned, ${acceptedSummary}, 0 violations) — scope=${scope}.`,
   );
   process.exit(0);
 });

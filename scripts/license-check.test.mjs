@@ -122,3 +122,28 @@ test('evalExpr: `*` marker stripped inside compound expressions', () => {
   assert.equal(evalExpr('MIT*', allowed, unauthorized), 'allowed');
   assert.equal(evalExpr(['MIT*', 'GPL-3.0'], allowed, unauthorized), 'allowed');
 });
+
+// Regression: a flat string split is not paren-aware and tears an AND term out
+// of a parenthesized OR group, letting a mandatory copyleft conjunct pass.
+test('evalExpr: parenthesized group inside an AND — copyleft conjunct fails (regression)', () => {
+  assert.equal(evalExpr('GPL-3.0 AND (MIT OR Apache-2.0)', allowed, unauthorized), 'unauthorized');
+  assert.equal(evalExpr('(MIT OR Apache-2.0) AND GPL-3.0', allowed, unauthorized), 'unauthorized');
+  assert.equal(evalExpr('(MIT OR GPL-3.0) AND GPL-3.0', allowed, unauthorized), 'unauthorized');
+  assert.equal(evalExpr('(MIT OR GPL-3.0) AND (Apache-2.0 OR ISC)', allowed, unauthorized), 'allowed');
+});
+
+test('evalExpr: free-text lowercase or/and is not an SPDX operator → unknown', () => {
+  assert.equal(evalExpr('MIT or commercial', allowed, unauthorized), 'unknown');
+  assert.equal(evalExpr('MIT and something', allowed, unauthorized), 'unknown');
+});
+
+test('evalExpr: unbalanced parens / leftover tokens → unknown (fail closed)', () => {
+  assert.equal(evalExpr('(MIT OR Apache-2.0', allowed, unauthorized), 'unknown');
+  assert.equal(evalExpr('MIT )', allowed, unauthorized), 'unknown');
+  assert.equal(evalExpr('MIT Apache-2.0', allowed, unauthorized), 'unknown');
+});
+
+test('evalExpr: WITH exception is ignored; base id decides', () => {
+  assert.equal(evalExpr('Apache-2.0 WITH LLVM-exception', allowed, unauthorized), 'allowed');
+  assert.equal(evalExpr('GPL-3.0 WITH Classpath-exception-2.0', allowed, unauthorized), 'unauthorized');
+});
