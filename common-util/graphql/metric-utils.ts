@@ -1,6 +1,6 @@
 import { CHAIN_CONFIG } from 'common-util/constants';
 import { GraphQLClient, RequestDocument, Variables } from 'graphql-request';
-import Web3 from 'web3';
+import { createPublicClient, http } from 'viem';
 import { MetricStatus, MetricWithStatus, WithMeta } from './types';
 
 export const createStaleStatus = ({
@@ -59,8 +59,8 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
         console.error(`No RPC URL configured for chain: ${chain}`);
         return null;
       }
-      const web3Instance = new Web3(chainConfig.rpc);
-      const blockNumber = await web3Instance.eth.getBlockNumber();
+      const client = createPublicClient({ transport: http(chainConfig.rpc) });
+      const blockNumber = await client.getBlockNumber();
       const block = Number(blockNumber);
       blockCache[chain] = { block, lastUpdated: currentTime };
       return block;

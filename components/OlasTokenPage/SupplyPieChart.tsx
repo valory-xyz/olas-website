@@ -1,6 +1,6 @@
 import { ArcElement, Chart } from 'chart.js';
 import { COINGECKO_URL, ETHERSCAN_URL } from 'common-util/constants';
-import { getOlasContract, olasAddress } from 'common-util/web3';
+import { olasAddress, readOlasContract } from 'common-util/web3';
 import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
 import PropTypes from 'prop-types';
@@ -10,8 +10,6 @@ import Verify from '../Verify';
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
-
-const olasContract = getOlasContract();
 
 const daoAddress = '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE';
 const veOlasAddress = '0x7e01A500805f8A52Fad229b3015AD130A332B7b3';
@@ -153,7 +151,7 @@ export const SupplyPieChart = () => {
       try {
         const promises = [
           fetch('/api/olas/total_supply'),
-          ...ADDRESSES.map((address) => olasContract.methods.balanceOf(address).call()),
+          ...ADDRESSES.map((address) => readOlasContract('balanceOf', [address])),
         ];
 
         const result = await Promise.allSettled(promises);
