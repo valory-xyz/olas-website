@@ -1,0 +1,241 @@
+{
+  "_comment": "License allowlist gate config (PARANOID). A PRODUCTION dependency whose license is not in `allowedSpdx` — including UNKNOWN/Custom — FAILS, unless (1) a `licenseOverrides` correction, (2) its exact NAME is in `exemptions`, or (3) its name matches an `exemptionPrefixes` entry. Read by scripts/license-check.mjs. Plain JSON — no comments; document with _-prefixed string keys.",
+  "scope": "production",
+  "allowedSpdx": [
+    "MIT",
+    "MIT-0",
+    "ISC",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "0BSD",
+    "MPL-2.0",
+    "LGPL-2.1",
+    "LGPL-2.1-only",
+    "LGPL-2.1-or-later",
+    "LGPL-2.1+",
+    "Python-2.0",
+    "BlueOak-1.0.0",
+    "CC0-1.0",
+    "Unlicense",
+    "WTFPL",
+    "Zlib",
+    "OFL-1.1",
+    "CC-BY-4.0",
+    "CC-BY-3.0",
+    "Artistic-2.0"
+  ],
+  "unauthorizedSpdx": [
+    "GPL-2.0",
+    "GPL-3.0",
+    "GPL-3.0+",
+    "LGPL-3.0",
+    "MPL-1.1",
+    "AGPL-3.0"
+  ],
+  "licenseOverrides": [],
+  "exemptions": [
+    {
+      "package": "web3",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-core",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-errors",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-abi",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-accounts",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-contract",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-ens",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-iban",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-eth-personal",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-net",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-providers-http",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-providers-ipc",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-providers-ws",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-rpc-methods",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-rpc-providers",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-types",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-utils",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    },
+    {
+      "package": "web3-validator",
+      "spdx": "LGPL-3.0",
+      "reason": "web3.js v4 (ChainSafe) packages are LGPL-3.0. Accepted weak-copyleft for read-only chain access; revisit by migrating to viem (the org default) to drop this cluster.",
+      "parents": [
+        "(direct dependency / web3.js v4)"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    }
+  ],
+  "exemptionPrefixes": [
+    {
+      "prefix": "@img/sharp-libvips-",
+      "spdx": "LGPL-3.0-or-later",
+      "reason": "Next.js image-optimizer native lib (libvips) via next > sharp. Dynamically-loaded native binary, not statically combined with our JS. Package name varies by OS/arch (darwin-arm64 locally, linux-x64 on CI), so a narrow publisher-controlled prefix is used.",
+      "parents": [
+        "sharp"
+      ],
+      "added": "2026-06-05",
+      "review": "2027-06-05"
+    }
+  ]
+}
