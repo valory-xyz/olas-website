@@ -1,11 +1,12 @@
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { formatEther } from 'viem';
 
 import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
 import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
-import { getTokenomicsContract, web3 } from 'common-util/web3';
+import { readTokenomicsContract } from 'common-util/web3';
 import { GetInvolved } from 'components/OlasTokenPage/GetInvolved';
 import { ProtocolAudits } from 'components/ProtocolPage/ProtocolAudits';
 import SectionWrapper from '../Layout/SectionWrapper';
@@ -26,8 +27,6 @@ import { UsagePieChart } from './UsagePieChart';
 // and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
-const tokenomicsContract = getTokenomicsContract();
-
 const Supply = () => {
   const [epoch, setEpoch] = useState(null);
   const [split, setSplit] = useState({});
@@ -42,7 +41,7 @@ const Supply = () => {
       try {
         setLoading(true);
 
-        const newTimeLaunch = await tokenomicsContract.methods.timeLaunch().call();
+        const newTimeLaunch = await readTokenomicsContract('timeLaunch');
         setTimeLaunch(newTimeLaunch);
 
         // Call getActualInflationForYear method repeatedly for 0 through 12
@@ -51,9 +50,7 @@ const Supply = () => {
 
         for (let i = 0; i <= 12; i += 1) {
           promises.push(
-            tokenomicsContract.methods
-              .getActualInflationForYear(i)
-              .call()
+            readTokenomicsContract('getActualInflationForYear', [i])
               .then((result) => {
                 const resultValue = result as unknown;
                 if (
@@ -61,7 +58,7 @@ const Supply = () => {
                   typeof resultValue === 'number' ||
                   typeof resultValue === 'bigint'
                 ) {
-                  newInflationForYear[i] = web3.utils.fromWei(String(resultValue), 'ether');
+                  newInflationForYear[i] = formatEther(BigInt(resultValue));
                 }
                 return result;
               })
@@ -75,24 +72,26 @@ const Supply = () => {
         await Promise.all(promises);
         setInflationForYear(newInflationForYear);
 
-        const newCurrentYear = await tokenomicsContract.methods.currentYear().call();
+        const newCurrentYear = await readTokenomicsContract('currentYear');
         setCurrentYear(newCurrentYear);
 
         // Call epochCounter to get the current epoch
-        const newEpoch = await tokenomicsContract.methods.epochCounter().call();
+        const newEpoch = await readTokenomicsContract('epochCounter');
         setEpoch(newEpoch);
-        // Use the result as the parameter for mapEpochTokenomics
-        const tokenomicsResult = await tokenomicsContract.methods
-          .mapEpochTokenomics(newEpoch)
-          .call();
-        // 6 is the index of the bonders % value
-        const bonders = Number(tokenomicsResult['6']);
+        // Use the result as the parameter for mapEpochTokenomics.
+        // A single named-tuple output decodes to an object keyed by struct field
+        // names; `maxBondFraction` is the bonders % value (index 6 in the struct).
+        const tokenomicsResult = await readTokenomicsContract<{
+          maxBondFraction: number | bigint;
+        }>('mapEpochTokenomics', [newEpoch]);
+        const bonders = Number(tokenomicsResult.maxBondFraction);
 
-        // staking
-        const stakingResult = await tokenomicsContract.methods
-          .mapEpochStakingPoints(newEpoch)
-          .call();
-        const staking = Number(stakingResult['3']);
+        // staking — multiple outputs decode to an array; index 3 is stakingFraction
+        const stakingResult = await readTokenomicsContract<Array<number | bigint>>(
+          'mapEpochStakingPoints',
+          [newEpoch]
+        );
+        const staking = Number(stakingResult[3]);
 
         // subtract bonders % from 100 to get developers %
         const developers = 100 - (staking + bonders);

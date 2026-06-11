@@ -73,7 +73,7 @@ When adding a new dependency, check:
 
 **Olas-specific watches:**
 
-- [`web3`](https://www.npmjs.com/package/web3) pulls a very large transitive tree and the web3 / viem ecosystem has historically been a high-value target. Scrutinize any bump, including `web3-types`.
+- [`viem`](https://www.npmjs.com/package/viem) is the Ethereum client used for read-only on-chain calls. The web3 / viem ecosystem has historically been a high-value target. Scrutinize any bump, including its transitive `ox` / `abitype` deps.
 - [`@vercel/blob`](https://www.npmjs.com/package/@vercel/blob) is what actually reads `BLOB_READ_WRITE_TOKEN` at runtime (see [§7](#7-secrets-hygiene-in-the-build-environment)). A compromised version could exfiltrate the token. Pin tightly and do not skip review on its transitive bumps.
 - [`@vercel/og`](https://www.npmjs.com/package/@vercel/og) runs in Node.js runtime (see [`pages/api/og/[[...slug]].tsx`](./pages/api/og/[[...slug]].tsx)) and executes vendor code during OG image generation, where it has access to `BLOB_READ_WRITE_TOKEN` via `@vercel/blob`.
 
