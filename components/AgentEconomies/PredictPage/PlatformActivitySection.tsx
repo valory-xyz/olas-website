@@ -20,12 +20,15 @@ export type Platform = 'polystrat' | 'omenstrat';
 type MetricStatus = StaleIndicatorProps['status'];
 
 export type PlatformMetrics = {
+  // APR is a current staking rate (no time series) — the only un-windowed metric.
   apr: number | null;
   aprStatus: MetricStatus;
-  partialRoi: number | null;
-  finalRoi: number | null;
+  // Windowed ROI: finalRoi = prediction + staking rewards; partialRoi = prediction only.
+  partialRoi: WindowedMetric<number | null> | null;
+  finalRoi: WindowedMetric<number | null> | null;
   roiStatus: MetricStatus;
-  successRate: number | null;
+  // Windowed prediction accuracy (% correct per time range).
+  successRate: WindowedMetric<number | null> | null;
   successRateStatus: MetricStatus;
   traderTxs: number | null;
   mechTxs: number | null;
@@ -63,8 +66,8 @@ const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
   { key: 'max', label: 'Max' },
 ];
 
-// Only Omenstrat exposes a windowed metric (Brier score) today. On Polystrat the
-// tabs stay disabled until predict-polymarket ships per-window data.
+// ROI and Accuracy are windowed for both platforms; Brier adds a 4th windowed metric
+// on Omenstrat. When no windowed data is available yet, the non-max tabs stay disabled.
 const getTimeRangeTabs = (windowed: boolean) =>
   TIME_RANGE_KEYS.map(({ key, label }) =>
     windowed || key === 'max'
@@ -143,15 +146,18 @@ export const PlatformActivitySection = ({
 }: PlatformActivitySectionProps) => {
   const m = metrics[platform];
 
-  // Brier score is the only windowed metric today, and it exists for Omenstrat only.
-  const isWindowed = platform === 'omenstrat' && !isNil(m.brierScore);
+  // ROI, Accuracy (both platforms) and Brier (Omenstrat) are windowed, so tabs are
+  // enabled whenever windowed data exists.
+  const isWindowed = !isNil(m.successRate) || !isNil(m.finalRoi);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('max');
 
+  const finalRoiValue = m.finalRoi?.[activeWindow] ?? null;
+  const partialRoiValue = m.partialRoi?.[activeWindow] ?? null;
   const roiItem: MetricItemProps = {
     label: (
       <span className="flex items-center gap-2">
         Total ROI - Average{' '}
-        {!isNil(m.partialRoi) && (
+        {!isNil(partialRoiValue) && (
           <Popover>
             <div className="flex flex-col max-w-[320px] gap-4 text-base">
               <p className="text-gray-500">
@@ -164,7 +170,7 @@ export const PlatformActivitySection = ({
               <div className="flex justify-between">
                 <span className="text-gray-900">Partial ROI</span>
                 <span className={m.roiStatus?.stale ? 'text-gray-400' : ''}>
-                  {`${m.partialRoi}%`}
+                  {`${Math.round(partialRoiValue)}%`}
                 </span>
               </div>
               <div className="text-sm">
@@ -175,7 +181,7 @@ export const PlatformActivitySection = ({
         )}
       </span>
     ),
-    value: isNil(m.finalRoi) ? null : `${m.finalRoi}%`,
+    value: isNil(finalRoiValue) ? null : `${Math.round(finalRoiValue)}%`,
     status: m.roiStatus,
     href: `/data#${platform}-predict-roi`,
     warning:
@@ -184,9 +190,23 @@ export const PlatformActivitySection = ({
       ) : undefined,
   };
 
+  const accuracyValue = m.successRate?.[activeWindow] ?? null;
   const accuracyItem: MetricItemProps = {
-    label: 'Prediction Accuracy - Average (Last 10K Trades)',
-    value: isNil(m.successRate) ? null : `${m.successRate}%`,
+    label: (
+      <span className="flex items-center gap-2">
+        Prediction Accuracy{' '}
+        <Popover>
+          <div className="flex flex-col max-w-[320px] gap-2 text-base text-gray-500">
+            <p>
+              Share of the agent&apos;s settled predictions that were correct, over the selected
+              time range. Each bet is counted on the day it was placed, once its market has
+              resolved.
+            </p>
+          </div>
+        </Popover>
+      </span>
+    ),
+    value: isNil(accuracyValue) ? null : `${accuracyValue.toFixed(0)}%`,
     status: m.successRateStatus,
     href: `/data#${platform}-predict-accuracy`,
   };
@@ -219,11 +239,14 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-predict-brier`,
   };
 
-  // Both economies show ROI / APR / Accuracy. Brier score is an additional 4th
-  // metric on Omenstrat only (predict-polymarket doesn't index Brier yet).
-  const performanceItems: MetricItemProps[] = [
+  // APR is a current staking rate with no per-window data, so it sits in its own group
+  // untouched by the tabs.
+  const currentItems: MetricItemProps[] = [aprItem];
+
+  // ROI and Accuracy are windowed on both economies; Brier adds a 4th windowed metric
+  // on Omenstrat only (predict-polymarket doesn't index Brier yet). These respond to the tabs.
+  const windowedItems: MetricItemProps[] = [
     roiItem,
-    aprItem,
     accuracyItem,
     ...(platform === 'omenstrat' ? [brierItem] : []),
   ];
@@ -258,18 +281,37 @@ export const PlatformActivitySection = ({
 
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="text-lg font-semibold">Performance</div>
-            <Tabs
-              items={getTimeRangeTabs(isWindowed)}
-              activeKey={isWindowed ? activeWindow : 'max'}
-              onChange={(key) => setActiveWindow(key as WindowKey)}
-            />
+          <div className="text-lg font-semibold">Performance</div>
+
+          {/* Current staking rate — not affected by the time-range tabs. */}
+          <div className="flex flex-col gap-3">
+            <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Current
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {currentItems.map((item, i) => (
+                <MetricItem key={i} {...item} />
+              ))}
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {performanceItems.map((item, i) => (
-              <MetricItem key={i} {...item} />
-            ))}
+
+          {/* Time-windowed metrics — the tabs drive only this group. */}
+          <div className="flex flex-col gap-3 pt-2 border-t border-slate-200">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                By time range
+              </div>
+              <Tabs
+                items={getTimeRangeTabs(isWindowed)}
+                activeKey={isWindowed ? activeWindow : 'max'}
+                onChange={(key) => setActiveWindow(key as WindowKey)}
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {windowedItems.map((item, i) => (
+                <MetricItem key={i} {...item} />
+              ))}
+            </div>
           </div>
         </Card>
 

@@ -761,6 +761,86 @@ const computeAgentBlueprintHistogram = (
   return binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10);
 };
 
+/**
+ * Protocol-aggregate (dollar-weighted) net gain and total costs over a window, summed
+ * across ALL agents with positive trading costs. Powers the windowed Performance ROI.
+ *
+ * Mirrors the per-agent cost/netGain math in `computeAgentBlueprintHistogram`, but
+ * aggregates into one ratio instead of binning — and intentionally OMITS the
+ * `MIN_TRADES_FOR_ROI_DISPLAY` activity filter: dollar weighting already de-emphasises
+ * tiny agents, and the Performance headline is a whole-economy figure, not a per-agent
+ * distribution. Keep the formulas in sync with the histogram.
+ *
+ * `daysBack` 7|30|90 → sum `byDay` buckets in the window; `null` → sum `allTimeAgents`.
+ * Results are 1e18-scaled (USDC 1e6 × 1e12 for polystrat). partialRoi% =
+ * netGain / totalCosts × 100; finalRoi adds staking rewards (USD) to the numerator.
+ */
+export const computeWindowedNetGainAndCosts = (
+  data: AgentBlueprintRoiData,
+  daysBack: number | null,
+  isPolystrat: boolean
+): { netGain: bigint; totalCosts: bigint } => {
+  let netGain = 0n;
+  let totalCosts = 0n;
+
+  if (daysBack === null) {
+    for (const entry of Object.values(data.allTimeAgents ?? {})) {
+      const tradingCosts = BigInt(entry.tradingCosts); // already scaled
+      if (tradingCosts <= 0n) continue;
+      const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
+      const agentTotalCosts = tradingCosts + mechFees;
+      netGain += BigInt(entry.payout) - agentTotalCosts;
+      totalCosts += agentTotalCosts;
+    }
+    return { netGain, totalCosts };
+  }
+
+  const scale = isPolystrat ? BigInt('1000000000000') : 1n; // USDC 1e6 → 1e18
+  const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
+  const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
+
+  type Totals = {
+    profit: bigint;
+    payout: bigint;
+    mechRequests: number;
+    tradedSettled: bigint;
+    feesSettled: bigint;
+  };
+  const agentTotals = new Map<string, Totals>();
+
+  for (const [dayKeyStr, dayData] of Object.entries(data.byDay)) {
+    const dayTs = Number(dayKeyStr);
+    if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
+    for (const [agentId, entry] of Object.entries(dayData.agents)) {
+      const prev: Totals = agentTotals.get(agentId) ?? {
+        profit: 0n,
+        payout: 0n,
+        mechRequests: 0,
+        tradedSettled: 0n,
+        feesSettled: 0n,
+      };
+      prev.profit += BigInt(entry.profit);
+      prev.payout += BigInt(entry.payout);
+      prev.mechRequests += entry.mechRequests;
+      if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
+      if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
+      agentTotals.set(agentId, prev);
+    }
+  }
+
+  for (const totals of agentTotals.values()) {
+    const scaledProfit = totals.profit * scale;
+    const tradingCosts = isPolystrat
+      ? totals.payout * scale - scaledProfit
+      : totals.tradedSettled + totals.feesSettled;
+    if (tradingCosts <= 0n) continue;
+    const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
+    netGain += scaledProfit - mechFees;
+    totalCosts += tradingCosts + mechFees;
+  }
+  return { netGain, totalCosts };
+};
+
 export const computeAllRangeHistograms = (
   omenData: AgentBlueprintRoiData | null,
   polyData: AgentBlueprintRoiData | null
