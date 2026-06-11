@@ -8,7 +8,7 @@ import {
 } from 'common-util/constants';
 import { BALANCER_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { balancerGetPoolQuery } from 'common-util/graphql/queries';
-import Web3 from 'web3';
+import { Abi, createPublicClient, http } from 'viem';
 
 type BalancerPoolToken = {
   address: string;
@@ -53,12 +53,19 @@ const getPolygonPolUsdPriceScaled = async (): Promise<bigint | null> => {
   if (!rpcUrl) return null;
 
   try {
-    const web3 = new Web3(rpcUrl);
-    const feed = new web3.eth.Contract(
-      CHAINLINK_AGGREGATOR_V3_ABI as unknown as any,
-      CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
-    );
-    const latest: any = await feed.methods.latestRoundData().call();
+    const client = createPublicClient({ transport: http(rpcUrl) });
+    // viem's overloaded `readContract` generic mis-resolves under this repo's
+    // tsconfig; call through a narrowed signature (see common-util/web3.ts).
+    const readContract = client.readContract as unknown as (params: {
+      address: `0x${string}`;
+      abi: Abi;
+      functionName: string;
+    }) => Promise<unknown>;
+    const latest: any = await readContract({
+      address: CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD as `0x${string}`,
+      abi: CHAINLINK_AGGREGATOR_V3_ABI as unknown as Abi,
+      functionName: 'latestRoundData',
+    });
     const answerRaw = Array.isArray(latest) ? latest[1] : latest?.answer;
     if (answerRaw === null || answerRaw === undefined) return null;
 

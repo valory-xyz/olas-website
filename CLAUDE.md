@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is the Olas Network marketing website — a **Next.js 15** (Pages Router) application that showcases autonomous AI agents, staking programs, and the Olas protocol. The site uses **Strapi** as a headless CMS for editorial content, queries multi-chain **GraphQL subgraphs** for on-chain metrics, and persists those metrics as JSON snapshots in **Vercel Blob storage** that are refreshed by Vercel **cron jobs**.
 
-Stack at a glance: Next.js 15 + React 19, Node 22, TypeScript-first (`.ts`/`.tsx`) with `allowJs` for legacy `.js`/`.jsx`, Tailwind CSS + shadcn/ui (Radix primitives), `graphql-request`, `swr`, `@vercel/blob`, `web3`, `dayjs`.
+Stack at a glance: Next.js 15 + React 19, Node 22, TypeScript-first (`.ts`/`.tsx`) with `allowJs` for legacy `.js`/`.jsx`, Tailwind CSS + shadcn/ui (Radix primitives), `graphql-request`, `swr`, `@vercel/blob`, `viem`, `dayjs`.
 
 ## Development Commands
 
