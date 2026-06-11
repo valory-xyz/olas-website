@@ -239,14 +239,13 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-predict-brier`,
   };
 
-  // APR is a current staking rate with no per-window data, so it sits in its own group
-  // untouched by the tabs.
-  const currentItems: MetricItemProps[] = [aprItem];
-
-  // ROI and Accuracy are windowed on both economies; Brier adds a 4th windowed metric
-  // on Omenstrat only (predict-polymarket doesn't index Brier yet). These respond to the tabs.
-  const windowedItems: MetricItemProps[] = [
+  // ROI, Accuracy and Brier (Omenstrat only) respond to the time-range tabs. APR is a
+  // current staking rate with no per-window data, so it simply stays constant as the
+  // tabs change. Brier is a 4th metric on Omenstrat only (predict-polymarket doesn't
+  // index Brier yet).
+  const performanceItems: MetricItemProps[] = [
     roiItem,
+    aprItem,
     accuracyItem,
     ...(platform === 'omenstrat' ? [brierItem] : []),
   ];
@@ -281,37 +280,18 @@ export const PlatformActivitySection = ({
 
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
-          <div className="text-lg font-semibold">Performance</div>
-
-          {/* Current staking rate — not affected by the time-range tabs. */}
-          <div className="flex flex-col gap-3">
-            <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              Current
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {currentItems.map((item, i) => (
-                <MetricItem key={i} {...item} />
-              ))}
-            </div>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="text-lg font-semibold">Performance</div>
+            <Tabs
+              items={getTimeRangeTabs(isWindowed)}
+              activeKey={isWindowed ? activeWindow : 'max'}
+              onChange={(key) => setActiveWindow(key as WindowKey)}
+            />
           </div>
-
-          {/* Time-windowed metrics — the tabs drive only this group. */}
-          <div className="flex flex-col gap-3 pt-2 border-t border-slate-200">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                By time range
-              </div>
-              <Tabs
-                items={getTimeRangeTabs(isWindowed)}
-                activeKey={isWindowed ? activeWindow : 'max'}
-                onChange={(key) => setActiveWindow(key as WindowKey)}
-              />
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {windowedItems.map((item, i) => (
-                <MetricItem key={i} {...item} />
-              ))}
-            </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {performanceItems.map((item, i) => (
+              <MetricItem key={i} {...item} />
+            ))}
           </div>
         </Card>
 
