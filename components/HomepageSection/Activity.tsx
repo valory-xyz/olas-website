@@ -106,7 +106,7 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className = '' }: OlasIsBurnedA
       height={124}
       className="h-[124px]"
     />
-    <div className="mb-auto mt-[47px] font-semibold text-sm md:mt-[58px] text-black z-20 content-center flex flex-row gap-2">
+    <div className="mb-auto mt-[47px] w-[76px] font-semibold text-sm md:mt-[58px] text-black z-20 content-center flex flex-row gap-2">
       <p>ON</p>
       <Popover
         align="center"
