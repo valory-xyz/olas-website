@@ -111,7 +111,11 @@ const fetchOmenDayBuckets: FetchDayBuckets = async (
     }
 
     if (rows.length < LIMIT) break;
-    cursor = minTs; // next page strictly older
+    // Cursor by `timestamp_lt: minTs`. If a full page ends exactly on a timestamp
+    // shared by more bets, those siblings are dropped — a rare, undercount-only edge
+    // at second granularity. Accepted (this feeds an accuracy %, not a hard count);
+    // revisit with id_gt paging within a timestamp if bets ever cluster on a second.
+    cursor = minTs;
   }
   return perDay;
 };
@@ -172,6 +176,8 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
     }
 
     if (rows.length < LIMIT) break;
+    // Same `timestamp_lt` cursor tradeoff as fetchOmenDayBuckets above: bets sharing
+    // the page-boundary second can be dropped (rare, undercount-only).
     cursor = minTs;
   }
   return perDay;

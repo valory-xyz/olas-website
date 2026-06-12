@@ -26,7 +26,10 @@ export type PlatformMetrics = {
   // Windowed ROI: finalRoi = prediction + staking rewards; partialRoi = prediction only.
   partialRoi: WindowedMetric<number | null> | null;
   finalRoi: WindowedMetric<number | null> | null;
+  // roiStatus tracks finalRoi (the headline); partialRoiStatus tracks the popover value,
+  // which can be fresh while finalRoi is still stale (e.g. staking rewards backfilling).
   roiStatus: MetricStatus;
+  partialRoiStatus: MetricStatus;
   // Windowed prediction accuracy (% correct per time range).
   successRate: WindowedMetric<number | null> | null;
   successRateStatus: MetricStatus;
@@ -169,12 +172,12 @@ export const PlatformActivitySection = ({
               </p>
               <div className="flex justify-between">
                 <span className="text-gray-900">Partial ROI</span>
-                <span className={m.roiStatus?.stale ? 'text-gray-400' : ''}>
+                <span className={m.partialRoiStatus?.stale ? 'text-gray-400' : ''}>
                   {`${Math.round(partialRoiValue)}%`}
                 </span>
               </div>
               <div className="text-sm">
-                <StaleMetricContent status={m.roiStatus} />
+                <StaleMetricContent status={m.partialRoiStatus} />
               </div>
             </div>
           </Popover>

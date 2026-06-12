@@ -1,5 +1,6 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { getClosedMarketsBetsQuery } from 'common-util/graphql/queries';
+import { getOmenBetsByTimeRangeQuery } from 'common-util/graphql/queries';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
@@ -7,9 +8,13 @@ import { CodeSnippet } from './CodeSnippet';
 
 export const OmenstratAccuracyInfo = () => {
   const [copied, setCopied] = useState(false);
-  const closedMarketsBets = getClosedMarketsBetsQuery({
+  // Example: the 7D window. The accuracy accumulator runs this query across history one
+  // day-range at a time, buckets each settled bet on the day it was placed, then sums
+  // won/total per window (7D / 30D / 90D / Max).
+  const windowedBets = getOmenBetsByTimeRangeQuery({
     first: 1000,
-    pages: 10,
+    timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
+    timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
   });
 
   const copyEndpointToClipboard = async () => {
@@ -28,18 +33,19 @@ export const OmenstratAccuracyInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Success rate shows how often your agent&apos;s predictions were correct in resolved
-          markets. Trades on unresolved markets or with invalid outcomes are excluded, and the rate
-          is based on the latest <b>10,000 trades</b> from closed markets to ensure performance
-          remains relevant.
+          markets. Trades on unresolved markets or with invalid outcomes are excluded. The rate is
+          shown per <b>time range</b> (7D / 30D / 90D / Max): each settled bet is counted on the day
+          it was <b>placed</b>, and a bet is correct when its outcome matches the market&apos;s
+          resolved answer.
         </p>
 
-        <p>The following query is used:</p>
+        <p>The following query is used (example shows the 7-day window):</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Closed Markets Bets query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Windowed Bets query</h3>
 
         <p className="max-w-[800px]">
-          Used to fetch all bets along with their outcome and the final answer of the associated
-          market
+          Used to fetch settled bets within a time range, along with their outcome and the final
+          answer of the associated market
         </p>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>
@@ -59,7 +65,7 @@ export const OmenstratAccuracyInfo = () => {
         <CodeSnippet>
           {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ query: closedMarketsBets })}'`}
+  -d '${JSON.stringify({ query: windowedBets })}'`}
         </CodeSnippet>
       </div>
     </SectionWrapper>

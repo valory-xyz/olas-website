@@ -797,6 +797,11 @@ export const computeWindowedNetGainAndCosts = (
 
   const scale = isPolystrat ? BigInt('1000000000000') : 1n; // USDC 1e6 → 1e18
   const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
+  // INVARIANT: the largest windowed tab (90D) must fit inside byDay's retention, i.e.
+  // daysBack <= BYDAY_RETENTION_DAYS. byDay is pruned to BYDAY_RETENTION_DAYS (strict
+  // `<` cutoff), so 90D's oldest day currently sits exactly on the boundary and is
+  // kept. If BYDAY_RETENTION_DAYS is ever lowered below 90, the 90D window would
+  // silently lose its oldest days — keep BYDAY_RETENTION_DAYS >= the largest window.
   const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
   type Totals = {

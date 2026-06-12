@@ -1,4 +1,4 @@
-import { GNOSIS_STAKING_CONTRACTS } from 'common-util/constants';
+import { PREDICT_STAKING_PROGRAMS_PEARL } from 'common-util/constants';
 import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
@@ -90,6 +90,11 @@ const fetchDayBuckets = async (
     }
 
     if (rows.length < LIMIT) break;
+    // Cursor by `blockTimestamp_lt: minTs`. If a full page ends exactly on a
+    // timestamp shared by more rows, those siblings are dropped — a rare,
+    // undercount-only edge given second-granularity reward checkpoints. Accepted
+    // here (rewards feed final ROI, not a hard total); revisit with id_gt paging
+    // within a timestamp if reward events ever cluster on identical seconds.
     cursor = minTs;
   }
   return perDay;
@@ -222,14 +227,17 @@ const buildWindowedStakingRewards = async (
 export type StakingRewardsWindows = MetricWithStatus<WindowedMetric<string | null>>;
 export type { WindowKey };
 
-// Omenstrat: filter to the 41 predict staking contracts (the gnosis staking subgraph
-// also indexes non-predict programs).
+// Omenstrat: filter to the predict (Pearl) staking programs only. The gnosis staking
+// subgraph indexes every Olas program on the chain — including LST — so we scope to
+// PREDICT_STAKING_PROGRAMS_PEARL (the Pearl-configured predict programs) rather than
+// the broader GNOSIS_STAKING_CONTRACTS list, which still mixes in non-predict programs
+// and would otherwise inflate predict final ROI.
 export const fetchOmenstratStakingRewards = (): Promise<StakingRewardsWindows> =>
   buildWindowedStakingRewards(
     'predict-staking-rewards/omenstrat',
     'gnosis',
     OMEN_GENESIS_DAY,
-    GNOSIS_STAKING_CONTRACTS
+    Object.values(PREDICT_STAKING_PROGRAMS_PEARL)
   );
 
 // Polystrat: the polygon staking subgraph is predict-only, so sum unfiltered.
