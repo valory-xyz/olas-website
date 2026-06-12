@@ -102,7 +102,7 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className = '' }: OlasIsBurnedA
     <Image
       src={`${imgPath}${pointsDown ? 'mobile-arrow4.png' : 'arrow4.png'}`}
       alt="arrow"
-      width={50}
+      width={28}
       height={124}
       className="h-[124px]"
     />
