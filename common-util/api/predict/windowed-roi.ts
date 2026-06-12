@@ -31,6 +31,12 @@ export type WindowedRoi = {
 // staking-rewards accumulator) and the current OLAS price into windowed partial and
 // final ROI. Staking rewards are valued at the current OLAS price — the same
 // approximation the legacy all-time ROI used.
+//
+// Bucketing basis (intentional): ROI inherits roi-distribution's *settlement-day*
+// bucketing, whereas the accuracy metric buckets by *placement day*. So the same "7D"
+// tab covers slightly different bet populations across ROI vs Accuracy — each is the
+// natural convention for its metric (ROI = P&L realised in the window; accuracy =
+// predictions made in the window that have since resolved). See the /data methodology.
 const computePlatformWindowedRoi = async (
   roiCategory: string,
   isPolystrat: boolean,
