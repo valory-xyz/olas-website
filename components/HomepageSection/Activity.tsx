@@ -107,14 +107,15 @@ const OlasIsBurnedArrow = ({ pointsDown = false, className = '' }: OlasIsBurnedA
       className="h-[124px]"
     />
     <div className="mb-auto mt-[47px] font-semibold text-sm md:mt-[58px] text-black z-20 content-center flex flex-row gap-2">
-      <p>OFF</p>
+      <p>ON</p>
       <Popover
         align="center"
         side="right"
         contentClassName="w-[382px] text-left font-normal translate-x-2"
       >
-        Fees collected can be turned on or off by the Governors of the Olas Protocol. Currently,
-        fees are turned off to encourage early adoption and growth of the marketplace.
+        <strong>Fees collected</strong> can be turned on or off by the Governors of the Olas
+        Protocol. Currently, fees are turned on; they are designed to buy back and burn OLAS as the
+        marketplace is used.
         <ExternalLink
           href={`${VALORY_GIT_URL}/autonolas-aip/blob/main/content/aips/aip-5/automate_relayer_marketplace.md`}
           className="mt-2 cursor-pointer"
