@@ -1,4 +1,4 @@
-import { fetchAllPredictMetrics } from 'common-util/api/predict';
+import { fetchAllPredictMetrics, PREDICT_SNAPSHOT_CATEGORY } from 'common-util/api/predict';
 import { saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('No predict metrics returned');
     }
 
-    const url = await saveSnapshot({ category: 'predict', data: metrics });
+    const url = await saveSnapshot({ category: PREDICT_SNAPSHOT_CATEGORY, data: metrics });
 
     return res.status(200).json({
       success: true,

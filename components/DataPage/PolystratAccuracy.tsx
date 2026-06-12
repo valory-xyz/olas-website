@@ -1,5 +1,6 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { getPolymarketBetsQuery } from 'common-util/graphql/queries';
+import { getPolymarketBetsByTimeRangeQuery } from 'common-util/graphql/queries';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
@@ -7,9 +8,13 @@ import { CodeSnippet } from './CodeSnippet';
 
 export const PolystratAccuracyInfo = () => {
   const [copied, setCopied] = useState(false);
-  const polymarketBets = getPolymarketBetsQuery({
+  // Example: the 7D window. The accuracy accumulator runs this query across history one
+  // day-range at a time, buckets each resolved bet on the day it was placed, then sums
+  // won/total per window (7D / 30D / 90D / Max).
+  const windowedBets = getPolymarketBetsByTimeRangeQuery({
     first: 1000,
-    pages: 10,
+    blockTimestamp_gte: getMidnightUtcTimestampDaysAgo(7),
+    blockTimestamp_lt: getMidnightUtcTimestampDaysAgo(0),
   });
 
   const copyEndpointToClipboard = async () => {
@@ -28,18 +33,19 @@ export const PolystratAccuracyInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Success rate shows how often your agent&apos;s predictions were correct in resolved
-          markets. Bets on unresolved markets or with invalid outcomes are excluded, and the rate is
-          based on the latest <b>10,000 bets</b> from resolved markets to ensure performance remains
-          relevant.
+          markets. Bets on unresolved markets or with invalid outcomes are excluded. The rate is
+          shown per <b>time range</b> (7D / 30D / 90D / Max): each resolved bet is counted on the
+          day it was <b>placed</b>, and a bet is correct when its outcome index matches the
+          question&apos;s winning index.
         </p>
 
-        <p>The following query is used:</p>
+        <p>The following query is used (example shows the 7-day window):</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Polymarket Bets query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Windowed Bets query</h3>
 
         <p className="max-w-[800px]">
-          Used to fetch all bets along with their outcome index and the resolution of the associated
-          market question
+          Used to fetch bets within a time range, along with their outcome index and the resolution
+          of the associated market question
         </p>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>
@@ -59,7 +65,7 @@ export const PolystratAccuracyInfo = () => {
         <CodeSnippet>
           {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL} \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ query: polymarketBets })}'`}
+  -d '${JSON.stringify({ query: windowedBets })}'`}
         </CodeSnippet>
       </div>
     </SectionWrapper>
