@@ -69,6 +69,12 @@ const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
   { key: 'max', label: 'Max' },
 ];
 
+// A windowed metric only carries data once at least one of its windows is non-null.
+// On a fresh predict-v2 blob mid-backfill every window is null, so this stays false and
+// the non-max tabs remain disabled (matching getTimeRangeTabs below).
+const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
+  !isNil(w) && Object.values(w).some((v) => !isNil(v));
+
 // ROI and Accuracy are windowed for both platforms; Brier adds a 4th windowed metric
 // on Omenstrat. When no windowed data is available yet, the non-max tabs stay disabled.
 const getTimeRangeTabs = (windowed: boolean) =>
@@ -150,8 +156,13 @@ export const PlatformActivitySection = ({
   const m = metrics[platform];
 
   // ROI, Accuracy (both platforms) and Brier (Omenstrat) are windowed, so tabs are
-  // enabled whenever windowed data exists.
-  const isWindowed = !isNil(m.successRate) || !isNil(m.finalRoi);
+  // enabled once any windowed metric has at least one non-null window (not merely a
+  // present-but-all-null object from a mid-backfill blob).
+  const isWindowed =
+    hasWindowData(m.partialRoi) ||
+    hasWindowData(m.finalRoi) ||
+    hasWindowData(m.successRate) ||
+    hasWindowData(m.brierScore);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('max');
 
   const finalRoiValue = m.finalRoi?.[activeWindow] ?? null;

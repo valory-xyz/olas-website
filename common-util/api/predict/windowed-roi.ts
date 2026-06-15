@@ -12,6 +12,12 @@ import {
 
 const SCALE_1E18 = 10n ** 18n;
 
+// The roi-distribution snapshot is refreshed by a separate daily cron. If that cron
+// stalls the blob still loads, so guard on its age and surface staleness as a
+// fetchError once it's older than this — otherwise windowed ROI would keep publishing
+// aging data with a fresh-looking status.
+const ROI_SNAPSHOT_MAX_AGE_MS = 48 * 60 * 60 * 1000;
+
 const WINDOWS: { key: WindowKey; days: number | null }[] = [
   { key: '7d', days: 7 },
   { key: '30d', days: 30 },
@@ -46,12 +52,23 @@ const computePlatformWindowedRoi = async (
   const source = isPolystrat ? 'polystrat' : 'omenstrat';
 
   let roiData: AgentBlueprintRoiData | null = null;
+  let roiSnapshotTs: number | null = null;
   try {
     const snap = await getSnapshot({ category: roiCategory });
     roiData = (snap?.data as unknown as AgentBlueprintRoiData) ?? null;
+    roiSnapshotTs = snap?.timestamp ?? null;
   } catch (e) {
     console.warn(`Could not load roi-distribution snapshot (${roiCategory})`, e);
   }
+
+  // Missing blob → hard error; present-but-aging blob → stale error (propagates to UI).
+  const roiSnapshotStale =
+    roiSnapshotTs != null && Date.now() - roiSnapshotTs > ROI_SNAPSHOT_MAX_AGE_MS;
+  const roiFetchErrors = !roiData
+    ? [`roi-distribution:${source}`]
+    : roiSnapshotStale
+      ? [`roi-distribution:${source}:stale`]
+      : [];
 
   // Advance the staking-rewards accumulator (it persists its own backfill progress).
   const rewards = await fetchRewards();
@@ -79,14 +96,14 @@ const computePlatformWindowedRoi = async (
 
   const partialStatus = createStaleStatus({
     indexingErrors: [],
-    fetchErrors: roiData ? [] : [`roi-distribution:${source}`],
+    fetchErrors: roiFetchErrors,
   });
 
   // finalRoi additionally depends on the rewards accumulator and the OLAS price.
   const finalStatus = createStaleStatus({
     indexingErrors: rewards.status?.indexingErrors ?? [],
     fetchErrors: [
-      ...(roiData ? [] : [`roi-distribution:${source}`]),
+      ...roiFetchErrors,
       ...(olasUsdPrice ? [] : ['balancer:olas-price']),
       ...(rewards.status?.fetchErrors ?? []),
     ],

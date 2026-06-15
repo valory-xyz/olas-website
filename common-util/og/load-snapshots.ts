@@ -2,7 +2,7 @@ import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies'
 import type { MainMetricsData } from 'common-util/api/main-metrics';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
 import { fetchOlasTotalSupplyWei } from 'common-util/api/other-metrics/token-supply';
-import type { PredictMetricsData } from 'common-util/api/predict';
+import { PREDICT_SNAPSHOT_CATEGORY, type PredictMetricsData } from 'common-util/api/predict';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
 import type { OgSnapshotCategory } from './registry';
@@ -10,7 +10,9 @@ import type { OgSnapshotCategory } from './registry';
 const SNAPSHOT_CATEGORY: Record<OgSnapshotCategory, string> = {
   main: 'main',
   other: 'other',
-  predict: 'predict',
+  // Use the shared constant so the OG card reads the same blob the cron writes
+  // (bumped to predict-v2 for the windowed-metrics schema change).
+  predict: PREDICT_SNAPSHOT_CATEGORY,
   'agent-economies': 'agent-economies',
 };
 

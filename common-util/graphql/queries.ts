@@ -317,8 +317,8 @@ export const getOmenBetsByTimeRangeQuery = ({ first, timestamp_gte, timestamp_lt
 
 // Staking reward checkpoints within a [timestamp_gte, timestamp_lt) window, cursor-paged.
 // Powers the windowed staking-rewards accumulator used by windowed final ROI.
-// `contractAddresses` scopes to the predict staking contracts (omenstrat → the 41
-// GNOSIS_STAKING_CONTRACTS; polystrat → omit, the polygon staking subgraph is
+// `contractAddresses` scopes to the predict staking programs (omenstrat → the 12
+// PREDICT_STAKING_PROGRAMS_PEARL; polystrat → omit, the polygon staking subgraph is
 // predict-only). `rewardAmount` is 1e18-scaled OLAS, summable across rows.
 export const getStakingRewardsByTimeRangeQuery = ({
   first,
