@@ -47,14 +47,31 @@ type DailyOmenstratRow = {
 
 type DailyOmenstratResponse = WithMeta<{ dailyAgentPerformances: DailyOmenstratRow[] }>;
 
-// Omenstrat trader agents on Gnosis — same selection the Predict page uses for DAA.
-const OMENSTRAT_AGENT_IDS = OMENSTRAT_AGENT_CLASSIFICATION.valory_trader;
+// Omenstrat trader agents on Gnosis. Note this deliberately includes legacy agentId 12
+// in addition to the canonical trader IDs (14, 25): trader-quickstart originally
+// hardcoded AGENT_ID=12 when minting trader services, and trader-quickstart PR #104
+// (~2023-11) only migrated NON-staking services on-chain to 14/25 — staked trader
+// services intentionally keep AGENT_ID=12 (to avoid breaking Everest staking reward
+// claims). So all trader activity from inception (2023-07-12) until ~2023-11-18, plus
+// staked traders ever since, is recorded on-chain under agentId 12. Scoping to [14, 25]
+// alone hid ~4 months of early history and the heatmap appeared to start 2023-11-17;
+// [12, 14, 25] recovers it. We do NOT reuse OMENSTRAT_AGENT_CLASSIFICATION.valory_trader
+// here because the Predict page's DAA tile depends on that staying [14, 25].
+//
+// Verified by classifying all 3,264 Gnosis services via their configHash IPFS metadata
+// (service/valory/trader*): 3,020 are traders, spread across agentIds 12/14/25 and many
+// with no agentId at all. Excluded: 40 (valory/optimus — babydegen liquidity trader) and
+// 71 (Supafund) are different economies. The ~12 genuine non-trader services still filed
+// under agentId 12 contribute only ~45 active-day rows (mostly zero-activity test
+// services) — below the heatmap's quantile colour resolution, so they need no filtering.
+const OMENSTRAT_AGENT_IDS = [...OMENSTRAT_AGENT_CLASSIFICATION.valory_trader, 12];
 const CHAIN = 'gnosis';
 const SOURCE = 'registry:gnosis:explorer';
 
-// Wide enough to cover Omenstrat's first active day (~2023-11). The transform
+// Wide enough to cover the trader's first active day (2023-07-12). The transform
 // trims leading zero-days, so an over-wide window just self-trims to inception.
-const SERIES_WINDOW_DAYS = 1200;
+// (1500d reaches back to ~2022-05, keeping inception covered well past 2027.)
+const SERIES_WINDOW_DAYS = 1500;
 const ONE_DAY_SECONDS = 24 * 60 * 60;
 
 // The proxy occasionally 504s on the heavier paged query — retry transient
@@ -78,7 +95,7 @@ const requestWithRetry = async <T>(fn: () => Promise<T>, attempts = 3): Promise<
 };
 
 // The subgraph caps `first` at 1000, so we page through with skip. One row per
-// (agent, day) → a few years × 2 trader agents fits in ~2 pages; cap as a backstop.
+// (agent, day) → a few years × 3 trader agents (12/14/25) ≈ 3-4k rows; cap as a backstop.
 const PAGE_SIZE = 1000;
 const MAX_PAGES = 8;
 
