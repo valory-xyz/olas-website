@@ -48,6 +48,13 @@ type DailyOmenstratRow = {
 type DailyOmenstratResponse = WithMeta<{ dailyAgentPerformances: DailyOmenstratRow[] }>;
 
 // Omenstrat trader agents on Gnosis — same selection the Predict page uses for DAA.
+// Intentionally trader-only: the mech / market_maker / other_trader classes are
+// excluded. Those classes have on-chain activity from mid-2023 (mech ~2023-05,
+// market_maker ~2023-07), but the trader agents (14, 25) only went live 2023-11-17,
+// which is why this heatmap's DAA + Transactions series start in Nov 2023 rather
+// than mid-2023. The Predict page's *transaction* total uses the full agent set
+// (OMENSTRAT_AGENT_IDS_FLAT), so it reflects the earlier dates — that difference is
+// by design, not a windowing/trimming bug.
 const OMENSTRAT_AGENT_IDS = OMENSTRAT_AGENT_CLASSIFICATION.valory_trader;
 const CHAIN = 'gnosis';
 const SOURCE = 'registry:gnosis:explorer';

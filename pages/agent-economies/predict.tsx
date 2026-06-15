@@ -1,3 +1,4 @@
+import { PREDICT_SNAPSHOT_CATEGORY } from 'common-util/api/predict';
 import {
   computeAllRangeHistograms,
   AgentBlueprintRoiData,
@@ -28,7 +29,7 @@ const Predict = ({ metrics, roiDistribution, toolAccuracy }) => (
 
 export const getStaticProps = async () => {
   const [snapshot, omenRoiSnapshot, polyRoiSnapshot, toolAccuracySnapshot] = await Promise.all([
-    getSnapshot({ category: 'predict' }),
+    getSnapshot({ category: PREDICT_SNAPSHOT_CATEGORY }),
     getSnapshot({ category: 'roi-distribution/omenstrat-main' }),
     getSnapshot({ category: 'roi-distribution/polystrat-main' }),
     getSnapshot({ category: 'predict-tool-accuracy' }),

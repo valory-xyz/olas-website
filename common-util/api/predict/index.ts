@@ -17,11 +17,9 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { fetchOmenstratAccuracy, fetchPolystratAccuracy } from './accuracy';
 import { emptyWindows, fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
-import { fetchOmenstratRoi } from './omenstrat-roi';
-import { fetchOmenstratSuccessRate } from './omenstrat-success-rate';
-import { fetchPolystratRoi } from './polystrat-roi';
-import { fetchPolystratSuccessRate } from './polystrat-success-rate';
+import { fetchOmenstratWindowedRoi, fetchPolystratWindowedRoi } from './windowed-roi';
 
 const OMENSTRAT_AGENT_IDS_FLAT = Object.values(OMENSTRAT_AGENT_CLASSIFICATION)
   .flat()
@@ -214,15 +212,25 @@ const fetchPolystratOlasApr = async (): Promise<MetricWithStatus<string | null>>
 
 export type { WindowKey, WindowedMetric } from './omenstrat-brier';
 
+// Snapshot category for the predict metrics blob. The `-v2` suffix is a one-time
+// version bump: partialRoi/finalRoi/successRate changed shape (scalar -> windowed
+// per-range), a breaking schema change. Bumping the category (rather than the global
+// METRICS_PREFIX) isolates the migration to this blob so the Brier, roi-distribution
+// and accuracy accumulators don't get reset. Reader and writer must use this.
+export const PREDICT_SNAPSHOT_CATEGORY = 'predict-v2';
+
 export type PredictMetricsData = {
   // Omenstrat metrics
   omenstrat: {
     dailyActiveAgents: MetricWithStatus<number | null>;
     apr: MetricWithStatus<string | null>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
-    partialRoi: MetricWithStatus<number | null>;
-    finalRoi: MetricWithStatus<number | null>;
-    successRate: MetricWithStatus<string | null>;
+    // Windowed prediction-only ROI (excludes staking rewards).
+    partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
+    // Windowed prediction + staking-rewards ROI (the headline value).
+    finalRoi: MetricWithStatus<WindowedMetric<number | null>>;
+    // Windowed prediction accuracy (% of settled bets correct, by placement day).
+    successRate: MetricWithStatus<WindowedMetric<number | null>>;
     // Windowed mean Brier score (predict-omen only). Lower is better; ~0.25 = a 50/50 guess.
     brierScore: MetricWithStatus<WindowedMetric<number | null>>;
   };
@@ -232,9 +240,9 @@ export type PredictMetricsData = {
     dailyActiveAgents: MetricWithStatus<number | null>;
     apr: MetricWithStatus<string | null>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
-    partialRoi: MetricWithStatus<number | null>;
-    finalRoi: MetricWithStatus<number | null>;
-    successRate: MetricWithStatus<string | null>;
+    partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
+    finalRoi: MetricWithStatus<WindowedMetric<number | null>>;
+    successRate: MetricWithStatus<WindowedMetric<number | null>>;
   };
 };
 
@@ -262,14 +270,14 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       // Omenstrat
       fetchOmenstratOlasApr(),
       fetchPredictTxsByAgentType(),
-      fetchOmenstratRoi(),
-      fetchOmenstratSuccessRate(),
+      fetchOmenstratWindowedRoi(),
+      fetchOmenstratAccuracy(),
       fetchOmenstratBrier(),
       // Polystrat
       fetchPolystratOlasApr(),
       fetchPolystratTxsByAgentType(),
-      fetchPolystratRoi(),
-      fetchPolystratSuccessRate(),
+      fetchPolystratWindowedRoi(),
+      fetchPolystratAccuracy(),
     ]);
 
     // Extract separate DAA values
@@ -300,22 +308,19 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:txs') },
         partialRoi:
           omenstratRoiResult.status === 'fulfilled'
-            ? {
-                value: omenstratRoiResult.value.value?.partialRoi ?? null,
-                status: omenstratRoiResult.value.status,
-              }
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
+            ? omenstratRoiResult.value.partialRoi
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
         finalRoi:
           omenstratRoiResult.status === 'fulfilled'
-            ? {
-                value: omenstratRoiResult.value.value?.finalRoi ?? null,
-                status: omenstratRoiResult.value.status,
-              }
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
+            ? omenstratRoiResult.value.finalRoi
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('omenstrat:roi') },
         successRate:
           omenstratSuccessRateResult.status === 'fulfilled'
             ? omenstratSuccessRateResult.value
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:successRate') },
+            : {
+                value: emptyWindows(),
+                status: getFetchErrorAndCreateStaleStatus('omenstrat:successRate'),
+              },
         brierScore:
           omenstratBrierResult.status === 'fulfilled'
             ? omenstratBrierResult.value
@@ -337,22 +342,19 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:txs') },
         partialRoi:
           polystratRoiResult.status === 'fulfilled'
-            ? {
-                value: polystratRoiResult.value.value?.partialRoi ?? null,
-                status: polystratRoiResult.value.status,
-              }
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },
+            ? polystratRoiResult.value.partialRoi
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },
         finalRoi:
           polystratRoiResult.status === 'fulfilled'
-            ? {
-                value: polystratRoiResult.value.value?.finalRoi ?? null,
-                status: polystratRoiResult.value.status,
-              }
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },
+            ? polystratRoiResult.value.finalRoi
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('polystrat:roi') },
         successRate:
           polystratSuccessRateResult.status === 'fulfilled'
             ? polystratSuccessRateResult.value
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:successRate') },
+            : {
+                value: emptyWindows(),
+                status: getFetchErrorAndCreateStaleStatus('polystrat:successRate'),
+              },
       },
     };
 
