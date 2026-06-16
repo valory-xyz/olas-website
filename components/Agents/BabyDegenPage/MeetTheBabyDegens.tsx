@@ -1,7 +1,4 @@
-import {
-  SECTION_BOX_CLASS,
-  SUB_HEADER_LG_CLASS
-} from 'common-util/classes';
+import { SECTION_BOX_CLASS, SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
