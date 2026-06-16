@@ -5,6 +5,7 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
+import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -144,6 +145,7 @@ type ActivityCardProps = {
   iconHeight?: number;
   alt?: string;
   text?: React.ReactNode;
+  cardClassName?: string;
   primary: ActivityCardLinkProps;
   secondary?: Partial<ActivityCardLinkProps>;
   tertiary?: Partial<ActivityCardLinkProps>;
@@ -155,6 +157,7 @@ const ActivityCard = ({
   iconHeight = 40,
   alt,
   text,
+  cardClassName,
   primary: {
     text: primaryText,
     link: primaryLink,
@@ -186,7 +189,12 @@ const ActivityCard = ({
   const TertiaryLink = tertiaryIsLinkExternal ? ExternalLink : Link;
 
   return (
-    <Card className="flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque">
+    <Card
+      className={cn(
+        'flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque',
+        cardClassName
+      )}
+    >
       <div className="flex flex-row place-items-center gap-3">
         <Image
           src={`${imgPath}${icon}`}
@@ -237,6 +245,7 @@ const UsersCard = ({
   <ActivityCard
     icon="users.png"
     text="Users"
+    cardClassName="md:w-[360px]"
     primary={{
       value: totalOperators,
       text: (
