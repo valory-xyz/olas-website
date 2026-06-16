@@ -12,6 +12,9 @@ const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
+// Protocol fee taken on mech marketplace turnover (fee switch is ON).
+const MARKETPLACE_FEE_RATE = 0.15;
+
 type MetricStatus = {
   stale: boolean;
   lastValidAt: number | null;
@@ -249,10 +252,10 @@ const UsersCard = ({
     secondary={{
       value: olasStaked,
       text: (
-        <>
+        <span className="whitespace-nowrap">
           OLAS currently staked
           <StaleIndicator status={olasStakedStatus} />
-        </>
+        </span>
       ),
       link: '/data#olas-staked',
       status: olasStakedStatus,
@@ -341,7 +344,10 @@ const AgentToAgentCard = ({
       isLinkExternal: false,
     }}
     tertiary={{
-      value: `$${Number(mechFees).toLocaleString()}`,
+      value: `$${(Number(mechFees) * MARKETPLACE_FEE_RATE).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
       text: (
         <>
           fees collected
