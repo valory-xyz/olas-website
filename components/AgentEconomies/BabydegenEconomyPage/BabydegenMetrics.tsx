@@ -136,9 +136,9 @@ const ComingSoonCard = ({ name }) => (
 );
 
 const TAB_ITEMS = [
-  { key: 'basius', label: 'Basius' },
-  { key: 'optimus', label: 'Optimus' },
-  { key: 'modius', label: 'Modius' },
+  { key: 'basius', label: 'Basius', icon: '/images/babydegen-econ-page/basius.png' },
+  { key: 'optimus', label: 'Optimus', icon: '/images/babydegen-econ-page/optimus.png' },
+  { key: 'modius', label: 'Modius', icon: '/images/babydegen-econ-page/modius.png' },
 ];
 
 export const BabydegenMetrics = ({ metrics }) => {
@@ -175,9 +175,7 @@ export const BabydegenMetrics = ({ metrics }) => {
           </div>
         </Card>
 
-        <div className="flex justify-center">
-          <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} />
-        </div>
+        <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} fullWidth />
 
         {activeTab === 'basius' && <ComingSoonCard name="Basius" />}
         {activeTab === 'optimus' && (
