@@ -1,10 +1,11 @@
 import {
   SECTION_BOX_CLASS,
-  SUB_HEADER_LG_CLASS,
-  TEXT_MEDIUM_LIGHT_CLASS,
+  SUB_HEADER_LG_CLASS
 } from 'common-util/classes';
+import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { H2 } from 'components/ui/typography';
+import { Button } from 'components/ui/button';
+import { H2, SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 
 const TaggedItem = ({ item }) => (
@@ -85,14 +86,7 @@ const BasiusAgent = () => (
       className="mb-auto"
     />
     <div className="flex flex-col gap-4">
-      <Image
-        src="/images/under-construction.svg"
-        alt="Under Construction"
-        width={186}
-        height={32}
-      />
-      <div className={TEXT_MEDIUM_LIGHT_CLASS}>BASIUS AGENT</div>
-      <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>Basius agent</h2>
       <p>
         Basius is a personal DeFAI agent that autonomously manages your portfolio on Base. It
         gathers market data, selects optimal trading algorithms, and executes trades seamlessly on
@@ -107,6 +101,16 @@ const BasiusAgent = () => (
             </li>
           ))}
         </ul>
+      </div>
+      <div className="flex flex-wrap gap-4">
+        <Button variant="default" size="default" className="max-md:grow w-fit">
+          <SubsiteLink
+            href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=basius&utm_content=basius-button`}
+            isInButton
+          >
+            Run via Pearl
+          </SubsiteLink>
+        </Button>
       </div>
     </div>
   </div>
@@ -128,8 +132,7 @@ const ModiusAgent = () => (
         width={186}
         height={32}
       />
-      <div className={TEXT_MEDIUM_LIGHT_CLASS}>MODIUS AGENT</div>
-      <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>Modius agent</h2>
       <p>
         Modius is a personal DeFAI agent that autonomously manages your portfolio with cutting-edge
         strategies. It gathers market data, selects optimal trading algorithms, and executes trades
@@ -165,8 +168,7 @@ const OptimusAgent = () => (
         width={186}
         height={32}
       />
-      <div className={TEXT_MEDIUM_LIGHT_CLASS}>OPTIMUS AGENT</div>
-      <h2 className={SUB_HEADER_LG_CLASS}>Your Personal AI Portfolio Manager</h2>
+      <h2 className={SUB_HEADER_LG_CLASS}>Optimus agent</h2>
       <p>
         The Optimus Agent is an autonomous AI agent that streamlines your DeFi experience by
         intelligently managing your assets on specific blockchain platforms. Initially focused on
