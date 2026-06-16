@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+'use client';
+
+import { useMemo, useState } from 'react';
 
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
-import { Link } from 'components/ui/typography';
+import { Tabs } from 'components/ui/tabs';
+import { ExternalLink, Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
+import { LineChart } from 'lucide-react';
 import Image from 'next/image';
 
 const formatNumber = (num) => {
@@ -16,7 +19,41 @@ const formatNumber = (num) => {
   return `${numTo1dp}%`;
 };
 
-const BabydegenMetricsBubble = ({
+const AprMetric = ({ item }) => {
+  const value = item.value === null ? '--' : item.value;
+  const display =
+    item.source && value !== '--' ? (
+      item.source.isExternal ? (
+        <ExternalLink href={item.source.link} hideArrow>
+          <span className={item.status?.stale ? 'text-gray-400' : ''}>{value}</span>
+          <span className="text-2xl">↗</span>
+        </ExternalLink>
+      ) : (
+        <Link href={item.source.link}>
+          <span className={item.status?.stale ? 'text-gray-400' : ''}>{value}</span>
+        </Link>
+      )
+    ) : (
+      value
+    );
+
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-sm text-slate-700">{item.label}</span>
+      <div className="flex items-center gap-2">
+        <span
+          className={`text-2xl font-semibold ${item.status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+        >
+          {display}
+        </span>
+        <StaleIndicator status={item.status} />
+      </div>
+      <span className="text-xs text-slate-400">{item.hint}</span>
+    </div>
+  );
+};
+
+const BabydegenEconomyCard = ({
   isUnderConstruction = false,
   metrics,
   status,
@@ -32,24 +69,27 @@ const BabydegenMetricsBubble = ({
       ? baseSource
       : { link: OPERATE_URL, isExternal: true };
 
-    const baseMetrics = [
+    return [
       {
         id: 'toUSDC',
-        subText: 'APR, Relative to USDC - Moving Average 7D',
+        label: 'APR, Relative to USDC',
+        hint: 'Moving Average 7D',
         value: metrics?.latestUsdcApr ? formatNumber(metrics.latestUsdcApr) : null,
         source: baseSource,
         status,
       },
       {
         id: 'toETH',
-        subText: 'APR, Relative to ETH - Moving Average 7D',
+        label: 'APR, Relative to ETH',
+        hint: 'Moving Average 7D',
         value: metrics?.latestEthApr ? formatNumber(metrics.latestEthApr) : null,
         source: baseSource,
         status,
       },
       {
         id: 'olasApr',
-        subText: 'APR, OLAS - Via OLAS Staking',
+        label: 'APR, OLAS',
+        hint: 'Via OLAS Staking',
         value: !isNil(metrics?.stakingAprCalculated)
           ? formatNumber(metrics.stakingAprCalculated)
           : metrics?.maxOlasApr
@@ -59,28 +99,58 @@ const BabydegenMetricsBubble = ({
         status,
       },
     ];
-
-    return baseMetrics;
   }, [metrics, sourceUrl, status]);
 
   return (
-    <MetricsBubble
-      isUnderConstruction={isUnderConstruction}
-      metrics={data}
-      image={image}
-      title={title}
-    />
+    <Card className="p-8 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {image && <Image alt={title} src={image} width={32} height={32} />}
+          <span className="text-lg font-semibold">{title}</span>
+        </div>
+        {isUnderConstruction && (
+          <Image
+            src="/images/under-construction.svg"
+            alt="Under Construction"
+            width={163}
+            height={28}
+          />
+        )}
+      </div>
+      <div className="grid sm:grid-cols-3 gap-6">
+        {data.map((item) => (
+          <AprMetric key={item.id} item={item} />
+        ))}
+      </div>
+    </Card>
   );
 };
 
+const ComingSoonCard = ({ name }) => (
+  <Card className="p-8 border border-slate-200 rounded-2xl flex flex-col items-center justify-center text-center gap-4 min-h-[205px]">
+    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+      <LineChart className="h-6 w-6 text-slate-400" />
+    </div>
+    <p className="text-base text-slate-500">{name} agent economy metrics are coming soon.</p>
+  </Card>
+);
+
+const TAB_ITEMS = [
+  { key: 'basius', label: 'Basius' },
+  { key: 'optimus', label: 'Optimus' },
+  { key: 'modius', label: 'Modius' },
+];
+
 export const BabydegenMetrics = ({ metrics }) => {
+  const [activeTab, setActiveTab] = useState('optimus');
+
   return (
     <SectionWrapper id="stats">
-      <div className="max-w-[872px] mx-auto grid md:grid-cols-2 gap-6">
-        <Card className="flex flex-col gap-6 p-8 border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center md:col-span-2 w-full">
+      <div className="max-w-[646px] mx-auto flex flex-col gap-6">
+        <Card className="flex flex-col gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center text-xl w-full">
           <div className="flex items-center">
             <Image
-              alt="Mech DAAs"
+              alt="BabyDegen DAAs"
               src="/images/agents/babydegen-econ.png"
               width="35"
               height="35"
@@ -104,20 +174,30 @@ export const BabydegenMetrics = ({ metrics }) => {
             Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
-        <BabydegenMetricsBubble
-          isUnderConstruction
-          title="Modius Agent Economy"
-          image="/images/babydegen-econ-page/modius.png"
-          metrics={metrics?.modius?.value}
-          status={metrics?.modius?.status}
-        />
-        <BabydegenMetricsBubble
-          isUnderConstruction
-          title="Optimus Agent Economy"
-          image="/images/babydegen-econ-page/optimus.png"
-          metrics={metrics?.optimus?.value}
-          status={metrics?.optimus?.status}
-        />
+
+        <div className="flex justify-center">
+          <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} />
+        </div>
+
+        {activeTab === 'basius' && <ComingSoonCard name="Basius" />}
+        {activeTab === 'optimus' && (
+          <BabydegenEconomyCard
+            isUnderConstruction
+            title="Optimus Agent Economy"
+            image="/images/babydegen-econ-page/optimus.png"
+            metrics={metrics?.optimus?.value}
+            status={metrics?.optimus?.status}
+          />
+        )}
+        {activeTab === 'modius' && (
+          <BabydegenEconomyCard
+            isUnderConstruction
+            title="Modius Agent Economy"
+            image="/images/babydegen-econ-page/modius.png"
+            metrics={metrics?.modius?.value}
+            status={metrics?.modius?.status}
+          />
+        )}
       </div>
     </SectionWrapper>
   );
