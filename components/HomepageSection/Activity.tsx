@@ -250,7 +250,7 @@ const UsersCard = ({
       value: olasStaked,
       text: (
         <>
-          OLAS staked
+          OLAS currently staked
           <StaleIndicator status={olasStakedStatus} />
         </>
       ),
@@ -288,7 +288,7 @@ const DailyActiveAgentsCard = ({
       status: dailyActiveAgentsStatus,
       text: (
         <>
-          DAAs{' '}
+          Daily Active Agents{' '}
           <Popover>
             7-day average Daily Active Agents
             {dailyActiveAgentsStatus?.stale && (
@@ -341,9 +341,15 @@ const AgentToAgentCard = ({
       isLinkExternal: false,
     }}
     tertiary={{
-      value: '0%',
-      text: 'fees collected',
+      value: `$${Number(mechFees).toLocaleString()}`,
+      text: (
+        <>
+          fees collected
+          <StaleIndicator status={mechFeesStatus} />
+        </>
+      ),
       link: '/data#protocol-fees',
+      status: mechFeesStatus,
       isLinkExternal: false,
     }}
   />
