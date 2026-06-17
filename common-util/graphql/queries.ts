@@ -282,6 +282,80 @@ export const getExplorerBetsQuery = ({ first, timestamp_lt }) => gql`
   }
 `;
 
+// Resolved Omen bets within a [timestamp_gte, timestamp_lt) window, cursor-paged.
+// Powers the windowed prediction-accuracy accumulator (predict-accuracy/omenstrat):
+// settled bets only (`currentAnswer_not: null`), bucketed by placement day. Uses a
+// `timestamp_lt` cursor rather than skip so a 30-day backfill chunk stays O(1)/page.
+export const getOmenBetsByTimeRangeQuery = ({ first, timestamp_gte, timestamp_lt }) => gql`
+  query OmenBetsByTimeRange {
+    bets(
+      first: ${first}
+      where: {
+        and: [
+          { fixedProductMarketMaker_: { currentAnswer_not: null } }
+          { timestamp_gte: ${timestamp_gte} }
+          { timestamp_lt: ${timestamp_lt} }
+        ]
+      }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      timestamp
+      outcomeIndex
+      fixedProductMarketMaker {
+        currentAnswer
+      }
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
+// Staking reward checkpoints within a [timestamp_gte, timestamp_lt) window, cursor-paged.
+// Powers the windowed staking-rewards accumulator used by windowed final ROI.
+// `contractAddresses` scopes to the predict staking programs (omenstrat → the 12
+// PREDICT_STAKING_PROGRAMS_PEARL; polystrat → omit, the polygon staking subgraph is
+// predict-only). `rewardAmount` is 1e18-scaled OLAS, summable across rows.
+export const getStakingRewardsByTimeRangeQuery = ({
+  first,
+  contractAddresses,
+  timestamp_gte,
+  timestamp_lt,
+}: {
+  first: number;
+  contractAddresses?: string[];
+  timestamp_gte: number;
+  timestamp_lt: number;
+}) => {
+  const contractFilter =
+    contractAddresses && contractAddresses.length > 0
+      ? `{ contractAddress_in: [${contractAddresses.map((a) => `"${a.toLowerCase()}"`).join(', ')}] }`
+      : '';
+  return gql`
+  query StakingRewardsByTimeRange {
+    serviceRewardsHistories(
+      first: ${first}
+      where: { and: [ ${contractFilter} { blockTimestamp_gte: ${timestamp_gte} } { blockTimestamp_lt: ${timestamp_lt} } ] }
+      orderBy: blockTimestamp
+      orderDirection: desc
+    ) {
+      rewardAmount
+      blockTimestamp
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+};
+
 export const dailyBabydegenPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
@@ -998,6 +1072,44 @@ export const getPolymarketBetsQuery = ({ first, pages }: { first: number; pages:
   }
   return gql`query getPolymarketClosedMarkets { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
 };
+
+// Polymarket bets within a [blockTimestamp_gte, blockTimestamp_lt) window, cursor-paged.
+// Powers the windowed prediction-accuracy accumulator (predict-accuracy/polystrat),
+// bucketed by placement day. Polymarket has no `currentAnswer` server-side filter, so
+// unresolved bets are returned and skipped in code (counted later once they resolve).
+export const getPolymarketBetsByTimeRangeQuery = ({
+  first,
+  blockTimestamp_gte,
+  blockTimestamp_lt,
+}) => gql`
+  query PolymarketBetsByTimeRange {
+    bets(
+      first: ${first}
+      where: {
+        and: [
+          { blockTimestamp_gte: ${blockTimestamp_gte} }
+          { blockTimestamp_lt: ${blockTimestamp_lt} }
+        ]
+      }
+      orderBy: blockTimestamp
+      orderDirection: desc
+    ) {
+      blockTimestamp
+      outcomeIndex
+      question {
+        resolution {
+          winningIndex
+        }
+      }
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
 
 export const getPolymarketBetsWithBettorQuery = ({
   first,

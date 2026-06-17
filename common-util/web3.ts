@@ -35,7 +35,12 @@ const readContract = ethereumClient.readContract as unknown as (
  * Returns the decoded result exactly as viem decodes it (uint256 -> bigint).
  */
 export const readOlasContract = <T = any>(functionName: string, args: unknown[] = []): Promise<T> =>
-  readContract({ address: olasAddress, abi: olasAbi as unknown as Abi, functionName, args }) as Promise<T>;
+  readContract({
+    address: olasAddress,
+    abi: olasAbi as unknown as Abi,
+    functionName,
+    args,
+  }) as Promise<T>;
 
 /**
  * Read-only call against the Tokenomics contract on Ethereum mainnet.

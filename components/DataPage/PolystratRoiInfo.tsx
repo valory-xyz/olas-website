@@ -3,7 +3,7 @@ import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMechRequestsQuery,
   getPolymarketMarketsDataQuery,
-  stakingGlobalsQuery,
+  getStakingRewardsByTimeRangeQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
 import { getSubgraphExplorerUrl } from 'common-util/subgraph';
@@ -19,7 +19,11 @@ export const PolystratRoiInfo = () => {
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
   const marketsData = getPolymarketMarketsDataQuery({ first: 1000, pages: 10 });
-  const stakingGlobals = stakingGlobalsQuery;
+  const stakingRewards = getStakingRewardsByTimeRangeQuery({
+    first: 1000,
+    timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
+    timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
+  });
   const mechRequests = getMechRequestsQuery({
     timestamp_gt: marketOpenTimestamp,
     first: 1000,
@@ -44,7 +48,11 @@ export const PolystratRoiInfo = () => {
         <p>
           Total ROI shows your agent&apos;s overall earnings, including profits from predictions and
           staking rewards, minus all related costs such as trade amounts, gas fees, and Mech request
-          fees. Requests made for unresolved (open) markets are excluded to ensure accuracy.
+          fees. Requests made for unresolved (open) markets are excluded to ensure accuracy. ROI is
+          shown per <b>time range</b> (7D / 30D / 90D / Max): prediction profit and costs are
+          aggregated per window from per-agent daily statistics, and staking rewards are summed over
+          the same window (the Polygon staking subgraph indexes predict programs only) and valued at
+          the current OLAS/USD price.
         </p>
 
         <ul className="list-disc list-inside space-y-1">
@@ -115,9 +123,12 @@ export const PolystratRoiInfo = () => {
   -d '${JSON.stringify({ query: marketsData })}'`}
         </CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Globals query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Rewards query</h3>
 
-        <p>Used for getting cumulative staking rewards in OLAS</p>
+        <p className="max-w-[800px]">
+          Used for getting staking rewards (in OLAS) within a time range (example shows the 7-day
+          window). The windowed sum is valued at the current OLAS/USD price for Final ROI.
+        </p>
         <p className="text-purple-600">
           Subgraph link:{' '}
           <ExternalLink
@@ -126,7 +137,7 @@ export const PolystratRoiInfo = () => {
             Polygon
           </ExternalLink>
         </p>
-        <CodeSnippet>{stakingGlobals}</CodeSnippet>
+        <CodeSnippet>{stakingRewards}</CodeSnippet>
       </div>
     </SectionWrapper>
   );
