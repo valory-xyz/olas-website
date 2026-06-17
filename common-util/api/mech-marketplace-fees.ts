@@ -16,9 +16,10 @@ import { Abi, createPublicClient, formatUnits, http } from 'viem';
  * the balance to a drainer (non-OLAS → Olas Treasury, OLAS → burned) and resets
  * `collectedFees` to 0.
  *
- * We therefore read `collectedFees()` directly off each BalanceTracker — it is the
- * canonical, currently-held amount of collected (un-drained) protocol fees. There is
- * no cumulative counter in the contract; the value drops after each drain.
+ * We therefore read `collectedFees()` directly off each BalanceTracker (the currently-
+ * held, un-drained amount) and add the sum of its `Drained` events since the fee went
+ * live — because `drain()` resets `collectedFees` to 0, the live value alone would
+ * sawtooth down after every drain. Together they approximate lifetime fees collected.
  *
  * SCOPE (current): we only count trackers denominated in a token that is ~= 1 USD,
  * so no price oracle is needed: USDC trackers (6 decimals) and the Gnosis native
@@ -30,9 +31,11 @@ import { Abi, createPublicClient, formatUnits, http } from 'viem';
  * Chainlink feeds for ETH/POL/CELO native) — mirroring the pricing the new-mech-fees
  * subgraph already does. The currently-excluded trackers are listed in the comment below.
  *
- * TODO: `collectedFees()` only reflects fees not yet drained — it resets to 0 on each
- * `drain()`. To report lifetime fees collected (including already-distributed ones),
- * additionally sum the `Drained(address,uint256)` events each tracker emits.
+ * TODO (TEMPORARY): the `Drained` event scan is a stopgap. It is bounded to a runtime-
+ * estimated window since the fee-activation timestamp and chunks on RPC range errors,
+ * but it re-scans on every cron run and the window grows over time. Replace it
+ * with a cumulative fee field indexed by the new-mech-fees subgraph once available, then
+ * delete the on-chain log scan (sumDrainedRaw / FEE_LIVE_SINCE_SEC).
  */
 
 // BalanceTracker addresses denominated in a ~= 1 USD token, so the raw on-chain
@@ -109,25 +112,91 @@ const COLLECTED_FEES_ABI = [
   },
 ] as const satisfies Abi;
 
+// keccak256("Drained(address,uint256)") — `token` is indexed (topic), `collectedFees`
+// is the (non-indexed) 32-byte data word, so BigInt(log.data) is the drained amount.
+const DRAINED_TOPIC0 = '0xb2559daa129ad136aac2133ac6a0c75920abbef7d6663a017a94e181b13786c3';
+
+// The Mech Marketplace 15% fee went live on 2026-06-15 ~06:30 UTC (proposal executed on
+// Ethereum, bridged to the L2s minutes later). `drain()` reverts on zero collectedFees,
+// so no `Drained` event can exist before this — we start the scan just before it.
+const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
+
+// CHAIN_CONFIG.lagLimit is "blocks per ~12h" (43200s), so block time ≈ 43200 / lagLimit.
+const blockTimeSec = (chain: keyof typeof CHAIN_CONFIG) => 43200 / CHAIN_CONFIG[chain].lagLimit;
+
+const toBlockHex = (n: bigint) => `0x${n.toString(16)}`;
+
+type RawLog = { data: string };
+type RpcRequest = (args: { method: string; params: unknown[] }) => Promise<unknown>;
+
+// Conservative block window for providers that cap eth_getLogs ranges (most allow ≥10k).
+const GETLOGS_CHUNK = 9000n;
+
+// Whether an eth_getLogs error is a range/result-size limit (worth chunking) vs a
+// persistent error (e.g. method not whitelisted) where chunking would never help.
+const isRangeLimitError = (err: unknown): boolean => {
+  const e = err as { message?: string; details?: string; shortMessage?: string };
+  const msg = `${e?.message ?? ''} ${e?.details ?? ''} ${e?.shortMessage ?? ''}`.toLowerCase();
+  return /range|limit|exceed|too many|too large|more than|block range|response size/.test(msg);
+};
+
 /**
- * Reads `collectedFees()` from a single BalanceTracker and returns the amount as a
- * USD number (the tracker's token is ~= 1 USD). Throws on RPC/read failure so the
- * caller can record a per-tracker fetch error.
+ * Sums the `Drained` event amounts (raw token units) a BalanceTracker emitted between
+ * `fromBlock` and `toBlock`. Tries the whole range in one call; only if that fails with a
+ * range/result-size limit does it fall back to fixed-size chunks (linear, bounded). Any
+ * other error (e.g. eth_getLogs not whitelisted) is rethrown so the caller falls back to
+ * the un-drained amount — never recurses, so a persistent error can't blow up.
  */
-const readCollectedFeesUsd = async (
+const sumDrainedRaw = async (
+  request: RpcRequest,
+  address: `0x${string}`,
+  fromBlock: bigint,
+  toBlock: bigint
+): Promise<bigint> => {
+  const fetchRange = async (a: bigint, b: bigint): Promise<bigint> => {
+    const logs = (await request({
+      method: 'eth_getLogs',
+      params: [
+        { address, topics: [DRAINED_TOPIC0], fromBlock: toBlockHex(a), toBlock: toBlockHex(b) },
+      ],
+    })) as RawLog[];
+    return logs.reduce((sum, log) => sum + BigInt(log.data), 0n);
+  };
+
+  try {
+    return await fetchRange(fromBlock, toBlock);
+  } catch (err) {
+    if (!isRangeLimitError(err)) throw err;
+    let total = 0n;
+    for (let start = fromBlock; start <= toBlock; start += GETLOGS_CHUNK) {
+      const end = start + GETLOGS_CHUNK - 1n < toBlock ? start + GETLOGS_CHUNK - 1n : toBlock;
+      total += await fetchRange(start, end);
+    }
+    return total;
+  }
+};
+
+/**
+ * Returns a tracker's fees collected in USD: current `collectedFees()` (un-drained) plus
+ * the sum of its `Drained` events since the fee went live (the tracker's token is ~= 1 USD).
+ * The contract read throws on failure so the caller records a per-tracker fetch error; the
+ * event scan is best-effort and falls back to the un-drained amount only.
+ */
+const readTrackerFeesUsd = async (
   tracker: (typeof USD_PEGGED_FEE_TRACKERS)[number]
 ): Promise<number> => {
-  const rpc = CHAIN_CONFIG[tracker.chain]?.rpc;
-  if (!rpc) throw new Error(`Missing RPC for ${tracker.chain}`);
+  const cfg = CHAIN_CONFIG[tracker.chain];
+  if (!cfg?.rpc) throw new Error(`Missing RPC for ${tracker.chain}`);
 
-  const client = createPublicClient({ transport: http(rpc) });
-  // viem's overloaded `readContract` generic mis-resolves under this repo's tsconfig
-  // (see common-util/web3.ts) — call through a narrowed signature.
+  const client = createPublicClient({ transport: http(cfg.rpc) });
+  // viem's overloaded generics mis-resolve under this repo's tsconfig (see common-util/web3.ts)
+  // — call through narrowed signatures.
   const readContract = client.readContract as unknown as (params: {
     address: `0x${string}`;
     abi: Abi;
     functionName: string;
   }) => Promise<bigint>;
+  const request = client.request as unknown as RpcRequest;
 
   const collected = await readContract({
     address: tracker.address,
@@ -135,7 +204,21 @@ const readCollectedFeesUsd = async (
     functionName: 'collectedFees',
   });
 
-  return Number(formatUnits(collected, tracker.decimals));
+  // Add already-drained fees (TEMPORARY — see file header). Best-effort: on failure, fall
+  // back to the un-drained amount rather than failing the whole tile.
+  let drained = 0n;
+  try {
+    const latest = BigInt((await request({ method: 'eth_blockNumber', params: [] })) as string);
+    const elapsed = Math.max(0, Math.floor(Date.now() / 1000) - FEE_LIVE_SINCE_SEC);
+    // 1.25x safety margin so the window always starts before the activation block.
+    const span = BigInt(Math.ceil((elapsed / blockTimeSec(tracker.chain)) * 1.25));
+    const fromBlock = latest > span ? latest - span : 0n;
+    drained = await sumDrainedRaw(request, tracker.address, fromBlock, latest);
+  } catch (err) {
+    console.error(`drainedScan:${tracker.chain}:${tracker.token}`, err);
+  }
+
+  return Number(formatUnits(collected + drained, tracker.decimals));
 };
 
 /**
@@ -149,7 +232,7 @@ export const fetchMechMarketplaceFeesCollected = async (): Promise<
 > => {
   const fetchErrors: string[] = [];
 
-  const results = await Promise.allSettled(USD_PEGGED_FEE_TRACKERS.map(readCollectedFeesUsd));
+  const results = await Promise.allSettled(USD_PEGGED_FEE_TRACKERS.map(readTrackerFeesUsd));
 
   let totalUsd = 0;
   results.forEach((result, i) => {
