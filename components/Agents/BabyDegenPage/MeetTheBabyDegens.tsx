@@ -75,13 +75,15 @@ const optimusKeyFeatures = [
 
 const BasiusAgent = () => (
   <div id="basius-agent" className="flex flex-col md:flex-row gap-4 py-16 max-w-[968px] mx-auto">
-    <Image
-      src="/images/agents/babydegen/basius.png"
-      alt="basius agent"
-      width={250}
-      height={300}
-      className="mb-auto"
-    />
+    <div className="flex w-[250px] justify-center items-start mb-auto shrink-0">
+      <Image
+        src="/images/agents/babydegen/basius.png"
+        alt="basius agent"
+        width={190}
+        height={190}
+        className="mt-4"
+      />
+    </div>
     <div className="flex flex-col gap-4">
       <h2 className={SUB_HEADER_LG_CLASS}>Basius agent</h2>
       <p>
