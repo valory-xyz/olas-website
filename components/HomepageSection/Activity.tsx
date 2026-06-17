@@ -5,12 +5,26 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator';
 import { ExternalLink, Link } from 'components/ui/typography';
+import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
 const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
+
+// Format a USD metric, falling back to '--' when the value is missing/non-numeric
+// (e.g. a snapshot taken before this metric existed) so we never render "$NaN".
+const formatUsd = (value?: string | number, fractionDigits?: number) => {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return '--';
+  return `$${num.toLocaleString(
+    'en-US',
+    fractionDigits != null
+      ? { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }
+      : undefined
+  )}`;
+};
 
 type MetricStatus = {
   stale: boolean;
@@ -52,8 +66,10 @@ type DailyActiveAgentsCardProps = {
 type AgentToAgentCardProps = {
   ataTransactions?: string;
   mechFees?: string | number;
+  feesCollected?: string | number;
   ataTransactionsStatus?: MetricStatus;
   mechFeesStatus?: MetricStatus;
+  feesCollectedStatus?: MetricStatus;
 };
 
 type TransactionsCardProps = {
@@ -66,6 +82,7 @@ type ActivityMetrics = {
   olasStaked?: { value?: number; status?: MetricStatus };
   dailyActiveAgents?: { value?: number; status?: MetricStatus };
   mechFees?: { value?: number | string; status?: MetricStatus };
+  feesCollected?: { value?: number | string; status?: MetricStatus };
   ataTransactions?: { value?: number; status?: MetricStatus };
   totalOperators?: { value?: number; status?: MetricStatus };
 };
@@ -96,7 +113,7 @@ const ActivityValue = ({
 
 const OlasIsBurnedArrow = ({ pointsDown = false, className = '' }: OlasIsBurnedArrowProps) => (
   <div className={`flex flex-row md:mt-4 gap-2 ${className}`}>
-    <p className="w-[76px] md:ml-[58px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
+    <p className="w-[82px] md:ml-[28px] text-sm mt-9 md:mt-[46px] mb-auto max-sm:text-slate-500">
       OLAS is burned
     </p>
     <Image
@@ -141,6 +158,7 @@ type ActivityCardProps = {
   iconHeight?: number;
   alt?: string;
   text?: React.ReactNode;
+  cardClassName?: string;
   primary: ActivityCardLinkProps;
   secondary?: Partial<ActivityCardLinkProps>;
   tertiary?: Partial<ActivityCardLinkProps>;
@@ -152,6 +170,7 @@ const ActivityCard = ({
   iconHeight = 40,
   alt,
   text,
+  cardClassName,
   primary: {
     text: primaryText,
     link: primaryLink,
@@ -183,7 +202,12 @@ const ActivityCard = ({
   const TertiaryLink = tertiaryIsLinkExternal ? ExternalLink : Link;
 
   return (
-    <Card className="flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque">
+    <Card
+      className={cn(
+        'flex flex-col py-4 px-6 gap-4 h-fit w-full md:w-[300px] activity-card-opaque',
+        cardClassName
+      )}
+    >
       <div className="flex flex-row place-items-center gap-3">
         <Image
           src={`${imgPath}${icon}`}
@@ -234,6 +258,7 @@ const UsersCard = ({
   <ActivityCard
     icon="users.png"
     text="Users"
+    cardClassName="md:w-[360px]"
     primary={{
       value: totalOperators,
       text: (
@@ -250,7 +275,7 @@ const UsersCard = ({
       value: olasStaked,
       text: (
         <>
-          OLAS staked
+          <span className="whitespace-nowrap">OLAS currently staked</span>
           <StaleIndicator status={olasStakedStatus} />
         </>
       ),
@@ -288,7 +313,7 @@ const DailyActiveAgentsCard = ({
       status: dailyActiveAgentsStatus,
       text: (
         <>
-          DAAs{' '}
+          Daily Active Agents{' '}
           <Popover>
             7-day average Daily Active Agents
             {dailyActiveAgentsStatus?.stale && (
@@ -308,8 +333,10 @@ const DailyActiveAgentsCard = ({
 const AgentToAgentCard = ({
   ataTransactions,
   mechFees,
+  feesCollected,
   ataTransactionsStatus,
   mechFeesStatus,
+  feesCollectedStatus,
 }: AgentToAgentCardProps) => (
   <ActivityCard
     icon="agent-to-agent.png"
@@ -329,7 +356,7 @@ const AgentToAgentCard = ({
       isLinkExternal: false,
     }}
     secondary={{
-      value: `$${Number(mechFees).toLocaleString()}`,
+      value: formatUsd(mechFees),
       text: (
         <>
           turnover
@@ -341,9 +368,15 @@ const AgentToAgentCard = ({
       isLinkExternal: false,
     }}
     tertiary={{
-      value: '0%',
-      text: 'fees collected',
+      value: formatUsd(feesCollected, 2),
+      text: (
+        <>
+          fees collected
+          <StaleIndicator status={feesCollectedStatus} />
+        </>
+      ),
       link: '/data#protocol-fees',
+      status: feesCollectedStatus,
       isLinkExternal: false,
     }}
   />
@@ -396,6 +429,8 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
         dailyActiveAgentsStatus: undefined,
         mechFees: '--',
         mechFeesStatus: undefined,
+        feesCollected: '--',
+        feesCollectedStatus: undefined,
         ataTransactions: '--',
         ataTransactionsStatus: undefined,
         totalOperators: '--',
@@ -412,6 +447,8 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
       dailyActiveAgentsStatus: metrics.dailyActiveAgents?.status,
       mechFees: metrics.mechFees?.value || '--',
       mechFeesStatus: metrics.mechFees?.status,
+      feesCollected: metrics.feesCollected?.value ?? '--',
+      feesCollectedStatus: metrics.feesCollected?.status,
       ataTransactions: metrics.ataTransactions?.value?.toLocaleString() || '--',
       ataTransactionsStatus: metrics.ataTransactions?.status,
       totalOperators: metrics.totalOperators?.value?.toLocaleString() || '--',
@@ -482,7 +519,7 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
                 height={124}
                 className="h-[124px] ml-auto"
               />
-              <p className="w-[76px] text-sm mr-[68px] ml-2 my-auto">Agents are active</p>
+              <p className="w-[82px] text-sm mr-[38px] ml-2 my-auto">Agents are active</p>
             </div>
           </div>
         </div>
@@ -490,8 +527,10 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
           <AgentToAgentCard
             ataTransactions={processedMetrics.ataTransactions}
             mechFees={processedMetrics.mechFees}
+            feesCollected={processedMetrics.feesCollected}
             ataTransactionsStatus={processedMetrics.ataTransactionsStatus}
             mechFeesStatus={processedMetrics.mechFeesStatus}
+            feesCollectedStatus={processedMetrics.feesCollectedStatus}
           />
           <div>
             <Image

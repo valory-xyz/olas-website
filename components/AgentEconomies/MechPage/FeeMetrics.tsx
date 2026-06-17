@@ -54,13 +54,12 @@ export const FeeMetrics = ({ metrics }) => {
         color: '#68bcce',
       },
       burned: {
-        id: 'olas-burned',
-        label: 'Marketplace Fees Burned',
+        id: 'fees-collected',
+        label: 'Fees Collected',
         description:
-          'Marketplace fees taken from claimed payments and regularly burned by the DAO.',
-        // Marketplace Fees Burned should always be 1% of Claimed Payments
-        value: metrics?.olasBurned?.value || 0,
-        status: metrics?.olasBurned?.status,
+          'Collected fees are later distributed by the DAO — non-OLAS fees to the Olas Treasury, OLAS fees burned.',
+        value: metrics?.protocolFees?.value || 0,
+        status: metrics?.protocolFees?.status,
         color: '#dab2e4',
       },
     }),
@@ -68,20 +67,20 @@ export const FeeMetrics = ({ metrics }) => {
   );
 
   /**
-   * Function to derive the widths of the Sankey diagram branches
-   * Ensures that the olasBurnedBranch is at least 1% of the claimed payments,
-   * doesn't have anything to do with the actual values
+   * Function to derive the widths of the Sankey diagram branches.
+   * Uses the real collected-fees value, but keeps the branch at least 1% of claimed
+   * payments so it stays visible when fees are tiny, and never wider than claimed
+   * payments so the realised-earnings branch can't go negative.
    */
   const CheckOlasBurnt = () => {
     const { burned, claimed } = formerData;
 
-    // Ensure that the olasBurnedBranch is at least 1% of the claimed payments
-    const olasBurnedBranch = Math.max(burned.value * 10, claimed.value * 0.01);
+    const feesBranch = Math.min(Math.max(burned.value, claimed.value * 0.01), claimed.value);
 
     return {
-      olasBurnedBranch,
-      // Subtract the olasBurnedBranch from the claimed payments to get the recievedFeesBranch (in order to keep the input & output values equal)
-      recievedFeesBranch: claimed.value - olasBurnedBranch,
+      olasBurnedBranch: feesBranch,
+      // Subtract the fees branch from the claimed payments to get the recievedFeesBranch (in order to keep the input & output values equal)
+      recievedFeesBranch: Math.max(claimed.value - feesBranch, 0),
     };
   };
 
@@ -114,7 +113,7 @@ export const FeeMetrics = ({ metrics }) => {
     ],
     [
       'Claimed Payments',
-      'Marketplace Fees Burned',
+      'Fees Collected',
       CheckOlasBurnt().olasBurnedBranch,
       formatToTooltip({
         from: formerData.claimed,
@@ -130,10 +129,8 @@ export const FeeMetrics = ({ metrics }) => {
         to: formerData.recieved,
       }),
     ],
-    // Add a small dummy flow when olasBurned is 0 to maintain spacing between Unclaimed Payments and Fees Recieved node
-    ...(formerData.burned.value === 0
-      ? [['Claimed Payments', 'Marketplace Fees Burned', 0.01, '']]
-      : []),
+    // Add a small dummy flow when collected fees are 0 to maintain spacing between Unclaimed Payments and Fees Recieved node
+    ...(formerData.burned.value === 0 ? [['Claimed Payments', 'Fees Collected', 0.01, '']] : []),
   ];
 
   const options = {
@@ -163,8 +160,9 @@ export const FeeMetrics = ({ metrics }) => {
         <p className="text-base text-left text-slate-700 mx-auto">
           The Mech Marketplace handles the collection of fees from the delivery of tasks. A Mech
           triggers the transfer of its accumulated payments from the balance tracker contract,
-          typically at various intervals. Upon this transfer, a small percentage of the payment is
-          taken as a DAO fee, which is subsequently burned. Here&apos;s more on{' '}
+          typically at various intervals. Upon this transfer, a percentage of the payment is taken
+          as a DAO fee, later distributed by the DAO — non-OLAS fees to the Olas Treasury and OLAS
+          fees burned. Here&apos;s more on{' '}
           <Link href="#process" className="text-purple-600">
             the process
           </Link>
@@ -198,11 +196,13 @@ export const FeeMetrics = ({ metrics }) => {
               <div className="flex flex-col gap-2 mb-3">
                 <div className="flex flex-wrap gap-2 text-black">
                   <span className="text-base max-sm:text-sm font-semibold">{item.label}</span>
-                  <Popover>{item.description}</Popover>
+                  <Popover contentClassName="max-w-[260px] text-left font-normal">
+                    {item.description}
+                  </Popover>
                 </div>
               </div>
               <Link
-                href="/data#mech-turnover"
+                href={item.id === 'fees-collected' ? '/data#protocol-fees' : '/data#mech-turnover'}
                 className="block text-3xl max-sm:text-xl font-extrabold mb-4 mt-auto"
               >
                 <div className="flex items-center gap-2 text-black">

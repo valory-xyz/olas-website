@@ -6,6 +6,7 @@ import {
 } from 'common-util/graphql/metric-utils';
 import { legacyMechFeesTotalsQuery, newMechFeesTotalsQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
+import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
 
 type MechFeesResult = WithMeta<{
   global: {
@@ -31,10 +32,14 @@ export const fetchMechFeeMetrics = async () => {
       keyof typeof MECH_FEES_GRAPH_CLIENTS
     >;
 
-    const allResults = await Promise.allSettled([
-      ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesTotalsQuery)),
-      legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
-      ...chainKeys.map((chain) => getChainBlockNumber(chain)),
+    const [allResults, feesCollected] = await Promise.all([
+      Promise.allSettled([
+        ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesTotalsQuery)),
+        legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
+        ...chainKeys.map((chain) => getChainBlockNumber(chain)),
+      ]),
+      // Protocol fees collected on-chain (read directly from the BalanceTrackers).
+      fetchMechMarketplaceFeesCollected(),
     ]);
 
     const newFeeResults = allResults.slice(
@@ -91,12 +96,22 @@ export const fetchMechFeeMetrics = async () => {
     const status = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });
     const createMetric = (value: number) => ({ value, status });
 
+    // Protocol fees collected on-chain, in USD (USDC + xDAI ~= 1 USD trackers — see
+    // fetchMechMarketplaceFeesCollected). Carries its own fetch status.
+    const collectedFeesUsd = feesCollected.value !== null ? Number(feesCollected.value) : 0;
+    const collectedFeesMetric = { value: collectedFeesUsd, status: feesCollected.status };
+
     return {
       totalFees: createMetric(Number(inUsd.toFixed(6))),
       claimedFees: createMetric(Number(outUsd.toFixed(6))),
       recievedFees: createMetric(Number(outUsd.toFixed(6))),
       unclaimedFees: createMetric(Number(unclaimed.toFixed(6))),
-      protocolFees: createMetric(0),
+      protocolFees: collectedFeesMetric,
+      // OLAS burned is a separate flow (OLAS-denominated fees → burned on Ethereum) and a
+      // different unit from the USD collected fees above. The trackers we currently count
+      // (USDC, xDAI) are non-OLAS and route to the Olas Treasury, not burned, so nothing is
+      // burned from them. TODO: compute the burned OLAS amount once OLAS mech trackers are
+      // added (see fetchMechMarketplaceFeesCollected).
       olasBurned: createMetric(0),
     };
   } catch (error) {
