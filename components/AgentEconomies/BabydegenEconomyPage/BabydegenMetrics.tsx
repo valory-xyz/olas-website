@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { OPERATE_URL } from 'common-util/constants';
+import { ComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsBubble } from 'components/MetricsBubble';
 import { Card } from 'components/ui/card';
@@ -118,6 +119,7 @@ export const BabydegenMetrics = ({ metrics }) => {
           metrics={metrics?.optimus?.value}
           status={metrics?.optimus?.status}
         />
+        <ComingSoon text="Basius" className="md:col-span-2" />
       </div>
     </SectionWrapper>
   );
