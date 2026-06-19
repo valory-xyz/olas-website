@@ -105,6 +105,7 @@ export const BabydegenMetrics = ({ metrics }) => {
             Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
+        <ComingSoon text="Basius" className="md:col-span-2" />
         <BabydegenMetricsBubble
           isUnderConstruction
           title="Modius Agent Economy"
@@ -119,7 +120,6 @@ export const BabydegenMetrics = ({ metrics }) => {
           metrics={metrics?.optimus?.value}
           status={metrics?.optimus?.status}
         />
-        <ComingSoon text="Basius" className="md:col-span-2" />
       </div>
     </SectionWrapper>
   );
