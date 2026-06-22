@@ -132,13 +132,13 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
       {
         key: 'optimus',
         label: 'Optimus',
-        icon: '/images/agents/optimus-agent.png',
+        icon: '/images/explorer/optimus.png',
         ramp: 'red',
       },
       {
         key: 'modius',
         label: 'Modius',
-        icon: '/images/agents/modius-agent.png',
+        icon: '/images/explorer/modius.png',
         ramp: 'lime',
         phaseOutDate: MODIUS_FIXED_END_DATE_UTC.slice(0, 10),
       },
