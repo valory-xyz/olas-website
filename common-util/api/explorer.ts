@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 
-import { MODIUS_FIXED_END_DATE_UTC, OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
+import { OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
 import {
   BABYDEGEN_GRAPH_CLIENTS,
@@ -458,7 +458,11 @@ export const fetchOmenstratExplorerSeries = async (
 // so they self-heal independently — a flaky Mode run never blanks Optimus, and vice
 // versa (mergeWithFallback only falls back per-leaf).
 const BABYDEGEN_AGENT_IDS = [40]; // valory/optimus liquidity trader (Optimus + Modius)
-const MODIUS_FIXED_END_TIMESTAMP = Math.floor(new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000);
+// Modius (Mode) was phased out on 2025-09-18, but its agents wound down gradually over the
+// following weeks. Show the series through end-of-2025 so that real wind-down tail is
+// visible after the phase-out marker — while still excluding a 2026 synthetic flat-20
+// data artifact on agentId 40. (The phase-out MARKER itself stays on 2025-09-18 in the UI.)
+const MODIUS_SERIES_END_TIMESTAMP = Math.floor(new Date('2025-12-31T00:00:00Z').getTime() / 1000);
 // Babydegen launched in 2024; one page comfortably covers the full daily history
 // (and self-trims via the leading-zero trim / chain cutoff). Backstop only.
 const BABYDEGEN_AUM_MAX_DAYS = 1000;
@@ -479,8 +483,8 @@ const fetchBabydegenChainAum = async (chain: 'optimism' | 'mode'): Promise<DaaSe
     const data = (await BABYDEGEN_GRAPH_CLIENTS[chain].request(
       dailyBabydegenPopulationMetricsQuery(
         chain === 'mode'
-          ? // Mode wound down — never read population snapshots past the fixed end date.
-            { first: BABYDEGEN_AUM_MAX_DAYS, timestampLte: MODIUS_FIXED_END_TIMESTAMP }
+          ? // Mode wound down — cap at the end-of-2025 series end (see MODIUS_SERIES_END_TIMESTAMP).
+            { first: BABYDEGEN_AUM_MAX_DAYS, timestampLte: MODIUS_SERIES_END_TIMESTAMP }
           : { first: BABYDEGEN_AUM_MAX_DAYS }
       )
     )) as BabydegenPopulationResponse;
@@ -512,14 +516,14 @@ const fetchBabydegenChainAum = async (chain: 'optimism' | 'mode'): Promise<DaaSe
 export const fetchBabydegenAgentSeries = async (
   chain: 'optimism' | 'mode'
 ): Promise<MetricWithStatus<BabydegenAgentSeries | null>> => {
-  // Modius (Mode) was phased out on MODIUS_FIXED_END_DATE_UTC — cap its series there so
-  // the wind-down tail and a post-retirement flat-value artifact are excluded; the cell
-  // on that date becomes the phase-out marker in the UI. Optimus (Optimism) runs to today.
+  // Modius (Mode) ends at MODIUS_SERIES_END_TIMESTAMP (end of 2025) — its wind-down tail
+  // shows after the 2025-09-18 phase-out marker, while the 2026 synthetic flat-20 artifact
+  // is excluded. Optimus (Optimism) runs to today.
   // (+1 day because the query/transform bounds are exclusive, so the end date is included.)
   const todayMidnight = getMidnightUtcTimestampDaysAgo(0);
   const timestampLt =
     chain === 'mode'
-      ? Math.min(todayMidnight, MODIUS_FIXED_END_TIMESTAMP + ONE_DAY_SECONDS)
+      ? Math.min(todayMidnight, MODIUS_SERIES_END_TIMESTAMP + ONE_DAY_SECONDS)
       : todayMidnight;
   const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
   const source = `registry:babydegen:${chain}`;
