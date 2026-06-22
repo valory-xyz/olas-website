@@ -55,6 +55,40 @@ export const HEATMAP_LEVEL_COLORS = [
   '#5e10a2', // 8 — deepest
 ];
 
+// Alternate sequential ramps for economies with multiple agents (same empty grey at
+// index 0, then 8 shades tinted light → the brand colour at level 8). Used to
+// colour-code Babydegen's Optimus vs Modius heatmaps — the densest days land exactly
+// on each agent's brand colour (Optimism red #FF0420 / Mode lime #C9ED29).
+export const HEATMAP_LEVEL_COLORS_RED = [
+  '#dfe5ee', // 0 — empty
+  '#ffe1e4', // 1
+  '#ffc1c8', // 2
+  '#ffa2ac', // 3
+  '#ff8290', // 4
+  '#ff6374', // 5
+  '#ff4358', // 6
+  '#ff243c', // 7
+  '#ff0420', // 8 — Optimism brand red
+];
+export const HEATMAP_LEVEL_COLORS_LIME = [
+  '#dfe5ee', // 0 — empty
+  '#f9fde5', // 1
+  '#f2fbca', // 2
+  '#ebf8b0', // 3
+  '#e4f695', // 4
+  '#ddf47a', // 5
+  '#d7f25f', // 6
+  '#d0ef44', // 7
+  '#c9ed29', // 8 — Mode brand lime
+];
+
+export type HeatmapRamp = 'purple' | 'red' | 'lime';
+export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
+  purple: HEATMAP_LEVEL_COLORS,
+  red: HEATMAP_LEVEL_COLORS_RED,
+  lime: HEATMAP_LEVEL_COLORS_LIME,
+};
+
 // row (0=Sun … 6=Sat) → label. All seven.
 const WEEKDAY_AT_ROW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -162,7 +196,11 @@ const EMPTY_MODEL: Model = {
   lastRealCol: 0,
 };
 
-const buildModel = (series: DaaSeriesPoint[], colorScale: ColorScale = 'sequential'): Model => {
+const buildModel = (
+  series: DaaSeriesPoint[],
+  colorScale: ColorScale = 'sequential',
+  levelColors: string[] = HEATMAP_LEVEL_COLORS
+): Model => {
   if (series.length === 0) return EMPTY_MODEL;
 
   const countByDate = new Map(series.map((point) => [point.date, point.count]));
@@ -260,9 +298,7 @@ const buildModel = (series: DaaSeriesPoint[], colorScale: ColorScale = 'sequenti
     columns.forEach((col) =>
       col.forEach((cell) => {
         if (!cell.inRange) return;
-        cell.color = cell.hasData
-          ? divergingColor(cell.count, negT, posT)
-          : HEATMAP_LEVEL_COLORS[0];
+        cell.color = cell.hasData ? divergingColor(cell.count, negT, posT) : levelColors[0];
       })
     );
   } else {
@@ -271,7 +307,7 @@ const buildModel = (series: DaaSeriesPoint[], colorScale: ColorScale = 'sequenti
       col.forEach((cell) => {
         if (!cell.inRange) return;
         cell.level = levelFor(cell.count, thresholds);
-        cell.color = HEATMAP_LEVEL_COLORS[cell.level];
+        cell.color = levelColors[cell.level];
       })
     );
   }
@@ -301,12 +337,18 @@ type DaaCalendarHeatmapProps = {
   highlightYear?: number | null;
   /** Noun shown in the tooltip, e.g. "active agents" or "transactions". */
   unitLabel?: string;
-  /** How the tooltip value reads: "658 active agents" vs "62% accuracy". */
-  valueKind?: 'count' | 'percent';
+  /** How the tooltip value reads: "658 active agents", "62% accuracy", or "$1,234". */
+  valueKind?: 'count' | 'percent' | 'usd';
   /** 'diverging' = red/green for signed values (ROI); 'sequential' = purple, ≤0 empty. */
   colorScale?: ColorScale;
+  /** Sequential ramp (index 0 = empty, 1..8 = light→deep). Defaults to the purple ramp. */
+  levelColors?: string[];
   /** "Mode" — bucket colours from the visible window, not the whole history. */
   localMode?: boolean;
+  /** A single date (YYYY-MM-DD) drawn specially — e.g. an agent's phase-out day. */
+  markerDate?: string | null;
+  /** Tooltip text shown for the marker cell instead of its metric value. */
+  markerLabel?: string;
   className?: string;
   id?: string;
 };
@@ -317,13 +359,16 @@ export const DaaCalendarHeatmap = ({
   unitLabel = 'active agents',
   valueKind = 'count',
   colorScale = 'sequential',
+  levelColors = HEATMAP_LEVEL_COLORS,
   localMode = false,
+  markerDate = null,
+  markerLabel = '',
   className,
   id,
 }: DaaCalendarHeatmapProps) => {
   const { columns, monthTicks, monthCells, yearSpan, contentWidth, lastRealCol } = useMemo(
-    () => buildModel(series, colorScale),
-    [series, colorScale]
+    () => buildModel(series, colorScale, levelColors),
+    [series, colorScale, levelColors]
   );
 
   // All cells, flat — each Cell already carries its own col/row.
@@ -533,7 +578,7 @@ export const DaaCalendarHeatmap = ({
         // precomputed red/green colour. Otherwise use the cell's resolved colour.
         const bg =
           colorScale === 'sequential' && localMode && localThresholds
-            ? HEATMAP_LEVEL_COLORS[levelFor(cell.count, localThresholds)]
+            ? levelColors[levelFor(cell.count, localThresholds)]
             : cell.color;
         const waveDelay =
           WAVE_START_DELAY + Math.max(0, cell.col - (lastRealCol - VISIBLE_COLS)) * WAVE_STAGGER;
@@ -541,6 +586,9 @@ export const DaaCalendarHeatmap = ({
           reduced || !firstWave
             ? undefined
             : `heatmap-cell-in ${WAVE_DURATION}ms ${EASE_OUT} ${waveDelay}ms backwards`;
+        // Marker cell (e.g. an agent's phase-out day): drawn as a ringed circle so it
+        // stands out as the series' end-point, with its own tooltip copy.
+        const isMarker = markerDate != null && cell.inRange && cell.date === markerDate;
         return (
           <div
             key={cell.key}
@@ -553,10 +601,12 @@ export const DaaCalendarHeatmap = ({
               width: CELL_SIZE,
               height: CELL_SIZE,
               boxSizing: 'border-box',
-              borderRadius: 7,
+              borderRadius: isMarker ? '50%' : 7,
               cursor: cell.hasData ? 'pointer' : 'default',
               backgroundColor: cell.inRange && !dimmed ? bg : 'transparent',
               border: dimmed ? '1px dashed #c3ccdb' : undefined,
+              boxShadow: isMarker && !dimmed ? '0 0 0 2px #fff, 0 0 0 4px #0f172a' : undefined,
+              zIndex: isMarker ? 5 : undefined,
               animation: anim,
             }}
           />
@@ -567,10 +617,12 @@ export const DaaCalendarHeatmap = ({
       highlightYear,
       localMode,
       localThresholds,
+      levelColors,
       colorScale,
       lastRealCol,
       reduced,
       firstWave,
+      markerDate,
       onCellEnter,
     ]
   );
@@ -758,9 +810,13 @@ export const DaaCalendarHeatmap = ({
             {dayjs(hovered.date).format('DD MMM, YYYY')}
           </span>
           <span className="text-[14px] font-medium leading-5 text-black">
-            {valueKind === 'percent'
-              ? `${hovered.count}% ${unitLabel}`
-              : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
+            {markerDate && hovered.date === markerDate && markerLabel
+              ? markerLabel
+              : valueKind === 'percent'
+                ? `${hovered.count}% ${unitLabel}`
+                : valueKind === 'usd'
+                  ? `$${hovered.count.toLocaleString('en-US')}`
+                  : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
           </span>
         </div>
       )}
