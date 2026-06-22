@@ -810,14 +810,15 @@ export const DaaCalendarHeatmap = ({
             {dayjs(hovered.date).format('DD MMM, YYYY')}
           </span>
           <span className="text-[14px] font-medium leading-5 text-black">
-            {markerDate && hovered.date === markerDate && markerLabel
-              ? markerLabel
-              : valueKind === 'percent'
-                ? `${hovered.count}% ${unitLabel}`
-                : valueKind === 'usd'
-                  ? `$${hovered.count.toLocaleString('en-US')}`
-                  : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
+            {valueKind === 'percent'
+              ? `${hovered.count}% ${unitLabel}`
+              : valueKind === 'usd'
+                ? `$${hovered.count.toLocaleString('en-US')}`
+                : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
           </span>
+          {markerDate && hovered.date === markerDate && markerLabel && (
+            <span className="text-[12px] font-medium leading-4 text-[#0f172a]">{markerLabel}</span>
+          )}
         </div>
       )}
     </div>
