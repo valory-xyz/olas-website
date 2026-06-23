@@ -325,6 +325,8 @@ const buildModel = (
 type Hovered = {
   date: string;
   count: number;
+  /** Whether the hovered day has a real value (vs a gap-filled / no-data marker cell). */
+  hasData: boolean;
   monthKey: string;
   cellLeft: number;
   cellTop: number;
@@ -479,7 +481,11 @@ export const DaaCalendarHeatmap = ({
   // ---- Tooltip ---- (stable handler so the memoized grid never re-creates its cells)
   const onCellEnter = useCallback(
     (cell: Cell) => (e: React.MouseEvent<HTMLDivElement>) => {
-      if (dragRef.current || !cell.hasData || !cell.date) return;
+      // Marker cells are hoverable even with no value for the active metric, so the
+      // marker label (e.g. a phase-out note) is always reachable — e.g. on the AUM
+      // tile where that day may have no snapshot.
+      const isMarkerCell = markerDate != null && cell.date === markerDate;
+      if (dragRef.current || !cell.date || (!cell.hasData && !isMarkerCell)) return;
       const wrap = wrapperRef.current?.getBoundingClientRect();
       if (!wrap) return;
       const box = e.currentTarget.getBoundingClientRect();
@@ -489,6 +495,7 @@ export const DaaCalendarHeatmap = ({
       setHovered({
         date: cell.date,
         count: cell.count,
+        hasData: cell.hasData,
         monthKey: cell.monthKey,
         cellLeft,
         cellTop,
@@ -502,7 +509,7 @@ export const DaaCalendarHeatmap = ({
         }, TOOLTIP_DELAY);
       }
     },
-    []
+    [markerDate]
   );
 
   const clearHover = () => {
@@ -587,13 +594,16 @@ export const DaaCalendarHeatmap = ({
             ? undefined
             : `heatmap-cell-in ${WAVE_DURATION}ms ${EASE_OUT} ${waveDelay}ms backwards`;
         // Marker cell (e.g. an agent's phase-out day): drawn as a ringed circle so it
-        // stands out as the series' end-point, with its own tooltip copy.
+        // stands out as a notable day, with its own tooltip copy. It can sit anywhere in
+        // the series (the phase-out date is mid-series when a wind-down tail follows).
+        // Hoverable even with no value so its label is always reachable (see onCellEnter).
         const isMarker = markerDate != null && cell.inRange && cell.date === markerDate;
+        const hoverable = cell.hasData || isMarker;
         return (
           <div
             key={cell.key}
-            className={cell.hasData ? 'heatmap-cell' : undefined}
-            onMouseEnter={cell.hasData ? onCellEnter(cell) : undefined}
+            className={hoverable ? 'heatmap-cell' : undefined}
+            onMouseEnter={hoverable ? onCellEnter(cell) : undefined}
             style={{
               position: 'absolute',
               left: cell.col * PITCH,
@@ -602,7 +612,7 @@ export const DaaCalendarHeatmap = ({
               height: CELL_SIZE,
               boxSizing: 'border-box',
               borderRadius: isMarker ? '50%' : 7,
-              cursor: cell.hasData ? 'pointer' : 'default',
+              cursor: hoverable ? 'pointer' : 'default',
               backgroundColor: cell.inRange && !dimmed ? bg : 'transparent',
               border: dimmed ? '1px dashed #c3ccdb' : undefined,
               boxShadow: isMarker && !dimmed ? '0 0 0 2px #fff, 0 0 0 4px #0f172a' : undefined,
@@ -809,13 +819,17 @@ export const DaaCalendarHeatmap = ({
           <span className="text-[12px] leading-4 text-[#606f85]">
             {dayjs(hovered.date).format('DD MMM, YYYY')}
           </span>
-          <span className="text-[14px] font-medium leading-5 text-black">
-            {valueKind === 'percent'
-              ? `${hovered.count}% ${unitLabel}`
-              : valueKind === 'usd'
-                ? `$${hovered.count.toLocaleString('en-US')}`
-                : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
-          </span>
+          {/* Value line — omitted for a no-data marker cell (e.g. a phase-out day with no
+              AUM snapshot), which shows only the date + marker label. */}
+          {hovered.hasData && (
+            <span className="text-[14px] font-medium leading-5 text-black">
+              {valueKind === 'percent'
+                ? `${hovered.count}% ${unitLabel}`
+                : valueKind === 'usd'
+                  ? `$${hovered.count.toLocaleString('en-US')}`
+                  : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
+            </span>
+          )}
           {markerDate && hovered.date === markerDate && markerLabel && (
             <span className="text-[12px] font-medium leading-4 text-[#0f172a]">{markerLabel}</span>
           )}
