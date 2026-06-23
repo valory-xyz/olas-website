@@ -37,8 +37,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const value = metrics.data.omenstrat.value;
     const optimus = metrics.data.babydegenOptimus.value;
     const modius = metrics.data.babydegenModius.value;
-    const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum: unknown[] } | null) =>
-      s && { daa: s.daa.length, transactions: s.transactions.length, aum: s.aum.length };
+    const mech = metrics.data.mech.value;
+    const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum?: unknown[] } | null) =>
+      s && {
+        daa: s.daa.length,
+        transactions: s.transactions.length,
+        ...(s.aum && { aum: s.aum.length }),
+      };
     return res.status(200).json({
       success: true,
       generatedAt: new Date().toISOString(),
@@ -53,6 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         optimus: seriesCounts(optimus),
         modius: seriesCounts(modius),
       },
+      mechCounts: seriesCounts(mech),
     });
   } catch (error) {
     console.error('Error refreshing explorer metrics:', error);

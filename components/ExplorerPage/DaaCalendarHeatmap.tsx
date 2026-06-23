@@ -82,11 +82,28 @@ export const HEATMAP_LEVEL_COLORS_LIME = [
   '#c9ed29', // 8 — Mode brand lime
 ];
 
-export type HeatmapRamp = 'purple' | 'red' | 'lime';
+// Mech teal ramp. Unlike the red/lime ramps (brand colour at the deepest level), the
+// Mech brand teal #1BBAA1 sits at level 6 and the last two levels deepen past it into
+// dark teal — so the busy end keeps strong contrast (the lime ramp went too light to
+// distinguish at the top). Light tints (1–5) interpolate white → #1BBAA1.
+export const HEATMAP_LEVEL_COLORS_TEAL = [
+  '#dfe5ee', // 0 — empty
+  '#e4f7f4', // 1
+  '#bbeae3', // 2
+  '#93ded3', // 3
+  '#6bd2c2', // 4
+  '#43c6b2', // 5
+  '#1bbaa1', // 6 — Mech brand teal
+  '#128071', // 7 — deeper
+  '#0a4a40', // 8 — deepest (dark teal)
+];
+
+export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal';
 export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
   purple: HEATMAP_LEVEL_COLORS,
   red: HEATMAP_LEVEL_COLORS_RED,
   lime: HEATMAP_LEVEL_COLORS_LIME,
+  teal: HEATMAP_LEVEL_COLORS_TEAL,
 };
 
 // row (0=Sun … 6=Sat) → label. All seven.

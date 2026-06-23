@@ -112,8 +112,8 @@ type EconomyMeta = { metrics: string[]; agents: AgentMeta[] };
 
 // Per-economy ordered metric tiles + its agents (label/icon + heatmap colour ramp).
 // The active metric resets to the first key on an economy switch; the active agent
-// resets to the economy's first agent. Babydegen colour-codes Optimus (red) vs
-// Modius (yellow); single-agent economies just show their one agent.
+// resets to the economy's first agent. Babydegen colour-codes Optimus (red) vs Modius
+// (lime); Predict (purple) and Mech (teal) are single-agent.
 const ECONOMY_META: Record<string, EconomyMeta> = {
   predict: {
     metrics: ['daa', 'transactions', 'accuracy'],
@@ -141,6 +141,17 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         icon: '/images/explorer/modius.png',
         ramp: 'lime',
         phaseOutDate: MODIUS_FIXED_END_DATE_UTC.slice(0, 10),
+      },
+    ],
+  },
+  mech: {
+    metrics: ['daa', 'transactions'],
+    agents: [
+      {
+        key: 'mech',
+        label: 'Mech',
+        icon: '/images/explorer/mech.png',
+        ramp: 'teal',
       },
     ],
   },

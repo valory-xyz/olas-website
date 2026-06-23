@@ -555,6 +555,67 @@ export const fetchBabydegenAgentSeries = async (
   }
 };
 
+// ── Mech economy (AI Mech infrastructure agents — DAA + transactions) ────────────
+// The core mech agents (agentIds 9/26/29/36/37) run across Gnosis + Base + Polygon. One
+// combined series, summed per day across chains — Mech has no sub-agents, and no daily
+// AUM/fees/requests series exists in the subgraphs, so just DAA + transactions.
+const MECH_AGENT_IDS = [9, 26, 29, 36, 37];
+const MECH_CHAINS = ['gnosis', 'base', 'polygon'] as const;
+const MECH_SOURCE = 'registry:mech:explorer';
+
+/**
+ * Fetch the Mech economy's daily series (DAA + transactions) from the registry subgraphs
+ * on Gnosis + Base + Polygon, summed per day. Degrades gracefully per chain (a failed
+ * chain is dropped with a fetchError); only an all-chain failure returns null so
+ * mergeWithFallback keeps the last good series.
+ */
+export const fetchMechExplorerSeries = async (): Promise<
+  MetricWithStatus<RegistrySeries | null>
+> => {
+  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
+  const allRows: DailyOmenstratRow[] = [];
+  let anySuccess = false;
+
+  await Promise.all(
+    MECH_CHAINS.map(async (chain) => {
+      try {
+        const { rows, meta } = await pageRegistryRows(
+          REGISTRY_GRAPH_CLIENTS[chain],
+          MECH_AGENT_IDS,
+          timestampGt,
+          timestampLt
+        );
+        allRows.push(...rows);
+        anySuccess = true;
+
+        const chainBlock = await getChainBlockNumber(chain);
+        if (meta?.hasIndexingErrors) indexingErrors.push(`registry:${chain}`);
+        if (checkSubgraphLag(chainBlock, meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching mech registry (${chain}):`, error);
+        fetchErrors.push(`registry:${chain}`);
+      }
+    })
+  );
+
+  if (!anySuccess) {
+    return { value: null, status: getFetchErrorAndCreateStaleStatus(MECH_SOURCE) };
+  }
+
+  // transformExplorerSeries sums rows by date, so cross-chain rows aggregate per day.
+  return {
+    value: transformExplorerSeries(allRows, timestampGt, timestampLt),
+    status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+  };
+};
+
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
@@ -562,6 +623,8 @@ export type ExplorerMetricsData = {
   babydegenOptimus: MetricWithStatus<BabydegenAgentSeries | null>;
   /** Modius (Mode, wound down) — separate series for independent fallback + colour. */
   babydegenModius: MetricWithStatus<BabydegenAgentSeries | null>;
+  /** Mech (AI Mech infra agents across Gnosis + Base + Polygon) — DAA + transactions. */
+  mech: MetricWithStatus<RegistrySeries | null>;
 };
 
 export type ExplorerMetricsSnapshot = {
@@ -578,12 +641,16 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const [omenstrat, babydegenOptimus, babydegenModius] = await Promise.all([
+    const [omenstrat, babydegenOptimus, babydegenModius, mech] = await Promise.all([
       fetchOmenstratExplorerSeries(options),
       fetchBabydegenAgentSeries('optimism'),
       fetchBabydegenAgentSeries('mode'),
+      fetchMechExplorerSeries(),
     ]);
-    return { data: { omenstrat, babydegenOptimus, babydegenModius }, timestamp: Date.now() };
+    return {
+      data: { omenstrat, babydegenOptimus, babydegenModius, mech },
+      timestamp: Date.now(),
+    };
   } catch (error) {
     console.error('Error building explorer metrics snapshot:', error);
     return null;
