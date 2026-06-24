@@ -22,6 +22,7 @@ import {
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
+import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -450,6 +451,7 @@ export type MainMetricsData = {
   transactions: MetricWithStatus<string | null>;
   ataTransactions: MetricWithStatus<string | null>;
   mechFees: MetricWithStatus<string | null>;
+  feesCollected: MetricWithStatus<string | null>;
   totalOperators: MetricWithStatus<number | null>;
 };
 
@@ -466,6 +468,7 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
       transactionsResult,
       ataTransactionsResult,
       mechFeesResult,
+      feesCollectedResult,
       totalOperatorsResult,
     ] = await Promise.all([
       fetchDailyAgentPerformance(),
@@ -473,6 +476,7 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
       fetchTransactions(),
       fetchAtaTransactions(),
       fetchMechFees(),
+      fetchMechMarketplaceFeesCollected(),
       fetchTotalOperators(),
     ]);
 
@@ -483,6 +487,7 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
         transactions: transactionsResult,
         ataTransactions: ataTransactionsResult,
         mechFees: mechFeesResult,
+        feesCollected: feesCollectedResult,
         totalOperators: totalOperatorsResult,
       },
       timestamp: Date.now(),
