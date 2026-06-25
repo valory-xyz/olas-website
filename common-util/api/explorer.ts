@@ -102,9 +102,11 @@ const requestWithRetry = async <T>(fn: () => Promise<T>, attempts = 3): Promise<
 };
 
 // The subgraph caps `first` at 1000, so we page through with skip. One row per
-// (agent, day) → a few years × 3 trader agents (12/14/25) ≈ 3-4k rows; cap as a backstop.
+// (agent, day): Omenstrat ≈ 3 agents, Babydegen 1, Mech 5 — over several years the
+// busiest (Mech on Gnosis) can approach ~8k rows, so cap high with headroom. Hitting
+// the cap is logged (a full final page means the most-recent days were truncated).
 const PAGE_SIZE = 1000;
-const MAX_PAGES = 8;
+const MAX_PAGES = 16;
 
 /**
  * Build two gap-filled daily series (DAA + transactions) from the per-agent daily
@@ -180,6 +182,16 @@ const pageRegistryRows = async (
     const pageRows = data.dailyAgentPerformances || [];
     rows.push(...pageRows);
     if (pageRows.length < PAGE_SIZE) break;
+    // Last allowed page still came back full → there's more data we won't fetch. The
+    // query is asc-ordered, so the dropped rows are the MOST RECENT days. Surface it
+    // rather than silently undercounting (the snapshot would look fresh but be short).
+    if (page === MAX_PAGES - 1) {
+      console.error(
+        `pageRegistryRows: hit MAX_PAGES=${MAX_PAGES} for agentIds [${agentIds.join(
+          ','
+        )}] (${rows.length} rows) — recent days may be truncated; raise MAX_PAGES.`
+      );
+    }
   }
 
   return { rows, meta };

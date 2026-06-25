@@ -351,8 +351,11 @@ const Explorer = ({ economies }: ExplorerProps) => {
         </div>
       </div>
 
-      {/* Heatmap — full-bleed left; right gutter past the weekday axis (16px mobile, 40px md+) */}
-      <div className="w-full pr-4 md:pr-10">
+      {/* Heatmap — full-bleed left; right gutter past the weekday axis (16px mobile, 40px md+).
+          Keyed by economy+agent (NOT metric) so it remounts and re-lands on the most-recent
+          day when the date range changes (e.g. switching to Mech), while a metric switch keeps
+          its scroll position + avoids re-running the entrance wave. */}
+      <div key={`${activeEconomy}-${agentMeta.key}`} className="w-full pr-4 md:pr-10">
         <DaaCalendarHeatmap
           series={activeSeries}
           highlightYear={activeYear}
