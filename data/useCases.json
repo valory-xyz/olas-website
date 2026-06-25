@@ -20,6 +20,12 @@
         "isExternal": true
       },
       {
+        "title": "Basius",
+        "description": "Intelligently manages your DeFi assets on Base.",
+        "image": "/images/agents/basius.png",
+        "link": "/agents/babydegen#basius-agent"
+      },
+      {
         "title": "BabyDegen",
         "description": "Trades autonomously in DeFi.",
         "image": "/images/agents/babydegen-icon.svg",

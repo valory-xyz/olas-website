@@ -1,50 +1,5 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { Card } from 'components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
-
-const babydegens = [
-  {
-    id: 'modius-economy',
-    src: '/images/babydegen-econ-page/modius.png',
-    isUnderConstruction: true,
-    title: 'The Modius Economy',
-    desc: (
-      <>
-        <p className="mb-2">
-          The Modius Economy is a network of personal DeFAI agents that autonomously manage
-          portfolios on Mode.
-        </p>
-        <p>
-          Each Modius agent gathers market data, selects optimal strategies, and executes trades for
-          individual users — working independently but collectively creating a decentralized,
-          autonomous economy focused on intelligent, hands-free asset management.
-        </p>
-      </>
-    ),
-    link: '/agents/babydegen#modius-agent',
-  },
-  {
-    id: 'optimus-economy',
-    src: '/images/babydegen-econ-page/optimus.png',
-    isUnderConstruction: true,
-    title: 'The Optimus Economy',
-    desc: (
-      <>
-        <p>
-          The Optimus Economy is built from a network of Optimus agents, each autonomously managing
-          assets across Optimism Mainnet.
-        </p>
-        <p>
-          As they individually seek the best yields, they collectively form an evolving DeFAI
-          economy focused on maximizing returns and expanding into new opportunities.
-        </p>
-      </>
-    ),
-    link: '/agents/babydegen#optimus-agent',
-  },
-];
 
 const WhatIsOptimus = () => (
   <div id="about" className="max-w-screen-sm mx-auto">
@@ -70,44 +25,8 @@ const WhatIsOptimus = () => (
   </div>
 );
 
-const AgentTypes = () => (
-  <div id="sub-economies">
-    <h2 className={`${SUB_HEADER_CLASS} font-semibold text-center text-4xl mb-8`}>
-      Meet Babydegens
-    </h2>
-    <div className="flex flex-col md:flex-row gap-4 gap-6 my-8">
-      {babydegens.map((item) => (
-        <Card
-          key={item.id}
-          className="flex flex-col p-8 max-sm:w-auto w-[424px] rounded-xl mx-auto"
-        >
-          {item.isUnderConstruction && (
-            <Image
-              src="/images/under-construction.svg"
-              alt="Under Construction"
-              width={186}
-              height={32}
-              className="mb-4"
-            />
-          )}
-          <div className="mt-auto flex flex-col lg:h-[400px]">
-            <Image alt={item.title} src={item.src} width="64" height="64" className="mb-6" />
-            <span className="text-2xl font-bold text-black mb-4">{item.title}</span>
-            <div className="mb-4">{item.desc}</div>
-
-            <Link href={item.link} className="mt-auto text-purple-600">
-              Find out more
-            </Link>
-          </div>
-        </Card>
-      ))}
-    </div>
-  </div>
-);
-
 export const Descriptions = () => (
   <SectionWrapper customClasses="mb-16 mt-4 max-w-[872px] mx-6 md:mx-auto">
     <WhatIsOptimus />
-    <AgentTypes />
   </SectionWrapper>
 );

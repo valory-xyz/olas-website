@@ -45,7 +45,7 @@ export const Hero = () => (
     description="A network of autonomous AI trading agents navigating DeFi ecosystems,
           powered by Olas — managing assets, adapting strategies, and evolving
           24/7 without human input."
-    PrimaryButton={LearnHowItWorks}
-    statusTag={UnderConstructionTag}
+    PrimaryButton={RunAnAgent}
+    SecondaryButton={LearnHowItWorks}
   />
 );
