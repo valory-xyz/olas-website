@@ -568,18 +568,19 @@ export const fetchBabydegenAgentSeries = async (
 };
 
 // ── Mech economy (AI Mech infrastructure agents — DAA + transactions) ────────────
-// The core mech agents (agentIds 9/26/29/36/37) run across Gnosis + Base + Polygon. One
-// combined series, summed per day across chains — Mech has no sub-agents, and no daily
-// AUM/fees/requests series exists in the subgraphs, so just DAA + transactions.
-const MECH_AGENT_IDS = [9, 26, 29, 36, 37];
+// The core mech agents (agentIds 9/26/29/36/37/77) run across Gnosis + Base + Polygon.
+// One combined series, summed per day across chains — Mech has no sub-agents, and no
+// daily AUM/fees/requests series exists in the subgraphs, so just DAA + transactions.
+const MECH_AGENT_IDS = [9, 26, 29, 36, 37, 77];
 const MECH_CHAINS = ['gnosis', 'base', 'polygon'] as const;
-const MECH_SOURCE = 'registry:mech:explorer';
 
 /**
  * Fetch the Mech economy's daily series (DAA + transactions) from the registry subgraphs
- * on Gnosis + Base + Polygon, summed per day. Degrades gracefully per chain (a failed
- * chain is dropped with a fetchError); only an all-chain failure returns null so
- * mergeWithFallback keeps the last good series.
+ * on Gnosis + Base + Polygon, summed per day into ONE combined value. Because the value
+ * is combined, a partial (one chain down) would publish an undercount missing the busiest
+ * chain — and `mergeWithFallback` only falls back on null. So if ANY contributing chain
+ * fails we return null, preserving the last good combined snapshot rather than shipping a
+ * short total.
  */
 export const fetchMechExplorerSeries = async (): Promise<
   MetricWithStatus<RegistrySeries | null>
@@ -591,7 +592,6 @@ export const fetchMechExplorerSeries = async (): Promise<
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
   const allRows: DailyOmenstratRow[] = [];
-  let anySuccess = false;
 
   await Promise.all(
     MECH_CHAINS.map(async (chain) => {
@@ -603,7 +603,6 @@ export const fetchMechExplorerSeries = async (): Promise<
           timestampLt
         );
         allRows.push(...rows);
-        anySuccess = true;
 
         const chainBlock = await getChainBlockNumber(chain);
         if (meta?.hasIndexingErrors) indexingErrors.push(`registry:${chain}`);
@@ -617,8 +616,13 @@ export const fetchMechExplorerSeries = async (): Promise<
     })
   );
 
-  if (!anySuccess) {
-    return { value: null, status: getFetchErrorAndCreateStaleStatus(MECH_SOURCE) };
+  // Any chain failing means the combined total would be short — return null so
+  // mergeWithFallback keeps the last good combined series (marked stale) instead.
+  if (fetchErrors.length > 0) {
+    return {
+      value: null,
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+    };
   }
 
   // transformExplorerSeries sums rows by date, so cross-chain rows aggregate per day.
