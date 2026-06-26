@@ -43,7 +43,7 @@ export const getStaticProps = async () => {
     },
     mech: {
       mech: {
-        series: data?.mech?.value ?? { daa: [], transactions: [] },
+        series: data?.mech?.value ?? { daa: [], ata: [] },
         status: data?.mech?.status ?? null,
       },
     },

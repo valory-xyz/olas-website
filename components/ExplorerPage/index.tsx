@@ -79,6 +79,15 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     headline: (s) => formatCount(s.reduce((sum, p) => sum + p.count, 0)),
     selectable: () => true,
   },
+  ata: {
+    label: 'Agent-to-Agent Transactions',
+    unit: 'A2A txns',
+    kind: 'count',
+    scale: 'sequential',
+    // Total ATA across the plotted history.
+    headline: (s) => formatCount(s.reduce((sum, p) => sum + p.count, 0)),
+    selectable: (s) => s.length > 0,
+  },
   accuracy: {
     label: 'Avg Prediction Accuracy',
     unit: 'accuracy',
@@ -105,8 +114,8 @@ type AgentMeta = {
   label: string;
   icon: string;
   ramp: HeatmapRamp;
-  /** Phase-out date (YYYY-MM-DD) — its final cell is marked as the retirement day. */
-  phaseOutDate?: string;
+  /** A notable day to ring + annotate on the heatmap (e.g. a retirement or launch date). */
+  marker?: { date: string; label: string };
 };
 type EconomyMeta = { metrics: string[]; agents: AgentMeta[] };
 
@@ -140,18 +149,21 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         label: 'Modius',
         icon: '/images/explorer/modius.png',
         ramp: 'lime',
-        phaseOutDate: MODIUS_FIXED_END_DATE_UTC.slice(0, 10),
+        marker: { date: MODIUS_FIXED_END_DATE_UTC.slice(0, 10), label: 'Modius phased out' },
       },
     ],
   },
   mech: {
-    metrics: ['daa', 'transactions'],
+    metrics: ['daa', 'ata'],
     agents: [
       {
         key: 'mech',
         label: 'Mech',
         icon: '/images/explorer/mech.png',
         ramp: 'teal',
+        // New Mech Marketplace launch (first marketplaceRequest, 2025-02-28): legacy ATA
+        // before, new-MM ATA after.
+        marker: { date: '2025-02-28', label: 'New Mech Marketplace launched' },
       },
     ],
   },
@@ -363,8 +375,8 @@ const Explorer = ({ economies }: ExplorerProps) => {
           valueKind={metricConfig.kind}
           colorScale={metricConfig.scale}
           levelColors={rampColors}
-          markerDate={agentMeta.phaseOutDate ?? null}
-          markerLabel={agentMeta.phaseOutDate ? `${agentMeta.label} phased out` : undefined}
+          markerDate={agentMeta.marker?.date ?? null}
+          markerLabel={agentMeta.marker?.label}
         />
       </div>
 
