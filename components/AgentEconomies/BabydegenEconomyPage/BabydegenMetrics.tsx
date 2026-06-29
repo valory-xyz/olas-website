@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 
 import { OPERATE_URL } from 'common-util/constants';
+import { ComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';

@@ -382,6 +382,33 @@ export const dailyBabydegenPerformancesQuery = gql`
   }
 `;
 
+// Basius (Base) registers under agentId 115, unlike Modius/Optimus (agentId 40).
+export const dailyBasiusPerformancesQuery = gql`
+  query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
+    dailyAgentPerformances(
+      where: {
+        and: [
+          { agentId: 115 }
+          { dayTimestamp_gt: $timestamp_gt }
+          { dayTimestamp_lt: $timestamp_lt }
+        ]
+      }
+      orderBy: dayTimestamp
+      orderDirection: desc
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const dailyAgentsFunPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
