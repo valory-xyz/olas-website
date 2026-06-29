@@ -13,12 +13,7 @@ type Economy = {
 
 const ECONOMIES: Economy[] = [
   { key: 'predict', label: 'Predict', icon: '/images/explorer/predict.png' },
-  {
-    key: 'babydegen',
-    label: 'Babydegen',
-    icon: '/images/explorer/babydegen-economy.png',
-    disabled: true,
-  },
+  { key: 'babydegen', label: 'Babydegen', icon: '/images/explorer/babydegen-economy.png' },
   { key: 'mech', label: 'Mech', icon: '/images/explorer/mech.png', disabled: true },
 ];
 

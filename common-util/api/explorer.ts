@@ -1,6 +1,12 @@
+import { GraphQLClient } from 'graphql-request';
+
 import { OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
-import { predictAgentsGraphClient, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import {
+  BABYDEGEN_GRAPH_CLIENTS,
+  predictAgentsGraphClient,
+  REGISTRY_GRAPH_CLIENTS,
+} from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -8,6 +14,7 @@ import {
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
+  dailyBabydegenPopulationMetricsQuery,
   explorerOmenstratSeriesQuery,
   getExplorerBetsQuery,
   getExplorerDailyProfitStatsQuery,
@@ -137,39 +144,59 @@ const transformExplorerSeries = (
   return { daa, transactions };
 };
 
-// Registry-derived DAA + transactions (paged; the subgraph caps `first` at 1000).
+// Page a registry subgraph's daily per-agent rows (the subgraph caps `first` at 1000,
+// so we skip-page until a short page). Chain-agnostic — `explorerOmenstratSeriesQuery`
+// is parameterised by `agentIds`, so the same query serves Omenstrat (Gnosis) and
+// Babydegen (Optimism + Mode). Returns the last page's `_meta` for lag/error detection.
+const pageRegistryRows = async (
+  client: GraphQLClient,
+  agentIds: number[],
+  timestampGt: number,
+  timestampLt: number
+): Promise<{ rows: DailyOmenstratRow[]; meta: DailyOmenstratResponse['_meta'] }> => {
+  const rows: DailyOmenstratRow[] = [];
+  let meta: DailyOmenstratResponse['_meta'];
+
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    let data: DailyOmenstratResponse | null = null;
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= REQUEST_ATTEMPTS; attempt += 1) {
+      try {
+        data = (await client.request(explorerOmenstratSeriesQuery, {
+          agentIds,
+          timestamp_gt: timestampGt,
+          timestamp_lt: timestampLt,
+          skip: page * PAGE_SIZE,
+        })) as DailyOmenstratResponse;
+        break;
+      } catch (err) {
+        lastError = err;
+        if (attempt < REQUEST_ATTEMPTS) await sleep(400 * attempt);
+      }
+    }
+    if (!data) throw lastError;
+
+    meta = data._meta;
+    const pageRows = data.dailyAgentPerformances || [];
+    rows.push(...pageRows);
+    if (pageRows.length < PAGE_SIZE) break;
+  }
+
+  return { rows, meta };
+};
+
+// Registry-derived DAA + transactions for Omenstrat (Gnosis).
 const fetchRegistrySeries = async (
   timestampGt: number,
   timestampLt: number
 ): Promise<MetricWithStatus<RegistrySeries | null>> => {
   try {
-    const rows: DailyOmenstratRow[] = [];
-    let meta: DailyOmenstratResponse['_meta'];
-
-    for (let page = 0; page < MAX_PAGES; page += 1) {
-      let data: DailyOmenstratResponse | null = null;
-      let lastError: unknown;
-      for (let attempt = 1; attempt <= REQUEST_ATTEMPTS; attempt += 1) {
-        try {
-          data = (await REGISTRY_GRAPH_CLIENTS.gnosis.request(explorerOmenstratSeriesQuery, {
-            agentIds: OMENSTRAT_AGENT_IDS,
-            timestamp_gt: timestampGt,
-            timestamp_lt: timestampLt,
-            skip: page * PAGE_SIZE,
-          })) as DailyOmenstratResponse;
-          break;
-        } catch (err) {
-          lastError = err;
-          if (attempt < REQUEST_ATTEMPTS) await sleep(400 * attempt);
-        }
-      }
-      if (!data) throw lastError;
-
-      meta = data._meta;
-      const pageRows = data.dailyAgentPerformances || [];
-      rows.push(...pageRows);
-      if (pageRows.length < PAGE_SIZE) break;
-    }
+    const { rows, meta } = await pageRegistryRows(
+      REGISTRY_GRAPH_CLIENTS.gnosis,
+      OMENSTRAT_AGENT_IDS,
+      timestampGt,
+      timestampLt
+    );
 
     const chainBlock = await getChainBlockNumber(CHAIN);
     const indexingErrors = meta?.hasIndexingErrors ? [SOURCE] : [];
@@ -424,9 +451,117 @@ export const fetchOmenstratExplorerSeries = async (
   };
 };
 
+// ── Babydegen economy (registry DAA + transactions, population-metrics AUM) ──────
+// Babydegen has two distinct agents, kept as SEPARATE series (each gets its own
+// heatmap + colour in the UI): Optimus on Optimism (ongoing) and Modius on Mode
+// (wound down 2025-09-18). Each is stored as its own MetricWithStatus snapshot entry
+// so they self-heal independently — a flaky Mode run never blanks Optimus, and vice
+// versa (mergeWithFallback only falls back per-leaf).
+const BABYDEGEN_AGENT_IDS = [40]; // valory/optimus liquidity trader (Optimus + Modius)
+// Modius (Mode) was phased out on 2025-09-18, but its agents wound down gradually over the
+// following weeks. Show the series through end-of-2025 so that real wind-down tail is
+// visible after the phase-out marker — while still excluding a 2026 synthetic flat-20
+// data artifact on agentId 40. (The phase-out MARKER itself stays on 2025-09-18 in the UI.)
+const MODIUS_SERIES_END_TIMESTAMP = Math.floor(new Date('2025-12-31T00:00:00Z').getTime() / 1000);
+// Babydegen launched in 2024; one page comfortably covers the full daily history
+// (and self-trims via the leading-zero trim / chain cutoff). Backstop only.
+const BABYDEGEN_AUM_MAX_DAYS = 1000;
+
+/** One babydegen agent's daily series (no prediction-specific tiles). */
+export type BabydegenAgentSeries = RegistrySeries & {
+  /** Assets Under Management — daily totalFundedAUM (USD) for this agent's chain. */
+  aum: DaaSeriesPoint[];
+};
+
+type BabydegenPopulationRow = { timestamp: string | number; totalFundedAUM: string | number };
+type BabydegenPopulationResponse = WithMeta<{ dailyPopulationMetrics: BabydegenPopulationRow[] }>;
+
+// Daily AUM (USD) for a single babydegen chain. Best-effort — on failure returns an
+// empty series (the AUM tile renders no-data) rather than failing the agent's series.
+const fetchBabydegenChainAum = async (chain: 'optimism' | 'mode'): Promise<DaaSeriesPoint[]> => {
+  try {
+    const data = (await BABYDEGEN_GRAPH_CLIENTS[chain].request(
+      dailyBabydegenPopulationMetricsQuery(
+        chain === 'mode'
+          ? // Mode wound down — cap at the end-of-2025 series end (see MODIUS_SERIES_END_TIMESTAMP).
+            { first: BABYDEGEN_AUM_MAX_DAYS, timestampLte: MODIUS_SERIES_END_TIMESTAMP }
+          : { first: BABYDEGEN_AUM_MAX_DAYS }
+      )
+    )) as BabydegenPopulationResponse;
+
+    const byDay = new Map<string, number>();
+    (data?.dailyPopulationMetrics ?? []).forEach((row) => {
+      const ts = Number(row.timestamp);
+      const aum = Number(row.totalFundedAUM);
+      if (!Number.isFinite(ts) || !Number.isFinite(aum)) return;
+      const date = new Date(ts * 1000).toISOString().slice(0, 10);
+      byDay.set(date, (byDay.get(date) || 0) + aum);
+    });
+
+    return Array.from(byDay, ([date, count]) => ({ date, count: Math.round(count) })).sort((a, b) =>
+      a.date.localeCompare(b.date)
+    );
+  } catch (error) {
+    console.error(`Error fetching babydegen AUM (${chain}):`, error);
+    return [];
+  }
+};
+
+/**
+ * Fetch one babydegen agent's daily series for the Explorer heatmap: DAA + transactions
+ * from the chain's registry subgraph, and AUM from its population-metrics subgraph.
+ * Registry drives staleness; AUM is best-effort. Returns null/stale on a registry
+ * failure so mergeWithFallback keeps this agent's last good series.
+ */
+export const fetchBabydegenAgentSeries = async (
+  chain: 'optimism' | 'mode'
+): Promise<MetricWithStatus<BabydegenAgentSeries | null>> => {
+  // Modius (Mode) ends at MODIUS_SERIES_END_TIMESTAMP (end of 2025) — its wind-down tail
+  // shows after the 2025-09-18 phase-out marker, while the 2026 synthetic flat-20 artifact
+  // is excluded. Optimus (Optimism) runs to today.
+  // (+1 day because the query/transform bounds are exclusive, so the end date is included.)
+  const todayMidnight = getMidnightUtcTimestampDaysAgo(0);
+  const timestampLt =
+    chain === 'mode'
+      ? Math.min(todayMidnight, MODIUS_SERIES_END_TIMESTAMP + ONE_DAY_SECONDS)
+      : todayMidnight;
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+  const source = `registry:babydegen:${chain}`;
+
+  try {
+    const [{ rows, meta }, aum] = await Promise.all([
+      pageRegistryRows(
+        REGISTRY_GRAPH_CLIENTS[chain],
+        BABYDEGEN_AGENT_IDS,
+        timestampGt,
+        timestampLt
+      ),
+      fetchBabydegenChainAum(chain),
+    ]);
+
+    const chainBlock = await getChainBlockNumber(chain);
+    const indexingErrors = meta?.hasIndexingErrors ? [source] : [];
+    const laggingSubgraphs = checkSubgraphLag(chainBlock, meta?.block?.number, chain)
+      ? [source]
+      : [];
+
+    return {
+      value: { ...transformExplorerSeries(rows, timestampGt, timestampLt), aum },
+      status: createStaleStatus({ indexingErrors, fetchErrors: [], laggingSubgraphs }),
+    };
+  } catch (error) {
+    console.error(`Error fetching from ${source}:`, error);
+    return { value: null, status: getFetchErrorAndCreateStaleStatus(source) };
+  }
+};
+
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
+  /** Optimus (Optimism) — its own series so it can self-heal independently of Modius. */
+  babydegenOptimus: MetricWithStatus<BabydegenAgentSeries | null>;
+  /** Modius (Mode, wound down) — separate series for independent fallback + colour. */
+  babydegenModius: MetricWithStatus<BabydegenAgentSeries | null>;
 };
 
 export type ExplorerMetricsSnapshot = {
@@ -443,8 +578,12 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const omenstrat = await fetchOmenstratExplorerSeries(options);
-    return { data: { omenstrat }, timestamp: Date.now() };
+    const [omenstrat, babydegenOptimus, babydegenModius] = await Promise.all([
+      fetchOmenstratExplorerSeries(options),
+      fetchBabydegenAgentSeries('optimism'),
+      fetchBabydegenAgentSeries('mode'),
+    ]);
+    return { data: { omenstrat, babydegenOptimus, babydegenModius }, timestamp: Date.now() };
   } catch (error) {
     console.error('Error building explorer metrics snapshot:', error);
     return null;

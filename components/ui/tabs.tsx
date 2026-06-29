@@ -1,8 +1,10 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
+import Image from 'next/image';
 
 type TabItem = {
   key: string;
   label: string;
+  icon?: string;
   disabled?: boolean;
   tooltip?: string;
 };
@@ -11,12 +13,16 @@ type TabsProps = {
   items: TabItem[];
   activeKey: string;
   onChange: (key: string) => void;
+  // When set, the bar stretches to fill its container and tabs share the width equally.
+  fullWidth?: boolean;
 };
 
-export const Tabs = ({ items, activeKey, onChange }: TabsProps) => (
+export const Tabs = ({ items, activeKey, onChange, fullWidth = false }: TabsProps) => (
   <Tooltip.Provider delayDuration={150}>
-    <div className="flex items-center gap-1 bg-white border border-slate-100 rounded-lg p-1">
-      {items.map(({ key, label, disabled, tooltip }) => {
+    <div
+      className={`flex items-center gap-1 bg-white border border-slate-100 rounded-lg p-1 ${fullWidth ? 'w-full' : ''}`}
+    >
+      {items.map(({ key, label, icon, disabled, tooltip }) => {
         const isActive = activeKey === key;
         const stateClasses = disabled
           ? 'text-gray-300 cursor-not-allowed'
@@ -34,8 +40,9 @@ export const Tabs = ({ items, activeKey, onChange }: TabsProps) => (
             onClick={() => {
               if (!disabled) onChange(key);
             }}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${stateClasses}`}
+            className={`flex items-center justify-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${fullWidth ? 'flex-1' : ''} ${stateClasses}`}
           >
+            {icon && <Image src={icon} alt="" width={18} height={18} />}
             {label}
           </button>
         );
