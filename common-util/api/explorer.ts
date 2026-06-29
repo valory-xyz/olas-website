@@ -583,8 +583,12 @@ export const fetchBabydegenAgentSeries = async (
 // and prunes block-state so historical block-height (time-travel) queries fail. So we
 // count the raw `ataTransaction` events per UTC day directly, paging by blockTimestamp.
 const MECH_AGENT_IDS = [9, 26, 29, 36, 37, 77];
+// Used for both DAA (registry) and ATA (marketplace) counting.
+// TODO: switch to `Object.keys(MARKETPLACE_GRAPH_CLIENTS)` (matching the homepage ATA
+// tile's fetchAtaTransactions) once mechs actually run on the other marketplace chains
+// (optimism/ethereum/arbitrum). Today they don't — those chains have no mech ATA — so we
+// scope to the three live chains; the Explorer total still equals the homepage tile.
 const MECH_CHAINS = ['gnosis', 'base', 'polygon'] as const;
-const MECH_ATA_CHAINS = ['gnosis', 'base', 'polygon'] as const; // marketplace clients
 
 const ATA_PAGE_SIZE = 1000; // the subgraph caps `first` at 1000
 // Page budget per run (~285s at ~0.13s/page) so a deep backfill bails politely before the
@@ -665,7 +669,7 @@ const fetchMechAtaSeries = async (
   const budget = { left: ATA_MAX_PAGES_PER_RUN };
 
   const byDay = new Map<string, number>();
-  for (const chain of MECH_ATA_CHAINS) {
+  for (const chain of MECH_CHAINS) {
     try {
       const counts = await fetchChainAtaCounts(
         MARKETPLACE_GRAPH_CLIENTS[chain],
