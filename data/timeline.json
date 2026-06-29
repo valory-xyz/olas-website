@@ -1,5 +1,296 @@
 [
     {
+        "year": "2026",
+        "quarters": [
+            {
+                "quarter": "Quarter 2",
+                "date": "Apr - Jun",
+                "topics": [
+                    {
+                        "topic": "Basius Launches: A DeFAI Agent on Base",
+                        "content": "- Basius is an autonomous DeFAI agent on [@base](https://x.com/base), designed to provide [@AerodromeFi](https://x.com/aerodromefi) liquidity on your behalf and claim the AERO rewards.\n- Local, open-source, and user-owned — [run it on Pearl](https://www.pearl.you).\n- [Read more](https://olas.network/blog/basius)",
+                        "category": [
+                            "Pearl",
+                            "Build",
+                            "Launch",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Registries Hardened via Immunefi White Hat",
+                        "content": "- A white-hat-flagged issue in the Olas Registries was fixed (now live), coordinated through the [@immunefi](https://x.com/immunefi) bug bounty.\n- A win for the robustness of the Olas ecosystem.\n- [Read more](https://olas.network/blog/registries-update)",
+                        "category": [
+                            "Govern",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Marketplace Protocol Fee Goes Live — 15% + OLAS Burn",
+                        "content": "- A 15% protocol fee now applies to agent-to-agent payments on the Olas Marketplace across supported EVM chains.\n- Fees collected in OLAS are burned on Ethereum; fees in other tokens go to the Olas Treasury.\n- Activated by DAO vote (June 11–14), tying Marketplace usage to OLAS supply.",
+                        "category": [
+                            "Tokenomics",
+                            "Marketplace",
+                            "Govern",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Adapts to Polymarket's New Wallet Setup",
+                        "content": "- After Polymarket shipped a new wallet architecture, Polystrat was updated to support it — so new autonomous Polystrat agents can be created again.\n- Self-custody is preserved by design: your [@Safe](https://x.com/safe) stays at the center, with Polymarket's new wallet acting as a pass-through that needs your agent key's signature for every move.\n- [Try Polystrat](https://www.pearl.you/polystrat)",
+                        "category": [
+                            "Pearl",
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Reopens Its Bug Bounty on Immunefi",
+                        "content": "- The Olas on-chain bug bounty is back on [@immunefi](https://x.com/immunefi).\n- Scope: governance, registries, tokenomics, and the Olas Marketplace, across Ethereum and 7 additional chains.\n- Rewards up to $5,000 (Critical), PoC required.\n- [Read more](https://immunefi.com/bug-bounty/autonolas/information/)",
+                        "category": [
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "The Agent Economy Explorer Launches",
+                        "content": "- A new Agent Economy Explorer visualizes Olas Predict: the live agent economy on [@gnosischain](https://x.com/gnosischain).\n- It reads like a GitHub contribution graph, but the contributors are autonomous AI agents working on-chain — a calendar heatmap of active agents, transactions, and prediction accuracy, day by day.\n- [Read more](https://olas.network/blog/agent-explorer)",
+                        "category": [
+                            "Key milestones",
+                            "Activity Metrics"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl: Quality-of-Life Upgrades Through Q2",
+                        "content": "- Agent Wallet now shows a transaction history: deposits, agent funding, and withdrawals in one place, right inside Pearl.\n- Withdraw just what you need from an agent, without unstaking or stopping it.\n- A new \"Keep device awake\" toggle keeps a sleeping laptop from stalling your agents.\n- Close all open Omen and Polymarket positions of your Omenstrat and Polystrat agents in a single click.\n- Add or update your backup wallet right from settings.\n- Recover your funds and reach your agents with a Secret Recovery Phrase, even without your original device.\n- In-app updates: install new Pearl versions without a manual reinstall.",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Mini: AI-Powered Predictions on Polymarket, Right in Your Browser",
+                        "content": "- Pearl Mini brings AI-powered predictions directly onto [@Polymarket](https://x.com/polymarket), in the browser — generate an AI prediction in one click, then trade with one more.\n- Three modes by depth: Quick (a fast take), Deep (live news), and Super (multi-step reasoning). The first prediction is free.\n- Each prediction comes with an AI-generated likelihood score — one signal to weigh against the market's price. A browser co-pilot, distinct from Pearl's autonomous desktop agent; self-custodial, built with [@privy_io](https://x.com/privy_io) and [@tempo](https://x.com/tempo).\n- [Try Pearl Mini](https://www.pearl.you/mini)",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Codebase Audit Report Published (Code4rena, $62k)",
+                        "content": "- The $62,000 competitive audit of the Olas codebase with [@code4rena](https://x.com/code4rena) is complete, and the full report is published.\n- The wardens' work helps make the Olas codebase more robust.",
+                        "category": [
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Stack Surpasses 12.5M+ Agent-to-Agent Transactions",
+                        "content": "- The Olas Stack has now supported 12.5M+ agent-to-agent (A2A) transactions.\n- Agents discover services, negotiate terms, and execute exchanges directly with one another — coordinating across open ecosystems within guardrails users define.",
+                        "category": [
+                            "Activity Metrics",
+                            "Marketplace",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "New Omenstrat Staking Reward Contracts",
+                        "content": "- Four new Omenstrat OLAS activity reward contracts went live (5k and 10k OLAS slots), following user requests.",
+                        "category": [
+                            "Pearl",
+                            "Operate"
+                        ]
+                    },
+                    {
+                        "topic": "Some Pearl Agents Move to Maintenance Mode",
+                        "content": "- Optimus, Agents.fun, and Polystrat moved to maintenance mode. Existing agents continued to run, but new agents of these types were paused.\n- Polystrat's pause followed Polymarket shipping a new wallet architecture incompatible with Pearl's [@Safe](https://x.com/safe)-based self-custody; Optimus and Agents.fun saw reduced adoption.\n- Omenstrat remained fully available to new users, with more staking incentives on the way.",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Runs on Raspberry Pi 5 & ARM64",
+                        "content": "- Pearl now runs on Raspberry Pi 5 and other ARM64 Linux devices — your agent doesn't need a laptop anymore.\n- Run your agents 24/7 on low-cost hardware.\n- [Get Pearl](https://www.pearl.you)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Stays Compatible Through Polymarket's Protocol Upgrade",
+                        "content": "- Polymarket upgraded its protocol; Polystrat on Pearl was already compatible, placing trades on the new API (pUSD token).",
+                        "category": [
+                            "Pearl",
+                            "Operate"
+                        ]
+                    },
+                    {
+                        "topic": "Quickstart CLI Deprecated — Agents Consolidate on Pearl",
+                        "content": "- Quickstart CLI is being fully deprecated; going forward, Pearl is the primary interface to run agents on Olas and the full platform for Olas Staking.\n- Olas agents can move from Quickstart to Pearl in one command — bringing the agent, wallet, and remaining funds across.\n- [Migrate from Quickstart](https://github.com/valory-xyz/quickstart)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Micromech: Easier Mech Deployment",
+                        "content": "- Micromech, built by Olas community dev [@dvilelaf](https://x.com/dvilelaf), makes deploying and operating a Mech (a service AI agents can call) on Olas much simpler.\n- Designed to lower the barrier to running agent services on the Marketplace.",
+                        "category": [
+                            "Marketplace",
+                            "Build"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Ships Its First Fully AI-Developed Feature",
+                        "content": "- A user requested a feature, an AI agent built it, and engineers reviewed it — Pearl shipped its first fully AI-developed feature.\n- It came straight from user feedback, immediately bringing value to the customer.",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    }
+                ]
+            },
+            {
+                "quarter": "Quarter 1",
+                "date": "Jan - Mar",
+                "topics": [
+                    {
+                        "topic": "Run Unlimited Agents on Pearl",
+                        "content": "- It is now possible to run multiple agents of the same type on Pearl — each with its own strategy, wallet, and stake.",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Agents Unleashed: On the Streets — Cannes",
+                        "content": "- Agents Unleashed took to the streets of Cannes during EthCC for \"On the Streets,\" capturing community takes on AI, agents, and ownership.\n- The premier space to learn about AI x crypto, out in the wild.",
+                        "category": [
+                            "Agents Unleashed"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Success Agent: Agentic Support Comes to Pearl",
+                        "content": "- Agentic support arrived in Pearl, the AI agent app store.\n- The Pearl Success Agent brings intelligent, responsive assistance — improving user experience and customer support autonomously, in real time.",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas in the Media: CoinDesk & Forbes",
+                        "content": "- CoinDesk covered how Olas AI agents are rewriting prediction-market trading, featuring Olas Predict on [@Polymarket](https://x.com/polymarket).\n- Forbes covered Olas at [@EthereumDenver](https://x.com/ethereumdenver) as the largest AI agent economy in crypto, with 14M+ agent transactions and over half of all [@Safe](https://x.com/safe) transactions on [@gnosischain](https://x.com/gnosischain).",
+                        "category": [
+                            "Media appearances",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Takes Part in the SYNTHESIS Hackathon (with an AI Judge)",
+                        "content": "- Olas took part in SYNTHESIS, an online hackathon where agents register, build, compete, and are judged by both humans and AI.\n- Olas contributed its own AI judge and a $4,300 prize pool for hacks built on Olas.",
+                        "category": [
+                            "Hackathons"
+                        ]
+                    },
+                    {
+                        "topic": "Track Your Polystrat's Performance in Pearl",
+                        "content": "- A new Pearl update lets you track your Polystrat agent's performance: all-time profit, prediction accuracy, profit over time, and position details.",
+                        "category": [
+                            "Pearl"
+                        ]
+                    },
+                    {
+                        "topic": "Auto-Run Comes to Pearl",
+                        "content": "- Pearl's new Auto-Run feature runs your agents one-by-one automatically.\n- The moment one agent finishes its tasks and earns rewards, Pearl runs the next, so multiple agents keep working without manual starting and stopping.",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl for Linux — Now Fully Cross-Platform",
+                        "content": "- Pearl is now available on Linux.\n- Olas agents can run on all major operating systems: macOS, Windows, and Linux.",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat's Launch Draws Press Coverage",
+                        "content": "- The Polystrat launch was picked up across crypto media — Cointelegraph, AltcoinDesk, and Sandmark — on the shift toward AI agents in prediction markets.\n- Independent analyst [@0xjacobzhao](https://x.com/0xjacobzhao) called Polystrat \"one of the first consumer-grade trading agents for Polymarket.\"",
+                        "category": [
+                            "Media appearances",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Launches: Autonomous Trading on Polymarket",
+                        "content": "- Polystrat is an autonomous AI agent that trades [@Polymarket](https://x.com/polymarket) on the strategy you select, around the clock, with zero manual input.\n- Built by [@valoryag](https://x.com/valoryag), running on [@0xPolygon](https://x.com/0xpolygon), secured by [@Safe](https://x.com/safe) smart accounts, with fiat on-ramp and social sign-in.\n- Within two weeks, Polystrat agents executed 4,200+ trades. Open-source and user-owned — you hold the keys and keep the outcomes.\n- [Get Polystrat](https://www.pearl.you/polystrat)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Marketplace Surpasses 10M+ A2A as Legacy Mechs Retire",
+                        "content": "- End of an era, dawn of a bigger one: Olas retired the legacy Mech agents that first proved crypto-native, API-free A2A micropayments back in 2023.\n- The Olas Marketplace has since surpassed 10M+ A2A transactions, evolving into a global standard for autonomous service exchange.\n- The Marketplace stays open and growing — hire AI agents, or monetize your own.\n- [Explore](https://olas.network/mech-marketplace)",
+                        "category": [
+                            "Marketplace",
+                            "Activity Metrics",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Agents Adopt ERC-8004 (Universal Agent Identity)",
+                        "content": "- ERC-8004 went live on Ethereum mainnet and a growing set of L2s, bringing a universal on-chain identity layer for AI agents.\n- Olas mirrored 3,000+ agents across 8 EVM chains into the standard — building on the first on-chain agent registry Olas introduced on Ethereum in 2022.\n- Agent naming was standardized across Pearl, the Predict economy, and the ERC-8004 scanner, making agents easier to find and verify.",
+                        "category": [
+                            "Marketplace",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Prediction Trader Becomes Omenstrat",
+                        "content": "- Olas' OG prediction agents — live on Omen ([@gnosischain](https://x.com/gnosischain)) since 2023 — were rebranded Omenstrat as the Olas Predict economy accelerates.\n- User-owned via Pearl, with millions of transactions to date. [Own your Omenstrat agent](https://www.pearl.you).",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Codebase Audit Opens (Code4rena, $62k)",
+                        "content": "- An 18-day competitive audit of the Olas codebase opened with [@code4rena](https://x.com/code4rena) (Jan 22 – Feb 9).\n- $62,000 prize pool, with top rewards for the highest and most unique vulnerabilities found.",
+                        "category": [
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Q1 Performance Snapshot",
+                        "content": "- Reported Q1 figures for Polystrat agents: ~14,700 trades across 1,750 markets, 80 daily active agents, and a 63% average prediction accuracy.\n- Average total ROI across agents was -4.14% for the quarter. Polystrat is designed to execute your chosen strategy autonomously; past performance does not guarantee future results.",
+                        "category": [
+                            "Pearl",
+                            "Activity Metrics"
+                        ]
+                    },
+                    {
+                        "topic": "Record Agent Growth in Q1",
+                        "content": "- Pearl reached new all-time highs in Q1 2026:\n- 834 Daily Active Agents (DAAs)\n- 15.6M+ total transactions\n- 11.7M+ agent-to-agent transactions",
+                        "category": [
+                            "Activity Metrics",
+                            "Key milestones"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "year": "2025",
         "quarters" : [
             {
