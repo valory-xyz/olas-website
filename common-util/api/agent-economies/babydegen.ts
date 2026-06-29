@@ -18,6 +18,7 @@ import {
 import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
+  dailyBasiusPerformancesQuery,
   stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -209,18 +210,24 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [modeResult, optimismResult, modeBlock, optimismBlock] = await Promise.allSettled([
-      REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-      REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      }),
-      getChainBlockNumber('mode'),
-      getChainBlockNumber('optimism'),
-    ]);
+    const [modeResult, optimismResult, baseResult, modeBlock, optimismBlock, baseBlock] =
+      await Promise.allSettled([
+        REGISTRY_GRAPH_CLIENTS.mode.request(dailyBabydegenPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        }),
+        REGISTRY_GRAPH_CLIENTS.optimism.request(dailyBabydegenPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        }),
+        REGISTRY_GRAPH_CLIENTS.base.request(dailyBasiusPerformancesQuery, {
+          timestamp_gt,
+          timestamp_lt,
+        }),
+        getChainBlockNumber('mode'),
+        getChainBlockNumber('optimism'),
+        getChainBlockNumber('base'),
+      ]);
 
     const handleResult = (
       result: PromiseSettledResult<any>,
@@ -250,12 +257,14 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
 
     const modePerformances = handleResult(modeResult, 'mode', modeBlock);
     const optimismPerformances = handleResult(optimismResult, 'optimism', optimismBlock);
+    const basePerformances = handleResult(baseResult, 'base', baseBlock);
 
     const modeAverage = calculate7DayAverage(modePerformances, 'activeMultisigCount');
     const optimismAverage = calculate7DayAverage(optimismPerformances, 'activeMultisigCount');
+    const baseAverage = calculate7DayAverage(basePerformances, 'activeMultisigCount');
 
     return {
-      value: modeAverage + optimismAverage,
+      value: modeAverage + optimismAverage + baseAverage,
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
@@ -264,7 +273,7 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
       value: null,
       status: createStaleStatus({
         indexingErrors: [],
-        fetchErrors: ['registry:mode', 'registry:optimism'],
+        fetchErrors: ['registry:mode', 'registry:optimism', 'registry:base'],
         laggingSubgraphs: [],
       }),
     };

@@ -8,6 +8,7 @@ import {
   dailyAgentPerformancesQuery,
   dailyAgentsFunPerformancesQuery,
   dailyBabydegenPerformancesQuery,
+  dailyBasiusPerformancesQuery,
   dailyContributePerformancesQuery,
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
@@ -56,12 +57,15 @@ export const DailyActiveAgentsInfo = () => {
             is useful to understand the operational footprint and engagement of specific agents over
             time. The <strong>active multisig count</strong> reflects the number of unique multisigs
             that performed at least one on-chain interaction attributed to a given agent within the
-            UTC day window.
+            UTC day window. Modius and Optimus register under <code>agentId = 40</code>, while
+            Basius (Base) registers under <code>agentId = 115</code>, so two queries are used.
           </p>
 
-          <p>The following query is used to compute daily active agents:</p>
+          <p>The following queries are used to compute daily active agents:</p>
 
-          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
+            Modius &amp; Optimus Daily Performance query
+          </h3>
 
           <p className="text-purple-600">
             Subgraph links:{' '}
@@ -74,6 +78,18 @@ export const DailyActiveAgentsInfo = () => {
             )}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
+
+          <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Basius Daily Performance query</h3>
+
+          <p className="text-purple-600">
+            Subgraph links:{' '}
+            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
+              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </ExternalLink>
+            ))}
+          </p>
+          <CodeSnippet>{dailyBasiusPerformancesQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="agentsfun-daily-active-agents">
