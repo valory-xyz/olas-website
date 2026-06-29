@@ -20,12 +20,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 365) — if the invocation overruns it's killed before saveSnapshot and nothing is
     // written. Go deeper by re-running with larger windows (each run merges into prior).
     const previousSnapshot = await getSnapshot({ category: 'explorer' });
-    const previous = (previousSnapshot?.data as ExplorerMetricsData)?.omenstrat?.value ?? null;
+    const previousData = previousSnapshot?.data as ExplorerMetricsData | undefined;
+    const previous = previousData?.omenstrat?.value ?? null;
+    const mechPrevious = previousData?.mech?.value ?? null;
 
+    // Mech ATA has no daily aggregate, so it's event-counted per day (Method A): the cron
+    // recomputes only the last couple of days; a one-time history backfill pages a bounded
+    // slice — keep each slice ≲150 days so it fits the 300s budget, e.g.:
+    //   /api/refresh-metrics/explorer?ataFromDays=400&ataToDays=250  (then 250→100, 100→0)
     const metrics = await fetchAllExplorerMetrics({
       previous,
       accuracyPages: toInt(req.query.accuracyPages),
       roiDays: toInt(req.query.roiDays),
+      mechPrevious,
+      ataFromDays: toInt(req.query.ataFromDays),
+      ataToDays: toInt(req.query.ataToDays),
     });
 
     if (!metrics) {
@@ -37,8 +46,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const value = metrics.data.omenstrat.value;
     const optimus = metrics.data.babydegenOptimus.value;
     const modius = metrics.data.babydegenModius.value;
-    const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum: unknown[] } | null) =>
-      s && { daa: s.daa.length, transactions: s.transactions.length, aum: s.aum.length };
+    const mech = metrics.data.mech.value;
+    const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum?: unknown[] } | null) =>
+      s && {
+        daa: s.daa.length,
+        transactions: s.transactions.length,
+        ...(s.aum && { aum: s.aum.length }),
+      };
     return res.status(200).json({
       success: true,
       generatedAt: new Date().toISOString(),
@@ -52,6 +66,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       babydegenCounts: {
         optimus: seriesCounts(optimus),
         modius: seriesCounts(modius),
+      },
+      mechCounts: mech && {
+        daa: mech.daa.length,
+        ata: mech.ata.length,
+        ataTotal: mech.ata.reduce((sum, p) => sum + p.count, 0),
       },
     });
   } catch (error) {

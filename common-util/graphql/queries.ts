@@ -659,6 +659,23 @@ export const ataTransactionsQuery = gql`
   }
 `;
 
+// Raw agent-to-agent transaction events in a time window, paged by blockTimestamp cursor
+// (the subgraph has no daily ATA aggregate and prunes block-state, so the Explorer counts
+// events per day directly). `id` is returned for boundary de-duplication across pages.
+export const mechAtaTransactionsQuery = gql`
+  query MechAtaTransactions($gte: BigInt!, $lt: BigInt!) {
+    ataTransactions(
+      first: 1000
+      where: { blockTimestamp_gte: $gte, blockTimestamp_lt: $lt }
+      orderBy: blockTimestamp
+      orderDirection: asc
+    ) {
+      id
+      blockTimestamp
+    }
+  }
+`;
+
 export const newMechFeesQuery = gql`
   query NewMechFees {
     global(id: "") {

@@ -41,6 +41,12 @@ export const getStaticProps = async () => {
         status: data?.babydegenModius?.status ?? null,
       },
     },
+    mech: {
+      mech: {
+        series: data?.mech?.value ?? { daa: [], ata: [] },
+        status: data?.mech?.status ?? null,
+      },
+    },
   };
 
   return {

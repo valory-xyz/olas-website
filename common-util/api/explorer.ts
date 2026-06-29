@@ -4,6 +4,7 @@ import { OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
 import {
   BABYDEGEN_GRAPH_CLIENTS,
+  MARKETPLACE_GRAPH_CLIENTS,
   predictAgentsGraphClient,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
@@ -18,6 +19,7 @@ import {
   explorerOmenstratSeriesQuery,
   getExplorerBetsQuery,
   getExplorerDailyProfitStatsQuery,
+  mechAtaTransactionsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -102,9 +104,11 @@ const requestWithRetry = async <T>(fn: () => Promise<T>, attempts = 3): Promise<
 };
 
 // The subgraph caps `first` at 1000, so we page through with skip. One row per
-// (agent, day) → a few years × 3 trader agents (12/14/25) ≈ 3-4k rows; cap as a backstop.
+// (agent, day): Omenstrat ≈ 3 agents, Babydegen 1, Mech 5 — over several years the
+// busiest (Mech on Gnosis) can approach ~8k rows, so cap high with headroom. Hitting
+// the cap is logged (a full final page means the most-recent days were truncated).
 const PAGE_SIZE = 1000;
-const MAX_PAGES = 8;
+const MAX_PAGES = 16;
 
 /**
  * Build two gap-filled daily series (DAA + transactions) from the per-agent daily
@@ -180,6 +184,16 @@ const pageRegistryRows = async (
     const pageRows = data.dailyAgentPerformances || [];
     rows.push(...pageRows);
     if (pageRows.length < PAGE_SIZE) break;
+    // Last allowed page still came back full → there's more data we won't fetch. The
+    // query is asc-ordered, so the dropped rows are the MOST RECENT days. Surface it
+    // rather than silently undercounting (the snapshot would look fresh but be short).
+    if (page === MAX_PAGES - 1) {
+      console.error(
+        `pageRegistryRows: hit MAX_PAGES=${MAX_PAGES} for agentIds [${agentIds.join(
+          ','
+        )}] (${rows.length} rows) — recent days may be truncated; raise MAX_PAGES.`
+      );
+    }
   }
 
   return { rows, meta };
@@ -378,12 +392,18 @@ const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoin
 };
 
 export type ExplorerFetchOptions = {
-  /** Prior stored series to merge fresh windows into — preserves a deep backfill. */
+  /** Prior stored Omenstrat series to merge fresh windows into — preserves a deep backfill. */
   previous?: ExplorerSeries | null;
   /** Accuracy bet pages to fetch (shallow cron default; large for a backfill). */
   accuracyPages?: number;
   /** ROI window in days (shallow cron default; large for a backfill). */
   roiDays?: number;
+  /** Prior stored Mech series to merge the recomputed ATA window into. */
+  mechPrevious?: MechExplorerSeries | null;
+  /** Mech ATA window start (days ago); large for a one-time ATA backfill slice. */
+  ataFromDays?: number;
+  /** Mech ATA window end (days ago); pair with ataFromDays to backfill a bounded slice. */
+  ataToDays?: number;
 };
 
 /**
@@ -555,6 +575,200 @@ export const fetchBabydegenAgentSeries = async (
   }
 };
 
+// ── Mech economy (DAA from registry; Agent-to-Agent transactions from marketplace) ──
+// The core mech agents (agentIds 9/26/29/36/37/77) run across Gnosis + Base + Polygon.
+// DAA is summed per day across those registry subgraphs. The headline metric is ATA
+// (agent-to-agent transactions) — the meaningful mech volume (~13M, 99% Gnosis) — which
+// the marketplace subgraph exposes only as a cumulative counter with no daily aggregate,
+// and prunes block-state so historical block-height (time-travel) queries fail. So we
+// count the raw `ataTransaction` events per UTC day directly, paging by blockTimestamp.
+const MECH_AGENT_IDS = [9, 26, 29, 36, 37, 77];
+// Used for both DAA (registry) and ATA (marketplace) counting.
+// TODO: switch to `Object.keys(MARKETPLACE_GRAPH_CLIENTS)` (matching the homepage ATA
+// tile's fetchAtaTransactions) once mechs actually run on the other marketplace chains
+// (optimism/ethereum/arbitrum). Today they don't — those chains have no mech ATA — so we
+// scope to the three live chains; the Explorer total still equals the homepage tile.
+const MECH_CHAINS = ['gnosis', 'base', 'polygon'] as const;
+
+const ATA_PAGE_SIZE = 1000; // the subgraph caps `first` at 1000
+// Page budget per run (~285s at ~0.13s/page) so a deep backfill bails politely before the
+// 300s function limit. The daily cron only recomputes a couple of days (far under this).
+const ATA_MAX_PAGES_PER_RUN = 2000;
+// Cron recompute window: re-count only the last couple of days (the only days still
+// changing — finished days are immutable, counted once, then preserved by mergeSeries).
+const ATA_CRON_FROM_DAYS = 2;
+
+type AtaRow = { id: string; blockTimestamp: string };
+
+/**
+ * Count `ataTransaction` events per UTC day for one chain in [startTs, endTs), paging by a
+ * blockTimestamp cursor (deep `skip` is rejected by The Graph). Events sharing the cursor
+ * second across a page boundary are de-duplicated by id. Decrements the shared page budget
+ * so a backfill stops before the function time limit. Returns counts by YYYY-MM-DD.
+ */
+const fetchChainAtaCounts = async (
+  client: GraphQLClient,
+  startTs: number,
+  endTs: number,
+  budget: { left: number }
+): Promise<Map<string, number>> => {
+  const byDay = new Map<string, number>();
+  let cursor = startTs;
+  let seenAtCursor = new Set<string>();
+
+  while (budget.left > 0) {
+    budget.left -= 1;
+    const data = (await requestWithRetry(() =>
+      client.request(mechAtaTransactionsQuery, { gte: String(cursor), lt: String(endTs) })
+    )) as { ataTransactions: AtaRow[] };
+    const rows = data?.ataTransactions ?? [];
+    if (rows.length === 0) break;
+
+    let counted = 0;
+    for (const row of rows) {
+      const ts = Number(row.blockTimestamp);
+      if (ts === cursor && seenAtCursor.has(row.id)) continue; // already counted last page
+      const date = new Date(ts * 1000).toISOString().slice(0, 10);
+      byDay.set(date, (byDay.get(date) || 0) + 1);
+      counted += 1;
+    }
+
+    if (rows.length < ATA_PAGE_SIZE) break; // last page
+    const lastTs = Number(rows[rows.length - 1].blockTimestamp);
+    // >1000 events share one second AND fill the page → cursor can't advance. Bail rather
+    // than loop (a single second with 1000+ ATA never happens in practice).
+    if (lastTs === cursor && counted === 0) {
+      console.error(`mech ATA cursor stuck at ${cursor}`);
+      break;
+    }
+    // Carry the ids at the new cursor second so the next page (gte cursor) doesn't re-count them.
+    const idsAtLast = rows.filter((r) => Number(r.blockTimestamp) === lastTs).map((r) => r.id);
+    seenAtCursor =
+      lastTs === cursor ? new Set([...seenAtCursor, ...idsAtLast]) : new Set(idsAtLast);
+    cursor = lastTs;
+  }
+
+  return byDay;
+};
+
+/**
+ * Daily ATA series summed across the marketplace chains for the window [fromDays, toDays)
+ * (day offsets from today; toDays ≤ 0 means up to now, including today's partial day).
+ * Chains run sequentially (gentle on the shared proxy; Gnosis is ~99% of volume). The
+ * recomputed window is merged into `previous`, so finished days from a prior run/backfill
+ * are preserved and only the recomputed days are overwritten.
+ */
+const fetchMechAtaSeries = async (
+  fromDays: number,
+  toDays: number,
+  previous: DaaSeriesPoint[] | undefined
+): Promise<DaaSeriesPoint[]> => {
+  const startTs = getMidnightUtcTimestampDaysAgo(fromDays);
+  const endTs =
+    toDays <= 0 ? Math.floor(Date.now() / 1000) : getMidnightUtcTimestampDaysAgo(toDays);
+  const budget = { left: ATA_MAX_PAGES_PER_RUN };
+
+  const byDay = new Map<string, number>();
+  for (const chain of MECH_CHAINS) {
+    try {
+      const counts = await fetchChainAtaCounts(
+        MARKETPLACE_GRAPH_CLIENTS[chain],
+        startTs,
+        endTs,
+        budget
+      );
+      counts.forEach((count, date) => byDay.set(date, (byDay.get(date) || 0) + count));
+    } catch (error) {
+      console.error(`Error fetching mech ATA (${chain}):`, error);
+    }
+  }
+
+  const fresh = Array.from(byDay, ([date, count]) => ({ date, count })).sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+  return mergeSeries(previous, fresh);
+};
+
+/** Mech daily series: DAA (registry) + ATA (marketplace agent-to-agent transactions). */
+export type MechExplorerSeries = {
+  daa: DaaSeriesPoint[];
+  ata: DaaSeriesPoint[];
+};
+
+export type MechFetchOptions = {
+  /** Prior stored Mech series to merge the recomputed ATA window into (preserves backfill). */
+  previous?: MechExplorerSeries | null;
+  /** ATA window start (days ago). Default = cron window; large for a one-time backfill. */
+  ataFromDays?: number;
+  /** ATA window end (days ago). Default 0 = today. Use with ataFromDays to backfill a slice. */
+  ataToDays?: number;
+};
+
+/**
+ * Fetch the Mech economy series: DAA from the registry subgraphs (Gnosis + Base + Polygon,
+ * summed per day) and ATA from the marketplace subgraphs (event-counted per day, recent
+ * window merged into prior history). DAA is a combined value, so if ANY registry chain
+ * fails we return null — `mergeWithFallback` then keeps the last good snapshot rather than
+ * publishing a short total. ATA is best-effort: a failed fetch keeps the prior ATA series.
+ */
+export const fetchMechExplorerSeries = async (
+  options: MechFetchOptions = {}
+): Promise<MetricWithStatus<MechExplorerSeries | null>> => {
+  const { previous = null, ataFromDays = ATA_CRON_FROM_DAYS, ataToDays = 0 } = options;
+  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
+  const allRows: DailyOmenstratRow[] = [];
+
+  await Promise.all(
+    MECH_CHAINS.map(async (chain) => {
+      try {
+        const { rows, meta } = await pageRegistryRows(
+          REGISTRY_GRAPH_CLIENTS[chain],
+          MECH_AGENT_IDS,
+          timestampGt,
+          timestampLt
+        );
+        allRows.push(...rows);
+
+        const chainBlock = await getChainBlockNumber(chain);
+        if (meta?.hasIndexingErrors) indexingErrors.push(`registry:${chain}`);
+        if (checkSubgraphLag(chainBlock, meta?.block?.number, chain)) {
+          laggingSubgraphs.push(`registry:${chain}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching mech registry (${chain}):`, error);
+        fetchErrors.push(`registry:${chain}`);
+      }
+    })
+  );
+
+  // DAA is a combined cross-chain value — any chain failing would publish a short total,
+  // so return null and let mergeWithFallback keep the last good combined series.
+  if (fetchErrors.length > 0) {
+    return {
+      value: null,
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+    };
+  }
+
+  // ATA — best-effort; a failed fetch keeps the prior series so DAA still publishes.
+  const ata = await fetchMechAtaSeries(ataFromDays, ataToDays, previous?.ata).catch((error) => {
+    console.error('Error fetching mech ATA:', error);
+    return previous?.ata ?? [];
+  });
+
+  // transformExplorerSeries sums registry rows by date; we keep only DAA for Mech.
+  const { daa } = transformExplorerSeries(allRows, timestampGt, timestampLt);
+  return {
+    value: { daa, ata },
+    status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+  };
+};
+
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
@@ -562,6 +776,8 @@ export type ExplorerMetricsData = {
   babydegenOptimus: MetricWithStatus<BabydegenAgentSeries | null>;
   /** Modius (Mode, wound down) — separate series for independent fallback + colour. */
   babydegenModius: MetricWithStatus<BabydegenAgentSeries | null>;
+  /** Mech — DAA (registry) + ATA (marketplace agent-to-agent transactions). */
+  mech: MetricWithStatus<MechExplorerSeries | null>;
 };
 
 export type ExplorerMetricsSnapshot = {
@@ -578,12 +794,20 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const [omenstrat, babydegenOptimus, babydegenModius] = await Promise.all([
+    const [omenstrat, babydegenOptimus, babydegenModius, mech] = await Promise.all([
       fetchOmenstratExplorerSeries(options),
       fetchBabydegenAgentSeries('optimism'),
       fetchBabydegenAgentSeries('mode'),
+      fetchMechExplorerSeries({
+        previous: options.mechPrevious,
+        ataFromDays: options.ataFromDays,
+        ataToDays: options.ataToDays,
+      }),
     ]);
-    return { data: { omenstrat, babydegenOptimus, babydegenModius }, timestamp: Date.now() };
+    return {
+      data: { omenstrat, babydegenOptimus, babydegenModius, mech },
+      timestamp: Date.now(),
+    };
   } catch (error) {
     console.error('Error building explorer metrics snapshot:', error);
     return null;
