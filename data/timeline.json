@@ -158,6 +158,22 @@
                 "date": "Jan - Mar",
                 "topics": [
                     {
+                        "topic": "Record Agent Growth in Q1",
+                        "content": "- Pearl reached new all-time highs in Q1 2026:\n- 834 Daily Active Agents (DAAs)\n- 15.6M+ total transactions\n- 11.7M+ agent-to-agent transactions",
+                        "category": [
+                            "Activity Metrics",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Q1 Performance Snapshot",
+                        "content": "- Reported Q1 figures for Polystrat agents: ~14,700 trades across 1,750 markets, 80 daily active agents, and a 63% average prediction accuracy.\n- Average total ROI across agents was -4.14% for the quarter. Polystrat is designed to execute your chosen strategy autonomously; past performance does not guarantee future results.",
+                        "category": [
+                            "Pearl",
+                            "Activity Metrics"
+                        ]
+                    },
+                    {
                         "topic": "Run Unlimited Agents on Pearl",
                         "content": "- It is now possible to run multiple agents of the same type on Pearl — each with its own strategy, wallet, and stake.",
                         "category": [
@@ -267,22 +283,6 @@
                         "content": "- An 18-day competitive audit of the Olas codebase opened with [@code4rena](https://x.com/code4rena) (Jan 22 – Feb 9).\n- $62,000 prize pool, with top rewards for the highest and most unique vulnerabilities found.",
                         "category": [
                             "Build",
-                            "Key milestones"
-                        ]
-                    },
-                    {
-                        "topic": "Polystrat Q1 Performance Snapshot",
-                        "content": "- Reported Q1 figures for Polystrat agents: ~14,700 trades across 1,750 markets, 80 daily active agents, and a 63% average prediction accuracy.\n- Average total ROI across agents was -4.14% for the quarter. Polystrat is designed to execute your chosen strategy autonomously; past performance does not guarantee future results.",
-                        "category": [
-                            "Pearl",
-                            "Activity Metrics"
-                        ]
-                    },
-                    {
-                        "topic": "Record Agent Growth in Q1",
-                        "content": "- Pearl reached new all-time highs in Q1 2026:\n- 834 Daily Active Agents (DAAs)\n- 15.6M+ total transactions\n- 11.7M+ agent-to-agent transactions",
-                        "category": [
-                            "Activity Metrics",
                             "Key milestones"
                         ]
                     }
