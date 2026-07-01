@@ -7,6 +7,13 @@ import Image from 'next/image';
 
 const list = [
   {
+    title: 'Back on the streets during EthCC[9]',
+    imageSrc: 'on-the-streets.png',
+    location: 'Cannes',
+    date: 'Mar 30 ‘26',
+    interviewLink: 'https://www.youtube.com/playlist?list=PLGynJgxd1j4w',
+  },
+  {
     title: 'The AI Ownership Era',
     imageSrc: 'ai-ownership.png',
     location: 'Buenos Aires, Devconnect',
@@ -112,66 +119,79 @@ export const CTA = () => (
       </h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-[800px] lg:w-[800px] mx-auto">
-        {list.map(({ title, imageSrc, location, date, eventLink, replayLink }, index) => {
-          let cardClassNames = replayLink ? 'bg-white border-inherit' : 'bg-none border-purple-300';
-          let cardStyle = replayLink
-            ? {}
-            : {
-                background:
-                  'linear-gradient(90deg, rgba(52, 170, 255, 0.1), rgba(255, 51, 231, 0.1))',
-              };
-          let textClassName = replayLink ? 'text-slate-500' : '';
-          let iconsClassName = replayLink ? '' : 'text-purple-600';
+        {list.map(
+          ({ title, imageSrc, location, date, eventLink, replayLink, interviewLink }, index) => {
+            const isUpcoming = !replayLink && !interviewLink;
+            let cardClassNames = isUpcoming
+              ? 'bg-none border-purple-300'
+              : 'bg-white border-inherit';
+            let cardStyle = isUpcoming
+              ? {
+                  background:
+                    'linear-gradient(90deg, rgba(52, 170, 255, 0.1), rgba(255, 51, 231, 0.1))',
+                }
+              : {};
+            let textClassName = isUpcoming ? '' : 'text-slate-500';
+            let iconsClassName = isUpcoming ? 'text-purple-600' : '';
 
-          return (
-            <Card
-              key={index}
-              className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
-              style={cardStyle}
-            >
-              <div className="flex flex-col gap-1 w-full">
-                <div className="md:hidden mx-auto">
+            return (
+              <Card
+                key={index}
+                className={`${cardClassNames} shadow-sm flex flex-row justify-between p-4 rounded-xl`}
+                style={cardStyle}
+              >
+                <div className="flex flex-col gap-1 w-full">
+                  <div className="md:hidden mx-auto">
+                    <CardImage src={imageSrc} />
+                  </div>
+
+                  <div
+                    className={`flex flex-row md:items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
+                  >
+                    {isUpcoming && (
+                      <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
+                        Upcoming
+                      </div>
+                    )}
+
+                    <span className="flex max-sm:mt-2">
+                      <MapPin className={`mr-2 w-[20px] ${iconsClassName}`} />
+                      {location}
+                    </span>
+                    <span className="flex">
+                      <CalendarIcon className={`mr-2 w-[20px] ${iconsClassName}`} />
+                      {date}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold max-w-[500px] my-4">{title}</h3>
+                  <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
+                    {eventLink && (
+                      <a href={eventLink} target="_blank" rel="noopener noreferrer">
+                        Event page ↗
+                      </a>
+                    )}
+                    {replayLink && (
+                      <a href={replayLink} target="_blank" rel="noopener noreferrer">
+                        Watch talk replay ↗
+                      </a>
+                    )}
+                    {interviewLink && (
+                      <a href={interviewLink} target="_blank" rel="noopener noreferrer">
+                        Watch interviews ↗
+                      </a>
+                    )}
+                    {isUpcoming && (
+                      <span className="italic text-slate-500">Talk replay coming soon...</span>
+                    )}
+                  </div>
+                </div>
+                <div className="hidden md:block">
                   <CardImage src={imageSrc} />
                 </div>
-
-                <div
-                  className={`flex flex-row md:items-center max-sm:gap-2 gap-6 ${textClassName} max-sm:flex-col align-middle`}
-                >
-                  {!replayLink && (
-                    <div className="max-sm:mt-2 rounded-full bg-gradient-to-r from-[#34AAFF] to-[#FF33E7] text-white py-1 px-2 max-w-fit max-sm:mx-auto">
-                      Upcoming
-                    </div>
-                  )}
-
-                  <span className="flex max-sm:mt-2">
-                    <MapPin className={`mr-2 w-[20px] ${iconsClassName}`} />
-                    {location}
-                  </span>
-                  <span className="flex">
-                    <CalendarIcon className={`mr-2 w-[20px] ${iconsClassName}`} />
-                    {date}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold max-w-[500px] my-4">{title}</h3>
-                <div className="flex flex-row max-sm:flex-col max-sm:gap-2 gap-6 text-purple-600 mt-auto max-sm:text-left">
-                  <a href={eventLink} target="_blank" rel="noopener noreferrer">
-                    Event page ↗
-                  </a>
-                  {replayLink ? (
-                    <a href={replayLink} target="_blank" rel="noopener noreferrer">
-                      Watch talk replay ↗
-                    </a>
-                  ) : (
-                    <span className="italic text-slate-500">Talk replay coming soon...</span>
-                  )}
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <CardImage src={imageSrc} />
-              </div>
-            </Card>
-          );
-        })}
+              </Card>
+            );
+          }
+        )}
       </div>
     </div>
   </SectionWrapper>
