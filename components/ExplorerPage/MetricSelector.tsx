@@ -1,3 +1,4 @@
+import { Popover } from 'components/ui/popover';
 import { cn } from 'lib/utils';
 
 export type ExplorerMetric = {
@@ -7,6 +8,8 @@ export type ExplorerMetric = {
   value: string;
   /** Only metrics with a real daily series can drive the heatmap. */
   selectable: boolean;
+  /** Optional hover tooltip (e.g. the date the headline value is for). */
+  tooltip?: string;
 };
 
 type MetricSelectorProps = {
@@ -33,15 +36,25 @@ export const MetricSelector = ({
     <div className="flex w-full max-w-[872px] flex-col border-x border-[#e8eaee] md:flex-row">
       {metrics.map((metric, i) => {
         const isActive = metric.key === activeKey;
+        const select = () => metric.selectable && onChange(metric.key);
         return (
-          <button
+          // A div (not a button) so the info Popover — itself a button — can nest inside
+          // the label row without invalid button-in-button markup. Keyboard support is
+          // wired manually to keep tab/Enter/Space selection.
+          <div
             key={metric.key}
-            type="button"
             role="tab"
             aria-selected={isActive}
             aria-disabled={!metric.selectable || undefined}
+            tabIndex={metric.selectable ? 0 : undefined}
             title={metric.selectable ? undefined : 'Daily series coming soon'}
-            onClick={() => metric.selectable && onChange(metric.key)}
+            onClick={select}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                select();
+              }
+            }}
             className={cn(
               'flex flex-1 flex-col items-start justify-center gap-2 p-6 text-left transition-colors',
               // Stacked on mobile → divider runs along the bottom; row on md+ → divider on the right.
@@ -49,8 +62,13 @@ export const MetricSelector = ({
               metric.selectable ? 'cursor-pointer hover:bg-slate-100' : 'cursor-default'
             )}
           >
-            <span className="text-[14px] leading-5 tracking-[0.14px] text-[#78879c]">
+            <span className="flex items-center gap-1 text-[14px] leading-5 tracking-[0.14px] text-[#78879c]">
               {metric.label}
+              {metric.tooltip && (
+                <Popover side="top" contentClassName="whitespace-nowrap">
+                  {metric.tooltip}
+                </Popover>
+              )}
             </span>
             <span className="relative inline-block">
               <span
@@ -68,7 +86,7 @@ export const MetricSelector = ({
                 />
               )}
             </span>
-          </button>
+          </div>
         );
       })}
     </div>
