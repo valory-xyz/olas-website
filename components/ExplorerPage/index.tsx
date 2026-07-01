@@ -57,6 +57,10 @@ type MetricDef = {
   headline: (series: DaaSeriesPoint[]) => string;
   /** Whether the tile is selectable — false dims it + shows "coming soon". */
   selectable: (series: DaaSeriesPoint[]) => boolean;
+  /** Tile label override (defaults to `label`); lets the tile read differently from the heatmap header. */
+  tileLabel?: string;
+  /** Optional hover tooltip for the tile (e.g. the date the headline value is for). */
+  tooltip?: (series: DaaSeriesPoint[]) => string | undefined;
 };
 
 // Metric → the noun used in the header/tooltip, how the tooltip value reads, the heatmap
@@ -64,11 +68,19 @@ type MetricDef = {
 const METRIC_CONFIG: Record<string, MetricDef> = {
   daa: {
     label: 'Daily Active Agents',
+    // Tile shows the latest day's value, so label it "Latest DAAs"; the heatmap header
+    // keeps the descriptive "Daily Active Agents" (it plots the full daily history).
+    tileLabel: 'Latest DAAs',
     unit: 'active agents',
     kind: 'count',
     scale: 'sequential',
     // Latest day's active-agent count.
     headline: (s) => formatCount(s.length ? s[s.length - 1].count : 0),
+    // Spell out the day the headline value is for, e.g. "Daily Active Agents of June 29, 2026".
+    tooltip: (s) =>
+      s.length
+        ? `Daily Active Agents as of ${dayjs(s[s.length - 1].date).format('MMMM D, YYYY')}`
+        : undefined,
     selectable: () => true,
   },
   transactions: {
@@ -249,9 +261,10 @@ const Explorer = ({ economies }: ExplorerProps) => {
     const metricSeries = series[key] ?? [];
     return {
       key,
-      label: config.label,
+      label: config.tileLabel ?? config.label,
       value: config.headline(metricSeries),
       selectable: config.selectable(metricSeries),
+      tooltip: config.tooltip?.(metricSeries),
     };
   });
 
