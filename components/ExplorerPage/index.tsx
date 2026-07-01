@@ -388,8 +388,8 @@ const Explorer = ({ economies }: ExplorerProps) => {
           valueKind={metricConfig.kind}
           colorScale={metricConfig.scale}
           levelColors={rampColors}
-          markerDate={agentMeta.phaseOutDate ?? null}
-          markerLabel={agentMeta.phaseOutDate ? `${agentMeta.label} phased out` : undefined}
+          markerDate={agentMeta.marker?.date ?? null}
+          markerLabel={agentMeta.marker?.label}
         />
       </div>
 
