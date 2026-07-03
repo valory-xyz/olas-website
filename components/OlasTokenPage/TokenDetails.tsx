@@ -28,6 +28,10 @@ export const TokenDetails = () => (
         >
           Token Details
         </SectionHeading>
+        <p className="text-center text-sm text-gray-500 mt-4">
+          For information only — not financial advice. OLAS is a crypto asset; its value can go
+          down as well as up.
+        </p>
         <div className="hidden md:block">
           <Table className="mt-6">
             <TableHeader>

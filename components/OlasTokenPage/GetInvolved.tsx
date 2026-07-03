@@ -43,8 +43,9 @@ const GET_INVOLVED_DATA = [
   {
     id: 5,
     imageSrc: '/images/homepage/olas-bond.png',
-    title: 'Provide liquidity, get discounted OLAS',
-    description: 'A bonding mechanism rewards providers of liquidity with discounted OLAS.',
+    title: 'Provide liquidity, get OLAS',
+    description:
+      'A bonding mechanism rewards providers of liquidity with OLAS, when bonding programs are open.',
     ctaText: 'Bond',
     href: '/bond',
   },

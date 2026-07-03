@@ -16,17 +16,18 @@ const steps = [
     title: 'Provide liquidity',
     description: (
       <>
-        As a Bonder, you exchange your LP tokens for discounted OLAS to help the Olas ecosystem
-        operate smoothly and sustainably. Simply deposit your LP tokens to your chosen{' '}
+        As a Bonder, you exchange your LP tokens for OLAS to help the Olas ecosystem operate
+        smoothly and sustainably. Simply deposit your LP tokens to an open{' '}
         <SubsiteLink href={BONDING_PROGRAMS_URL}>bonding program</SubsiteLink>, exchanging your LP
-        tokens for discounted OLAS, available after the predetermined vesting period.
+        tokens for OLAS, claimable after the predetermined vesting period. Bonding is
+        self-custodial, and program availability varies — at times, no programs may be open.
       </>
     ),
   },
   {
     title: 'Receive benefits',
     description:
-      'In return for providing liquidity, Olas Bonders receive OLAS tokens at a discounted price.',
+      'In return for providing liquidity, Olas Bonders receive OLAS tokens at the rate quoted by the program at the time of deposit. OLAS is a crypto asset — its value can go down as well as up, including during the vesting period.',
   },
   {
     title: 'Support the ecosystem',
@@ -60,7 +61,7 @@ export const HowBondingWorks = () => (
       <div className="self-center">
         <Button variant="default" size="xl" asChild className="mt-4 md:mt-10">
           <SubsiteLink href={BOND_URL} isInButton>
-            Start bonding now
+            View bonding programs
           </SubsiteLink>
         </Button>
       </div>

@@ -9,7 +9,7 @@ const list = [
   {
     title: 'Stake Your OLAS',
     description:
-      'Put your tokens to work by running an agent through Pearl — the AI agent app store. Earn staking rewards by participating in agent-based staking contracts tied to real performance.',
+      'Put your tokens to work by running an agent through Pearl — the AI agent app store. Earn staking rewards by participating in agent-based staking contracts tied to real performance. Rewards depend on agent activity and are not guaranteed.',
     url: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=staking&utm_content=staking-link`,
     urlText: 'Own your AI agent via Pearl',
     cardWidth: 'col-span-2',
