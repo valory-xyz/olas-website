@@ -7,6 +7,15 @@
                 "date": "Apr - Jun",
                 "topics": [
                     {
+                        "topic": "Olas Staking Enters a New Phase — Emissions Drop to ~5%",
+                        "content": "- New staking contracts set a lower, ~5% OLAS emission rate.\n- Together with OLAS buyback-and-burn funded by Marketplace fees (and, later, protocol-owned liquidity), this sets Olas up for sustainable growth.\n- [Read more](https://olas.network/blog/lower-emissions)",
+                        "category": [
+                            "Tokenomics",
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
                         "topic": "Basius Launches: A DeFAI Agent on Base",
                         "content": "- Basius is an autonomous DeFAI agent on [@base](https://x.com/base), designed to provide [@AerodromeFi](https://x.com/aerodromefi) liquidity on your behalf and claim the AERO rewards.\n- Local, open-source, and user-owned — [run it on Pearl](https://www.pearl.you).\n- [Read more](https://olas.network/blog/basius)",
                         "category": [
