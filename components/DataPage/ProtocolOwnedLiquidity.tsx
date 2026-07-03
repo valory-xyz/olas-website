@@ -15,7 +15,7 @@ export const ProtocolOwnedLiquidityInfo = () => {
         <p>
           Tracks the total USD value of LP tokens held by the Olas Treasury across all chains. The
           Treasury acquires LP tokens permanently through the bonding mechanism, where participants
-          deposit LP tokens in exchange for discounted OLAS.
+          deposit LP tokens in exchange for OLAS.
         </p>
 
         <p>

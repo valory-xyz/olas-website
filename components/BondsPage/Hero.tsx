@@ -19,14 +19,14 @@ const ProvideLiquidity = (
   <div>
     Provide liquidity,
     <br />
-    get discounted OLAS
+    get OLAS in return
   </div>
 );
 
 const StartBonding = () => (
   <Button variant="default" size="xl" asChild className="w-full lg:w-auto">
     <SubsiteLink href={BOND_URL} isInButton>
-      Start bonding now
+      View bonding programs
     </SubsiteLink>
   </Button>
 );
@@ -36,7 +36,7 @@ export const Hero = () => (
     HeroImage={HeroImage}
     pageName="OLAS BOND"
     title={ProvideLiquidity}
-    description="Join the Olas ecosystem as a Bonder & get discounted OLAS."
+    description="Join the Olas ecosystem as a Bonder & receive OLAS in return for LP tokens, when bonding programs are open."
     PrimaryButton={StartBonding}
   />
 );

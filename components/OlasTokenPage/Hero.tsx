@@ -24,7 +24,7 @@ export const Hero = () => (
     HeroImage={HeroImage}
     pageName="OLAS TOKEN"
     title="Unlock the Olas Network"
-    description="OLAS token provides access to the core functions of the network."
+    description="OLAS token provides access to the core functions of the network. OLAS is a crypto asset — its value can go down as well as up. Nothing on this page is financial advice."
     PrimaryButton={GetOlas}
   />
 );

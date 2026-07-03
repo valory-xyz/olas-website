@@ -12,7 +12,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 const list = [
   {
     title: 'Get more OLAS',
-    desc: 'You get OLAS tokens at a discount.',
+    desc: 'Receive OLAS in return for your LP tokens, at the rate quoted by the program.',
     icon: <BadgePercent size={30} />,
   },
   {
@@ -35,8 +35,8 @@ export const UnlockBenefits = () => (
       <p>
         Join as an Olas Bonder to strengthen the network. An Olas Bonder provides liquidity to the
         Olas ecosystem by participating in bonding programs. By bonding your assets, you help grow
-        the network and in return, receive OLAS at preferential rates. It’s a simple way to support
-        and benefit from the growth of the Olas ecosystem.
+        the network and in return, receive OLAS. It’s a simple way to support the growth of the Olas
+        ecosystem.
       </p>
 
       <div id="why-bond">

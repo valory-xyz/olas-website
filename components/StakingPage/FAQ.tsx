@@ -50,7 +50,7 @@ const faq = [
   },
   {
     title: 'Who can participate in staking?',
-    desc: 'Anyone. You can stake OLAS to run an agent or support a specific staking program.',
+    desc: 'Anyone. You can stake OLAS to run an agent or support a specific staking program. Rewards depend on agent activity and performance and are not guaranteed, and staked OLAS is locked under the terms of the staking contract.',
   },
   {
     title: 'Can I create my own staking contract?',
