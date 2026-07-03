@@ -35,8 +35,8 @@ export const UnlockBenefits = () => (
       <p>
         Join as an Olas Bonder to strengthen the network. An Olas Bonder provides liquidity to the
         Olas ecosystem by participating in bonding programs. By bonding your assets, you help grow
-        the network and in return, receive OLAS. It’s a simple way to support the growth of the
-        Olas ecosystem.
+        the network and in return, receive OLAS. It’s a simple way to support the growth of the Olas
+        ecosystem.
       </p>
 
       <div id="why-bond">
