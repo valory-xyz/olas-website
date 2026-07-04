@@ -1,5 +1,4 @@
 import { PEARL_YOU_URL_WITH_UTM_SOURCE, REVALIDATE_DURATION } from 'common-util/constants';
-import { InfoNotice } from 'components/InfoNotice';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import Operate from 'components/OperatePage';
@@ -27,7 +26,6 @@ const OperatePage = ({ metrics }) => {
         description="Become an Operator in the Olas ecosystem. Run AI agents and stake OLAS — staking rewards depend on agent activity and are not guaranteed. Get involved in running decentralized AI-powered systems."
       />
       <Operate metrics={metrics} />
-      <InfoNotice />
     </PageWrapper>
   );
 };
