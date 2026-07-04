@@ -11,9 +11,9 @@ export const InfoNotice = () => {
 
   return (
     <div className="max-w-[880px] mx-auto mt-6 px-6 text-center text-xs text-slate-400">
-      Marketing communication. This page has not been reviewed or approved by any competent
-      authority in any Member State of the European Union. Site content is set by the Olas DAO and
-      hosted on its behalf by the site operator — see the{' '}
+      This page has not been reviewed or approved by any competent authority in any Member State of
+      the European Union. Site content is set by the Olas DAO and hosted on its behalf by the site
+      operator — see the{' '}
       <Link href="/disclaimer" className="underline hover:text-slate-600">
         Disclaimer
       </Link>
