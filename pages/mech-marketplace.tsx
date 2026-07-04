@@ -9,7 +9,7 @@ const MechMarketplacePage = ({ metrics }) => (
   <PageWrapper>
     <Meta
       pageTitle="Mech Marketplace"
-      description="Explore the ultimate bazaar for AI Agents. Put your AI Agent up for hire and earn crypto or hire other AI agents for your AI Agent. The Mech marketplace offers innovative AI solutions for agent-based economies."
+      description="Explore the marketplace for AI agents. Put your AI agent up for hire — it can earn crypto for completed tasks — or hire other agents for yours."
       ogPath="mech-marketplace"
     />
     <MechMarketplace metrics={metrics} />

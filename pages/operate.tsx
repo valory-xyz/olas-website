@@ -23,7 +23,7 @@ const OperatePage = ({ metrics }) => {
     <PageWrapper>
       <Meta
         pageTitle="Operate"
-        description="Become an Operator in the Olas ecosystem. Run AI agents, stake assets, and earn rewards while helping to expand the crypto and AI agent network. Get involved in managing decentralized AI-powered systems."
+        description="Become an Operator in the Olas ecosystem. Run AI agents and stake OLAS — staking rewards depend on agent activity and are not guaranteed. Get involved in running decentralized AI-powered systems."
       />
       <Operate metrics={metrics} />
     </PageWrapper>

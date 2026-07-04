@@ -8,7 +8,7 @@ const BuildPage = ({ metrics }) => (
   <PageWrapper>
     <Meta
       pageTitle="Build"
-      description="Build on Olas protocol, earn Dev Rewards, create AI agents, or contribute to crypto projects. Become an Olas Builder and get paid."
+      description="Build on the Olas protocol: create AI agents and contribute code. Builders may earn Dev Rewards when developer incentives are active."
     />
     <Build metrics={metrics} />
   </PageWrapper>

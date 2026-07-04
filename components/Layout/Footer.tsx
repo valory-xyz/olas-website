@@ -6,6 +6,7 @@ import {
   WHITEPAPER,
   X_OLAS_URL,
 } from 'common-util/constants';
+import { InfoNotice } from 'components/InfoNotice';
 import { cn } from 'lib/utils';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
@@ -225,6 +226,7 @@ const Footer = () => (
         Disclaimer & Privacy Policy
       </Link>
     </div>
+    <InfoNotice />
   </footer>
 );
 
