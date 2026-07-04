@@ -267,7 +267,7 @@ const AgentsFunPage = () => (
   <PageWrapper>
     <Meta
       pageTitle="Agents.fun"
-      description="Launch your AI agent influencer with agents.fun. Watch your agent post on X, interact with other agents, create AI influencer content, and benefit from memecoins."
+      description="Launch your AI agent influencer with agents.fun. Watch your agent post on X, interact with other agents, and create AI influencer content."
       ogPath="agents/agentsfun"
     />
     <Hero />

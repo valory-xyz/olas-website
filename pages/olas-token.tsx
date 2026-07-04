@@ -1,6 +1,7 @@
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
+import { InfoNotice } from 'components/InfoNotice';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import OlasToken from 'components/OlasTokenPage';
@@ -13,6 +14,7 @@ const OlasTokenPage = ({ metrics }) => (
       ogPath="olas-token"
     />
     <OlasToken metrics={metrics} />
+    <InfoNotice />
   </PageWrapper>
 );
 
