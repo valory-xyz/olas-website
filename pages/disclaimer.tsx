@@ -103,7 +103,7 @@ const points = [
           </li>
           <li>
             that your data may be collected per this Disclaimer and Privacy Policy, in particular
-            Section 8 regarding 'Privacy and Analytics Tools'.
+            Section 9 regarding 'Privacy and Analytics Tools'.
           </li>
         </ol>
       </>
