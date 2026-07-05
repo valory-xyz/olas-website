@@ -152,6 +152,73 @@ const points = [
     ),
   },
   {
+    title: 'European Union / European Economic Area (MiCA)',
+    description: (
+      <>
+        <p>
+          The following applies to persons in the European Union and the European Economic Area, in
+          addition to the other terms of this Disclaimer.
+        </p>
+        <p>
+          <strong>Classification of OLAS.</strong> OLAS is a crypto-asset other than an
+          asset-referenced token or an e-money token within the meaning of Regulation (EU) 2023/1114
+          on markets in crypto-assets (“MiCA”). OLAS does not purport to maintain a stable value by
+          referencing any official currency, asset, or combination thereof, and confers no claim on
+          any issuer reserve.
+        </p>
+        <p>
+          <strong>No offer to the public.</strong> Nothing on the Sites constitutes, and nothing on
+          the Sites is intended to constitute, an offer to the public of crypto-assets in the Union
+          within the meaning of Article 3(1)(12) MiCA, a solicitation to purchase OLAS, or
+          investment advice. OLAS was first distributed in July 2023 and was traded on trading
+          platforms before 30 December 2024; reliance is placed on the transitional provisions of
+          Article 143 MiCA in respect of OLAS. No crypto-asset white paper has been notified or
+          published in respect of OLAS, and none is required for content on the Sites, which do not
+          offer OLAS to the public.
+        </p>
+        <p>
+          <strong>No crypto-asset services.</strong> Neither the Owner nor the Operator provides
+          crypto-asset services within the meaning of Article 3(1)(16) MiCA — including custody and
+          administration, exchange, execution of orders, reception and transmission of orders,
+          portfolio management, or advice on crypto-assets — to persons in the Union. Any software
+          made available via the Sites is non-custodial and executes under the user’s sole direction
+          and control; neither the Owner nor the Operator holds user funds or private keys, or
+          executes, transmits, or reverses transactions on any user’s behalf.
+        </p>
+        <p>
+          <strong>Risk warning.</strong> Crypto-assets, including OLAS, are volatile. Their value
+          can go down as well as up, and you may lose the entire value of any crypto-assets you
+          acquire, hold, or stake. Staking and activity rewards depend on protocol conditions and
+          agent performance and are not guaranteed. Crypto-assets held in self-custody are not
+          covered by the deposit guarantee schemes established under Directive 2014/49/EU or the
+          investor compensation schemes established under Directive 97/9/EC. Transactions in
+          crypto-assets may be irreversible, and losses due to error, protocol failure, or loss of
+          credentials may not be recoverable.
+        </p>
+        <p>
+          <strong>Marketing communications.</strong> Pages on the Sites describing OLAS, staking, or
+          bonding may constitute marketing communications for the purposes of MiCA. Any such
+          communications have not been reviewed or approved by any competent authority in any Member
+          State of the European Union. The content of the Sites is set by the Owner and hosted on
+          its behalf by the Operator.
+        </p>
+        <p>
+          <strong>Third-party services.</strong> Fiat-to-crypto and other regulated services
+          accessible through or referenced by the Sites are provided by third parties under their
+          own authorizations and terms. Availability of such services, and of individual product
+          features, may be restricted by jurisdiction, including within the Union.
+        </p>
+        <p>
+          <strong>Bonding and staking programmes.</strong> Bonding programme availability varies and
+          programmes may be closed at any time. Where a bonding programme is open, participation
+          terms (rates, vesting) are set by the applicable on-chain programme parameters as approved
+          by Olas DAO governance, and participation may be unavailable to persons in certain
+          jurisdictions, including the Union, as indicated at the point of participation.
+        </p>
+      </>
+    ),
+  },
+  {
     title: 'Privacy and Analytics Tools',
     description: (
       <ol className={`list-[lower-alpha] ${subClassName}`}>
@@ -237,7 +304,7 @@ const points = [
     title: 'Updates',
     description: (
       <>
-        <p>This page was last updated on 16.12.2025. </p>
+        <p>This page was last updated on 05.07.2026. </p>
         <p>
           Any changes will be reflected on this page. If material changes are made to how your
           personal data is processed, we will notify you on the Site before the changes take effect.
