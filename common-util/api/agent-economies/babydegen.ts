@@ -1,5 +1,6 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
+  BASIUS_STAKING_CONTRACTS,
   MODIUS_FIXED_END_DATE_UTC,
   MODIUS_STAKING_CONTRACTS,
   OPTIMUS_STAKING_CONTRACTS,
@@ -98,6 +99,33 @@ const fetchOptimusPopulationMetrics = async (): Promise<MetricWithStatus<any[] |
   });
 };
 
+const fetchBasiusPopulationMetrics = async (): Promise<MetricWithStatus<any[] | null>> => {
+  return executeGraphQLQuery<DailyPopulationMetrics, any[] | null>({
+    client: BABYDEGEN_GRAPH_CLIENTS.base,
+    chain: 'base',
+    query: dailyBabydegenPopulationMetricsQuery({ first: 10 }),
+    source: 'babyDegen:base',
+    transform: (data) => {
+      const rows = Array.isArray(data?.dailyPopulationMetrics) ? data.dailyPopulationMetrics : [];
+      if (rows.length === 0) return null;
+
+      // Exclude today (UTC)
+      const todayMidnightUtc = getMidnightUtcTimestampDaysAgo(0);
+      const filtered = rows.filter((r) => Number(r.timestamp) < todayMidnightUtc);
+      if (filtered.length < 7) return null;
+
+      // Map medianAUM to medianFundedAUM
+      return filtered
+        .slice(0, 7)
+        .map((row) => ({
+          ...row,
+          medianFundedAUM: toNumber(row.medianAUM),
+        }))
+        .reverse();
+    },
+  });
+};
+
 const buildAprMetrics = ({
   populationMetrics,
   maxOlasApr = null,
@@ -126,6 +154,40 @@ const fetchOptimusMetrics = async (
 ): Promise<MetricWithStatus<any>> => {
   const { value: populationResult, status: populationStatus } =
     await fetchOptimusPopulationMetrics();
+
+  if (!populationResult) {
+    return { value: null, status: populationStatus };
+  }
+
+  const metrics = buildAprMetrics({
+    populationMetrics: populationResult,
+    maxOlasApr: maxOlasApr.value,
+  });
+
+  return {
+    value: metrics ?? { ...EMPTY_APR_METRICS },
+    status: createStaleStatus({
+      indexingErrors: [
+        ...(populationStatus.indexingErrors || []),
+        ...(maxOlasApr.status.indexingErrors || []),
+      ],
+      fetchErrors: [
+        ...(populationStatus.fetchErrors || []),
+        ...(maxOlasApr.status.fetchErrors || []),
+      ],
+      laggingSubgraphs: [
+        ...(populationStatus.laggingSubgraphs || []),
+        ...(maxOlasApr.status.laggingSubgraphs || []),
+      ],
+    }),
+  };
+};
+
+const fetchBasiusMetrics = async (
+  maxOlasApr: MetricWithStatus<number | null>
+): Promise<MetricWithStatus<any>> => {
+  const { value: populationResult, status: populationStatus } =
+    await fetchBasiusPopulationMetrics();
 
   if (!populationResult) {
     return { value: null, status: populationStatus };
@@ -314,22 +376,38 @@ const fetchOptimusOlasApr = async (): Promise<MetricWithStatus<number | null>> =
   });
 };
 
+const fetchBasiusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
+  return executeGraphQLQuery<StakingContractsResult, number | null>({
+    client: STAKING_GRAPH_CLIENTS.base,
+    chain: 'base',
+    query: stakingContractsQuery(BASIUS_STAKING_CONTRACTS),
+    source: 'staking:base',
+    transform: (data) => {
+      const contracts = data?.stakingContracts;
+      return contracts && contracts.length > 0 ? getMaxApr(contracts) : null;
+    },
+  });
+};
+
 export const fetchBabyDegenMetrics = async () => {
   try {
-    const [modiusApr, optimusApr] = await Promise.all([
+    const [modiusApr, optimusApr, basiusApr] = await Promise.all([
       fetchModiusOlasApr(),
       fetchOptimusOlasApr(),
+      fetchBasiusOlasApr(),
     ]);
 
-    const [modiusMetrics, optimusMetrics, dailyActiveAgents] = await Promise.all([
+    const [modiusMetrics, optimusMetrics, basiusMetrics, dailyActiveAgents] = await Promise.all([
       fetchModiusMetrics(modiusApr),
       fetchOptimusMetrics(optimusApr),
+      fetchBasiusMetrics(basiusApr),
       fetchDailyAgentPerformance(),
     ]);
 
     return {
       optimus: optimusMetrics,
       modius: modiusMetrics,
+      basius: basiusMetrics,
       dailyActiveAgents,
     };
   } catch (error) {
@@ -342,6 +420,7 @@ export const fetchBabyDegenMetrics = async () => {
     return {
       optimus: { value: null, status: errorStatus },
       modius: { value: null, status: errorStatus },
+      basius: { value: null, status: errorStatus },
       dailyActiveAgents: { value: null, status: errorStatus },
     };
   }
