@@ -478,6 +478,12 @@ export const fetchOmenstratExplorerSeries = async (
 // so they self-heal independently — a flaky Mode run never blanks Optimus, and vice
 // versa (mergeWithFallback only falls back per-leaf).
 const BABYDEGEN_AGENT_IDS = [40]; // valory/optimus liquidity trader (Optimus + Modius)
+// Basius (Base) registers under agentId 115, unlike Optimus/Modius (agentId 40).
+const BASIUS_AGENT_IDS = [115];
+type BabydegenChain = 'optimism' | 'mode' | 'base';
+// Basius lives on Base under agentId 115; Optimus (optimism) + Modius (mode) share 40.
+const babydegenAgentIdsForChain = (chain: BabydegenChain): number[] =>
+  chain === 'base' ? BASIUS_AGENT_IDS : BABYDEGEN_AGENT_IDS;
 // Modius (Mode) was phased out on 2025-09-18, but its agents wound down gradually over the
 // following weeks. Show the series through end-of-2025 so that real wind-down tail is
 // visible after the phase-out marker — while still excluding a 2026 synthetic flat-20
@@ -498,7 +504,7 @@ type BabydegenPopulationResponse = WithMeta<{ dailyPopulationMetrics: BabydegenP
 
 // Daily AUM (USD) for a single babydegen chain. Best-effort — on failure returns an
 // empty series (the AUM tile renders no-data) rather than failing the agent's series.
-const fetchBabydegenChainAum = async (chain: 'optimism' | 'mode'): Promise<DaaSeriesPoint[]> => {
+const fetchBabydegenChainAum = async (chain: BabydegenChain): Promise<DaaSeriesPoint[]> => {
   try {
     const data = (await BABYDEGEN_GRAPH_CLIENTS[chain].request(
       dailyBabydegenPopulationMetricsQuery(
@@ -534,7 +540,7 @@ const fetchBabydegenChainAum = async (chain: 'optimism' | 'mode'): Promise<DaaSe
  * failure so mergeWithFallback keeps this agent's last good series.
  */
 export const fetchBabydegenAgentSeries = async (
-  chain: 'optimism' | 'mode'
+  chain: BabydegenChain
 ): Promise<MetricWithStatus<BabydegenAgentSeries | null>> => {
   // Modius (Mode) ends at MODIUS_SERIES_END_TIMESTAMP (end of 2025) — its wind-down tail
   // shows after the 2025-09-18 phase-out marker, while the 2026 synthetic flat-20 artifact
@@ -552,7 +558,7 @@ export const fetchBabydegenAgentSeries = async (
     const [{ rows, meta }, aum] = await Promise.all([
       pageRegistryRows(
         REGISTRY_GRAPH_CLIENTS[chain],
-        BABYDEGEN_AGENT_IDS,
+        babydegenAgentIdsForChain(chain),
         timestampGt,
         timestampLt
       ),
@@ -776,6 +782,8 @@ export type ExplorerMetricsData = {
   babydegenOptimus: MetricWithStatus<BabydegenAgentSeries | null>;
   /** Modius (Mode, wound down) — separate series for independent fallback + colour. */
   babydegenModius: MetricWithStatus<BabydegenAgentSeries | null>;
+  /** Basius (Base, agentId 115) — separate series for independent fallback + colour. */
+  babydegenBasius: MetricWithStatus<BabydegenAgentSeries | null>;
   /** Mech — DAA (registry) + ATA (marketplace agent-to-agent transactions). */
   mech: MetricWithStatus<MechExplorerSeries | null>;
 };
@@ -794,18 +802,21 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const [omenstrat, babydegenOptimus, babydegenModius, mech] = await Promise.all([
-      fetchOmenstratExplorerSeries(options),
-      fetchBabydegenAgentSeries('optimism'),
-      fetchBabydegenAgentSeries('mode'),
-      fetchMechExplorerSeries({
-        previous: options.mechPrevious,
-        ataFromDays: options.ataFromDays,
-        ataToDays: options.ataToDays,
-      }),
-    ]);
+    const [omenstrat, babydegenOptimus, babydegenModius, babydegenBasius, mech] = await Promise.all(
+      [
+        fetchOmenstratExplorerSeries(options),
+        fetchBabydegenAgentSeries('optimism'),
+        fetchBabydegenAgentSeries('mode'),
+        fetchBabydegenAgentSeries('base'),
+        fetchMechExplorerSeries({
+          previous: options.mechPrevious,
+          ataFromDays: options.ataFromDays,
+          ataToDays: options.ataToDays,
+        }),
+      ]
+    );
     return {
-      data: { omenstrat, babydegenOptimus, babydegenModius, mech },
+      data: { omenstrat, babydegenOptimus, babydegenModius, babydegenBasius, mech },
       timestamp: Date.now(),
     };
   } catch (error) {

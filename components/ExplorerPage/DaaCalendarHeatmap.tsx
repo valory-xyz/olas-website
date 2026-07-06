@@ -82,6 +82,21 @@ export const HEATMAP_LEVEL_COLORS_LIME = [
   '#c9ed29', // 8 — Mode brand lime
 ];
 
+// Basius (Base) blue ramp — same shape as red/lime (empty grey at 0, light tints
+// interpolating white → the brand colour at level 8). Densest days land on Base brand
+// blue #0052FF.
+export const HEATMAP_LEVEL_COLORS_BLUE = [
+  '#dfe5ee', // 0 — empty
+  '#e1e9ff', // 1
+  '#c1d3ff', // 2
+  '#a1beff', // 3
+  '#81a8ff', // 4
+  '#6093ff', // 5
+  '#407dff', // 6
+  '#2068ff', // 7
+  '#0052ff', // 8 — Base brand blue
+];
+
 // Mech teal ramp. Unlike the red/lime ramps (brand colour at the deepest level), the
 // Mech brand teal #1BBAA1 sits at level 6 and the last two levels deepen past it into
 // dark teal — so the busy end keeps strong contrast (the lime ramp went too light to
@@ -98,12 +113,13 @@ export const HEATMAP_LEVEL_COLORS_TEAL = [
   '#0a4a40', // 8 — deepest (dark teal)
 ];
 
-export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal';
+export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal' | 'blue';
 export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
   purple: HEATMAP_LEVEL_COLORS,
   red: HEATMAP_LEVEL_COLORS_RED,
   lime: HEATMAP_LEVEL_COLORS_LIME,
   teal: HEATMAP_LEVEL_COLORS_TEAL,
+  blue: HEATMAP_LEVEL_COLORS_BLUE,
 };
 
 // row (0=Sun … 6=Sat) → label. All seven.

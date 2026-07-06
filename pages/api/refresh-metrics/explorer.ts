@@ -46,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const value = metrics.data.omenstrat.value;
     const optimus = metrics.data.babydegenOptimus.value;
     const modius = metrics.data.babydegenModius.value;
+    const basius = metrics.data.babydegenBasius.value;
     const mech = metrics.data.mech.value;
     const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum?: unknown[] } | null) =>
       s && {
@@ -66,6 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       babydegenCounts: {
         optimus: seriesCounts(optimus),
         modius: seriesCounts(modius),
+        basius: seriesCounts(basius),
       },
       mechCounts: mech && {
         daa: mech.daa.length,
