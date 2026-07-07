@@ -56,6 +56,10 @@ const faq = [
     title: 'Can I create my own staking contract?',
     desc: 'Yes. Builders, DAOs, and protocols can launch their own staking programs by defining KPIs and deploying a staking contract. This helps attract agents aligned with your goals.',
   },
+  {
+    title: 'Are liquid staking tokens like lstOLAS official Olas products?',
+    desc: 'No. Liquid staking tokens are developed and operated by independent third parties, not by the Olas DAO. The DAO has approved generic staking contract implementations for use within Olas staking, but it has not approved, audited, or endorsed any third-party liquid staking product. Always do your own research with the relevant provider.',
+  },
 ];
 
 export const FAQ = () => (
