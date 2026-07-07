@@ -67,6 +67,28 @@ export const BabydegenMetricsInfo = () => {
         </p>
         <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery({ first: 10 })}</CodeSnippet>
 
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>Basius Population Metrics Query</h3>
+        <p className="text-purple-600">
+          Subgraph link:{' '}
+          <ExternalLink
+            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL)}
+          >
+            Base BabyDegen
+          </ExternalLink>
+        </p>
+        <CodeSnippet>{dailyBabydegenPopulationMetricsQuery({ first: 10 })}</CodeSnippet>
+
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Base Staking Snapshots Query</h3>
+        <p className="text-purple-600">
+          Subgraph link:{' '}
+          <ExternalLink
+            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL)}
+          >
+            Base Staking
+          </ExternalLink>
+        </p>
+        <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery({ first: 10 })}</CodeSnippet>
+
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>Modius Population Metrics Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}

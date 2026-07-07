@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 
 import { OPERATE_URL } from 'common-util/constants';
-import { ComingSoon } from 'components/ComingSoon';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
@@ -11,7 +10,6 @@ import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { ExternalLink, Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
-import { LineChart } from 'lucide-react';
 import Image from 'next/image';
 
 const formatNumber = (num) => {
@@ -127,15 +125,6 @@ const BabydegenEconomyCard = ({
   );
 };
 
-const ComingSoonCard = ({ name }) => (
-  <Card className="p-8 border border-slate-200 rounded-2xl flex flex-col items-center justify-center text-center gap-4 min-h-[205px]">
-    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-      <LineChart className="h-6 w-6 text-slate-400" />
-    </div>
-    <p className="text-base text-slate-500">{name} agent economy metrics are coming soon.</p>
-  </Card>
-);
-
 const TAB_ITEMS = [
   { key: 'basius', label: 'Basius', icon: '/images/babydegen-econ-page/basius.png' },
   { key: 'optimus', label: 'Optimus', icon: '/images/babydegen-econ-page/optimus.png' },
@@ -178,7 +167,14 @@ export const BabydegenMetrics = ({ metrics }) => {
 
         <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} fullWidth />
 
-        {activeTab === 'basius' && <ComingSoonCard name="Basius" />}
+        {activeTab === 'basius' && (
+          <BabydegenEconomyCard
+            title="Basius Agent Economy"
+            image="/images/babydegen-econ-page/basius.png"
+            metrics={metrics?.basius?.value}
+            status={metrics?.basius?.status}
+          />
+        )}
         {activeTab === 'optimus' && (
           <BabydegenEconomyCard
             isUnderConstruction

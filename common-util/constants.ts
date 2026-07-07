@@ -224,6 +224,12 @@ export const OPTIMUS_STAKING_CONTRACTS = [
   '0x0f69f35652B1acdbD769049334f1AC580927E139',
   '0x6891Cf116f9a3bDbD1e89413118eF81F69D298C3',
 ];
+// Basius (Base) staking contracts — Source: https://govern.olas.network/contracts
+export const BASIUS_STAKING_CONTRACTS = [
+  '0x0fb55cef7b12b76ea52900325461a5443f51b43f',
+  '0x728ca3b024ba4c273695df6e45e79db675b8c756',
+  '0x9593c4524df86f46935aa0ec996b4ccbe71c8234',
+];
 
 // Hardcoded values for Modius, suggested by Babydegen team
 export const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';

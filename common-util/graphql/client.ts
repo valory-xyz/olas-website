@@ -99,6 +99,7 @@ export const BABYDEGEN_GRAPH_CLIENTS = {
     requestConfig
   ),
   mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
+  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
 };
 
 export const MECH_FEES_GRAPH_CLIENTS = {
