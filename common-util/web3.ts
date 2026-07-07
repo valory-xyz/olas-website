@@ -3,7 +3,9 @@ import { mainnet } from 'viem/chains';
 import olasAbi from '../data/ABIs/Olas.json';
 import tokenomicsAbi from '../data/ABIs/Tokenomics.json';
 
-const ETHEREUM_RPC = 'https://ethereum-rpc.publicnode.com';
+// Contract reads only run server-side (snapshot builders / cron), so the
+// server-only ETHEREUM_RPC env var is preferred; the public node is a fallback.
+const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://ethereum-rpc.publicnode.com';
 
 export const olasAddress: `0x${string}` = '0x0001A500A6B18995B03f44bb040A5fFc28E45CB0';
 export const tokenomicsAddress: `0x${string}` = '0xc096362fa6f4A4B1a9ea68b1043416f3381ce300';

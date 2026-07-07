@@ -162,6 +162,14 @@ export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 export const COINGECKO_URL = 'https://www.coingecko.com';
 export const ETHERSCAN_URL = 'https://etherscan.io';
 
+// Ethereum addresses holding non-circulating OLAS, shown on the /olas-token
+// supply distribution pie chart. Keys match the ids in SupplyPieChart's DATA config.
+export const OLAS_SUPPLY_DISTRIBUTION_ADDRESSES = {
+  veOlas: '0x7e01A500805f8A52Fad229b3015AD130A332B7b3',
+  dao: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  valory: '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941',
+} as const;
+
 // Balancer pools used for on-chain OLAS USD pricing for Predict ROI.
 // - Gnosis: OLAS-WXDAI (WXDAI ≈ 1 USD)
 // - Polygon: OLAS-WMATIC (WMATIC -> USD conversion is done via Polygon POL/USD Chainlink feed)

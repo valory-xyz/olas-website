@@ -42,7 +42,7 @@ const OlasMintInfo = () => (
 );
 
 type EmissionScheduleChartProps = {
-  inflationForYear?: string[];
+  inflationForYear?: (string | null)[];
   timeLaunch?: unknown;
   currentYear?: unknown;
   loading: boolean;

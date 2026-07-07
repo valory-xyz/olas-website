@@ -1,12 +1,8 @@
 import { BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
+import { isNil } from 'lodash';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { formatEther } from 'viem';
 
 import { COINGECKO_URL, OLAS_API_URL } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
-import { readTokenomicsContract } from 'common-util/web3';
 import { GetInvolved } from 'components/OlasTokenPage/GetInvolved';
 import { ProtocolAudits } from 'components/ProtocolPage/ProtocolAudits';
 import SectionWrapper from '../Layout/SectionWrapper';
@@ -27,138 +23,16 @@ import { UsagePieChart } from './UsagePieChart';
 // and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
-const Supply = () => {
-  const [epoch, setEpoch] = useState(null);
-  const [split, setSplit] = useState({});
-  const [timeLaunch, setTimeLaunch] = useState(null);
-  const [currentYear, setCurrentYear] = useState(null);
-  const [inflationForYear, setInflationForYear] = useState([]);
-  const [emissions, setEmissions] = useState([]);
-  const [loading, setLoading] = useState(false);
+const Supply = ({ metrics }) => {
+  const tokenomics = metrics?.tokenomics;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  const schedule = tokenomics?.emissionSchedule?.value;
+  const epochDistribution = tokenomics?.epochDistribution?.value;
+  const emissions = tokenomics?.emissions?.value ?? [];
 
-        const newTimeLaunch = await readTokenomicsContract('timeLaunch');
-        setTimeLaunch(newTimeLaunch);
-
-        // Call getActualInflationForYear method repeatedly for 0 through 12
-        const newInflationForYear = Array.from({ length: 12 }, () => null);
-        const promises = [];
-
-        for (let i = 0; i <= 12; i += 1) {
-          promises.push(
-            readTokenomicsContract('getActualInflationForYear', [i])
-              .then((result) => {
-                const resultValue = result as unknown;
-                if (
-                  typeof resultValue === 'string' ||
-                  typeof resultValue === 'number' ||
-                  typeof resultValue === 'bigint'
-                ) {
-                  newInflationForYear[i] = formatEther(BigInt(resultValue));
-                }
-                return result;
-              })
-              .catch((error) => {
-                newInflationForYear.push(undefined); // Push undefined if promise fails
-                console.error(`Error in getActualInflationForYear for year ${i}:`, error);
-              })
-          );
-        }
-
-        await Promise.all(promises);
-        setInflationForYear(newInflationForYear);
-
-        const newCurrentYear = await readTokenomicsContract('currentYear');
-        setCurrentYear(newCurrentYear);
-
-        // Call epochCounter to get the current epoch
-        const newEpoch = await readTokenomicsContract('epochCounter');
-        setEpoch(newEpoch);
-        // Use the result as the parameter for mapEpochTokenomics.
-        // A single named-tuple output decodes to an object keyed by struct field
-        // names; `maxBondFraction` is the bonders % value (index 6 in the struct).
-        const tokenomicsResult = await readTokenomicsContract<{
-          maxBondFraction: number | bigint;
-        }>('mapEpochTokenomics', [newEpoch]);
-        const bonders = Number(tokenomicsResult.maxBondFraction);
-
-        // staking — multiple outputs decode to an array; index 3 is stakingFraction
-        const stakingResult = await readTokenomicsContract<Array<number | bigint>>(
-          'mapEpochStakingPoints',
-          [newEpoch]
-        );
-        const staking = Number(stakingResult[3]);
-
-        // subtract bonders % from 100 to get developers %
-        const developers = 100 - (staking + bonders);
-        setSplit({
-          staking,
-          bonders,
-          developers,
-        });
-
-        // emissions
-        const emissionsData = (await TOKENOMICS_GRAPH_CLIENTS.ethereum?.request(
-          emissionsQuery
-        )) as {
-          epoches?: Array<{ counter?: number; [key: string]: unknown }>;
-        };
-
-        // Fetch rewards updates from all staking subgraphs
-        const stakingRewardsPromises = Object.entries(STAKING_GRAPH_CLIENTS).map(
-          async ([chain, client]) => {
-            try {
-              const rewards = await client.request(rewardUpdates(emissionsData.epoches || []));
-              return { chain, rewards };
-            } catch (error) {
-              console.error(`Error fetching rewards from ${chain}:`, error);
-              return { chain, rewards: null };
-            }
-          }
-        );
-
-        const stakingRewardsResults = await Promise.allSettled(stakingRewardsPromises);
-
-        const emissions = (emissionsData.epoches || []).map((epoch, index) => {
-          let totalClaimableStakingRewards = BigInt(0);
-          let totalClaimedStakingRewards = BigInt(0);
-
-          // Accumulate rewards from all chains
-          stakingRewardsResults.forEach((result) => {
-            if (result.status === 'fulfilled' && result.value.rewards) {
-              const epochRewards = result.value.rewards[`_${index + 1}`] || [];
-              totalClaimableStakingRewards += epochRewards.reduce(
-                (acc, item) => (item.type === 'Claimable' ? acc + BigInt(item.amount) : acc),
-                BigInt(0)
-              );
-              totalClaimedStakingRewards += epochRewards.reduce(
-                (acc, item) => (item.type === 'Claimed' ? acc + BigInt(item.amount) : acc),
-                BigInt(0)
-              );
-            }
-          });
-
-          return {
-            ...epoch,
-            totalClaimableStakingRewards,
-            totalClaimedStakingRewards,
-          };
-        });
-
-        setEmissions(emissions);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const scheduleLoading = isNil(schedule);
+  const epochLoading = isNil(epochDistribution);
+  const emissionsLoading = isNil(tokenomics?.emissions?.value);
 
   return (
     <div className="text-black border-b" id="supply">
@@ -170,7 +44,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl font-bold">Token Supply</h2>
             </div>
-            <SupplyPieChart />
+            <SupplyPieChart supplyDistribution={tokenomics?.supplyDistribution} />
           </div>
 
           <div id="max-emission-schedule" className="border rounded-lg mb-12 lg:mb-0 mb-8 lg:mb-0">
@@ -182,10 +56,10 @@ const Supply = () => {
               </p>
             </div>
             <EmissionScheduleChart
-              inflationForYear={inflationForYear}
-              timeLaunch={timeLaunch}
-              currentYear={currentYear}
-              loading={loading}
+              inflationForYear={schedule?.inflationForYear}
+              timeLaunch={schedule?.timeLaunch}
+              currentYear={schedule?.currentYear}
+              loading={scheduleLoading}
             />
           </div>
 
@@ -196,7 +70,11 @@ const Supply = () => {
               <p className="text-slate-500">What are newly minted tokens used for right now?</p>
             </div>
             <div className="p-4">
-              <UsagePieChart epoch={epoch} split={split} loading={loading} />
+              <UsagePieChart
+                epoch={epochDistribution?.epoch}
+                split={epochDistribution?.split ?? {}}
+                loading={epochLoading}
+              />
             </div>
           </div>
 
@@ -207,7 +85,7 @@ const Supply = () => {
               <p className="text-slate-500">What are the OLAS emissions per epoch</p>
             </div>
             <div className="p-4">
-              <ActualEmissionsChart emissions={emissions} loading={loading} />
+              <ActualEmissionsChart emissions={emissions} loading={emissionsLoading} />
             </div>
           </div>
 
@@ -216,7 +94,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Builders</h2>
             </div>
-            <EmissionsToBuilders emissions={emissions} loading={loading} />
+            <EmissionsToBuilders emissions={emissions} loading={emissionsLoading} />
           </div>
 
           <div className="flex flex-col border rounded-lg mb-8 lg:mb-0">
@@ -224,7 +102,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Bonders</h2>
             </div>
-            <EmissionsToBonders emissions={emissions} loading={loading} />
+            <EmissionsToBonders emissions={emissions} loading={emissionsLoading} />
           </div>
 
           <div className="flex flex-col border rounded-lg mb-8 lg:mb-0">
@@ -232,7 +110,7 @@ const Supply = () => {
             <div className="p-4 border-b">
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>
-            <EmissionsToOperators emissions={emissions} loading={loading} />
+            <EmissionsToOperators emissions={emissions} loading={emissionsLoading} />
           </div>
 
           <div className="flex flex-col col-span-2 border rounded-lg py-6 px-4">
@@ -300,7 +178,7 @@ const OlasToken = ({ metrics }) => (
   <>
     <Hero />
     <TokenHoldersMetric metrics={metrics} />
-    <Supply />
+    <Supply metrics={metrics} />
     <OlasProtocol />
     <GetInvolved />
     <TokenDetails />
