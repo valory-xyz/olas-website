@@ -40,6 +40,10 @@ export const getStaticProps = async () => {
         series: data?.babydegenModius?.value ?? { daa: [], transactions: [], aum: [] },
         status: data?.babydegenModius?.status ?? null,
       },
+      basius: {
+        series: data?.babydegenBasius?.value ?? { daa: [], transactions: [], aum: [] },
+        status: data?.babydegenBasius?.status ?? null,
+      },
     },
     mech: {
       mech: {

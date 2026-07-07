@@ -157,6 +157,12 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         ramp: 'red',
       },
       {
+        key: 'basius',
+        label: 'Basius',
+        icon: '/images/explorer/basius.png',
+        ramp: 'blue',
+      },
+      {
         key: 'modius',
         label: 'Modius',
         icon: '/images/explorer/modius.png',
