@@ -16,6 +16,7 @@ import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { OlasProtocol } from './OlasProtocol';
 import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
+import { TokenomicsSummaryTable } from './TokenomicsSummaryTable';
 import { TokenHoldersMetric } from './TokenHoldersMetric';
 import { UsagePieChart } from './UsagePieChart';
 
@@ -38,6 +39,7 @@ const Supply = ({ metrics }) => {
     <div className="text-black border-b" id="supply">
       <SectionWrapper id="supply">
         <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">Supply</div>
+        <TokenomicsSummaryTable tokenomics={tokenomics} />
         <div className="flex-row lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="border rounded-lg mb-8 lg:mb-0">
             <div id="token-supply" />
