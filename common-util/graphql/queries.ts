@@ -2,6 +2,12 @@ import { gql } from 'graphql-request';
 
 export const emissionsQuery = gql`
   {
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
     epoches(orderBy: startBlock) {
       id
       counter
@@ -29,6 +35,12 @@ export const balancerGetPoolQuery = (poolId: string) => gql`
 
 export const rewardUpdates = (epochs) => gql`
   query RewardUpdates {
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
     ${epochs.map(
       (epoch, index) => `
         _${epoch.counter}: rewardUpdates(

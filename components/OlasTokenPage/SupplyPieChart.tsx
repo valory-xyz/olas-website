@@ -1,57 +1,58 @@
 import { ArcElement, Chart } from 'chart.js';
-import { COINGECKO_URL, ETHERSCAN_URL } from 'common-util/constants';
-import { olasAddress, readOlasContract } from 'common-util/web3';
+import {
+  COINGECKO_URL,
+  ETHERSCAN_URL,
+  OLAS_SUPPLY_DISTRIBUTION_ADDRESSES,
+} from 'common-util/constants';
+import { MetricWithStatus } from 'common-util/graphql/types';
+import { olasAddress } from 'common-util/web3';
 import { Popover } from 'components/ui/popover';
+import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { ExternalLink } from 'components/ui/typography';
+import { isNil } from 'lodash';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import Verify from '../Verify';
 
 // manually register arc element – required due to chart.js tree shaking
 Chart.register(ArcElement);
 
-const daoAddress = '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE';
-const veOlasAddress = '0x7e01A500805f8A52Fad229b3015AD130A332B7b3';
-const valoryAddress = '0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941';
-
 const DATA = [
   {
     id: 'veOlas',
     label: 'veOLAS (vote escrow)',
-    address: veOlasAddress,
+    address: OLAS_SUPPLY_DISTRIBUTION_ADDRESSES.veOlas,
+    weiKey: 'veOlasWei',
     tailwindColor: 'bg-purple-500',
     rgbColor: '#A755F7',
   },
   {
     id: 'dao',
     label: 'DAO Treasury',
-    address: daoAddress,
+    address: OLAS_SUPPLY_DISTRIBUTION_ADDRESSES.dao,
+    weiKey: 'daoWei',
     tailwindColor: 'bg-pink-500',
     rgbColor: '#E964C4',
   },
   {
     id: 'valory',
     label: 'Valory (core contributor)',
-    address: valoryAddress,
+    address: OLAS_SUPPLY_DISTRIBUTION_ADDRESSES.valory,
+    weiKey: 'valoryWei',
     tailwindColor: 'bg-green-400',
     rgbColor: '#3FE681',
   },
   {
     id: 'circulatingSupply',
     label: 'Circulating supply',
+    weiKey: 'circulatingSupplyWei',
     tailwindColor: 'bg-cyan-500',
     rgbColor: '#09B4D7',
   },
 ];
 
-const IDS = DATA.map((item) => item.id);
 const LABELS = DATA.map((item) => item.label);
-const ADDRESSES = DATA.map((item) => item.address).filter(Boolean);
-const TAILWIND_COLORS = DATA.map((item) => item.tailwindColor);
 const RGB_COLORS = DATA.map((item) => item.rgbColor);
-
-const CIRCULATING_SUPPLY_INDEX = DATA.findIndex((item) => item.id === 'circulatingSupply');
 
 function getAddressPrefix(address) {
   return address.slice(0, 6);
@@ -126,88 +127,37 @@ function formatNumber(number) {
   return number.toLocaleString();
 }
 
-function formatEthers(value) {
-  const weiValue = value;
+function formatEthers(value: bigint) {
   const divisor = 1000000000000000000n;
-  const etherValue = weiValue / divisor;
-  return Number(etherValue);
+  return Number(value / divisor);
 }
 
-export const SupplyPieChart = () => {
-  const [data, setData] = useState<
-    Array<{
-      id: string;
-      label: string;
-      address?: string;
-      color: string;
-      value: number;
-    }>
-  >([]);
-  const [totalSupply, setTotalSupply] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+type SupplyDistributionValue = {
+  totalSupplyWei: string;
+  veOlasWei: string;
+  daoWei: string;
+  valoryWei: string;
+  circulatingSupplyWei: string;
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const promises = [
-          fetch('/api/olas/total_supply'),
-          ...ADDRESSES.map((address) => readOlasContract('balanceOf', [address])),
-        ];
+type SupplyPieChartProps = {
+  supplyDistribution?: MetricWithStatus<SupplyDistributionValue | null>;
+};
 
-        const result = await Promise.allSettled(promises);
+export const SupplyPieChart = ({ supplyDistribution }: SupplyPieChartProps) => {
+  const distribution = supplyDistribution?.value;
+  const status = supplyDistribution?.status;
+  const loading = isNil(distribution);
 
-        const firstResult = result[0];
-        if (firstResult.status !== 'fulfilled') {
-          throw new Error('Failed to fetch total supply');
-        }
-        const response = firstResult.value as Response;
-        const totalSupplyResult = (await response.json()) as {
-          data: { totalSupply: string | number };
-        };
+  const data = loading
+    ? []
+    : DATA.map((item) => ({
+        ...item,
+        color: item.tailwindColor,
+        value: formatEthers(BigInt(distribution[item.weiKey] ?? 0)),
+      }));
 
-        const totalSupply = BigInt(totalSupplyResult.data.totalSupply);
-        const distributions = result.slice(1, result.length).map((item) => {
-          if (item.status === 'fulfilled') {
-            const value = item.value as unknown;
-            if (typeof value === 'bigint') {
-              return value;
-            }
-            if (typeof value === 'string' || typeof value === 'number') {
-              return BigInt(String(value));
-            }
-          }
-          return 0n;
-        });
-
-        const circulatingSupply =
-          totalSupply > 0 ? totalSupply - distributions.reduce((sum, item) => sum + item, 0n) : 0n;
-
-        setTotalSupply(formatEthers(totalSupply));
-        setData([
-          ...distributions.map((item, index) => ({
-            id: IDS[index],
-            label: LABELS[index],
-            address: ADDRESSES[index],
-            color: TAILWIND_COLORS[index],
-            value: formatEthers(item),
-          })),
-          {
-            id: IDS[CIRCULATING_SUPPLY_INDEX],
-            label: LABELS[CIRCULATING_SUPPLY_INDEX],
-            color: TAILWIND_COLORS[CIRCULATING_SUPPLY_INDEX],
-            value: formatEthers(circulatingSupply),
-          },
-        ]);
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const totalSupply = loading ? undefined : formatEthers(BigInt(distribution.totalSupplyWei));
 
   return (
     <>
@@ -216,8 +166,11 @@ export const SupplyPieChart = () => {
           <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
             Total Supply
           </h2>
-          <div className="text-gradient text-4xl font-extrabold">
-            {loading ? '--' : formatNumber(totalSupply)}
+          <div className="flex items-center gap-2">
+            <div className="text-gradient text-4xl font-extrabold">
+              {loading ? '--' : formatNumber(totalSupply)}
+            </div>
+            <StaleIndicator status={status} />
           </div>
           <div className="mb-4">
             <Popover
@@ -234,8 +187,13 @@ export const SupplyPieChart = () => {
           <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
             Circulating Supply
           </h2>
-          <div className="text-gradient text-4xl font-extrabold">
-            {loading ? '--' : formatNumber(data[data.length - 1].value)}
+          <div className="flex items-center gap-2">
+            <div className="text-gradient text-4xl font-extrabold">
+              {loading
+                ? '--'
+                : formatNumber(formatEthers(BigInt(distribution.circulatingSupplyWei)))}
+            </div>
+            <StaleIndicator status={status} />
           </div>
           <div className="mb-4">
             <Verify url={`${COINGECKO_URL}/en/coins/autonolas`} />

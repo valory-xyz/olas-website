@@ -4,6 +4,7 @@ import { fetchGovernMetrics } from './govern';
 import { fetchProtocolMetrics } from './protocol';
 import { fetchOlasTotalSupplyWei } from './token-supply';
 import { fetchTokenHolders } from './token-holders';
+import { fetchTokenomicsMetrics } from './tokenomics';
 
 export type OtherMetricsData = {
   build: Awaited<ReturnType<typeof fetchBuildMetrics>>;
@@ -12,6 +13,7 @@ export type OtherMetricsData = {
   tokenHolders: Awaited<ReturnType<typeof fetchTokenHolders>>;
   protocol: Awaited<ReturnType<typeof fetchProtocolMetrics>>;
   olasTotalSupplyWei: Awaited<ReturnType<typeof fetchOlasTotalSupplyWei>>;
+  tokenomics: Awaited<ReturnType<typeof fetchTokenomicsMetrics>>;
 };
 
 export type OtherMetricsSnapshot = {
@@ -20,16 +22,16 @@ export type OtherMetricsSnapshot = {
 };
 
 export const fetchAllOtherMetrics = async (): Promise<OtherMetricsSnapshot> => {
-  const [build, contribute, govern, tokenHolders, protocol, olasTotalSupplyWei] = await Promise.all(
-    [
+  const [build, contribute, govern, tokenHolders, protocol, olasTotalSupplyWei, tokenomics] =
+    await Promise.all([
       fetchBuildMetrics(),
       fetchContributeMetrics(),
       fetchGovernMetrics(),
       fetchTokenHolders(),
       fetchProtocolMetrics(),
       fetchOlasTotalSupplyWei(),
-    ]
-  );
+      fetchTokenomicsMetrics(),
+    ]);
 
   return {
     data: {
@@ -39,6 +41,7 @@ export const fetchAllOtherMetrics = async (): Promise<OtherMetricsSnapshot> => {
       tokenHolders,
       protocol,
       olasTotalSupplyWei,
+      tokenomics,
     },
     timestamp: Date.now(),
   };
