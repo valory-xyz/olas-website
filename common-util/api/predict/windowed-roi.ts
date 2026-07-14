@@ -76,10 +76,9 @@ const computePlatformWindowedRoi = async (
     for (const err of roiData.fetchErrors ?? []) {
       roiFetchErrors.push(`roi-distribution:${source}:${err}`);
     }
-    // A byDay cursor ≥2 days behind means the blob is mid-backfill (e.g. after a
-    // METRICS_PREFIX reset) or the daily cron keeps failing — either way the
-    // windowed values are computed from incomplete data. 1 day of tolerance
-    // covers the gap between UTC midnight and the daily cron run.
+    // A byDay cursor ≥2 days behind means the windowed values are computed from
+    // incomplete data, so flag it. 1 day of tolerance covers the gap between
+    // UTC midnight and the daily cron run.
     if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
     }

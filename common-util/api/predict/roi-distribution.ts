@@ -488,9 +488,9 @@ const updateAgentBlueprintData = async (
 
     if (!statsOk) {
       // Incomplete stats: apply nothing and do NOT advance lastDayTimestamp. The
-      // cursor only ever moves forward, so advancing past a failed fetch would
-      // leave a permanent hole in byDay (this is what emptied the blob after the
-      // 2026-07-08 prefix reset). The whole chunk is retried on the next run.
+      // day cursor only ever moves forward, so advancing past an incomplete fetch
+      // would permanently exclude those days from byDay. Leaving the cursor in
+      // place means the whole chunk is retried on the next run.
       runFetchErrors.push('daily-stats');
     } else {
       const statsByDay = new Map<string, DailyStatEntry[]>();

@@ -141,9 +141,9 @@ Follow the pattern in `pages/api/refresh-metrics/main.ts`:
 
 ### Blob Snapshot Schema Changes
 
-The blob filename includes a prefix: `metrics-${process.env.NODE_ENV}` (see `snapshot-storage.ts`). When making a **breaking** change to a snapshot schema:
-1. Update `METRICS_PREFIX` (e.g. add a date suffix) so new and old blobs don't collide.
-2. Manually trigger the `refresh-metrics` endpoints on a Vercel preview to populate the new blobs before merging.
+The blob filename is `metrics-${process.env.NODE_ENV}-<schemaVersion>-<category>.json`, where the schema version is resolved **per category** from `SCHEMA_VERSIONS` in `snapshot-storage.ts` (keyed by the category's first path segment, falling back to `DEFAULT_SCHEMA_VERSION`). When making a **breaking** change to a snapshot schema:
+1. Bump only the changed category's entry in `SCHEMA_VERSIONS` (e.g. a date suffix) so its new and old blobs don't collide. Do **not** bump globally — that would also reset unrelated categories, including slow-to-rebuild accumulators (`roi-distribution`, `predict-brier`, etc.) that backfill from genesis over many cron runs.
+2. Manually trigger the affected `refresh-metrics` endpoints on a Vercel preview to populate the new blobs before merging. For accumulator categories that can't rebuild in one run, copy the old blobs to the new filenames instead (schema permitting).
 3. Clean up old blobs from the Vercel Blob dashboard after the rollout.
 
 ISR pages expect the blob shape they were built against — schema drift will surface as render failures, not warnings.
