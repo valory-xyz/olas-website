@@ -7,11 +7,24 @@ import { PredictMetricsData } from 'common-util/api/predict';
 import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
 import { isNil, isPlainObject } from 'lodash';
 
-// Update this prefix when making breaking changes to the metrics schema.
-const METRICS_PREFIX = `metrics-${process.env.NODE_ENV}-20260708`;
+// Blob filenames embed a schema version, so a breaking change to a snapshot's
+// shape writes to a fresh blob instead of colliding with the old one. Versions
+// are scoped per category: bump the changed category's entry in SCHEMA_VERSIONS
+// so only its blob is renamed (and re-populated). A global bump would also reset
+// unrelated categories — including slow-to-rebuild accumulators such as
+// roi-distribution, which backfill from genesis over many daily cron runs.
+const METRICS_BASE_PREFIX = `metrics-${process.env.NODE_ENV}`;
+const DEFAULT_SCHEMA_VERSION = '20260708';
+// Keyed by the category's first path segment ('roi-distribution/omenstrat-main'
+// → 'roi-distribution'), so blob families written by the same code version
+// together. Categories not listed here use DEFAULT_SCHEMA_VERSION.
+const SCHEMA_VERSIONS: Record<string, string> = {};
 const CONTENT_TYPE = 'application/json';
 
-const getSnapshotFilename = (category: string) => `${METRICS_PREFIX}-${category}.json`;
+const getSnapshotFilename = (category: string) => {
+  const version = SCHEMA_VERSIONS[category.split('/')[0]] ?? DEFAULT_SCHEMA_VERSION;
+  return `${METRICS_BASE_PREFIX}-${version}-${category}.json`;
+};
 
 type SaveSnapshotParams = {
   category: string;

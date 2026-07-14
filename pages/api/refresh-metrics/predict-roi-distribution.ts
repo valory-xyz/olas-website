@@ -48,6 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       success: true,
       generatedAt: new Date().toISOString(),
       url,
+      fetchErrors: mainData.fetchErrors ?? [],
     });
   } catch (error) {
     console.error(`Error refreshing ${agent} ROI distribution:`, error);

@@ -1,6 +1,7 @@
 import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import { getSnapshot } from 'common-util/snapshot-storage';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { emptyWindows, WindowedMetric, WindowKey } from './omenstrat-brier';
 import { fetchOlasPriceInUsd } from './olas-price';
 import { AgentBlueprintRoiData, computeWindowedNetGainAndCosts } from './roi-distribution';
@@ -11,6 +12,7 @@ import {
 } from './staking-rewards';
 
 const SCALE_1E18 = 10n ** 18n;
+const DAY_SECONDS = 86400;
 
 // The roi-distribution snapshot is refreshed by a separate daily cron. If that cron
 // stalls the blob still loads, so guard on its age and surface staleness as a
@@ -64,11 +66,23 @@ const computePlatformWindowedRoi = async (
   // Missing blob → hard error; present-but-aging blob → stale error (propagates to UI).
   const roiSnapshotStale =
     roiSnapshotTs != null && Date.now() - roiSnapshotTs > ROI_SNAPSHOT_MAX_AGE_MS;
-  const roiFetchErrors = !roiData
-    ? [`roi-distribution:${source}`]
-    : roiSnapshotStale
-      ? [`roi-distribution:${source}:stale`]
-      : [];
+  const roiFetchErrors: string[] = [];
+  if (!roiData) {
+    roiFetchErrors.push(`roi-distribution:${source}`);
+  } else {
+    if (roiSnapshotStale) roiFetchErrors.push(`roi-distribution:${source}:stale`);
+    // Subgraph failures recorded by the daily refresh run that wrote the blob
+    // (e.g. the all-time agents fetch failed and the previous totals were kept).
+    for (const err of roiData.fetchErrors ?? []) {
+      roiFetchErrors.push(`roi-distribution:${source}:${err}`);
+    }
+    // A byDay cursor ≥2 days behind means the windowed values are computed from
+    // incomplete data, so flag it. 1 day of tolerance covers the gap between
+    // UTC midnight and the daily cron run.
+    if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
+      roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
+    }
+  }
 
   // Advance the staking-rewards accumulator (it persists its own backfill progress).
   const rewards = await fetchRewards();

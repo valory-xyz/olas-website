@@ -93,6 +93,14 @@ export type AgentBlueprintRoiData = {
   >;
   lastDayTimestamp: number;
   allTimeAgents: Record<string, AllTimeAgentEntry>; // agentId → all-time totals
+  /**
+   * Subgraph fetches that failed during the run that wrote this blob
+   * ('daily-stats' | 'all-time-agents' | 'mech-requests'). Consumers (windowed
+   * ROI) surface these as MetricWithStatus fetchErrors so the UI can flag
+   * staleness — a blob written by a failing run is otherwise indistinguishable
+   * from a healthy one.
+   */
+  fetchErrors?: string[];
 };
 
 // ─── Internal query types ────────────────────────────────────────────────────
@@ -138,10 +146,15 @@ type SenderEntry = {
 
 // ─── Daily stat fetchers ─────────────────────────────────────────────────────
 
+// `ok: false` means a page failed mid-pagination — the stats are incomplete and
+// the caller must NOT advance its day cursor past this range, or the failed days
+// would be skipped forever (the cursor only moves forward).
+type DailyStatsResult = { stats: DailyStatEntry[]; ok: boolean };
+
 const fetchOmenstratDailyStats = async (
   dayStartTs: number,
   dayEndTs: number
-): Promise<DailyStatEntry[]> => {
+): Promise<DailyStatsResult> => {
   const results: DailyStatEntry[] = [];
   let skip = 0;
   while (true) {
@@ -160,16 +173,16 @@ const fetchOmenstratDailyStats = async (
       skip += LIMIT;
     } catch (e) {
       console.error('Error fetching Omenstrat daily stats', e);
-      break;
+      return { stats: results, ok: false };
     }
   }
-  return results;
+  return { stats: results, ok: true };
 };
 
 const fetchPolystratDailyStats = async (
   dayStartTs: number,
   dayEndTs: number
-): Promise<DailyStatEntry[]> => {
+): Promise<DailyStatsResult> => {
   const results: DailyStatEntry[] = [];
   let skip = 0;
   while (true) {
@@ -188,10 +201,10 @@ const fetchPolystratDailyStats = async (
       skip += LIMIT;
     } catch (e) {
       console.error('Error fetching Polystrat daily stats', e);
-      break;
+      return { stats: results, ok: false };
     }
   }
-  return results;
+  return { stats: results, ok: true };
 };
 
 // ─── Incremental mech request fetcher ────────────────────────────────────────
@@ -203,11 +216,16 @@ const fetchPolystratDailyStats = async (
 const fetchIncrementalMechRequests = async (
   chain: 'gnosis' | 'polygon',
   lastTimestamp: number
-): Promise<{ additions: Record<string, Record<string, number[]>>; lastTimestamp: number }> => {
+): Promise<{
+  additions: Record<string, Record<string, number[]>>;
+  lastTimestamp: number;
+  ok: boolean;
+}> => {
   // FIX-1: additions now stores timestamps per (title, agentId), not just counts.
   const additions: Record<string, Record<string, number[]>> = {};
   let latestTs = lastTimestamp;
   let skip = 0;
+  let ok = true;
   const client = MARKETPLACE_GRAPH_CLIENTS[chain];
 
   while (true) {
@@ -230,10 +248,14 @@ const fetchIncrementalMechRequests = async (
       skip += LIMIT;
     } catch (e) {
       console.error(`Error fetching incremental mech requests for ${chain}`, e);
+      // Partial additions are safe to keep: latestTs only reflects rows actually
+      // fetched, so the next run resumes from there. Report the failure so it
+      // isn't invisible.
+      ok = false;
       break;
     }
   }
-  return { additions, lastTimestamp: latestTs };
+  return { additions, lastTimestamp: latestTs, ok };
 };
 
 // ─── All-time agent data fetcher ─────────────────────────────────────────────
@@ -245,9 +267,12 @@ const fetchIncrementalMechRequests = async (
 const fetchAllTimeAgents = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
   openQmr: Record<string, Record<string, number[]>>
-): Promise<Record<string, AllTimeAgentEntry>> => {
+): Promise<{ agents: Record<string, AllTimeAgentEntry>; ok: boolean }> => {
   const chain: 'gnosis' | 'polygon' = agentBlueprint === 'omenstrat' ? 'gnosis' : 'polygon';
   const SCALE = agentBlueprint === 'polystrat' ? BigInt('1000000000000') : 1n;
+  // A failed page means incomplete (or empty) totals — the caller keeps the
+  // previous run's allTimeAgents instead of overwriting them with a truncation.
+  let ok = true;
 
   // 1. Paginate traderAgents from predict subgraph (Settled Volume)
   const agentMap = new Map<string, { payout: bigint; tradingCosts: bigint; totalBets: number }>();
@@ -290,6 +315,7 @@ const fetchAllTimeAgents = async (
       skip += LIMIT;
     } catch (e) {
       console.error(`Error fetching traderAgents for ${agentBlueprint}`, e);
+      ok = false;
       break;
     }
   }
@@ -314,6 +340,7 @@ const fetchAllTimeAgents = async (
       skip += LIMIT;
     } catch (e) {
       console.error(`Error fetching senders for ${agentBlueprint}`, e);
+      ok = false;
       break;
     }
   }
@@ -350,7 +377,7 @@ const fetchAllTimeAgents = async (
     };
   }
 
-  return allTimeAgents;
+  return { agents: allTimeAgents, ok };
 };
 
 // ─── Agent data updater ───────────────────────────────────────────────────
@@ -414,10 +441,16 @@ const updateAgentBlueprintData = async (
       | undefined,
     existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
   );
-  const { additions, lastTimestamp: newMechTs } = await fetchIncrementalMechRequests(
-    chain,
-    existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
-  );
+  // Subgraph failures during this run — persisted on the blob so downstream
+  // consumers can surface staleness instead of trusting silently-empty data.
+  const runFetchErrors: string[] = [];
+
+  const {
+    additions,
+    lastTimestamp: newMechTs,
+    ok: mechRequestsOk,
+  } = await fetchIncrementalMechRequests(chain, existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs);
+  if (!mechRequestsOk) runFetchErrors.push('mech-requests');
   for (const [title, agentLists] of Object.entries(additions)) {
     if (!qmr[title]) qmr[title] = {};
     for (const [agentId, tsList] of Object.entries(agentLists)) {
@@ -451,120 +484,128 @@ const updateAgentBlueprintData = async (
 
     const fetchStats =
       agentBlueprint === 'omenstrat' ? fetchOmenstratDailyStats : fetchPolystratDailyStats;
-    const allStats = await fetchStats(startDay, processEndDay);
+    const { stats: allStats, ok: statsOk } = await fetchStats(startDay, processEndDay);
 
-    const statsByDay = new Map<string, DailyStatEntry[]>();
-    for (const stat of allStats) {
-      const dayKey = String(stat.date);
-      const list = statsByDay.get(dayKey) ?? [];
-      list.push(stat);
-      statsByDay.set(dayKey, list);
-    }
-
-    // Helper to create/ensure a byDay/agent entry (used only for TTL flush below)
-    const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
-      if (!byDay[dKey]) byDay[dKey] = { agents: {} };
-      if (!byDay[dKey].agents[aid]) {
-        byDay[dKey].agents[aid] = { profit: '0', payout: '0', mechRequests: 0 };
+    if (!statsOk) {
+      // Incomplete stats: apply nothing and do NOT advance lastDayTimestamp. The
+      // day cursor only ever moves forward, so advancing past an incomplete fetch
+      // would permanently exclude those days from byDay. Leaving the cursor in
+      // place means the whole chunk is retried on the next run.
+      runFetchErrors.push('daily-stats');
+    } else {
+      const statsByDay = new Map<string, DailyStatEntry[]>();
+      for (const stat of allStats) {
+        const dayKey = String(stat.date);
+        const list = statsByDay.get(dayKey) ?? [];
+        list.push(stat);
+        statsByDay.set(dayKey, list);
       }
-      return byDay[dKey].agents[aid];
-    };
 
-    for (let dayTs = startDay; dayTs <= processEndDay; dayTs += DAY_SECONDS) {
-      const dayKey = String(dayTs);
-      const dayStats = statsByDay.get(dayKey) ?? [];
-      const agents: Record<string, DailyAgentEntry> = {};
-      const qmrKeysUsedThisDay = new Set<string>();
+      // Helper to create/ensure a byDay/agent entry (used only for TTL flush below)
+      const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
+        if (!byDay[dKey]) byDay[dKey] = { agents: {} };
+        if (!byDay[dKey].agents[aid]) {
+          byDay[dKey].agents[aid] = { profit: '0', payout: '0', mechRequests: 0 };
+        }
+        return byDay[dKey].agents[aid];
+      };
 
-      for (const stat of dayStats) {
-        const agentId = stat.traderAgent.id.toLowerCase();
+      for (let dayTs = startDay; dayTs <= processEndDay; dayTs += DAY_SECONDS) {
+        const dayKey = String(dayTs);
+        const dayStats = statsByDay.get(dayKey) ?? [];
+        const agents: Record<string, DailyAgentEntry> = {};
+        const qmrKeysUsedThisDay = new Set<string>();
 
-        // Unique titles from the predict subgraph
-        const uniqueTitles = new Set<string>();
-        for (const p of stat.profitParticipants ?? []) {
-          const title = p.question ?? p.metadata?.title;
-          if (title) uniqueTitles.add(title);
+        for (const stat of dayStats) {
+          const agentId = stat.traderAgent.id.toLowerCase();
+
+          // Unique titles from the predict subgraph
+          const uniqueTitles = new Set<string>();
+          for (const p of stat.profitParticipants ?? []) {
+            const title = p.question ?? p.metadata?.title;
+            if (title) uniqueTitles.add(title);
+          }
+
+          // Consume QMR entries onto the settlement day (product intent: all
+          // market costs are grouped on the day the market settles, not on the
+          // day the request was made).
+          let mechRequests = 0;
+          for (const title of uniqueTitles) {
+            let matchedKey = qmr[title] ? title : null;
+            if (!matchedKey) {
+              matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
+            }
+            const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
+            if (matchedKey && tsList && tsList.length > 0) {
+              mechRequests += tsList.length;
+              qmr[matchedKey][agentId] = [];
+              qmrKeysUsedThisDay.add(matchedKey);
+            }
+          }
+
+          agents[agentId] = {
+            profit: stat.dailyProfit,
+            payout: stat.totalPayout,
+            mechRequests,
+            ...(agentBlueprint === 'omenstrat'
+              ? {
+                  tradedSettled: stat.dailyTradedSettled ?? '0',
+                  feesSettled: stat.dailyFeesSettled ?? '0',
+                }
+              : {}),
+          };
         }
 
-        // Consume QMR entries onto the settlement day (product intent: all
-        // market costs are grouped on the day the market settles, not on the
-        // day the request was made).
-        let mechRequests = 0;
-        for (const title of uniqueTitles) {
-          let matchedKey = qmr[title] ? title : null;
-          if (!matchedKey) {
-            matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
-          }
-          const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
-          if (matchedKey && tsList && tsList.length > 0) {
-            mechRequests += tsList.length;
-            qmr[matchedKey][agentId] = [];
-            qmrKeysUsedThisDay.add(matchedKey);
-          }
+        if (Object.keys(agents).length > 0) {
+          byDay[dayKey] = { agents };
         }
 
-        agents[agentId] = {
-          profit: stat.dailyProfit,
-          payout: stat.totalPayout,
-          mechRequests,
-          ...(agentBlueprint === 'omenstrat'
-            ? {
-                tradedSettled: stat.dailyTradedSettled ?? '0',
-                feesSettled: stat.dailyFeesSettled ?? '0',
-              }
-            : {}),
-        };
-      }
-
-      if (Object.keys(agents).length > 0) {
-        byDay[dayKey] = { agents };
-      }
-
-      // Cleanup QMR: Delete title if all agent lists are empty
-      for (const key of qmrKeysUsedThisDay) {
-        if (qmr[key]) {
-          let total = 0;
-          for (const agentList of Object.values(qmr[key])) total += agentList?.length ?? 0;
-          if (total === 0) {
-            delete qmr[key];
-            normalizedQmrMap.delete(normalizeTitle(key));
+        // Cleanup QMR: Delete title if all agent lists are empty
+        for (const key of qmrKeysUsedThisDay) {
+          if (qmr[key]) {
+            let total = 0;
+            for (const agentList of Object.values(qmr[key])) total += agentList?.length ?? 0;
+            if (total === 0) {
+              delete qmr[key];
+              normalizedQmrMap.delete(normalizeTitle(key));
+            }
           }
         }
       }
-    }
 
-    lastDayTimestamp = processEndDay;
+      lastDayTimestamp = processEndDay;
 
-    // FIX-2: Age-out pending QMR entries older than QMR_MAX_AGE_DAYS.
-    // Markets resolve in ~4 days; anything older either never settled or has a
-    // title-mismatch. Flush those timestamps onto their own days so they count
-    // as settled mech requests (not permanently "open").
-    const ttlCutoff = Math.floor(Date.now() / 1000) - QMR_MAX_AGE_DAYS * DAY_SECONDS;
-    let expiredCount = 0;
-    for (const [title, agentMap] of Object.entries(qmr)) {
-      for (const [agentId, tsList] of Object.entries(agentMap)) {
-        if (!tsList || tsList.length === 0) continue;
-        const kept: number[] = [];
-        for (const ts of tsList) {
-          if (ts < ttlCutoff) {
-            ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
-            expiredCount++;
-          } else {
-            kept.push(ts);
+      // FIX-2: Age-out pending QMR entries older than QMR_MAX_AGE_DAYS.
+      // Markets resolve in ~4 days; anything older either never settled or has a
+      // title-mismatch. Flush those timestamps onto their own days so they count
+      // as settled mech requests (not permanently "open").
+      const ttlCutoff = Math.floor(Date.now() / 1000) - QMR_MAX_AGE_DAYS * DAY_SECONDS;
+      let expiredCount = 0;
+      for (const [title, agentMap] of Object.entries(qmr)) {
+        for (const [agentId, tsList] of Object.entries(agentMap)) {
+          if (!tsList || tsList.length === 0) continue;
+          const kept: number[] = [];
+          for (const ts of tsList) {
+            if (ts < ttlCutoff) {
+              ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+              expiredCount++;
+            } else {
+              kept.push(ts);
+            }
           }
+          if (kept.length === 0) delete agentMap[agentId];
+          else agentMap[agentId] = kept;
         }
-        if (kept.length === 0) delete agentMap[agentId];
-        else agentMap[agentId] = kept;
+        if (Object.keys(agentMap).length === 0) {
+          delete qmr[title];
+          normalizedQmrMap.delete(normalizeTitle(title));
+        }
       }
-      if (Object.keys(agentMap).length === 0) {
-        delete qmr[title];
-        normalizedQmrMap.delete(normalizeTitle(title));
+      if (expiredCount > 0) {
+        console.log(
+          `[roi-dist:${agentBlueprint}] expired ${expiredCount} QMR entries older than ${QMR_MAX_AGE_DAYS} days`
+        );
       }
-    }
-    if (expiredCount > 0) {
-      console.log(
-        `[roi-dist:${agentBlueprint}] expired ${expiredCount} QMR entries older than ${QMR_MAX_AGE_DAYS} days`
-      );
     }
   }
 
@@ -574,11 +615,19 @@ const updateAgentBlueprintData = async (
     if (Number(dayKey) < retentionCutoff) delete byDay[dayKey];
   }
 
-  // 4: Recompute all-time agents (fresh each run)
-  const allTimeAgents = await fetchAllTimeAgents(agentBlueprint, qmr);
+  // 4: Recompute all-time agents (fresh each run). On fetch failure keep the
+  // previous run's totals — overwriting them with a truncated (often empty) map
+  // would null the Max-window ROI and the all-time histogram until the next
+  // fully-successful run.
+  const { agents: fetchedAllTimeAgents, ok: allTimeOk } = await fetchAllTimeAgents(
+    agentBlueprint,
+    qmr
+  );
+  const allTimeAgents = allTimeOk ? fetchedAllTimeAgents : (existing?.allTimeAgents ?? {});
+  if (!allTimeOk) runFetchErrors.push('all-time-agents');
 
   return {
-    mainData: { byDay, lastDayTimestamp, allTimeAgents },
+    mainData: { byDay, lastDayTimestamp, allTimeAgents, fetchErrors: runFetchErrors },
     qmrData: { questionMechRequests: qmr, lastMechRequestTimestamp: newMechTs },
   };
 };

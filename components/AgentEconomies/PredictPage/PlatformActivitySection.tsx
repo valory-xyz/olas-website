@@ -163,7 +163,7 @@ export const PlatformActivitySection = ({
     hasWindowData(m.finalRoi) ||
     hasWindowData(m.successRate) ||
     hasWindowData(m.brierScore);
-  const [activeWindow, setActiveWindow] = useState<WindowKey>('max');
+  const [activeWindow, setActiveWindow] = useState<WindowKey>('7d');
 
   const finalRoiValue = m.finalRoi?.[activeWindow] ?? null;
   const partialRoiValue = m.partialRoi?.[activeWindow] ?? null;
