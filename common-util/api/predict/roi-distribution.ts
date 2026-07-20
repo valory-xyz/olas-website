@@ -14,6 +14,16 @@ import {
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
+import { fetchIncrementalMechRequestsFromAnalytics } from './mech-analytics';
+
+// Off-chain migration feature flag. When 'true', the incremental
+// mech-request feed is pulled from mech-analytics instead of the
+// marketplace subgraph (which stops seeing individual off-chain
+// requests post-switch). Defaults off — flip in staging first, then
+// production once mech-analytics is caught up. See PR #11 on
+// valory-xyz/mech-analytics for the migration plan.
+const USE_MECH_ANALYTICS_MECH_REQUESTS = process.env.USE_MECH_ANALYTICS_MECH_REQUESTS === 'true';
+
 const LIMIT = 1000;
 // Process at most this many days per cron run to stay within timeout
 const MAX_DAYS_PER_RUN = 30;
@@ -221,6 +231,21 @@ const fetchIncrementalMechRequests = async (
   lastTimestamp: number;
   ok: boolean;
 }> => {
+  // Off-chain switch: post-switch, the marketplace subgraph stops
+  // creating individual Request / ParsedRequest entities for
+  // off-chain requests (only aggregate counters update, via
+  // MarketplaceDeliveryWithSignatures at settlement time). The
+  // per-request title-keyed feed this function builds goes empty
+  // for off-chain activity if we keep reading the subgraph. The
+  // flag routes the read through mech-analytics's data lake, which
+  // continues to accumulate off-chain requests via a private write
+  // path. Downstream (`fetchAllTimeAgents`, `openQmr`,
+  // `normalizeTitle`, `settledMechRequests` computation) is
+  // shape-compatible and unchanged.
+  if (USE_MECH_ANALYTICS_MECH_REQUESTS) {
+    return fetchIncrementalMechRequestsFromAnalytics(chain, lastTimestamp);
+  }
+
   // FIX-1: additions now stores timestamps per (title, agentId), not just counts.
   const additions: Record<string, Record<string, number[]>> = {};
   let latestTs = lastTimestamp;
@@ -449,7 +474,10 @@ const updateAgentBlueprintData = async (
     additions,
     lastTimestamp: newMechTs,
     ok: mechRequestsOk,
-  } = await fetchIncrementalMechRequests(chain, existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs);
+  } = await fetchIncrementalMechRequests(
+    chain,
+    existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
+  );
   if (!mechRequestsOk) runFetchErrors.push('mech-requests');
   for (const [title, agentLists] of Object.entries(additions)) {
     if (!qmr[title]) qmr[title] = {};
