@@ -1,10 +1,13 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 
 import { MODIUS_FIXED_END_DATE_UTC } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
 import type { MetricStatus } from 'common-util/graphql/types';
+import { Button } from 'components/ui/button';
 import {
   DaaCalendarHeatmap,
   HEATMAP_DIVERGING_COLORS,
@@ -129,7 +132,7 @@ type AgentMeta = {
   /** A notable day to ring + annotate on the heatmap (e.g. a retirement or launch date). */
   marker?: { date: string; label: string };
 };
-type EconomyMeta = { metrics: string[]; agents: AgentMeta[] };
+type EconomyMeta = { name: string; metrics: string[]; agents: AgentMeta[] };
 
 // Per-economy ordered metric tiles + its agents (label/icon + heatmap colour ramp).
 // The active metric resets to the first key on an economy switch; the active agent
@@ -137,6 +140,7 @@ type EconomyMeta = { metrics: string[]; agents: AgentMeta[] };
 // (lime); Predict (purple) and Mech (teal) are single-agent.
 const ECONOMY_META: Record<string, EconomyMeta> = {
   predict: {
+    name: 'Predict',
     metrics: ['daa', 'transactions', 'accuracy'],
     agents: [
       {
@@ -148,6 +152,7 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
     ],
   },
   babydegen: {
+    name: 'BabyDegen',
     metrics: ['daa', 'transactions', 'aum'],
     agents: [
       {
@@ -172,6 +177,7 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
     ],
   },
   mech: {
+    name: 'Mech',
     metrics: ['daa', 'ata'],
     agents: [
       {
@@ -241,6 +247,19 @@ const Explorer = ({ economies }: ExplorerProps) => {
   const [activeAgent, setActiveAgent] = useState('omenstrat');
   const [activeMetric, setActiveMetric] = useState('daa');
   const [activeYear, setActiveYear] = useState<number | null>(null);
+
+  // Deep-link support: /agent-economies/explorer?economy=babydegen preselects the
+  // economy (used by the "View X Economy in Explorer" CTAs on economy pages). The
+  // query is only available after hydration, hence the effect rather than useState.
+  const { isReady, query } = useRouter();
+  useEffect(() => {
+    const economy = typeof query.economy === 'string' ? query.economy.toLowerCase() : '';
+    if (!isReady || !(economy in ECONOMY_META)) return;
+    setActiveEconomy(economy);
+    setActiveAgent(ECONOMY_META[economy].agents[0].key);
+    setActiveMetric(ECONOMY_META[economy].metrics[0]);
+    setActiveYear(null);
+  }, [isReady, query.economy]);
 
   const economyMeta = ECONOMY_META[activeEconomy] ?? ECONOMY_META.predict;
   const agentMeta = economyMeta.agents.find((a) => a.key === activeAgent) ?? economyMeta.agents[0];
@@ -400,8 +419,17 @@ const Explorer = ({ economies }: ExplorerProps) => {
       </div>
 
       {/* Legend — centered, below the heatmap */}
-      <div className="mx-auto mb-20 mt-4 w-full max-w-[872px] px-4">
+      <div className="mx-auto mt-4 w-full max-w-[872px] px-4">
         <Legend scale={metricConfig.scale} rampColors={rampColors} />
+      </div>
+
+      {/* Economy content-page CTA — 56px below the legend (Figma 21515:18551) */}
+      <div className="mb-20 mt-14 flex justify-center px-4">
+        <Button variant="default" size="lg" asChild>
+          <Link href={`/agent-economies/${activeEconomy}`}>
+            Learn More about {economyMeta.name} Economy
+          </Link>
+        </Button>
       </div>
     </>
   );

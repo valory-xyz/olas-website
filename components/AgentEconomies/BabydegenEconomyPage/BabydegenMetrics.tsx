@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { OPERATE_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
@@ -11,6 +12,7 @@ import { Tabs } from 'components/ui/tabs';
 import { ExternalLink, Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
+import NextLink from 'next/link';
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
@@ -193,6 +195,13 @@ export const BabydegenMetrics = ({ metrics }) => {
             status={metrics?.modius?.status}
           />
         )}
+        <div className="mt-8 flex justify-center">
+          <Button variant="default" size="lg" asChild>
+            <NextLink href="/agent-economies/explorer?economy=babydegen">
+              View BabyDegen Economy in Explorer
+            </NextLink>
+          </Button>
+        </div>
       </div>
     </SectionWrapper>
   );

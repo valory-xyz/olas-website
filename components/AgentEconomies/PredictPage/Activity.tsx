@@ -1,10 +1,12 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
@@ -185,6 +187,13 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
             platform={platform}
             className="md:col-span-2"
           />
+        </div>
+        <div className="mt-14 flex justify-center">
+          <Button variant="default" size="lg" asChild>
+            <NextLink href="/agent-economies/explorer?economy=predict">
+              View Predict Economy in Explorer
+            </NextLink>
+          </Button>
         </div>
       </div>
     </SectionWrapper>
