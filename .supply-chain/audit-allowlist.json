@@ -10,5 +10,15 @@
     "added": "YYYY-MM-DD when added — REQUIRED",
     "review": "YYYY-MM-DD by which the entry must be re-evaluated — REQUIRED"
   },
-  "entries": []
+  "entries": [
+    {
+      "id": 1124066,
+      "ghsa": "GHSA-f88m-g3jw-g9cj",
+      "package": "sharp",
+      "severity": "high",
+      "reason": "Inherited libvips CVEs in sharp <0.35.0, pulled via @vercel/og which pins sharp ^0.34 — no upstream fix path yet. Sharp runs server-side only, for OG image generation on trusted inputs. Remove once @vercel/og ships sharp >=0.35 or a resolutions bump is validated.",
+      "added": "2026-07-22",
+      "review": "2026-08-22"
+    }
+  ]
 }
