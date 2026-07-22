@@ -18,11 +18,11 @@ export const ExplorerCallout = () => (
       </Button>
     </div>
     <Image
-      src="/images/agent-economies/explorer-preview.png"
+      src="/images/agent-economies/explorer-heatmap-preview.png"
       alt="Agent Economy Explorer heatmap preview"
       width={292}
       height={146}
-      className="shrink-0 [mask-image:linear-gradient(to_right,transparent,black_25%)] max-md:h-auto max-md:w-full"
+      className="shrink-0 max-md:h-auto max-md:w-full"
     />
   </Card>
 );

@@ -253,11 +253,15 @@ const Explorer = ({ economies }: ExplorerProps) => {
   // query is only available after hydration, hence the effect rather than useState.
   const { isReady, query } = useRouter();
   useEffect(() => {
+    if (!isReady) return;
     const economy = typeof query.economy === 'string' ? query.economy.toLowerCase() : '';
-    if (!isReady || !(economy in ECONOMY_META)) return;
+    // Own-property check: `in` walks the prototype chain, so user-controlled values
+    // like ?economy=constructor would pass the guard and crash on .agents below.
+    if (!Object.hasOwn(ECONOMY_META, economy)) return;
+    const meta = ECONOMY_META[economy];
     setActiveEconomy(economy);
-    setActiveAgent(ECONOMY_META[economy].agents[0].key);
-    setActiveMetric(ECONOMY_META[economy].metrics[0]);
+    setActiveAgent(meta.agents[0].key);
+    setActiveMetric(meta.metrics[0]);
     setActiveYear(null);
   }, [isReady, query.economy]);
 
@@ -294,7 +298,7 @@ const Explorer = ({ economies }: ExplorerProps) => {
   });
 
   const handleEconomy = (key: string) => {
-    if (!(key in ECONOMY_META)) return;
+    if (!Object.hasOwn(ECONOMY_META, key)) return;
     setActiveEconomy(key);
     // Reset to the economy's first agent + metric and clear the year filter (the new
     // economy's agents/metrics/date-range differ, so stale selections could blank it).
@@ -311,7 +315,7 @@ const Explorer = ({ economies }: ExplorerProps) => {
   };
 
   const handleMetric = (key: string) => {
-    if (!(key in METRIC_CONFIG)) return;
+    if (!Object.hasOwn(METRIC_CONFIG, key)) return;
     setActiveMetric(key);
     // Reset the year filter: the new metric may not cover the selected year, which
     // would otherwise dim every cell (blank heatmap) with no visible tab to un-toggle.
