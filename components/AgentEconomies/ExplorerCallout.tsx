@@ -5,7 +5,7 @@ import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 
 export const ExplorerCallout = () => (
-  <Card className="flex flex-col justify-between gap-6 rounded-xl border-none bg-white p-6 shadow-[0px_8px_24px_0px_rgba(24,39,75,0.12)] md:flex-row md:items-center">
+  <Card className="flex flex-col justify-between gap-6 rounded-xl border-none bg-white p-6 shadow-[0px_8px_24px_0px_rgba(24,39,75,0.12)] md:flex-row md:items-start">
     <div className="flex flex-col items-start gap-4">
       <div className="flex flex-col gap-2 text-left">
         <h5 className="text-lg font-medium text-black">Agent Economy Explorer</h5>
