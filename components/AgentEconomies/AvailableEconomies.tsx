@@ -1,4 +1,5 @@
 import { SECTION_BOX_CLASS } from 'common-util/classes';
+import { ExplorerCallout } from 'components/AgentEconomies/ExplorerCallout';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import SectionHeading from 'components/SectionHeading';
 import { Button } from 'components/ui/button';
@@ -22,7 +23,7 @@ export const AvailableEconomies = () => {
             Many specialized agents interacting autonomously towards a predefined goal.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6 mb-20">
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
           {agentEconomies.services.map((item) => (
             <Link key={item.title} href={item.link} className="w-full h-full">
               <Card
@@ -42,12 +43,13 @@ export const AvailableEconomies = () => {
             </Link>
           ))}
         </div>
-        <div className="max-sm:flex-col flex gap-4 w-fit mx-auto">
+        <ExplorerCallout />
+        <div className="max-sm:flex-col flex gap-4 w-fit mx-auto mt-20">
           <Button variant="default" size="lg" className="w-fit mx-auto max-sm:w-full" asChild>
-            <Link href="/agents">Explore Agents</Link>
+            <Link href="/agents">Learn about Agents</Link>
           </Button>
           <Button variant="outline" size="lg" className="max-sm:w-full w-fit mx-auto" asChild>
-            <Link href="/deprecated-usecases">Explore Deprecated Use Cases</Link>
+            <Link href="/deprecated-usecases">View Deprecated Use Cases</Link>
           </Button>
         </div>
       </div>

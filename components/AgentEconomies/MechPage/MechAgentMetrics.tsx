@@ -1,9 +1,11 @@
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { useMemo } from 'react';
 
 export const MechAgentMetrics = ({ metrics }) => {
@@ -177,6 +179,13 @@ export const MechAgentMetrics = ({ metrics }) => {
             );
           })}
         </div>
+      </div>
+      <div className="mt-14 flex justify-center">
+        <Button variant="default" size="lg" asChild>
+          <NextLink href="/agent-economies/explorer?economy=mech">
+            View Mech Economy in Explorer
+          </NextLink>
+        </Button>
       </div>
     </SectionWrapper>
   );
