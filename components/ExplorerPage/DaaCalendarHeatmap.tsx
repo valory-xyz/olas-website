@@ -238,8 +238,13 @@ const buildModel = (
 
   const countByDate = new Map(series.map((point) => [point.date, point.count]));
   const sorted = [...series].sort((a, b) => a.date.localeCompare(b.date));
-  const start = dayjs(sorted[0].date);
+  const dataStart = dayjs(sorted[0].date);
   const end = dayjs(sorted[sorted.length - 1].date);
+  // GitHub-style axis: always span at least a rolling year ending on the last day,
+  // so a sparse/new agent (e.g. Basius) fills the full width with its activity
+  // anchored to the right. Older agents keep their full history (dataStart wins).
+  const minStart = end.subtract(1, 'year');
+  const start = dataStart.isBefore(minStart) ? dataStart : minStart;
   const totalDays = end.diff(start, 'day') + 1;
 
   // Weekday alignment: shift every day by the start day's weekday so row = weekday.

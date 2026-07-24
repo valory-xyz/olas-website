@@ -166,6 +166,7 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         label: 'Basius',
         icon: '/images/explorer/basius.png',
         ramp: 'blue',
+        marker: { date: '2026-06-24', label: 'Basius launched publicly' },
       },
       {
         key: 'modius',
