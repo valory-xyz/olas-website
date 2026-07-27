@@ -8,7 +8,7 @@
     "services": [
       {
         "title": "Connect",
-        "description": "Bring On-chain to Your Coding Agent, Starting with Prediction Markets.",
+        "description": "Brings on-chain to your coding agent, starting with prediction markets.",
         "image": "/images/agents/connect.png",
         "link": "https://pearl.you/connect",
         "isExternal": true
