@@ -1255,30 +1255,3 @@ export const liquidityL2Query = gql`
   }
 `;
 
-export const getMechRequestsBySenderEntityQuery = ({
-  sender,
-  timestamp_gt,
-  first,
-  skip,
-}: {
-  sender: string;
-  timestamp_gt: number;
-  first: number;
-  skip: number;
-}) => gql`
-  query MechSenderRequests {
-    sender(id: "${sender}") {
-      requests(
-        first: ${first}
-        skip: ${skip}
-        where: { blockTimestamp_gt: "${timestamp_gt}" }
-      ) {
-        blockTimestamp
-        parsedRequest {
-          tool
-          questionTitle
-        }
-      }
-    }
-  }
-`;

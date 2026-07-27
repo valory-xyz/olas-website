@@ -5,10 +5,11 @@ import {
 } from 'common-util/graphql/client';
 import {
   getClosedMarketsBetsQuery,
-  getMechRequestsBySenderEntityQuery,
   getMechRequestsBySenderWithToolQuery,
   getPolymarketBetsWithBettorQuery,
 } from 'common-util/graphql/queries';
+
+import { USE_MECH_ANALYTICS, fetchScoredRowsForRequester } from './mech-analytics';
 
 const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const BET_PAGE_SIZE = 1000;
@@ -81,7 +82,31 @@ async function fetchResolvedBets(): Promise<Bet[]> {
     .flatMap(([, value]) => value) as Bet[];
 }
 
-async function fetchMechRequestsForSender(
+/** Fetches the same data as the per-sender subgraph pulls, but from mech-analytics. */
+async function fetchMechRequestsForSenderFromAnalytics(
+  chain: 'gnosis' | 'polygon',
+  sender: string,
+  timestampGt: number
+): Promise<MechRequest[]> {
+  const rows = await fetchScoredRowsForRequester(
+    chain,
+    sender,
+    timestampGt,
+    MECH_PAGE_SIZE,
+    MECH_MAX_PAGES
+  );
+  return rows.map((row) => ({
+    blockTimestamp: String(Math.floor(Date.parse(row.requested_at) / 1000)),
+    parsedRequest: {
+      tool: row.tool,
+      questionTitle: row.question_title,
+    },
+  }));
+}
+
+/** Loads mech requests for one sender from the marketplace subgraph. */
+async function fetchMechRequestsForSenderFromSubgraph(
+  chain: 'gnosis' | 'polygon',
   sender: string,
   timestampGt: number
 ): Promise<MechRequest[]> {
@@ -89,7 +114,7 @@ async function fetchMechRequestsForSender(
 
   for (let i = 0; i < MECH_MAX_PAGES; i++) {
     const skip = i * MECH_PAGE_SIZE;
-    const data = await MARKETPLACE_GRAPH_CLIENTS.gnosis.request<{
+    const data = await MARKETPLACE_GRAPH_CLIENTS[chain].request<{
       requests: MechRequest[];
     }>(
       getMechRequestsBySenderWithToolQuery({
@@ -105,6 +130,18 @@ async function fetchMechRequestsForSender(
   }
 
   return allRequests;
+}
+
+/** Loads mech requests for one sender. The flag selects the data source. */
+async function fetchMechRequestsForSender(
+  chain: 'gnosis' | 'polygon',
+  sender: string,
+  timestampGt: number
+): Promise<MechRequest[]> {
+  if (USE_MECH_ANALYTICS) {
+    return fetchMechRequestsForSenderFromAnalytics(chain, sender, timestampGt);
+  }
+  return fetchMechRequestsForSenderFromSubgraph(chain, sender, timestampGt);
 }
 
 function matchBetToMechRequest(bet: Bet, mechRequests: MechRequest[]): string | null {
@@ -164,7 +201,7 @@ export async function computeOmenstratToolAccuracy(): Promise<ToolAccuracyStat[]
   for (let i = 0; i < senders.length; i += SENDER_BATCH_SIZE) {
     const batch = senders.slice(i, i + SENDER_BATCH_SIZE);
     const results = await Promise.allSettled(
-      batch.map((sender) => fetchMechRequestsForSender(sender, earliestBetTimestamp))
+      batch.map((sender) => fetchMechRequestsForSender('gnosis', sender, earliestBetTimestamp))
     );
 
     results.forEach((result, idx) => {
@@ -236,33 +273,6 @@ async function fetchPolymarketResolvedBets(): Promise<PolymarketBet[]> {
   return allBets.filter((bet) => bet.question?.resolution != null);
 }
 
-async function fetchPolygonMechRequestsForSender(
-  sender: string,
-  timestampGt: number
-): Promise<MechRequest[]> {
-  const allRequests: MechRequest[] = [];
-
-  for (let i = 0; i < MECH_MAX_PAGES; i++) {
-    const skip = i * MECH_PAGE_SIZE;
-    const data = await MARKETPLACE_GRAPH_CLIENTS.polygon.request<{
-      sender: { requests: MechRequest[] } | null;
-    }>(
-      getMechRequestsBySenderEntityQuery({
-        sender,
-        timestamp_gt: timestampGt,
-        first: MECH_PAGE_SIZE,
-        skip,
-      })
-    );
-    const requests = data.sender?.requests ?? [];
-    if (requests.length === 0) break;
-    allRequests.push(...requests);
-    if (requests.length < MECH_PAGE_SIZE) break;
-  }
-
-  return allRequests;
-}
-
 function matchPolymarketBetToMechRequest(
   bet: PolymarketBet,
   mechRequests: MechRequest[]
@@ -316,7 +326,7 @@ export async function computePolystratToolAccuracy(): Promise<ToolAccuracyStat[]
   for (let i = 0; i < senders.length; i += SENDER_BATCH_SIZE) {
     const batch = senders.slice(i, i + SENDER_BATCH_SIZE);
     const results = await Promise.allSettled(
-      batch.map((sender) => fetchPolygonMechRequestsForSender(sender, earliestBetTimestamp))
+      batch.map((sender) => fetchMechRequestsForSender('polygon', sender, earliestBetTimestamp))
     );
 
     results.forEach((result, idx) => {
