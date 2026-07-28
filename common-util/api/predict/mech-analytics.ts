@@ -1,3 +1,5 @@
+import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
+
 /**
  * Client for the mech-analytics `/v1/data/scored-rows` endpoint.
  * It replaces the per-request reads from the marketplace subgraph,
@@ -15,8 +17,8 @@ export const MECH_ANALYTICS_CHAIN_IDS: Record<'gnosis' | 'polygon', number> = {
   polygon: 137,
 };
 
-/** Same value as QMR_MAX_AGE_DAYS in roi-distribution.ts. Older requests cannot be open anymore. */
-const QMR_WINDOW_SECONDS = 14 * 86400;
+/** Requests older than this window cannot be open anymore. */
+const QMR_WINDOW_SECONDS = QMR_MAX_AGE_DAYS * 86400;
 
 /** Fields we use from `/v1/data/scored-rows` rows. Other fields are ignored. */
 export type ScoredRow = {
@@ -43,12 +45,13 @@ export async function* iterateScoredRows(
     throw new Error('MECH_ANALYTICS_URL not set — cannot fetch mech-analytics scored rows');
   }
 
+  const url = new URL(`${base.replace(/\/$/, '')}/v1/data/scored-rows`);
+  for (const [key, value] of Object.entries(searchParams)) {
+    url.searchParams.set(key, value);
+  }
+
   let cursor: string | null = null;
   while (true) {
-    const url = new URL(`${base.replace(/\/$/, '')}/v1/data/scored-rows`);
-    for (const [key, value] of Object.entries(searchParams)) {
-      url.searchParams.set(key, value);
-    }
     if (cursor) url.searchParams.set('cursor', cursor);
 
     const response = await fetch(url.toString());
@@ -56,19 +59,31 @@ export async function* iterateScoredRows(
       throw new Error(`mech-analytics /v1/data/scored-rows returned ${response.status}`);
     }
     const page = (await response.json()) as ScoredRowsPage;
-    yield page.rows ?? [];
+    // A 200 without a rows array is a broken response, not an empty page.
+    if (!Array.isArray(page.rows)) {
+      throw new Error('mech-analytics /v1/data/scored-rows returned no rows array');
+    }
+    yield page.rows;
 
     if (!page.next_cursor) break;
     cursor = page.next_cursor;
   }
 }
 
+/**
+ * Result of a mech-analytics QMR fetch.
+ * `null` = a rebuild failed. Save nothing; the next run retries the rebuild.
+ * `ok: false` = a page failed during an incremental run. The result can
+ * still be saved: the next run fetches the missed rows again, and
+ * `ingestedRequestIds` filters out the rows we already have.
+ * More: docs/mech-analytics-migration.md
+ */
 export type AnalyticsQmrUpdate = {
   additions: Record<string, Record<string, number[]>>;
   /** When true, the caller must drop the existing QMR map: `additions` holds the complete open set. */
   rebuild: boolean;
-  /** New computed_at watermark to save. Null when a rebuild failed — save nothing then. */
-  lastComputedAt: string | null;
+  /** New computed_at watermark to save. */
+  lastComputedAt: string;
   /** Ids of rows we already processed (request_id → requested_at, unix seconds). */
   ingestedRequestIds: Record<string, number>;
   /** Highest requested_at we saved. Stored as lastMechRequestTimestamp so a rollback to the subgraph path can continue from it. */
@@ -89,10 +104,16 @@ export const fetchMechRequestsFromAnalytics = async (
   lastComputedAt: string | undefined,
   previousIngestedIds: Record<string, number> | undefined,
   previousLastTimestamp: number
-): Promise<AnalyticsQmrUpdate> => {
+): Promise<AnalyticsQmrUpdate | null> => {
   const nowSec = Math.floor(Date.now() / 1000);
   const windowStartSec = nowSec - QMR_WINDOW_SECONDS;
-  const isRebuild = !lastComputedAt;
+  // A watermark that does not parse would make the endpoint reject every run.
+  const hasValidWatermark =
+    Boolean(lastComputedAt) && !Number.isNaN(Date.parse(lastComputedAt as string));
+  if (lastComputedAt && !hasValidWatermark) {
+    console.warn(`[mech-analytics:${chain}] invalid watermark "${lastComputedAt}" — rebuilding`);
+  }
+  const isRebuild = !hasValidWatermark;
   // Taken before fetching. After a successful rebuild it becomes the
   // watermark, so the next run also sees rows scored while we were fetching.
   const runStart = new Date().toISOString();
@@ -102,11 +123,11 @@ export const fetchMechRequestsFromAnalytics = async (
     ? {}
     : { ...(previousIngestedIds ?? {}) };
   let lastTimestamp = previousLastTimestamp;
-  // Updated row by row. If a page fails, the saved watermark covers only the
-  // rows we processed; the next run fetches the boundary again and the id
-  // ledger skips the duplicates.
-  let maxComputedAt = lastComputedAt ?? null;
+  // Updated row by row. See the AnalyticsQmrUpdate doc for why a partially
+  // advanced watermark is safe.
+  let maxComputedAt = isRebuild ? null : (lastComputedAt as string);
   let ok = true;
+  const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0 };
 
   const params: Record<string, string> = {
     chain_id: String(MECH_ANALYTICS_CHAIN_IDS[chain]),
@@ -126,18 +147,28 @@ export const fetchMechRequestsFromAnalytics = async (
           maxComputedAt = row.computed_at;
         }
 
-        if (ingestedRequestIds[row.request_id] !== undefined) continue; // already processed
+        if (ingestedRequestIds[row.request_id] !== undefined) {
+          skips.duplicate++;
+          continue;
+        }
         const ts = Math.floor(Date.parse(row.requested_at) / 1000);
-        if (!Number.isFinite(ts) || ts <= 0 || ts < windowStartSec) continue;
+        if (!Number.isFinite(ts) || ts <= 0 || ts < windowStartSec) {
+          skips.outOfWindow++;
+          continue;
+        }
 
         if (isRebuild && row.resolution_status === 'invalid') {
           ingestedRequestIds[row.request_id] = ts; // remember the id so we skip this row later
+          skips.invalid++;
           continue;
         }
 
         const agentId = row.requester?.toLowerCase();
         const questionTitle = row.question_title;
-        if (!agentId || !questionTitle) continue;
+        if (!agentId || !questionTitle) {
+          skips.missingKey++;
+          continue;
+        }
 
         if (!additions[questionTitle]) additions[questionTitle] = {};
         if (!additions[questionTitle][agentId]) additions[questionTitle][agentId] = [];
@@ -154,14 +185,7 @@ export const fetchMechRequestsFromAnalytics = async (
   if (isRebuild && !ok) {
     // An incomplete rebuild would give us only part of the open set.
     // Save nothing and try again on the next run.
-    return {
-      additions: {},
-      rebuild: false,
-      lastComputedAt: null,
-      ingestedRequestIds: previousIngestedIds ?? {},
-      lastTimestamp: previousLastTimestamp,
-      ok: false,
-    };
+    return null;
   }
 
   for (const [id, ts] of Object.entries(ingestedRequestIds)) {
@@ -170,13 +194,15 @@ export const fetchMechRequestsFromAnalytics = async (
 
   console.log(
     `[mech-analytics:${chain}] ${isRebuild ? 'rebuild' : 'incremental'} ok=${ok} ` +
-      `ingestedIds=${Object.keys(ingestedRequestIds).length}`
+      `ingestedIds=${Object.keys(ingestedRequestIds).length} ` +
+      `skipped: dup=${skips.duplicate} old=${skips.outOfWindow} ` +
+      `invalid=${skips.invalid} noKey=${skips.missingKey}`
   );
 
   return {
     additions,
     rebuild: isRebuild,
-    lastComputedAt: isRebuild ? runStart : maxComputedAt,
+    lastComputedAt: isRebuild ? runStart : (maxComputedAt as string),
     ingestedRequestIds,
     lastTimestamp,
     ok,
@@ -197,6 +223,7 @@ export const fetchScoredRowsForRequester = async (
 ): Promise<ScoredRow[]> => {
   const rows: ScoredRow[] = [];
   let pages = 0;
+  let lastPageFull = false;
   const params: Record<string, string> = {
     chain_id: String(MECH_ANALYTICS_CHAIN_IDS[chain]),
     requester,
@@ -205,7 +232,13 @@ export const fetchScoredRowsForRequester = async (
   };
   for await (const page of iterateScoredRows(params)) {
     rows.push(...page);
+    lastPageFull = page.length === pageSize;
     if (++pages >= maxPages) break;
+  }
+  if (pages >= maxPages && lastPageFull) {
+    console.warn(
+      `[mech-analytics:${chain}] page cap hit for ${requester} — rows beyond ${rows.length} were not fetched`
+    );
   }
   return rows;
 };

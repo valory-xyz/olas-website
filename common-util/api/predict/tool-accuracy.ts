@@ -16,6 +16,8 @@ const BET_PAGE_SIZE = 1000;
 const BET_TOTAL = 10000;
 const MECH_PAGE_SIZE = 1000;
 const MECH_MAX_PAGES = 10;
+// mech-analytics allows larger pages than the subgraph; 10 × 5000 = 50k cap per sender
+const ANALYTICS_PAGE_SIZE = 5000;
 const SENDER_BATCH_SIZE = 5;
 
 type Bet = {
@@ -92,7 +94,7 @@ async function fetchMechRequestsForSenderFromAnalytics(
     chain,
     sender,
     timestampGt,
-    MECH_PAGE_SIZE,
+    ANALYTICS_PAGE_SIZE,
     MECH_MAX_PAGES
   );
   return rows.map((row) => ({

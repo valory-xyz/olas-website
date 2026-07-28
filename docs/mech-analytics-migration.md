@@ -111,9 +111,13 @@ resolution must still be saved). We skip a row when: its ID is in the map, or
 null. Old rows cannot be open; `settledMechRequests = senderTotal −
 openRequestCount` already counts them as settled, the same as the TTL flush.
 When a page fails, we keep the partial additions. The watermark then covers
-only the processed rows. The next run reads the boundary again, and the map
-removes the duplicates. The error surface stays the same as the subgraph path
-(`'mech-requests'` in fetchErrors).
+only the processed rows. This loses no data: the endpoint serves rows in
+ascending `(computed_at, request_id)` order, so every row on a failed page has
+`computed_at` at or after the saved watermark. `since_computed_at` is
+inclusive, so the next run receives those rows again. Rows we already saved
+come again too; the `ingestedRequestIds` map filters them out. The error
+surface stays the same as the subgraph path (`'mech-requests'` in
+fetchErrors).
 
 **A flag-off run drops `lastComputedAt` and `ingestedRequestIds`.** A new
 flag-on run then starts with a fresh rebuild. An old watermark could count
