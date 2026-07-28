@@ -587,10 +587,10 @@ const PearlTerms = () => {
                     <ExternalLink href="https://polymarket.com/">
                       https://polymarket.com/
                     </ExternalLink>
-                    , herein: “Polymarket”) or Omenstrat Agent that trades on the Omen Platform
-                    (available at{' '}
-                    <ExternalLink href="https://omen.eth.link/">
-                      https://omen.eth.link/
+                    , herein: “Polymarket”) or Omenstrat Agent that trades via the decentralized
+                    Omen Platform (available at{' '}
+                    <ExternalLink href="https://dxdocs.eth.limo/docs/Products/omen/">
+                      https://dxdocs.eth.limo/docs/Products/omen/
                     </ExternalLink>
                     , herein: “Omen”)) may be limited or disabled at the Pearl Application-level
                     (including preventing activation or execution of an Agent from certain
