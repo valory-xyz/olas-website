@@ -11,6 +11,32 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
 import { ExternalLink, Link } from 'components/ui/typography';
 import { useRouter } from 'next/router';
+import { ReactNode } from 'react';
+
+type HeadingTag = 'h4' | 'h5' | 'h6';
+
+const HEADING_CLASSES: Record<HeadingTag, string> = {
+  h4: 'text-xl text-black font-semibold mt-8',
+  h5: 'text-lg text-black font-semibold',
+  h6: 'text-lg text-black font-semibold',
+};
+
+// Numbered headings self-link to their own anchor (e.g. #section-7-5)
+const AnchorHeading = ({
+  as: Tag,
+  id,
+  children,
+}: {
+  as: HeadingTag;
+  id: string;
+  children: ReactNode;
+}) => (
+  <Tag id={id} className={`${HEADING_CLASSES[Tag]} scroll-mt-[100px]`}>
+    <a href={`#${id}`} className="hover:underline">
+      {children}
+    </a>
+  </Tag>
+);
 
 // Note: All links on this page must be external because
 // the page is also rendered inside the Pearl app
@@ -31,7 +57,9 @@ const PearlTerms = () => {
           </h1>
           <div className="text-xl text-gray-600 space-y-6">
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">1. Introduction and Scope</h4>
+              <AnchorHeading as="h4" id="section-1">
+                1. Introduction and Scope
+              </AnchorHeading>
               <p className="mt-2">
                 Valory AG (“Valory” as defined at{' '}
                 <ExternalLink href={`${VALORY_URL}/terms`}>https://valory.xyz/terms</ExternalLink>,
@@ -61,7 +89,7 @@ const PearlTerms = () => {
                 Conditions, you must not download or use the Pearl Application. You also acknowledge
                 the terms and privacy policies of “Third-Party Integrations” (external protocols,
                 platforms, or services provided by entities other than Valory, including but not
-                limited to those named in Section 7).
+                limited to those named in <Link href="#section-7">Section 7</Link>).
               </p>
               <p className="mt-2">
                 For the avoidance of doubt, the Pearl Site Disclaimer & Privacy Policy governs the
@@ -85,9 +113,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">
+              <AnchorHeading as="h4" id="section-2">
                 2. What is the Pearl Application
-              </h4>
+              </AnchorHeading>
               <p className="mt-2">
                 Pearl Application enables users to run “Agents” or “AI Agents” (software that can
                 perceive its environment, make decisions, and take actions without constant human
@@ -115,7 +143,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">3. Acceptance of the risks</h4>
+              <AnchorHeading as="h4" id="section-3">
+                3. Acceptance of the risks
+              </AnchorHeading>
               <p className="mt-2">
                 The Conditions explain the risks involved in using Offerings like Pearl Application,
                 which are based on emerging technologies (such as blockchain). Nothing in Pearl
@@ -152,7 +182,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">4. Limitation of liability</h4>
+              <AnchorHeading as="h4" id="section-4">
+                4. Limitation of liability
+              </AnchorHeading>
               <p className="mt-2">
                 <AlertTriangle size={18} className="inline-block mb-1" /> Warning: Pearl Application
                 is experimental open-source software that is provided “as is”, without any
@@ -172,9 +204,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">
+              <AnchorHeading as="h4" id="section-5">
                 5. Non-custodial nature & data handling
-              </h4>
+              </AnchorHeading>
               <p className="mt-2">
                 Pearl Application is non-custodial software developed by Valory. Valory does not
                 ever take custody of user funds, access wallets, or act as a financial intermediary
@@ -197,7 +229,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">6. Pearl Agents</h4>
+              <AnchorHeading as="h4" id="section-6">
+                6. Pearl Agents
+              </AnchorHeading>
               <p className="mt-2">
                 As above, Pearl enables users to use various Agents where the open-source code was
                 provided by Valory or another Third-Party and the Agents run locally on users&apos;
@@ -209,14 +243,14 @@ const PearlTerms = () => {
               </p>
               <div className="space-y-4 mt-4 ml-8">
                 <div>
-                  <h5 className="text-lg text-black font-semibold" id="available-agents-terms">
+                  <AnchorHeading as="h5" id="section-6-1">
                     6.1 Available Agents
-                  </h5>
+                  </AnchorHeading>
                   <div className="space-y-4 mt-4 ml-8">
                     <div>
-                      <h6 className="text-lg text-black font-semibold" id="basius-terms">
+                      <AnchorHeading as="h6" id="section-6-1-1">
                         6.1.1 Basius (DeFAI Agents)
-                      </h6>
+                      </AnchorHeading>
                       <p className="mt-2">
                         Pearl Application allows users to run Optimus and Basius, autonomous Agents
                         developed by Valory (together, the “DeFAI Agent(s)”). “Optimus” is a DeFAI
@@ -237,36 +271,40 @@ const PearlTerms = () => {
                         Base, together with third-party routing, bridging, and pricing services used
                         to execute swaps and transactions, in order to provide or manage liquidity
                         positions. The DEXs and other protocols with which DeFAI Agent(s) interact
-                        are Market Protocols within the meaning of Section 7.5, and Section 7.5
-                        applies to them. Valory does not operate, control, or manage these DEXs or
-                        protocols, does not execute, clear, or settle any transaction on them, and
-                        does not determine pricing, slippage, eligibility, or outcomes. Consistent
-                        with Section 5, Valory does not take custody of, access, or control any
-                        assets used by the DeFAI Agent(s), which at all times remain in
-                        user-controlled wallets or smart-contract wallets. The DeFAI Agent(s) may
-                        hold or route between digital assets, and tokens not supported by a DeFAI
-                        Agent(s) may be swapped into a supported asset when a position is entered.
-                        Providing liquidity and transacting on DEXs involves significant risk,
-                        including price volatility, slippage, impermanent loss, smart-contract
+                        are Market Protocols within the meaning of{' '}
+                        <Link href="#section-7-5">Section 7.5</Link>, and{' '}
+                        <Link href="#section-7-5">Section 7.5</Link> applies to them. Valory does
+                        not operate, control, or manage these DEXs or protocols, does not execute,
+                        clear, or settle any transaction on them, and does not determine pricing,
+                        slippage, eligibility, or outcomes. Consistent with{' '}
+                        <Link href="#section-5">Section 5</Link>, Valory does not take custody of,
+                        access, or control any assets used by the DeFAI Agent(s), which at all times
+                        remain in user-controlled wallets or smart-contract wallets. The DeFAI
+                        Agent(s) may hold or route between digital assets, and tokens not supported
+                        by a DeFAI Agent(s) may be swapped into a supported asset when a position is
+                        entered. Providing liquidity and transacting on DEXs involves significant
+                        risk, including price volatility, slippage, impermanent loss, smart-contract
                         failure, failed or delayed transactions, and partial or total loss of
                         assets. Any reference to returns, yield, return of investment, or portfolio
                         performance is indicative only, is not guaranteed, and does not constitute
                         investment, financial, or trading advice. Nothing in the DeFAI Agent(s)
                         constitutes a managed account, pooled investment, or any offer to manage
-                        assets and Section 3 applies in full. Valory is not liable for any losses,
-                        damages, delays, failed actions, or other issues arising from or related to
-                        the DeFAI Agent(s), the DEXs, or any third-party routing, bridging, or
-                        pricing services they rely on, including outages, mispricing, or changes to
-                        such services or their rules. Use of the DeFAI Agent(s) may be subject to
-                        geographic, legal, or regulatory restrictions, and may be limited or
-                        disabled at the Pearl Application level in accordance with Section 3, 7.5
-                        and 8 herein.
+                        assets and <Link href="#section-3">Section 3</Link> applies in full. Valory
+                        is not liable for any losses, damages, delays, failed actions, or other
+                        issues arising from or related to the DeFAI Agent(s), the DEXs, or any
+                        third-party routing, bridging, or pricing services they rely on, including
+                        outages, mispricing, or changes to such services or their rules. Use of the
+                        DeFAI Agent(s) may be subject to geographic, legal, or regulatory
+                        restrictions, and may be limited or disabled at the Pearl Application level
+                        in accordance with Section <Link href="#section-3">3</Link>,{' '}
+                        <Link href="#section-7-5">7.5</Link> and <Link href="#section-8">8</Link>{' '}
+                        herein.
                       </p>
                     </div>
                     <div>
-                      <h6 className="text-lg text-black font-semibold" id="connect-terms">
+                      <AnchorHeading as="h6" id="section-6-1-2">
                         6.1.2 Connect
-                      </h6>
+                      </AnchorHeading>
                       <p className="mt-2">
                         Pearl Connect (“Connect”) is a Pearl Agent; each instance you create is a
                         “Connect Agent”. Connect Agents are Pearl Agents that can connect to any
@@ -274,55 +312,58 @@ const PearlTerms = () => {
                         <ExternalLink href="https://claude.com/product/claude-code">
                           Claude Code
                         </ExternalLink>{' '}
-                        (see Section 7.6), hereafter “Agent Harness”), and optionally any
-                        Independent Agent you create independently via the Agent Harness (hereafter
-                        “Independent Agent”, totally distinct from Pearl&apos;s Agents). Together
-                        the Agent Harness and any Independent Agent are each termed a “Connected
-                        Agent”, collectively “Connected Agents”. Unlike other Pearl Agents, Connect
-                        is not autonomous: it is designed as a co-pilot for the Connected Agents,
-                        giving them the ability to act on-chain — including transferring funds,
-                        paying for Agent services via the Olas Protocol, or trading on Market
-                        Protocols, such as Polymarket or Omen (see Section 7.5) — only when you
-                        direct them to, live.
+                        (see <Link href="#section-7-6">Section 7.6</Link>), hereafter “Agent
+                        Harness”), and optionally any Independent Agent you create independently via
+                        the Agent Harness (hereafter “Independent Agent”, totally distinct from
+                        Pearl&apos;s Agents). Together the Agent Harness and any Independent Agent
+                        are each termed a “Connected Agent”, collectively “Connected Agents”. Unlike
+                        other Pearl Agents, Connect is not autonomous: it is designed as a co-pilot
+                        for the Connected Agents, giving them the ability to act on-chain —
+                        including transferring funds, paying for Agent services via the Olas
+                        Protocol, or trading on Market Protocols, such as Polymarket or Omen (see{' '}
+                        <Link href="#section-7-5">Section 7.5</Link>) — only when you direct them
+                        to, live.
                       </p>
                       <p className="mt-2">
-                        Connect is non-custodial in the manner described in Section 5: the Connected
-                        Agent prepares the action you asked for, but neither it nor its provider
-                        holds your private key or signs anything, only your Connect Agent can sign
-                        and thereby approve the action and resulting actions, e.g. sending funds
-                        from your Connect Agent&apos;s wallet (the “Agent Wallet”). Your Connected
-                        Agent can prepare a trade on a Market Protocol, your Connect Agent can sign
-                        the trade to approve the necessary actions (including transfers of funds
-                        from your Agent Wallet), and your Connect Agent or Connected Agent can send
-                        the signed trade to the Market Protocol, depending on the Market Protocol.
-                        Trades are initiated by you or Connected Agents and are your own
-                        responsibility, regardless of whether they are executed by the Connect Agent
-                        and whether they are informed by predictions requested by the Connect Agent.
-                        Any prediction, forecast, or other output returned by the Connect Agent is
-                        generated by processes involving independent Third-Parties, is not reviewed
-                        or verified by Valory, and does not constitute financial, investment, or
-                        trading advice (Section 3).
+                        Connect is non-custodial in the manner described in{' '}
+                        <Link href="#section-5">Section 5</Link>: the Connected Agent prepares the
+                        action you asked for, but neither it nor its provider holds your private key
+                        or signs anything, only your Connect Agent can sign and thereby approve the
+                        action and resulting actions, e.g. sending funds from your Connect
+                        Agent&apos;s wallet (the “Agent Wallet”). Your Connected Agent can prepare a
+                        trade on a Market Protocol, your Connect Agent can sign the trade to approve
+                        the necessary actions (including transfers of funds from your Agent Wallet),
+                        and your Connect Agent or Connected Agent can send the signed trade to the
+                        Market Protocol, depending on the Market Protocol. Trades are initiated by
+                        you or Connected Agents and are your own responsibility, regardless of
+                        whether they are executed by the Connect Agent and whether they are informed
+                        by predictions requested by the Connect Agent. Any prediction, forecast, or
+                        other output returned by the Connect Agent is generated by processes
+                        involving independent Third-Parties, is not reviewed or verified by Valory,
+                        and does not constitute financial, investment, or trading advice (
+                        <Link href="#section-3">Section 3</Link>).
                       </p>
                       <p className="mt-2">
                         <AlertTriangle size={18} className="inline-block mb-1" /> Connect Agents
-                        carry risks in addition to those described in Sections 3, 4, and 7. By
-                        creating and using your Connect Agent you are agreeing that any funds in
-                        your Agent Wallet can be used by your Connect and Connected Agent. You
-                        understand that these technologies are AI-mediated and may result in the
-                        loss of any and all funds associated. Only fund your Agent Wallet with funds
-                        you agree to spend. As with any AI Agent that acts on content it processes,
-                        your Connected Agent could be manipulated by content it encounters into
-                        requesting a transaction you did not intend (“prompt injection”). The
-                        Connect Agents&apos; design can mitigate some risks but cannot fully
-                        eliminate risks and your Agent&apos;s risk profile is affected by how you
-                        configure it. Connect Agents&apos; protections also depend on the ordinary
-                        security of your own device and Connected Agent installations, and on the
-                        independent conduct of the Connected Agent provider and any Third-Party
-                        Integrations you choose to interact with through it. You acknowledge that
-                        using Connect Agents carry a non-zero risk of loss of some or all funds held
-                        in the Agent Wallet, and that you are solely responsible for the Connected
-                        Agent you use, the content it is exposed to, and how you configure your
-                        Connect Agent.
+                        carry risks in addition to those described in Sections{' '}
+                        <Link href="#section-3">3</Link>, <Link href="#section-4">4</Link>, and{' '}
+                        <Link href="#section-7">7</Link>. By creating and using your Connect Agent
+                        you are agreeing that any funds in your Agent Wallet can be used by your
+                        Connect and Connected Agent. You understand that these technologies are
+                        AI-mediated and may result in the loss of any and all funds associated. Only
+                        fund your Agent Wallet with funds you agree to spend. As with any AI Agent
+                        that acts on content it processes, your Connected Agent could be manipulated
+                        by content it encounters into requesting a transaction you did not intend
+                        (“prompt injection”). The Connect Agents&apos; design can mitigate some
+                        risks but cannot fully eliminate risks and your Agent&apos;s risk profile is
+                        affected by how you configure it. Connect Agents&apos; protections also
+                        depend on the ordinary security of your own device and Connected Agent
+                        installations, and on the independent conduct of the Connected Agent
+                        provider and any Third-Party Integrations you choose to interact with
+                        through it. You acknowledge that using Connect Agents carry a non-zero risk
+                        of loss of some or all funds held in the Agent Wallet, and that you are
+                        solely responsible for the Connected Agent you use, the content it is
+                        exposed to, and how you configure your Connect Agent.
                       </p>
                       <p className="mt-2">
                         Anything beyond what Connect Agents themselves provide — any MCP server,
@@ -339,23 +380,22 @@ const PearlTerms = () => {
                   </div>
                 </div>
                 <div>
-                  <h5
-                    className="text-lg text-black font-semibold"
-                    id="agents-under-development-terms"
-                  >
+                  <AnchorHeading as="h5" id="section-6-2">
                     6.2 Agents Under Development
-                  </h5>
+                  </AnchorHeading>
                   <div className="space-y-4 mt-4 ml-8">
                     <div>
-                      <h6 className="text-lg text-black font-semibold" id="optimus-terms">
+                      <AnchorHeading as="h6" id="section-6-2-1">
                         6.2.1 Optimus
-                      </h6>
-                      <p className="mt-2">See Section 6.1.1.</p>
+                      </AnchorHeading>
+                      <p className="mt-2">
+                        See <Link href="#section-6-1-1">Section 6.1.1</Link>.
+                      </p>
                     </div>
                     <div>
-                      <h6 className="text-lg text-black font-semibold" id="pettbro-terms">
+                      <AnchorHeading as="h6" id="section-6-2-2">
                         6.2.2 Pettbro
-                      </h6>
+                      </AnchorHeading>
                       <p className="mt-2">
                         “PettBro” is an autonomous Agent provided and built by Pett.ai (an
                         independent third-party that is not owned, operated, or controlled by
@@ -426,7 +466,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">7. Third-Party Integrations</h4>
+              <AnchorHeading as="h4" id="section-7">
+                7. Third-Party Integrations
+              </AnchorHeading>
               <p className="mt-2">
                 Valory is not liable for any Third-Party Integrations; you use them at your own sole
                 risk and must comply with their respective terms. To the fullest extent permitted by
@@ -435,10 +477,10 @@ const PearlTerms = () => {
                 Integrations. For more information see:
               </p>
               <div className="space-y-4 mt-4 ml-8">
-                <div>
-                  <h5 className="text-lg text-black font-semibold" id="transak-terms">
+                <div id="transak-terms">
+                  <AnchorHeading as="h5" id="section-7-1">
                     <LinkIcon size={18} className="inline-block mb-1" /> 7.1 Transak
-                  </h5>
+                  </AnchorHeading>
                   <p className="mt-2">
                     Transak is a regulated Virtual Asset Service Provider (VASP) that enables
                     fiat-to-crypto purchases (available at{' '}
@@ -473,10 +515,10 @@ const PearlTerms = () => {
                     lawfully be excluded.
                   </p>
                 </div>
-                <div>
-                  <h5 className="text-lg text-black font-semibold" id="web3auth-terms">
+                <div id="web3auth-terms">
+                  <AnchorHeading as="h5" id="section-7-2">
                     <LinkIcon size={18} className="inline-block mb-1" /> 7.2 Web3Auth
-                  </h5>
+                  </AnchorHeading>
                   <p className="mt-2">
                     Web3Auth is a third-party authentication and wallet backup service that uses
                     multi-party computation (MPC) technology (available at{' '}
@@ -505,10 +547,10 @@ const PearlTerms = () => {
                     integration, except to the extent such liability cannot lawfully be excluded.
                   </p>
                 </div>
-                <div>
-                  <h5 className="text-lg text-black font-semibold" id="zendesk-terms">
+                <div id="zendesk-terms">
+                  <AnchorHeading as="h5" id="section-7-3">
                     <LinkIcon size={18} className="inline-block mb-1" /> 7.3 Zendesk
-                  </h5>
+                  </AnchorHeading>
                   <p className="mt-2">
                     Pearl Application allows users to contact the Valory support team through
                     Zendesk (available at{' '}
@@ -546,16 +588,18 @@ const PearlTerms = () => {
                     the extent such liability cannot lawfully be excluded.
                   </p>
                 </div>
-                <div>
-                  <h5 className="text-lg text-black font-semibold" id="pettai-terms">
+                <div id="pettai-terms">
+                  <AnchorHeading as="h5" id="section-7-4">
                     <LinkIcon size={18} className="inline-block mb-1" /> 7.4 Pett.ai
-                  </h5>
-                  <p className="mt-2">See Section 6.2.2.</p>
+                  </AnchorHeading>
+                  <p className="mt-2">
+                    See <Link href="#section-6-2-2">Section 6.2.2</Link>.
+                  </p>
                 </div>
-                <div>
-                  <h5 className="text-lg text-black font-semibold" id="market-protocols-terms">
+                <div id="market-protocols-terms">
+                  <AnchorHeading as="h5" id="section-7-5">
                     7.5 Interaction with Market Protocols
-                  </h5>
+                  </AnchorHeading>
                   <p className="mt-2">
                     Some functionality in Pearl Application may interact with decentralized or
                     centralized market protocols operated by third-parties (“Market Protocols”).
@@ -603,9 +647,9 @@ const PearlTerms = () => {
                   </p>
                 </div>
                 <div>
-                  <h5 className="text-lg text-black font-semibold" id="anthropic-terms">
+                  <AnchorHeading as="h5" id="section-7-6">
                     <LinkIcon size={18} className="inline-block mb-1" /> 7.6 Anthropic (Claude Code)
-                  </h5>
+                  </AnchorHeading>
                   <p className="mt-2">
                     <ExternalLink href="https://claude.com/product/claude-code">
                       Claude Code
@@ -615,26 +659,27 @@ const PearlTerms = () => {
                     <ExternalLink href="https://www.anthropic.com/">anthropic.com</ExternalLink>,
                     hereafter: “the Anthropic Software”) and is not owned, controlled, or operated
                     by Valory. Pearl Application may launch or link to the Anthropic Software,
-                    including as a means of accessing Pearl Connect (Section 6.1.2), but does not
-                    modify it and has no visibility into or control over your Anthropic account,
-                    session content, or any data you provide to or receive from it. Any mention and
-                    interaction with Pearl or related software or communications from Valory does
-                    not constitute nor imply a partnership or any other kind of relationship with
-                    Anthropic nor an endorsement from the same. You contract directly with Anthropic
-                    under its own applicable terms of service and privacy policy. Valory makes no
-                    warranties regarding the Anthropic Software&apos;s availability, security,
-                    correctness, or performance, and, to the maximum extent permitted by law, is not
-                    liable for any losses, damages, or issues arising from or related to your use of
-                    the Anthropic Software, including any output it generates or action it takes.
+                    including as a means of accessing Pearl Connect (
+                    <Link href="#section-6-1-2">Section 6.1.2</Link>), but does not modify it and
+                    has no visibility into or control over your Anthropic account, session content,
+                    or any data you provide to or receive from it. Any mention and interaction with
+                    Pearl or related software or communications from Valory does not constitute nor
+                    imply a partnership or any other kind of relationship with Anthropic nor an
+                    endorsement from the same. You contract directly with Anthropic under its own
+                    applicable terms of service and privacy policy. Valory makes no warranties
+                    regarding the Anthropic Software&apos;s availability, security, correctness, or
+                    performance, and, to the maximum extent permitted by law, is not liable for any
+                    losses, damages, or issues arising from or related to your use of the Anthropic
+                    Software, including any output it generates or action it takes.
                   </p>
                 </div>
               </div>
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">
+              <AnchorHeading as="h4" id="section-8">
                 8. User responsibilities and prohibited uses
-              </h4>
+              </AnchorHeading>
               <p className="mt-2">
                 You represent and warrant that your access to and use of the Pearl Application, any
                 Agent or Third-Party Integrations accessed through Pearl Application complies with
@@ -666,9 +711,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">
+              <AnchorHeading as="h4" id="section-9">
                 9. Updates, governing law and dispute resolution
-              </h4>
+              </AnchorHeading>
               <p className="mt-2">
                 Valory may update these Pearl Terms from time to time to reflect changes in the
                 product or legal requirements. Updates will be effective when posted on the Pearl
@@ -687,7 +732,9 @@ const PearlTerms = () => {
             </section>
 
             <section>
-              <h4 className="text-xl text-black font-semibold mt-8">10. Support</h4>
+              <AnchorHeading as="h4" id="section-10">
+                10. Support
+              </AnchorHeading>
               <p className="mt-2">
                 If you encounter a problem/question, please contact here -{' '}
                 <ExternalLink href="mailto:support@valory.zendesk.com">
