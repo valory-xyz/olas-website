@@ -214,6 +214,10 @@ export async function computeOmenstratToolAccuracy(): Promise<ToolAccuracyStat[]
     results.forEach((result, idx) => {
       if (result.status === 'fulfilled') {
         mechRequestsBySender.set(batch[idx], result.value);
+      } else {
+        // A dropped sender only shrinks the stats; log it so an outage
+        // (e.g. missing MECH_ANALYTICS_URL) does not look like healthy data.
+        console.error(`[tool-accuracy] mech-request fetch failed for ${batch[idx]}`, result.reason);
       }
     });
   }
@@ -339,6 +343,10 @@ export async function computePolystratToolAccuracy(): Promise<ToolAccuracyStat[]
     results.forEach((result, idx) => {
       if (result.status === 'fulfilled') {
         mechRequestsBySender.set(batch[idx], result.value);
+      } else {
+        // A dropped sender only shrinks the stats; log it so an outage
+        // (e.g. missing MECH_ANALYTICS_URL) does not look like healthy data.
+        console.error(`[tool-accuracy] mech-request fetch failed for ${batch[idx]}`, result.reason);
       }
     });
   }

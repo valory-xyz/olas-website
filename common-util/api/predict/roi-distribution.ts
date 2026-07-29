@@ -24,6 +24,7 @@ const DAY_SECONDS = 86400;
 const BYDAY_RETENTION_DAYS = 90;
 // QMR_MAX_AGE_DAYS (common-util/constants.ts): age-out TTL for pending QMR
 // entries (markets resolve in ~4 days); shared with the mech-analytics client.
+
 // Minimum lifetime bets before an agent's ROI is included in the histogram.
 // Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
 // produce statistically meaningless ROIs that distort the tails.
@@ -459,7 +460,7 @@ const updateAgentBlueprintData = async (
 
   let additions: Record<string, Record<string, number[]>> = {};
   let newMechTs = existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs;
-  let mechRequestsOk: boolean;
+  let mechRequestsOk = false;
   // Saved only while the flag is on. A flag-off run drops it, so turning
   // the flag on again starts with a fresh rebuild. An old watermark could
   // count the same rows twice.

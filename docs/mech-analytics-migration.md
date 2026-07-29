@@ -107,8 +107,8 @@ partial rebuild is dangerous: it makes `openRequestCount` too low, and then
 **Incremental runs.** Query: `since_computed_at=<watermark>` and
 `since=<now−14d>`, with no `resolved` filter (a recent request with a fast
 resolution must still be saved). We skip a row when: its ID is in the map, or
-`requested_at` is older than the 14-day window, or the title or requester is
-null. Old rows cannot be open; `settledMechRequests = senderTotal −
+`requested_at` is older than the 14-day window, or `resolution_status` is
+`'invalid'` (its ID is still recorded), or the title or requester is null. Old rows cannot be open; `settledMechRequests = senderTotal −
 openRequestCount` already counts them as settled, the same as the TTL flush.
 When a page fails, we keep the partial additions. The watermark then covers
 only the processed rows. This loses no data: the endpoint serves rows in

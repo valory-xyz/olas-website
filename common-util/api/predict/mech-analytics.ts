@@ -71,6 +71,10 @@ export async function* iterateScoredRows(
     yield page.rows;
 
     if (!page.next_cursor) break;
+    // A truthy non-string cursor is a broken response, same as a missing rows array.
+    if (typeof page.next_cursor !== 'string') {
+      throw new Error('mech-analytics /v1/data/scored-rows returned a non-string next_cursor');
+    }
     cursor = page.next_cursor;
   }
 }
@@ -174,7 +178,7 @@ export const fetchMechRequestsFromAnalytics = async (
           continue;
         }
 
-        if (isRebuild && row.resolution_status === 'invalid') {
+        if (row.resolution_status === 'invalid') {
           ingestedRequestIds[row.request_id] = ts; // remember the id so we skip this row later
           skips.invalid++;
           continue;
@@ -261,6 +265,8 @@ export const fetchScoredRowsForRequester = async (
     lastPageFull = page.length === pageSize;
     if (++pages >= maxPages) break;
   }
+  // Can fire when the row count is exactly pageSize × maxPages and no more
+  // rows exist — a rare false positive, accepted to keep the pager simple.
   if (pages >= maxPages && lastPageFull) {
     console.warn(
       `[mech-analytics:${chain}] page cap hit for ${requester} — rows beyond ${rows.length} were not fetched`
