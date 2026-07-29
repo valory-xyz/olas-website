@@ -7,10 +7,11 @@
     "description": "Lightweight agents that anybody can run locally or in the cloud.",
     "services": [
       {
-        "title": "Omenstrat",
-        "description": "Trades on prediction markets.",
-        "image": "/images/agents/omenstrat.png",
-        "link": "/agents/omenstrat"
+        "title": "Connect",
+        "description": "Brings on-chain to your coding agent, starting with prediction markets.",
+        "image": "/images/agents/connect.png",
+        "link": "https://pearl.you/connect",
+        "isExternal": true
       },
       {
         "title": "Polystrat",
@@ -18,6 +19,12 @@
         "image": "/images/agents/polystrat.png",
         "link": "https://www.pearl.you/polystrat",
         "isExternal": true
+      },
+      {
+        "title": "Omenstrat",
+        "description": "Trades on prediction markets.",
+        "image": "/images/agents/omenstrat.png",
+        "link": "/agents/omenstrat"
       },
       {
         "title": "Basius",
