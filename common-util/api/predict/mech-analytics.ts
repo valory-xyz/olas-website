@@ -12,13 +12,18 @@ export const USE_MECH_ANALYTICS = process.env.USE_MECH_ANALYTICS === 'true';
 
 const PAGE_SIZE = 5000; // endpoint max limit
 
-export const MECH_ANALYTICS_CHAIN_IDS: Record<'gnosis' | 'polygon', number> = {
+export const MECH_ANALYTICS_CHAIN_IDS = {
   gnosis: 100,
   polygon: 137,
-};
+} as const;
+
+export type MechAnalyticsChain = keyof typeof MECH_ANALYTICS_CHAIN_IDS;
 
 /** Requests older than this window cannot be open anymore. */
 const QMR_WINDOW_SECONDS = QMR_MAX_AGE_DAYS * 86400;
+
+/** Converts an ISO 8601 string to unix seconds. Returns NaN for a bad input. */
+export const isoToUnixSec = (iso: string): number => Math.floor(Date.parse(iso) / 1000);
 
 /** Fields we use from `/v1/data/scored-rows` rows. Other fields are ignored. */
 export type ScoredRow = {
@@ -54,7 +59,7 @@ export async function* iterateScoredRows(
   while (true) {
     if (cursor) url.searchParams.set('cursor', cursor);
 
-    const response = await fetch(url.toString());
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`mech-analytics /v1/data/scored-rows returned ${response.status}`);
     }
@@ -70,26 +75,30 @@ export async function* iterateScoredRows(
   }
 }
 
-/**
- * Result of a mech-analytics QMR fetch.
- * `null` = a rebuild failed. Save nothing; the next run retries the rebuild.
- * `ok: false` = a page failed during an incremental run. The result can
- * still be saved: the next run fetches the missed rows again, and
- * `ingestedRequestIds` filters out the rows we already have.
- * More: docs/mech-analytics-migration.md
- */
-export type AnalyticsQmrUpdate = {
+type QmrFetchData = {
   additions: Record<string, Record<string, number[]>>;
-  /** When true, the caller must drop the existing QMR map: `additions` holds the complete open set. */
-  rebuild: boolean;
   /** New computed_at watermark to save. */
   lastComputedAt: string;
   /** Ids of rows we already processed (request_id → requested_at, unix seconds). */
   ingestedRequestIds: Record<string, number>;
   /** Highest requested_at we saved. Stored as lastMechRequestTimestamp so a rollback to the subgraph path can continue from it. */
   lastTimestamp: number;
-  ok: boolean;
 };
+
+/**
+ * Result of a mech-analytics QMR fetch.
+ * `null` = a rebuild failed or returned no rows at all. Save nothing; the
+ * next run retries the rebuild.
+ * `kind: 'rebuild'` = the caller must drop the existing QMR map: `additions`
+ * holds the complete open set.
+ * `kind: 'incremental', ok: false` = a page failed. The result can still be
+ * saved: the next run fetches the missed rows again, and `ingestedRequestIds`
+ * filters out the rows we already have.
+ * More: docs/mech-analytics-migration.md
+ */
+export type AnalyticsQmrUpdate =
+  | (QmrFetchData & { kind: 'rebuild' })
+  | (QmrFetchData & { kind: 'incremental'; ok: boolean });
 
 /**
  * Fetches mech requests for the QMR blob.
@@ -100,7 +109,7 @@ export type AnalyticsQmrUpdate = {
  * counting a row twice.
  */
 export const fetchMechRequestsFromAnalytics = async (
-  chain: 'gnosis' | 'polygon',
+  chain: MechAnalyticsChain,
   lastComputedAt: string | undefined,
   previousIngestedIds: Record<string, number> | undefined,
   previousLastTimestamp: number
@@ -123,10 +132,12 @@ export const fetchMechRequestsFromAnalytics = async (
     ? {}
     : { ...(previousIngestedIds ?? {}) };
   let lastTimestamp = previousLastTimestamp;
-  // Updated row by row. See the AnalyticsQmrUpdate doc for why a partially
-  // advanced watermark is safe.
+  // Updated row by row, before the skip checks below. This order is safe only
+  // because `ingestedRequestIds` is always checked before a row is ingested —
+  // the next run re-reads the boundary and the map removes the duplicates.
   let maxComputedAt = isRebuild ? null : (lastComputedAt as string);
   let ok = true;
+  let rowsSeen = 0;
   const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0 };
 
   const params: Record<string, string> = {
@@ -142,8 +153,14 @@ export const fetchMechRequestsFromAnalytics = async (
 
   try {
     for await (const rows of iterateScoredRows(params)) {
+      rowsSeen += rows.length;
       for (const row of rows) {
-        if (row.computed_at && (!maxComputedAt || row.computed_at > maxComputedAt)) {
+        // A malformed computed_at must not become the saved watermark.
+        if (
+          row.computed_at &&
+          !Number.isNaN(Date.parse(row.computed_at)) &&
+          (!maxComputedAt || row.computed_at > maxComputedAt)
+        ) {
           maxComputedAt = row.computed_at;
         }
 
@@ -151,7 +168,7 @@ export const fetchMechRequestsFromAnalytics = async (
           skips.duplicate++;
           continue;
         }
-        const ts = Math.floor(Date.parse(row.requested_at) / 1000);
+        const ts = isoToUnixSec(row.requested_at);
         if (!Number.isFinite(ts) || ts <= 0 || ts < windowStartSec) {
           skips.outOfWindow++;
           continue;
@@ -188,6 +205,14 @@ export const fetchMechRequestsFromAnalytics = async (
     return null;
   }
 
+  if (isRebuild && rowsSeen === 0) {
+    // Zero rows can mean the endpoint is still catching up (or a wrong
+    // chain filter). Wiping the open set on that would inflate
+    // settledMechRequests, so treat it like a failed rebuild.
+    console.error(`[mech-analytics:${chain}] rebuild returned zero rows — keeping the old QMR`);
+    return null;
+  }
+
   for (const [id, ts] of Object.entries(ingestedRequestIds)) {
     if (ts < windowStartSec) delete ingestedRequestIds[id];
   }
@@ -199,23 +224,24 @@ export const fetchMechRequestsFromAnalytics = async (
       `invalid=${skips.invalid} noKey=${skips.missingKey}`
   );
 
-  return {
+  const data: QmrFetchData = {
     additions,
-    rebuild: isRebuild,
     lastComputedAt: isRebuild ? runStart : (maxComputedAt as string),
     ingestedRequestIds,
     lastTimestamp,
-    ok,
   };
+  return isRebuild ? { kind: 'rebuild', ...data } : { kind: 'incremental', ok, ...data };
 };
 
 /**
  * Loads all scored rows for one requester made after the given time
  * (unix seconds). Keeps no state between runs.
  * `since` filters on requested_at; +1 second turns ">=" into ">".
+ * Throws on any page failure — callers must handle the rejection
+ * (current callers wrap each call in `Promise.allSettled`).
  */
 export const fetchScoredRowsForRequester = async (
-  chain: 'gnosis' | 'polygon',
+  chain: MechAnalyticsChain,
   requester: string,
   timestampGt: number,
   pageSize: number,

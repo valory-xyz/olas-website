@@ -9,7 +9,12 @@ import {
   getPolymarketBetsWithBettorQuery,
 } from 'common-util/graphql/queries';
 
-import { USE_MECH_ANALYTICS, fetchScoredRowsForRequester } from './mech-analytics';
+import {
+  MechAnalyticsChain,
+  USE_MECH_ANALYTICS,
+  fetchScoredRowsForRequester,
+  isoToUnixSec,
+} from './mech-analytics';
 
 const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const BET_PAGE_SIZE = 1000;
@@ -86,7 +91,7 @@ async function fetchResolvedBets(): Promise<Bet[]> {
 
 /** Fetches the same data as the per-sender subgraph pulls, but from mech-analytics. */
 async function fetchMechRequestsForSenderFromAnalytics(
-  chain: 'gnosis' | 'polygon',
+  chain: MechAnalyticsChain,
   sender: string,
   timestampGt: number
 ): Promise<MechRequest[]> {
@@ -98,7 +103,7 @@ async function fetchMechRequestsForSenderFromAnalytics(
     MECH_MAX_PAGES
   );
   return rows.map((row) => ({
-    blockTimestamp: String(Math.floor(Date.parse(row.requested_at) / 1000)),
+    blockTimestamp: String(isoToUnixSec(row.requested_at)),
     parsedRequest: {
       tool: row.tool,
       questionTitle: row.question_title,
@@ -108,7 +113,7 @@ async function fetchMechRequestsForSenderFromAnalytics(
 
 /** Loads mech requests for one sender from the marketplace subgraph. */
 async function fetchMechRequestsForSenderFromSubgraph(
-  chain: 'gnosis' | 'polygon',
+  chain: MechAnalyticsChain,
   sender: string,
   timestampGt: number
 ): Promise<MechRequest[]> {
@@ -136,7 +141,7 @@ async function fetchMechRequestsForSenderFromSubgraph(
 
 /** Loads mech requests for one sender. The flag selects the data source. */
 async function fetchMechRequestsForSender(
-  chain: 'gnosis' | 'polygon',
+  chain: MechAnalyticsChain,
   sender: string,
   timestampGt: number
 ): Promise<MechRequest[]> {

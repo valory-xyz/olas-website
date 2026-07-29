@@ -473,9 +473,9 @@ const updateAgentBlueprintData = async (
       newMechTs
     );
     // null = the rebuild failed; keep everything as it is and retry next run.
-    mechRequestsOk = result !== null && result.ok;
+    mechRequestsOk = result !== null && (result.kind === 'rebuild' || result.ok);
     if (result !== null) {
-      if (result.rebuild) {
+      if (result.kind === 'rebuild') {
         // Old entries from the subgraph cannot be matched with analytics rows,
         // so we drop them and start fresh.
         qmr = {};
@@ -678,7 +678,7 @@ const updateAgentBlueprintData = async (
     qmrData: {
       questionMechRequests: qmr,
       lastMechRequestTimestamp: newMechTs,
-      ...(newMechAnalytics !== undefined ? { mechAnalytics: newMechAnalytics } : {}),
+      mechAnalytics: newMechAnalytics,
     },
   };
 };
