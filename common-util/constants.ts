@@ -190,6 +190,8 @@ export const CACHE_DURATION_SECONDS = 12 * 60 * 60; // 12 hours
 export const REVALIDATE_DURATION = 5 * 60; // 5 minutes
 export const DEFAULT_MECH_FEE = BigInt('10000000000000000'); // 0.01
 export const PREDICT_MARKET_DURATION_DAYS = 4;
+// Age-out TTL for pending QMR entries; also bounds the mech-analytics ingest window
+export const QMR_MAX_AGE_DAYS = 14;
 
 // Omenstrat agent classification used for transactions-by-type and DAA queries
 export const OMENSTRAT_AGENT_CLASSIFICATION = {

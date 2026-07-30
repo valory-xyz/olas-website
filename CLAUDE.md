@@ -112,6 +112,12 @@ All env vars use `NEXT_PUBLIC_` prefix when needed client-side. Categories (see 
 
 ESLint rule (`.eslintrc.json`): **never default- or namespace-import `lodash`** (it bundles the whole library). Use named imports (`import { get } from 'lodash'`) or modular imports (`import get from 'lodash/get'`).
 
+## Design Specs (`docs/`)
+
+Index of design documents. Read the matching spec BEFORE you change the listed areas. Keep this list an index — put details in the spec, not here.
+
+- `docs/mech-analytics-migration.md` — off-chain mech-request migration (subgraph → mech-analytics API, `USE_MECH_ANALYTICS` flag). Read before changing `common-util/api/predict/*` (`roi-distribution.ts`, `tool-accuracy.ts`, `mech-analytics.ts`) or any marketplace per-request query.
+
 ## Important Implementation Details
 
 ### GraphQL Queries
@@ -185,6 +191,7 @@ Applied to all paths: `Content-Security-Policy: frame-ancestors 'none'`, `X-Cont
 6. **Lodash imports**: default and namespace imports are ESLint-blocked — use `import { x } from 'lodash'` or `import x from 'lodash/x'`.
 7. **Middleware runs on the Edge runtime**: keep it lightweight; no Node.js APIs.
 8. **TypeScript strictness**: `strict: false` in `tsconfig.json`, `allowJs: true`. New code in `common-util/` should still be typed (per CONTRIBUTING.md).
+9. **Off-chain mech requests**: the marketplace subgraph does not create `Request` / `ParsedRequest` entities for off-chain requests — per-request reads return nothing, while aggregate counters keep growing. Per-request data comes from the mech-analytics API instead. See `docs/mech-analytics-migration.md`.
 
 ## Testing Considerations
 

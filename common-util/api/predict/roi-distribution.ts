@@ -1,4 +1,4 @@
-import { DEFAULT_MECH_FEE } from 'common-util/constants';
+import { DEFAULT_MECH_FEE, QMR_MAX_AGE_DAYS } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
   polymarketAgentsGraphClient,
@@ -14,14 +14,17 @@ import {
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
+import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
+
 const LIMIT = 1000;
 // Process at most this many days per cron run to stay within timeout
 const MAX_DAYS_PER_RUN = 30;
 const DAY_SECONDS = 86400;
 // Keep only this many days in byDay (covers the longest non-global tab: 90D)
 const BYDAY_RETENTION_DAYS = 90;
-// FIX-2: age-out TTL for pending QMR entries (markets resolve in ~4 days)
-const QMR_MAX_AGE_DAYS = 14;
+// QMR_MAX_AGE_DAYS (common-util/constants.ts): age-out TTL for pending QMR
+// entries (markets resolve in ~4 days); shared with the mech-analytics client.
+
 // Minimum lifetime bets before an agent's ROI is included in the histogram.
 // Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
 // produce statistically meaningless ROIs that distort the tails.
@@ -55,6 +58,16 @@ const dayKeyOf = (ts: number): string => String(Math.floor(ts / DAY_SECONDS) * D
 export type QmrData = {
   questionMechRequests: Record<string, Record<string, number[]>>; // title → agentId → sorted asc timestamps
   lastMechRequestTimestamp: number;
+  /**
+   * mech-analytics path only — see docs/mech-analytics-migration.md
+   * When missing, the next flag-on run rebuilds the open set.
+   */
+  mechAnalytics?: {
+    /** Last seen computed_at watermark. */
+    lastComputedAt: string;
+    /** Ids of rows we already counted (request_id → requested_at, unix seconds). */
+    ingestedRequestIds: Record<string, number>;
+  };
 };
 
 /** Per-agent daily aggregates, used for 'd7' | 'd30' | 'd90' distributions */
@@ -435,7 +448,7 @@ const updateAgentBlueprintData = async (
 
   // 1: Update QMR (incremental mech requests)
   // FIX-1: QMR stores timestamp arrays per (title, agentId).
-  const qmr = normalizeQmrShape(
+  let qmr = normalizeQmrShape(
     existingQmr?.questionMechRequests as
       | Record<string, Record<string, number[] | number>>
       | undefined,
@@ -445,11 +458,46 @@ const updateAgentBlueprintData = async (
   // consumers can surface staleness instead of trusting silently-empty data.
   const runFetchErrors: string[] = [];
 
-  const {
-    additions,
-    lastTimestamp: newMechTs,
-    ok: mechRequestsOk,
-  } = await fetchIncrementalMechRequests(chain, existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs);
+  let additions: Record<string, Record<string, number[]>> = {};
+  let newMechTs = existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs;
+  let mechRequestsOk = false;
+  // Saved only while the flag is on. A flag-off run drops it, so turning
+  // the flag on again starts with a fresh rebuild. An old watermark could
+  // count the same rows twice.
+  let newMechAnalytics: QmrData['mechAnalytics'];
+
+  if (USE_MECH_ANALYTICS) {
+    const result = await fetchMechRequestsFromAnalytics(
+      chain,
+      existingQmr?.mechAnalytics?.lastComputedAt,
+      existingQmr?.mechAnalytics?.ingestedRequestIds,
+      newMechTs
+    );
+    // null = the rebuild failed; keep everything as it is and retry next run.
+    mechRequestsOk = result !== null && (result.kind === 'rebuild' || result.ok);
+    if (result !== null) {
+      if (result.kind === 'rebuild') {
+        // Old entries from the subgraph cannot be matched with analytics rows,
+        // so we drop them and start fresh.
+        qmr = {};
+      }
+      additions = result.additions;
+      newMechTs = result.lastTimestamp;
+      newMechAnalytics = {
+        lastComputedAt: result.lastComputedAt,
+        ingestedRequestIds: result.ingestedRequestIds,
+      };
+    }
+  } else {
+    ({
+      additions,
+      lastTimestamp: newMechTs,
+      ok: mechRequestsOk,
+    } = await fetchIncrementalMechRequests(
+      chain,
+      existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
+    ));
+  }
   if (!mechRequestsOk) runFetchErrors.push('mech-requests');
   for (const [title, agentLists] of Object.entries(additions)) {
     if (!qmr[title]) qmr[title] = {};
@@ -628,7 +676,11 @@ const updateAgentBlueprintData = async (
 
   return {
     mainData: { byDay, lastDayTimestamp, allTimeAgents, fetchErrors: runFetchErrors },
-    qmrData: { questionMechRequests: qmr, lastMechRequestTimestamp: newMechTs },
+    qmrData: {
+      questionMechRequests: qmr,
+      lastMechRequestTimestamp: newMechTs,
+      mechAnalytics: newMechAnalytics,
+    },
   };
 };
 
