@@ -282,10 +282,20 @@ const scriptGitSha = () => {
   }
 };
 
+// Origin only: the artifact gets posted on the cutover PR, and a
+// signed URL or ?token= query must never travel with it.
+const safeOrigin = (url) => {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return '<invalid-url>';
+  }
+};
+
 const metadata = {
   run_at_utc: new Date().toISOString(),
   script_git_sha: scriptGitSha(),
-  mech_analytics_url: mechAnalyticsUrl,
+  mech_analytics_url: safeOrigin(mechAnalyticsUrl),
   window_days: windowDays,
   lag_buffer_minutes: lagBufferMinutes,
   count_tolerance_abs: countTolerance,
@@ -946,5 +956,10 @@ try {
     emit(`\nwrote ${mdPath}`);
     emit(`wrote ${jsonPath}`);
   }
-  process.exit(exitCode);
+  // The explicit exit is needed because undici keep-alive sockets would
+  // otherwise hold the event loop open — but stdout writes are async
+  // when piped (docker logs, K8s), and a bare process.exit() discards
+  // whatever is still buffered, including the verdict line. Queue the
+  // exit behind a final zero-byte write so the buffer drains first.
+  process.stdout.write('', () => process.exit(exitCode));
 }
