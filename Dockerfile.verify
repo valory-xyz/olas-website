@@ -1,0 +1,70 @@
+# syntax=docker/dockerfile:1
+#
+# Image for the olas-website / mech-analytics parity verification script
+# (scripts/verify-mech-analytics-parity.mjs). Used by infra as a K8s Job
+# during the predict-page consumer migration to prove that the two
+# migrating fields (partialRoi, successRate) match between the Vercel
+# Blob snapshot visitors see today and the mech-analytics
+# /v1/metrics/ai-agent endpoints.
+#
+# Published on tag as valory/olas-website-verify:<version> via
+# .github/workflows/publish-verify-image.yaml.
+#
+# Runtime deps come from yarn.lock so the image is reproducible from any
+# commit. Only the parity script rides along — the Next.js app is not
+# built or shipped; the script imports @vercel/blob plus node built-ins.
+#
+# Runtime contract:
+#   * env: BLOB_READ_WRITE_TOKEN (secret), MECH_ANALYTICS_URL
+#   * mount: /reports for --output-dir report artifacts
+#   * exit codes: 0 pass, 1 unexpected error, 3 divergence, 4 missing field
+#
+# Base pinned to the repo's .nvmrc version (22.22.3).
+FROM node:22.22.3-slim AS base
+
+# Bake the source commit into the image at build time. The verify script
+# reads GIT_SHA from the env; without this the ``git rev-parse`` fallback
+# fires and every artifact attributes the run to ``unknown`` since the
+# image ships without a git binary and without a .git directory.
+ARG GIT_SHA=unknown
+ENV GIT_SHA=$GIT_SHA
+
+WORKDIR /app
+
+# Pin Yarn to the same version CI activates via Corepack (main.yml), and
+# prepare the runtime dirs. /reports is the --output-dir mount point
+# infra provides; the image itself only ever writes there, never to /app.
+#
+# The non-root ``node`` user (uid 1000) ships with the base image, so it
+# exists BEFORE the dependency install below — every layer from here on
+# is owned by ``node`` at build time and no recursive chown of the
+# (large) node_modules tree is needed at the end of the build.
+RUN corepack enable \
+    && corepack prepare yarn@1.22.22 --activate \
+    && mkdir -p /reports \
+    && chown node:node /app /reports
+USER node
+
+# Layer dep install ahead of source copy so a script edit doesn't
+# invalidate the (slow) dependency layer. .yarnrc carries the repo's
+# install-time defense (--install.ignore-scripts true); keep it so the
+# image install skips lifecycle scripts exactly like CI does.
+COPY --chown=node:node package.json yarn.lock .yarnrc ./
+
+# --production: the verifier needs runtime deps only (the script imports
+# @vercel/blob); eslint, tailwind, and the rest of devDependencies stay
+# out of the image.
+RUN yarn install --frozen-lockfile --production \
+    && yarn cache clean
+
+# Copy only what the script needs: the entry point itself. It imports
+# @vercel/blob (installed above) and node built-ins, nothing else from
+# the repo.
+COPY --chown=node:node \
+    scripts/verify-mech-analytics-parity.mjs \
+    ./scripts/verify-mech-analytics-parity.mjs
+
+# node_modules sits at /app/node_modules; plain ``node`` resolves
+# @vercel/blob from there. ``docker run --rm <image> --help`` exercises
+# the wiring without secrets.
+ENTRYPOINT ["node", "scripts/verify-mech-analytics-parity.mjs"]

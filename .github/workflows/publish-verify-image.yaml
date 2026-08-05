@@ -1,0 +1,102 @@
+name: Publish verify image
+
+# Builds and pushes valory/olas-website-verify — the image infra runs as
+# a K8s Job for the predict-page / mech-analytics parity verification
+# (Dockerfile.verify, entry point is
+# scripts/verify-mech-analytics-parity.mjs).
+#
+# * On release: builds AND pushes tagged image to Docker Hub.
+# * On PR touching Dockerfile.verify, the verify script, the workflow,
+#   or the deps that end up in the image: builds only (no push, no
+#   credentials needed — safe on fork PRs) and runs ``--help`` against
+#   the built image so the entry point wiring is exercised end-to-end.
+#   Prevents shipping a broken Dockerfile (chown ordering, module
+#   resolution, deps drift) whose only signal otherwise is "infra tries
+#   to run it and it crashes".
+
+on:
+  release:
+    types: [prereleased, released]
+  pull_request:
+    paths:
+      - 'Dockerfile.verify'
+      - 'scripts/verify-mech-analytics-parity.mjs'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.yarnrc'
+      - '.github/workflows/publish-verify-image.yaml'
+
+# Least-privilege default for GITHUB_TOKEN (same discipline as main.yml):
+# both jobs only need to read the repo. Docker Hub pushes authenticate
+# with repo secrets, not GITHUB_TOKEN.
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: valory/olas-website-verify
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Compute image tag
+        id: tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Computed tag: $tag"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile.verify
+          push: true
+          tags: ${{ env.IMAGE }}:${{ steps.tag.outputs.tag }}
+          # Bake the source commit into the image so the verify script's
+          # metadata header can attribute each artifact to a specific
+          # revision without needing git inside the runtime image.
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+
+  build-only:
+    # PR-triggered smoke build — no registry push, no secrets required,
+    # so it runs safely on fork PRs. Load the image into the local
+    # Docker daemon and invoke ``--help`` to catch any regression in
+    # Dockerfile layer ordering, dependency install, or entrypoint that
+    # would otherwise only surface when infra tries to run the released
+    # tag.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: valory/olas-website-verify:pr-${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build (no push)
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile.verify
+          push: false
+          load: true
+          tags: ${{ env.IMAGE }}
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+
+      - name: Smoke-test entrypoint
+        run: docker run --rm ${{ env.IMAGE }} --help
