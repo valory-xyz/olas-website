@@ -6,13 +6,15 @@ name: Publish verify image
 # scripts/verify-mech-analytics-parity.mjs).
 #
 # * On release: builds AND pushes tagged image to Docker Hub.
-# * On PR touching Dockerfile.verify, the verify script, the workflow,
-#   or the deps that end up in the image: builds only (no push, no
-#   credentials needed — safe on fork PRs) and runs ``--help`` against
-#   the built image so the entry point wiring is exercised end-to-end.
-#   Prevents shipping a broken Dockerfile (chown ordering, module
-#   resolution, deps drift) whose only signal otherwise is "infra tries
-#   to run it and it crashes".
+# * On PR touching Dockerfile.verify, the verify script, or the
+#   workflow: builds only (no push, no credentials needed — safe on
+#   fork PRs) and runs ``--help`` against the built image so the entry
+#   point wiring is exercised end-to-end. Prevents shipping a broken
+#   Dockerfile (chown ordering, entrypoint wiring) whose only signal
+#   otherwise is "infra tries to run it and it crashes". The image
+#   installs no npm dependencies (the script is node built-ins only),
+#   so package.json / yarn.lock changes cannot affect it and are not
+#   triggers.
 
 on:
   release:
@@ -21,9 +23,6 @@ on:
     paths:
       - 'Dockerfile.verify'
       - 'scripts/verify-mech-analytics-parity.mjs'
-      - 'package.json'
-      - 'yarn.lock'
-      - '.yarnrc'
       - '.github/workflows/publish-verify-image.yaml'
 
 # Least-privilege default for GITHUB_TOKEN (same discipline as main.yml):
