@@ -1,0 +1,57 @@
+# syntax=docker/dockerfile:1
+#
+# Image for the olas-website / mech-analytics parity verification script
+# (scripts/verify-mech-analytics-parity.mjs). Used by infra as a K8s Job
+# during the predict-page consumer migration to gate the mech-request
+# count-source swap (mech-analytics docs/consumer_migration.md §4 /
+# §12 Q4): open-market count parity, scored-rows row parity, and
+# senderTotal parity between the marketplace/predict subgraphs and the
+# mech-analytics endpoints.
+#
+# Published on tag as valory/olas-website-verify:<version> via
+# .github/workflows/publish-verify-image.yaml.
+#
+# The script uses node built-ins only (fetch, fs, util) — no yarn
+# install, no node_modules. The image is the pinned node base plus the
+# one script file.
+#
+# Runtime contract:
+#   * env: MECH_ANALYTICS_URL, plus the subgraph URLs (all secrets —
+#     they embed Graph gateway API keys; the script logs presence only,
+#     never the values):
+#       NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL
+#       NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL
+#       NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL
+#       NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL
+#   * mount: /reports for --output-dir report artifacts
+#   * exit codes: 0 pass, 1 unexpected error, 2 vacuous, 3 divergence,
+#     4 data gap
+#
+# Base pinned to the repo's .nvmrc version (22.22.3).
+FROM node:22.22.3-slim AS base
+
+# Bake the source commit into the image at build time. The verify script
+# reads GIT_SHA from the env; without this the ``git rev-parse`` fallback
+# fires and every artifact attributes the run to ``unknown`` since the
+# image ships without a git binary and without a .git directory.
+ARG GIT_SHA=unknown
+ENV GIT_SHA=$GIT_SHA
+
+WORKDIR /app
+
+# /reports is the --output-dir mount point infra provides; the image
+# itself only ever writes there, never to /app. The non-root ``node``
+# user (uid 1000) ships with the base image.
+RUN mkdir -p /reports \
+    && chown node:node /app /reports
+USER node
+
+# The entry point is the only file the image needs from the repo — it
+# imports node built-ins exclusively.
+COPY --chown=node:node \
+    scripts/verify-mech-analytics-parity.mjs \
+    ./scripts/verify-mech-analytics-parity.mjs
+
+# ``docker run --rm <image> --help`` exercises the wiring without
+# secrets; a no-env run exits 1 with an ERROR verdict.
+ENTRYPOINT ["node", "scripts/verify-mech-analytics-parity.mjs"]
