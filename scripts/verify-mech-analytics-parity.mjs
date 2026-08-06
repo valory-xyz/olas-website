@@ -107,6 +107,15 @@ const LAG_BUFFER_MINUTES_DEFAULT = 30;
 // are otherwise compared exactly (checks 1 and 2 use zero tolerance).
 const COUNT_TOLERANCE_DEFAULT = 5;
 
+// Mech-analytics keeps a 24h finality gate on Omen: rows only flip to
+// `resolved` 24h after finalization (consumer_migration.md §6). The
+// subgraph's dailyProfitStatistics consumes a market as soon as the
+// day's stats record it, so markets resolved in the last ~24h are
+// consumed on the subgraph side but still `pending` in analytics.
+// Over a 4-day window that's a chronic delta that turns honest runs
+// red. Cap check-1 dailyStats consumption at (now - N h) to align.
+const FINALITY_LAG_HOURS_DEFAULT = 24;
+
 const DAY_SECONDS = 86400;
 const SUBGRAPH_PAGE = 1000;
 // graph-node rejects skip > 5000; a full page at that offset means the
@@ -158,6 +167,7 @@ const { values: args } = parseArgs({
     'output-dir': { type: 'string' },
     'window-days': { type: 'string' },
     'lag-buffer-minutes': { type: 'string' },
+    'finality-lag-hours': { type: 'string' },
     'count-tolerance': { type: 'string' },
     verbose: { type: 'boolean', short: 'v' },
     help: { type: 'boolean', short: 'h' },
@@ -186,6 +196,8 @@ if (args.help) {
       '  --mech-analytics-url <url>   mech-analytics base URL (or MECH_ANALYTICS_URL env)\n' +
       `  --window-days <n>            checks 1+2 window (default ${WINDOW_DAYS_DEFAULT})\n` +
       `  --lag-buffer-minutes <n>     near-edge trim for scoring lag (default ${LAG_BUFFER_MINUTES_DEFAULT})\n` +
+      `  --finality-lag-hours <n>     check 1 consumption cutoff for the analytics 24h\n` +
+      `                               finality gate (default ${FINALITY_LAG_HOURS_DEFAULT})\n` +
       `  --count-tolerance <n>        check 3 absolute tolerance (default ${COUNT_TOLERANCE_DEFAULT})\n` +
       '  --output-dir <dir>           write parity-<ts>.md/.json artifacts here\n' +
       '  -v, --verbose                log per-page fetch progress\n' +
@@ -234,6 +246,11 @@ const lagBufferMinutes = parseNonNegativeInt(
   args['lag-buffer-minutes'],
   'lag-buffer-minutes',
   LAG_BUFFER_MINUTES_DEFAULT
+);
+const finalityLagHours = parseNonNegativeInt(
+  args['finality-lag-hours'],
+  'finality-lag-hours',
+  FINALITY_LAG_HOURS_DEFAULT
 );
 const countTolerance = parseNonNegativeInt(
   args['count-tolerance'],
@@ -298,6 +315,7 @@ const metadata = {
   mech_analytics_url: safeOrigin(mechAnalyticsUrl),
   window_days: windowDays,
   lag_buffer_minutes: lagBufferMinutes,
+  finality_lag_hours: finalityLagHours,
   count_tolerance_abs: countTolerance,
 };
 
@@ -307,6 +325,7 @@ emit(`  script git SHA:       ${metadata.script_git_sha}`);
 emit(`  mech-analytics URL:   ${metadata.mech_analytics_url}`);
 emit(`  window (days):        ${metadata.window_days}`);
 emit(`  lag buffer (min):     ${metadata.lag_buffer_minutes}`);
+emit(`  finality lag (h):     ${metadata.finality_lag_hours} (check 1 only)`);
 emit(`  count tolerance (±):  ${metadata.count_tolerance_abs} (check 3 only)`);
 for (const name of REQUIRED_ENV.slice(1)) {
   // Presence only — the URLs embed API keys.
@@ -373,6 +392,7 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
           orderBy: blockTimestamp
           orderDirection: asc
         ) {
+          id
           sender { id }
           blockTimestamp
           parsedRequest { questionTitle }
@@ -408,7 +428,15 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
       skippedAfterWindowEnd += 1;
       continue;
     }
-    usable.push({ requester, ts, title });
+    // req.id is the marketplace subgraph's Request.id — same identifier
+    // the mech-analytics lake writes back as `request_id`, so check 2
+    // can match on it when both sides have it (see diffRowSets).
+    usable.push({
+      requester,
+      ts,
+      title,
+      requestId: typeof req.id === 'string' ? req.id.toLowerCase() : null,
+    });
   }
   return { rows: usable, truncated, skippedMissingKey, skippedAfterWindowEnd };
 };
@@ -497,14 +525,17 @@ const fetchJson = async (url, label) => {
 // Pages /v1/data/scored-rows the same way the site's client does
 // (common-util/api/predict/mech-analytics.ts::iterateScoredRows).
 // `since` is >= on requested_at, so windowStart+1s reproduces the
-// subgraph's strict blockTimestamp_gt boundary.
+// subgraph's strict blockTimestamp_gt boundary. `until` is exclusive
+// on the API but the subgraph keeps rows at ts == windowEndSec (only
+// ts > windowEndSec is skipped), so windowEndSec+1 keeps the two
+// sides' inclusive-end semantics symmetric.
 const fetchScoredRows = async (chainId, windowStartSec, windowEndSec, label) => {
   const rows = [];
   let truncated = false;
   const url = new URL(`${mechAnalyticsBase}/v1/data/scored-rows`);
   url.searchParams.set('chain_id', String(chainId));
   url.searchParams.set('since', isoFromUnixSec(windowStartSec + 1));
-  url.searchParams.set('until', isoFromUnixSec(windowEndSec));
+  url.searchParams.set('until', isoFromUnixSec(windowEndSec + 1));
   url.searchParams.set('limit', String(SCORED_ROWS_PAGE));
 
   let cursor = null;
@@ -637,33 +668,54 @@ const classifyAnalyticsRows = (rows) => {
 // Check 2 — row parity
 // ---------------------------------------------------------------------------
 
-// Multiset diff on (requester, unix timestamp, normalizeTitle(title)).
-// normalizeTitle on both sides matches the consumer's own matching
-// discipline and absorbs title truncation differences between the
-// subgraph's parsedRequest and the lake's question_title.
+// Multiset diff. Preferred key is (requester, request_id) — the
+// marketplace subgraph's Request.id is the same identifier the lake
+// writes back as `request_id`, and the consumer's fetcher dedupes on
+// it (common-util/api/predict/mech-analytics.ts). Fallback is
+// (requester, unix ts, normalizeTitle(title)) for rows missing an id
+// on either side; this fallback is only sound while ts equality
+// holds — once live-writer rows land, requested_at (authorization
+// time) can drift seconds-to-minutes from blockTimestamp, so any
+// row that falls back and diverges is called out with a mode label
+// so the operator can tell "real regression" from "expected drift".
 const diffRowSets = (subgraphRows, analyticsRows) => {
-  const keyOf = (requester, ts, title) => `${requester}|${ts}|${normalizeTitle(title)}`;
+  const idKey = (requester, id) => `id|${requester}|${id}`;
+  const tsKey = (requester, ts, title) => `ts|${requester}|${ts}|${normalizeTitle(title)}`;
   const tally = new Map();
-  for (const { requester, ts, title } of subgraphRows) {
-    const key = keyOf(requester, ts, title);
+  const modeById = new Map();
+
+  const bump = (key, side, mode) => {
     const entry = tally.get(key) ?? { subgraph: 0, analytics: 0 };
-    entry.subgraph += 1;
+    entry[side] += 1;
     tally.set(key, entry);
+    modeById.set(key, mode);
+  };
+
+  for (const { requester, ts, title, requestId } of subgraphRows) {
+    bump(
+      requestId ? idKey(requester, requestId) : tsKey(requester, ts, title),
+      'subgraph',
+      requestId ? 'id' : 'ts'
+    );
   }
   for (const { requester, row } of analyticsRows) {
+    const rowId = typeof row.request_id === 'string' ? row.request_id.toLowerCase() : null;
+    if (rowId) {
+      bump(idKey(requester, rowId), 'analytics', 'id');
+      continue;
+    }
     const ts = Math.floor(Date.parse(row.requested_at) / 1000);
     if (!Number.isFinite(ts)) continue;
-    const key = keyOf(requester, ts, row.question_title);
-    const entry = tally.get(key) ?? { subgraph: 0, analytics: 0 };
-    entry.analytics += 1;
-    tally.set(key, entry);
+    bump(tsKey(requester, ts, row.question_title), 'analytics', 'ts');
   }
 
   let missingInAnalytics = 0;
   let extraInAnalytics = 0;
+  let tsFallbackKeys = 0;
   const missingSamples = [];
   const extraSamples = [];
   for (const [key, { subgraph, analytics }] of tally) {
+    if (modeById.get(key) === 'ts') tsFallbackKeys += 1;
     if (subgraph > analytics) {
       missingInAnalytics += subgraph - analytics;
       if (missingSamples.length < SAMPLE_LIMIT) missingSamples.push(key);
@@ -672,7 +724,7 @@ const diffRowSets = (subgraphRows, analyticsRows) => {
       if (extraSamples.length < SAMPLE_LIMIT) extraSamples.push(key);
     }
   }
-  return { missingInAnalytics, extraInAnalytics, missingSamples, extraSamples };
+  return { missingInAnalytics, extraInAnalytics, missingSamples, extraSamples, tsFallbackKeys };
 };
 
 // ---------------------------------------------------------------------------
@@ -707,10 +759,15 @@ try {
     section(`${key} (chain ${chainId}, agent ${agentId}) — data pulls`);
     const [marketplace, dailyStats, scoredRows, aggregate] = await Promise.all([
       fetchMarketplaceRequests(marketplaceUrl, windowStartSec, windowEndSec, `${key}:marketplace`),
+      // date_lte is capped at (now - finality lag) so the subgraph
+      // side doesn't consume settlements still inside the analytics
+      // 24h finality gate — otherwise recent settlements would show as
+      // consumed on the subgraph but pending in analytics and produce
+      // a chronic delta on honest runs.
       fetchDailyStats(
         dailyStatsUrl,
         Math.floor(windowStartSec / DAY_SECONDS) * DAY_SECONDS,
-        nowSec,
+        nowSec - finalityLagHours * 60 * 60,
         platform.participantTitleField,
         `${key}:daily-stats`
       ),
@@ -795,6 +852,14 @@ try {
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
     emit(`  extra in analytics:   ${rowDiff.extraInAnalytics}`);
+    if (rowDiff.tsFallbackKeys > 0) {
+      emit(
+        `  ${rowDiff.tsFallbackKeys} key(s) matched via (requester, ts, title) fallback ` +
+          '— once live lake writes turn on, requested_at can drift from blockTimestamp ' +
+          'by seconds-to-minutes, so a divergence with a nonzero fallback count may be ' +
+          'ts drift rather than a missing/extra row.'
+      );
+    }
     for (const sample of rowDiff.missingSamples) emit(`    missing: ${sample}`);
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
@@ -827,6 +892,7 @@ try {
       extra_in_analytics: rowDiff.extraInAnalytics,
       missing_samples: rowDiff.missingSamples,
       extra_samples: rowDiff.extraSamples,
+      ts_fallback_keys: rowDiff.tsFallbackKeys,
       truncated: check2Truncated,
     });
 
