@@ -123,32 +123,51 @@ export const computeWindow = ({
     }
     return { windowStartSec, windowEndSec, source: 'explicit' };
   }
+  // Anchor start to end (until = now - lag; since = until - days) so the
+  // span is exactly `days`, matching verify_migration_swap.py:_compute_window
+  // (mech-predict/scripts/verify_migration_swap.py:1286-1287). Anchoring
+  // start to `now` and end to `now - lag` shortens the window by the lag.
   const windowEndSec = nowSec - lagBufferMinutes * 60;
-  const windowStartSec = nowSec - windowDays * DAY_SECONDS;
-  if (windowEndSec <= windowStartSec) {
-    throw new Error('lag buffer consumes the whole window — lower --lag-buffer-minutes');
+  const windowStartSec = windowEndSec - windowDays * DAY_SECONDS;
+  if (windowEndSec <= 0) {
+    // lagBufferMinutes larger than nowSec — nonsensical clock, refuse
+    // to compute a window rather than producing a negative windowEnd.
+    throw new Error('lag buffer pushes window end to or before epoch — check --lag-buffer-minutes');
   }
   return { windowStartSec, windowEndSec, source: 'trailing' };
 };
 
 // ---------------------------------------------------------------------------
-// Check 1 — subgraph-side open-market count via QMR + dailyStats consumption
+// Check 1 — shared QMR pipeline (single-source correctness)
 // ---------------------------------------------------------------------------
 
-// Reproduces roi-distribution.ts's open-market classification over the
-// window: build the QMR-shaped map title→agent→count from the marketplace
-// feed, then consume settled entries via profitParticipants titles (exact
-// key first, then normalizeTitle — mirrors roi-distribution.ts:581-591
-// including per-agent consumption).
-export const computeSubgraphOpenCount = (requests, dailyStats, participantTitleField) => {
-  const qmr = new Map(); // title -> Map(agent -> count)
-  const normalizedIndex = new Map(); // normalizeTitle(title) -> title
-  for (const { requester, title } of requests) {
-    if (!qmr.has(title)) {
-      qmr.set(title, new Map());
-      normalizedIndex.set(normalizeTitle(title), title);
-    }
-    const agents = qmr.get(title);
+// The QMR is keyed on normalizeTitle(title) directly (not on the raw title
+// with a secondary normalized-index lookup). Two rationales:
+//
+//   1. Consumer parity. roi-distribution.ts:513-516 rebuilds `qmr` from
+//      `Object.keys(qmr)` after settlement consumption, then re-derives
+//      normalizedQmrMap from the surviving keys — so production only ever
+//      keeps a single QMR keyed by whichever raw title happened to arrive
+//      first for a given normalized bucket.
+//
+//   2. Order-independence between the two verifier feeds. The subgraph
+//      feed arrives by blockTimestamp; the scored-rows feed by
+//      requested_at + cursor. If we kept a raw-title QMR with a
+//      normalizedIndex fallback (as this file did previously), a collision
+//      past the 100-char slice would resolve to a different raw key on
+//      each side — same logical data, different open count, false
+//      divergence. Keying on normalizeTitle(title) collapses the bucket
+//      before insertion so the tie-break is a no-op.
+//
+// Entries are `{ requester, title }`. Callers pre-filter (invalid,
+// missing key, out-of-window, deduplicated) so the shared body never
+// re-implements per-feed shape logic.
+export const runQmrOpenCount = (entries, dailyStats) => {
+  const qmr = new Map(); // normalizeTitle(title) -> Map(agent -> count)
+  for (const { requester, title } of entries) {
+    const key = normalizeTitle(title);
+    if (!qmr.has(key)) qmr.set(key, new Map());
+    const agents = qmr.get(key);
     agents.set(requester, (agents.get(requester) ?? 0) + 1);
   }
 
@@ -157,14 +176,17 @@ export const computeSubgraphOpenCount = (requests, dailyStats, participantTitleF
     const agentId = stat.traderAgent?.id?.toLowerCase();
     if (!agentId) continue;
     for (const participant of stat.profitParticipants ?? []) {
-      const title =
-        participantTitleField === 'question' ? participant.question : participant.metadata?.title;
+      // Union with fallback matches roi-distribution.ts:573
+      // (`p.question ?? p.metadata?.title`). The two subgraphs surface the
+      // title in different fields (Omen: `question`, Polymarket:
+      // `metadata.title`) and a market whose title lands in the other
+      // field would otherwise fail to consume its QMR entry, overstating
+      // `open` asymmetrically per platform.
+      const title = participant.question ?? participant.metadata?.title;
       if (!title) continue;
-      const matchedKey = qmr.has(title)
-        ? title
-        : (normalizedIndex.get(normalizeTitle(title)) ?? null);
-      if (!matchedKey) continue;
-      const agents = qmr.get(matchedKey);
+      const key = normalizeTitle(title);
+      const agents = qmr.get(key);
+      if (!agents) continue;
       const count = agents.get(agentId) ?? 0;
       if (count > 0) {
         consumed += count;
@@ -180,22 +202,88 @@ export const computeSubgraphOpenCount = (requests, dailyStats, participantTitleF
   return { open, consumed };
 };
 
+// Subgraph-side adapter: build entries from marketplace-subgraph requests
+// (already usable — `requester`/`title`/`ts` guards fire in the fetcher)
+// and delegate to the shared pipeline. `participantTitleField` is
+// retained for signature stability but no longer needed inside the QMR:
+// the shared body reads both title fields via the consumer's `??` union.
+export const computeSubgraphOpenCount = (requests, dailyStats, _participantTitleField) => {
+  const entries = requests.map(({ requester, title }) => ({ requester, title }));
+  return runQmrOpenCount(entries, dailyStats);
+};
+
+// Analytics-side adapter: mirrors the consumer's flag-on filtering in
+// common-util/api/predict/mech-analytics.ts:171-197 exactly:
+//
+//   1. dedup on request_id (the API sends the same row again every time
+//      its resolution updates — without dedup every update re-inflates
+//      the analytics open count vs the subgraph, which counts each
+//      request once)
+//   2. window/ts validity gate (ts <= 0 || ts < windowStartSec) — done
+//      BEFORE the invalid check so out-of-window invalid rows don't get
+//      recorded as "ingested-invalid"
+//   3. invalid rows are recorded (their id enters the ingested set so
+//      later duplicates stay skipped) then skipped
+//   4. missing requester/title are skipped
+//   5. survivors enter QMR; their id is recorded to skip later duplicates
+//
+// Returns the shared `{ open, consumed }` plus analytics-side diagnostics
+// (`ingested`, `skippedInvalid`, `skippedDuplicate`, `skippedOutOfWindow`,
+// `skippedMissingKey`).
+export const computeAnalyticsOpenCount = (rows, dailyStats, windowStartSec) => {
+  const seenIds = new Set();
+  const entries = [];
+  let skippedDuplicate = 0;
+  let skippedOutOfWindow = 0;
+  let skippedInvalid = 0;
+  let skippedMissingKey = 0;
+
+  for (const row of rows) {
+    const requestId = row.request_id ?? null;
+    if (requestId != null && seenIds.has(requestId)) {
+      skippedDuplicate += 1;
+      continue;
+    }
+    const ts = Math.floor(Date.parse(row.requested_at) / 1000);
+    if (!Number.isFinite(ts) || ts <= 0 || ts < windowStartSec) {
+      skippedOutOfWindow += 1;
+      continue;
+    }
+    if (row.resolution_status === 'invalid') {
+      if (requestId != null) seenIds.add(requestId);
+      skippedInvalid += 1;
+      continue;
+    }
+    const requester = row.requester?.toLowerCase();
+    const title = row.question_title;
+    if (!requester || !title) {
+      skippedMissingKey += 1;
+      continue;
+    }
+    entries.push({ requester, title });
+    if (requestId != null) seenIds.add(requestId);
+  }
+
+  const { open, consumed } = runQmrOpenCount(entries, dailyStats);
+  return {
+    open,
+    consumed,
+    ingested: entries.length,
+    skippedInvalid,
+    skippedDuplicate,
+    skippedOutOfWindow,
+    skippedMissingKey,
+  };
+};
+
 // ---------------------------------------------------------------------------
-// Check 1 — analytics-side classification and open-market computation
+// classifyAnalyticsRows — informational bucket breakdown for the artifact
 // ---------------------------------------------------------------------------
 
-// Bucket the mech-analytics rows the way the artifact reports them. The
-// counts are informational (they surface the shape of the raw data); the
-// gated number is `open` from computeAnalyticsOpenCount below, not
-// `pending_with_market` from here.
-//
-// The consumer's flag-on path (mech-analytics.ts::fetchMechRequestsFromAnalytics)
-// does NOT filter on market_id — it filters only on invalid rows and
-// missing requester/title. The old check 1 gated on `pending_with_market`
-// (i.e. rows with market_id IS NOT NULL) which dropped ~99% of legitimate
-// rows for chain-100 where the market_id column is populated for a small
-// recent tail of the data only. That produced a fake divergence in prod
-// (0 vs 1326) even though the consumer would have counted every row.
+// The counts are informational only. The gated number is `open` from
+// computeAnalyticsOpenCount above. Retained so the artifact keeps
+// reporting the (a)/(b)/(c) breakdown that documents which shape of raw
+// data lives in per_request_scores.
 export const classifyAnalyticsRows = (rows) => {
   const counts = {
     pending_with_market: 0, // (a) — historical bucket, informational only
@@ -204,6 +292,10 @@ export const classifyAnalyticsRows = (rows) => {
     resolved: 0,
     skipped_missing_key: 0,
   };
+  // `usable` = rows with both requester and title. Used by check 2's
+  // multiset diff (diffRowSets), which matches on (requester, request_id)
+  // with a (requester, ts, title) fallback. Check 1's stricter filtering
+  // (dedup + window + invalid) lives inside computeAnalyticsOpenCount.
   const usable = [];
   for (const row of rows) {
     const requester = row.requester?.toLowerCase();
@@ -224,66 +316,6 @@ export const classifyAnalyticsRows = (rows) => {
     }
   }
   return { counts, usable };
-};
-
-// Reproduces the consumer's post-swap open-market count for the analytics
-// side. Mirrors mech-analytics.ts::fetchMechRequestsFromAnalytics filtering
-// (invalid rows skipped, rows without requester/title skipped, everything
-// else feeds the QMR by title) followed by roi-distribution.ts's settlement
-// consumption via normalizeTitle-matched profitParticipants. The result is
-// what the site would count as "still open" after processing the same
-// scored-rows page it will use post-cutover.
-//
-// `usableRows` are the {requester, row} entries from classifyAnalyticsRows
-// (already de-noised: no missing keys). Invalid rows are still present and
-// are filtered here so classifyAnalyticsRows can also count them for the
-// (b) bucket without double-work.
-export const computeAnalyticsOpenCount = (usableRows, dailyStats, participantTitleField) => {
-  const qmr = new Map(); // title -> Map(agent -> count)
-  const normalizedIndex = new Map(); // normalizeTitle(title) -> title
-  let ingested = 0;
-  let skippedInvalid = 0;
-  for (const { requester, row } of usableRows) {
-    if (row.resolution_status === 'invalid') {
-      skippedInvalid += 1;
-      continue;
-    }
-    const title = row.question_title;
-    if (!qmr.has(title)) {
-      qmr.set(title, new Map());
-      normalizedIndex.set(normalizeTitle(title), title);
-    }
-    const agents = qmr.get(title);
-    agents.set(requester, (agents.get(requester) ?? 0) + 1);
-    ingested += 1;
-  }
-
-  let consumed = 0;
-  for (const stat of dailyStats) {
-    const agentId = stat.traderAgent?.id?.toLowerCase();
-    if (!agentId) continue;
-    for (const participant of stat.profitParticipants ?? []) {
-      const title =
-        participantTitleField === 'question' ? participant.question : participant.metadata?.title;
-      if (!title) continue;
-      const matchedKey = qmr.has(title)
-        ? title
-        : (normalizedIndex.get(normalizeTitle(title)) ?? null);
-      if (!matchedKey) continue;
-      const agents = qmr.get(matchedKey);
-      const count = agents.get(agentId) ?? 0;
-      if (count > 0) {
-        consumed += count;
-        agents.delete(agentId);
-      }
-    }
-  }
-
-  let open = 0;
-  for (const agents of qmr.values()) {
-    for (const count of agents.values()) open += count;
-  }
-  return { open, consumed, ingested, skippedInvalid };
 };
 
 // ---------------------------------------------------------------------------
@@ -357,32 +389,145 @@ export const diffRowSets = (subgraphRows, analyticsRows) => {
 
 // Which subgraph Sender counter matches agent_aggregates.n_mech_requests.
 //
-// The marketplace subgraph increments the Sender counters like this
-// (verified in autonolas-subgraph/subgraphs/marketplace/src/marketplace/
-// mech-marketplace.ts):
+// The marketplace subgraph increments the Sender counters in three
+// places (autonolas-subgraph @ 30d9043e49059598fc228ad4790ecd20b1bb1c74):
 //
-//   handleMarketplaceRequest (on-chain path):
-//     sender.totalMarketplaceRequests += 1
-//     sender.totalLegacyRequests      += numRequests      ← ALSO bumped
+//   subgraphs/marketplace/src/marketplace/mech-marketplace.ts
+//     handleMarketplaceRequest (on-chain path):
+//       sender.totalMarketplaceRequests += 1
+//       sender.totalLegacyRequests      += numRequests      ← ALSO bumped
 //
-//   handleMarketplaceDeliveryWithSignatures (off-chain path):
-//     sender.totalOffChainRequests    += numDeliveries
-//     sender.totalLegacyRequests      += numDeliveries    ← ALSO bumped
+//     handleMarketplaceDeliveryWithSignatures (off-chain path):
+//       sender.totalOffChainRequests    += numDeliveries
+//       sender.totalLegacyRequests      += numDeliveries    ← ALSO bumped
 //
-// So `totalLegacyRequests` is misnamed — it's the grand total of ALL
-// requests (on-chain + off-chain), not just the legacy tail. The previous
-// check summed `totalLegacyRequests + totalMarketplaceRequests`, which
-// counts the on-chain path twice: once via the grand-total field and once
-// via the marketplace-only field. That produced a chronic 2× divergence
-// in prod (Gnosis 604,930 vs 302,465; Polygon 129,044 vs 64,519).
+//   subgraphs/marketplace/src/agent-mech.ts:265-273
+//     handleRequest (legacy AgentMech Request event, wired via
+//     subgraph.gnosis.yaml:389 and the sister chain manifests):
+//       sender.totalLegacyRequests      += 1
+//       sender.totalMarketplaceRequests += 1                ← ALSO bumped
 //
-// The one field that matches `agent_aggregates.n_mech_requests` semantics
-// (total requests seen for this Safe) is `totalLegacyRequests` alone.
-// An equivalent non-overlapping split is `totalOffChainRequests +
-// totalMarketplaceRequests`, but that's two subtractions from a fragile
-// name and this comment would need to explain both — using the grand-total
-// field directly keeps the mapping one-to-one.
+// So the correct identity is:
+//
+//   totalLegacyRequests      = SUM_agentMech(1) + SUM_mkt(numRequests) + SUM_offchain(n)
+//   totalMarketplaceRequests = SUM_agentMech(1) + SUM_mkt(1)
+//
+// `totalLegacyRequests` is the grand total across all three entry points
+// (misnamed — it's not a "legacy tail", it's the superset). It carries
+// pre-marketplace AgentMech requests as well, so anyone re-verifying this
+// against mech-analytics needs to confirm both sides read the same
+// superset. They do: mech-analytics's `agent_aggregates.n_mech_requests`
+// is populated by reading `totalLegacyRequests` directly
+// (mech-analytics/etl/readers/marketplace_subgraph.py:298 →
+// mech-analytics/etl/aggregates/rollup_agent.py::fetch_sender_request_counts).
+// The AgentMech-era question does not re-open: both sides carry it.
+//
+// The previous check summed `totalLegacyRequests + totalMarketplaceRequests`,
+// which counts every on-chain marketplace path twice (once via the grand
+// total, once via the marketplace-only counter). That produced the
+// chronic 2× divergence in prod. Use `totalLegacyRequests` alone.
+//
+// Coercion contract: null preserved, never coerced to 0 (verify-mech-
+// analytics-parity.mjs script header states this invariant). An empty
+// string or garbage value also returns null — those are data-gap
+// signals, not real zeros. NaN propagating into the sum would flip a
+// divergence verdict via `NaN <= tolerance` being false, so we must
+// stop it here before it reaches the caller.
 export const pickSubgraphSenderTotal = (sender) => {
   if (!sender || sender.totalLegacyRequests == null) return null;
-  return Number(sender.totalLegacyRequests);
+  const raw = sender.totalLegacyRequests;
+  // Empty / whitespace-only strings coerce to 0 via Number(''), which
+  // would silently understate subgraphTotal. Treat them as data-gap
+  // signals (null), matching the null-preserved invariant.
+  if (typeof raw === 'string' && raw.trim() === '') return null;
+  const total = Number(raw);
+  return Number.isFinite(total) ? total : null;
+};
+
+// ---------------------------------------------------------------------------
+// Verdict decision — pure function over the collected checkResults
+// ---------------------------------------------------------------------------
+
+// Extracted so the exit-code precedence and vacuous-dilution guard are
+// unit-testable without spinning the full script. Returns
+// `{ exitCode, verdict, message, counts }` where:
+//
+//   exitCode: 0 pass | 1 error | 2 vacuous | 3 divergence | 4 data gap
+//   verdict:  'PASS' | 'FAIL' | 'VACUOUS'
+//   message:  the one-line summary the run's `Verdict` section prints
+//   counts:   { pass, divergence, gap, vacuous } for the artifact header
+//
+// Precedence: divergence (3) outranks gap (4) — a data gap on one check
+// must not mask a real regression on another. Full-vacuous (all results
+// vacuous) escalates to exit 2 so a run where nothing was comparable
+// doesn't silently read as PASS. Partial-vacuous is also escalated: if
+// any distinct check KIND has no non-vacuous result on any platform,
+// that check verified nothing on this run and the verdict downgrades to
+// vacuous — otherwise a run reporting `passed: 4, vacuous: 2, diverged: 0`
+// would exit 0 despite two checks doing no verification (the reviewer's
+// scenario: check 3 vacuous on both platforms after an API contract
+// change).
+export const decideVerdict = (checkResults) => {
+  const byStatus = (status) => checkResults.filter((r) => r.status === status);
+  const passes = byStatus('pass');
+  const divergences = byStatus('divergence');
+  const gaps = byStatus('gap');
+  const vacuous = byStatus('vacuous');
+  const counts = {
+    pass: passes.length,
+    divergence: divergences.length,
+    gap: gaps.length,
+    vacuous: vacuous.length,
+  };
+
+  if (divergences.length > 0) {
+    return {
+      exitCode: 3,
+      verdict: 'FAIL',
+      message: `FAIL (divergence): ${divergences.map((r) => `${r.platform}/${r.check}`).join(', ')}`,
+      counts,
+    };
+  }
+  if (gaps.length > 0) {
+    return {
+      exitCode: 4,
+      verdict: 'FAIL',
+      message: `FAIL (data gap): ${gaps.map((r) => `${r.platform}/${r.check}`).join(', ')}`,
+      counts,
+    };
+  }
+  if (checkResults.length > 0 && vacuous.length === checkResults.length) {
+    return {
+      exitCode: 2,
+      verdict: 'VACUOUS',
+      message: 'VACUOUS: every check had nothing to compare on either side — not a pass.',
+      counts,
+    };
+  }
+  // Partial-vacuous guard: if any check kind was vacuous on every
+  // platform it ran on, that kind proved nothing this run.
+  const kinds = new Map(); // kind -> { total, vacuous }
+  for (const r of checkResults) {
+    const bucket = kinds.get(r.check) ?? { total: 0, vacuous: 0 };
+    bucket.total += 1;
+    if (r.status === 'vacuous') bucket.vacuous += 1;
+    kinds.set(r.check, bucket);
+  }
+  const unverifiedKinds = [...kinds.entries()]
+    .filter(([, b]) => b.total > 0 && b.total === b.vacuous)
+    .map(([kind]) => kind);
+  if (unverifiedKinds.length > 0) {
+    return {
+      exitCode: 2,
+      verdict: 'VACUOUS',
+      message: `VACUOUS: check kind(s) with no non-vacuous result: ${unverifiedKinds.join(', ')} — not a pass.`,
+      counts,
+    };
+  }
+  return {
+    exitCode: 0,
+    verdict: 'PASS',
+    message: 'PASS: every non-vacuous check matched.',
+    counts,
+  };
 };

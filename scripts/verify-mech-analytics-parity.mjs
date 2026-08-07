@@ -63,6 +63,22 @@
 //   the on-chain path twice and produced a chronic 2× divergence
 //   in prod. See pickSubgraphSenderTotal in the -lib module.
 //
+//   Important: check 3 gates the POST-SWAP number. Once the migration
+//   ships, the site reads `agent_aggregates.n_mech_requests` from
+//   mech-analytics, which is populated directly by
+//   `sender.totalLegacyRequests` (mech-analytics/etl/readers/
+//   marketplace_subgraph.py:298), and that is what this check compares.
+//   The current live-site formula at common-util/api/predict/
+//   roi-distribution.ts:349 still does
+//   `Number(sender.totalLegacyRequests) + Number(sender.totalMarketplaceRequests)`
+//   — the exact double-counting sum this script diagnoses as the
+//   check-3 bug. That means a green check 3 does NOT gate what users
+//   see on the live site today; it gates the safety of the swap. Fixing
+//   roi-distribution.ts:349 is out of scope for this parity script
+//   (that lives with product sign-off and a separate PR) — but ops
+//   should know that the pre-cutover live number and the post-cutover
+//   verifier number differ by roughly a factor of two until that lands.
+//
 // NOT in this script — flag-on vs flag-off openRequestCount (§12 Q4's
 // framing). Exercising the site's own fetchIncrementalMechRequests /
 // fetchAllTimeAgents path twice (USE_MECH_ANALYTICS on/off) requires
@@ -102,7 +118,6 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 
 import {
-  normalizeTitle,
   isoFromUnixSec,
   scrub,
   safeOrigin,
@@ -115,6 +130,7 @@ import {
   computeAnalyticsOpenCount,
   diffRowSets,
   pickSubgraphSenderTotal,
+  decideVerdict,
 } from './verify-mech-analytics-parity-lib.mjs';
 
 // ---------------------------------------------------------------------------
@@ -716,14 +732,14 @@ try {
       platform.participantTitleField
     );
     // Analytics side runs the SAME QMR + dailyStats consumption pipeline
-    // the consumer runs post-swap. This is the number that actually
-    // matters for the swap — not the (a) bucket the previous version
-    // gated on. See computeAnalyticsOpenCount in the -lib module for
-    // why market_id filtering is wrong.
+    // the consumer runs post-swap. Feeds raw scoredRows.rows (not the
+    // usable subset) so computeAnalyticsOpenCount can apply the
+    // consumer's filter order exactly: dedup → window/ts → invalid →
+    // requester/title → ingest. See mech-analytics.ts:171-197.
     const analyticsOpen = computeAnalyticsOpenCount(
-      usableAnalyticsRows,
+      scoredRows.rows,
       dailyStats.stats,
-      platform.participantTitleField
+      windowStartSec
     );
     emit(
       `  subgraph feed: ${marketplace.rows.length} requests, ` +
@@ -731,7 +747,8 @@ try {
     );
     emit(
       `  analytics feed: ${analyticsOpen.ingested} rows ingested ` +
-        `(${analyticsOpen.skippedInvalid} invalid skipped), ` +
+        `(${analyticsOpen.skippedInvalid} invalid, ${analyticsOpen.skippedDuplicate} duplicate, ` +
+        `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key skipped), ` +
         `${analyticsOpen.consumed} consumed by settlement matching → open=${analyticsOpen.open}`
     );
     emit('  raw scored-rows breakdown (informational, previously gated (a)):');
@@ -778,6 +795,9 @@ try {
       analytics_consumed: analyticsOpen.consumed,
       analytics_ingested: analyticsOpen.ingested,
       analytics_invalid_skipped: analyticsOpen.skippedInvalid,
+      analytics_duplicate_skipped: analyticsOpen.skippedDuplicate,
+      analytics_out_of_window_skipped: analyticsOpen.skippedOutOfWindow,
+      analytics_missing_key_skipped: analyticsOpen.skippedMissingKey,
       analytics_row_buckets: counts,
       truncated: check1Truncated,
     });
@@ -902,41 +922,16 @@ try {
 
   // ---- Verdict -------------------------------------------------------------
   section('Verdict');
-  const byStatus = (status) => checkResults.filter((r) => r.status === status);
-  const divergences = byStatus('divergence');
-  const gaps = byStatus('gap');
-  const vacuous = byStatus('vacuous');
+  const decision = decideVerdict(checkResults);
   emit(`  checks run:       ${checkResults.length}`);
-  emit(`  passed:           ${byStatus('pass').length}`);
-  emit(`  diverged:         ${divergences.length}`);
-  emit(`  data gaps:        ${gaps.length}`);
-  emit(`  vacuous:          ${vacuous.length}`);
-
-  // Precedence: divergence (3) outranks gap (4) so an incomplete fetch
-  // on one check can never mask a real regression on another. The
-  // all-vacuous guard (2) stops a run where nothing was comparable from
-  // reading as a PASS.
-  if (divergences.length > 0) {
-    emit('');
-    emit(`FAIL (divergence): ${divergences.map((r) => `${r.platform}/${r.check}`).join(', ')}`);
-    exitCode = 3;
-    verdict = 'FAIL';
-  } else if (gaps.length > 0) {
-    emit('');
-    emit(`FAIL (data gap): ${gaps.map((r) => `${r.platform}/${r.check}`).join(', ')}`);
-    exitCode = 4;
-    verdict = 'FAIL';
-  } else if (vacuous.length === checkResults.length) {
-    emit('');
-    emit('VACUOUS: every check had nothing to compare on either side — not a pass.');
-    exitCode = 2;
-    verdict = 'VACUOUS';
-  } else {
-    emit('');
-    emit('PASS: every non-vacuous check matched.');
-    exitCode = 0;
-    verdict = 'PASS';
-  }
+  emit(`  passed:           ${decision.counts.pass}`);
+  emit(`  diverged:         ${decision.counts.divergence}`);
+  emit(`  data gaps:        ${decision.counts.gap}`);
+  emit(`  vacuous:          ${decision.counts.vacuous}`);
+  emit('');
+  emit(decision.message);
+  exitCode = decision.exitCode;
+  verdict = decision.verdict;
 } catch (err) {
   emit('');
   emit(`ERROR: ${scrub(err.message)}`);
