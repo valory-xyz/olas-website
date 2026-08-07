@@ -23,6 +23,7 @@ on:
     paths:
       - 'Dockerfile.verify'
       - 'scripts/verify-mech-analytics-parity.mjs'
+      - 'scripts/verify-mech-analytics-parity-lib.mjs'
       - '.github/workflows/publish-verify-image.yaml'
 
 # Least-privilege default for GITHUB_TOKEN (same discipline as main.yml):
