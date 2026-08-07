@@ -141,23 +141,25 @@ export const computeWindow = ({
 // Check 1 — shared QMR pipeline (single-source correctness)
 // ---------------------------------------------------------------------------
 
-// The QMR is keyed on normalizeTitle(title) directly (not on the raw title
-// with a secondary normalized-index lookup). Two rationales:
+// The QMR is keyed on normalizeTitle(title) directly rather than on the
+// raw title with a secondary normalized-index lookup. Rationale:
+// order-independence between the two verifier feeds. The subgraph feed
+// arrives by blockTimestamp; the scored-rows feed by requested_at + cursor.
+// If we kept a raw-title QMR with a normalizedIndex fallback (as this
+// file did previously), a collision past the 100-char slice would
+// resolve to a different raw key on each side — same logical data,
+// different open count, false divergence. Keying on normalizeTitle(title)
+// collapses the bucket before insertion so the tie-break is a no-op.
 //
-//   1. Consumer parity. roi-distribution.ts:513-516 rebuilds `qmr` from
-//      `Object.keys(qmr)` after settlement consumption, then re-derives
-//      normalizedQmrMap from the surviving keys — so production only ever
-//      keeps a single QMR keyed by whichever raw title happened to arrive
-//      first for a given normalized bucket.
-//
-//   2. Order-independence between the two verifier feeds. The subgraph
-//      feed arrives by blockTimestamp; the scored-rows feed by
-//      requested_at + cursor. If we kept a raw-title QMR with a
-//      normalizedIndex fallback (as this file did previously), a collision
-//      past the 100-char slice would resolve to a different raw key on
-//      each side — same logical data, different open count, false
-//      divergence. Keying on normalizeTitle(title) collapses the bucket
-//      before insertion so the tie-break is a no-op.
+// Note this is a deliberate deviation from the consumer, not a mirror of
+// it. roi-distribution.ts keeps separate raw-title buckets in `qmr` and
+// only builds `normalizedQmrMap` for settlement lookup, so on a
+// post-100-char collision the consumer keeps two buckets and drains one
+// per matching settlement title. Merging into a single normalized bucket
+// means the verifier consumes more on collision than the consumer would.
+// That is the correct choice for a two-sided verifier (both sides collapse
+// the same way, so the comparison is order-invariant), but it is not a
+// literal reproduction of the consumer's QMR shape.
 //
 // Entries are `{ requester, title }`. Callers pre-filter (invalid,
 // missing key, out-of-window, deduplicated) so the shared body never
@@ -204,12 +206,29 @@ export const runQmrOpenCount = (entries, dailyStats) => {
 
 // Subgraph-side adapter: build entries from marketplace-subgraph requests
 // (already usable — `requester`/`title`/`ts` guards fire in the fetcher)
-// and delegate to the shared pipeline. `participantTitleField` is
-// retained for signature stability but no longer needed inside the QMR:
-// the shared body reads both title fields via the consumer's `??` union.
-export const computeSubgraphOpenCount = (requests, dailyStats, _participantTitleField) => {
+// and delegate to the shared pipeline. The consumer's `??` union
+// (question ?? metadata.title) fires inside runQmrOpenCount, so no
+// per-platform participant-title-field flag is needed here.
+export const computeSubgraphOpenCount = (requests, dailyStats) => {
   const entries = requests.map(({ requester, title }) => ({ requester, title }));
   return runQmrOpenCount(entries, dailyStats);
+};
+
+// Shared usability extraction. Both computeAnalyticsOpenCount and
+// classifyAnalyticsRows care whether a row has a lowercased requester
+// and a non-empty question_title — those are the only fields the
+// consumer requires. Returning `{ requester, title }` (nullable) rather
+// than a boolean lets callers reuse the coerced values without a
+// second normalisation step, and prevents the two functions from
+// drifting on what "usable" means. Before this helper existed, both
+// carried inline copies of the same filter and a schema tweak (a new
+// falsy sentinel, say) would only reach whichever site the reviewer
+// remembered to update.
+export const extractRowUsability = (row) => {
+  const requester = row.requester?.toLowerCase() ?? null;
+  const title = row.question_title ?? null;
+  const usable = Boolean(requester) && Boolean(title);
+  return { requester, title, usable };
 };
 
 // Analytics-side adapter: mirrors the consumer's flag-on filtering in
@@ -254,9 +273,8 @@ export const computeAnalyticsOpenCount = (rows, dailyStats, windowStartSec) => {
       skippedInvalid += 1;
       continue;
     }
-    const requester = row.requester?.toLowerCase();
-    const title = row.question_title;
-    if (!requester || !title) {
+    const { requester, title, usable } = extractRowUsability(row);
+    if (!usable) {
       skippedMissingKey += 1;
       continue;
     }
@@ -284,13 +302,24 @@ export const computeAnalyticsOpenCount = (rows, dailyStats, windowStartSec) => {
 // computeAnalyticsOpenCount above. Retained so the artifact keeps
 // reporting the (a)/(b)/(c) breakdown that documents which shape of raw
 // data lives in per_request_scores.
+//
+// IMPORTANT — these counts are computed over RAW rows (no request_id
+// dedup, no window/ts gate). computeAnalyticsOpenCount's
+// `skippedInvalid`/`skippedDuplicate` counters count POST-dedup, which
+// means the two `invalid` numbers can diverge on any window with
+// resolution-sweep activity (per docs/mech-analytics-migration.md:79-84
+// the API re-serves a row on every sweep touch, so a resolved-then-
+// invalidated row lands in `skippedDuplicate` here and in
+// `bucket_raw_invalid` in the artifact). The bucket keys are prefixed
+// `raw_` in the returned object so the artifact reader sees the two
+// populations aren't the same thing side-by-side.
 export const classifyAnalyticsRows = (rows) => {
   const counts = {
-    pending_with_market: 0, // (a) — historical bucket, informational only
-    invalid: 0, // (b)
-    no_market_id: 0, // (c) — non-invalid rows without a market
-    resolved: 0,
-    skipped_missing_key: 0,
+    raw_pending_with_market: 0, // (a) — historical bucket, informational only
+    raw_invalid: 0, // (b), counted pre-dedup
+    raw_no_market_id: 0, // (c) — non-invalid rows without a market
+    raw_resolved: 0,
+    raw_skipped_missing_key: 0,
   };
   // `usable` = rows with both requester and title. Used by check 2's
   // multiset diff (diffRowSets), which matches on (requester, request_id)
@@ -298,21 +327,20 @@ export const classifyAnalyticsRows = (rows) => {
   // (dedup + window + invalid) lives inside computeAnalyticsOpenCount.
   const usable = [];
   for (const row of rows) {
-    const requester = row.requester?.toLowerCase();
-    const title = row.question_title;
-    if (!requester || !title) {
-      counts.skipped_missing_key += 1;
+    const { requester, usable: rowUsable } = extractRowUsability(row);
+    if (!rowUsable) {
+      counts.raw_skipped_missing_key += 1;
       continue;
     }
     usable.push({ requester, row });
     if (row.resolution_status === 'invalid') {
-      counts.invalid += 1;
+      counts.raw_invalid += 1;
     } else if (row.market_id == null) {
-      counts.no_market_id += 1;
+      counts.raw_no_market_id += 1;
     } else if (row.resolution_status === 'pending') {
-      counts.pending_with_market += 1;
+      counts.raw_pending_with_market += 1;
     } else {
-      counts.resolved += 1;
+      counts.raw_resolved += 1;
     }
   }
   return { counts, usable };
@@ -445,6 +473,123 @@ export const pickSubgraphSenderTotal = (sender) => {
 };
 
 // ---------------------------------------------------------------------------
+// Check 1 status resolution — pure helper over the two open-count numbers
+// ---------------------------------------------------------------------------
+
+// Resolves the check-1 status (`vacuous | pass | gap | divergence`) from
+// the two sides' counts, feed sizes, ingestion outcome, and truncation
+// flag. Extracted so the truncation downgrade (`truncated ? 'gap' :
+// 'pass'`) and the zero-ingest degradation guard are testable in
+// isolation. The main script threads the returned status straight into
+// the record().
+//
+// Precedence (top wins):
+//   1. Both feeds empty                             → vacuous
+//   2. Analytics side ingested zero rows but its
+//      raw feed was non-empty (ts gate / dedup /
+//      invalid drained everything)                  → gap
+//   3. Analytics side dropped >SKIP_RATIO_THRESHOLD
+//      of its raw rows via the ts/window gate       → gap
+//   4. subgraphOpen === analyticsOpen AND
+//      subgraphConsumed === analyticsConsumed       → truncated ? gap : pass
+//   5. Truncated                                    → gap
+//   6. Anything else                                → divergence
+//
+// The zero-ingest branch is new-this-round: without it a total ingestion
+// failure (500 rows all-unparseable requested_at → `ingested: 0`,
+// `open: 0`) would report `PASS: open-market counts match exactly (0)`
+// on a quiet-subgraph window, having verified nothing. The ratio branch
+// (skips > half the raw feed) covers partial degradation short of total
+// failure — a plausible mid-roll-out contract drift where the ETL starts
+// mangling most but not all rows.
+//
+// The consumed compare in branch 4 is a strict tie-breaker on top of
+// open equality: settlement draining an agent's full count on any
+// match makes `open` lossy, so `open=0` on both sides can hide a
+// discrepancy INSIDE a settled market (e.g. subgraph consumed 3 and
+// analytics consumed 4 both round to open=0). check 2's row-level
+// diff catches this specific case, but comparing consumed here costs
+// nothing and closes the hole without relying on check 2 staying as-is.
+export const SKIP_RATIO_THRESHOLD = 0.5;
+
+export const resolveCheck1Status = ({
+  subgraphOpen,
+  subgraphConsumed,
+  analyticsOpen,
+  analyticsConsumed,
+  analyticsIngested,
+  analyticsRawRowCount,
+  subgraphRowCount,
+  analyticsSkippedOutOfWindow,
+  truncated,
+}) => {
+  if (subgraphRowCount === 0 && analyticsRawRowCount === 0) {
+    return { status: 'vacuous', reason: 'no-rows-either-side' };
+  }
+  // Zero-ingest guard: raw feed was non-empty but the ts/dedup/invalid
+  // filters drained every row. Downstream open=0 vs subgraph=0 would
+  // silently PASS otherwise.
+  if (analyticsIngested === 0 && analyticsRawRowCount > 0) {
+    return { status: 'gap', reason: 'analytics-ingested-zero' };
+  }
+  // Partial-degradation guard: raw feed non-empty and majority of rows
+  // fell out via the out-of-window gate. This is the plausible ETL
+  // drift case (`requested_at` starts arriving in a new format on some
+  // rows). Below this ratio we treat it as noise; above it, we can't
+  // trust the open count as representative of the window.
+  if (
+    analyticsRawRowCount > 0 &&
+    analyticsSkippedOutOfWindow / analyticsRawRowCount > SKIP_RATIO_THRESHOLD
+  ) {
+    return { status: 'gap', reason: 'analytics-out-of-window-majority' };
+  }
+  if (subgraphOpen === analyticsOpen && subgraphConsumed === analyticsConsumed) {
+    return {
+      status: truncated ? 'gap' : 'pass',
+      reason: truncated ? 'match-but-truncated' : 'exact-match',
+    };
+  }
+  if (subgraphOpen === analyticsOpen && subgraphConsumed !== analyticsConsumed) {
+    // Open matches but consumed doesn't — the settlement drain hid a
+    // real inside-market discrepancy. Not tolerated even without
+    // truncation.
+    return { status: 'divergence', reason: 'consumed-mismatch' };
+  }
+  if (truncated) {
+    return { status: 'gap', reason: 'mismatch-but-truncated' };
+  }
+  return { status: 'divergence', reason: 'open-mismatch' };
+};
+
+// Resolves the check-2 (row parity) status from the multiset diff
+// outputs, feed sizes, and truncation flag. Same-shape helper as
+// resolveCheck1Status so the truncation-downgrade rule
+// (`truncated ? 'gap' : 'pass'` when diffs are zero;
+//  `truncated ? 'gap' : 'divergence'` when non-zero) is tested in
+// isolation from the script's env-var/network side effects.
+export const resolveCheck2Status = ({
+  subgraphRowCount,
+  analyticsRowCount,
+  missingInAnalytics,
+  extraInAnalytics,
+  truncated,
+}) => {
+  if (subgraphRowCount === 0 && analyticsRowCount === 0) {
+    return { status: 'vacuous', reason: 'no-rows-either-side' };
+  }
+  if (missingInAnalytics === 0 && extraInAnalytics === 0) {
+    return {
+      status: truncated ? 'gap' : 'pass',
+      reason: truncated ? 'match-but-truncated' : 'exact-match',
+    };
+  }
+  if (truncated) {
+    return { status: 'gap', reason: 'mismatch-but-truncated' };
+  }
+  return { status: 'divergence', reason: 'row-set-mismatch' };
+};
+
+// ---------------------------------------------------------------------------
 // Verdict decision — pure function over the collected checkResults
 // ---------------------------------------------------------------------------
 
@@ -467,6 +612,15 @@ export const pickSubgraphSenderTotal = (sender) => {
 // would exit 0 despite two checks doing no verification (the reviewer's
 // scenario: check 3 vacuous on both platforms after an API contract
 // change).
+//
+// Invariant: an empty checkResults MUST return exit 2 VACUOUS, never
+// exit 0 PASS. The script's own flow always records at least one result
+// per platform per check, so this is unreachable through the current
+// entry point — but decideVerdict is exported and independently
+// unit-tested, and any future caller (filtered subset, early return,
+// feature-flagged PLATFORMS) inherits this default. "Nothing checked"
+// must never read as "everything passed". Do not remove the empty
+// branch below without also revisiting every caller.
 export const decideVerdict = (checkResults) => {
   const byStatus = (status) => checkResults.filter((r) => r.status === status);
   const passes = byStatus('pass');
@@ -480,6 +634,14 @@ export const decideVerdict = (checkResults) => {
     vacuous: vacuous.length,
   };
 
+  if (checkResults.length === 0) {
+    return {
+      exitCode: 2,
+      verdict: 'VACUOUS',
+      message: 'VACUOUS: no checks were recorded — nothing to gate, not a pass.',
+      counts,
+    };
+  }
   if (divergences.length > 0) {
     return {
       exitCode: 3,
@@ -496,7 +658,7 @@ export const decideVerdict = (checkResults) => {
       counts,
     };
   }
-  if (checkResults.length > 0 && vacuous.length === checkResults.length) {
+  if (vacuous.length === checkResults.length) {
     return {
       exitCode: 2,
       verdict: 'VACUOUS',

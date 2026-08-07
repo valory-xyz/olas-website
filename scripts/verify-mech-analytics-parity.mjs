@@ -131,7 +131,12 @@ import {
   diffRowSets,
   pickSubgraphSenderTotal,
   decideVerdict,
+  resolveCheck1Status,
+  resolveCheck2Status,
+  SKIP_RATIO_THRESHOLD,
 } from './verify-mech-analytics-parity-lib.mjs';
+
+const SKIP_RATIO_THRESHOLD_PCT = Math.round(SKIP_RATIO_THRESHOLD * 100);
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -726,11 +731,7 @@ try {
 
     // ---- Check 1: open-market count parity --------------------------------
     section(`${key} — check 1: open-market count parity`);
-    const subgraphOpen = computeSubgraphOpenCount(
-      marketplace.rows,
-      dailyStats.stats,
-      platform.participantTitleField
-    );
+    const subgraphOpen = computeSubgraphOpenCount(marketplace.rows, dailyStats.stats);
     // Analytics side runs the SAME QMR + dailyStats consumption pipeline
     // the consumer runs post-swap. Feeds raw scoredRows.rows (not the
     // usable subset) so computeAnalyticsOpenCount can apply the
@@ -751,36 +752,57 @@ try {
         `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key skipped), ` +
         `${analyticsOpen.consumed} consumed by settlement matching → open=${analyticsOpen.open}`
     );
-    emit('  raw scored-rows breakdown (informational, previously gated (a)):');
-    emit(`    (a) pending + market_id: ${counts.pending_with_market}`);
-    emit(`    (b) invalid:             ${counts.invalid}`);
-    emit(`    (c) no market_id:        ${counts.no_market_id}`);
-    emit(`        resolved:            ${counts.resolved}`);
-    emit(`        missing key skipped: ${counts.skipped_missing_key}`);
+    emit('  raw scored-rows breakdown (informational, pre-dedup, previously gated (a)):');
+    emit(`    (a) raw pending + market_id: ${counts.raw_pending_with_market}`);
+    emit(`    (b) raw invalid:             ${counts.raw_invalid}`);
+    emit(`    (c) raw no market_id:        ${counts.raw_no_market_id}`);
+    emit(`        raw resolved:            ${counts.raw_resolved}`);
+    emit(`        raw missing key skipped: ${counts.raw_skipped_missing_key}`);
 
     const check1Truncated = marketplace.truncated || dailyStats.truncated || scoredRows.truncated;
-    let check1Status;
-    if (marketplace.rows.length === 0 && scoredRows.rows.length === 0) {
-      check1Status = 'vacuous';
+    const { status: check1Status, reason: check1Reason } = resolveCheck1Status({
+      subgraphOpen: subgraphOpen.open,
+      subgraphConsumed: subgraphOpen.consumed,
+      analyticsOpen: analyticsOpen.open,
+      analyticsConsumed: analyticsOpen.consumed,
+      analyticsIngested: analyticsOpen.ingested,
+      analyticsRawRowCount: scoredRows.rows.length,
+      subgraphRowCount: marketplace.rows.length,
+      analyticsSkippedOutOfWindow: analyticsOpen.skippedOutOfWindow,
+      truncated: check1Truncated,
+    });
+    if (check1Reason === 'no-rows-either-side') {
       emit('  VACUOUS: no rows on either side in the window.');
-    } else if (subgraphOpen.open === analyticsOpen.open) {
-      // Exact equality — counts get no tolerance (unlike check 3, both
-      // sides here describe the same window of the same requests).
-      check1Status = check1Truncated ? 'gap' : 'pass';
+    } else if (check1Reason === 'analytics-ingested-zero') {
       emit(
-        check1Truncated
-          ? `  MATCH on truncated data (${subgraphOpen.open}) — treating as a data gap, not a pass.`
-          : `  PASS: open-market counts match exactly (${subgraphOpen.open}).`
+        `  GAP: analytics ingested 0 rows from a raw feed of ${scoredRows.rows.length} ` +
+          `(${analyticsOpen.skippedInvalid} invalid, ${analyticsOpen.skippedDuplicate} duplicate, ` +
+          `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key). ` +
+          'Cannot gate an open count computed on zero ingested rows.'
       );
-    } else if (check1Truncated) {
-      // A truncated fetch cannot prove a divergence — the missing rows
-      // could account for the whole delta.
-      check1Status = 'gap';
+    } else if (check1Reason === 'analytics-out-of-window-majority') {
+      emit(
+        `  GAP: analytics dropped ${analyticsOpen.skippedOutOfWindow}/${scoredRows.rows.length} ` +
+          `rows via the out-of-window gate (> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
+          'This suggests upstream requested_at drift, not a real match.'
+      );
+    } else if (check1Reason === 'exact-match') {
+      emit(`  PASS: open-market counts match exactly (${subgraphOpen.open}).`);
+    } else if (check1Reason === 'match-but-truncated') {
+      emit(
+        `  MATCH on truncated data (${subgraphOpen.open}) — treating as a data gap, not a pass.`
+      );
+    } else if (check1Reason === 'consumed-mismatch') {
+      emit(
+        `  DIVERGENCE: open counts match (${subgraphOpen.open}) but consumed differs ` +
+          `(subgraph=${subgraphOpen.consumed}, analytics=${analyticsOpen.consumed}) ` +
+          '— settlement drained an agent bucket asymmetrically inside a settled market.'
+      );
+    } else if (check1Reason === 'mismatch-but-truncated') {
       emit(
         `  GAP: counts differ (subgraph=${subgraphOpen.open}, analytics=${analyticsOpen.open}) but a fetch was truncated.`
       );
     } else {
-      check1Status = 'divergence';
       emit(
         `  DIVERGENCE: subgraph open=${subgraphOpen.open} vs analytics open=${analyticsOpen.open}.`
       );
@@ -789,6 +811,7 @@ try {
       check: 'open_market_count',
       platform: key,
       status: check1Status,
+      status_reason: check1Reason,
       subgraph_open: subgraphOpen.open,
       subgraph_consumed: subgraphOpen.consumed,
       analytics_open: analyticsOpen.open,
@@ -822,28 +845,29 @@ try {
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
     const check2Truncated = marketplace.truncated || scoredRows.truncated;
-    let check2Status;
-    if (marketplace.rows.length === 0 && usableAnalyticsRows.length === 0) {
-      check2Status = 'vacuous';
+    const { status: check2Status, reason: check2Reason } = resolveCheck2Status({
+      subgraphRowCount: marketplace.rows.length,
+      analyticsRowCount: usableAnalyticsRows.length,
+      missingInAnalytics: rowDiff.missingInAnalytics,
+      extraInAnalytics: rowDiff.extraInAnalytics,
+      truncated: check2Truncated,
+    });
+    if (check2Reason === 'no-rows-either-side') {
       emit('  VACUOUS: no rows on either side in the window.');
-    } else if (rowDiff.missingInAnalytics === 0 && rowDiff.extraInAnalytics === 0) {
-      check2Status = check2Truncated ? 'gap' : 'pass';
-      emit(
-        check2Truncated
-          ? '  MATCH on truncated data — treating as a data gap, not a pass.'
-          : '  PASS: row sets match exactly.'
-      );
-    } else if (check2Truncated) {
-      check2Status = 'gap';
+    } else if (check2Reason === 'exact-match') {
+      emit('  PASS: row sets match exactly.');
+    } else if (check2Reason === 'match-but-truncated') {
+      emit('  MATCH on truncated data — treating as a data gap, not a pass.');
+    } else if (check2Reason === 'mismatch-but-truncated') {
       emit('  GAP: row sets differ but a fetch was truncated — rerun with a smaller window.');
     } else {
-      check2Status = 'divergence';
       emit('  DIVERGENCE: row sets differ.');
     }
     record({
       check: 'row_parity',
       platform: key,
       status: check2Status,
+      status_reason: check2Reason,
       subgraph_rows: marketplace.rows.length,
       analytics_rows: usableAnalyticsRows.length,
       missing_in_analytics: rowDiff.missingInAnalytics,

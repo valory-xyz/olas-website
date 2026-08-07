@@ -43,9 +43,13 @@ import {
   computeSubgraphOpenCount,
   computeAnalyticsOpenCount,
   classifyAnalyticsRows,
+  extractRowUsability,
   diffRowSets,
   pickSubgraphSenderTotal,
   decideVerdict,
+  resolveCheck1Status,
+  resolveCheck2Status,
+  SKIP_RATIO_THRESHOLD,
 } from './verify-mech-analytics-parity-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -334,12 +338,33 @@ test('classifyAnalyticsRows: buckets rows by resolution_status and market_id pre
     { requester: '0xc', question_title: null, resolution_status: 'pending', market_id: '0xM4' },
   ];
   const { counts, usable } = classifyAnalyticsRows(rows);
-  assert.equal(counts.pending_with_market, 1);
-  assert.equal(counts.no_market_id, 1);
-  assert.equal(counts.invalid, 1);
-  assert.equal(counts.resolved, 1);
-  assert.equal(counts.skipped_missing_key, 2);
+  // Bucket keys are `raw_*` prefixed so the artifact reader can tell
+  // these are pre-dedup / pre-window counts, not the same population as
+  // computeAnalyticsOpenCount's post-dedup skippedInvalid/etc.
+  assert.equal(counts.raw_pending_with_market, 1);
+  assert.equal(counts.raw_no_market_id, 1);
+  assert.equal(counts.raw_invalid, 1);
+  assert.equal(counts.raw_resolved, 1);
+  assert.equal(counts.raw_skipped_missing_key, 2);
   assert.equal(usable.length, 4); // rows with requester+title survive the key check
+});
+
+test('classifyAnalyticsRows: duplicate request_ids all counted (pre-dedup semantics)', () => {
+  // Deliberate divergence from computeAnalyticsOpenCount. The API re-serves
+  // a row every time the resolution sweep touches it
+  // (docs/mech-analytics-migration.md:79-84); this bucket count reports
+  // that raw shape so the artifact reader can see the physical row
+  // volume, and computeAnalyticsOpenCount dedups so the check-1 gate
+  // uses each request once. Regression guard so a future edit that
+  // deduplicates here doesn't silently change the artifact's meaning.
+  const rows = [
+    { request_id: 'r1', requester: '0xa', question_title: 'q1', resolution_status: 'invalid', market_id: '0xM' },
+    { request_id: 'r1', requester: '0xa', question_title: 'q1', resolution_status: 'invalid', market_id: '0xM' },
+    { request_id: 'r1', requester: '0xa', question_title: 'q1', resolution_status: 'invalid', market_id: '0xM' },
+  ];
+  const { counts, usable } = classifyAnalyticsRows(rows);
+  assert.equal(counts.raw_invalid, 3);
+  assert.equal(usable.length, 3);
 });
 
 // ---------------------------------------------------------------------------
@@ -862,38 +887,432 @@ test('decideVerdict: mixed vacuous — kind is verified on at least one platform
   assert.equal(d.verdict, 'PASS');
 });
 
-test('decideVerdict: empty checkResults → exit 0 (nothing to gate, mirrors no-op run)', () => {
-  // Defensive: decideVerdict must never crash on an empty list. In
-  // practice the script always records at least one result per platform
-  // per check, but the guard makes the contract obvious.
+test('decideVerdict: empty checkResults → exit 2 VACUOUS (nothing checked is never a pass)', () => {
+  // Reviewer regression: round 2 added `checkResults.length > 0 &&` to
+  // the all-vacuous branch and, as a side effect, made an empty list
+  // fall through to the final `PASS`. Any future caller that hands an
+  // empty list to decideVerdict (filtered subset, early return,
+  // feature-flagged PLATFORMS) would inherit "nothing checked means
+  // PASS". Empty MUST be exit 2, not exit 0.
   const d = decideVerdict([]);
-  assert.equal(d.exitCode, 0);
-  assert.equal(d.verdict, 'PASS');
+  assert.equal(d.exitCode, 2);
+  assert.equal(d.verdict, 'VACUOUS');
+  assert.match(d.message, /no checks were recorded/);
 });
 
-test('decideVerdict: truncation downgrade — check status is "gap" not "pass" when truncated+match', () => {
-  // Truncation-to-gap downgrade lives at the per-check site (check1Status
-  // = check1Truncated ? 'gap' : 'pass' when counts match). decideVerdict
-  // sees the downgraded status, so a truncated+match check contributes
-  // to the gap tally and escalates to exit 4.
+test('decideVerdict: propagates pre-labelled "gap" status to exit 4', () => {
+  // decideVerdict operates on already-classified statuses. This test
+  // pins the contract that a `gap` from any check-site downgrade
+  // escalates to exit 4 (not exit 0). The actual downgrade computation
+  // is tested against resolveCheck1Status / resolveCheck2Status below.
   const r = [
-    { check: 'open_market_count', platform: 'omenstrat', status: 'gap' /* truncated+match */ },
+    { check: 'open_market_count', platform: 'omenstrat', status: 'gap' },
     { check: 'row_parity', platform: 'omenstrat', status: 'pass' },
   ];
   const d = decideVerdict(r);
   assert.equal(d.exitCode, 4);
 });
 
-test('decideVerdict: truncation downgrade — truncated+mismatch is gap, not divergence', () => {
-  // Same downgrade in the opposite direction: truncated+mismatch must
-  // NOT be reported as divergence because the missing rows could account
-  // for the whole delta. Per-check code sets status='gap' in this case;
-  // decideVerdict must treat it as gap (exit 4), not divergence (exit 3).
+test('decideVerdict: pre-labelled "gap" from truncated+mismatch does not escalate to divergence', () => {
+  // Same as above in the opposite direction: even when there IS a diff,
+  // a check-site that labels itself `gap` (because it was truncated)
+  // must not be treated as `divergence` by decideVerdict — otherwise a
+  // truncated fetch could report a fake regression.
   const r = [
-    { check: 'open_market_count', platform: 'omenstrat', status: 'gap' /* truncated+mismatch */ },
+    { check: 'open_market_count', platform: 'omenstrat', status: 'gap' },
   ];
   const d = decideVerdict(r);
   assert.equal(d.exitCode, 4);
   assert.equal(d.counts.divergence, 0);
   assert.equal(d.counts.gap, 1);
+});
+
+// ---------------------------------------------------------------------------
+// extractRowUsability — the shared filter classifyAnalyticsRows /
+// computeAnalyticsOpenCount both go through
+// ---------------------------------------------------------------------------
+
+test('extractRowUsability: lowercases requester and requires non-empty title', () => {
+  // Both fields required; requester lowercased; either missing → not usable.
+  assert.deepEqual(extractRowUsability({ requester: '0xABC', question_title: 'q' }), {
+    requester: '0xabc',
+    title: 'q',
+    usable: true,
+  });
+  assert.deepEqual(extractRowUsability({ requester: null, question_title: 'q' }), {
+    requester: null,
+    title: 'q',
+    usable: false,
+  });
+  assert.deepEqual(extractRowUsability({ requester: '0xABC', question_title: null }), {
+    requester: '0xabc',
+    title: null,
+    usable: false,
+  });
+  assert.deepEqual(extractRowUsability({ requester: '', question_title: 'q' }), {
+    requester: '',
+    title: 'q',
+    usable: false,
+  });
+  assert.deepEqual(extractRowUsability({ requester: '0xabc', question_title: '' }), {
+    requester: '0xabc',
+    title: '',
+    usable: false,
+  });
+});
+
+test('classifyAnalyticsRows and computeAnalyticsOpenCount agree on usability filter', () => {
+  // Both call sites must classify "usable" identically for the artifact
+  // to make sense. This is the anti-drift test the reviewer asked for:
+  // if the shared helper's contract changes, both callers move together
+  // or this fails.
+  const rows = [
+    { request_id: 'r1', requester: '0xA', question_title: 'q1', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r2', requester: null, question_title: 'q2', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r3', requester: '0xB', question_title: '', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r4', requester: '', question_title: 'q4', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+  ];
+  const { counts, usable } = classifyAnalyticsRows(rows);
+  const result = computeAnalyticsOpenCount(rows, [], NO_WINDOW);
+  // classifyAnalyticsRows skipped 3, computeAnalyticsOpenCount skipped 3;
+  // exactly one row survived on each side.
+  assert.equal(counts.raw_skipped_missing_key, 3);
+  assert.equal(usable.length, 1);
+  assert.equal(result.skippedMissingKey, 3);
+  assert.equal(result.ingested, 1);
+});
+
+// ---------------------------------------------------------------------------
+// computeAnalyticsOpenCount — skippedMissingKey counter (previously untested)
+// ---------------------------------------------------------------------------
+
+test('computeAnalyticsOpenCount: skippedMissingKey counts survivors of ts+invalid but no requester/title', () => {
+  // Ordering matters: dedup → ts → invalid → missing-key. A row that
+  // survives dedup, ts, and invalid but has no requester or title lands
+  // in skippedMissingKey (not skippedInvalid or skippedOutOfWindow).
+  const rows = [
+    { request_id: 'r1', requester: '0xA', question_title: 'q1', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r2', requester: null, question_title: 'q2', resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r3', requester: '0xB', question_title: null, resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+    { request_id: 'r4', requester: null, question_title: null, resolution_status: 'pending', requested_at: '2026-07-01T00:00:00Z', market_id: null },
+  ];
+  const result = computeAnalyticsOpenCount(rows, [], NO_WINDOW);
+  assert.equal(result.skippedMissingKey, 3);
+  assert.equal(result.skippedInvalid, 0);
+  assert.equal(result.skippedOutOfWindow, 0);
+  assert.equal(result.skippedDuplicate, 0);
+  assert.equal(result.ingested, 1);
+});
+
+// ---------------------------------------------------------------------------
+// resolveCheck1Status — extracted downgrade / vacuous / gap logic
+// ---------------------------------------------------------------------------
+
+test('resolveCheck1Status: exact match with no truncation → pass', () => {
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 5,
+    analyticsConsumed: 2,
+    analyticsIngested: 7,
+    analyticsRawRowCount: 7,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'pass');
+  assert.equal(r.reason, 'exact-match');
+});
+
+test('resolveCheck1Status: truncated match downgrades pass → gap', () => {
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 5,
+    analyticsConsumed: 2,
+    analyticsIngested: 7,
+    analyticsRawRowCount: 7,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: true,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'match-but-truncated');
+});
+
+test('resolveCheck1Status: truncated mismatch downgrades divergence → gap', () => {
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 3,
+    analyticsConsumed: 4,
+    analyticsIngested: 7,
+    analyticsRawRowCount: 7,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: true,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'mismatch-but-truncated');
+});
+
+test('resolveCheck1Status: untruncated mismatch → divergence', () => {
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 4,
+    analyticsConsumed: 3,
+    analyticsIngested: 7,
+    analyticsRawRowCount: 7,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'divergence');
+  assert.equal(r.reason, 'open-mismatch');
+});
+
+test('resolveCheck1Status: open matches but consumed differs → divergence (advisory 4 fix)', () => {
+  // Reviewer's example: subgraph 3 requests with 1 genuinely missing
+  // vs analytics 4 correct. Both settle in the same market, so open=0
+  // on both sides — but consumed diverges 3 vs 4. Comparing open alone
+  // would PASS. resolveCheck1Status must flag this as divergence.
+  const r = resolveCheck1Status({
+    subgraphOpen: 0,
+    subgraphConsumed: 3,
+    analyticsOpen: 0,
+    analyticsConsumed: 4,
+    analyticsIngested: 4,
+    analyticsRawRowCount: 4,
+    subgraphRowCount: 3,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'divergence');
+  assert.equal(r.reason, 'consumed-mismatch');
+});
+
+test('resolveCheck1Status: both feeds empty → vacuous', () => {
+  const r = resolveCheck1Status({
+    subgraphOpen: 0,
+    subgraphConsumed: 0,
+    analyticsOpen: 0,
+    analyticsConsumed: 0,
+    analyticsIngested: 0,
+    analyticsRawRowCount: 0,
+    subgraphRowCount: 0,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'vacuous');
+  assert.equal(r.reason, 'no-rows-either-side');
+});
+
+test('resolveCheck1Status: analytics raw non-empty but ingested=0 → gap (round-2 regression)', () => {
+  // Reviewer's reproduction: 500 rows with unparseable requested_at, the
+  // window/ts gate drops all 500, ingested=0, open=0. Subgraph quiet in
+  // the same window (open=0). Old branch would PASS. Must now GAP.
+  const r = resolveCheck1Status({
+    subgraphOpen: 0,
+    subgraphConsumed: 0,
+    analyticsOpen: 0,
+    analyticsConsumed: 0,
+    analyticsIngested: 0,
+    analyticsRawRowCount: 500,
+    subgraphRowCount: 0,
+    analyticsSkippedOutOfWindow: 500,
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'analytics-ingested-zero');
+});
+
+test('resolveCheck1Status: analytics dropped >50% of raw via out-of-window → gap (partial degradation)', () => {
+  // Between total failure and healthy: half the raw feed gets dropped
+  // by the ts gate. We can't trust the open count as representative.
+  // Ratio threshold guard should escalate to gap.
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 5,
+    analyticsConsumed: 2,
+    analyticsIngested: 4,
+    analyticsRawRowCount: 10,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 6, // 6/10 = 60% > 50%
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'analytics-out-of-window-majority');
+});
+
+test('resolveCheck1Status: skip ratio at threshold is not enough to trigger gap', () => {
+  // Boundary check: SKIP_RATIO_THRESHOLD is strict-greater-than (`>`).
+  // Exactly at the threshold is not a gap — otherwise flapping around
+  // the boundary would produce inconsistent verdicts.
+  assert.equal(SKIP_RATIO_THRESHOLD, 0.5);
+  const r = resolveCheck1Status({
+    subgraphOpen: 5,
+    subgraphConsumed: 2,
+    analyticsOpen: 5,
+    analyticsConsumed: 2,
+    analyticsIngested: 5,
+    analyticsRawRowCount: 10,
+    subgraphRowCount: 7,
+    analyticsSkippedOutOfWindow: 5, // 5/10 = exactly 0.5
+    truncated: false,
+  });
+  assert.equal(r.status, 'pass');
+});
+
+// ---------------------------------------------------------------------------
+// resolveCheck2Status — extracted row-parity downgrade
+// ---------------------------------------------------------------------------
+
+test('resolveCheck2Status: zero diffs, not truncated → pass', () => {
+  const r = resolveCheck2Status({
+    subgraphRowCount: 10,
+    analyticsRowCount: 10,
+    missingInAnalytics: 0,
+    extraInAnalytics: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'pass');
+  assert.equal(r.reason, 'exact-match');
+});
+
+test('resolveCheck2Status: zero diffs BUT truncated → gap (match-but-truncated)', () => {
+  const r = resolveCheck2Status({
+    subgraphRowCount: 10,
+    analyticsRowCount: 10,
+    missingInAnalytics: 0,
+    extraInAnalytics: 0,
+    truncated: true,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'match-but-truncated');
+});
+
+test('resolveCheck2Status: non-zero diffs BUT truncated → gap not divergence', () => {
+  const r = resolveCheck2Status({
+    subgraphRowCount: 10,
+    analyticsRowCount: 8,
+    missingInAnalytics: 2,
+    extraInAnalytics: 0,
+    truncated: true,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'mismatch-but-truncated');
+});
+
+test('resolveCheck2Status: non-zero diffs, not truncated → divergence', () => {
+  const r = resolveCheck2Status({
+    subgraphRowCount: 10,
+    analyticsRowCount: 8,
+    missingInAnalytics: 2,
+    extraInAnalytics: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'divergence');
+  assert.equal(r.reason, 'row-set-mismatch');
+});
+
+test('resolveCheck2Status: both empty → vacuous', () => {
+  const r = resolveCheck2Status({
+    subgraphRowCount: 0,
+    analyticsRowCount: 0,
+    missingInAnalytics: 0,
+    extraInAnalytics: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'vacuous');
+});
+
+// ---------------------------------------------------------------------------
+// End-to-end reproduction of the round-2 zero-ingest regression
+// ---------------------------------------------------------------------------
+
+test('E2E round-2 regression: 500 unparseable rows + quiet subgraph must be GAP not PASS', () => {
+  // Ojus's exact scenario: mech-analytics ETL contract drift produces
+  // 500 scored rows with unparseable requested_at. The ts gate drops
+  // all 500 → ingested=0 → open=0. Subgraph is quiet in the same
+  // window (no marketplace rows). Old check-1 branch would emit
+  // "PASS: open-market counts match exactly (0)" and exit 0. This test
+  // wires computeAnalyticsOpenCount to resolveCheck1Status the same
+  // way parity.mjs does and asserts the pipeline lands on `gap`.
+  const rows = Array.from({ length: 500 }, (_, i) => ({
+    request_id: `r${i}`,
+    requester: '0xa',
+    question_title: 'q',
+    resolution_status: 'pending',
+    requested_at: 'not a valid date at all', // Date.parse → NaN → ts NaN → skipped
+    market_id: null,
+  }));
+  const windowStartSec = Math.floor(Date.parse('2026-07-01T00:00:00Z') / 1000);
+  const analyticsOpen = computeAnalyticsOpenCount(rows, [], windowStartSec);
+  // Precondition: exactly the ETL-drift shape the reviewer described.
+  assert.equal(analyticsOpen.ingested, 0);
+  assert.equal(analyticsOpen.open, 0);
+  assert.equal(analyticsOpen.skippedOutOfWindow, 500);
+  const subgraphOpen = { open: 0, consumed: 0 };
+  const decision = resolveCheck1Status({
+    subgraphOpen: subgraphOpen.open,
+    subgraphConsumed: subgraphOpen.consumed,
+    analyticsOpen: analyticsOpen.open,
+    analyticsConsumed: analyticsOpen.consumed,
+    analyticsIngested: analyticsOpen.ingested,
+    analyticsRawRowCount: rows.length, // 500 raw rows in
+    subgraphRowCount: 0,
+    analyticsSkippedOutOfWindow: analyticsOpen.skippedOutOfWindow,
+    truncated: false,
+  });
+  assert.equal(decision.status, 'gap');
+  assert.equal(decision.reason, 'analytics-ingested-zero');
+});
+
+test('E2E round-2 regression: consumed-drain hides discrepancy (advisory 4)', () => {
+  // Ojus's example for advisory 4: subgraph has 3 requests on title T
+  // for agent A but ONE is genuinely missing (2 usable). analytics has
+  // 4 correctly. Settlement drains agent A on match → open=0 on both
+  // sides. Comparing open alone: PASS. Comparing consumed too: divergence.
+  //
+  // Build subgraph feed: 2 requests (post the "missing" one) on title T.
+  const subgraphRequests = [
+    { requester: '0xa', title: 'Some market title' },
+    { requester: '0xa', title: 'Some market title' },
+  ];
+  // Build analytics feed: 4 requests on the same title.
+  const analyticsRows = Array.from({ length: 4 }, (_, i) => ({
+    request_id: `r${i}`,
+    requester: '0xa',
+    question_title: 'Some market title',
+    resolution_status: 'pending',
+    requested_at: '2026-07-02T00:00:00Z',
+    market_id: '0xM',
+  }));
+  // Settlement: agent A settles the market.
+  const dailyStats = [
+    { traderAgent: { id: '0xa' }, profitParticipants: [{ question: 'Some market title' }] },
+  ];
+  const subgraphOpen = computeSubgraphOpenCount(subgraphRequests, dailyStats);
+  const analyticsOpen = computeAnalyticsOpenCount(analyticsRows, dailyStats, NO_WINDOW);
+  // Confirm both open=0 (settlement drained both agent buckets fully).
+  assert.equal(subgraphOpen.open, 0);
+  assert.equal(analyticsOpen.open, 0);
+  // But consumed differs — that's the hidden discrepancy.
+  assert.equal(subgraphOpen.consumed, 2);
+  assert.equal(analyticsOpen.consumed, 4);
+  const decision = resolveCheck1Status({
+    subgraphOpen: subgraphOpen.open,
+    subgraphConsumed: subgraphOpen.consumed,
+    analyticsOpen: analyticsOpen.open,
+    analyticsConsumed: analyticsOpen.consumed,
+    analyticsIngested: analyticsOpen.ingested,
+    analyticsRawRowCount: analyticsRows.length,
+    subgraphRowCount: subgraphRequests.length,
+    analyticsSkippedOutOfWindow: 0,
+    truncated: false,
+  });
+  assert.equal(decision.status, 'divergence');
+  assert.equal(decision.reason, 'consumed-mismatch');
 });
