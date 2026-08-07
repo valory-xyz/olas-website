@@ -313,6 +313,18 @@ export const computeAnalyticsOpenCount = (rows, dailyStats, windowStartSec) => {
 // `bucket_raw_invalid` in the artifact). The bucket keys are prefixed
 // `raw_` in the returned object so the artifact reader sees the two
 // populations aren't the same thing side-by-side.
+//
+// Check 1 and check 2 audit different row populations by design.
+// `computeAnalyticsOpenCount` (check 1) dedups on `request_id` and
+// drops invalid + out-of-window rows before building its QMR;
+// `classifyAnalyticsRows.usable` (check 2's feed via `diffRowSets`)
+// applies only the requester/title presence test — no dedup, no window
+// gate, no invalid drop. Consequence: check 2 is a row-set diff, not a
+// backstop for check 1's ingestion guards. A check-1 false pass caused
+// by an attrition-guard miss will NOT be caught by check 2 (e.g. a
+// missing-key storm shrinks `usable` on both sides symmetrically and
+// check 2 still reports exact-match). This is why the attrition guards
+// in `resolveCheck1Status` cover every non-duplicate bucket.
 export const classifyAnalyticsRows = (rows) => {
   const counts = {
     raw_pending_with_market: 0, // (a) — historical bucket, informational only
@@ -489,71 +501,106 @@ export const pickSubgraphSenderTotal = (sender) => {
 //      raw feed was non-empty (ts gate / dedup /
 //      invalid drained everything)                  → gap
 //   3. Analytics side dropped >SKIP_RATIO_THRESHOLD
-//      of its raw rows via the ts/window gate       → gap
-//   4. subgraphOpen === analyticsOpen AND
-//      subgraphConsumed === analyticsConsumed       → truncated ? gap : pass
-//   5. Truncated                                    → gap
-//   6. Anything else                                → divergence
+//      of its raw rows via ts/window + missing-key
+//      + invalid (post-dedup, non-duplicate) skips  → gap
+//   4. Subgraph side ingested zero rows but its
+//      raw feed was non-empty                       → gap
+//   5. Subgraph side dropped >SKIP_RATIO_THRESHOLD
+//      of its raw rows via missing-key + past-end   → gap
+//   6. subgraphOpen === analyticsOpen               → truncated ? gap : pass
+//   7. Truncated                                    → gap
+//   8. Anything else                                → divergence
 //
-// The zero-ingest branch is new-this-round: without it a total ingestion
-// failure (500 rows all-unparseable requested_at → `ingested: 0`,
-// `open: 0`) would report `PASS: open-market counts match exactly (0)`
-// on a quiet-subgraph window, having verified nothing. The ratio branch
-// (skips > half the raw feed) covers partial degradation short of total
-// failure — a plausible mid-roll-out contract drift where the ETL starts
-// mangling most but not all rows.
+// The zero-ingest branches (2, 4) cover total ingestion failure: 500
+// rows all-unparseable requested_at → `ingested: 0`, `open: 0` would
+// otherwise report `PASS: open-market counts match exactly (0)` on a
+// quiet-subgraph window, having verified nothing. The ratio branches
+// (3, 5) cover partial degradation short of total failure — a plausible
+// mid-roll-out contract drift where the ETL / subgraph starts mangling
+// most but not all rows.
 //
-// The consumed compare in branch 4 is a strict tie-breaker on top of
-// open equality: settlement draining an agent's full count on any
-// match makes `open` lossy, so `open=0` on both sides can hide a
-// discrepancy INSIDE a settled market (e.g. subgraph consumed 3 and
-// analytics consumed 4 both round to open=0). check 2's row-level
-// diff catches this specific case, but comparing consumed here costs
-// nothing and closes the hole without relying on check 2 staying as-is.
+// Round 2 added a `consumed !== analyticsConsumed → divergence` tie-
+// breaker after the open-equal branch. Round 3 reverted it: `consumed`
+// is not comparable across the two sides on healthy data because
+// `computeAnalyticsOpenCount` drops `resolution_status === 'invalid'`
+// rows (mirroring the post-swap consumer's filter) while the subgraph
+// feed has no invalid concept, so any window that contains an invalid
+// row will see the two `consumed` counts differ by the invalid count.
+// Reviewer self-corrected in round 3. The correct longer-term fix
+// (drop invalid `request_id`s from the subgraph feed too so both sides
+// model the post-swap consumer) touches how the subgraph feed is built
+// and how check 2 works — deferred to a follow-up PR. `subgraphConsumed`
+// and `analyticsConsumed` remain in the artifact for informational use.
 export const SKIP_RATIO_THRESHOLD = 0.5;
 
 export const resolveCheck1Status = ({
   subgraphOpen,
-  subgraphConsumed,
   analyticsOpen,
-  analyticsConsumed,
   analyticsIngested,
   analyticsRawRowCount,
   subgraphRowCount,
+  subgraphRawRowCount,
+  subgraphSkippedMissingKey,
+  subgraphSkippedAfterWindowEnd,
   analyticsSkippedOutOfWindow,
+  analyticsSkippedMissingKey,
+  analyticsSkippedInvalid,
   truncated,
 }) => {
   if (subgraphRowCount === 0 && analyticsRawRowCount === 0) {
     return { status: 'vacuous', reason: 'no-rows-either-side' };
   }
-  // Zero-ingest guard: raw feed was non-empty but the ts/dedup/invalid
-  // filters drained every row. Downstream open=0 vs subgraph=0 would
-  // silently PASS otherwise.
+  // Zero-ingest guard (analytics): raw feed was non-empty but the
+  // ts/dedup/invalid/missing-key filters drained every row. Downstream
+  // open=0 vs subgraph=0 would silently PASS otherwise.
   if (analyticsIngested === 0 && analyticsRawRowCount > 0) {
     return { status: 'gap', reason: 'analytics-ingested-zero' };
   }
-  // Partial-degradation guard: raw feed non-empty and majority of rows
-  // fell out via the out-of-window gate. This is the plausible ETL
-  // drift case (`requested_at` starts arriving in a new format on some
-  // rows). Below this ratio we treat it as noise; above it, we can't
-  // trust the open count as representative of the window.
+  // Partial-degradation guard (analytics): raw feed non-empty and
+  // majority of rows fell out via the out-of-window / missing-key /
+  // invalid buckets. `skippedDuplicate` is deliberately EXCLUDED from
+  // the numerator — per docs/mech-analytics-migration.md:79-84 the API
+  // re-serves the same row on every sweep touch, so duplicates are
+  // normal healthy traffic and including them would fire the guard
+  // during any resolution sweep. The other three buckets each represent
+  // a plausible upstream regression: `skippedOutOfWindow` covers
+  // requested_at parse / format drift; `skippedMissingKey` covers a
+  // `requester` / `question_title` rename or nulling; `skippedInvalid`
+  // covers predict-api resolution_status classification regressions.
+  const analyticsAttrition =
+    analyticsSkippedOutOfWindow + analyticsSkippedMissingKey + analyticsSkippedInvalid;
   if (
     analyticsRawRowCount > 0 &&
-    analyticsSkippedOutOfWindow / analyticsRawRowCount > SKIP_RATIO_THRESHOLD
+    analyticsAttrition / analyticsRawRowCount > SKIP_RATIO_THRESHOLD
   ) {
-    return { status: 'gap', reason: 'analytics-out-of-window-majority' };
+    return { status: 'gap', reason: 'analytics-attrition-majority' };
   }
-  if (subgraphOpen === analyticsOpen && subgraphConsumed === analyticsConsumed) {
+  // Zero-ingest guard (subgraph): mirror of the analytics-side guard.
+  // `fetchMarketplaceRequests` filters rows without `sender`, `title`,
+  // or a positive `ts`, and rows past `windowEndSec`. A schema change
+  // (`sender.id` going missing on most `Request` entities) presents as
+  // a smaller `subgraphRowCount` — the `vacuous` branch only fires when
+  // BOTH sides are empty, so without this guard a genuine subgraph
+  // regression looks like a quiet window.
+  if (subgraphRawRowCount != null && subgraphRowCount === 0 && subgraphRawRowCount > 0) {
+    return { status: 'gap', reason: 'subgraph-ingested-zero' };
+  }
+  // Partial-degradation guard (subgraph): mirror of the analytics-side
+  // ratio guard. The subgraph fetcher separates rows into two skip
+  // buckets — `skippedMissingKey` and `skippedAfterWindowEnd` — both
+  // represent plausible upstream regressions worth escalating on.
+  if (subgraphRawRowCount != null && subgraphRawRowCount > 0) {
+    const subgraphAttrition =
+      (subgraphSkippedMissingKey ?? 0) + (subgraphSkippedAfterWindowEnd ?? 0);
+    if (subgraphAttrition / subgraphRawRowCount > SKIP_RATIO_THRESHOLD) {
+      return { status: 'gap', reason: 'subgraph-attrition-majority' };
+    }
+  }
+  if (subgraphOpen === analyticsOpen) {
     return {
       status: truncated ? 'gap' : 'pass',
       reason: truncated ? 'match-but-truncated' : 'exact-match',
     };
-  }
-  if (subgraphOpen === analyticsOpen && subgraphConsumed !== analyticsConsumed) {
-    // Open matches but consumed doesn't — the settlement drain hid a
-    // real inside-market discrepancy. Not tolerated even without
-    // truncation.
-    return { status: 'divergence', reason: 'consumed-mismatch' };
   }
   if (truncated) {
     return { status: 'gap', reason: 'mismatch-but-truncated' };

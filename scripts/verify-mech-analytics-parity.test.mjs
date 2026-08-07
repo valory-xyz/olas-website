@@ -1072,26 +1072,6 @@ test('resolveCheck1Status: untruncated mismatch → divergence', () => {
   assert.equal(r.reason, 'open-mismatch');
 });
 
-test('resolveCheck1Status: open matches but consumed differs → divergence (advisory 4 fix)', () => {
-  // Reviewer's example: subgraph 3 requests with 1 genuinely missing
-  // vs analytics 4 correct. Both settle in the same market, so open=0
-  // on both sides — but consumed diverges 3 vs 4. Comparing open alone
-  // would PASS. resolveCheck1Status must flag this as divergence.
-  const r = resolveCheck1Status({
-    subgraphOpen: 0,
-    subgraphConsumed: 3,
-    analyticsOpen: 0,
-    analyticsConsumed: 4,
-    analyticsIngested: 4,
-    analyticsRawRowCount: 4,
-    subgraphRowCount: 3,
-    analyticsSkippedOutOfWindow: 0,
-    truncated: false,
-  });
-  assert.equal(r.status, 'divergence');
-  assert.equal(r.reason, 'consumed-mismatch');
-});
-
 test('resolveCheck1Status: both feeds empty → vacuous', () => {
   const r = resolveCheck1Status({
     subgraphOpen: 0,
@@ -1133,17 +1113,17 @@ test('resolveCheck1Status: analytics dropped >50% of raw via out-of-window → g
   // Ratio threshold guard should escalate to gap.
   const r = resolveCheck1Status({
     subgraphOpen: 5,
-    subgraphConsumed: 2,
     analyticsOpen: 5,
-    analyticsConsumed: 2,
     analyticsIngested: 4,
     analyticsRawRowCount: 10,
     subgraphRowCount: 7,
     analyticsSkippedOutOfWindow: 6, // 6/10 = 60% > 50%
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 0,
     truncated: false,
   });
   assert.equal(r.status, 'gap');
-  assert.equal(r.reason, 'analytics-out-of-window-majority');
+  assert.equal(r.reason, 'analytics-attrition-majority');
 });
 
 test('resolveCheck1Status: skip ratio at threshold is not enough to trigger gap', () => {
@@ -1153,16 +1133,131 @@ test('resolveCheck1Status: skip ratio at threshold is not enough to trigger gap'
   assert.equal(SKIP_RATIO_THRESHOLD, 0.5);
   const r = resolveCheck1Status({
     subgraphOpen: 5,
-    subgraphConsumed: 2,
     analyticsOpen: 5,
-    analyticsConsumed: 2,
     analyticsIngested: 5,
     analyticsRawRowCount: 10,
     subgraphRowCount: 7,
     analyticsSkippedOutOfWindow: 5, // 5/10 = exactly 0.5
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 0,
     truncated: false,
   });
   assert.equal(r.status, 'pass');
+});
+
+test('resolveCheck1Status: majority of analytics feed lost via missing-key → gap (round-3 widened numerator)', () => {
+  // Ojus's round-3 repro (comment 3736451382): 5000 raw rows, 4999 lose
+  // `requester` to a schema drift and land in `skippedMissingKey`, one
+  // survivor matches the subgraph's single row. Old numerator counted
+  // only `skippedOutOfWindow` → 0/5000 → ratio guard didn't fire → open
+  // matched → PASS on a feed that lost 99.98% of its rows. Widened
+  // numerator must escalate to gap.
+  const r = resolveCheck1Status({
+    subgraphOpen: 1,
+    analyticsOpen: 1,
+    analyticsIngested: 1,
+    analyticsRawRowCount: 5000,
+    subgraphRowCount: 1,
+    analyticsSkippedOutOfWindow: 0,
+    analyticsSkippedMissingKey: 4999,
+    analyticsSkippedInvalid: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'analytics-attrition-majority');
+});
+
+test('resolveCheck1Status: majority of analytics feed lost via invalid → gap (widened numerator, predict-api regression)', () => {
+  // Sibling of the missing-key case: predict-api starts mis-classifying
+  // rows as `resolution_status = 'invalid'` on most of the feed. Landing
+  // entirely in `skippedInvalid` was invisible to the round-2 numerator.
+  const r = resolveCheck1Status({
+    subgraphOpen: 1,
+    analyticsOpen: 1,
+    analyticsIngested: 1,
+    analyticsRawRowCount: 100,
+    subgraphRowCount: 1,
+    analyticsSkippedOutOfWindow: 0,
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 60,
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'analytics-attrition-majority');
+});
+
+test('resolveCheck1Status: duplicates alone do NOT trigger the attrition guard (healthy re-serves)', () => {
+  // docs/mech-analytics-migration.md:79-84 — the API re-serves the same
+  // row on every sweep touch, so `skippedDuplicate` is expected on any
+  // window with resolution-sweep activity. Including it in the numerator
+  // would fire the guard on perfectly healthy data. Guard the invariant
+  // structurally: the function does not accept a `analyticsSkippedDuplicate`
+  // parameter, so a future change that pipes it in is a signature-level
+  // breakage this call site would surface immediately. The runtime check
+  // below asserts a 90-duplicate window with no non-duplicate attrition
+  // stays pass.
+  const r = resolveCheck1Status({
+    subgraphOpen: 3,
+    analyticsOpen: 3,
+    analyticsIngested: 10,
+    analyticsRawRowCount: 100,
+    subgraphRowCount: 3,
+    analyticsSkippedOutOfWindow: 0,
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'pass');
+});
+
+test('resolveCheck1Status: subgraph ingested 0 rows from non-empty raw → gap (round-3 subgraph guard)', () => {
+  // Ojus's round-3 comment 3736451400 — mirror of the analytics zero-
+  // ingest guard. `fetchMarketplaceRequests` returns rows === [] after
+  // filtering missing sender/title/ts or past-window-end, but the raw
+  // page had entries. Without this branch it looks like a quiet window
+  // (subgraphRowCount === 0 but subgraphRawRowCount > 0 falls through
+  // to open-mismatch or exact-match depending on the analytics side).
+  // Analytics side kept healthy so the analytics guards don't fire first.
+  const r = resolveCheck1Status({
+    subgraphOpen: 0,
+    analyticsOpen: 0,
+    analyticsIngested: 5,
+    analyticsRawRowCount: 5,
+    subgraphRowCount: 0,
+    subgraphRawRowCount: 500,
+    subgraphSkippedMissingKey: 500,
+    subgraphSkippedAfterWindowEnd: 0,
+    analyticsSkippedOutOfWindow: 0,
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'subgraph-ingested-zero');
+});
+
+test('resolveCheck1Status: majority of subgraph feed lost via missing-key → gap (round-3 subgraph guard)', () => {
+  // The subgraph side sibling of `analytics-attrition-majority`.
+  // `sender.id` (or `parsedRequest.questionTitle`) going missing on
+  // most `Request` entities lands entirely in `skippedMissingKey` and
+  // would otherwise present as a smaller `subgraphRowCount`,
+  // structurally indistinguishable from a genuinely quiet window.
+  const r = resolveCheck1Status({
+    subgraphOpen: 1,
+    analyticsOpen: 1,
+    analyticsIngested: 100,
+    analyticsRawRowCount: 100,
+    subgraphRowCount: 1,
+    subgraphRawRowCount: 100,
+    subgraphSkippedMissingKey: 60, // 60/100 = 60% > 50%
+    subgraphSkippedAfterWindowEnd: 0,
+    analyticsSkippedOutOfWindow: 0,
+    analyticsSkippedMissingKey: 0,
+    analyticsSkippedInvalid: 0,
+    truncated: false,
+  });
+  assert.equal(r.status, 'gap');
+  assert.equal(r.reason, 'subgraph-attrition-majority');
 });
 
 // ---------------------------------------------------------------------------
@@ -1270,49 +1365,3 @@ test('E2E round-2 regression: 500 unparseable rows + quiet subgraph must be GAP 
   assert.equal(decision.reason, 'analytics-ingested-zero');
 });
 
-test('E2E round-2 regression: consumed-drain hides discrepancy (advisory 4)', () => {
-  // Ojus's example for advisory 4: subgraph has 3 requests on title T
-  // for agent A but ONE is genuinely missing (2 usable). analytics has
-  // 4 correctly. Settlement drains agent A on match → open=0 on both
-  // sides. Comparing open alone: PASS. Comparing consumed too: divergence.
-  //
-  // Build subgraph feed: 2 requests (post the "missing" one) on title T.
-  const subgraphRequests = [
-    { requester: '0xa', title: 'Some market title' },
-    { requester: '0xa', title: 'Some market title' },
-  ];
-  // Build analytics feed: 4 requests on the same title.
-  const analyticsRows = Array.from({ length: 4 }, (_, i) => ({
-    request_id: `r${i}`,
-    requester: '0xa',
-    question_title: 'Some market title',
-    resolution_status: 'pending',
-    requested_at: '2026-07-02T00:00:00Z',
-    market_id: '0xM',
-  }));
-  // Settlement: agent A settles the market.
-  const dailyStats = [
-    { traderAgent: { id: '0xa' }, profitParticipants: [{ question: 'Some market title' }] },
-  ];
-  const subgraphOpen = computeSubgraphOpenCount(subgraphRequests, dailyStats);
-  const analyticsOpen = computeAnalyticsOpenCount(analyticsRows, dailyStats, NO_WINDOW);
-  // Confirm both open=0 (settlement drained both agent buckets fully).
-  assert.equal(subgraphOpen.open, 0);
-  assert.equal(analyticsOpen.open, 0);
-  // But consumed differs — that's the hidden discrepancy.
-  assert.equal(subgraphOpen.consumed, 2);
-  assert.equal(analyticsOpen.consumed, 4);
-  const decision = resolveCheck1Status({
-    subgraphOpen: subgraphOpen.open,
-    subgraphConsumed: subgraphOpen.consumed,
-    analyticsOpen: analyticsOpen.open,
-    analyticsConsumed: analyticsOpen.consumed,
-    analyticsIngested: analyticsOpen.ingested,
-    analyticsRawRowCount: analyticsRows.length,
-    subgraphRowCount: subgraphRequests.length,
-    analyticsSkippedOutOfWindow: 0,
-    truncated: false,
-  });
-  assert.equal(decision.status, 'divergence');
-  assert.equal(decision.reason, 'consumed-mismatch');
-});

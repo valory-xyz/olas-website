@@ -760,15 +760,25 @@ try {
     emit(`        raw missing key skipped: ${counts.raw_skipped_missing_key}`);
 
     const check1Truncated = marketplace.truncated || dailyStats.truncated || scoredRows.truncated;
+    // Subgraph raw row count is the pre-filter count `fetchMarketplaceRequests`
+    // observed BEFORE dropping missing-sender/title/ts rows and post-windowEnd
+    // rows. Mirrors `analyticsRawRowCount = scoredRows.rows.length` (also
+    // pre-filter, in that case pre the analytics-side ts/dedup/invalid gate
+    // that runs inside `computeAnalyticsOpenCount`).
+    const subgraphRawRowCount =
+      marketplace.rows.length + marketplace.skippedMissingKey + marketplace.skippedAfterWindowEnd;
     const { status: check1Status, reason: check1Reason } = resolveCheck1Status({
       subgraphOpen: subgraphOpen.open,
-      subgraphConsumed: subgraphOpen.consumed,
       analyticsOpen: analyticsOpen.open,
-      analyticsConsumed: analyticsOpen.consumed,
       analyticsIngested: analyticsOpen.ingested,
       analyticsRawRowCount: scoredRows.rows.length,
       subgraphRowCount: marketplace.rows.length,
+      subgraphRawRowCount,
+      subgraphSkippedMissingKey: marketplace.skippedMissingKey,
+      subgraphSkippedAfterWindowEnd: marketplace.skippedAfterWindowEnd,
       analyticsSkippedOutOfWindow: analyticsOpen.skippedOutOfWindow,
+      analyticsSkippedMissingKey: analyticsOpen.skippedMissingKey,
+      analyticsSkippedInvalid: analyticsOpen.skippedInvalid,
       truncated: check1Truncated,
     });
     if (check1Reason === 'no-rows-either-side') {
@@ -780,23 +790,42 @@ try {
           `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key). ` +
           'Cannot gate an open count computed on zero ingested rows.'
       );
-    } else if (check1Reason === 'analytics-out-of-window-majority') {
+    } else if (check1Reason === 'analytics-attrition-majority') {
+      const analyticsAttrition =
+        analyticsOpen.skippedOutOfWindow +
+        analyticsOpen.skippedMissingKey +
+        analyticsOpen.skippedInvalid;
       emit(
-        `  GAP: analytics dropped ${analyticsOpen.skippedOutOfWindow}/${scoredRows.rows.length} ` +
-          `rows via the out-of-window gate (> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
-          'This suggests upstream requested_at drift, not a real match.'
+        `  GAP: analytics dropped ${analyticsAttrition}/${scoredRows.rows.length} rows ` +
+          `via out-of-window (${analyticsOpen.skippedOutOfWindow}), missing-key ` +
+          `(${analyticsOpen.skippedMissingKey}), and invalid (${analyticsOpen.skippedInvalid}) ` +
+          `buckets (> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
+          'Suggests upstream contract drift (requested_at format, requester/title schema, ' +
+          'or predict-api resolution classification), not a real match.'
+      );
+    } else if (check1Reason === 'subgraph-ingested-zero') {
+      emit(
+        `  GAP: subgraph ingested 0 rows from a raw feed of ${subgraphRawRowCount} ` +
+          `(${marketplace.skippedMissingKey} missing sender/title/ts, ` +
+          `${marketplace.skippedAfterWindowEnd} past window end). ` +
+          'Cannot gate an open count when the subgraph side dropped every row.'
+      );
+    } else if (check1Reason === 'subgraph-attrition-majority') {
+      const subgraphAttrition =
+        marketplace.skippedMissingKey + marketplace.skippedAfterWindowEnd;
+      emit(
+        `  GAP: subgraph dropped ${subgraphAttrition}/${subgraphRawRowCount} rows ` +
+          `via missing-key (${marketplace.skippedMissingKey}) and past-window-end ` +
+          `(${marketplace.skippedAfterWindowEnd}) buckets ` +
+          `(> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
+          'Suggests a subgraph schema regression (e.g. sender.id or parsedRequest.questionTitle ' +
+          'going missing on most entities), not a real match.'
       );
     } else if (check1Reason === 'exact-match') {
       emit(`  PASS: open-market counts match exactly (${subgraphOpen.open}).`);
     } else if (check1Reason === 'match-but-truncated') {
       emit(
         `  MATCH on truncated data (${subgraphOpen.open}) — treating as a data gap, not a pass.`
-      );
-    } else if (check1Reason === 'consumed-mismatch') {
-      emit(
-        `  DIVERGENCE: open counts match (${subgraphOpen.open}) but consumed differs ` +
-          `(subgraph=${subgraphOpen.consumed}, analytics=${analyticsOpen.consumed}) ` +
-          '— settlement drained an agent bucket asymmetrically inside a settled market.'
       );
     } else if (check1Reason === 'mismatch-but-truncated') {
       emit(
