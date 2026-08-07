@@ -46,11 +46,15 @@ RUN mkdir -p /reports \
     && chown node:node /app /reports
 USER node
 
-# The entry point is the only file the image needs from the repo — it
-# imports node built-ins exclusively.
+# The entry point plus its extracted pure-helper module are the only
+# files the image needs from the repo — both import node built-ins
+# exclusively. The -lib.mjs module is imported by the entry point (pure
+# helpers live there so they can be unit-tested); shipping only the
+# entry point would break the import at runtime.
 COPY --chown=node:node \
     scripts/verify-mech-analytics-parity.mjs \
-    ./scripts/verify-mech-analytics-parity.mjs
+    scripts/verify-mech-analytics-parity-lib.mjs \
+    ./scripts/
 
 # ``docker run --rm <image> --help`` exercises the wiring without
 # secrets; a no-env run exits 1 with an ERROR verdict.

@@ -21,16 +21,23 @@
 // parallel-run" and §12 Q4:
 //
 // Check 1 — open-market count parity (the core gate).
-//   mech-analytics's last-4-days count of rows with
-//   resolution_status='pending' AND market_id present (via
-//   /v1/data/scored-rows) must equal the title-normalised open-market
-//   count computed the way roi-distribution.ts computes it today:
-//   requests from the marketplace subgraph's incremental feed, minus
-//   the ones consumed by settlement (normalizeTitle matching against
-//   dailyProfitStatistics.profitParticipants). The mech-analytics side
-//   is broken out into (a) pending+market_id, (b) invalid, (c) no
-//   market_id — the consumer counts only (a); (b) and (c) are reported
-//   so a naive resolved=false count overshooting is visible.
+//   Reproduces the consumer's post-swap QMR pipeline on both sides for
+//   the same window and compares the resulting "still open" counts.
+//   * subgraph side: build QMR from marketplace-subgraph requests,
+//     consume via dailyProfitStatistics profitParticipants (normalizeTitle
+//     matching) — the exact algorithm roi-distribution.ts runs today.
+//   * analytics side: feed scored-rows through the same consumer
+//     filtering (mech-analytics.ts::fetchMechRequestsFromAnalytics
+//     skips invalid rows and rows without requester/title; nothing else
+//     is filtered — crucially, market_id is NOT gated), build the same
+//     QMR shape, then consume via the same dailyStats logic.
+//   The old version of this check gated on analytics rows with
+//   market_id IS NOT NULL, but the consumer doesn't do that — 99% of
+//   chain-100 rows in per_request_scores have market_id NULL (the
+//   column is populated only for a small recent tail), so the previous
+//   gate dropped ~99% of legitimate rows and produced a fake 0-vs-1326
+//   divergence in prod. The (a)/(b)/(c) row-bucket breakdown is still
+//   reported for context but is not the gated number.
 //
 // Check 2 — scored-rows row parity.
 //   For the same window, the row set from
@@ -42,11 +49,35 @@
 // Check 3 — senderTotal parity.
 //   agent_aggregates.n_mech_requests (window 'all', via
 //   /v1/metrics/ai-agent/{chain}/{agent}) vs the marketplace
-//   subgraph's Sender.totalLegacyRequests + totalMarketplaceRequests
-//   summed over the same registered Safes (from the /instances
-//   endpoint). Compared with a small absolute tolerance — see
-//   COUNT_TOLERANCE_DEFAULT below for why exact equality is not the
-//   bar on this one check.
+//   subgraph's Sender.totalLegacyRequests summed over the same
+//   registered Safes (from the /instances endpoint). Compared with a
+//   small absolute tolerance — see COUNT_TOLERANCE_DEFAULT below for
+//   why exact equality is not the bar on this one check.
+//   NOTE the field name is misleading. Verified in the subgraph
+//   handler (autonolas-subgraph/subgraphs/marketplace/src/marketplace/
+//   mech-marketplace.ts), `totalLegacyRequests` is bumped on BOTH the
+//   on-chain (handleMarketplaceRequest) and off-chain
+//   (handleMarketplaceDeliveryWithSignatures) paths, so it is actually
+//   the grand total of every request the Safe made. The previous
+//   version summed it with `totalMarketplaceRequests`, which counts
+//   the on-chain path twice and produced a chronic 2× divergence
+//   in prod. See pickSubgraphSenderTotal in the -lib module.
+//
+//   Important: check 3 gates the POST-SWAP number. Once the migration
+//   ships, the site reads `agent_aggregates.n_mech_requests` from
+//   mech-analytics, which is populated directly by
+//   `sender.totalLegacyRequests` (mech-analytics/etl/readers/
+//   marketplace_subgraph.py:298), and that is what this check compares.
+//   The current live-site formula at common-util/api/predict/
+//   roi-distribution.ts:349 still does
+//   `Number(sender.totalLegacyRequests) + Number(sender.totalMarketplaceRequests)`
+//   — the exact double-counting sum this script diagnoses as the
+//   check-3 bug. That means a green check 3 does NOT gate what users
+//   see on the live site today; it gates the safety of the swap. Fixing
+//   roi-distribution.ts:349 is out of scope for this parity script
+//   (that lives with product sign-off and a separate PR) — but ops
+//   should know that the pre-cutover live number and the post-cutover
+//   verifier number differ by roughly a factor of two until that lands.
 //
 // NOT in this script — flag-on vs flag-off openRequestCount (§12 Q4's
 // framing). Exercising the site's own fetchIncrementalMechRequests /
@@ -73,6 +104,10 @@
 //   NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL=... \
 //     node scripts/verify-mech-analytics-parity.mjs [--output-dir ./out]
 //
+// Window override for backfills (mutually exclusive with --window-days):
+//   node scripts/verify-mech-analytics-parity.mjs \
+//     --since 2026-07-01T00:00:00Z --until 2026-07-08T00:00:00Z
+//
 // Subgraph URLs embed API keys — they are secrets. This script never
 // prints them (presence is logged as yes/no; HTTP errors carry status
 // codes only, never the URL).
@@ -81,6 +116,27 @@ import { execSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
+
+import {
+  isoFromUnixSec,
+  scrub,
+  safeOrigin,
+  parsePositiveInt,
+  parseNonNegativeInt,
+  parseAwareIso,
+  computeWindow,
+  computeSubgraphOpenCount,
+  classifyAnalyticsRows,
+  computeAnalyticsOpenCount,
+  diffRowSets,
+  pickSubgraphSenderTotal,
+  decideVerdict,
+  resolveCheck1Status,
+  resolveCheck2Status,
+  SKIP_RATIO_THRESHOLD,
+} from './verify-mech-analytics-parity-lib.mjs';
+
+const SKIP_RATIO_THRESHOLD_PCT = Math.round(SKIP_RATIO_THRESHOLD * 100);
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -124,7 +180,6 @@ const SUBGRAPH_MAX_SKIP = 5000;
 const SCORED_ROWS_PAGE = 1000;
 const SCORED_ROWS_MAX_PAGES = 500;
 const SENDER_ID_CHUNK = 100;
-const SAMPLE_LIMIT = 10;
 
 // One platform = one (marketplace-subgraph chain, daily-stats subgraph,
 // mech-analytics chain_id/agent_id) triple. Agent ids per
@@ -166,6 +221,8 @@ const { values: args } = parseArgs({
     'mech-analytics-url': { type: 'string' },
     'output-dir': { type: 'string' },
     'window-days': { type: 'string' },
+    since: { type: 'string' },
+    until: { type: 'string' },
     'lag-buffer-minutes': { type: 'string' },
     'finality-lag-hours': { type: 'string' },
     'count-tolerance': { type: 'string' },
@@ -184,18 +241,26 @@ if (args.help) {
       'Gates the mech-request count-source swap of the olas-website predict-page\n' +
       'migration (consumer_migration.md §4 / §12 Q4). Three checks per platform\n' +
       '(omenstrat=gnosis/100/14, polystrat=polygon/137/86):\n' +
-      '  1. open-market count parity: scored-rows pending+market_id count vs the\n' +
-      '     normalizeTitle-based open count over the marketplace-subgraph feed\n' +
+      '  1. open-market count parity: same QMR + dailyStats consumption pipeline\n' +
+      '     the consumer runs, executed against both sides for the same window\n' +
       '  2. scored-rows row parity: (requester, timestamp, title) row sets match\n' +
       '  3. senderTotal parity: agent_aggregates.n_mech_requests vs subgraph\n' +
-      '     Sender.totalLegacyRequests + totalMarketplaceRequests per Safe\n' +
+      '     Sender.totalLegacyRequests (misnamed — it is the grand total,\n' +
+      '     bumped on both on-chain and off-chain paths) per Safe\n' +
       'Flag-on/off openRequestCount comparison is the staging parallel-run\n' +
       'check done by ops on the deployed site — it is NOT run here.\n' +
       '\n' +
       'Options:\n' +
       '  --mech-analytics-url <url>   mech-analytics base URL (or MECH_ANALYTICS_URL env)\n' +
-      `  --window-days <n>            checks 1+2 window (default ${WINDOW_DAYS_DEFAULT})\n` +
-      `  --lag-buffer-minutes <n>     near-edge trim for scoring lag (default ${LAG_BUFFER_MINUTES_DEFAULT})\n` +
+      `  --window-days <n>            checks 1+2 trailing window (default ${WINDOW_DAYS_DEFAULT});\n` +
+      '                               ignored when --since/--until are given\n' +
+      '  --since <iso>                explicit window lower bound (ISO 8601, must include\n' +
+      '                               timezone offset). Requires --until.\n' +
+      '  --until <iso>                explicit window upper bound (ISO 8601, must include\n' +
+      '                               timezone offset). Requires --since. Mutually\n' +
+      '                               exclusive with --window-days / --lag-buffer-minutes.\n' +
+      `  --lag-buffer-minutes <n>     trailing-window near-edge trim (default ${LAG_BUFFER_MINUTES_DEFAULT});\n` +
+      '                               ignored when --since/--until are given\n' +
       `  --finality-lag-hours <n>     check 1 consumption cutoff for the analytics 24h\n` +
       `                               finality gate (default ${FINALITY_LAG_HOURS_DEFAULT})\n` +
       `  --count-tolerance <n>        check 3 absolute tolerance (default ${COUNT_TOLERANCE_DEFAULT})\n` +
@@ -220,43 +285,61 @@ if (missingEnv.length > 0) {
   process.exit(1);
 }
 
-const parsePositiveInt = (raw, label, fallback) => {
-  if (raw == null) return fallback;
-  const value = Number(raw);
-  if (!Number.isInteger(value) || value <= 0) {
-    console.error(`--${label} must be a positive integer, got "${raw}"`);
+// parsePositiveInt / parseNonNegativeInt live in the -lib module and throw
+// on bad input. Wrap here so the CLI still emits a clean error to stderr
+// and exits 1 instead of spraying a stack trace.
+const cliInt = (fn, raw, label, fallback) => {
+  try {
+    return fn(raw, label, fallback);
+  } catch (err) {
+    console.error(err.message);
     process.exit(1);
   }
-  return value;
 };
 
-const parseNonNegativeInt = (raw, label, fallback) => {
-  if (raw == null) return fallback;
-  const value = Number(raw);
-  if (!Number.isInteger(value) || value < 0) {
-    console.error(`--${label} must be a non-negative integer, got "${raw}"`);
-    process.exit(1);
-  }
-  return value;
-};
+// --since / --until are mutually exclusive with --window-days /
+// --lag-buffer-minutes (an explicit window means the operator chose the
+// exact bounds, so the trailing-window knobs don't apply). Reject the
+// combination up front so the operator sees a clear message instead of
+// silent priority behavior.
+if ((args.since || args.until) && (args['window-days'] || args['lag-buffer-minutes'])) {
+  console.error(
+    '--since / --until are mutually exclusive with --window-days and --lag-buffer-minutes'
+  );
+  process.exit(1);
+}
 
 const outputDir = args['output-dir'] ? path.resolve(args['output-dir']) : null;
-const windowDays = parsePositiveInt(args['window-days'], 'window-days', WINDOW_DAYS_DEFAULT);
-const lagBufferMinutes = parseNonNegativeInt(
+const windowDays = cliInt(parsePositiveInt, args['window-days'], 'window-days', WINDOW_DAYS_DEFAULT);
+const lagBufferMinutes = cliInt(
+  parseNonNegativeInt,
   args['lag-buffer-minutes'],
   'lag-buffer-minutes',
   LAG_BUFFER_MINUTES_DEFAULT
 );
-const finalityLagHours = parseNonNegativeInt(
+const finalityLagHours = cliInt(
+  parseNonNegativeInt,
   args['finality-lag-hours'],
   'finality-lag-hours',
   FINALITY_LAG_HOURS_DEFAULT
 );
-const countTolerance = parseNonNegativeInt(
+const countTolerance = cliInt(
+  parseNonNegativeInt,
   args['count-tolerance'],
   'count-tolerance',
   COUNT_TOLERANCE_DEFAULT
 );
+
+let sinceDate = null;
+let untilDate = null;
+try {
+  sinceDate = parseAwareIso(args.since, 'since');
+  untilDate = parseAwareIso(args.until, 'until');
+} catch (err) {
+  console.error(err.message);
+  process.exit(1);
+}
+
 const verbose = Boolean(args.verbose);
 
 const mechAnalyticsBase = mechAnalyticsUrl.replace(/\/$/, '');
@@ -277,13 +360,6 @@ const section = (title) => {
   emit(`=== ${title} ===`);
 };
 
-// Subgraph URLs embed API keys; never let one leak through an error
-// message or stack trace into stdout or the artifacts.
-const scrub = (text) =>
-  String(text)
-    .replace(/https?:\/\/\S+/g, '<redacted-url>')
-    .replace(/[0-9a-fA-F]{16,}/g, '<redacted>');
-
 // ---------------------------------------------------------------------------
 // Provenance header
 // ---------------------------------------------------------------------------
@@ -299,32 +375,53 @@ const scriptGitSha = () => {
   }
 };
 
-// Origin only: the artifact gets posted on the cutover PR, and a
-// signed URL or ?token= query must never travel with it.
-const safeOrigin = (url) => {
-  try {
-    return new URL(url).origin;
-  } catch {
-    return '<invalid-url>';
-  }
-};
+// Window resolution: parseAwareIso rejects naive datetimes, computeWindow
+// enforces the all-or-nothing --since/--until pairing and until > since,
+// and falls back to the trailing (now - windowDays, now - lag) window
+// otherwise. Same shape as verify_migration_swap.py's _compute_window.
+let windowStartSec;
+let windowEndSec;
+let windowSource;
+try {
+  ({
+    windowStartSec,
+    windowEndSec,
+    source: windowSource,
+  } = computeWindow({
+    since: sinceDate,
+    until: untilDate,
+    nowSec: Math.floor(Date.now() / 1000),
+    windowDays,
+    lagBufferMinutes,
+  }));
+} catch (err) {
+  console.error(err.message);
+  process.exit(1);
+}
 
 const metadata = {
   run_at_utc: new Date().toISOString(),
   script_git_sha: scriptGitSha(),
   mech_analytics_url: safeOrigin(mechAnalyticsUrl),
-  window_days: windowDays,
-  lag_buffer_minutes: lagBufferMinutes,
+  window_source: windowSource,
+  window_days: windowSource === 'trailing' ? windowDays : null,
+  lag_buffer_minutes: windowSource === 'trailing' ? lagBufferMinutes : null,
   finality_lag_hours: finalityLagHours,
   count_tolerance_abs: countTolerance,
+  window_start_utc: isoFromUnixSec(windowStartSec),
+  window_end_utc: isoFromUnixSec(windowEndSec),
 };
 
 emit('=== Run metadata ===');
 emit(`  run_at (UTC):         ${metadata.run_at_utc}`);
 emit(`  script git SHA:       ${metadata.script_git_sha}`);
 emit(`  mech-analytics URL:   ${metadata.mech_analytics_url}`);
-emit(`  window (days):        ${metadata.window_days}`);
-emit(`  lag buffer (min):     ${metadata.lag_buffer_minutes}`);
+emit(`  window source:        ${metadata.window_source}`);
+if (windowSource === 'trailing') {
+  emit(`  window (days):        ${metadata.window_days}`);
+  emit(`  lag buffer (min):     ${metadata.lag_buffer_minutes}`);
+}
+emit(`  window:               (${metadata.window_start_utc}, ${metadata.window_end_utc}]`);
 emit(`  finality lag (h):     ${metadata.finality_lag_hours} (check 1 only)`);
 emit(`  count tolerance (±):  ${metadata.count_tolerance_abs} (check 3 only)`);
 for (const name of REQUIRED_ENV.slice(1)) {
@@ -333,21 +430,8 @@ for (const name of REQUIRED_ENV.slice(1)) {
 }
 
 // ---------------------------------------------------------------------------
-// Shared helpers
+// HTTP helpers
 // ---------------------------------------------------------------------------
-
-// Copied verbatim from common-util/api/predict/roi-distribution.ts:402
-// (normalizeTitle). Node can't import the site's TypeScript, so the one
-// pure helper the matching depends on is reimplemented here. DRIFT
-// WARNING: if roi-distribution.ts changes normalizeTitle, this copy
-// must change with it or check 1's matching diverges from the site's.
-const normalizeTitle = (title) =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-    .slice(0, 100);
-
-const isoFromUnixSec = (sec) => new Date(sec * 1000).toISOString();
 
 // POST { query } like the site's GraphQLClient does under the hood
 // (common-util/graphql/client.ts). Error messages carry the label and
@@ -483,7 +567,8 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
 
 // getMarketplaceSendersQuery (queries.ts) narrowed to the Safes under
 // verification via id_in — the site pages every sender, but check 3
-// only needs the registered Safes' counters.
+// only needs the registered Safes' counters. See pickSubgraphSenderTotal
+// in the -lib module for the counter choice.
 const fetchSenderTotals = async (url, safeIds, label) => {
   const totals = new Map();
   for (let i = 0; i < safeIds.length; i += SENDER_ID_CHUNK) {
@@ -495,16 +580,13 @@ const fetchSenderTotals = async (url, safeIds, label) => {
         senders(first: ${SENDER_ID_CHUNK}, where: { id_in: [${idList}] }) {
           id
           totalLegacyRequests
-          totalMarketplaceRequests
         }
       }`,
       label
     );
     for (const sender of data?.senders ?? []) {
-      totals.set(
-        sender.id.toLowerCase(),
-        Number(sender.totalLegacyRequests) + Number(sender.totalMarketplaceRequests)
-      );
+      const total = pickSubgraphSenderTotal(sender);
+      if (total != null) totals.set(sender.id.toLowerCase(), total);
     }
   }
   return totals;
@@ -581,153 +663,6 @@ const fetchAgentAggregate = async (chainId, agentId) => {
 };
 
 // ---------------------------------------------------------------------------
-// Check 1 — open-market count parity
-// ---------------------------------------------------------------------------
-
-// Reproduces roi-distribution.ts's open-market classification over the
-// window: build the QMR-shaped map title→agent→count from the
-// marketplace feed, then consume settled entries via profitParticipants
-// titles (exact key first, then normalizeTitle — mirrors
-// roi-distribution.ts:581-591 including per-agent consumption).
-const computeSubgraphOpenCount = (requests, dailyStats, participantTitleField) => {
-  const qmr = new Map(); // title -> Map(agent -> count)
-  const normalizedIndex = new Map(); // normalizeTitle(title) -> title
-  for (const { requester, title } of requests) {
-    if (!qmr.has(title)) {
-      qmr.set(title, new Map());
-      normalizedIndex.set(normalizeTitle(title), title);
-    }
-    const agents = qmr.get(title);
-    agents.set(requester, (agents.get(requester) ?? 0) + 1);
-  }
-
-  let consumed = 0;
-  for (const stat of dailyStats) {
-    const agentId = stat.traderAgent?.id?.toLowerCase();
-    if (!agentId) continue;
-    for (const participant of stat.profitParticipants ?? []) {
-      const title =
-        participantTitleField === 'question' ? participant.question : participant.metadata?.title;
-      if (!title) continue;
-      const matchedKey = qmr.has(title)
-        ? title
-        : (normalizedIndex.get(normalizeTitle(title)) ?? null);
-      if (!matchedKey) continue;
-      const agents = qmr.get(matchedKey);
-      const count = agents.get(agentId) ?? 0;
-      if (count > 0) {
-        consumed += count;
-        agents.delete(agentId);
-      }
-    }
-  }
-
-  let open = 0;
-  for (const agents of qmr.values()) {
-    for (const count of agents.values()) open += count;
-  }
-  return { open, consumed };
-};
-
-// Breaks the mech-analytics window rows out the way §12 Q4 prescribes.
-// Only (a) pending+market_id is what the consumer's flag-on path counts
-// (mech-analytics.ts skips invalid rows and rows without requester or
-// title before they reach QMR); (b) and (c) are reported so a naive
-// resolved=false count overshooting is visible in the artifact.
-const classifyAnalyticsRows = (rows) => {
-  const counts = {
-    pending_with_market: 0, // (a) — the gated number
-    invalid: 0, // (b)
-    no_market_id: 0, // (c) — non-invalid rows without a market
-    resolved: 0,
-    skipped_missing_key: 0,
-  };
-  const usable = [];
-  for (const row of rows) {
-    const requester = row.requester?.toLowerCase();
-    const title = row.question_title;
-    if (!requester || !title) {
-      counts.skipped_missing_key += 1;
-      continue;
-    }
-    usable.push({ requester, row });
-    if (row.resolution_status === 'invalid') {
-      counts.invalid += 1;
-    } else if (row.market_id == null) {
-      counts.no_market_id += 1;
-    } else if (row.resolution_status === 'pending') {
-      counts.pending_with_market += 1;
-    } else {
-      counts.resolved += 1;
-    }
-  }
-  return { counts, usable };
-};
-
-// ---------------------------------------------------------------------------
-// Check 2 — row parity
-// ---------------------------------------------------------------------------
-
-// Multiset diff. Preferred key is (requester, request_id) — the
-// marketplace subgraph's Request.id is the same identifier the lake
-// writes back as `request_id`, and the consumer's fetcher dedupes on
-// it (common-util/api/predict/mech-analytics.ts). Fallback is
-// (requester, unix ts, normalizeTitle(title)) for rows missing an id
-// on either side; this fallback is only sound while ts equality
-// holds — once live-writer rows land, requested_at (authorization
-// time) can drift seconds-to-minutes from blockTimestamp, so any
-// row that falls back and diverges is called out with a mode label
-// so the operator can tell "real regression" from "expected drift".
-const diffRowSets = (subgraphRows, analyticsRows) => {
-  const idKey = (requester, id) => `id|${requester}|${id}`;
-  const tsKey = (requester, ts, title) => `ts|${requester}|${ts}|${normalizeTitle(title)}`;
-  const tally = new Map();
-  const modeById = new Map();
-
-  const bump = (key, side, mode) => {
-    const entry = tally.get(key) ?? { subgraph: 0, analytics: 0 };
-    entry[side] += 1;
-    tally.set(key, entry);
-    modeById.set(key, mode);
-  };
-
-  for (const { requester, ts, title, requestId } of subgraphRows) {
-    bump(
-      requestId ? idKey(requester, requestId) : tsKey(requester, ts, title),
-      'subgraph',
-      requestId ? 'id' : 'ts'
-    );
-  }
-  for (const { requester, row } of analyticsRows) {
-    const rowId = typeof row.request_id === 'string' ? row.request_id.toLowerCase() : null;
-    if (rowId) {
-      bump(idKey(requester, rowId), 'analytics', 'id');
-      continue;
-    }
-    const ts = Math.floor(Date.parse(row.requested_at) / 1000);
-    if (!Number.isFinite(ts)) continue;
-    bump(tsKey(requester, ts, row.question_title), 'analytics', 'ts');
-  }
-
-  let missingInAnalytics = 0;
-  let extraInAnalytics = 0;
-  let tsFallbackKeys = 0;
-  const missingSamples = [];
-  const extraSamples = [];
-  for (const [key, { subgraph, analytics }] of tally) {
-    if (modeById.get(key) === 'ts') tsFallbackKeys += 1;
-    if (subgraph > analytics) {
-      missingInAnalytics += subgraph - analytics;
-      if (missingSamples.length < SAMPLE_LIMIT) missingSamples.push(key);
-    } else if (analytics > subgraph) {
-      extraInAnalytics += analytics - subgraph;
-      if (extraSamples.length < SAMPLE_LIMIT) extraSamples.push(key);
-    }
-  }
-  return { missingInAnalytics, extraInAnalytics, missingSamples, extraSamples, tsFallbackKeys };
-};
-
-// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -741,16 +676,6 @@ const record = (result) => {
 };
 
 try {
-  const nowSec = Math.floor(Date.now() / 1000);
-  const windowEndSec = nowSec - lagBufferMinutes * 60;
-  const windowStartSec = nowSec - windowDays * DAY_SECONDS;
-  if (windowEndSec <= windowStartSec) {
-    throw new Error('lag buffer consumes the whole window — lower --lag-buffer-minutes');
-  }
-  metadata.window_start_utc = isoFromUnixSec(windowStartSec);
-  metadata.window_end_utc = isoFromUnixSec(windowEndSec);
-  emit(`  window:               (${metadata.window_start_utc}, ${metadata.window_end_utc}]`);
-
   for (const platform of PLATFORMS) {
     const { key, chainId, agentId } = platform;
     const marketplaceUrl = process.env[platform.marketplaceUrlEnv];
@@ -763,11 +688,24 @@ try {
       // side doesn't consume settlements still inside the analytics
       // 24h finality gate — otherwise recent settlements would show as
       // consumed on the subgraph but pending in analytics and produce
-      // a chronic delta on honest runs.
+      // a chronic delta on honest runs. `nowSec` for the lag is
+      // computed against the actual clock, not the window end, so an
+      // explicit --since/--until run still trims the DailyStats side
+      // by the same gate.
       fetchDailyStats(
         dailyStatsUrl,
         Math.floor(windowStartSec / DAY_SECONDS) * DAY_SECONDS,
-        nowSec - finalityLagHours * 60 * 60,
+        // For a trailing window the cap is (now - finality lag) — the
+        // usual guard. For an explicit --since/--until historical window
+        // the cap becomes (windowEnd + finality lag), so we don't
+        // uselessly sweep months of daily-stats to consume settlements
+        // that already happened well after the window closed. Both
+        // stay in effect (`min`), so operators can't accidentally
+        // widen the consumption horizon by picking a huge window.
+        Math.min(
+          Math.floor(Date.now() / 1000) - finalityLagHours * 60 * 60,
+          windowEndSec + finalityLagHours * 60 * 60
+        ),
         platform.participantTitleField,
         `${key}:daily-stats`
       ),
@@ -793,54 +731,126 @@ try {
 
     // ---- Check 1: open-market count parity --------------------------------
     section(`${key} — check 1: open-market count parity`);
-    const { open, consumed } = computeSubgraphOpenCount(
-      marketplace.rows,
+    const subgraphOpen = computeSubgraphOpenCount(marketplace.rows, dailyStats.stats);
+    // Analytics side runs the SAME QMR + dailyStats consumption pipeline
+    // the consumer runs post-swap. Feeds raw scoredRows.rows (not the
+    // usable subset) so computeAnalyticsOpenCount can apply the
+    // consumer's filter order exactly: dedup → window/ts → invalid →
+    // requester/title → ingest. See mech-analytics.ts:171-197.
+    const analyticsOpen = computeAnalyticsOpenCount(
+      scoredRows.rows,
       dailyStats.stats,
-      platform.participantTitleField
+      windowStartSec
     );
-    emit(`  subgraph feed: ${marketplace.rows.length} requests, ${consumed} consumed by`);
-    emit(`    settlement matching (normalizeTitle vs profitParticipants) → open=${open}`);
-    emit('  mech-analytics breakdown (consumer counts only (a)):');
-    emit(`    (a) pending + market_id: ${counts.pending_with_market}`);
-    emit(`    (b) invalid:             ${counts.invalid}`);
-    emit(`    (c) no market_id:        ${counts.no_market_id}`);
-    emit(`        resolved:            ${counts.resolved}`);
-    emit(`        missing key skipped: ${counts.skipped_missing_key}`);
+    emit(
+      `  subgraph feed: ${marketplace.rows.length} requests, ` +
+        `${subgraphOpen.consumed} consumed by settlement matching → open=${subgraphOpen.open}`
+    );
+    emit(
+      `  analytics feed: ${analyticsOpen.ingested} rows ingested ` +
+        `(${analyticsOpen.skippedInvalid} invalid, ${analyticsOpen.skippedDuplicate} duplicate, ` +
+        `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key skipped), ` +
+        `${analyticsOpen.consumed} consumed by settlement matching → open=${analyticsOpen.open}`
+    );
+    emit('  raw scored-rows breakdown (informational, pre-dedup, previously gated (a)):');
+    emit(`    (a) raw pending + market_id: ${counts.raw_pending_with_market}`);
+    emit(`    (b) raw invalid:             ${counts.raw_invalid}`);
+    emit(`    (c) raw no market_id:        ${counts.raw_no_market_id}`);
+    emit(`        raw resolved:            ${counts.raw_resolved}`);
+    emit(`        raw missing key skipped: ${counts.raw_skipped_missing_key}`);
 
     const check1Truncated = marketplace.truncated || dailyStats.truncated || scoredRows.truncated;
-    let check1Status;
-    if (marketplace.rows.length === 0 && scoredRows.rows.length === 0) {
-      check1Status = 'vacuous';
+    // Subgraph raw row count is the pre-filter count `fetchMarketplaceRequests`
+    // observed BEFORE dropping missing-sender/title/ts rows and post-windowEnd
+    // rows. Mirrors `analyticsRawRowCount = scoredRows.rows.length` (also
+    // pre-filter, in that case pre the analytics-side ts/dedup/invalid gate
+    // that runs inside `computeAnalyticsOpenCount`).
+    const subgraphRawRowCount =
+      marketplace.rows.length + marketplace.skippedMissingKey + marketplace.skippedAfterWindowEnd;
+    const { status: check1Status, reason: check1Reason } = resolveCheck1Status({
+      subgraphOpen: subgraphOpen.open,
+      analyticsOpen: analyticsOpen.open,
+      analyticsIngested: analyticsOpen.ingested,
+      analyticsRawRowCount: scoredRows.rows.length,
+      subgraphRowCount: marketplace.rows.length,
+      subgraphRawRowCount,
+      subgraphSkippedMissingKey: marketplace.skippedMissingKey,
+      subgraphSkippedAfterWindowEnd: marketplace.skippedAfterWindowEnd,
+      analyticsSkippedOutOfWindow: analyticsOpen.skippedOutOfWindow,
+      analyticsSkippedMissingKey: analyticsOpen.skippedMissingKey,
+      analyticsSkippedInvalid: analyticsOpen.skippedInvalid,
+      truncated: check1Truncated,
+    });
+    if (check1Reason === 'no-rows-either-side') {
       emit('  VACUOUS: no rows on either side in the window.');
-    } else if (open === counts.pending_with_market) {
-      // Exact equality — counts get no tolerance (unlike check 3, both
-      // sides here describe the same window of the same requests).
-      check1Status = check1Truncated ? 'gap' : 'pass';
+    } else if (check1Reason === 'analytics-ingested-zero') {
       emit(
-        check1Truncated
-          ? `  MATCH on truncated data (${open}) — treating as a data gap, not a pass.`
-          : `  PASS: open-market counts match exactly (${open}).`
+        `  GAP: analytics ingested 0 rows from a raw feed of ${scoredRows.rows.length} ` +
+          `(${analyticsOpen.skippedInvalid} invalid, ${analyticsOpen.skippedDuplicate} duplicate, ` +
+          `${analyticsOpen.skippedOutOfWindow} out-of-window, ${analyticsOpen.skippedMissingKey} missing-key). ` +
+          'Cannot gate an open count computed on zero ingested rows.'
       );
-    } else if (check1Truncated) {
-      // A truncated fetch cannot prove a divergence — the missing rows
-      // could account for the whole delta.
-      check1Status = 'gap';
+    } else if (check1Reason === 'analytics-attrition-majority') {
+      const analyticsAttrition =
+        analyticsOpen.skippedOutOfWindow +
+        analyticsOpen.skippedMissingKey +
+        analyticsOpen.skippedInvalid;
       emit(
-        `  GAP: counts differ (subgraph=${open}, analytics=${counts.pending_with_market}) but a fetch was truncated.`
+        `  GAP: analytics dropped ${analyticsAttrition}/${scoredRows.rows.length} rows ` +
+          `via out-of-window (${analyticsOpen.skippedOutOfWindow}), missing-key ` +
+          `(${analyticsOpen.skippedMissingKey}), and invalid (${analyticsOpen.skippedInvalid}) ` +
+          `buckets (> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
+          'Suggests upstream contract drift (requested_at format, requester/title schema, ' +
+          'or predict-api resolution classification), not a real match.'
+      );
+    } else if (check1Reason === 'subgraph-ingested-zero') {
+      emit(
+        `  GAP: subgraph ingested 0 rows from a raw feed of ${subgraphRawRowCount} ` +
+          `(${marketplace.skippedMissingKey} missing sender/title/ts, ` +
+          `${marketplace.skippedAfterWindowEnd} past window end). ` +
+          'Cannot gate an open count when the subgraph side dropped every row.'
+      );
+    } else if (check1Reason === 'subgraph-attrition-majority') {
+      const subgraphAttrition =
+        marketplace.skippedMissingKey + marketplace.skippedAfterWindowEnd;
+      emit(
+        `  GAP: subgraph dropped ${subgraphAttrition}/${subgraphRawRowCount} rows ` +
+          `via missing-key (${marketplace.skippedMissingKey}) and past-window-end ` +
+          `(${marketplace.skippedAfterWindowEnd}) buckets ` +
+          `(> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
+          'Suggests a subgraph schema regression (e.g. sender.id or parsedRequest.questionTitle ' +
+          'going missing on most entities), not a real match.'
+      );
+    } else if (check1Reason === 'exact-match') {
+      emit(`  PASS: open-market counts match exactly (${subgraphOpen.open}).`);
+    } else if (check1Reason === 'match-but-truncated') {
+      emit(
+        `  MATCH on truncated data (${subgraphOpen.open}) — treating as a data gap, not a pass.`
+      );
+    } else if (check1Reason === 'mismatch-but-truncated') {
+      emit(
+        `  GAP: counts differ (subgraph=${subgraphOpen.open}, analytics=${analyticsOpen.open}) but a fetch was truncated.`
       );
     } else {
-      check1Status = 'divergence';
       emit(
-        `  DIVERGENCE: subgraph open=${open} vs analytics pending+market_id=${counts.pending_with_market}.`
+        `  DIVERGENCE: subgraph open=${subgraphOpen.open} vs analytics open=${analyticsOpen.open}.`
       );
     }
     record({
       check: 'open_market_count',
       platform: key,
       status: check1Status,
-      subgraph_open: open,
-      subgraph_consumed: consumed,
-      analytics: counts,
+      status_reason: check1Reason,
+      subgraph_open: subgraphOpen.open,
+      subgraph_consumed: subgraphOpen.consumed,
+      analytics_open: analyticsOpen.open,
+      analytics_consumed: analyticsOpen.consumed,
+      analytics_ingested: analyticsOpen.ingested,
+      analytics_invalid_skipped: analyticsOpen.skippedInvalid,
+      analytics_duplicate_skipped: analyticsOpen.skippedDuplicate,
+      analytics_out_of_window_skipped: analyticsOpen.skippedOutOfWindow,
+      analytics_missing_key_skipped: analyticsOpen.skippedMissingKey,
+      analytics_row_buckets: counts,
       truncated: check1Truncated,
     });
 
@@ -864,28 +874,29 @@ try {
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
     const check2Truncated = marketplace.truncated || scoredRows.truncated;
-    let check2Status;
-    if (marketplace.rows.length === 0 && usableAnalyticsRows.length === 0) {
-      check2Status = 'vacuous';
+    const { status: check2Status, reason: check2Reason } = resolveCheck2Status({
+      subgraphRowCount: marketplace.rows.length,
+      analyticsRowCount: usableAnalyticsRows.length,
+      missingInAnalytics: rowDiff.missingInAnalytics,
+      extraInAnalytics: rowDiff.extraInAnalytics,
+      truncated: check2Truncated,
+    });
+    if (check2Reason === 'no-rows-either-side') {
       emit('  VACUOUS: no rows on either side in the window.');
-    } else if (rowDiff.missingInAnalytics === 0 && rowDiff.extraInAnalytics === 0) {
-      check2Status = check2Truncated ? 'gap' : 'pass';
-      emit(
-        check2Truncated
-          ? '  MATCH on truncated data — treating as a data gap, not a pass.'
-          : '  PASS: row sets match exactly.'
-      );
-    } else if (check2Truncated) {
-      check2Status = 'gap';
+    } else if (check2Reason === 'exact-match') {
+      emit('  PASS: row sets match exactly.');
+    } else if (check2Reason === 'match-but-truncated') {
+      emit('  MATCH on truncated data — treating as a data gap, not a pass.');
+    } else if (check2Reason === 'mismatch-but-truncated') {
       emit('  GAP: row sets differ but a fetch was truncated — rerun with a smaller window.');
     } else {
-      check2Status = 'divergence';
       emit('  DIVERGENCE: row sets differ.');
     }
     record({
       check: 'row_parity',
       platform: key,
       status: check2Status,
+      status_reason: check2Reason,
       subgraph_rows: marketplace.rows.length,
       analytics_rows: usableAnalyticsRows.length,
       missing_in_analytics: rowDiff.missingInAnalytics,
@@ -939,7 +950,7 @@ try {
       const delta = Math.abs(analyticsTotal - subgraphTotal);
       emit(`  registered Safes: ${safes.length} (${safesWithoutSender} with no sender entity)`);
       emit(`  analytics n_mech_requests (all): ${analyticsTotal}`);
-      emit(`  subgraph Σ(totalLegacy+totalMarketplace): ${subgraphTotal}`);
+      emit(`  subgraph Σ(totalLegacyRequests): ${subgraphTotal}`);
       emit(`  |delta| = ${delta} (tolerance ±${countTolerance}, settlement-lag allowance)`);
       if (delta <= countTolerance) {
         check3Status = 'pass';
@@ -964,41 +975,16 @@ try {
 
   // ---- Verdict -------------------------------------------------------------
   section('Verdict');
-  const byStatus = (status) => checkResults.filter((r) => r.status === status);
-  const divergences = byStatus('divergence');
-  const gaps = byStatus('gap');
-  const vacuous = byStatus('vacuous');
+  const decision = decideVerdict(checkResults);
   emit(`  checks run:       ${checkResults.length}`);
-  emit(`  passed:           ${byStatus('pass').length}`);
-  emit(`  diverged:         ${divergences.length}`);
-  emit(`  data gaps:        ${gaps.length}`);
-  emit(`  vacuous:          ${vacuous.length}`);
-
-  // Precedence: divergence (3) outranks gap (4) so an incomplete fetch
-  // on one check can never mask a real regression on another. The
-  // all-vacuous guard (2) stops a run where nothing was comparable from
-  // reading as a PASS.
-  if (divergences.length > 0) {
-    emit('');
-    emit(`FAIL (divergence): ${divergences.map((r) => `${r.platform}/${r.check}`).join(', ')}`);
-    exitCode = 3;
-    verdict = 'FAIL';
-  } else if (gaps.length > 0) {
-    emit('');
-    emit(`FAIL (data gap): ${gaps.map((r) => `${r.platform}/${r.check}`).join(', ')}`);
-    exitCode = 4;
-    verdict = 'FAIL';
-  } else if (vacuous.length === checkResults.length) {
-    emit('');
-    emit('VACUOUS: every check had nothing to compare on either side — not a pass.');
-    exitCode = 2;
-    verdict = 'VACUOUS';
-  } else {
-    emit('');
-    emit('PASS: every non-vacuous check matched.');
-    exitCode = 0;
-    verdict = 'PASS';
-  }
+  emit(`  passed:           ${decision.counts.pass}`);
+  emit(`  diverged:         ${decision.counts.divergence}`);
+  emit(`  data gaps:        ${decision.counts.gap}`);
+  emit(`  vacuous:          ${decision.counts.vacuous}`);
+  emit('');
+  emit(decision.message);
+  exitCode = decision.exitCode;
+  verdict = decision.verdict;
 } catch (err) {
   emit('');
   emit(`ERROR: ${scrub(err.message)}`);

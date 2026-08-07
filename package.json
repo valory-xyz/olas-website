@@ -15,7 +15,8 @@
     "audit:install-hooks:update": "node scripts/audit-install-hooks.mjs --update",
     "license-check": "node scripts/license-check.mjs",
     "license-check:test": "node --test scripts/license-check.test.mjs",
-    "verify-mech-analytics-parity": "node scripts/verify-mech-analytics-parity.mjs"
+    "verify-mech-analytics-parity": "node scripts/verify-mech-analytics-parity.mjs",
+    "verify-mech-analytics-parity:test": "node --test scripts/verify-mech-analytics-parity.test.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "5.2.6",
