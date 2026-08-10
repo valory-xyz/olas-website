@@ -7,6 +7,7 @@ import {
 import { legacyMechFeesTotalsQuery, newMechFeesTotalsQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
 import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
+import { formatUnits } from 'viem';
 
 type MechFeesResult = WithMeta<{
   global: {
@@ -68,8 +69,14 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(latestBlock, res.value?._meta?.block?.number, chain)) {
         laggingSubgraphs.push(`mechFees:${chain}`);
       }
-      inUsd += Number(res.value?.global?.totalFeesInUSD || 0);
-      outUsd += Number(res.value?.global?.totalFeesOutUSD || 0);
+      // `global: null` must not read as zero fees — that drops the chain but reports healthy.
+      if (res.value?.global == null) {
+        console.error(`mechFees:${chain}: subgraph responded without a global entity`);
+        fetchErrors.push(`mechFees:${chain}:missingGlobal`);
+        return;
+      }
+      inUsd += Number(res.value.global.totalFeesInUSD || 0);
+      outUsd += Number(res.value.global.totalFeesOutUSD || 0);
     });
 
     // Add legacy Gnosis fees (wei-denominated)
@@ -88,8 +95,9 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(gnosisBlock, legacy?._meta?.block?.number, 'legacy')) {
         laggingSubgraphs.push('mechFees:legacy');
       }
-      inUsd += Number((BigInt(legacy?.global?.totalFeesIn || '0') / BigInt(1e18)).toString());
-      outUsd += Number((BigInt(legacy?.global?.totalFeesOut || '0') / BigInt(1e18)).toString());
+      // Wei -> xDAI via formatUnits: BigInt division would floor away every sub-dollar fraction.
+      inUsd += Number(formatUnits(BigInt(legacy?.global?.totalFeesIn || '0'), 18));
+      outUsd += Number(formatUnits(BigInt(legacy?.global?.totalFeesOut || '0'), 18));
     }
 
     const unclaimed = Math.max(inUsd - outUsd, 0);

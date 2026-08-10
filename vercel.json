@@ -1,11 +1,7 @@
 {
   "installCommand": "yarn install --frozen-lockfile",
   "functions": {
-    "pages/api/refresh-metrics/omenstrat-roi-distribution.ts": {
-      "maxDuration": 300,
-      "memory": 512
-    },
-    "pages/api/refresh-metrics/polystrat-roi-distribution.ts": {
+    "pages/api/refresh-metrics/predict-roi-distribution.ts": {
       "maxDuration": 300,
       "memory": 512
     },
