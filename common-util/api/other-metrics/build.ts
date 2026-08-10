@@ -3,6 +3,7 @@ import {
   createStaleStatus,
   executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -17,15 +18,16 @@ const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> =>
     chain: 'ethereum',
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
-    // null (not 0) on an absent entity, so mergeWithFallback holds the last good value
-    // instead of publishing a zero as healthy. Logged because `transform` has no
-    // fetchErrors array to name the source in — without this there'd be no trace at all.
-    transform: (data) => {
-      if (data.global?.totalBuilders == null) {
-        console.error('build:totalBuilders: subgraph responded without global.totalBuilders');
-        return null;
-      }
-      return Number(data.global.totalBuilders);
+    // null (not 0) on an absent entity, so the merge holds the last good value instead of
+    // publishing a zero as healthy — and readGlobalField names the source in the tooltip.
+    transform: (data, fetchErrors) => {
+      const total = readGlobalField(
+        data.global,
+        'totalBuilders',
+        'build:totalBuilders',
+        fetchErrors
+      );
+      return total === null ? null : Number(total);
     },
   });
 };

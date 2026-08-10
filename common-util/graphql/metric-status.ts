@@ -62,6 +62,11 @@ export const readGlobalField = <TGlobal, K extends keyof TGlobal>(
  * as computed (lag included) to drive the indicator; `frozen` records whether the published
  * value is actually a held-over one, which is what greys the number out.
  */
+const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
+
+const isMetricLike = (v: unknown): boolean => isPlainObject(v) && 'value' in v && 'status' in v;
+
 export const resolveMergedMetric = (
   newMetric: MetricWithStatus<unknown>,
   oldMetric: MetricWithStatus<unknown> | null,
@@ -94,4 +99,57 @@ export const resolveMergedMetric = (
     ...newMetric,
     status: { ...newMetric.status, frozen: false, lastValidAt: now },
   };
+};
+
+/**
+ * Walks a snapshot tree and applies `resolveMergedMetric` at every `MetricWithStatus` leaf,
+ * carrying forward keys the new fetch didn't produce.
+ *
+ * Arrays are returned as-is rather than merged element-wise. That is deliberate: pairing by
+ * index is meaningless for the ordered series in these snapshots (ROI buckets, daily
+ * points), and recursing would carry stale keys from the old array's objects into the new
+ * one. The consequence is that a `MetricWithStatus` nested inside an array gets no fallback
+ * — no snapshot shape does that today, so the warning below exists to make the limitation
+ * announce itself to whoever first adds one, rather than silently skipping their metric.
+ */
+export const mergeSnapshotTree = (
+  newData: unknown,
+  oldData: unknown,
+  now: number,
+  path = ''
+): unknown => {
+  if (!newData || typeof newData !== 'object') return newData;
+
+  if (isMetricLike(newData)) {
+    return resolveMergedMetric(
+      newData as MetricWithStatus<unknown>,
+      isMetricLike(oldData) ? (oldData as MetricWithStatus<unknown>) : null,
+      now
+    );
+  }
+
+  if (Array.isArray(newData)) {
+    if (newData.some(isMetricLike)) {
+      console.warn(
+        `mergeSnapshotTree: ${path || 'root'} contains MetricWithStatus items inside an array; ` +
+          `no fallback is applied to them. Restructure to an object keyed by id, or extend this walk.`
+      );
+    }
+    return newData;
+  }
+
+  const result: Record<string, unknown> = {};
+  const newObj = isPlainObject(newData) ? newData : {};
+  const oldObj = isPlainObject(oldData) ? oldData : {};
+
+  for (const key of new Set([...Object.keys(newObj), ...Object.keys(oldObj)])) {
+    const nextPath = path ? `${path}.${key}` : key;
+    if (key in newObj) {
+      result[key] = mergeSnapshotTree(newObj[key], oldObj[key], now, nextPath);
+    } else {
+      result[key] = oldObj[key];
+    }
+  }
+
+  return result;
 };

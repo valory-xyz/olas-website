@@ -6,7 +6,13 @@ import { MetricStatus, MetricWithStatus, WithMeta } from './types';
 // Pure decision helpers live in metric-status.ts so they can be unit-tested standalone.
 import { hasHardError } from './metric-status';
 
-export { hasHardError, isFrozen, readGlobalField, resolveMergedMetric } from './metric-status';
+export {
+  hasHardError,
+  isFrozen,
+  readGlobalField,
+  resolveMergedMetric,
+  mergeSnapshotTree,
+} from './metric-status';
 
 export const createStaleStatus = ({
   indexingErrors,
@@ -107,7 +113,12 @@ type GraphQLQueryOptions<TData, TResult> = {
   variables?: Variables;
   source: string;
   chain: string;
-  transform: (data: TData) => TResult;
+  /**
+   * Receives a `fetchErrors` sink so it can report an absent entity by name — pass it to
+   * `readGlobalField`. Without it a null return froze the metric with an empty "Affected
+   * Sources" line, giving the user a held-over value and no explanation.
+   */
+  transform: (data: TData, fetchErrors: string[]) => TResult;
 };
 
 export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResult>({
@@ -120,6 +131,7 @@ export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResu
 }: GraphQLQueryOptions<TData, TResult>): Promise<MetricWithStatus<TResult | null>> {
   const indexingErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
+  const fetchErrors: string[] = [];
 
   try {
     const [data, chainBlock] = await Promise.all([
@@ -135,11 +147,11 @@ export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResu
       laggingSubgraphs.push(source);
     }
 
-    const value = transform(data);
+    const value = transform(data, fetchErrors);
 
     return {
       value,
-      status: createStaleStatus({ indexingErrors, fetchErrors: [], laggingSubgraphs }),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
     console.error(`Error fetching from ${source}:`, error);

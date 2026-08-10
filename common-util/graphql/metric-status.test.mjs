@@ -22,6 +22,7 @@ import {
   isFrozen,
   readGlobalField,
   resolveMergedMetric,
+  mergeSnapshotTree,
 } from './metric-status.ts';
 
 const NOW = 1_700_000_000_000;
@@ -197,4 +198,62 @@ test('isFrozen: true when frozen with empty error arrays (transform returned nul
   assert.deepEqual(merged.status.fetchErrors, []);
   assert.equal(hasHardError(merged.status), false);
   assert.equal(isFrozen(merged.status), true);
+});
+
+// --- mergeSnapshotTree ----------------------------------------------------------------
+
+test('mergeSnapshotTree: applies the leaf decision at nested metric leaves', () => {
+  const merged = mergeSnapshotTree(
+    { a: { b: { value: null, status: status({ fetchErrors: ['x'] }) } } },
+    { a: { b: { value: 'OLD', status: status({ lastValidAt: OLD_VALID_AT }) } } },
+    NOW
+  );
+  assert.equal(merged.a.b.value, 'OLD');
+  assert.equal(merged.a.b.status.frozen, true);
+});
+
+test('mergeSnapshotTree: carries forward keys absent from the new fetch', () => {
+  const merged = mergeSnapshotTree({ kept: 1 }, { kept: 0, dropped: 'from-old' }, NOW);
+  assert.equal(merged.kept, 1);
+  assert.equal(merged.dropped, 'from-old');
+});
+
+test('mergeSnapshotTree: passes primitives and nulls through untouched', () => {
+  assert.equal(mergeSnapshotTree(5, 9, NOW), 5);
+  assert.equal(mergeSnapshotTree(null, 'old', NOW), null);
+  assert.equal(mergeSnapshotTree('s', 'old', NOW), 's');
+});
+
+test('mergeSnapshotTree: returns arrays as-is rather than pairing by index', () => {
+  // Index pairing is meaningless for the ordered series these snapshots hold, and would
+  // carry stale keys from the old array's objects into the new one.
+  const next = [{ x: 1 }, { x: 2 }];
+  assert.deepEqual(mergeSnapshotTree(next, [{ x: 9, stale: 'leak' }, { x: 8 }], NOW), next);
+});
+
+test('mergeSnapshotTree: warns when metrics are nested in an array (no fallback applied)', () => {
+  const warnings = [];
+  const original = console.warn;
+  console.warn = (m) => warnings.push(m);
+  try {
+    mergeSnapshotTree(
+      { series: [{ value: null, status: status({ fetchErrors: ['x'] }) }] },
+      { series: [{ value: 'OLD', status: status() }] },
+      NOW
+    );
+  } finally {
+    console.warn = original;
+  }
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /series/);
+});
+
+test('mergeSnapshotTree: a metric gaining a new sibling keeps both', () => {
+  const merged = mergeSnapshotTree(
+    { a: { value: 1, status: status() }, b: { value: 2, status: status() } },
+    { a: { value: 0, status: status() } },
+    NOW
+  );
+  assert.equal(merged.a.value, 1);
+  assert.equal(merged.b.value, 2);
 });

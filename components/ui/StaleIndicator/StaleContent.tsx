@@ -14,7 +14,7 @@ export const StaleMetricContent = ({ status }: StaleIndicatorProps) => {
   // error arrays (a transform returning null freezes on the nil value alone), and a local
   // `hardErrors.length > 0` would then promise live data under a greyed, held-over number.
   const frozen = isFrozen(status);
-  const sources = [
+  const affectedSources = [
     ...(status?.indexingErrors || []),
     ...(status?.fetchErrors || []),
     ...(status?.laggingSubgraphs || []),
@@ -31,8 +31,8 @@ export const StaleMetricContent = ({ status }: StaleIndicatorProps) => {
         {frozen ? 'Last successful update: ' : 'Updated: '}
         {formatLocalDate(status?.lastValidAt)}
       </span>
-      {sources.length > 0 && (
-        <span className="text-xs mt-2">Affected Sources: {sources.join(', ')}</span>
+      {affectedSources.length > 0 && (
+        <span className="text-xs mt-2">Affected Sources: {affectedSources.join(', ')}</span>
       )}
     </div>
   );
