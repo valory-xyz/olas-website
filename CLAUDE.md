@@ -66,7 +66,7 @@ Coverage varies by category (e.g. `BABYDEGEN_GRAPH_CLIENTS` only has Optimism + 
 
 Categories: `main`, `predict`, `agent-economies`, `other`. Plus daily snapshots for `predict-roi-distribution` (per agent) and `predict-tool-accuracy`.
 
-**`MetricWithStatus<T>` shape**: every metric is `{ value, status: { stale, lastValidAt, indexingErrors, fetchErrors, laggingSubgraphs } }`. Use `createStaleStatus`, `getFetchErrorAndCreateStaleStatus`, and `checkSubgraphLag` from `common-util/graphql/metric-utils.ts` to populate it. `CHAIN_CONFIG` in `common-util/constants.ts` defines the per-chain `lagLimit` (calibrated for ~12h indexing tolerance).
+**`MetricWithStatus<T>` shape**: every metric is `{ value, status: { stale, lastValidAt, indexingErrors, fetchErrors, laggingSubgraphs } }`. Use `createStaleStatus`, `getFetchErrorAndCreateStaleStatus`, and `checkSubgraphLag` from `common-util/graphql/metric-utils.ts` to populate it. `CHAIN_CONFIG` in `common-util/constants.ts` derives each chain's `lagLimit` from a measured `blockTimeSec` and a `lagToleranceHours` that scales with the chain's share of the totals (12h for ethereum/gnosis, 48h for the sub-2% chains). Set the tolerance in hours — never hand-write a block count.
 
 **Strapi CMS data flow**:
 - `common-util/api/index.ts` and `common-util/useFetchApi.ts` call `${NEXT_PUBLIC_API_URL}/api/<resource>` with `qs`-stringified params.

@@ -121,8 +121,9 @@ const DRAINED_TOPIC0 = '0xb2559daa129ad136aac2133ac6a0c75920abbef7d6663a017a94e1
 // so no `Drained` event can exist before this — we start the scan just before it.
 const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
 
-// CHAIN_CONFIG.lagLimit is "blocks per ~12h" (43200s), so block time ≈ 43200 / lagLimit.
-const blockTimeSec = (chain: keyof typeof CHAIN_CONFIG) => 43200 / CHAIN_CONFIG[chain].lagLimit;
+// Measured per-chain block time. Previously derived from lagLimit, which only held while
+// every chain used the same 12h tolerance — tolerances now vary, so read it directly.
+const blockTimeSec = (chain: keyof typeof CHAIN_CONFIG) => CHAIN_CONFIG[chain].blockTimeSec;
 
 const toBlockHex = (n: bigint) => `0x${n.toString(16)}`;
 
