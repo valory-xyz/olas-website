@@ -6,6 +6,7 @@ import {
   executeGraphQLQuery,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import {
   getActiveVeOlasDepositorsQuery,
@@ -32,13 +33,15 @@ const fetchLockedBalance = async (): Promise<MetricWithStatus<string | null>> =>
     };
   }
 
-  return executeGraphQLQuery<VeOlasLockedBalanceResult, string>({
+  return executeGraphQLQuery<VeOlasLockedBalanceResult, string | null>({
     client,
     query: veOlasLockedBalanceQuery,
     variables: { tokenId: VEOLAS_TOKEN_ID },
     source: 'govern:lockedBalance',
     chain: 'ethereum',
-    transform: (data) => data?.token?.balance ?? '0',
+    // null (not '0') on an absent entity — see build.ts.
+    transform: (data, fetchErrors) =>
+      readGlobalField(data?.token, 'balance', 'govern:lockedBalance', fetchErrors),
   });
 };
 

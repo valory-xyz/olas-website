@@ -3,6 +3,7 @@ import {
   createStaleStatus,
   executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import { totalBuildersQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -17,7 +18,17 @@ const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> =>
     chain: 'ethereum',
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
-    transform: (data) => Number(data.global?.totalBuilders || 0),
+    // null (not 0) on an absent entity, so the merge holds the last good value instead of
+    // publishing a zero as healthy — and readGlobalField names the source in the tooltip.
+    transform: (data, fetchErrors) => {
+      const total = readGlobalField(
+        data.global,
+        'totalBuilders',
+        'build:totalBuilders',
+        fetchErrors
+      );
+      return total === null ? null : Number(total);
+    },
   });
 };
 

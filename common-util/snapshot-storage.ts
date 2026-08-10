@@ -4,8 +4,7 @@ import { ExplorerMetricsData } from 'common-util/api/explorer';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
-import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
-import { isNil, isPlainObject } from 'lodash';
+import { mergeSnapshotTree } from 'common-util/graphql/metric-utils';
 
 // Blob filenames embed a schema version, so a breaking change to a snapshot's
 // shape writes to a fresh blob instead of colliding with the old one. Versions
@@ -47,79 +46,10 @@ export type MetricsSnapshot = {
 const isMetricsSnapshot = (data: unknown): data is MetricsSnapshot =>
   typeof data === 'object' && data !== null && 'data' in data && 'timestamp' in data;
 
-// TODO: refactor this fn to make it more readable.
-const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''): unknown => {
-  if (!newData || typeof newData !== 'object') {
-    return newData;
-  }
-
-  if (isMetricWithStatus(newData)) {
-    const newMetric = newData as MetricWithStatus<unknown>;
-    const oldMetric = isMetricWithStatus(oldData) ? (oldData as MetricWithStatus<unknown>) : null;
-
-    const newValueIsInvalid = isNil(newMetric.value) || newMetric.status?.stale;
-
-    if (newValueIsInvalid) {
-      // Try to fall back to old data if available and valid
-      if (oldMetric && !isNil(oldMetric.value)) {
-        return {
-          value: oldMetric.value,
-          status: {
-            ...newMetric.status,
-            stale: true,
-            lastValidAt: oldMetric.status?.lastValidAt ?? null,
-          },
-        };
-      }
-      // No valid fallback - return newData as-is with stale status preserved
-      return {
-        ...newMetric,
-        status: {
-          ...newMetric.status,
-          stale: true,
-          lastValidAt: newMetric.status?.lastValidAt ?? null,
-        },
-      };
-    }
-
-    // New data is valid - update with fresh timestamp
-    return {
-      ...newMetric,
-      status: {
-        ...newMetric.status,
-        stale: false,
-        lastValidAt: Date.now(),
-      },
-    };
-  }
-
-  const result: Record<string, unknown> = {};
-  if (Array.isArray(newData)) {
-    return newData;
-  }
-
-  const allKeys = new Set([
-    ...Object.keys(isPlainObject(newData) ? (newData as object) : {}),
-    ...Object.keys(isPlainObject(oldData) ? (oldData as object) : {}),
-  ]);
-
-  for (const key of allKeys) {
-    const newPath = path ? `${path}.${key}` : key;
-    if (isPlainObject(newData) && key in (newData as Record<string, unknown>)) {
-      result[key] = mergeWithFallback(
-        (newData as Record<string, unknown>)[key],
-        isPlainObject(oldData) && key in (oldData as Record<string, unknown>)
-          ? (oldData as Record<string, unknown>)[key]
-          : undefined,
-        newPath
-      );
-    } else if (isPlainObject(oldData) && key in (oldData as Record<string, unknown>)) {
-      result[key] = (oldData as Record<string, unknown>)[key];
-    }
-  }
-
-  return result;
-};
+// The walk itself lives in metric-status.ts alongside the leaf decision, so both are
+// covered by `yarn metric-status:test` rather than only the leaf.
+const mergeWithFallback = (newData: unknown, oldData: unknown): unknown =>
+  mergeSnapshotTree(newData, oldData, Date.now());
 
 /**
  * Snapshot Storage:
@@ -142,18 +72,26 @@ export const saveSnapshot = async ({
 
   // Merge data if we are not explicitly overwriting
   if (!overwrite) {
-    try {
-      const oldSnapshot = await getSnapshot({ category });
+    const previous = await loadSnapshot({ category });
 
-      if (isMetricsSnapshot(oldSnapshot)) {
-        const mergedData = mergeWithFallback(data.data, oldSnapshot.data);
-        dataToSave = {
-          ...data,
-          data: mergedData as MetricsData,
-        };
-      }
-    } catch (error) {
-      console.warn(`Failed to load previous snapshot for ${category} fallback`, error);
+    if (previous.outcome === 'error') {
+      // Writing unmerged data here would strip the hold-last-good-value fallback from every
+      // hard-errored metric in the category, for a reason unrelated to those metrics — a
+      // transient blob read is enough. Better to leave the existing blob intact and let the
+      // next cron retry than to overwrite good values with nulls.
+      throw new Error(
+        `Refusing to save ${category}: could not read the previous snapshot to merge against ` +
+          `(${previous.error}). Existing blob left untouched; the next run will retry.`
+      );
+    }
+
+    // 'absent' is the legitimate bootstrap path (first run, or a SCHEMA_VERSIONS bump):
+    // there is nothing to merge against, so the raw fetch is what should be written.
+    if (previous.outcome === 'found') {
+      dataToSave = {
+        ...data,
+        data: mergeWithFallback(data.data, previous.snapshot.data) as MetricsData,
+      };
     }
   }
 
@@ -173,37 +111,55 @@ type GetSnapshotParams = {
 };
 
 /**
- * Retrieves the latest snapshot for a given category.
+ * A snapshot genuinely not existing yet and a failed read are very different things to the
+ * merge — the first must write raw to bootstrap, the second must not write at all — but
+ * both collapse to `null` through `getSnapshot`. `loadSnapshot` keeps them apart.
+ */
+type LoadSnapshotResult =
+  | { outcome: 'found'; snapshot: MetricsSnapshot }
+  | { outcome: 'absent' }
+  | { outcome: 'error'; error: string };
+
+const loadSnapshot = async ({ category }: GetSnapshotParams): Promise<LoadSnapshotResult> => {
+  const filename = getSnapshotFilename(category);
+  let blobUrl: string;
+
+  try {
+    const { blobs } = await list({ prefix: filename, limit: 1 });
+    const blob = blobs?.find((b) => b.pathname === filename);
+    // An empty listing is authoritative: the blob has never been written.
+    if (!blob) return { outcome: 'absent' };
+    blobUrl = blob.url;
+  } catch (error) {
+    console.error(`Error listing snapshot for ${category}:`, error);
+    return { outcome: 'error', error: `list failed: ${(error as Error)?.message}` };
+  }
+
+  try {
+    const response = await fetch(blobUrl, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status} from ${blobUrl}`);
+
+    const data = await response.json();
+    if (isMetricsSnapshot(data)) return { outcome: 'found', snapshot: data };
+
+    // The blob exists but is unusable. Treated as an error, not 'absent': overwriting it
+    // unmerged would discard whatever valid values it still holds.
+    console.warn(`Snapshot for ${category} does not match expected structure`);
+    return { outcome: 'error', error: 'malformed snapshot' };
+  } catch (error) {
+    console.error(`Error reading snapshot for ${category}:`, error);
+    return { outcome: 'error', error: (error as Error)?.message ?? 'read failed' };
+  }
+};
+
+/**
+ * Retrieves the latest snapshot for a given category, or null if it is missing or
+ * unreadable. Read paths (pages, ISR) cannot act on the difference, so they use this;
+ * `saveSnapshot` uses `loadSnapshot` because for a write the difference matters.
  */
 export const getSnapshot = async ({
   category,
 }: GetSnapshotParams): Promise<MetricsSnapshot | null> => {
-  try {
-    const filename = getSnapshotFilename(category);
-    const { blobs } = await list({ prefix: filename, limit: 1 });
-
-    if (!blobs || blobs.length === 0) return null;
-
-    const blob = blobs.find((b) => b.pathname === filename);
-
-    if (!blob) return null;
-
-    const response = await fetch(blob.url, {
-      cache: 'no-store',
-    });
-
-    if (!response.ok) throw new Error(`Failed to fetch snapshot from ${blob.url}`);
-
-    const data = await response.json();
-
-    if (isMetricsSnapshot(data)) {
-      return data;
-    }
-
-    console.warn(`Snapshot for ${category} does not match expected structure`);
-    return null;
-  } catch (error) {
-    console.error(`Error reading snapshot for ${category}:`, error);
-    return null;
-  }
+  const result = await loadSnapshot({ category });
+  return result.outcome === 'found' ? result.snapshot : null;
 };

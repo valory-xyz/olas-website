@@ -3,10 +3,12 @@ import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import { legacyMechFeesTotalsQuery, newMechFeesTotalsQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
 import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
+import { formatUnits } from 'viem';
 
 type MechFeesResult = WithMeta<{
   global: {
@@ -68,8 +70,14 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(latestBlock, res.value?._meta?.block?.number, chain)) {
         laggingSubgraphs.push(`mechFees:${chain}`);
       }
-      inUsd += Number(res.value?.global?.totalFeesInUSD || 0);
-      outUsd += Number(res.value?.global?.totalFeesOutUSD || 0);
+      // Per-field, so a present entity missing a field is caught too, not just a null entity.
+      const source = `mechFees:${chain}`;
+      const feesIn = readGlobalField(res.value?.global, 'totalFeesInUSD', source, fetchErrors);
+      const feesOut = readGlobalField(res.value?.global, 'totalFeesOutUSD', source, fetchErrors);
+      if (feesIn === null || feesOut === null) return;
+
+      inUsd += Number(feesIn);
+      outUsd += Number(feesOut);
     });
 
     // Add legacy Gnosis fees (wei-denominated)
@@ -88,8 +96,25 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(gnosisBlock, legacy?._meta?.block?.number, 'legacy')) {
         laggingSubgraphs.push('mechFees:legacy');
       }
-      inUsd += Number((BigInt(legacy?.global?.totalFeesIn || '0') / BigInt(1e18)).toString());
-      outUsd += Number((BigInt(legacy?.global?.totalFeesOut || '0') / BigInt(1e18)).toString());
+      // Same guard as the per-chain loop: the legacy path zero-filling silently was the
+      // exact failure this change exists to close.
+      const legacyIn = readGlobalField(
+        legacy?.global,
+        'totalFeesIn',
+        'mechFees:legacy',
+        fetchErrors
+      );
+      const legacyOut = readGlobalField(
+        legacy?.global,
+        'totalFeesOut',
+        'mechFees:legacy',
+        fetchErrors
+      );
+      if (legacyIn !== null && legacyOut !== null) {
+        // Wei -> xDAI via formatUnits: BigInt division would floor away every sub-dollar fraction.
+        inUsd += Number(formatUnits(BigInt(legacyIn), 18));
+        outUsd += Number(formatUnits(BigInt(legacyOut), 18));
+      }
     }
 
     const unclaimed = Math.max(inUsd - outUsd, 0);

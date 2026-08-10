@@ -13,6 +13,7 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
@@ -26,12 +27,12 @@ const AprMetric = ({ item }) => {
     item.source && value !== '--' ? (
       item.source.isExternal ? (
         <ExternalLink href={item.source.link} hideArrow>
-          <span className={item.status?.stale ? 'text-gray-400' : ''}>{value}</span>
+          <span className={isFrozen(item.status) ? 'text-gray-400' : ''}>{value}</span>
           <span className="text-2xl">↗</span>
         </ExternalLink>
       ) : (
         <Link href={item.source.link}>
-          <span className={item.status?.stale ? 'text-gray-400' : ''}>{value}</span>
+          <span className={isFrozen(item.status) ? 'text-gray-400' : ''}>{value}</span>
         </Link>
       )
     ) : (
@@ -43,7 +44,7 @@ const AprMetric = ({ item }) => {
       <span className="text-sm text-slate-700">{item.label}</span>
       <div className="flex items-center gap-2">
         <span
-          className={`text-2xl font-semibold ${item.status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+          className={`text-2xl font-semibold ${isFrozen(item.status) ? 'text-gray-400' : 'text-purple-600'}`}
         >
           {display}
         </span>
@@ -153,7 +154,7 @@ export const BabydegenMetrics = ({ metrics }) => {
           {metrics?.dailyActiveAgents?.value ? (
             <div className="flex items-center gap-2">
               <Link className="font-extrabold text-6xl" href="/data#babydegen-daily-active-agents">
-                <span className={metrics.dailyActiveAgents.status?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(metrics.dailyActiveAgents.status) ? 'text-gray-400' : ''}>
                   {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
                 </span>
               </Link>

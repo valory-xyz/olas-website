@@ -1,5 +1,6 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 export const AgentsFunMetrics = ({ metrics }) => {
   const { value, status } = metrics?.dailyActiveAgents || {};
@@ -21,7 +22,7 @@ export const AgentsFunMetrics = ({ metrics }) => {
           {value ? (
             <div className="flex items-center gap-2">
               <Link className="font-extrabold text-6xl" href="/data#agentsfun-daily-active-agents">
-                <span className={status?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(status) ? 'text-gray-400' : ''}>
                   {Math.floor(value).toLocaleString()}
                 </span>
               </Link>

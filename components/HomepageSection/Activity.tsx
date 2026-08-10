@@ -8,6 +8,8 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricStatus } from 'common-util/graphql/types';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -24,14 +26,6 @@ const formatUsd = (value?: string | number, fractionDigits?: number) => {
       ? { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }
       : undefined
   )}`;
-};
-
-type MetricStatus = {
-  stale: boolean;
-  lastValidAt: number | null;
-  indexingErrors: string[];
-  fetchErrors: string[];
-  laggingSubgraphs: string[];
 };
 
 type ActivityValueProps = {
@@ -102,7 +96,7 @@ const ActivityValue = ({
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
       <div
-        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${status?.stale ? 'text-gray-400' : 'text-purple-700'}`}
+        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-700'}`}
       >
         {value}
       </div>

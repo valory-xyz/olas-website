@@ -12,6 +12,7 @@ import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
 import { ToolAccuracyTable } from './ToolAccuracyTable';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 const processPredictMetrics = (
   metrics: any
@@ -120,7 +121,7 @@ const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText, id }) => 
           <span className="text-purple-600 text-6xl">--</span>
         ) : (
           <Link className="font-extrabold text-6xl" href={href}>
-            <span className={`${status?.stale ? 'text-gray-400' : ''}`}>{daaValue}</span>
+            <span className={`${isFrozen(status) ? 'text-gray-400' : ''}`}>{daaValue}</span>
           </Link>
         )}
         <StaleIndicator status={status} />

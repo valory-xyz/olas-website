@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { StaleIndicator } from './ui/StaleIndicator';
 import { Card } from './ui/card';
 import { ExternalLink, Link } from './ui/typography';
+import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricStatus } from 'common-util/graphql/types';
 
 export const fetchMetrics = async (fetchFunctions) => {
   try {
@@ -67,18 +69,14 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
 
 const renderMetricValue = (metric: {
   metric?: string | number;
-  status?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-    laggingSubgraphs: string[];
-  };
+  status?: MetricStatus;
   isMoney?: boolean;
   source?: string;
   isExternal?: boolean;
 }) => {
+  // Indicator on any issue; grey the number only when it's a held-over value, not merely lagging.
   const isStale = metric.status?.stale;
+  const isValueFrozen = isFrozen(metric.status);
   const valueClassName = 'font-extrabold max-sm:text-4xl text-6xl';
   const staleIndicator = isStale ? (
     <span className="ml-2 inline-block align-middle">
@@ -109,7 +107,7 @@ const renderMetricValue = (metric: {
     <div className="flex items-center">
       {isExternal ? (
         <ExternalLink className={valueClassName} href={metric.source} hideArrow>
-          <div className={`flex items-center ${isStale ? 'text-gray-400' : ''}`}>
+          <div className={`flex items-center ${isValueFrozen ? 'text-gray-400' : ''}`}>
             {metric.isMoney && <span>$</span>}
             {formatted}
             <span className="text-4xl">↗</span>
@@ -117,7 +115,7 @@ const renderMetricValue = (metric: {
         </ExternalLink>
       ) : (
         <Link className={valueClassName} href={metric.source}>
-          <span className={isStale ? 'text-gray-400' : ''}>
+          <span className={isValueFrozen ? 'text-gray-400' : ''}>
             {metric.isMoney && <span>$</span>}
             {formatted}
           </span>

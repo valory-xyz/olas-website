@@ -10,7 +10,21 @@ export type WithMeta<T> = T & {
 };
 
 export type MetricStatus = {
+  /**
+   * Something is wrong with at least one source — drives the amber indicator.
+   * Broader than `frozen`: a lagging subgraph is stale but still publishes live data.
+   */
   stale: boolean;
+  /**
+   * The published value is a held-over fallback rather than this run's data, because a
+   * source hard-failed or returned nothing. Drives the greyed-out value text.
+   *
+   * Required, so every producer must set it and any component redeclaring this shape fails
+   * to compile rather than silently dropping the field. Blobs written before it existed
+   * still lack it at runtime (deserialisation is an unchecked cast), so always read through
+   * `isFrozen()` in metric-utils, which falls back to the error arrays when it is absent.
+   */
+  frozen: boolean;
   /**
    * Timestamp when data was last valid
    */

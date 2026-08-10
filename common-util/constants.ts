@@ -120,42 +120,49 @@ export const LIQUIDITY_SUBGRAPH_URLS = [
 ];
 
 /**
- * Lag limits are calibrated so each chain tolerates ~12 hours of subgraph indexing delay
+ * Per-chain subgraph lag tolerance.
+ *
+ * `lagLimit` is derived rather than hand-written: a single magic block count used to bury
+ * both the chain's block time and the tolerance, so neither could be reviewed on its own.
+ *
+ * Tolerance scales with how much a chain moves the published totals, because a lagging
+ * chain only distorts an aggregate in proportion to its share of it. Gnosis dominates
+ * registry transactions by roughly two orders of magnitude, so a delay there is material
+ * within hours; the remaining chains are each low single-digit percentages or less, where
+ * half a day of delay is a rounding error. Flagging those at 12h greys headline metrics
+ * over differences too small to see, which just teaches people to ignore the indicator.
+ *
+ * Both inputs are point-in-time observations, not invariants — block times drift with
+ * network upgrades and traffic shares move as chains are added. Re-derive rather than
+ * trust these if you are changing them:
+ *   blockTimeSec  — (t(head) - t(head - N)) / N over each chain's public RPC
+ *   traffic share — `global(id: "") { txCount }` per REGISTRY_GRAPH_CLIENTS entry
+ * Last checked 2026-08-10 (PR #553); shares then were gnosis 96.57%, optimism 1.69%,
+ * polygon 0.86%, base 0.64%, mode 0.24% (ethereum/celo/arbitrum not reachable at the time).
  */
-export const CHAIN_CONFIG: Record<string, { rpc: string; lagLimit: number }> = {
-  ethereum: {
-    rpc: process.env.ETHEREUM_RPC,
-    lagLimit: 3600, // ~12s blocks → 3600 blocks ≈ 12 hours
-  },
-  gnosis: {
-    rpc: process.env.GNOSIS_RPC,
-    lagLimit: 9000, // ~5s blocks → 9000 blocks ≈ 12 hours
-  },
-  arbitrum: {
-    rpc: process.env.ARBITRUM_RPC,
-    lagLimit: 160000, // ~0.27s blocks → 160000 blocks ≈ 12 hours
-  },
-  optimism: {
-    rpc: process.env.OPTIMISM_RPC,
-    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
-  },
-  base: {
-    rpc: process.env.BASE_RPC,
-    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
-  },
-  celo: {
-    rpc: process.env.CELO_RPC,
-    lagLimit: 43200, // ~1s blocks → 43200 blocks ≈ 12 hours
-  },
-  polygon: {
-    rpc: process.env.POLYGON_RPC,
-    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
-  },
-  mode: {
-    rpc: process.env.MODE_RPC,
-    lagLimit: 21600, // ~2s blocks → 21600 blocks ≈ 12 hours
-  },
+const CHAIN_LAG_CONFIG: Record<
+  string,
+  { rpc: string; blockTimeSec: number; lagToleranceHours: number }
+> = {
+  // Mainnet registry is the origin chain — treat delays there as material.
+  ethereum: { rpc: process.env.ETHEREUM_RPC, blockTimeSec: 12, lagToleranceHours: 12 },
+  // ~96.6% of registry transactions: the only chain that can shift a total on its own.
+  gnosis: { rpc: process.env.GNOSIS_RPC, blockTimeSec: 5.1, lagToleranceHours: 12 },
+  arbitrum: { rpc: process.env.ARBITRUM_RPC, blockTimeSec: 0.25, lagToleranceHours: 48 },
+  optimism: { rpc: process.env.OPTIMISM_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
+  base: { rpc: process.env.BASE_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
+  celo: { rpc: process.env.CELO_RPC, blockTimeSec: 1, lagToleranceHours: 48 },
+  polygon: { rpc: process.env.POLYGON_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
+  mode: { rpc: process.env.MODE_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
 };
+
+export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; lagLimit: number }> =
+  Object.fromEntries(
+    Object.entries(CHAIN_LAG_CONFIG).map(([chain, { rpc, blockTimeSec, lagToleranceHours }]) => [
+      chain,
+      { rpc, blockTimeSec, lagLimit: Math.round((lagToleranceHours * 3600) / blockTimeSec) },
+    ])
+  );
 
 export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 

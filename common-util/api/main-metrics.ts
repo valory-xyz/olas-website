@@ -11,6 +11,7 @@ import {
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
@@ -24,6 +25,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
+import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
@@ -75,7 +77,13 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        performanceByChains.push(data.dailyActiveMultisigs_collection ?? []);
+        // An empty collection is legitimate (no activity); an absent field is not.
+        if (data.dailyActiveMultisigs_collection == null) {
+          console.error(`registry:${chain}: subgraph responded without dailyActiveMultisigs`);
+          fetchErrors.push(`registry:${chain}:missingGlobal`);
+        } else {
+          performanceByChains.push(data.dailyActiveMultisigs_collection);
+        }
       }
     });
 
@@ -135,7 +143,15 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`staking:${chain}`);
         }
-        olasStakedByChains.push(data.global?.currentOlasStaked ?? '0');
+        const currentOlasStaked = readGlobalField(
+          data.global,
+          'currentOlasStaked',
+          `staking:${chain}`,
+          fetchErrors
+        );
+        if (currentOlasStaked !== null) {
+          olasStakedByChains.push(currentOlasStaked);
+        }
       }
     });
 
@@ -198,7 +214,10 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        txCountByChains.push(data.global?.txCount ?? '0');
+        const txCount = readGlobalField(data.global, 'txCount', `registry:${chain}`, fetchErrors);
+        if (txCount !== null) {
+          txCountByChains.push(txCount);
+        }
       }
     });
 
@@ -261,7 +280,15 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        operatorsByChains.push(data.global?.totalOperators ?? 0);
+        const totalOperators = readGlobalField(
+          data.global,
+          'totalOperators',
+          `registry:${chain}`,
+          fetchErrors
+        );
+        if (totalOperators !== null) {
+          operatorsByChains.push(totalOperators);
+        }
       }
     });
 
@@ -323,7 +350,15 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`ata:${chain}`);
         }
-        ataTransactionsByChains.push(data.global?.totalAtaTransactions || '0');
+        const totalAtaTransactions = readGlobalField(
+          data.global,
+          'totalAtaTransactions',
+          `ata:${chain}`,
+          fetchErrors
+        );
+        if (totalAtaTransactions !== null) {
+          ataTransactionsByChains.push(totalAtaTransactions);
+        }
       }
     });
 
@@ -402,18 +437,27 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
         laggingSubgraphs.push(`mechFees:${source}`);
       }
 
-      if (data.global) {
-        if (isLegacy) {
-          // Legacy mech fees - convert from wei to XDAI
-          const weiValue = (data as LegacyMechFeesResult).global.totalFeesIn || '0';
-          const xdaiValue = Number(weiValue) / 10 ** 18;
-          totalFees += xdaiValue;
-        } else {
-          // New mech fees (gnosis, base) - already in USD
-          const usdValue = Number((data as MechFeesResult).global.totalFeesInUSD || '0');
-          totalFees += usdValue;
-        }
-      }
+      // Split by branch only because a dynamically-chosen field name doesn't infer under
+      // `keyof` against the union of the two global types.
+      const raw = isLegacy
+        ? readGlobalField(
+            (data as LegacyMechFeesResult).global,
+            'totalFeesIn',
+            `mechFees:${source}`,
+            fetchErrors
+          )
+        : readGlobalField(
+            (data as MechFeesResult).global,
+            'totalFeesInUSD',
+            `mechFees:${source}`,
+            fetchErrors
+          );
+      if (raw === null) return;
+
+      // Legacy is wei-denominated. formatUnits (BigInt math) matches
+      // agent-economies/mech-fees.ts: `Number(weiString) / 1e18` casts through a 64-bit
+      // float first, so the two would disagree on the same input past 2^53 wei.
+      totalFees += isLegacy ? Number(formatUnits(BigInt(raw), 18)) : Number(raw);
     };
 
     processResult(

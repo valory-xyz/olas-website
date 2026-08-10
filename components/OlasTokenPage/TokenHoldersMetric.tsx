@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Card } from '../ui/card';
 import { StaleIndicator } from '../ui/StaleIndicator';
 import { Link } from '../ui/typography';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 export const TokenHoldersMetric = ({ metrics }) => {
   const tokenHolders = metrics?.tokenHolders;
@@ -26,7 +27,7 @@ export const TokenHoldersMetric = ({ metrics }) => {
           <Link href="/data#token-holders">
             <div className="flex items-center gap-2 text-black">
               <span
-                className={`font-extrabold text-6xl ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`}
+                className={`font-extrabold text-6xl ${isFrozen(status) ? 'text-gray-400' : 'text-purple-600'}`}
               >
                 {value?.toLocaleString()}
               </span>

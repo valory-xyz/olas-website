@@ -6,6 +6,7 @@ import {
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
@@ -131,8 +132,15 @@ const fetchMechGlobals = async (): Promise<
           laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
-        totalRequests += Number(data.global?.totalRequests ?? 0);
-        totalDeliveries += Number(data.global?.totalDeliveries ?? 0);
+        // Zero-filling here would also distort the derived `other` bucket
+        // (totalRequests - known), so one nulled chain would skew two published numbers.
+        const source = `marketplace:${chain}`;
+        const requests = readGlobalField(data.global, 'totalRequests', source, fetchErrors);
+        const deliveries = readGlobalField(data.global, 'totalDeliveries', source, fetchErrors);
+        if (requests === null || deliveries === null) return;
+
+        totalRequests += Number(requests);
+        totalDeliveries += Number(deliveries);
       }
     });
 
@@ -330,20 +338,29 @@ export const fetchMechMetrics = async () => {
         status: categorized.status,
       },
       agentsfunTxs: agentsfunTxs,
+      // `other` is derived as total - known, so a failure in ANY of its three inputs
+      // inflates it. agentsfunTxs was previously excluded from both the value gate and the
+      // status merge: a failed agents.fun subgraph nulled to 0, shrank `known`, and
+      // published an inflated bucket as healthy — straight past hasHardError and over the
+      // last good blob. All three inputs now gate the value and contribute their status.
       otherTxs: {
-        value: globals.value && categorized.value ? otherTxsValue : null,
+        value:
+          globals.value && categorized.value && agentsfunTxs.value != null ? otherTxsValue : null,
         status: createStaleStatus({
           indexingErrors: [
             ...(globals.status.indexingErrors || []),
             ...(categorized.status.indexingErrors || []),
+            ...(agentsfunTxs.status.indexingErrors || []),
           ],
           fetchErrors: [
             ...(globals.status.fetchErrors || []),
             ...(categorized.status.fetchErrors || []),
+            ...(agentsfunTxs.status.fetchErrors || []),
           ],
           laggingSubgraphs: [
             ...(globals.status.laggingSubgraphs || []),
             ...(categorized.status.laggingSubgraphs || []),
+            ...(agentsfunTxs.status.laggingSubgraphs || []),
           ],
         }),
       },
