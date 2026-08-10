@@ -6,6 +6,7 @@ import {
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
@@ -131,8 +132,15 @@ const fetchMechGlobals = async (): Promise<
           laggingSubgraphs.push(`marketplace:${chain}`);
         }
 
-        totalRequests += Number(data.global?.totalRequests ?? 0);
-        totalDeliveries += Number(data.global?.totalDeliveries ?? 0);
+        // Zero-filling here would also distort the derived `other` bucket
+        // (totalRequests - known), so one nulled chain would skew two published numbers.
+        const source = `marketplace:${chain}`;
+        const requests = readGlobalField(data.global, 'totalRequests', source, fetchErrors);
+        const deliveries = readGlobalField(data.global, 'totalDeliveries', source, fetchErrors);
+        if (requests === null || deliveries === null) return;
+
+        totalRequests += Number(requests);
+        totalDeliveries += Number(deliveries);
       }
     });
 

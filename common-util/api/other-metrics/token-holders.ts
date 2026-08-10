@@ -29,8 +29,20 @@ const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddre
     const chainBlock = await getChainBlockNumber(key);
     const hasLaggingSubgraphs = checkSubgraphLag(chainBlock, response?._meta?.block?.number, key);
 
+    // An absent token entity is a failure, not zero holders — recording it as an error
+    // keeps the chain out of the sum and lets mergeWithFallback hold the last good total.
+    if (response?.token?.holderCount == null) {
+      console.error(`tokenHolders:${key}: subgraph responded without token.holderCount`);
+      return {
+        count: 0,
+        error: `tokenHolders:${key}:missingGlobal`,
+        hasIndexingErrors: response?._meta?.hasIndexingErrors,
+        hasLaggingSubgraphs,
+      };
+    }
+
     return {
-      count: Number(response?.token?.holderCount ?? 0),
+      count: Number(response.token.holderCount),
       error: null,
       hasIndexingErrors: response._meta?.hasIndexingErrors,
       hasLaggingSubgraphs,

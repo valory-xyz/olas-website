@@ -7,6 +7,7 @@ import { Link } from 'components/ui/typography';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 export const MechAgentMetrics = ({ metrics }) => {
   const data = useMemo(
@@ -97,7 +98,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           {metrics?.dailyActiveAgents?.value ? (
             <div className="flex items-center gap-2">
               <Link className="font-extrabold text-6xl" href="/data#mech-daily-active-agents">
-                <span className={metrics.dailyActiveAgents.status?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(metrics.dailyActiveAgents.status) ? 'text-gray-400' : ''}>
                   {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
                 </span>
               </Link>
@@ -115,7 +116,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           {typeof metrics?.totalRequests?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
               <Link className="font-bold" href="/data#mech-globals">
-                <span className={metrics.totalRequests.status?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(metrics.totalRequests.status) ? 'text-gray-400' : ''}>
                   {metrics.totalRequests.value.toLocaleString()}
                 </span>
               </Link>
@@ -128,7 +129,7 @@ export const MechAgentMetrics = ({ metrics }) => {
           {typeof metrics?.totalDeliveries?.value === 'number' ? (
             <span className="inline-flex items-center gap-1">
               <Link className="font-bold" href="/data#mech-globals">
-                <span className={metrics.totalDeliveries.status?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(metrics.totalDeliveries.status) ? 'text-gray-400' : ''}>
                   {metrics.totalDeliveries.value.toLocaleString()}
                 </span>
               </Link>
@@ -153,7 +154,7 @@ export const MechAgentMetrics = ({ metrics }) => {
                 <div className="flex items-center gap-2">
                   <Link href="/data#mech-requests-categorized">
                     <div className="flex items-center">
-                      <span className={item.status?.stale ? 'text-gray-400' : ''}>
+                      <span className={isFrozen(item.status) ? 'text-gray-400' : ''}>
                         {item.value}
                       </span>
                       <span className="text-black">

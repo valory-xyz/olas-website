@@ -17,7 +17,10 @@ const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> =>
     chain: 'ethereum',
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
-    transform: (data) => Number(data.global?.totalBuilders || 0),
+    // null (not 0) on an absent entity, so mergeWithFallback holds the last good value
+    // instead of publishing a zero as healthy.
+    transform: (data) =>
+      data.global?.totalBuilders == null ? null : Number(data.global.totalBuilders),
   });
 };
 

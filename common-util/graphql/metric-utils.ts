@@ -3,6 +3,11 @@ import { GraphQLClient, RequestDocument, Variables } from 'graphql-request';
 import { createPublicClient, http } from 'viem';
 import { MetricStatus, MetricWithStatus, WithMeta } from './types';
 
+// Pure decision helpers live in metric-status.ts so they can be unit-tested standalone.
+import { hasHardError } from './metric-status';
+
+export { hasHardError, isFrozen, readGlobalField, resolveMergedMetric } from './metric-status';
+
 export const createStaleStatus = ({
   indexingErrors,
   fetchErrors,
@@ -13,6 +18,7 @@ export const createStaleStatus = ({
   laggingSubgraphs?: string[];
 }): MetricStatus => ({
   stale: indexingErrors.length > 0 || fetchErrors.length > 0 || laggingSubgraphs.length > 0,
+  frozen: hasHardError({ fetchErrors, indexingErrors }),
   lastValidAt:
     indexingErrors.length === 0 && fetchErrors.length === 0 && laggingSubgraphs.length === 0
       ? Date.now()

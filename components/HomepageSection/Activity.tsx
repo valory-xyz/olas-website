@@ -8,6 +8,7 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -102,7 +103,7 @@ const ActivityValue = ({
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
       <div
-        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${status?.stale ? 'text-gray-400' : 'text-purple-700'}`}
+        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-700'}`}
       >
         {value}
       </div>

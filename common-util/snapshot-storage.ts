@@ -4,6 +4,7 @@ import { ExplorerMetricsData } from 'common-util/api/explorer';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
+import { resolveMergedMetric } from 'common-util/graphql/metric-utils';
 import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
 import { isNil, isPlainObject } from 'lodash';
 
@@ -57,48 +58,7 @@ const mergeWithFallback = (newData: unknown, oldData: unknown, path: string = ''
     const newMetric = newData as MetricWithStatus<unknown>;
     const oldMetric = isMetricWithStatus(oldData) ? (oldData as MetricWithStatus<unknown>) : null;
 
-    // Only a hard failure makes the new value untrustworthy. A lagging subgraph still
-    // returns real data for its chain — just a little behind — so the fresh aggregate is
-    // closer to the truth than a frozen one that ages indefinitely. Falling back on lag
-    // alone was making published metrics *less* accurate the longer a chain stayed behind.
-    const hasHardError =
-      (newMetric.status?.fetchErrors?.length ?? 0) > 0 ||
-      (newMetric.status?.indexingErrors?.length ?? 0) > 0;
-    const newValueIsInvalid = isNil(newMetric.value) || hasHardError;
-
-    if (newValueIsInvalid) {
-      // Try to fall back to old data if available and valid
-      if (oldMetric && !isNil(oldMetric.value)) {
-        return {
-          value: oldMetric.value,
-          status: {
-            ...newMetric.status,
-            stale: true,
-            lastValidAt: oldMetric.status?.lastValidAt ?? null,
-          },
-        };
-      }
-      // No valid fallback - return newData as-is with stale status preserved
-      return {
-        ...newMetric,
-        status: {
-          ...newMetric.status,
-          stale: true,
-          lastValidAt: newMetric.status?.lastValidAt ?? null,
-        },
-      };
-    }
-
-    // New data is publishable - update with fresh timestamp. `stale` is left as
-    // createStaleStatus computed it, so a lag-only metric still renders its indicator
-    // (and names the lagging chain) while showing the live value rather than a frozen one.
-    return {
-      ...newMetric,
-      status: {
-        ...newMetric.status,
-        lastValidAt: Date.now(),
-      },
-    };
+    return resolveMergedMetric(newMetric, oldMetric, Date.now());
   }
 
   const result: Record<string, unknown> = {};

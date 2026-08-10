@@ -11,6 +11,7 @@ import {
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
+  readGlobalField,
 } from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
@@ -24,30 +25,11 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
+import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
 const REGISTRY_CHAINS = Object.keys(REGISTRY_GRAPH_CLIENTS);
-
-/**
- * A subgraph can answer successfully with `global: null` (e.g. mid-reindex). Coercing that
- * to 0 would drop the chain from the sum yet still publish `stale: false`, overwriting the
- * blob with a too-low number. Record a fetch error so mergeWithFallback keeps the old value.
- */
-const readGlobalField = <T>(
-  globalEntity: Record<string, unknown> | null | undefined,
-  field: string,
-  source: string,
-  fetchErrors: string[]
-): T | null => {
-  const value = globalEntity?.[field];
-  if (value === undefined || value === null) {
-    console.error(`${source}: subgraph responded without global.${field}`);
-    fetchErrors.push(`${source}:missingGlobal`);
-    return null;
-  }
-  return value as T;
-};
 
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
@@ -161,7 +143,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`staking:${chain}`);
         }
-        const currentOlasStaked = readGlobalField<string>(
+        const currentOlasStaked = readGlobalField(
           data.global,
           'currentOlasStaked',
           `staking:${chain}`,
@@ -232,12 +214,7 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        const txCount = readGlobalField<string>(
-          data.global,
-          'txCount',
-          `registry:${chain}`,
-          fetchErrors
-        );
+        const txCount = readGlobalField(data.global, 'txCount', `registry:${chain}`, fetchErrors);
         if (txCount !== null) {
           txCountByChains.push(txCount);
         }
@@ -303,7 +280,7 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`registry:${chain}`);
         }
-        const totalOperators = readGlobalField<number>(
+        const totalOperators = readGlobalField(
           data.global,
           'totalOperators',
           `registry:${chain}`,
@@ -373,7 +350,7 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`ata:${chain}`);
         }
-        const totalAtaTransactions = readGlobalField<string>(
+        const totalAtaTransactions = readGlobalField(
           data.global,
           'totalAtaTransactions',
           `ata:${chain}`,
@@ -460,15 +437,27 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
         laggingSubgraphs.push(`mechFees:${source}`);
       }
 
-      const field = isLegacy ? 'totalFeesIn' : 'totalFeesInUSD';
-      const raw = readGlobalField<string>(data.global, field, `mechFees:${source}`, fetchErrors);
-      if (raw === null) return;
-
       if (isLegacy) {
-        // Legacy mech fees - convert from wei to XDAI
-        totalFees += Number(raw) / 10 ** 18;
+        // Legacy mech fees — wei-denominated. Converted with formatUnits (BigInt math) to
+        // match agent-economies/mech-fees.ts: `Number(weiString) / 1e18` casts through a
+        // 64-bit float first, so the two would disagree on the same input past 2^53 wei.
+        const raw = readGlobalField(
+          (data as LegacyMechFeesResult).global,
+          'totalFeesIn',
+          `mechFees:${source}`,
+          fetchErrors
+        );
+        if (raw === null) return;
+        totalFees += Number(formatUnits(BigInt(raw), 18));
       } else {
         // New mech fees (gnosis, base) - already in USD
+        const raw = readGlobalField(
+          (data as MechFeesResult).global,
+          'totalFeesInUSD',
+          `mechFees:${source}`,
+          fetchErrors
+        );
+        if (raw === null) return;
         totalFees += Number(raw);
       }
     };

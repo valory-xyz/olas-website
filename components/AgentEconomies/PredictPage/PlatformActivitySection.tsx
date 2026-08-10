@@ -14,6 +14,7 @@ import type { WindowedMetric, WindowKey } from 'common-util/api/predict';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 export type Platform = 'polystrat' | 'omenstrat';
 
@@ -95,14 +96,14 @@ type MetricItemProps = {
 const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) => {
   // Match the brand colour of the linked metrics (Link is text-purple-600) so an
   // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
-  const valueClass = `text-2xl font-bold ${status?.stale ? 'text-gray-400' : 'text-purple-600'}`;
+  const valueClass = `text-2xl font-bold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-600'}`;
   return (
     <div className="flex flex-col gap-1">
       <div className="text-sm text-slate-500">{label}</div>
       <div className="flex items-center gap-2">
         {href ? (
           <Link href={href} className="text-2xl font-bold">
-            <span className={status?.stale ? 'text-gray-400' : ''}>{value || '--'}</span>
+            <span className={isFrozen(status) ? 'text-gray-400' : ''}>{value || '--'}</span>
           </Link>
         ) : (
           <span className={valueClass}>{value || '--'}</span>
@@ -183,7 +184,7 @@ export const PlatformActivitySection = ({
               </p>
               <div className="flex justify-between">
                 <span className="text-gray-900">Partial ROI</span>
-                <span className={m.partialRoiStatus?.stale ? 'text-gray-400' : ''}>
+                <span className={isFrozen(m.partialRoiStatus) ? 'text-gray-400' : ''}>
                   {`${Math.round(partialRoiValue)}%`}
                 </span>
               </div>

@@ -94,6 +94,11 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Run verify-mech-analytics-parity unit tests
         run: yarn verify-mech-analytics-parity:test
+      # metric-status holds the merge/fallback decisions behind every published metric.
+      # A frozen homepage and silently-zeroed cross-chain totals both shipped from
+      # untested changes to this logic.
+      - name: Run metric-status unit tests
+        run: yarn metric-status:test
 
   install-hooks:
     name: Install-hook diff

@@ -4,6 +4,7 @@ import { StaleIndicator } from 'components/ui/StaleIndicator';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { isFrozen } from 'common-util/graphql/metric-utils';
 
 export const OperateMetrics = ({ metrics }) => {
   const data = useMemo(
@@ -40,7 +41,9 @@ export const OperateMetrics = ({ metrics }) => {
           let borderClassName = '';
           if (index == 0)
             borderClassName += 'max-sm:border-b-1.5 md:border-r-1.5 border-purple-200';
+          // Indicator on any issue; grey only a held-over value, not a merely lagging one.
           const isStale = item.status?.stale;
+          const isValueFrozen = isFrozen(item.status);
 
           const getValue = () => {
             if (!item.value) return '--';
@@ -64,7 +67,7 @@ export const OperateMetrics = ({ metrics }) => {
               </div>
               <div className="flex justify-center items-center mb-4">
                 <span
-                  className={`text-5xl max-sm:text-4xl font-extrabold ${isStale ? 'text-gray-400' : 'text-purple-600'}`}
+                  className={`text-5xl max-sm:text-4xl font-extrabold ${isValueFrozen ? 'text-gray-400' : 'text-purple-600'}`}
                 >
                   {getValue()}
                 </span>
