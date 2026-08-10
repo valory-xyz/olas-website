@@ -45,7 +45,9 @@ export const readGlobalField = <TGlobal, K extends keyof TGlobal>(
   const value = globalEntity?.[field];
   if (isNil(value)) {
     console.error(`${source}: subgraph responded without global.${String(field)}`);
-    fetchErrors.push(`${source}:missingGlobal`);
+    // Field-qualified: callers commonly read two fields per source, so a bare
+    // `${source}:missingGlobal` would emit duplicates and hide which field was absent.
+    fetchErrors.push(`${source}:missing:${String(field)}`);
     return null;
   }
   return value as TGlobal[K];

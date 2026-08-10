@@ -18,9 +18,15 @@ const fetchTotalBuilders = async (): Promise<MetricWithStatus<number | null>> =>
     query: totalBuildersQuery,
     source: 'build:totalBuilders',
     // null (not 0) on an absent entity, so mergeWithFallback holds the last good value
-    // instead of publishing a zero as healthy.
-    transform: (data) =>
-      data.global?.totalBuilders == null ? null : Number(data.global.totalBuilders),
+    // instead of publishing a zero as healthy. Logged because `transform` has no
+    // fetchErrors array to name the source in — without this there'd be no trace at all.
+    transform: (data) => {
+      if (data.global?.totalBuilders == null) {
+        console.error('build:totalBuilders: subgraph responded without global.totalBuilders');
+        return null;
+      }
+      return Number(data.global.totalBuilders);
+    },
   });
 };
 

@@ -124,14 +124,21 @@ export const LIQUIDITY_SUBGRAPH_URLS = [
  *
  * `lagLimit` is derived rather than hand-written: a single magic block count used to bury
  * both the chain's block time and the tolerance, so neither could be reviewed on its own.
- * Block times below were measured against each chain's public RPC.
  *
  * Tolerance scales with how much a chain moves the published totals, because a lagging
- * chain only distorts an aggregate in proportion to its share of it. Gnosis carries ~96.6%
- * of registry transactions, so a delay there is material within hours; every other chain
- * measured is under 2% (optimism 1.69%, polygon 0.86%, base 0.64%, mode 0.24%), where half
- * a day of delay is a rounding error. Flagging those at 12h greys headline metrics over
- * differences too small to see, which just teaches people to ignore the indicator.
+ * chain only distorts an aggregate in proportion to its share of it. Gnosis dominates
+ * registry transactions by roughly two orders of magnitude, so a delay there is material
+ * within hours; the remaining chains are each low single-digit percentages or less, where
+ * half a day of delay is a rounding error. Flagging those at 12h greys headline metrics
+ * over differences too small to see, which just teaches people to ignore the indicator.
+ *
+ * Both inputs are point-in-time observations, not invariants — block times drift with
+ * network upgrades and traffic shares move as chains are added. Re-derive rather than
+ * trust these if you are changing them:
+ *   blockTimeSec  — (t(head) - t(head - N)) / N over each chain's public RPC
+ *   traffic share — `global(id: "") { txCount }` per REGISTRY_GRAPH_CLIENTS entry
+ * Last checked 2026-08-10 (PR #553); shares then were gnosis 96.57%, optimism 1.69%,
+ * polygon 0.86%, base 0.64%, mode 0.24% (ethereum/celo/arbitrum not reachable at the time).
  */
 const CHAIN_LAG_CONFIG: Record<
   string,

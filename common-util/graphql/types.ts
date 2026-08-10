@@ -17,11 +17,14 @@ export type MetricStatus = {
   stale: boolean;
   /**
    * The published value is a held-over fallback rather than this run's data, because a
-   * source hard-failed or returned nothing. Drives the greyed-out value text. Optional so
-   * snapshots written before this field existed still deserialize — read it through
-   * `isFrozen()` in metric-utils, which derives it from the error arrays when absent.
+   * source hard-failed or returned nothing. Drives the greyed-out value text.
+   *
+   * Required, so every producer must set it and any component redeclaring this shape fails
+   * to compile rather than silently dropping the field. Blobs written before it existed
+   * still lack it at runtime (deserialisation is an unchecked cast), so always read through
+   * `isFrozen()` in metric-utils, which falls back to the error arrays when it is absent.
    */
-  frozen?: boolean;
+  frozen: boolean;
   /**
    * Timestamp when data was last valid
    */

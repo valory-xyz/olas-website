@@ -80,13 +80,13 @@ test('readGlobalField: returns the value and records nothing when present', () =
 test('readGlobalField: a null entity is an error, not a zero', () => {
   const fetchErrors = [];
   assert.equal(readGlobalField(null, 'txCount', 'registry:celo', fetchErrors), null);
-  assert.deepEqual(fetchErrors, ['registry:celo:missingGlobal']);
+  assert.deepEqual(fetchErrors, ['registry:celo:missing:txCount']);
 });
 
 test('readGlobalField: a present entity missing the field is also an error', () => {
   const fetchErrors = [];
   assert.equal(readGlobalField({}, 'txCount', 'registry:celo', fetchErrors), null);
-  assert.deepEqual(fetchErrors, ['registry:celo:missingGlobal']);
+  assert.deepEqual(fetchErrors, ['registry:celo:missing:txCount']);
 });
 
 test('readGlobalField: a real zero is a value, not an absence', () => {
@@ -171,4 +171,30 @@ test('resolveMergedMetric: an old nil value is not a usable fallback', () => {
   );
   assert.equal(merged.value, null);
   assert.equal(merged.status.frozen, true);
+});
+
+test('readGlobalField: two absent fields on one source stay distinguishable', () => {
+  // A bare `${source}:missingGlobal` produced duplicate, field-less entries here, which
+  // rendered as "Affected Sources: mechFees:gnosis:missingGlobal, mechFees:gnosis:missingGlobal".
+  const fetchErrors = [];
+  readGlobalField(null, 'totalFeesInUSD', 'mechFees:gnosis', fetchErrors);
+  readGlobalField(null, 'totalFeesOutUSD', 'mechFees:gnosis', fetchErrors);
+  assert.deepEqual(fetchErrors, [
+    'mechFees:gnosis:missing:totalFeesInUSD',
+    'mechFees:gnosis:missing:totalFeesOutUSD',
+  ]);
+});
+
+test('isFrozen: true when frozen with empty error arrays (transform returned null)', () => {
+  // The build.ts / govern.ts path: resolveMergedMetric freezes on the nil value alone, so
+  // a local `hardErrors.length > 0` in the tooltip would disagree with the grey-out.
+  const merged = resolveMergedMetric(
+    { value: null, status: status() },
+    { value: 42, status: status({ lastValidAt: OLD_VALID_AT }) },
+    NOW
+  );
+  assert.equal(merged.status.frozen, true);
+  assert.deepEqual(merged.status.fetchErrors, []);
+  assert.equal(hasHardError(merged.status), false);
+  assert.equal(isFrozen(merged.status), true);
 });

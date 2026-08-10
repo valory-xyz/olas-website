@@ -437,29 +437,27 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
         laggingSubgraphs.push(`mechFees:${source}`);
       }
 
-      if (isLegacy) {
-        // Legacy mech fees — wei-denominated. Converted with formatUnits (BigInt math) to
-        // match agent-economies/mech-fees.ts: `Number(weiString) / 1e18` casts through a
-        // 64-bit float first, so the two would disagree on the same input past 2^53 wei.
-        const raw = readGlobalField(
-          (data as LegacyMechFeesResult).global,
-          'totalFeesIn',
-          `mechFees:${source}`,
-          fetchErrors
-        );
-        if (raw === null) return;
-        totalFees += Number(formatUnits(BigInt(raw), 18));
-      } else {
-        // New mech fees (gnosis, base) - already in USD
-        const raw = readGlobalField(
-          (data as MechFeesResult).global,
-          'totalFeesInUSD',
-          `mechFees:${source}`,
-          fetchErrors
-        );
-        if (raw === null) return;
-        totalFees += Number(raw);
-      }
+      // Split by branch only because a dynamically-chosen field name doesn't infer under
+      // `keyof` against the union of the two global types.
+      const raw = isLegacy
+        ? readGlobalField(
+            (data as LegacyMechFeesResult).global,
+            'totalFeesIn',
+            `mechFees:${source}`,
+            fetchErrors
+          )
+        : readGlobalField(
+            (data as MechFeesResult).global,
+            'totalFeesInUSD',
+            `mechFees:${source}`,
+            fetchErrors
+          );
+      if (raw === null) return;
+
+      // Legacy is wei-denominated. formatUnits (BigInt math) matches
+      // agent-economies/mech-fees.ts: `Number(weiString) / 1e18` casts through a 64-bit
+      // float first, so the two would disagree on the same input past 2^53 wei.
+      totalFees += isLegacy ? Number(formatUnits(BigInt(raw), 18)) : Number(raw);
     };
 
     processResult(

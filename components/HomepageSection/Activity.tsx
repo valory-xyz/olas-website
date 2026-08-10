@@ -9,6 +9,7 @@ import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricStatus } from 'common-util/graphql/types';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -25,14 +26,6 @@ const formatUsd = (value?: string | number, fractionDigits?: number) => {
       ? { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }
       : undefined
   )}`;
-};
-
-type MetricStatus = {
-  stale: boolean;
-  lastValidAt: number | null;
-  indexingErrors: string[];
-  fetchErrors: string[];
-  laggingSubgraphs: string[];
 };
 
 type ActivityValueProps = {

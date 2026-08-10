@@ -39,7 +39,13 @@ const fetchLockedBalance = async (): Promise<MetricWithStatus<string | null>> =>
     source: 'govern:lockedBalance',
     chain: 'ethereum',
     // null (not '0') on an absent entity — see build.ts.
-    transform: (data) => data?.token?.balance ?? null,
+    transform: (data) => {
+      if (data?.token?.balance == null) {
+        console.error('govern:lockedBalance: subgraph responded without token.balance');
+        return null;
+      }
+      return data.token.balance;
+    },
   });
 };
 

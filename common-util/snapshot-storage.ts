@@ -6,7 +6,7 @@ import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
 import { resolveMergedMetric } from 'common-util/graphql/metric-utils';
 import { isMetricWithStatus, MetricWithStatus } from 'common-util/graphql/types';
-import { isNil, isPlainObject } from 'lodash';
+import { isPlainObject } from 'lodash';
 
 // Blob filenames embed a schema version, so a breaking change to a snapshot's
 // shape writes to a fresh blob instead of colliding with the old one. Versions

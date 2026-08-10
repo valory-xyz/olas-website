@@ -3,6 +3,7 @@ import { StaleIndicator } from './ui/StaleIndicator';
 import { Card } from './ui/card';
 import { ExternalLink, Link } from './ui/typography';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricStatus } from 'common-util/graphql/types';
 
 export const fetchMetrics = async (fetchFunctions) => {
   try {
@@ -68,13 +69,7 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
 
 const renderMetricValue = (metric: {
   metric?: string | number;
-  status?: {
-    stale: boolean;
-    lastValidAt: number | null;
-    indexingErrors: string[];
-    fetchErrors: string[];
-    laggingSubgraphs: string[];
-  };
+  status?: MetricStatus;
   isMoney?: boolean;
   source?: string;
   isExternal?: boolean;
