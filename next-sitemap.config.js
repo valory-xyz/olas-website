@@ -15,12 +15,17 @@ const REDIRECTED_AGENT_SLUGS = new Set([
 ]);
 
 /**
- * Routes that exist as files under `pages/` — so next-sitemap finds them — but
- * must not be indexed.
- *  - `/academy`: retired, redirected to `/404` in next.config.js.
+ * Routes that exist as files under `pages/` — so next-sitemap finds them by
+ * filesystem discovery — but must not be listed.
+ *
+ * The first two redirect in `next.config.js` while their page file remains, so
+ * the sitemap advertises a URL that never returns 200. next-sitemap cannot see
+ * the redirect table, so each has to be named here.
+ *  - `/academy`  -> `/404` (retired)
+ *  - `/protocol` -> `/stack` (301)
  *  - `/restricted`: the geo-block interstitial; also carries a noindex tag.
  */
-const EXCLUDED_PATHS = ['/academy', '/restricted'];
+const EXCLUDED_PATHS = ['/academy', '/protocol', '/restricted'];
 
 /**
  * Blog posts live in the CMS and are rendered by `pages/blog/[id].tsx`, so
