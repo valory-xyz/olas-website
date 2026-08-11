@@ -174,9 +174,13 @@ const FINALITY_LAG_HOURS_DEFAULT = 24;
 
 const DAY_SECONDS = 86400;
 const SUBGRAPH_PAGE = 1000;
-// graph-node rejects skip > 5000; a full page at that offset means the
-// fetch is truncated and the affected checks degrade to a data gap.
-const SUBGRAPH_MAX_SKIP = 5000;
+// graph-node rejects skip > 5000 and per-day request volume on Gnosis
+// (~21k/day) can exceed the resulting 6000-row cap even on a one-day
+// window, so pagination is cursor-based on the entity timestamp. This
+// cap is a runaway-loop guard, not a coverage limit; it should never
+// be hit on a healthy 7-day window (7d × 21k ≈ 150k rows ÷ 1000/page
+// ≈ 150 pages).
+const SUBGRAPH_MAX_PAGES = 500;
 const SCORED_ROWS_PAGE = 1000;
 const SCORED_ROWS_MAX_PAGES = 500;
 const SENDER_ID_CHUNK = 100;
@@ -310,7 +314,12 @@ if ((args.since || args.until) && (args['window-days'] || args['lag-buffer-minut
 }
 
 const outputDir = args['output-dir'] ? path.resolve(args['output-dir']) : null;
-const windowDays = cliInt(parsePositiveInt, args['window-days'], 'window-days', WINDOW_DAYS_DEFAULT);
+const windowDays = cliInt(
+  parsePositiveInt,
+  args['window-days'],
+  'window-days',
+  WINDOW_DAYS_DEFAULT
+);
 const lagBufferMinutes = cliInt(
   parseNonNegativeInt,
   args['lag-buffer-minutes'],
@@ -430,49 +439,137 @@ for (const name of REQUIRED_ENV.slice(1)) {
 }
 
 // ---------------------------------------------------------------------------
+// Request-id normalisation
+// ---------------------------------------------------------------------------
+
+// The marketplace subgraph stores Request.id as a 0x-prefixed hex
+// string. Predict-api stores mech_requests.request_id as the same
+// 256-bit value in decimal (from the on-chain event's ``requestId``
+// uint256) for marketplace-era rows, and mech-analytics carries that
+// through unchanged — but pre-marketplace rows in per_request_scores
+// (2023-era backfill on chain 100 and some rollovers on chain 137)
+// were stored as 0x-hex too. Result: the analytics API mixes both
+// formats depending on when the row was written. Normalising both
+// sides to the same base10 representation makes id-based parity
+// order-invariant and format-agnostic.
+const normaliseRequestId = (raw) => {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  if (/^0x[0-9a-fA-F]+$/.test(trimmed)) {
+    try {
+      return BigInt(trimmed).toString(10);
+    } catch {
+      return null;
+    }
+  }
+  if (/^[0-9]+$/.test(trimmed)) return trimmed;
+  // Anything else (unrecognized encoding) is returned lower-cased so a
+  // future non-hex/non-decimal id shape still round-trips; matching
+  // will only succeed when both sides carry the same shape.
+  return trimmed.toLowerCase();
+};
+
+// ---------------------------------------------------------------------------
 // HTTP helpers
 // ---------------------------------------------------------------------------
+
+// Transient 5xx / network hiccups on either the graph gateway or the
+// mech-analytics API used to abort the whole run (a single 504 mid-
+// pagination wiped the ~50 pages of state already accumulated). Retry
+// on 5xx and network errors with a short exponential backoff before
+// escalating to a hard error. GraphQL-level errors (body.errors) are
+// still fatal on the first attempt — those are query bugs, not
+// transient.
+const RETRY_MAX_ATTEMPTS = 5;
+const RETRY_BASE_DELAY_MS = 500;
+
+const shouldRetryHttp = (status) => status >= 500 && status < 600;
+
+const withRetry = async (attemptFn, label) => {
+  let lastError;
+  for (let attempt = 1; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await attemptFn(attempt);
+    } catch (err) {
+      lastError = err;
+      const status = err?.retryableStatus;
+      const isNetwork = err?.isNetwork === true;
+      if (!status && !isNetwork) throw err;
+      if (attempt === RETRY_MAX_ATTEMPTS) break;
+      const delay = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+      if (verbose) {
+        emit(
+          `  [${label}] transient failure (${status ? `HTTP ${status}` : 'network'}), ` +
+            `retry ${attempt}/${RETRY_MAX_ATTEMPTS - 1} in ${delay}ms`
+        );
+      }
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw lastError;
+};
 
 // POST { query } like the site's GraphQLClient does under the hood
 // (common-util/graphql/client.ts). Error messages carry the label and
 // status only — never the URL, which embeds the API key.
-const gqlRequest = async (url, query, label) => {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ query }),
-  });
-  if (!res.ok) {
-    throw new Error(`${label}: subgraph returned HTTP ${res.status}`);
-  }
-  const body = await res.json();
-  if (Array.isArray(body.errors) && body.errors.length > 0) {
-    throw new Error(`${label}: GraphQL error: ${body.errors[0]?.message ?? 'unknown'}`);
-  }
-  return body.data ?? {};
-};
+const gqlRequest = (url, query, label) =>
+  withRetry(async () => {
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+    } catch (netErr) {
+      const wrapped = new Error(`${label}: subgraph network error: ${netErr.message}`);
+      wrapped.isNetwork = true;
+      throw wrapped;
+    }
+    if (!res.ok) {
+      const err = new Error(`${label}: subgraph returned HTTP ${res.status}`);
+      if (shouldRetryHttp(res.status)) err.retryableStatus = res.status;
+      throw err;
+    }
+    const body = await res.json();
+    if (Array.isArray(body.errors) && body.errors.length > 0) {
+      throw new Error(`${label}: GraphQL error: ${body.errors[0]?.message ?? 'unknown'}`);
+    }
+    return body.data ?? {};
+  }, label);
 
 // ---------------------------------------------------------------------------
 // Marketplace subgraph pulls
 // ---------------------------------------------------------------------------
 
-// Same query shape and pagination discipline as
+// Cursor-based pagination on ``blockTimestamp``. Skip-based pagination
+// hits graph-node's ``skip > 5000`` ceiling at 6000 rows per fetch, which
+// on Gnosis (~21k requests/day) truncates even a one-day window.
+// ``blockTimestamp_gt: cursor`` moves the window forward per page and
+// ``blockTimestamp_lte: windowEndSec`` puts the upper bound in the query
+// so late rows don't need a post-fetch filter. Same query shape as
 // getMechRequestsIncrementalQuery (common-util/graphql/queries.ts:816)
-// + fetchIncrementalMechRequests (roi-distribution.ts:229). A full page
-// at the graph-node skip ceiling marks the result truncated instead of
-// silently under-counting.
+// + fetchIncrementalMechRequests (roi-distribution.ts:229) otherwise.
+//
+// Same-timestamp saturation: if a full page comes back with every row
+// sharing the last row's ``blockTimestamp``, advancing the cursor to
+// that value would loop forever on those rows. Advance by 1s and warn
+// — dropping rows at that exact second is possible in principle but
+// requires >1000 requests to land in a single second on one chain, far
+// above steady-state production request rates.
 const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label) => {
   const rows = [];
-  let skip = 0;
+  let cursor = windowStartSec;
   let truncated = false;
+  let pages = 0;
   for (;;) {
     const data = await gqlRequest(
       url,
       `query MechRequestsIncremental {
         requests(
           first: ${SUBGRAPH_PAGE}
-          skip: ${skip}
-          where: { blockTimestamp_gt: "${windowStartSec}" }
+          where: { blockTimestamp_gt: "${cursor}", blockTimestamp_lte: "${windowEndSec}" }
           orderBy: blockTimestamp
           orderDirection: asc
         ) {
@@ -485,63 +582,117 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
       label
     );
     const page = data?.requests ?? [];
-    if (verbose) emit(`  [${label}] requests page skip=${skip} rows=${page.length}`);
+    if (verbose)
+      emit(`  [${label}] requests page ${pages + 1} cursor=${cursor} rows=${page.length}`);
     rows.push(...page);
+    pages += 1;
     if (page.length < SUBGRAPH_PAGE) break;
-    skip += SUBGRAPH_PAGE;
-    if (skip > SUBGRAPH_MAX_SKIP) {
+    if (pages >= SUBGRAPH_MAX_PAGES) {
       truncated = true;
       break;
     }
+    const lastTs = Number(page[page.length - 1].blockTimestamp);
+    const firstTs = Number(page[0].blockTimestamp);
+    if (lastTs === firstTs) {
+      emit(
+        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing cursor by 1s`
+      );
+      cursor = lastTs + 1;
+    } else {
+      cursor = lastTs;
+    }
   }
 
-  // Mirror the site's per-row guards (roi-distribution.ts:251-254):
-  // rows without sender, title, or a positive timestamp never enter QMR.
+  // Split the fetched entities into two views:
+  //   * `usable` — QMR-shaped rows (requester + title + ts in window),
+  //     mirrors roi-distribution.ts:251-254; check 1 (open-market
+  //     count) uses this.
+  //   * `withRequestId` — every row with a requester + request_id + ts
+  //     in window, regardless of whether `parsedRequest.questionTitle`
+  //     resolved. The marketplace subgraph returns a Request entity
+  //     for every mech request on-chain, including those whose IPFS
+  //     payload predict-api later couldn't parse (analytics-side shell
+  //     rows). Check 2 (row parity) uses this so a subgraph row and
+  //     its analytics-side shell counterpart at
+  //     /v1/data/unscored-rows match by id.
+  //
+  // Attrition breakdown is split into "missing sender/ts" (true schema-
+  // regression signal — sender.id nulled or blockTimestamp missing) vs
+  // "missing title only" (expected — the request-side analogue of
+  // predict-api shell rows). Check 1's attrition guard only escalates
+  // on the former so a chain whose steady-state title-less rate is
+  // high (Gnosis omenstrat routinely runs at ~90% title-less inside
+  // the parity window) doesn't chronically read as a regression.
   const usable = [];
-  let skippedMissingKey = 0;
+  const withRequestId = [];
+  let skippedMissingSenderOrTs = 0;
+  let skippedMissingTitleOnly = 0;
   let skippedAfterWindowEnd = 0;
   for (const req of rows) {
     const requester = req.sender?.id?.toLowerCase();
     const title = req.parsedRequest?.questionTitle;
     const ts = Number(req.blockTimestamp ?? 0);
-    if (!requester || !title || ts <= 0) {
-      skippedMissingKey += 1;
+    const requestId = normaliseRequestId(req.id);
+    if (!requester || ts <= 0) {
+      skippedMissingSenderOrTs += 1;
       continue;
     }
     if (ts > windowEndSec) {
       skippedAfterWindowEnd += 1;
       continue;
     }
+    if (requestId) {
+      withRequestId.push({ requester, ts, title: title ?? null, requestId });
+    }
+    if (!title) {
+      // Kept out of the QMR feed (no title → no settlement match), but
+      // already recorded in withRequestId above for check 2.
+      skippedMissingTitleOnly += 1;
+      continue;
+    }
     // req.id is the marketplace subgraph's Request.id — same identifier
     // the mech-analytics lake writes back as `request_id`, so check 2
     // can match on it when both sides have it (see diffRowSets).
-    usable.push({
-      requester,
-      ts,
-      title,
-      requestId: typeof req.id === 'string' ? req.id.toLowerCase() : null,
-    });
+    usable.push({ requester, ts, title, requestId });
   }
-  return { rows: usable, truncated, skippedMissingKey, skippedAfterWindowEnd };
+  return {
+    rows: usable,
+    withRequestId,
+    truncated,
+    skippedMissingSenderOrTs,
+    skippedMissingTitleOnly,
+    // Union kept for the artifact / attribution message; the two-bucket
+    // split above drives the attrition guard.
+    skippedMissingKey: skippedMissingSenderOrTs + skippedMissingTitleOnly,
+    skippedAfterWindowEnd,
+  };
 };
 
 // Subset of getOmenDailyProfitStatsQuery (queries.ts:721) /
 // getPolymarketDailyProfitStatsQuery (queries.ts:790): only the fields
-// the settlement-consumption matching needs.
+// the settlement-consumption matching needs. Cursor-based on ``date``
+// for the same reason as fetchMarketplaceRequests — many trader agents
+// share the same ``date`` (dailyProfitStatistics is keyed by
+// ``(traderAgent, date)``), and the historical consumption horizon can
+// span months on an explicit --since/--until run. Same-``date``
+// saturation is handled with a 1-day advance; production has O(100s)
+// of trader agents per platform, well under the 1000-row page cap.
 const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, label) => {
   const participantSelection =
     participantTitleField === 'question' ? 'question' : 'metadata { title }';
   const stats = [];
-  let skip = 0;
+  // Seed cursor so the first fetch's date_gt matches the caller's
+  // inclusive date_gte lower bound.
+  let cursor = dateGte - 1;
   let truncated = false;
+  let pages = 0;
   for (;;) {
     const data = await gqlRequest(
       url,
       `query DailyProfitStats {
         dailyProfitStatistics(
           first: ${SUBGRAPH_PAGE}
-          skip: ${skip}
-          where: { date_gte: ${dateGte}, date_lte: ${dateLte} }
+          where: { date_gt: ${cursor}, date_lte: ${dateLte} }
           orderBy: date
           orderDirection: asc
         ) {
@@ -553,13 +704,24 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
       label
     );
     const page = data?.dailyProfitStatistics ?? [];
-    if (verbose) emit(`  [${label}] daily-stats page skip=${skip} rows=${page.length}`);
+    if (verbose)
+      emit(`  [${label}] daily-stats page ${pages + 1} cursor=${cursor} rows=${page.length}`);
     stats.push(...page);
+    pages += 1;
     if (page.length < SUBGRAPH_PAGE) break;
-    skip += SUBGRAPH_PAGE;
-    if (skip > SUBGRAPH_MAX_SKIP) {
+    if (pages >= SUBGRAPH_MAX_PAGES) {
       truncated = true;
       break;
+    }
+    const lastDate = Number(page[page.length - 1].date);
+    const firstDate = Number(page[0].date);
+    if (lastDate === firstDate) {
+      emit(
+        `  [${label}] WARN: same-date saturation at date=${lastDate} (full page shares a single date) — advancing cursor by 1 day`
+      );
+      cursor = lastDate + DAY_SECONDS;
+    } else {
+      cursor = lastDate;
     }
   }
   return { stats, truncated };
@@ -596,25 +758,36 @@ const fetchSenderTotals = async (url, safeIds, label) => {
 // mech-analytics pulls
 // ---------------------------------------------------------------------------
 
-const fetchJson = async (url, label) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`${label}: mech-analytics returned HTTP ${res.status}`);
-  }
-  return res.json();
-};
+const fetchJson = (url, label) =>
+  withRetry(async () => {
+    let res;
+    try {
+      res = await fetch(url);
+    } catch (netErr) {
+      const wrapped = new Error(`${label}: mech-analytics network error: ${netErr.message}`);
+      wrapped.isNetwork = true;
+      throw wrapped;
+    }
+    if (!res.ok) {
+      const err = new Error(`${label}: mech-analytics returned HTTP ${res.status}`);
+      if (shouldRetryHttp(res.status)) err.retryableStatus = res.status;
+      throw err;
+    }
+    return res.json();
+  }, label);
 
-// Pages /v1/data/scored-rows the same way the site's client does
-// (common-util/api/predict/mech-analytics.ts::iterateScoredRows).
-// `since` is >= on requested_at, so windowStart+1s reproduces the
-// subgraph's strict blockTimestamp_gt boundary. `until` is exclusive
-// on the API but the subgraph keeps rows at ts == windowEndSec (only
-// ts > windowEndSec is skipped), so windowEndSec+1 keeps the two
-// sides' inclusive-end semantics symmetric.
-const fetchScoredRows = async (chainId, windowStartSec, windowEndSec, label) => {
+// Pages a paginated mech-analytics data endpoint. `since` is >= on
+// requested_at, so windowStart+1s reproduces the subgraph's strict
+// blockTimestamp_gt boundary. `until` is exclusive on the API but the
+// subgraph keeps rows at ts == windowEndSec (only ts > windowEndSec is
+// skipped), so windowEndSec+1 keeps the two sides' inclusive-end
+// semantics symmetric. Same shape used for /v1/data/scored-rows and
+// /v1/data/unscored-rows (the two endpoints partition per_request_scores
+// on column presence — mech-analytics PR #27).
+const fetchDataEndpoint = async (endpoint, chainId, windowStartSec, windowEndSec, label) => {
   const rows = [];
   let truncated = false;
-  const url = new URL(`${mechAnalyticsBase}/v1/data/scored-rows`);
+  const url = new URL(`${mechAnalyticsBase}${endpoint}`);
   url.searchParams.set('chain_id', String(chainId));
   url.searchParams.set('since', isoFromUnixSec(windowStartSec + 1));
   url.searchParams.set('until', isoFromUnixSec(windowEndSec + 1));
@@ -626,14 +799,14 @@ const fetchScoredRows = async (chainId, windowStartSec, windowEndSec, label) => 
     if (cursor) url.searchParams.set('cursor', cursor);
     const page = await fetchJson(url, label);
     if (!Array.isArray(page.rows)) {
-      throw new Error(`${label}: scored-rows response has no rows array`);
+      throw new Error(`${label}: response has no rows array`);
     }
-    if (verbose) emit(`  [${label}] scored-rows page ${pages + 1} rows=${page.rows.length}`);
+    if (verbose) emit(`  [${label}] page ${pages + 1} rows=${page.rows.length}`);
     rows.push(...page.rows);
     pages += 1;
     if (!page.next_cursor) break;
     if (typeof page.next_cursor !== 'string') {
-      throw new Error(`${label}: scored-rows next_cursor is not a string`);
+      throw new Error(`${label}: next_cursor is not a string`);
     }
     if (pages >= SCORED_ROWS_MAX_PAGES) {
       truncated = true;
@@ -643,6 +816,22 @@ const fetchScoredRows = async (chainId, windowStartSec, windowEndSec, label) => 
   }
   return { rows, truncated };
 };
+
+// Mirrors common-util/api/predict/mech-analytics.ts::iterateScoredRows.
+const fetchScoredRows = (chainId, windowStartSec, windowEndSec, label) =>
+  fetchDataEndpoint('/v1/data/scored-rows', chainId, windowStartSec, windowEndSec, label);
+
+// Shell rows (predict-api's unparseable-payload rows) moved from
+// /v1/data/scored-rows to /v1/data/unscored-rows in mech-analytics
+// PR #27. The row-parity check (check 2) needs the union of both so
+// the analytics feed carries the same superset the marketplace
+// subgraph's `requests` query does — otherwise every shell row shows
+// up as `missing_in_analytics`. Shell rows have every score column
+// NULL and ``question_title=None`` by construction, so they do NOT
+// enter check 1's QMR (extractRowUsability drops them) and do NOT
+// affect check 3 (which reads agent_aggregates.n_mech_requests).
+const fetchUnscoredRows = (chainId, windowStartSec, windowEndSec, label) =>
+  fetchDataEndpoint('/v1/data/unscored-rows', chainId, windowStartSec, windowEndSec, label);
 
 const fetchAgentAggregate = async (chainId, agentId) => {
   const label = `ai-agent ${chainId}/${agentId}`;
@@ -682,7 +871,7 @@ try {
     const dailyStatsUrl = process.env[platform.dailyStatsUrlEnv];
 
     section(`${key} (chain ${chainId}, agent ${agentId}) — data pulls`);
-    const [marketplace, dailyStats, scoredRows, aggregate] = await Promise.all([
+    const [marketplace, dailyStats, scoredRows, unscoredRows, aggregate] = await Promise.all([
       fetchMarketplaceRequests(marketplaceUrl, windowStartSec, windowEndSec, `${key}:marketplace`),
       // date_lte is capped at (now - finality lag) so the subgraph
       // side doesn't consume settlements still inside the analytics
@@ -710,24 +899,67 @@ try {
         `${key}:daily-stats`
       ),
       fetchScoredRows(chainId, windowStartSec, windowEndSec, `${key}:scored-rows`),
+      fetchUnscoredRows(chainId, windowStartSec, windowEndSec, `${key}:unscored-rows`),
       fetchAgentAggregate(chainId, agentId),
     ]);
-    emit(`  marketplace requests in window: ${marketplace.rows.length}`);
+    emit(`  marketplace requests in window (QMR-usable): ${marketplace.rows.length}`);
     emit(
-      `    (skipped: missing sender/title/ts=${marketplace.skippedMissingKey}, ` +
+      `    (skipped: missing sender/ts=${marketplace.skippedMissingSenderOrTs}, ` +
+        `missing title only=${marketplace.skippedMissingTitleOnly}, ` +
         `after window end=${marketplace.skippedAfterWindowEnd}` +
-        `${marketplace.truncated ? ', TRUNCATED at subgraph skip cap' : ''})`
+        `${marketplace.truncated ? ', TRUNCATED at subgraph page cap' : ''})`
+    );
+    emit(
+      `  marketplace rows with request_id (row-parity feed): ${marketplace.withRequestId.length}`
     );
     emit(
       `  daily-stat rows: ${dailyStats.stats.length}` +
-        `${dailyStats.truncated ? ' (TRUNCATED at subgraph skip cap)' : ''}`
+        `${dailyStats.truncated ? ' (TRUNCATED at subgraph page cap)' : ''}`
     );
     emit(
       `  scored rows in window: ${scoredRows.rows.length}` +
         `${scoredRows.truncated ? ' (TRUNCATED at page cap)' : ''}`
     );
+    emit(
+      `  unscored (shell) rows in window: ${unscoredRows.rows.length}` +
+        `${unscoredRows.truncated ? ' (TRUNCATED at page cap)' : ''}`
+    );
 
     const { counts, usable: usableAnalyticsRows } = classifyAnalyticsRows(scoredRows.rows);
+
+    // Analytics-side feed for check 2 (row parity) is the union of
+    // scored + unscored rows, keyed only on requester + request_id.
+    // Neither `question_title` nor `resolution_status` gates entry
+    // here: check 2 audits the raw request set (does the analytics
+    // API expose the same requests the marketplace subgraph indexed),
+    // not whether the score pipeline has resolved their titles or
+    // outcomes yet. classifyAnalyticsRows filters on title presence
+    // because that's what check 1's QMR needs; using that same subset
+    // here would drop scored rows whose question_title never resolved
+    // (present on chain-137 today via early-backfill hex-id rows),
+    // and check 2 would report them as `missing_in_analytics`.
+    //
+    // request_id is normalised via normaliseRequestId so the id-based
+    // match is format-agnostic. The analytics API mixes hex and decimal
+    // strings for the same underlying uint256 (marketplace-era rows are
+    // decimal, pre-marketplace backfill is hex); the subgraph is always
+    // hex; both get collapsed to decimal.
+    const buildAnalyticsRowParityEntry = (row) => {
+      if (!row.requester) return null;
+      const normalisedId = normaliseRequestId(row.request_id);
+      if (!normalisedId) return null;
+      return {
+        requester: row.requester.toLowerCase(),
+        row: { ...row, request_id: normalisedId },
+      };
+    };
+    const analyticsRowsForCheck2 = [...scoredRows.rows, ...unscoredRows.rows]
+      .map(buildAnalyticsRowParityEntry)
+      .filter(Boolean);
+    const scoredRowsInParity = scoredRows.rows.filter((r) => r.requester && r.request_id).length;
+    const unscoredRowsInParity = unscoredRows.rows.filter(
+      (r) => r.requester && r.request_id
+    ).length;
 
     // ---- Check 1: open-market count parity --------------------------------
     section(`${key} — check 1: open-market count parity`);
@@ -774,7 +1006,12 @@ try {
       analyticsRawRowCount: scoredRows.rows.length,
       subgraphRowCount: marketplace.rows.length,
       subgraphRawRowCount,
-      subgraphSkippedMissingKey: marketplace.skippedMissingKey,
+      // Only the schema-regression signal (sender.id or blockTimestamp
+      // missing) feeds the attrition guard; title-only drops are the
+      // subgraph-side analogue of predict-api shell rows and are
+      // handled via check 2's request-id parity path against
+      // /v1/data/unscored-rows.
+      subgraphSkippedMissingKey: marketplace.skippedMissingSenderOrTs,
       subgraphSkippedAfterWindowEnd: marketplace.skippedAfterWindowEnd,
       analyticsSkippedOutOfWindow: analyticsOpen.skippedOutOfWindow,
       analyticsSkippedMissingKey: analyticsOpen.skippedMissingKey,
@@ -806,20 +1043,22 @@ try {
     } else if (check1Reason === 'subgraph-ingested-zero') {
       emit(
         `  GAP: subgraph ingested 0 rows from a raw feed of ${subgraphRawRowCount} ` +
-          `(${marketplace.skippedMissingKey} missing sender/title/ts, ` +
+          `(${marketplace.skippedMissingSenderOrTs} missing sender/ts, ` +
+          `${marketplace.skippedMissingTitleOnly} missing title only, ` +
           `${marketplace.skippedAfterWindowEnd} past window end). ` +
           'Cannot gate an open count when the subgraph side dropped every row.'
       );
     } else if (check1Reason === 'subgraph-attrition-majority') {
       const subgraphAttrition =
-        marketplace.skippedMissingKey + marketplace.skippedAfterWindowEnd;
+        marketplace.skippedMissingSenderOrTs + marketplace.skippedAfterWindowEnd;
       emit(
         `  GAP: subgraph dropped ${subgraphAttrition}/${subgraphRawRowCount} rows ` +
-          `via missing-key (${marketplace.skippedMissingKey}) and past-window-end ` +
+          `via missing-sender/ts (${marketplace.skippedMissingSenderOrTs}) and past-window-end ` +
           `(${marketplace.skippedAfterWindowEnd}) buckets ` +
           `(> ${SKIP_RATIO_THRESHOLD_PCT}% of the raw feed). ` +
-          'Suggests a subgraph schema regression (e.g. sender.id or parsedRequest.questionTitle ' +
-          'going missing on most entities), not a real match.'
+          'Suggests a subgraph schema regression (sender.id or blockTimestamp going missing ' +
+          'on most entities), not a real match. Title-only drops ' +
+          `(${marketplace.skippedMissingTitleOnly}) are excluded — those are shell-row equivalents.`
       );
     } else if (check1Reason === 'exact-match') {
       emit(`  PASS: open-market counts match exactly (${subgraphOpen.open}).`);
@@ -856,9 +1095,10 @@ try {
 
     // ---- Check 2: scored-rows row parity ----------------------------------
     section(`${key} — check 2: scored-rows row parity`);
-    const rowDiff = diffRowSets(marketplace.rows, usableAnalyticsRows);
+    const rowDiff = diffRowSets(marketplace.withRequestId, analyticsRowsForCheck2);
     emit(
-      `  subgraph rows: ${marketplace.rows.length}, analytics rows: ${usableAnalyticsRows.length}`
+      `  subgraph rows: ${marketplace.withRequestId.length}, analytics rows: ${analyticsRowsForCheck2.length} ` +
+        `(scored=${scoredRowsInParity} + unscored=${unscoredRowsInParity})`
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
     emit(`  extra in analytics:   ${rowDiff.extraInAnalytics}`);
@@ -873,10 +1113,10 @@ try {
     for (const sample of rowDiff.missingSamples) emit(`    missing: ${sample}`);
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
-    const check2Truncated = marketplace.truncated || scoredRows.truncated;
+    const check2Truncated = marketplace.truncated || scoredRows.truncated || unscoredRows.truncated;
     const { status: check2Status, reason: check2Reason } = resolveCheck2Status({
-      subgraphRowCount: marketplace.rows.length,
-      analyticsRowCount: usableAnalyticsRows.length,
+      subgraphRowCount: marketplace.withRequestId.length,
+      analyticsRowCount: analyticsRowsForCheck2.length,
       missingInAnalytics: rowDiff.missingInAnalytics,
       extraInAnalytics: rowDiff.extraInAnalytics,
       truncated: check2Truncated,
@@ -897,8 +1137,11 @@ try {
       platform: key,
       status: check2Status,
       status_reason: check2Reason,
-      subgraph_rows: marketplace.rows.length,
-      analytics_rows: usableAnalyticsRows.length,
+      subgraph_rows: marketplace.withRequestId.length,
+      subgraph_qmr_rows: marketplace.rows.length,
+      analytics_rows: analyticsRowsForCheck2.length,
+      analytics_scored_rows: scoredRowsInParity,
+      analytics_unscored_rows: unscoredRowsInParity,
       missing_in_analytics: rowDiff.missingInAnalytics,
       extra_in_analytics: rowDiff.extraInAnalytics,
       missing_samples: rowDiff.missingSamples,
