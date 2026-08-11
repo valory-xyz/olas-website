@@ -727,6 +727,125 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
   return { stats, truncated };
 };
 
+// Off-chain request IDs live only on `MarketplaceDeliveryWithSignatures`
+// entities — the off-chain handler
+// (autonolas-subgraph/subgraphs/marketplace/src/marketplace/mech-marketplace.ts
+// handleMarketplaceDeliveryWithSignatures) does NOT create a `Request`
+// entity per off-chain request. Instead it emits one delivery entity
+// per settled batch, carrying a `requestIds` array of the off-chain IDs
+// that batch settled. Without this the row-parity check 2 double-counts
+// those rows as "extra in analytics" (they land in
+// /v1/data/scored-rows|unscored-rows via the predict-api lake, but the
+// subgraph's `requests(...)` query never sees them).
+//
+// Cursor-paginated on `blockTimestamp` — same shape and truncation /
+// same-timestamp handling as `fetchMarketplaceRequests` above. The
+// entity's own `id` is the batch id (uses transactionHash + log index
+// under the hood, `130 chars` shape) and is NOT the per-request id we
+// want; the per-request ids are the entries inside the `requestIds`
+// array, one entity yielding N entries where N = numDeliveries. Each
+// entry is normalised via `normaliseRequestId` (subgraph returns lower-
+// case hex Bytes; analytics stores the same uint256 as a decimal string
+// for marketplace-era rows; normaliser collapses both to decimal so
+// the id-based multiset diff is format-agnostic).
+const fetchMarketplaceOffChainRequestIds = async (url, windowStartSec, windowEndSec, label) => {
+  const entities = [];
+  let cursor = windowStartSec;
+  let truncated = false;
+  let pages = 0;
+  for (;;) {
+    const data = await gqlRequest(
+      url,
+      `query MarketplaceOffChainDeliveries {
+        marketplaceDeliveryWithSignatures_collection(
+          first: ${SUBGRAPH_PAGE}
+          where: { blockTimestamp_gt: "${cursor}", blockTimestamp_lte: "${windowEndSec}" }
+          orderBy: blockTimestamp
+          orderDirection: asc
+        ) {
+          id
+          requester
+          numDeliveries
+          requestIds
+          blockTimestamp
+        }
+      }`,
+      label
+    );
+    const page = data?.marketplaceDeliveryWithSignatures_collection ?? [];
+    if (verbose)
+      emit(`  [${label}] deliveries page ${pages + 1} cursor=${cursor} rows=${page.length}`);
+    entities.push(...page);
+    pages += 1;
+    if (page.length < SUBGRAPH_PAGE) break;
+    if (pages >= SUBGRAPH_MAX_PAGES) {
+      truncated = true;
+      break;
+    }
+    const lastTs = Number(page[page.length - 1].blockTimestamp);
+    const firstTs = Number(page[0].blockTimestamp);
+    if (lastTs === firstTs) {
+      emit(
+        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing cursor by 1s`
+      );
+      cursor = lastTs + 1;
+    } else {
+      cursor = lastTs;
+    }
+  }
+
+  const withRequestId = [];
+  let skippedMissingSenderOrTs = 0;
+  let skippedEmptyRequestIds = 0;
+  let skippedAfterWindowEnd = 0;
+  let skippedUnparseableId = 0;
+  for (const entity of entities) {
+    // `requester` on the delivery entity is a Bytes column (not a
+    // `Sender` reference), so no `.id` accessor is needed. Lower-case
+    // to match the subgraph's Request-side normalisation (`sender.id`
+    // is lower-cased by convention).
+    const requester = entity.requester?.toLowerCase();
+    const ts = Number(entity.blockTimestamp ?? 0);
+    const ids = Array.isArray(entity.requestIds) ? entity.requestIds : [];
+    if (!requester || ts <= 0) {
+      skippedMissingSenderOrTs += 1;
+      continue;
+    }
+    if (ts > windowEndSec) {
+      skippedAfterWindowEnd += 1;
+      continue;
+    }
+    if (ids.length === 0) {
+      skippedEmptyRequestIds += 1;
+      continue;
+    }
+    for (const raw of ids) {
+      const requestId = normaliseRequestId(raw);
+      if (!requestId) {
+        skippedUnparseableId += 1;
+        continue;
+      }
+      // No title on off-chain rows — the delivery entity doesn't carry
+      // a parsed title (title lives in the private IPFS payload, which
+      // the subgraph never sees). Analytics-side rows for these same
+      // requests also have `question_title` NULL for the same reason.
+      // Set title=null; the id-based match in diffRowSets is what
+      // pairs them.
+      withRequestId.push({ requester, ts, title: null, requestId });
+    }
+  }
+
+  return {
+    withRequestId,
+    truncated,
+    entitiesFetched: entities.length,
+    skippedMissingSenderOrTs,
+    skippedEmptyRequestIds,
+    skippedAfterWindowEnd,
+    skippedUnparseableId,
+  };
+};
+
 // getMarketplaceSendersQuery (queries.ts) narrowed to the Safes under
 // verification via id_in — the site pages every sender, but check 3
 // only needs the registered Safes' counters. See pickSubgraphSenderTotal
@@ -871,37 +990,55 @@ try {
     const dailyStatsUrl = process.env[platform.dailyStatsUrlEnv];
 
     section(`${key} (chain ${chainId}, agent ${agentId}) — data pulls`);
-    const [marketplace, dailyStats, scoredRows, unscoredRows, aggregate] = await Promise.all([
-      fetchMarketplaceRequests(marketplaceUrl, windowStartSec, windowEndSec, `${key}:marketplace`),
-      // date_lte is capped at (now - finality lag) so the subgraph
-      // side doesn't consume settlements still inside the analytics
-      // 24h finality gate — otherwise recent settlements would show as
-      // consumed on the subgraph but pending in analytics and produce
-      // a chronic delta on honest runs. `nowSec` for the lag is
-      // computed against the actual clock, not the window end, so an
-      // explicit --since/--until run still trims the DailyStats side
-      // by the same gate.
-      fetchDailyStats(
-        dailyStatsUrl,
-        Math.floor(windowStartSec / DAY_SECONDS) * DAY_SECONDS,
-        // For a trailing window the cap is (now - finality lag) — the
-        // usual guard. For an explicit --since/--until historical window
-        // the cap becomes (windowEnd + finality lag), so we don't
-        // uselessly sweep months of daily-stats to consume settlements
-        // that already happened well after the window closed. Both
-        // stay in effect (`min`), so operators can't accidentally
-        // widen the consumption horizon by picking a huge window.
-        Math.min(
-          Math.floor(Date.now() / 1000) - finalityLagHours * 60 * 60,
-          windowEndSec + finalityLagHours * 60 * 60
+    const [marketplace, marketplaceOffChain, dailyStats, scoredRows, unscoredRows, aggregate] =
+      await Promise.all([
+        fetchMarketplaceRequests(
+          marketplaceUrl,
+          windowStartSec,
+          windowEndSec,
+          `${key}:marketplace`
         ),
-        platform.participantTitleField,
-        `${key}:daily-stats`
-      ),
-      fetchScoredRows(chainId, windowStartSec, windowEndSec, `${key}:scored-rows`),
-      fetchUnscoredRows(chainId, windowStartSec, windowEndSec, `${key}:unscored-rows`),
-      fetchAgentAggregate(chainId, agentId),
-    ]);
+        // Off-chain request IDs from `MarketplaceDeliveryWithSignatures`
+        // entities — the subgraph's `requests(...)` query only returns
+        // on-chain rows (the off-chain handler doesn't create `Request`
+        // entities). Unioned into the subgraph side of check 2 below so
+        // the two sides model the same superset. See
+        // `fetchMarketplaceOffChainRequestIds` for the rationale.
+        fetchMarketplaceOffChainRequestIds(
+          marketplaceUrl,
+          windowStartSec,
+          windowEndSec,
+          `${key}:marketplace-offchain`
+        ),
+        // date_lte is capped at (now - finality lag) so the subgraph
+        // side doesn't consume settlements still inside the analytics
+        // 24h finality gate — otherwise recent settlements would show as
+        // consumed on the subgraph but pending in analytics and produce
+        // a chronic delta on honest runs. `nowSec` for the lag is
+        // computed against the actual clock, not the window end, so an
+        // explicit --since/--until run still trims the DailyStats side
+        // by the same gate.
+        fetchDailyStats(
+          dailyStatsUrl,
+          Math.floor(windowStartSec / DAY_SECONDS) * DAY_SECONDS,
+          // For a trailing window the cap is (now - finality lag) — the
+          // usual guard. For an explicit --since/--until historical window
+          // the cap becomes (windowEnd + finality lag), so we don't
+          // uselessly sweep months of daily-stats to consume settlements
+          // that already happened well after the window closed. Both
+          // stay in effect (`min`), so operators can't accidentally
+          // widen the consumption horizon by picking a huge window.
+          Math.min(
+            Math.floor(Date.now() / 1000) - finalityLagHours * 60 * 60,
+            windowEndSec + finalityLagHours * 60 * 60
+          ),
+          platform.participantTitleField,
+          `${key}:daily-stats`
+        ),
+        fetchScoredRows(chainId, windowStartSec, windowEndSec, `${key}:scored-rows`),
+        fetchUnscoredRows(chainId, windowStartSec, windowEndSec, `${key}:unscored-rows`),
+        fetchAgentAggregate(chainId, agentId),
+      ]);
     emit(`  marketplace requests in window (QMR-usable): ${marketplace.rows.length}`);
     emit(
       `    (skipped: missing sender/ts=${marketplace.skippedMissingSenderOrTs}, ` +
@@ -911,6 +1048,17 @@ try {
     );
     emit(
       `  marketplace rows with request_id (row-parity feed): ${marketplace.withRequestId.length}`
+    );
+    emit(
+      `  marketplace off-chain request_ids (from ${marketplaceOffChain.entitiesFetched} ` +
+        `MarketplaceDeliveryWithSignatures entities): ${marketplaceOffChain.withRequestId.length}` +
+        `${marketplaceOffChain.truncated ? ' (TRUNCATED at subgraph page cap)' : ''}`
+    );
+    emit(
+      `    (delivery-entity skips: missing sender/ts=${marketplaceOffChain.skippedMissingSenderOrTs}, ` +
+        `empty requestIds=${marketplaceOffChain.skippedEmptyRequestIds}, ` +
+        `after window end=${marketplaceOffChain.skippedAfterWindowEnd}, ` +
+        `unparseable id=${marketplaceOffChain.skippedUnparseableId})`
     );
     emit(
       `  daily-stat rows: ${dailyStats.stats.length}` +
@@ -1095,9 +1243,23 @@ try {
 
     // ---- Check 2: scored-rows row parity ----------------------------------
     section(`${key} — check 2: scored-rows row parity`);
-    const rowDiff = diffRowSets(marketplace.withRequestId, analyticsRowsForCheck2);
+    // Subgraph side is the union of on-chain requests and off-chain
+    // request IDs. On-chain rows come from the `requests(...)` query
+    // (handleMarketplaceRequest creates one `Request` entity per event);
+    // off-chain rows only surface as entries inside
+    // `MarketplaceDeliveryWithSignatures.requestIds` because the off-
+    // chain handler doesn't create per-request entities. Analytics
+    // side is scored ∪ unscored, since predict-api writes both on-chain
+    // and off-chain rows to the same lake. Without the off-chain leg
+    // every off-chain row shows up as "extra in analytics" (~4,600 on
+    // omenstrat, ~360 on polystrat in a 4-day window, verified 2026-08).
+    const subgraphOnChainRows = marketplace.withRequestId;
+    const subgraphOffChainRows = marketplaceOffChain.withRequestId;
+    const subgraphAllRows = [...subgraphOnChainRows, ...subgraphOffChainRows];
+    const rowDiff = diffRowSets(subgraphAllRows, analyticsRowsForCheck2);
     emit(
-      `  subgraph rows: ${marketplace.withRequestId.length}, analytics rows: ${analyticsRowsForCheck2.length} ` +
+      `  subgraph rows: ${subgraphAllRows.length} (on-chain=${subgraphOnChainRows.length} + ` +
+        `off-chain=${subgraphOffChainRows.length}), analytics rows: ${analyticsRowsForCheck2.length} ` +
         `(scored=${scoredRowsInParity} + unscored=${unscoredRowsInParity})`
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
@@ -1113,9 +1275,13 @@ try {
     for (const sample of rowDiff.missingSamples) emit(`    missing: ${sample}`);
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
-    const check2Truncated = marketplace.truncated || scoredRows.truncated || unscoredRows.truncated;
+    const check2Truncated =
+      marketplace.truncated ||
+      marketplaceOffChain.truncated ||
+      scoredRows.truncated ||
+      unscoredRows.truncated;
     const { status: check2Status, reason: check2Reason } = resolveCheck2Status({
-      subgraphRowCount: marketplace.withRequestId.length,
+      subgraphRowCount: subgraphAllRows.length,
       analyticsRowCount: analyticsRowsForCheck2.length,
       missingInAnalytics: rowDiff.missingInAnalytics,
       extraInAnalytics: rowDiff.extraInAnalytics,
@@ -1137,7 +1303,12 @@ try {
       platform: key,
       status: check2Status,
       status_reason: check2Reason,
-      subgraph_rows: marketplace.withRequestId.length,
+      // Composition: `subgraph_rows` is the union used to compare;
+      // the on-chain / off-chain split is preserved so an operator can
+      // see which leg drives a residual delta.
+      subgraph_rows: subgraphAllRows.length,
+      subgraph_on_chain_rows: subgraphOnChainRows.length,
+      subgraph_off_chain_rows: subgraphOffChainRows.length,
       subgraph_qmr_rows: marketplace.rows.length,
       analytics_rows: analyticsRowsForCheck2.length,
       analytics_scored_rows: scoredRowsInParity,
