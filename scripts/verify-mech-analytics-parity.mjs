@@ -1092,6 +1092,21 @@ try {
     // strings for the same underlying uint256 (marketplace-era rows are
     // decimal, pre-marketplace backfill is hex); the subgraph is always
     // hex; both get collapsed to decimal.
+    //
+    // Dedup on the normalised (requester, request_id) key: verified 2026-08
+    // that mech-analytics's `per_request_scores` stores some request_ids
+    // as hex and some as decimal for the SAME on-chain uint256 (predict-
+    // api-era backfill vs marketplace-era live writes, plus resolution
+    // sweep re-serves the same row on every touch). Both encodings appear
+    // in the same /v1/data/scored-rows|unscored-rows page. Without a
+    // Map-based dedup, `diffRowSets` (a multiset diff) counts hex and
+    // decimal as two separate rows on the analytics side against one
+    // subgraph row → `extraInAnalytics` inflates by the duplicate count.
+    // Verified collapse (2026-08-07 → 2026-08-11):
+    //   polystrat: 746 raw analytics rows → 387 unique (matches subgraph)
+    //   omenstrat: probe requester 0xba88…1033: 359 raw → 241 unique.
+    // Picking hex (first-wins on `.set(...)` order) is a convention; the
+    // two encodings represent the same on-chain request, so either is fine.
     const buildAnalyticsRowParityEntry = (row) => {
       if (!row.requester) return null;
       const normalisedId = normaliseRequestId(row.request_id);
@@ -1101,9 +1116,20 @@ try {
         row: { ...row, request_id: normalisedId },
       };
     };
-    const analyticsRowsForCheck2 = [...scoredRows.rows, ...unscoredRows.rows]
+    const analyticsRowsForCheck2Raw = [...scoredRows.rows, ...unscoredRows.rows]
       .map(buildAnalyticsRowParityEntry)
       .filter(Boolean);
+    const analyticsRowsForCheck2Map = new Map();
+    for (const entry of analyticsRowsForCheck2Raw) {
+      const key = `${entry.requester}|${entry.row.request_id}`;
+      if (!analyticsRowsForCheck2Map.has(key)) {
+        analyticsRowsForCheck2Map.set(key, entry);
+      }
+    }
+    const analyticsRowsForCheck2 = [...analyticsRowsForCheck2Map.values()];
+    const analyticsUnionRaw = analyticsRowsForCheck2Raw.length;
+    const analyticsUnionUnique = analyticsRowsForCheck2.length;
+    const analyticsUnionDuplicatesCollapsed = analyticsUnionRaw - analyticsUnionUnique;
     const scoredRowsInParity = scoredRows.rows.filter((r) => r.requester && r.request_id).length;
     const unscoredRowsInParity = unscoredRows.rows.filter(
       (r) => r.requester && r.request_id
@@ -1253,14 +1279,43 @@ try {
     // and off-chain rows to the same lake. Without the off-chain leg
     // every off-chain row shows up as "extra in analytics" (~4,600 on
     // omenstrat, ~360 on polystrat in a 4-day window, verified 2026-08).
+    //
+    // Subgraph side dedupes on the same normalised (requester, requestId)
+    // key as the analytics side. On-chain requestIds come from the
+    // subgraph as lower-case hex (normaliseRequestId collapses to
+    // decimal), off-chain requestIds come as either hex or decimal Bytes
+    // — same normaliser. A given on-chain uint256 requestId cannot
+    // simultaneously be on-chain and off-chain (mutually exclusive event
+    // paths in the subgraph handler), so this dedup should collapse zero
+    // rows on healthy data. Kept defensive so a future subgraph refactor
+    // that ever double-emits an id doesn't silently inflate the
+    // subgraph side of the multiset diff.
+    const dedupeById = (rows) => {
+      const map = new Map();
+      for (const row of rows) {
+        const requester = row.requester?.toLowerCase();
+        const requestId = row.requestId;
+        if (!requester || !requestId) continue;
+        const key = `${requester}|${requestId}`;
+        if (!map.has(key)) map.set(key, row);
+      }
+      return [...map.values()];
+    };
     const subgraphOnChainRows = marketplace.withRequestId;
     const subgraphOffChainRows = marketplaceOffChain.withRequestId;
-    const subgraphAllRows = [...subgraphOnChainRows, ...subgraphOffChainRows];
+    const subgraphAllRowsRaw = [...subgraphOnChainRows, ...subgraphOffChainRows];
+    const subgraphAllRows = dedupeById(subgraphAllRowsRaw);
+    const subgraphUnionRaw = subgraphAllRowsRaw.length;
+    const subgraphUnionUnique = subgraphAllRows.length;
+    const subgraphUnionDuplicatesCollapsed = subgraphUnionRaw - subgraphUnionUnique;
     const rowDiff = diffRowSets(subgraphAllRows, analyticsRowsForCheck2);
     emit(
-      `  subgraph rows: ${subgraphAllRows.length} (on-chain=${subgraphOnChainRows.length} + ` +
-        `off-chain=${subgraphOffChainRows.length}), analytics rows: ${analyticsRowsForCheck2.length} ` +
-        `(scored=${scoredRowsInParity} + unscored=${unscoredRowsInParity})`
+      `  subgraph rows (post-dedup): ${subgraphUnionUnique} (on-chain=${subgraphOnChainRows.length} + ` +
+        `off-chain=${subgraphOffChainRows.length} = raw ${subgraphUnionRaw}, ` +
+        `collapsed ${subgraphUnionDuplicatesCollapsed} duplicate id(s)), ` +
+        `analytics rows (post-dedup): ${analyticsUnionUnique} ` +
+        `(scored=${scoredRowsInParity} + unscored=${unscoredRowsInParity} = raw ${analyticsUnionRaw}, ` +
+        `collapsed ${analyticsUnionDuplicatesCollapsed} duplicate id(s))`
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
     emit(`  extra in analytics:   ${rowDiff.extraInAnalytics}`);
@@ -1303,14 +1358,25 @@ try {
       platform: key,
       status: check2Status,
       status_reason: check2Reason,
-      // Composition: `subgraph_rows` is the union used to compare;
-      // the on-chain / off-chain split is preserved so an operator can
-      // see which leg drives a residual delta.
+      // Composition: `subgraph_rows` is the post-dedup union used to
+      // compare; the on-chain / off-chain split and the raw-vs-unique
+      // union sizes are preserved so an operator can see (a) which leg
+      // drives a residual delta and (b) how much the hex/decimal
+      // duplicate collapse mattered on this run.
       subgraph_rows: subgraphAllRows.length,
+      subgraph_union_raw: subgraphUnionRaw,
+      subgraph_union_unique: subgraphUnionUnique,
+      subgraph_union_duplicates_collapsed: subgraphUnionDuplicatesCollapsed,
       subgraph_on_chain_rows: subgraphOnChainRows.length,
       subgraph_off_chain_rows: subgraphOffChainRows.length,
       subgraph_qmr_rows: marketplace.rows.length,
       analytics_rows: analyticsRowsForCheck2.length,
+      // Pre-dedup row count (for observability — see the hex/decimal
+      // collapse comment on `analyticsRowsForCheck2Raw` above) alongside
+      // the post-dedup number that actually feeds the diff.
+      analytics_union_raw: analyticsUnionRaw,
+      analytics_union_unique: analyticsUnionUnique,
+      analytics_union_duplicates_collapsed: analyticsUnionDuplicatesCollapsed,
       analytics_scored_rows: scoredRowsInParity,
       analytics_unscored_rows: unscoredRowsInParity,
       missing_in_analytics: rowDiff.missingInAnalytics,
