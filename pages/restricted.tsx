@@ -6,6 +6,8 @@ const RestrictedPage = () => {
     <>
       <Head>
         <title>Access Denied - Service Not Available</title>
+        {/* A geo-block interstitial should never be a search result for the site. */}
+        <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div className="bg-color-white h-screen text-center flex justify-center items-center">
         <div className="flex max-w-[800px] mx-auto">

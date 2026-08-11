@@ -32,7 +32,7 @@ export const Hero = () => (
     HeroImage={HeroImage}
     pageName="OLAS BUILD"
     title={BuildAgents}
-    description="Build on the Olas protocol and earn Dev Rewards, or get paid by contributing to external projects."
+    description="Build on the Olas protocol, offer your agent's services on the Marketplace, or get paid by contributing to external projects."
     PrimaryButton={GetStarted}
   />
 );

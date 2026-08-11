@@ -1,12 +1,12 @@
-import { Cross2Icon } from '@radix-ui/react-icons';
 import { BUILD_URL, STACK_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Card, CardTitle } from 'components/ui/card';
 import { SubsiteLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import Content from './Content';
+// `Content` (the Dev Rewards explainer modal) is intentionally left in the repo
+// unimported: the programme is paused, not cancelled, so restoring the modal is
+// a matter of re-adding a `showDevRewards` entry to the card below.
 
 const ways = [
   {
@@ -68,36 +68,28 @@ const ways = [
     ),
   },
   {
-    title: 'Earn Dev Rewards by building on Olas Protocol',
+    title: 'Contribute code to the Olas Protocol',
     imageSrc: '/images/build-page/earn-dev-rewards.png',
     description: (
       <>
         <p className="mb-4">
-          Contribute valuable code units — like agents or components — to the Olas protocol and have
-          a chance at receiving Developer Rewards.
+          Contribute valuable code units — like agents or components — to the Olas protocol, where
+          they can be reused across the ecosystem.
         </p>
         <p className="mb-4">
-          Dev Rewards is a part of the protocol that facilitates the distribution of capital to
-          developers who contribute to various services in the ecosystem.
+          Dev Rewards is the part of the protocol that facilitates the distribution of capital to
+          developers who contribute to various services in the ecosystem, rewarding both code
+          components and entire agents.
         </p>
-        <p>
-          This system is designed to reward both the contribution of code components and entire
-          agents.
+        <p className="font-semibold">
+          The Dev Rewards program is currently paused and is not accepting new claims.
         </p>
       </>
     ),
-    showDevRewards: (setDevRewardsOpen) => (
-      <a className="text-purple-600 cursor-pointer" onClick={() => setDevRewardsOpen(true)}>
-        Learn more about Dev Rewards
-      </a>
-    ),
-    tip: '*Dev Rewards program is temporarily not available.',
   },
 ];
 
 export const WaysToGrow = () => {
-  const [isDevRewardsOpen, setDevRewardsOpen] = useState(false);
-
   return (
     <SectionWrapper backgroundType="NONE" customClasses="py-16 md:py-24 px-4" id="why-build">
       <h2 className="text-4xl lg:mb-6 xl:mb-8 font-extrabold my-6 lg:my-auto text-center">
@@ -122,36 +114,7 @@ export const WaysToGrow = () => {
                 <span>{item.title}</span>
               </CardTitle>
               <div className="mb-6 text-start">{item.description}</div>
-              {item.showDevRewards && (
-                <div className="mt-auto">{item.showDevRewards(setDevRewardsOpen)}</div>
-              )}
-              {isDevRewardsOpen && (
-                <>
-                  <div
-                    className="fixed w-full h-full z-50 left-0 top-0 bg-black opacity-40"
-                    onClick={() => {
-                      setDevRewardsOpen(false);
-                    }}
-                  ></div>
-
-                  <Card className="fixed z-50 h-3/4 m-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto w-[320px] sm:w-[600px] md:max-w-screen-md overflow-hidden bg-white">
-                    <button
-                      className="absolute top-4 right-4 cursor-pointer z-10"
-                      onClick={() => {
-                        setDevRewardsOpen(false);
-                      }}
-                    >
-                      <Cross2Icon />
-                    </button>
-
-                    <div className="overflow-auto h-full">
-                      <Content />
-                    </div>
-                  </Card>
-                </>
-              )}
               <div className="mt-auto">{item.link}</div>
-              {item.tip && <div className="text-sm text-[#606F85] mt-2">{item.tip}</div>}
             </div>
           </Card>
         ))}
