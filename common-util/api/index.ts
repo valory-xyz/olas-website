@@ -42,16 +42,35 @@ export const getEducationArticle = async (id) => {
 };
 
 // ----------- BLOGS -----------
+/**
+ * Strapi clamps a page to 100 entries however large `pagination[limit]` is, so
+ * asking for 1000 in one call silently returns the first 100 and drops the rest.
+ * Page through instead. Mirrored in `components/Content/Articles.tsx` and
+ * `next-sitemap.config.js`, which read the same endpoint.
+ */
+const STRAPI_MAX_PAGE_SIZE = 100;
+
 export const getBlogs = async () => {
-  const params = {
-    sort: ['datePublished:desc'],
-    populate: '*',
-    // fetches max of 1000 blogs on the homepage
-    'pagination[limit]': 1000,
-  };
-  const json = await apiCall('blog-posts', params);
-  const data = get(json, 'data') || [];
-  return data;
+  const blogs = [];
+  let page = 1;
+  let pageCount = 1;
+
+  do {
+    const params = {
+      sort: ['datePublished:desc'],
+      populate: '*',
+      'pagination[page]': page,
+      'pagination[pageSize]': STRAPI_MAX_PAGE_SIZE,
+    };
+    const json = await apiCall('blog-posts', params);
+    blogs.push(...(get(json, 'data') || []));
+
+    pageCount = get(json, 'meta.pagination.pageCount') || 1;
+    page += 1;
+    // Bound the loop so a malformed `pageCount` cannot spin.
+  } while (page <= pageCount && page <= 50);
+
+  return blogs;
 };
 
 /**
