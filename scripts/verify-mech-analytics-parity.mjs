@@ -39,12 +39,31 @@
 //   divergence in prod. The (a)/(b)/(c) row-bucket breakdown is still
 //   reported for context but is not the gated number.
 //
-// Check 2 — scored-rows row parity.
-//   For the same window, the row set from
-//   getMechRequestsIncrementalQuery (requester, blockTimestamp,
-//   questionTitle) must match the rows from /v1/data/scored-rows
-//   (requester, requested_at, question_title). Missing / extra rows
-//   are reported per side.
+// Check 2 — row parity ("displayable rows" definition).
+//   For the same window, the set of rows a user would see rendered
+//   on the predict page as a completed prediction must match on both
+//   sides. Symmetric filter:
+//     * subgraph side: `isDelivered: true AND
+//       parsedRequest.questionTitle IS NOT NULL` in the WHERE clause
+//       of the marketplace-subgraph `requests` query.
+//     * analytics side: `/v1/data/scored-rows` ONLY (scored rows have
+//       `tool NOT NULL AND delivered_at NOT NULL` by construction, so
+//       they are exactly the delivered + parseable set).
+//   Off-chain requests (subgraph `MarketplaceDeliveryWithSignatures`)
+//   and unscored/shell rows (analytics `/v1/data/unscored-rows`)
+//   drop symmetrically on both sides — they are not in the
+//   displayable-rows population. Their counts are surfaced in the
+//   artifact as `subgraph_off_chain_count` and
+//   `analytics_unscored_count` for observability only.
+//   The prior definition compared "all subgraph requests" against
+//   "all analytics rows (scored + unscored + off-chain)": those are
+//   two different populations, and the transient states between them
+//   (undelivered, unparseable-payload) are legitimate real-world
+//   behaviour that will never match cleanly. Adding undelivered rows
+//   to mech-analytics would require a new lifecycle sweep
+//   (undelivered → scored transitions) — out of scope by design.
+//   Missing / extra rows are reported per side against the new
+//   population.
 //
 // Check 3 — senderTotal parity.
 //   agent_aggregates.n_mech_requests (window 'all', via
@@ -247,7 +266,11 @@ if (args.help) {
       '(omenstrat=gnosis/100/14, polystrat=polygon/137/86):\n' +
       '  1. open-market count parity: same QMR + dailyStats consumption pipeline\n' +
       '     the consumer runs, executed against both sides for the same window\n' +
-      '  2. scored-rows row parity: (requester, timestamp, title) row sets match\n' +
+      '  2. row parity ("displayable rows"): the rows a user would see rendered\n' +
+      '     on the predict page as a completed prediction must match on both\n' +
+      '     sides. Symmetric filter: subgraph isDelivered=true + questionTitle\n' +
+      '     non-null, analytics /v1/data/scored-rows only. Off-chain and unscored\n' +
+      '     rows drop symmetrically and are surfaced as observability only.\n' +
       '  3. senderTotal parity: agent_aggregates.n_mech_requests vs subgraph\n' +
       '     Sender.totalLegacyRequests (misnamed — it is the grand total,\n' +
       '     bumped on both on-chain and off-chain paths) per Safe\n' +
@@ -552,30 +575,79 @@ const gqlRequest = (url, query, label) =>
 // getMechRequestsIncrementalQuery (common-util/graphql/queries.ts:816)
 // + fetchIncrementalMechRequests (roi-distribution.ts:229) otherwise.
 //
-// Same-timestamp saturation: if a full page comes back with every row
-// sharing the last row's ``blockTimestamp``, advancing the cursor to
-// that value would loop forever on those rows. Advance by 1s and warn
-// — dropping rows at that exact second is possible in principle but
-// requires >1000 requests to land in a single second on one chain, far
-// above steady-state production request rates.
+// Row-parity population — "displayable rows": the WHERE clause filters
+// to `isDelivered: true AND parsedRequest_: {questionTitle_not: ""}`.
+// That is the set the predict page renders today: delivered on-chain
+// and whose IPFS payload the subgraph parsed to a non-empty title
+// (`_not: ""` in graph-node excludes both empty strings AND null, so
+// this also excludes `parsedRequest = null` rows via the nested-filter
+// implicit non-null requirement). It mirrors the analytics-side
+// scored population, which by construction has
+// `tool NOT NULL AND delivered_at NOT NULL` and is further filtered
+// analytics-side (buildAnalyticsRowParityEntry) to `question_title`
+// non-empty for symmetric displayability. Comparing "all subgraph
+// requests" against "all analytics rows" (previous version) is a
+// category error — those are two different populations that never
+// match cleanly. The transient states (undelivered / unparseable
+// payload / empty title) drop symmetrically on both sides under this
+// filter.
+//
+// Pagination: cursor-based on `blockTimestamp` with `_gte` + id-based
+// dedup. Skip-based pagination hits graph-node's `skip > 5000` ceiling
+// at 6000 rows per fetch, which on Gnosis (~21k requests/day)
+// truncates even a one-day window. Using `_gt` would silently lose
+// rows at tie-boundary timestamps when >1 row shares the last row's
+// blockTimestamp and not all fit on the page — graph-node's secondary
+// sort within a tied timestamp isn't guaranteed stable, so a row at
+// ts=T past position 1000 would be dropped by `_gt: T` on the next
+// page. `_gte: T` + dedup by `Request.id` overlaps by ~1 row per page
+// (the last row from the previous page) but guarantees every row at
+// ts=T is fetched exactly once. Verified against the omenstrat 4-day
+// window: `_gt` reported 6392 rows vs 6393 in analytics scored-rows
+// (1 tie-boundary row lost); `_gte` + dedup reports the true 6393.
+//
+// Same-timestamp saturation: if a full page comes back with every
+// row sharing the last row's `blockTimestamp`, we cannot advance the
+// cursor at all (the whole page is at ts=T; a `_gte: T` next page
+// would re-fetch the same rows in a loop). Advance by 1s and warn —
+// dropping rows at that exact second is possible in principle but
+// requires >1000 requests to land in a single second on one chain,
+// far above steady-state production request rates.
 const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label) => {
+  const seenIds = new Set();
   const rows = [];
   let cursor = windowStartSec;
+  let firstPage = true;
   let truncated = false;
   let pages = 0;
+  let duplicatesCollapsed = 0;
   for (;;) {
+    // First page uses `_gt: windowStartSec` (the window is
+    // (windowStartSec, windowEndSec], matching the subgraph's
+    // strict-lower / inclusive-upper contract in fetchIncrementalMechRequests).
+    // Subsequent pages use `_gte: lastTs` so tie-boundary rows are
+    // included and deduped.
+    const tsPredicate = firstPage
+      ? `blockTimestamp_gt: "${cursor}"`
+      : `blockTimestamp_gte: "${cursor}"`;
     const data = await gqlRequest(
       url,
       `query MechRequestsIncremental {
         requests(
           first: ${SUBGRAPH_PAGE}
-          where: { blockTimestamp_gt: "${cursor}", blockTimestamp_lte: "${windowEndSec}" }
+          where: {
+            ${tsPredicate},
+            blockTimestamp_lte: "${windowEndSec}",
+            isDelivered: true,
+            parsedRequest_: { questionTitle_not: "" }
+          }
           orderBy: blockTimestamp
           orderDirection: asc
         ) {
           id
           sender { id }
           blockTimestamp
+          isDelivered
           parsedRequest { questionTitle }
         }
       }`,
@@ -584,8 +656,16 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
     const page = data?.requests ?? [];
     if (verbose)
       emit(`  [${label}] requests page ${pages + 1} cursor=${cursor} rows=${page.length}`);
-    rows.push(...page);
+    for (const row of page) {
+      if (seenIds.has(row.id)) {
+        duplicatesCollapsed += 1;
+        continue;
+      }
+      seenIds.add(row.id);
+      rows.push(row);
+    }
     pages += 1;
+    firstPage = false;
     if (page.length < SUBGRAPH_PAGE) break;
     if (pages >= SUBGRAPH_MAX_PAGES) {
       truncated = true;
@@ -598,31 +678,31 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
         `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing cursor by 1s`
       );
       cursor = lastTs + 1;
+      firstPage = true; // reuse `_gt` on the leap; no boundary to overlap
     } else {
       cursor = lastTs;
     }
+  }
+  if (verbose && duplicatesCollapsed > 0) {
+    emit(`  [${label}] pagination overlap collapsed ${duplicatesCollapsed} duplicate id(s)`);
   }
 
   // Split the fetched entities into two views:
   //   * `usable` — QMR-shaped rows (requester + title + ts in window),
   //     mirrors roi-distribution.ts:251-254; check 1 (open-market
   //     count) uses this.
-  //   * `withRequestId` — every row with a requester + request_id + ts
-  //     in window, regardless of whether `parsedRequest.questionTitle`
-  //     resolved. The marketplace subgraph returns a Request entity
-  //     for every mech request on-chain, including those whose IPFS
-  //     payload predict-api later couldn't parse (analytics-side shell
-  //     rows). Check 2 (row parity) uses this so a subgraph row and
-  //     its analytics-side shell counterpart at
-  //     /v1/data/unscored-rows match by id.
+  //   * `withRequestId` — same superset (now that the WHERE clause
+  //     already gates on isDelivered + parsedRequest.questionTitle
+  //     non-null, every returned row has a title), further filtered to
+  //     rows whose `request_id` parses via `normaliseRequestId`. Check 2
+  //     (row parity) uses this so a subgraph row and its analytics-side
+  //     scored counterpart at /v1/data/scored-rows match by id.
   //
   // Attrition breakdown is split into "missing sender/ts" (true schema-
   // regression signal — sender.id nulled or blockTimestamp missing) vs
-  // "missing title only" (expected — the request-side analogue of
-  // predict-api shell rows). Check 1's attrition guard only escalates
-  // on the former so a chain whose steady-state title-less rate is
-  // high (Gnosis omenstrat routinely runs at ~90% title-less inside
-  // the parity window) doesn't chronically read as a regression.
+  // "missing title only" (should be 0 under the new WHERE gate — kept
+  // as a paranoid schema-drift telltale, e.g. the subgraph starts
+  // returning null titles despite the `_not: null` predicate).
   const usable = [];
   const withRequestId = [];
   let skippedMissingSenderOrTs = 0;
@@ -733,10 +813,20 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
 // handleMarketplaceDeliveryWithSignatures) does NOT create a `Request`
 // entity per off-chain request. Instead it emits one delivery entity
 // per settled batch, carrying a `requestIds` array of the off-chain IDs
-// that batch settled. Without this the row-parity check 2 double-counts
-// those rows as "extra in analytics" (they land in
-// /v1/data/scored-rows|unscored-rows via the predict-api lake, but the
-// subgraph's `requests(...)` query never sees them).
+// that batch settled.
+//
+// OBSERVABILITY-ONLY. Under the "displayable rows" definition of
+// row_parity (see fetchMarketplaceRequests), row_parity compares the
+// delivered + parseable on-chain population against the analytics
+// scored population. Off-chain delivery entities carry no
+// `isDelivered` flag (they only exist because they settled) and no
+// parsed title (title lives in the private IPFS payload), so they
+// cannot be placed on either side of the displayable-row comparison
+// without conflating populations. The count is still fetched and
+// surfaced in the artifact as `subgraph_off_chain_count` so an
+// operator can see whether an unexplained residual on the analytics
+// side coincides with off-chain activity, but it MUST NOT feed
+// row_parity.
 //
 // Cursor-paginated on `blockTimestamp` — same shape and truncation /
 // same-timestamp handling as `fetchMarketplaceRequests` above. The
@@ -940,15 +1030,22 @@ const fetchDataEndpoint = async (endpoint, chainId, windowStartSec, windowEndSec
 const fetchScoredRows = (chainId, windowStartSec, windowEndSec, label) =>
   fetchDataEndpoint('/v1/data/scored-rows', chainId, windowStartSec, windowEndSec, label);
 
-// Shell rows (predict-api's unparseable-payload rows) moved from
-// /v1/data/scored-rows to /v1/data/unscored-rows in mech-analytics
-// PR #27. The row-parity check (check 2) needs the union of both so
-// the analytics feed carries the same superset the marketplace
-// subgraph's `requests` query does — otherwise every shell row shows
-// up as `missing_in_analytics`. Shell rows have every score column
-// NULL and ``question_title=None`` by construction, so they do NOT
-// enter check 1's QMR (extractRowUsability drops them) and do NOT
-// affect check 3 (which reads agent_aggregates.n_mech_requests).
+// Shell rows (predict-api's unparseable-payload rows) live at
+// /v1/data/unscored-rows (mech-analytics PR #27 split them out of
+// /v1/data/scored-rows). Shell rows have every score column NULL and
+// ``question_title=None`` by construction, so they are the analytics-
+// side analogue of subgraph rows whose `parsedRequest.questionTitle`
+// resolved to null.
+//
+// OBSERVABILITY-ONLY. Under the "displayable rows" definition of
+// row_parity (see fetchMarketplaceRequests), the subgraph side is
+// pre-filtered to delivered + parseable rows, so the analytics side
+// must be scored-only (also delivered + parseable) to match the same
+// population. Feeding the unscored union into row_parity re-introduces
+// the population mismatch the redefinition set out to remove. The
+// count is fetched and surfaced in the artifact as
+// `analytics_unscored_count` for observability, but it MUST NOT feed
+// row_parity.
 const fetchUnscoredRows = (chainId, windowStartSec, windowEndSec, label) =>
   fetchDataEndpoint('/v1/data/unscored-rows', chainId, windowStartSec, windowEndSec, label);
 
@@ -1075,17 +1172,15 @@ try {
 
     const { counts, usable: usableAnalyticsRows } = classifyAnalyticsRows(scoredRows.rows);
 
-    // Analytics-side feed for check 2 (row parity) is the union of
-    // scored + unscored rows, keyed only on requester + request_id.
-    // Neither `question_title` nor `resolution_status` gates entry
-    // here: check 2 audits the raw request set (does the analytics
-    // API expose the same requests the marketplace subgraph indexed),
-    // not whether the score pipeline has resolved their titles or
-    // outcomes yet. classifyAnalyticsRows filters on title presence
-    // because that's what check 1's QMR needs; using that same subset
-    // here would drop scored rows whose question_title never resolved
-    // (present on chain-137 today via early-backfill hex-id rows),
-    // and check 2 would report them as `missing_in_analytics`.
+    // Analytics-side feed for check 2 (row parity, "displayable rows"
+    // definition) is scored-rows only. Scored rows have
+    // `tool NOT NULL AND delivered_at NOT NULL` by construction, so
+    // they are exactly the delivered + parseable population that the
+    // predict page renders. Unscored rows are the analytics analogue
+    // of subgraph rows without a parsed title — they drop symmetrically
+    // on both sides via the subgraph WHERE clause and the scored-only
+    // analytics feed here. See fetchUnscoredRows and
+    // fetchMarketplaceRequests for the full rationale.
     //
     // request_id is normalised via normaliseRequestId so the id-based
     // match is format-agnostic. The analytics API mixes hex and decimal
@@ -1098,17 +1193,24 @@ try {
     // as hex and some as decimal for the SAME on-chain uint256 (predict-
     // api-era backfill vs marketplace-era live writes, plus resolution
     // sweep re-serves the same row on every touch). Both encodings appear
-    // in the same /v1/data/scored-rows|unscored-rows page. Without a
-    // Map-based dedup, `diffRowSets` (a multiset diff) counts hex and
-    // decimal as two separate rows on the analytics side against one
-    // subgraph row → `extraInAnalytics` inflates by the duplicate count.
-    // Verified collapse (2026-08-07 → 2026-08-11):
-    //   polystrat: 746 raw analytics rows → 387 unique (matches subgraph)
-    //   omenstrat: probe requester 0xba88…1033: 359 raw → 241 unique.
-    // Picking hex (first-wins on `.set(...)` order) is a convention; the
-    // two encodings represent the same on-chain request, so either is fine.
+    // in the same /v1/data/scored-rows page. Without a Map-based dedup,
+    // `diffRowSets` (a multiset diff) counts hex and decimal as two
+    // separate rows on the analytics side against one subgraph row →
+    // `extraInAnalytics` inflates by the duplicate count. Predict-api
+    // canonicalisation PR will fix at source; until it deploys +
+    // backfills, this script-side dedup is the safety net.
+    // Symmetric with the subgraph WHERE clause: analytics scored rows
+    // without a non-empty question_title are NOT displayable (the
+    // predict page can't render a prediction card without a title),
+    // so they must be excluded here to match the subgraph filter.
+    // Predict-api's regex title extraction can return None on prompts
+    // it can't parse, which lands in scored-rows as question_title=null
+    // when the tool otherwise ran successfully. Those rows would show
+    // up as "extra in analytics" without this guard.
     const buildAnalyticsRowParityEntry = (row) => {
       if (!row.requester) return null;
+      const title = row.question_title;
+      if (typeof title !== 'string' || title.length === 0) return null;
       const normalisedId = normaliseRequestId(row.request_id);
       if (!normalisedId) return null;
       return {
@@ -1116,24 +1218,25 @@ try {
         row: { ...row, request_id: normalisedId },
       };
     };
-    const analyticsRowsForCheck2Raw = [...scoredRows.rows, ...unscoredRows.rows]
+    const analyticsScoredForCheck2Raw = scoredRows.rows
       .map(buildAnalyticsRowParityEntry)
       .filter(Boolean);
-    const analyticsRowsForCheck2Map = new Map();
-    for (const entry of analyticsRowsForCheck2Raw) {
+    const analyticsScoredForCheck2Map = new Map();
+    for (const entry of analyticsScoredForCheck2Raw) {
       const key = `${entry.requester}|${entry.row.request_id}`;
-      if (!analyticsRowsForCheck2Map.has(key)) {
-        analyticsRowsForCheck2Map.set(key, entry);
+      if (!analyticsScoredForCheck2Map.has(key)) {
+        analyticsScoredForCheck2Map.set(key, entry);
       }
     }
-    const analyticsRowsForCheck2 = [...analyticsRowsForCheck2Map.values()];
-    const analyticsUnionRaw = analyticsRowsForCheck2Raw.length;
-    const analyticsUnionUnique = analyticsRowsForCheck2.length;
-    const analyticsUnionDuplicatesCollapsed = analyticsUnionRaw - analyticsUnionUnique;
-    const scoredRowsInParity = scoredRows.rows.filter((r) => r.requester && r.request_id).length;
-    const unscoredRowsInParity = unscoredRows.rows.filter(
-      (r) => r.requester && r.request_id
-    ).length;
+    const analyticsScoredForCheck2 = [...analyticsScoredForCheck2Map.values()];
+    const analyticsScoredRawCount = analyticsScoredForCheck2Raw.length;
+    const analyticsScoredUniqueCount = analyticsScoredForCheck2.length;
+    const analyticsScoredDuplicatesCollapsed = analyticsScoredRawCount - analyticsScoredUniqueCount;
+    // Observability counters — NOT fed into row_parity. See
+    // fetchUnscoredRows / fetchMarketplaceOffChainRequestIds header
+    // comments for why.
+    const analyticsUnscoredCount = unscoredRows.rows.length;
+    const subgraphOffChainCount = marketplaceOffChain.withRequestId.length;
 
     // ---- Check 1: open-market count parity --------------------------------
     section(`${key} — check 1: open-market count parity`);
@@ -1267,55 +1370,35 @@ try {
       truncated: check1Truncated,
     });
 
-    // ---- Check 2: scored-rows row parity ----------------------------------
-    section(`${key} — check 2: scored-rows row parity`);
-    // Subgraph side is the union of on-chain requests and off-chain
-    // request IDs. On-chain rows come from the `requests(...)` query
-    // (handleMarketplaceRequest creates one `Request` entity per event);
-    // off-chain rows only surface as entries inside
-    // `MarketplaceDeliveryWithSignatures.requestIds` because the off-
-    // chain handler doesn't create per-request entities. Analytics
-    // side is scored ∪ unscored, since predict-api writes both on-chain
-    // and off-chain rows to the same lake. Without the off-chain leg
-    // every off-chain row shows up as "extra in analytics" (~4,600 on
-    // omenstrat, ~360 on polystrat in a 4-day window, verified 2026-08).
+    // ---- Check 2: row parity ("displayable rows") ------------------------
+    section(`${key} — check 2: row parity (displayable rows)`);
+    // Population under comparison: rows a user would see rendered on
+    // the predict page as a completed prediction. Symmetrically
+    // filtered on both sides:
+    //   * subgraph side: `isDelivered: true AND
+    //     parsedRequest.questionTitle IS NOT NULL` (WHERE clause in
+    //     fetchMarketplaceRequests). `marketplace.withRequestId` is
+    //     exactly that set, additionally gated on a parseable
+    //     `request_id`.
+    //   * analytics side: `/v1/data/scored-rows` only. Scored rows
+    //     have `tool NOT NULL AND delivered_at NOT NULL` by
+    //     construction, so they are the delivered + parseable set.
     //
-    // Subgraph side dedupes on the same normalised (requester, requestId)
-    // key as the analytics side. On-chain requestIds come from the
-    // subgraph as lower-case hex (normaliseRequestId collapses to
-    // decimal), off-chain requestIds come as either hex or decimal Bytes
-    // — same normaliser. A given on-chain uint256 requestId cannot
-    // simultaneously be on-chain and off-chain (mutually exclusive event
-    // paths in the subgraph handler), so this dedup should collapse zero
-    // rows on healthy data. Kept defensive so a future subgraph refactor
-    // that ever double-emits an id doesn't silently inflate the
-    // subgraph side of the multiset diff.
-    const dedupeById = (rows) => {
-      const map = new Map();
-      for (const row of rows) {
-        const requester = row.requester?.toLowerCase();
-        const requestId = row.requestId;
-        if (!requester || !requestId) continue;
-        const key = `${requester}|${requestId}`;
-        if (!map.has(key)) map.set(key, row);
-      }
-      return [...map.values()];
-    };
-    const subgraphOnChainRows = marketplace.withRequestId;
-    const subgraphOffChainRows = marketplaceOffChain.withRequestId;
-    const subgraphAllRowsRaw = [...subgraphOnChainRows, ...subgraphOffChainRows];
-    const subgraphAllRows = dedupeById(subgraphAllRowsRaw);
-    const subgraphUnionRaw = subgraphAllRowsRaw.length;
-    const subgraphUnionUnique = subgraphAllRows.length;
-    const subgraphUnionDuplicatesCollapsed = subgraphUnionRaw - subgraphUnionUnique;
-    const rowDiff = diffRowSets(subgraphAllRows, analyticsRowsForCheck2);
+    // Off-chain requests and unscored/shell rows drop symmetrically
+    // and DO NOT feed row_parity. Their counts are surfaced in the
+    // artifact as `subgraph_off_chain_count` / `analytics_unscored_count`
+    // for observability only. See header comments on
+    // fetchMarketplaceOffChainRequestIds and fetchUnscoredRows.
+    const subgraphDeliveredParseableRows = marketplace.withRequestId;
+    const rowDiff = diffRowSets(subgraphDeliveredParseableRows, analyticsScoredForCheck2);
     emit(
-      `  subgraph rows (post-dedup): ${subgraphUnionUnique} (on-chain=${subgraphOnChainRows.length} + ` +
-        `off-chain=${subgraphOffChainRows.length} = raw ${subgraphUnionRaw}, ` +
-        `collapsed ${subgraphUnionDuplicatesCollapsed} duplicate id(s)), ` +
-        `analytics rows (post-dedup): ${analyticsUnionUnique} ` +
-        `(scored=${scoredRowsInParity} + unscored=${unscoredRowsInParity} = raw ${analyticsUnionRaw}, ` +
-        `collapsed ${analyticsUnionDuplicatesCollapsed} duplicate id(s))`
+      `  subgraph rows (delivered + parseable): ${subgraphDeliveredParseableRows.length}, ` +
+        `analytics rows (scored, post-dedup): ${analyticsScoredUniqueCount} ` +
+        `(raw ${analyticsScoredRawCount}, collapsed ${analyticsScoredDuplicatesCollapsed} duplicate id(s))`
+    );
+    emit(
+      `  observability (NOT in row_parity): subgraph off-chain=${subgraphOffChainCount}, ` +
+        `analytics unscored=${analyticsUnscoredCount}`
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
     emit(`  extra in analytics:   ${rowDiff.extraInAnalytics}`);
@@ -1330,14 +1413,14 @@ try {
     for (const sample of rowDiff.missingSamples) emit(`    missing: ${sample}`);
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
-    const check2Truncated =
-      marketplace.truncated ||
-      marketplaceOffChain.truncated ||
-      scoredRows.truncated ||
-      unscoredRows.truncated;
+    // Off-chain / unscored fetches are observability-only for
+    // row_parity — their truncation cannot affect the
+    // displayable-rows comparison, so intentionally excluded from
+    // check2Truncated.
+    const check2Truncated = marketplace.truncated || scoredRows.truncated;
     const { status: check2Status, reason: check2Reason } = resolveCheck2Status({
-      subgraphRowCount: subgraphAllRows.length,
-      analyticsRowCount: analyticsRowsForCheck2.length,
+      subgraphRowCount: subgraphDeliveredParseableRows.length,
+      analyticsRowCount: analyticsScoredForCheck2.length,
       missingInAnalytics: rowDiff.missingInAnalytics,
       extraInAnalytics: rowDiff.extraInAnalytics,
       truncated: check2Truncated,
@@ -1358,27 +1441,15 @@ try {
       platform: key,
       status: check2Status,
       status_reason: check2Reason,
-      // Composition: `subgraph_rows` is the post-dedup union used to
-      // compare; the on-chain / off-chain split and the raw-vs-unique
-      // union sizes are preserved so an operator can see (a) which leg
-      // drives a residual delta and (b) how much the hex/decimal
-      // duplicate collapse mattered on this run.
-      subgraph_rows: subgraphAllRows.length,
-      subgraph_union_raw: subgraphUnionRaw,
-      subgraph_union_unique: subgraphUnionUnique,
-      subgraph_union_duplicates_collapsed: subgraphUnionDuplicatesCollapsed,
-      subgraph_on_chain_rows: subgraphOnChainRows.length,
-      subgraph_off_chain_rows: subgraphOffChainRows.length,
-      subgraph_qmr_rows: marketplace.rows.length,
-      analytics_rows: analyticsRowsForCheck2.length,
-      // Pre-dedup row count (for observability — see the hex/decimal
-      // collapse comment on `analyticsRowsForCheck2Raw` above) alongside
-      // the post-dedup number that actually feeds the diff.
-      analytics_union_raw: analyticsUnionRaw,
-      analytics_union_unique: analyticsUnionUnique,
-      analytics_union_duplicates_collapsed: analyticsUnionDuplicatesCollapsed,
-      analytics_scored_rows: scoredRowsInParity,
-      analytics_unscored_rows: unscoredRowsInParity,
+      // "Displayable rows" definition: subgraph delivered + parseable
+      // vs analytics scored (post-dedup). Off-chain and unscored
+      // counts are exposed as observability but do NOT feed the diff.
+      subgraph_delivered_parseable_count: subgraphDeliveredParseableRows.length,
+      analytics_scored_raw_count: analyticsScoredRawCount,
+      analytics_scored_unique_count: analyticsScoredUniqueCount,
+      analytics_scored_duplicates_collapsed: analyticsScoredDuplicatesCollapsed,
+      subgraph_off_chain_count: subgraphOffChainCount,
+      analytics_unscored_count: analyticsUnscoredCount,
       missing_in_analytics: rowDiff.missingInAnalytics,
       extra_in_analytics: rowDiff.extraInAnalytics,
       missing_samples: rowDiff.missingSamples,
