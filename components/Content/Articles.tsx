@@ -12,7 +12,36 @@ import Article from './Article';
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 const subURL = 'blog-posts';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+/**
+ * Strapi caps a page at 100 entries whatever `pagination[limit]` asks for, so a
+ * single request for 1000 silently returns the first 100 and the rest of the
+ * blog simply never appears. Anything above the cap has to be paged through.
+ *
+ * Keep in sync with the equivalent paging in `next-sitemap.config.js`, which
+ * hits the same endpoint for the same reason.
+ */
+const STRAPI_MAX_PAGE_SIZE = 100;
+
+const fetcher = async ([url, maxPages]: [string, number]) => {
+  const first = await fetch(url).then((res) => res.json());
+
+  // `maxPages` keeps a small caller honest: the homepage asks for 3 posts, so
+  // it must not walk the whole archive just because more pages exist.
+  const pageCount = Math.min(first?.meta?.pagination?.pageCount ?? 1, maxPages);
+  if (pageCount <= 1) return first;
+
+  const rest = await Promise.all(
+    // Pages are 1-indexed and page 1 is already fetched.
+    Array.from({ length: pageCount - 1 }, (_, index) =>
+      fetch(`${url}&pagination[page]=${index + 2}`).then((res) => res.json())
+    )
+  );
+
+  return {
+    ...first,
+    data: [...(first?.data ?? []), ...rest.flatMap((page) => page?.data ?? [])],
+  };
+};
 
 const folders = [
   {
@@ -29,12 +58,16 @@ const Articles = ({ limit = 1000, showSeeAll = false, displayFolders, isMain }) 
   const params = {
     sort: ['datePublished:desc'],
     populate: '*',
-    'pagination[limit]': limit,
+    // `pageSize`, not `limit`: `limit` is silently clamped to the cap above and
+    // gives no `pageCount` to page through with.
+    'pagination[pageSize]': Math.min(limit, STRAPI_MAX_PAGE_SIZE),
   };
   const stringifyParams = qs.stringify(params);
+  const pageSize = Math.min(limit, STRAPI_MAX_PAGE_SIZE);
+  const maxPages = Math.ceil(limit / pageSize);
 
   const { data, isLoading } = useSWR(
-    `${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`,
+    [`${API_URL}/${subURL}${params ? '?' : ''}${stringifyParams}`, maxPages],
     fetcher
   );
 
