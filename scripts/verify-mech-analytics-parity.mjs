@@ -43,27 +43,17 @@
 //   For the same window, the set of rows a user would see rendered
 //   on the predict page as a completed prediction must match on both
 //   sides. Symmetric filter:
-//     * subgraph side: `isDelivered: true AND
-//       parsedRequest.questionTitle IS NOT NULL` in the WHERE clause
-//       of the marketplace-subgraph `requests` query.
+//     * subgraph side: rows that are `isDelivered && parsedRequest.
+//       questionTitle` non-empty (applied client-side in
+//       `fetchMarketplaceRequests` while building `withRequestId`).
 //     * analytics side: `/v1/data/scored-rows` ONLY (scored rows have
-//       `tool NOT NULL AND delivered_at NOT NULL` by construction, so
-//       they are exactly the delivered + parseable set).
+//       `tool NOT NULL AND delivered_at NOT NULL` by construction).
 //   Off-chain requests (subgraph `MarketplaceDeliveryWithSignatures`)
 //   and unscored/shell rows (analytics `/v1/data/unscored-rows`)
-//   drop symmetrically on both sides — they are not in the
-//   displayable-rows population. Their counts are surfaced in the
-//   artifact as `subgraph_off_chain_count` and
-//   `analytics_unscored_count` for observability only.
-//   The prior definition compared "all subgraph requests" against
-//   "all analytics rows (scored + unscored + off-chain)": those are
-//   two different populations, and the transient states between them
-//   (undelivered, unparseable-payload) are legitimate real-world
-//   behaviour that will never match cleanly. Adding undelivered rows
-//   to mech-analytics would require a new lifecycle sweep
-//   (undelivered → scored transitions) — out of scope by design.
-//   Missing / extra rows are reported per side against the new
-//   population.
+//   drop symmetrically on both sides. Their counts are surfaced in
+//   the artifact as `subgraph_off_chain_count` and
+//   `analytics_unscored_count` for observability only — they are not
+//   gated and are not directly comparable to each other.
 //
 // Check 3 — senderTotal parity.
 //   agent_aggregates.n_mech_requests (window 'all', via
@@ -575,44 +565,39 @@ const gqlRequest = (url, query, label) =>
 // getMechRequestsIncrementalQuery (common-util/graphql/queries.ts:816)
 // + fetchIncrementalMechRequests (roi-distribution.ts:229) otherwise.
 //
-// Row-parity population — "displayable rows": the WHERE clause filters
-// to `isDelivered: true AND parsedRequest_: {questionTitle_not: ""}`.
-// That is the set the predict page renders today: delivered on-chain
-// and whose IPFS payload the subgraph parsed to a non-empty title
-// (`_not: ""` in graph-node excludes both empty strings AND null, so
-// this also excludes `parsedRequest = null` rows via the nested-filter
-// implicit non-null requirement). It mirrors the analytics-side
-// scored population, which by construction has
-// `tool NOT NULL AND delivered_at NOT NULL` and is further filtered
-// analytics-side (buildAnalyticsRowParityEntry) to `question_title`
-// non-empty for symmetric displayability. Comparing "all subgraph
-// requests" against "all analytics rows" (previous version) is a
-// category error — those are two different populations that never
-// match cleanly. The transient states (undelivered / unparseable
-// payload / empty title) drop symmetrically on both sides under this
-// filter.
+// Two populations come out of one fetch:
 //
-// Pagination: cursor-based on `blockTimestamp` with `_gte` + id-based
-// dedup. Skip-based pagination hits graph-node's `skip > 5000` ceiling
-// at 6000 rows per fetch, which on Gnosis (~21k requests/day)
-// truncates even a one-day window. Using `_gt` would silently lose
-// rows at tie-boundary timestamps when >1 row shares the last row's
-// blockTimestamp and not all fit on the page — graph-node's secondary
-// sort within a tied timestamp isn't guaranteed stable, so a row at
-// ts=T past position 1000 would be dropped by `_gt: T` on the next
-// page. `_gte: T` + dedup by `Request.id` overlaps by ~1 row per page
-// (the last row from the previous page) but guarantees every row at
-// ts=T is fetched exactly once. Verified against the omenstrat 4-day
-// window: `_gt` reported 6392 rows vs 6393 in analytics scored-rows
-// (1 tie-boundary row lost); `_gte` + dedup reports the true 6393.
+//   * `usable` (check 1's feed): every returned row with a requester,
+//     non-empty title, and ts in window — the client-side filter
+//     roi-distribution.ts:246-253 applies. The query is deliberately
+//     unfiltered by `isDelivered` server-side so this population is
+//     identical to what the live consumer's
+//     `fetchIncrementalMechRequests` sees.
+//
+//   * `withRequestId` (check 2's feed): the "displayable rows" subset
+//     of `usable` — additionally gated on `isDelivered == true` and a
+//     normaliseable request_id. Matches the analytics
+//     `/v1/data/scored-rows` population which by construction has
+//     `tool NOT NULL AND delivered_at NOT NULL`.
+//
+// Pagination: cursor-based on `blockTimestamp` with `_gt` on the
+// first page and `_gte` + id-based dedup thereafter. Skip-based
+// pagination hits graph-node's `skip > 5000` ceiling at 6000 rows
+// per fetch. `_gt` on every page silently loses rows at
+// tie-boundary timestamps when >1 row shares the last row's
+// blockTimestamp and not all fit on the page; `_gte: T` + dedup by
+// `Request.id` overlaps by ~1 row per page (the last row from the
+// previous page) but guarantees every row at ts=T is fetched
+// exactly once.
 //
 // Same-timestamp saturation: if a full page comes back with every
-// row sharing the last row's `blockTimestamp`, we cannot advance the
-// cursor at all (the whole page is at ts=T; a `_gte: T` next page
-// would re-fetch the same rows in a loop). Advance by 1s and warn —
-// dropping rows at that exact second is possible in principle but
-// requires >1000 requests to land in a single second on one chain,
-// far above steady-state production request rates.
+// row sharing the last row's `blockTimestamp`, we cannot advance
+// the cursor within that second (the whole page is at ts=T; a
+// `_gte: T` next page would re-fetch the same rows in a loop). We
+// keep `cursor = lastTs` and force the next page to `_gt: T`, which
+// skips exactly the saturated second and keeps every row at `T+1`.
+// This is only reachable at >1000 requests in a single second on
+// one chain, far above steady-state.
 const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label) => {
   const seenIds = new Set();
   const rows = [];
@@ -637,9 +622,7 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
           first: ${SUBGRAPH_PAGE}
           where: {
             ${tsPredicate},
-            blockTimestamp_lte: "${windowEndSec}",
-            isDelivered: true,
-            parsedRequest_: { questionTitle_not: "" }
+            blockTimestamp_lte: "${windowEndSec}"
           }
           orderBy: blockTimestamp
           orderDirection: asc
@@ -675,10 +658,10 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
     const firstTs = Number(page[0].blockTimestamp);
     if (lastTs === firstTs) {
       emit(
-        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing cursor by 1s`
+        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing past that second`
       );
-      cursor = lastTs + 1;
-      firstPage = true; // reuse `_gt` on the leap; no boundary to overlap
+      cursor = lastTs;
+      firstPage = true;
     } else {
       cursor = lastTs;
     }
@@ -687,22 +670,14 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
     emit(`  [${label}] pagination overlap collapsed ${duplicatesCollapsed} duplicate id(s)`);
   }
 
-  // Split the fetched entities into two views:
-  //   * `usable` — QMR-shaped rows (requester + title + ts in window),
-  //     mirrors roi-distribution.ts:251-254; check 1 (open-market
-  //     count) uses this.
-  //   * `withRequestId` — same superset (now that the WHERE clause
-  //     already gates on isDelivered + parsedRequest.questionTitle
-  //     non-null, every returned row has a title), further filtered to
-  //     rows whose `request_id` parses via `normaliseRequestId`. Check 2
-  //     (row parity) uses this so a subgraph row and its analytics-side
-  //     scored counterpart at /v1/data/scored-rows match by id.
+  // Split the fetched entities into two views feeding two different checks:
   //
-  // Attrition breakdown is split into "missing sender/ts" (true schema-
-  // regression signal — sender.id nulled or blockTimestamp missing) vs
-  // "missing title only" (should be 0 under the new WHERE gate — kept
-  // as a paranoid schema-drift telltale, e.g. the subgraph starts
-  // returning null titles despite the `_not: null` predicate).
+  //   * `usable` — QMR-shaped rows (requester + non-empty title + ts in
+  //     window), mirroring roi-distribution.ts:246-253's client-side
+  //     filter. Feeds check 1 (open-market count).
+  //   * `withRequestId` — usable subset that is `isDelivered == true`
+  //     with a normaliseable request_id. Feeds check 2 (row parity)
+  //     against `/v1/data/scored-rows` on the analytics side.
   const usable = [];
   const withRequestId = [];
   let skippedMissingSenderOrTs = 0;
@@ -721,19 +696,14 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
       skippedAfterWindowEnd += 1;
       continue;
     }
-    if (requestId) {
-      withRequestId.push({ requester, ts, title: title ?? null, requestId });
-    }
     if (!title) {
-      // Kept out of the QMR feed (no title → no settlement match), but
-      // already recorded in withRequestId above for check 2.
       skippedMissingTitleOnly += 1;
       continue;
     }
-    // req.id is the marketplace subgraph's Request.id — same identifier
-    // the mech-analytics lake writes back as `request_id`, so check 2
-    // can match on it when both sides have it (see diffRowSets).
     usable.push({ requester, ts, title, requestId });
+    if (req.isDelivered && requestId) {
+      withRequestId.push({ requester, ts, title, requestId });
+    }
   }
   return {
     rows: usable,
@@ -753,29 +723,37 @@ const fetchMarketplaceRequests = async (url, windowStartSec, windowEndSec, label
 // the settlement-consumption matching needs. Cursor-based on ``date``
 // for the same reason as fetchMarketplaceRequests — many trader agents
 // share the same ``date`` (dailyProfitStatistics is keyed by
-// ``(traderAgent, date)``), and the historical consumption horizon can
-// span months on an explicit --since/--until run. Same-``date``
-// saturation is handled with a 1-day advance; production has O(100s)
-// of trader agents per platform, well under the 1000-row page cap.
+// ``(traderAgent, date)``, so O(100s) of rows per date is normal), and
+// the historical consumption horizon can span months on an explicit
+// --since/--until run. Same tie-boundary + saturation handling as
+// fetchMarketplaceRequests, just on ``date`` instead of
+// ``blockTimestamp``.
 const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, label) => {
   const participantSelection =
     participantTitleField === 'question' ? 'question' : 'metadata { title }';
+  const seenIds = new Set();
   const stats = [];
   // Seed cursor so the first fetch's date_gt matches the caller's
   // inclusive date_gte lower bound.
   let cursor = dateGte - 1;
+  let firstPage = true;
   let truncated = false;
   let pages = 0;
+  let duplicatesCollapsed = 0;
   for (;;) {
+    const datePredicate = firstPage
+      ? `date_gt: ${cursor}`
+      : `date_gte: ${cursor}`;
     const data = await gqlRequest(
       url,
       `query DailyProfitStats {
         dailyProfitStatistics(
           first: ${SUBGRAPH_PAGE}
-          where: { date_gt: ${cursor}, date_lte: ${dateLte} }
+          where: { ${datePredicate}, date_lte: ${dateLte} }
           orderBy: date
           orderDirection: asc
         ) {
+          id
           traderAgent { id }
           date
           profitParticipants { ${participantSelection} }
@@ -786,8 +764,16 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
     const page = data?.dailyProfitStatistics ?? [];
     if (verbose)
       emit(`  [${label}] daily-stats page ${pages + 1} cursor=${cursor} rows=${page.length}`);
-    stats.push(...page);
+    for (const row of page) {
+      if (seenIds.has(row.id)) {
+        duplicatesCollapsed += 1;
+        continue;
+      }
+      seenIds.add(row.id);
+      stats.push(row);
+    }
     pages += 1;
+    firstPage = false;
     if (page.length < SUBGRAPH_PAGE) break;
     if (pages >= SUBGRAPH_MAX_PAGES) {
       truncated = true;
@@ -797,12 +783,16 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
     const firstDate = Number(page[0].date);
     if (lastDate === firstDate) {
       emit(
-        `  [${label}] WARN: same-date saturation at date=${lastDate} (full page shares a single date) — advancing cursor by 1 day`
+        `  [${label}] WARN: same-date saturation at date=${lastDate} (full page shares a single date) — advancing past that date`
       );
-      cursor = lastDate + DAY_SECONDS;
+      cursor = lastDate;
+      firstPage = true;
     } else {
       cursor = lastDate;
     }
+  }
+  if (verbose && duplicatesCollapsed > 0) {
+    emit(`  [${label}] pagination overlap collapsed ${duplicatesCollapsed} duplicate id(s)`);
   }
   return { stats, truncated };
 };
@@ -828,28 +818,30 @@ const fetchDailyStats = async (url, dateGte, dateLte, participantTitleField, lab
 // side coincides with off-chain activity, but it MUST NOT feed
 // row_parity.
 //
-// Cursor-paginated on `blockTimestamp` — same shape and truncation /
-// same-timestamp handling as `fetchMarketplaceRequests` above. The
-// entity's own `id` is the batch id (uses transactionHash + log index
-// under the hood, `130 chars` shape) and is NOT the per-request id we
-// want; the per-request ids are the entries inside the `requestIds`
-// array, one entity yielding N entries where N = numDeliveries. Each
-// entry is normalised via `normaliseRequestId` (subgraph returns lower-
-// case hex Bytes; analytics stores the same uint256 as a decimal string
-// for marketplace-era rows; normaliser collapses both to decimal so
-// the id-based multiset diff is format-agnostic).
+// Cursor-paginated on `blockTimestamp` with the same first-page-`_gt`
+// then `_gte` + id-dedup pattern as `fetchMarketplaceRequests`. The
+// entity's own `id` is the batch id (tx hash + log index) and is NOT
+// the per-request id — those live inside the `requestIds` array, one
+// entity yielding N entries where N = numDeliveries. Each entry is
+// normalised via `normaliseRequestId`.
 const fetchMarketplaceOffChainRequestIds = async (url, windowStartSec, windowEndSec, label) => {
+  const seenIds = new Set();
   const entities = [];
   let cursor = windowStartSec;
+  let firstPage = true;
   let truncated = false;
   let pages = 0;
+  let duplicatesCollapsed = 0;
   for (;;) {
+    const tsPredicate = firstPage
+      ? `blockTimestamp_gt: "${cursor}"`
+      : `blockTimestamp_gte: "${cursor}"`;
     const data = await gqlRequest(
       url,
       `query MarketplaceOffChainDeliveries {
         marketplaceDeliveryWithSignatures_collection(
           first: ${SUBGRAPH_PAGE}
-          where: { blockTimestamp_gt: "${cursor}", blockTimestamp_lte: "${windowEndSec}" }
+          where: { ${tsPredicate}, blockTimestamp_lte: "${windowEndSec}" }
           orderBy: blockTimestamp
           orderDirection: asc
         ) {
@@ -865,8 +857,16 @@ const fetchMarketplaceOffChainRequestIds = async (url, windowStartSec, windowEnd
     const page = data?.marketplaceDeliveryWithSignatures_collection ?? [];
     if (verbose)
       emit(`  [${label}] deliveries page ${pages + 1} cursor=${cursor} rows=${page.length}`);
-    entities.push(...page);
+    for (const entity of page) {
+      if (seenIds.has(entity.id)) {
+        duplicatesCollapsed += 1;
+        continue;
+      }
+      seenIds.add(entity.id);
+      entities.push(entity);
+    }
     pages += 1;
+    firstPage = false;
     if (page.length < SUBGRAPH_PAGE) break;
     if (pages >= SUBGRAPH_MAX_PAGES) {
       truncated = true;
@@ -876,12 +876,16 @@ const fetchMarketplaceOffChainRequestIds = async (url, windowStartSec, windowEnd
     const firstTs = Number(page[0].blockTimestamp);
     if (lastTs === firstTs) {
       emit(
-        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing cursor by 1s`
+        `  [${label}] WARN: same-timestamp saturation at ts=${lastTs} (full page shares a single blockTimestamp) — advancing past that second`
       );
-      cursor = lastTs + 1;
+      cursor = lastTs;
+      firstPage = true;
     } else {
       cursor = lastTs;
     }
+  }
+  if (verbose && duplicatesCollapsed > 0) {
+    emit(`  [${label}] pagination overlap collapsed ${duplicatesCollapsed} duplicate id(s)`);
   }
 
   const withRequestId = [];
@@ -1128,9 +1132,12 @@ try {
         // Off-chain request IDs from `MarketplaceDeliveryWithSignatures`
         // entities — the subgraph's `requests(...)` query only returns
         // on-chain rows (the off-chain handler doesn't create `Request`
-        // entities). Unioned into the subgraph side of check 2 below so
-        // the two sides model the same superset. See
-        // `fetchMarketplaceOffChainRequestIds` for the rationale.
+        // entities). OBSERVABILITY ONLY: surfaced in the artifact as
+        // `subgraph_off_chain_count` so an operator can see off-chain
+        // volume alongside the checks, but NOT unioned into check 2's
+        // subgraph side. See `fetchMarketplaceOffChainRequestIds` header
+        // for why off-chain rows can't be placed on either side of the
+        // "displayable rows" comparison.
         fetchMarketplaceOffChainRequestIds(
           marketplaceUrl,
           windowStartSec,
@@ -1472,14 +1479,6 @@ try {
     );
     emit(`  missing in analytics: ${rowDiff.missingInAnalytics}`);
     emit(`  extra in analytics:   ${rowDiff.extraInAnalytics}`);
-    if (rowDiff.tsFallbackKeys > 0) {
-      emit(
-        `  ${rowDiff.tsFallbackKeys} key(s) matched via (requester, ts, title) fallback ` +
-          '— once live lake writes turn on, requested_at can drift from blockTimestamp ' +
-          'by seconds-to-minutes, so a divergence with a nonzero fallback count may be ' +
-          'ts drift rather than a missing/extra row.'
-      );
-    }
     for (const sample of rowDiff.missingSamples) emit(`    missing: ${sample}`);
     for (const sample of rowDiff.extraSamples) emit(`    extra:   ${sample}`);
 
