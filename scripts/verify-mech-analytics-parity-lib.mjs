@@ -585,10 +585,18 @@ export const resolveCheck1Status = ({
   if (subgraphRawRowCount != null && subgraphRowCount === 0 && subgraphRawRowCount > 0) {
     return { status: 'gap', reason: 'subgraph-ingested-zero' };
   }
-  // Partial-degradation guard (subgraph): mirror of the analytics-side
-  // ratio guard. The subgraph fetcher separates rows into two skip
-  // buckets — `skippedMissingKey` and `skippedAfterWindowEnd` — both
-  // represent plausible upstream regressions worth escalating on.
+  // Partial-degradation guard (subgraph). ``subgraphSkippedMissingKey``
+  // here means "rows dropped for reasons that indicate a subgraph
+  // schema regression" (sender.id or blockTimestamp missing) — NOT
+  // rows dropped only because ``parsedRequest.questionTitle`` was
+  // null. Predict-api emits shell rows precisely for requests whose
+  // IPFS payload it could not parse, and those requests also lack a
+  // parsed title on the subgraph side; that's the steady state, not
+  // a regression. Chains routinely running at high title-less rates
+  // (Gnosis omenstrat at ~90% title-less inside a parity window)
+  // would otherwise chronically read as attrition-majority. Caller is
+  // expected to pass only sender/ts drops here and route title-only
+  // drops to check 2 via the request-id parity path.
   if (subgraphRawRowCount != null && subgraphRawRowCount > 0) {
     const subgraphAttrition =
       (subgraphSkippedMissingKey ?? 0) + (subgraphSkippedAfterWindowEnd ?? 0);
