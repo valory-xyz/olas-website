@@ -993,7 +993,23 @@ const fetchJson = (url, label) =>
 // semantics symmetric. Same shape used for /v1/data/scored-rows and
 // /v1/data/unscored-rows (the two endpoints partition per_request_scores
 // on column presence — mech-analytics PR #27).
-const fetchDataEndpoint = async (endpoint, chainId, windowStartSec, windowEndSec, label) => {
+//
+// Optional `source` filter (mech-analytics PR #28) narrows the pull to
+// one or more of predict-api's ingest labels: `mech_onchain`,
+// `mech_offchain`, `ipfs_historical`. Passed as a comma-separated
+// `?source=a,b` (server-side flattens comma form and the repeatable
+// `?source=a&source=b` form to the same `ANY(text[])` filter; comma is
+// shorter for logs). A typo returns 422 rather than an empty page, so
+// an unknown value is a hard error at the boundary, not silently
+// false-negative parity.
+const fetchDataEndpoint = async (
+  endpoint,
+  chainId,
+  windowStartSec,
+  windowEndSec,
+  label,
+  { source } = {}
+) => {
   const rows = [];
   let truncated = false;
   const url = new URL(`${mechAnalyticsBase}${endpoint}`);
@@ -1001,6 +1017,9 @@ const fetchDataEndpoint = async (endpoint, chainId, windowStartSec, windowEndSec
   url.searchParams.set('since', isoFromUnixSec(windowStartSec + 1));
   url.searchParams.set('until', isoFromUnixSec(windowEndSec + 1));
   url.searchParams.set('limit', String(SCORED_ROWS_PAGE));
+  if (Array.isArray(source) && source.length > 0) {
+    url.searchParams.set('source', source.join(','));
+  }
 
   let cursor = null;
   let pages = 0;
@@ -1027,8 +1046,12 @@ const fetchDataEndpoint = async (endpoint, chainId, windowStartSec, windowEndSec
 };
 
 // Mirrors common-util/api/predict/mech-analytics.ts::iterateScoredRows.
-const fetchScoredRows = (chainId, windowStartSec, windowEndSec, label) =>
-  fetchDataEndpoint('/v1/data/scored-rows', chainId, windowStartSec, windowEndSec, label);
+// Callers that need to reconcile against the marketplace subgraph's
+// on-chain-only `Request` collection pass
+// `{ source: ['mech_onchain', 'ipfs_historical'] }` to drop off-chain
+// rows at the API boundary — see `fetchDataEndpoint`.
+const fetchScoredRows = (chainId, windowStartSec, windowEndSec, label, options) =>
+  fetchDataEndpoint('/v1/data/scored-rows', chainId, windowStartSec, windowEndSec, label, options);
 
 // Shell rows (predict-api's unparseable-payload rows) live at
 // /v1/data/unscored-rows (mech-analytics PR #27 split them out of
@@ -1046,8 +1069,15 @@ const fetchScoredRows = (chainId, windowStartSec, windowEndSec, label) =>
 // count is fetched and surfaced in the artifact as
 // `analytics_unscored_count` for observability, but it MUST NOT feed
 // row_parity.
-const fetchUnscoredRows = (chainId, windowStartSec, windowEndSec, label) =>
-  fetchDataEndpoint('/v1/data/unscored-rows', chainId, windowStartSec, windowEndSec, label);
+const fetchUnscoredRows = (chainId, windowStartSec, windowEndSec, label, options) =>
+  fetchDataEndpoint(
+    '/v1/data/unscored-rows',
+    chainId,
+    windowStartSec,
+    windowEndSec,
+    label,
+    options
+  );
 
 const fetchAgentAggregate = async (chainId, agentId) => {
   const label = `ai-agent ${chainId}/${agentId}`;
@@ -1132,7 +1162,21 @@ try {
           platform.participantTitleField,
           `${key}:daily-stats`
         ),
-        fetchScoredRows(chainId, windowStartSec, windowEndSec, `${key}:scored-rows`),
+        // Scored rows filtered to the on-chain sources — `mech_onchain`
+        // (live poller) + `ipfs_historical` (data-lake backfill of past
+        // on-chain events). This is the population the marketplace
+        // subgraph's `Request` collection also covers (its indexer only
+        // fires on on-chain Request events), so filtering here makes the
+        // subgraph-vs-analytics comparison symmetric at the API
+        // boundary rather than by incidental drop-out downstream. Off-
+        // chain rows (`mech_offchain`) don't appear in the subgraph's
+        // `Request` collection at all — they're separately fetched via
+        // `fetchMarketplaceOffChainRequestIds` for observability only.
+        // The API is defined by `SourceLabel` in mech-analytics
+        // `etl/api/routes/data.py` (PR #28); typos return 422.
+        fetchScoredRows(chainId, windowStartSec, windowEndSec, `${key}:scored-rows`, {
+          source: ['mech_onchain', 'ipfs_historical'],
+        }),
         fetchUnscoredRows(chainId, windowStartSec, windowEndSec, `${key}:unscored-rows`),
         fetchAgentAggregate(chainId, agentId),
       ]);
@@ -1162,8 +1206,26 @@ try {
         `${dailyStats.truncated ? ' (TRUNCATED at subgraph page cap)' : ''}`
     );
     emit(
-      `  scored rows in window: ${scoredRows.rows.length}` +
+      `  scored rows in window (source=mech_onchain,ipfs_historical): ` +
+        `${scoredRows.rows.length}` +
         `${scoredRows.truncated ? ' (TRUNCATED at page cap)' : ''}`
+    );
+    // Composition of the scored feed by predict-api ingest source
+    // (mech-analytics PR #28). Live-poller rows are `mech_onchain`;
+    // data-lake backfill is `ipfs_historical`. Rows with `source=null`
+    // are pre-013 tail on the mech-analytics side (the source-backfill
+    // hasn't caught up yet — see mech-analytics
+    // `scripts/backfill_per_request_scores_source.py`). Operators watch
+    // the null count trend to zero as the backfill completes.
+    const sourceCounts = { mech_onchain: 0, ipfs_historical: 0, null: 0 };
+    for (const row of scoredRows.rows) {
+      const label = row.source ?? 'null';
+      sourceCounts[label] = (sourceCounts[label] ?? 0) + 1;
+    }
+    emit(
+      `    (by source: mech_onchain=${sourceCounts.mech_onchain}, ` +
+        `ipfs_historical=${sourceCounts.ipfs_historical}, ` +
+        `null=${sourceCounts.null})`
     );
     emit(
       `  unscored (shell) rows in window: ${unscoredRows.rows.length}` +
@@ -1196,9 +1258,17 @@ try {
     // in the same /v1/data/scored-rows page. Without a Map-based dedup,
     // `diffRowSets` (a multiset diff) counts hex and decimal as two
     // separate rows on the analytics side against one subgraph row →
-    // `extraInAnalytics` inflates by the duplicate count. Predict-api
-    // canonicalisation PR will fix at source; until it deploys +
-    // backfills, this script-side dedup is the safety net.
+    // `extraInAnalytics` inflates by the duplicate count.
+    //
+    // predict-api PR #178 canonicalises `request_id` at both writers
+    // and ships migration 013 to collapse the ~2,714 existing decimal
+    // duplicates on chain 100. Once that merges and the migration runs
+    // (and mech-analytics's own canonicaliser script re-writes the
+    // per_request_scores tail), the dedup below becomes structurally
+    // redundant. Keeping it as a regression guard: if a future writer
+    // path lands a row before predict-api canonicalises, the safety net
+    // still fires here. Removing it needs coordination across the two
+    // repos and a proof that the tail is clean.
     // Symmetric with the subgraph WHERE clause: analytics scored rows
     // without a non-empty question_title are NOT displayable (the
     // predict page can't render a prediction card without a title),
@@ -1448,6 +1518,11 @@ try {
       analytics_scored_raw_count: analyticsScoredRawCount,
       analytics_scored_unique_count: analyticsScoredUniqueCount,
       analytics_scored_duplicates_collapsed: analyticsScoredDuplicatesCollapsed,
+      // Composition of the analytics scored feed by predict-api ingest
+      // source (mech-analytics PR #28). `null` bucket tracks the pre-013
+      // tail — should trend to zero after
+      // `backfill_per_request_scores_source` completes.
+      analytics_scored_by_source: sourceCounts,
       subgraph_off_chain_count: subgraphOffChainCount,
       analytics_unscored_count: analyticsUnscoredCount,
       missing_in_analytics: rowDiff.missingInAnalytics,
