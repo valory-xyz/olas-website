@@ -422,11 +422,7 @@ tr, th {
      number, so selection is off for the run of the celebration. */
   cursor: pointer;
   user-select: none;
-  box-shadow:
-    0 0 16px 0 rgba(168, 85, 247, 0.18),
-    0 8px 24px 0 rgba(24, 39, 75, 0.12);
-  /* The glow breathes on its own and is left alone on hover. */
-  animation: milestone-glow 3.5s ease-in-out infinite;
+  box-shadow: 0 8px 24px 0 rgba(24, 39, 75, 0.12);
   /* `translate`, not `transform`: the click pop animates `scale`, and keeping
      them on separate properties means neither overwrites the other. Animating
      both through `transform` made the card drop to 0 for the pop's duration. */
@@ -439,17 +435,27 @@ tr, th {
   translate: 0 -2px;
 }
 
+/* The glow lives on its own transparent layer and pulses via opacity. Animating
+   box-shadow directly repainted the card every frame; opacity is handled by the
+   compositor, so the breathing costs nothing per frame. The layer carries no
+   background, so the halo shows outside the card and never tints its face. */
+.milestone-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 24px 0 rgba(168, 85, 247, 0.32);
+  pointer-events: none;
+  animation: milestone-glow 3.5s ease-in-out infinite;
+}
+
 @keyframes milestone-glow {
   0%,
   100% {
-    box-shadow:
-      0 0 14px 0 rgba(168, 85, 247, 0.16),
-      0 8px 24px 0 rgba(24, 39, 75, 0.12);
+    opacity: 0.45;
   }
   50% {
-    box-shadow:
-      0 0 24px 0 rgba(168, 85, 247, 0.32),
-      0 8px 24px 0 rgba(24, 39, 75, 0.12);
+    opacity: 1;
   }
 }
 
@@ -553,8 +559,12 @@ a:hover > .milestone-value {
   }
 
   /* Static glow, no breathing, no lift. The pop is gated in JS. */
-  .milestone-card {
+  .milestone-card::after {
     animation: none;
+    opacity: 0.7;
+  }
+
+  .milestone-card {
     transition: none;
   }
 
