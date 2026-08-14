@@ -143,8 +143,10 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`staking:${chain}`);
         }
+        // The query didn't fail, so a null Global just means no staking activity on this
+        // chain yet — expected, chains are wired up ahead of launch.
         const currentOlasStaked = readGlobalField(
-          data.global,
+          data.global ?? { currentOlasStaked: '0' },
           'currentOlasStaked',
           `staking:${chain}`,
           fetchErrors
@@ -350,8 +352,10 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
         if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
           laggingSubgraphs.push(`ata:${chain}`);
         }
+        // The query didn't fail, so a null Global just means no ATA transactions on this
+        // chain yet — expected, chains are wired up ahead of launch.
         const totalAtaTransactions = readGlobalField(
-          data.global,
+          data.global ?? { totalAtaTransactions: '0' },
           'totalAtaTransactions',
           `ata:${chain}`,
           fetchErrors
