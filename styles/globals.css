@@ -185,12 +185,13 @@ video {
    machine drop a frame and flash the cards away.
    The 1px blur was doing one real job, though: softening the dotted background
    showing through the half-transparent card. Dropping it let the dots read as a
-   crisp grid and the cards look see-through. The fill carries that now, which
-   costs nothing to composite. */
+   crisp grid and the cards look see-through. The fill is fully opaque now — it
+   keeps the original top-to-bottom shading, just without the page pattern
+   coming through, and costs nothing to composite. */
 .activity-card-opaque {
   border-radius: 12px;
   border: 1px solid white;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(242, 244, 249, 0.85) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f2f4f9 100%);
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
@@ -563,6 +564,29 @@ a:hover > .milestone-value {
    leaves — in flow, the icon pushes it ~30px off centre. */
 .milestone-card > div:first-of-type {
   position: relative;
+}
+
+/* Hat perched on the card's top-right corner, overhanging it like something
+   placed there rather than drawn into it. Above the ring so the rim passes
+   behind it; no pointer events so it never intercepts the card's click. */
+.milestone-hat {
+  position: absolute;
+  top: -58px;
+  right: -38px;
+  width: 104px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 12px rgba(24, 39, 75, 0.2));
+}
+
+/* On phones the card nearly fills the width, so an overhang this wide runs into
+   the section's clip and the hat looks cut off. Tuck it in. */
+@media (max-width: 767px) {
+  .milestone-hat {
+    top: -46px;
+    right: -6px;
+    width: 84px;
+  }
 }
 
 .milestone-caption {
