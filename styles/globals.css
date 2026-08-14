@@ -189,6 +189,11 @@ video {
    keeps the original top-to-bottom shading, just without the page pattern
    coming through, and costs nothing to composite. */
 .activity-card-opaque {
+  /* The section's dot pattern (.activity-bg) is an absolutely-positioned
+     sibling, so it paints over static boxes. The old backdrop-filter used to
+     lift the cards into the positioned paint stage; with it gone, relative
+     does the same job — without it the dots draw on top of the cards. */
+  position: relative;
   border-radius: 12px;
   border: 1px solid white;
   background: linear-gradient(180deg, #ffffff 0%, #f2f4f9 100%);
