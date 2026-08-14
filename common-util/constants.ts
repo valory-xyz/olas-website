@@ -318,9 +318,18 @@ export const PREDICT_STAKING_PROGRAMS_PEARL = {
 /** Transaction count that turns the celebration on. */
 export const TXN_MILESTONE_VALUE = 20_000_000;
 
-/** When the celebration turns itself off. Keep the explicit Z — a bare date
- *  parses as midnight UTC and silently ends the run a day early. */
-export const TXN_MILESTONE_END = '2026-08-22T23:59:59Z';
+/** How long the celebration runs, counted from the moment the threshold was
+ *  actually crossed (recorded in the snapshot as `milestoneReachedAt`). */
+export const TXN_MILESTONE_RUN_DAYS = 7;
+
+/**
+ * Backstop for the case where the crossing was never stamped — a snapshot
+ * rebuilt from scratch, or a blob wiped mid-run. Without it a missing stamp
+ * would leave the celebration on forever. Deliberately generous: it should
+ * never be what ends a healthy run. Keep the explicit Z — a bare date parses
+ * as midnight UTC and would cut a day off.
+ */
+export const TXN_MILESTONE_FALLBACK_END = '2026-08-27T23:59:59Z';
 
 /**
  * Parse a count that a metric published as a display string ("19,937,011").
@@ -339,7 +348,15 @@ export const parseFormattedCount = (value?: string | number | null): number => {
 /** Whether the transactions metric has crossed the milestone and the run is still open. */
 export const isTxnMilestoneActive = (
   transactionsValue?: string | number | null,
+  reachedAt?: string | null,
   now: number = Date.now()
-): boolean =>
-  parseFormattedCount(transactionsValue) >= TXN_MILESTONE_VALUE &&
-  now < Date.parse(TXN_MILESTONE_END);
+): boolean => {
+  if (parseFormattedCount(transactionsValue) < TXN_MILESTONE_VALUE) return false;
+
+  const stampedAt = reachedAt ? Date.parse(reachedAt) : NaN;
+  const endsAt = Number.isNaN(stampedAt)
+    ? Date.parse(TXN_MILESTONE_FALLBACK_END)
+    : stampedAt + TXN_MILESTONE_RUN_DAYS * 24 * 60 * 60 * 1000;
+
+  return now < endsAt;
+};

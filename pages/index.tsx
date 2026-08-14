@@ -42,8 +42,10 @@ export const getStaticProps = async () => {
   // Resolved here rather than in the component: a fixed prop renders the same
   // on server and client, so the date boundary can't cause a hydration mismatch.
   // ISR (5 min) re-evaluates it, so the celebration starts and ends on its own.
+  const mainMetrics = metrics as MainMetricsData | null;
   const isTxnMilestone = isTxnMilestoneActive(
-    (metrics as MainMetricsData | null)?.transactions?.value
+    mainMetrics?.transactions?.value,
+    mainMetrics?.milestoneReachedAt
   );
 
   return {
