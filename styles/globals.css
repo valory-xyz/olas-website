@@ -417,8 +417,11 @@ tr, th {
   /* Backdrop blur is deliberately left at the shared 1px: anything stronger
      smears the dot pattern behind the card into mush. */
   border-color: transparent;
-  /* Whole card celebrates on click — the handler lets the value's link through. */
+  /* Whole card celebrates on click — the handler lets the value's link through.
+     Repeated clicking would otherwise double-click-select the caption and the
+     number, so selection is off for the run of the celebration. */
   cursor: pointer;
+  user-select: none;
   box-shadow:
     0 0 28px 0 rgba(168, 85, 247, 0.28),
     0 8px 24px 0 rgba(24, 39, 75, 0.12);
@@ -436,16 +439,20 @@ tr, th {
   border-radius: 13px;
   padding: 1.5px;
   /* White stops are what read as "shimmer" — they sweep round as the angle
-     animates, which a pure hue rotation does not do. */
+     animates, which a pure hue rotation does not do. Each one is given an
+     explicit arc rather than a single stop, so it lands as a broad highlight
+     instead of a thin seam between two hues. */
   background: conic-gradient(
     from var(--milestone-angle),
-    #f472b6,
-    #ffffff,
-    #a855f7,
-    #7e22ed,
-    #ffffff,
-    #c084fc,
-    #f472b6
+    #f472b6 0deg,
+    #ffffff 45deg,
+    #ffffff 95deg,
+    #a855f7 140deg,
+    #7e22ed 185deg,
+    #ffffff 225deg,
+    #ffffff 275deg,
+    #c084fc 320deg,
+    #f472b6 360deg
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -457,7 +464,7 @@ tr, th {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  animation: milestone-border-spin 4s linear infinite;
+  animation: milestone-border-spin 9s linear infinite;
 }
 
 @keyframes milestone-border-spin {
