@@ -1,4 +1,4 @@
-import { MainMetricsData } from 'common-util/api/main-metrics';
+import type { MainMetricsData } from 'common-util/api/main-metrics';
 import { isTxnMilestoneActive, REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';

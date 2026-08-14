@@ -21,17 +21,24 @@ const COLORS = ['#7E22ED', '#A855F7', '#C084FC', '#F472B6', '#FBCFE8'];
 export const useMilestoneConfetti = (enabled: boolean) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const instanceRef = useRef<CreateTypes | null>(null);
+  // The promise is cached, not the resolved instance: two volleys can start
+  // while the chunk is still loading (the scroll volley plus an eager click),
+  // and caching only the result lets both see an empty ref and build a second
+  // instance on the same canvas — two render loops each clearing the other's
+  // frame. Storing the promise makes the first caller the only builder.
+  const instanceRef = useRef<Promise<CreateTypes | null> | null>(null);
 
-  const getInstance = useCallback(async () => {
-    if (!canvasRef.current) return null;
-    if (!instanceRef.current) {
-      // Lazy: keeps canvas-confetti out of the homepage bundle entirely.
-      const { default: confetti } = await import('canvas-confetti');
-      // No `useWorker` — transferControlToOffscreen only works once per canvas,
-      // and StrictMode's double mount would throw on the second attempt.
-      instanceRef.current = confetti.create(canvasRef.current, { resize: true });
-    }
+  const getInstance = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return Promise.resolve(null);
+
+    // Lazy: keeps canvas-confetti out of the homepage bundle entirely.
+    // No `useWorker` — transferControlToOffscreen only works once per canvas,
+    // and StrictMode's double mount would throw on the second attempt.
+    instanceRef.current ??= import('canvas-confetti').then(({ default: confetti }) =>
+      confetti.create(canvas, { resize: true })
+    );
+
     return instanceRef.current;
   }, []);
 
@@ -131,7 +138,9 @@ export const useMilestoneConfetti = (enabled: boolean) => {
 
   useEffect(
     () => () => {
-      instanceRef.current?.reset();
+      // May still be in flight — resolve before resetting, or a volley started
+      // just before unmount keeps drawing.
+      instanceRef.current?.then((instance) => instance?.reset());
       instanceRef.current = null;
     },
     []

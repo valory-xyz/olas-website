@@ -327,7 +327,12 @@ export const TXN_MILESTONE_END = '2026-08-22T23:59:59Z';
  * Returns 0 for anything unparseable, so callers fail closed.
  */
 export const parseFormattedCount = (value?: string | number | null): number => {
-  const digits = String(value ?? '').replace(/[^0-9]/g, '');
+  // Split on the decimal point first: stripping every non-digit would turn a
+  // hypothetical "1,993,701.25" into 199370125 and read as far past the target.
+  // The metric is published with maximumFractionDigits: 0 today, so this is
+  // belt-and-braces rather than a live case.
+  const [whole] = String(value ?? '').split('.');
+  const digits = whole.replace(/[^0-9]/g, '');
   return digits ? Number(digits) : 0;
 };
 

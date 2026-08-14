@@ -17,8 +17,6 @@ const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
-// Keyframes name from globals.css — used to find the ring animation at runtime.
-const MILESTONE_SPIN = 'milestone-ring-spin';
 const MILESTONE_HOVER_SPEED = 2.1;
 
 // Format a USD metric, falling back to '--' when the value is missing/non-numeric
@@ -401,6 +399,8 @@ const TransactionsCard = ({
   isMilestone = false,
 }: TransactionsCardProps) => {
   const { containerRef, canvasRef, fire } = useMilestoneConfetti(isMilestone);
+  const stackRef = useRef<HTMLDivElement | null>(null);
+  const ringSpinRef = useRef<HTMLDivElement | null>(null);
   const popRef = useRef<Animation | null>(null);
 
   useEffect(() => () => popRef.current?.cancel(), []);
@@ -410,7 +410,7 @@ const TransactionsCard = ({
   // next began, which is what made it stutter. Cancelling and replaying the
   // animation restarts cleanly however fast it's clicked.
   const pop = useCallback(() => {
-    const stack = containerRef.current?.querySelector('.milestone-stack');
+    const stack = stackRef.current;
     if (!stack || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     popRef.current?.cancel();
@@ -418,23 +418,17 @@ const TransactionsCard = ({
       duration: 260,
       easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
     });
-  }, [containerRef]);
+  }, []);
 
   // Speed the ring up via playbackRate rather than a CSS duration swap: the
   // swap keeps the animation's absolute time, which resolves to a different
   // angle at the new duration and makes the ring jump. playbackRate leaves the
   // current position alone, so one ring simply picks up pace.
-  const setRingSpeed = useCallback(
-    (rate: number) => {
-      containerRef.current
-        ?.getAnimations?.({ subtree: true })
-        .filter((animation) => (animation as CSSAnimation).animationName === MILESTONE_SPIN)
-        .forEach((animation) => {
-          animation.updatePlaybackRate(rate);
-        });
-    },
-    [containerRef]
-  );
+  const setRingSpeed = useCallback((rate: number) => {
+    ringSpinRef.current?.getAnimations().forEach((animation) => {
+      animation.updatePlaybackRate(rate);
+    });
+  }, []);
 
   const handleCardClick = useCallback(
     (event: React.MouseEvent) => {
@@ -502,12 +496,12 @@ const TransactionsCard = ({
           wrapper, so the rim travels with the card instead of staying put.
           The canvas is deliberately outside it — scaling the confetti with the
           card would drag the particles around mid-flight. */}
-      <div className="milestone-stack">
+      <div ref={stackRef} className="milestone-stack">
         {card}
         {/* Above the card so the rim covers its border. Two layers because the
             gradient rotates while the mask that shapes it must not. */}
         <div className="milestone-ring" aria-hidden>
-          <div className="milestone-ring-spin" />
+          <div ref={ringSpinRef} className="milestone-ring-spin" />
         </div>
       </div>
     </div>
@@ -583,7 +577,9 @@ export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityPro
 
   // Preview-only stand-in. Local builds frequently come up without a blob
   // snapshot, leaving the card reading "--" so the celebration can't be judged.
-  // Unreachable in production: it needs both ?milestone=1 and a missing value.
+  // Needs BOTH ?milestone=1 and a missing value: a snapshot can genuinely fail
+  // in production, but only someone who typed the query param would ever see
+  // this — a deliberate trade-off for the run, not an unreachable branch.
   const transactionsValue =
     isMilestonePreview && processedMetrics.transactions === '--'
       ? '20,012,345'
