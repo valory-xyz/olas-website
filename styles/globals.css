@@ -601,9 +601,20 @@ a:hover > .milestone-value {
 .milestone-caption {
   @apply text-sm font-normal text-purple-700;
   position: absolute;
-  left: 50%;
+  /* Centered between the icon and the right edge: the header's true center
+     runs into the 40px icon, so shift the midpoint by half the icon. */
+  left: calc(50% + 20px);
   top: 50%;
   transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+/* The wider mobile header has room to center the caption on the full row.
+   Must stay after the base rule — same specificity, later wins. */
+@media (max-width: 767px) {
+  .milestone-caption {
+    left: 50%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
