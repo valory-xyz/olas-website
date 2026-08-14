@@ -410,11 +410,11 @@ const TransactionsCard = ({
   // next began, which is what made it stutter. Cancelling and replaying the
   // animation restarts cleanly however fast it's clicked.
   const pop = useCallback(() => {
-    const card = containerRef.current?.querySelector('.milestone-card');
-    if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const stack = containerRef.current?.querySelector('.milestone-stack');
+    if (!stack || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     popRef.current?.cancel();
-    popRef.current = card.animate([{ scale: 1 }, { scale: 1.03 }, { scale: 1 }], {
+    popRef.current = stack.animate([{ scale: 1 }, { scale: 1.03 }, { scale: 1 }], {
       duration: 260,
       easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
     });
@@ -498,11 +498,17 @@ const TransactionsCard = ({
         // intrinsic 300x150 size, so left+right alone would not stretch it.
         className="milestone-confetti pointer-events-none absolute -left-[170px] -top-[190px] w-[calc(100%+340px)] h-[calc(100%+300px)]"
       />
-      {card}
-      {/* Sits above the card so the rim covers its border. Two layers because
-          the gradient rotates while the mask that shapes it must not. */}
-      <div className="milestone-ring" aria-hidden>
-        <div className="milestone-ring-spin" />
+      {/* Card and ring move as one: hover lift and click pop apply to this
+          wrapper, so the rim travels with the card instead of staying put.
+          The canvas is deliberately outside it — scaling the confetti with the
+          card would drag the particles around mid-flight. */}
+      <div className="milestone-stack">
+        {card}
+        {/* Above the card so the rim covers its border. Two layers because the
+            gradient rotates while the mask that shapes it must not. */}
+        <div className="milestone-ring" aria-hidden>
+          <div className="milestone-ring-spin" />
+        </div>
       </div>
     </div>
   );

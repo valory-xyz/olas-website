@@ -420,15 +420,20 @@ tr, th {
   cursor: pointer;
   user-select: none;
   box-shadow: 0 8px 24px 0 rgba(24, 39, 75, 0.12);
-  /* `translate`, not `transform`: the click pop animates `scale`, and keeping
-     them on separate properties means neither overwrites the other. Animating
-     both through `transform` made the card drop to 0 for the pop's duration. */
+}
+
+/* Card + ring, moved as a unit so the rim never lags behind the card.
+   `translate`, not `transform`: the click pop animates `scale`, and keeping
+   them on separate properties means neither overwrites the other. Animating
+   both through `transform` made the card drop to 0 for the pop's duration. */
+.milestone-stack {
+  position: relative;
   transition: translate 180ms ease;
 }
 
 /* Affordance: nothing else on the card says "clickable". Lifting it echoes the
    agent tiles above, which already lift on hover — same language, no new one. */
-.milestone-card:hover {
+.milestone-stack:hover {
   translate: 0 -2px;
 }
 
@@ -570,11 +575,11 @@ a:hover > .milestone-value {
     opacity: 0.7;
   }
 
-  .milestone-card {
+  .milestone-stack {
     transition: none;
   }
 
-  .milestone-card:hover {
+  .milestone-stack:hover {
     translate: none;
   }
 }
