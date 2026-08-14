@@ -70,10 +70,12 @@ export const fetchMechFeeMetrics = async () => {
       if (checkSubgraphLag(latestBlock, res.value?._meta?.block?.number, chain)) {
         laggingSubgraphs.push(`mechFees:${chain}`);
       }
-      // Per-field, so a present entity missing a field is caught too, not just a null entity.
+      // The query didn't fail, so a null Global just means no paid mech activity on this
+      // chain yet — expected, chains are wired up ahead of launch.
       const source = `mechFees:${chain}`;
-      const feesIn = readGlobalField(res.value?.global, 'totalFeesInUSD', source, fetchErrors);
-      const feesOut = readGlobalField(res.value?.global, 'totalFeesOutUSD', source, fetchErrors);
+      const globalEntity = res.value?.global ?? { totalFeesInUSD: '0', totalFeesOutUSD: '0' };
+      const feesIn = readGlobalField(globalEntity, 'totalFeesInUSD', source, fetchErrors);
+      const feesOut = readGlobalField(globalEntity, 'totalFeesOutUSD', source, fetchErrors);
       if (feesIn === null || feesOut === null) return;
 
       inUsd += Number(feesIn);
