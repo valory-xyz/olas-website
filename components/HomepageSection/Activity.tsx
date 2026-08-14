@@ -18,7 +18,7 @@ const imgPath = '/images/homepage/activity/';
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
 // Keyframes name from globals.css — used to find the ring animation at runtime.
-const MILESTONE_SPIN = 'milestone-border-spin';
+const MILESTONE_SPIN = 'milestone-ring-spin';
 const MILESTONE_HOVER_SPEED = 2.1;
 
 // Format a USD metric, falling back to '--' when the value is missing/non-numeric
@@ -499,6 +499,11 @@ const TransactionsCard = ({
         className="milestone-confetti pointer-events-none absolute -left-[170px] -top-[190px] w-[calc(100%+340px)] h-[calc(100%+300px)]"
       />
       {card}
+      {/* Sits above the card so the rim covers its border. Two layers because
+          the gradient rotates while the mask that shapes it must not. */}
+      <div className="milestone-ring" aria-hidden>
+        <div className="milestone-ring-spin" />
+      </div>
     </div>
   );
 };

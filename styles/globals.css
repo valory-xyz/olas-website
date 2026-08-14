@@ -406,17 +406,14 @@ tr, th {
    20M transactions milestone — temporary celebration (remove after the run).
    --------------------------------------------------------------------------- */
 
-@property --milestone-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
 /* Must stay after .activity-card-opaque — same specificity, later wins. */
 .milestone-card {
-  /* Backdrop blur is deliberately left at the shared 1px: anything stronger
-     smears the dot pattern behind the card into mush. */
   border-color: transparent;
+  /* Drop the inherited 1px backdrop-filter for the run of the celebration.
+     At 1px it contributes nothing visible, but it forces the card onto its own
+     composited layer that re-reads the pixels behind it — the exact class of
+     work that produces hard-to-reproduce compositing artefacts. */
+  backdrop-filter: none;
   /* Whole card celebrates on click — the handler lets the value's link through.
      Repeated clicking would otherwise double-click-select the caption and the
      number, so selection is off for the run of the celebration. */
@@ -463,23 +460,43 @@ tr, th {
    animation-duration here: changing the duration keeps the animation's absolute
    time, which lands at a different angle and makes the ring visibly jump. */
 
-/* Gradient ring. The mask is on the pseudo-element only — putting it on the
-   card itself would make the card a backdrop root and kill its own glass.
-   Inset -1px so the ring covers the card's own 1px border; without that, the
-   card's background shows through it as a pale outline around the gradient. */
-.milestone-card::before {
-  content: '';
+/* Gradient ring, in two layers.
+   Outer layer holds a static mask that cuts everything but a 1.5px rim; inner
+   layer carries the gradient and simply rotates. Animating a conic-gradient's
+   angle (the obvious one-element version) repaints the ring every single frame
+   for as long as the celebration runs; rotating a finished layer is handled by
+   the compositor, so nothing repaints at all.
+   Inset -1px so the rim covers the card's own border, which would otherwise
+   show through as a pale outline around the gradient. */
+.milestone-ring {
   position: absolute;
   inset: -1px;
-  z-index: 0;
   border-radius: 13px;
   padding: 1.5px;
-  /* White stops are what read as "shimmer" — they sweep round as the angle
-     animates, which a pure hue rotation does not do. Each one is given an
-     explicit arc rather than a single stop, so it lands as a broad highlight
-     instead of a thin seam between two hues. */
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  /* autoprefixer does not generate this — the webkit variant takes xor. */
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Square and oversized so no corner is ever uncovered as it turns. */
+.milestone-ring-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  /* White stops are what read as "shimmer". Each gets an explicit arc rather
+     than a single stop, so it lands as a broad highlight, not a thin seam. */
   background: conic-gradient(
-    from var(--milestone-angle),
     #f472b6 0deg,
     #ffffff 44deg,
     #ffffff 116deg,
@@ -490,22 +507,12 @@ tr, th {
     #c084fc 330deg,
     #f472b6 360deg
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  /* autoprefixer does not generate this — the webkit variant takes xor. */
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  animation: milestone-border-spin 9s linear infinite;
+  animation: milestone-ring-spin 9s linear infinite;
 }
 
-@keyframes milestone-border-spin {
+@keyframes milestone-ring-spin {
   to {
-    --milestone-angle: 360deg;
+    rotate: 360deg;
   }
 }
 
@@ -553,8 +560,7 @@ a:hover > .milestone-value {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .milestone-card::before,
-  .milestone-card:hover::before {
+  .milestone-ring-spin {
     animation: none;
   }
 
