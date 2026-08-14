@@ -517,9 +517,19 @@ a:hover > .milestone-value {
   mask-composite: intersect;
 }
 
+/* The card's header row (icon + caption). Made a positioning context so the
+   caption can centre on the card itself rather than on the space the icon
+   leaves — in flow, the icon pushes it ~30px off centre. */
+.milestone-card > div:first-of-type {
+  position: relative;
+}
+
 .milestone-caption {
-  /* flex-1 lets it centre in the space left of the icon. */
-  @apply flex-1 text-center text-sm font-normal text-purple-700;
+  @apply text-sm font-normal text-purple-700;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .milestone-pop {
