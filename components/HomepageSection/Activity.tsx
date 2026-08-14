@@ -402,12 +402,19 @@ const TransactionsCard = ({
 
   useEffect(() => () => clearTimeout(popTimeoutRef.current), []);
 
-  const handleBadgeClick = useCallback(() => {
-    fire();
-    setIsPopping(true);
-    clearTimeout(popTimeoutRef.current);
-    popTimeoutRef.current = setTimeout(() => setIsPopping(false), 280);
-  }, [fire]);
+  const handleCardClick = useCallback(
+    (event: React.MouseEvent) => {
+      // The value is a link to /data — let that click navigate instead of
+      // celebrating. Everything else on the card fires the confetti.
+      if ((event.target as HTMLElement).closest('a')) return;
+
+      fire();
+      setIsPopping(true);
+      clearTimeout(popTimeoutRef.current);
+      popTimeoutRef.current = setTimeout(() => setIsPopping(false), 280);
+    },
+    [fire]
+  );
 
   const card = (
     <ActivityCard
@@ -418,18 +425,7 @@ const TransactionsCard = ({
       cardClassName={
         isMilestone ? cn('milestone-card relative', isPopping && 'milestone-pop') : undefined
       }
-      text={
-        isMilestone ? (
-          <button
-            type="button"
-            onClick={handleBadgeClick}
-            className="milestone-badge"
-            aria-label="Celebrate 20 million transactions"
-          >
-            <span aria-hidden>🏆</span> 20M milestone
-          </button>
-        ) : undefined
-      }
+      text={isMilestone ? <span className="milestone-caption">20M milestone</span> : undefined}
       primary={{
         value: transactions,
         text: (
@@ -451,8 +447,12 @@ const TransactionsCard = ({
   return (
     // Plain `relative` on purpose: opacity / filter / transform / will-change
     // here would make this a backdrop root and cut the canvas out of the card's
-    // backdrop, silently killing the confetti-under-glass effect.
-    <div ref={containerRef} className="relative w-full md:w-[300px]">
+    // backdrop.
+    // Click-to-celebrate is a pointer-only easter egg layered on top of the
+    // automatic scroll volley — deliberately not a button, since making the
+    // card interactive would nest the value's /data link inside a control.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+    <div ref={containerRef} onClick={handleCardClick} className="relative w-full md:w-[300px]">
       <canvas
         ref={canvasRef}
         aria-hidden
@@ -533,6 +533,14 @@ export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityPro
       totalOperatorsStatus: metrics.totalOperators?.status,
     };
   }, [metrics]);
+
+  // Preview-only stand-in. Local builds frequently come up without a blob
+  // snapshot, leaving the card reading "--" so the celebration can't be judged.
+  // Unreachable in production: it needs both ?milestone=1 and a missing value.
+  const transactionsValue =
+    isMilestonePreview && processedMetrics.transactions === '--'
+      ? '20,012,345'
+      : processedMetrics.transactions;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -621,7 +629,7 @@ export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityPro
             <p>AI Agent Bazaar is used</p>
           </div>
           <TransactionsCard
-            transactions={processedMetrics.transactions}
+            transactions={transactionsValue}
             transactionsStatus={processedMetrics.transactionsStatus}
             isMilestone={showMilestone}
           />
@@ -654,7 +662,7 @@ export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityPro
           className="mx-auto mb-2"
         />
         <TransactionsCard
-          transactions={processedMetrics.transactions}
+          transactions={transactionsValue}
           transactionsStatus={processedMetrics.transactionsStatus}
           isMilestone={showMilestone}
         />

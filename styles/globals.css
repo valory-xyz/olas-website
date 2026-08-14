@@ -414,26 +414,36 @@ tr, th {
 
 /* Must stay after .activity-card-opaque — same specificity, later wins. */
 .milestone-card {
-  /* Hard-coded, never a var(): Safari refuses CSS variables inside
-     -webkit-backdrop-filter, and the glass would silently vanish there. */
-  backdrop-filter: blur(8px);
+  /* Backdrop blur is deliberately left at the shared 1px: anything stronger
+     smears the dot pattern behind the card into mush. */
   border-color: transparent;
+  /* Whole card celebrates on click — the handler lets the value's link through. */
+  cursor: pointer;
+  box-shadow:
+    0 0 28px 0 rgba(168, 85, 247, 0.28),
+    0 8px 24px 0 rgba(24, 39, 75, 0.12);
 }
 
 /* Gradient ring. The mask is on the pseudo-element only — putting it on the
-   card itself would make the card a backdrop root and kill its own glass. */
+   card itself would make the card a backdrop root and kill its own glass.
+   Inset -1px so the ring covers the card's own 1px border; without that, the
+   card's background shows through it as a pale outline around the gradient. */
 .milestone-card::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -1px;
   z-index: 0;
-  border-radius: inherit;
-  padding: 2px;
+  border-radius: 13px;
+  padding: 1.5px;
+  /* White stops are what read as "shimmer" — they sweep round as the angle
+     animates, which a pure hue rotation does not do. */
   background: conic-gradient(
     from var(--milestone-angle),
     #f472b6,
+    #ffffff,
     #a855f7,
     #7e22ed,
+    #ffffff,
     #c084fc,
     #f472b6
   );
@@ -447,7 +457,7 @@ tr, th {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  animation: milestone-border-spin 6s linear infinite;
+  animation: milestone-border-spin 4s linear infinite;
 }
 
 @keyframes milestone-border-spin {
@@ -460,14 +470,8 @@ tr, th {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600;
 }
 
-.milestone-badge {
-  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold text-purple-700 transition-colors;
-  background: linear-gradient(90deg, rgba(244, 114, 182, 0.18), rgba(168, 85, 247, 0.18));
-  border: 1px solid rgba(168, 85, 247, 0.35);
-}
-
-.milestone-badge:hover {
-  background: linear-gradient(90deg, rgba(244, 114, 182, 0.28), rgba(168, 85, 247, 0.28));
+.milestone-caption {
+  @apply text-base font-medium text-slate-600;
 }
 
 .milestone-pop {

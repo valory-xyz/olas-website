@@ -85,7 +85,7 @@ export const useMilestoneConfetti = (enabled: boolean) => {
         // Two volleys: the first one is easy to scroll past and miss.
         secondVolley = setTimeout(burst, SECOND_VOLLEY_DELAY_MS);
       },
-      { threshold: 0.4 }
+      { threshold: 0.5 }
     );
 
     observer.observe(element);
