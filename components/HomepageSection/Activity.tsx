@@ -17,6 +17,10 @@ const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
+// Keyframes name from globals.css — used to find the ring animation at runtime.
+const MILESTONE_SPIN = 'milestone-border-spin';
+const MILESTONE_HOVER_SPEED = 1.4;
+
 // Format a USD metric, falling back to '--' when the value is missing/non-numeric
 // (e.g. a snapshot taken before this metric existed) so we never render "$NaN".
 const formatUsd = (value?: string | number, fractionDigits?: number) => {
@@ -402,6 +406,22 @@ const TransactionsCard = ({
 
   useEffect(() => () => clearTimeout(popTimeoutRef.current), []);
 
+  // Speed the ring up via playbackRate rather than a CSS duration swap: the
+  // swap keeps the animation's absolute time, which resolves to a different
+  // angle at the new duration and makes the ring jump. playbackRate leaves the
+  // current position alone, so one ring simply picks up pace.
+  const setRingSpeed = useCallback(
+    (rate: number) => {
+      containerRef.current
+        ?.getAnimations?.({ subtree: true })
+        .filter((animation) => (animation as CSSAnimation).animationName === MILESTONE_SPIN)
+        .forEach((animation) => {
+          animation.updatePlaybackRate(rate);
+        });
+    },
+    [containerRef]
+  );
+
   const handleCardClick = useCallback(
     (event: React.MouseEvent) => {
       // The value is a link to /data — let that click navigate instead of
@@ -452,7 +472,13 @@ const TransactionsCard = ({
     // automatic scroll volley — deliberately not a button, since making the
     // card interactive would nest the value's /data link inside a control.
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-    <div ref={containerRef} onClick={handleCardClick} className="relative w-full md:w-[300px]">
+    <div
+      ref={containerRef}
+      onClick={handleCardClick}
+      onMouseEnter={() => setRingSpeed(MILESTONE_HOVER_SPEED)}
+      onMouseLeave={() => setRingSpeed(1)}
+      className="relative w-full md:w-[300px]"
+    >
       <canvas
         ref={canvasRef}
         aria-hidden
