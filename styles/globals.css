@@ -401,3 +401,97 @@ tr, th {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   20M transactions milestone — temporary celebration (remove after the run).
+   --------------------------------------------------------------------------- */
+
+@property --milestone-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Must stay after .activity-card-opaque — same specificity, later wins. */
+.milestone-card {
+  /* Hard-coded, never a var(): Safari refuses CSS variables inside
+     -webkit-backdrop-filter, and the glass would silently vanish there. */
+  backdrop-filter: blur(8px);
+  border-color: transparent;
+}
+
+/* Gradient ring. The mask is on the pseudo-element only — putting it on the
+   card itself would make the card a backdrop root and kill its own glass. */
+.milestone-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--milestone-angle),
+    #f472b6,
+    #a855f7,
+    #7e22ed,
+    #c084fc,
+    #f472b6
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  /* autoprefixer does not generate this — the webkit variant takes xor. */
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: milestone-border-spin 6s linear infinite;
+}
+
+@keyframes milestone-border-spin {
+  to {
+    --milestone-angle: 360deg;
+  }
+}
+
+.milestone-value {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600;
+}
+
+.milestone-badge {
+  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold text-purple-700 transition-colors;
+  background: linear-gradient(90deg, rgba(244, 114, 182, 0.18), rgba(168, 85, 247, 0.18));
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.milestone-badge:hover {
+  background: linear-gradient(90deg, rgba(244, 114, 182, 0.28), rgba(168, 85, 247, 0.28));
+}
+
+.milestone-pop {
+  animation: milestone-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes milestone-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .milestone-card::before {
+    animation: none;
+  }
+
+  .milestone-pop {
+    animation: none;
+  }
+}

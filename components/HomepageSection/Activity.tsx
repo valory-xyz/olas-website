@@ -7,9 +7,11 @@ import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator
 import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import { MetricStatus } from 'common-util/graphql/types';
+
+import { useMilestoneConfetti } from './useMilestoneConfetti';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -38,6 +40,7 @@ type ActivityValueProps = {
   text?: React.ReactNode;
   status?: MetricStatus;
   textSize?: 'xl' | '2xl';
+  valueClassName?: string;
 };
 
 type OlasIsBurnedArrowProps = {
@@ -69,6 +72,7 @@ type AgentToAgentCardProps = {
 type TransactionsCardProps = {
   transactions?: string;
   transactionsStatus?: MetricStatus;
+  isMilestone?: boolean;
 };
 
 type ActivityMetrics = {
@@ -83,6 +87,7 @@ type ActivityMetrics = {
 
 type ActivityProps = {
   metrics?: ActivityMetrics | null;
+  isTxnMilestone?: boolean;
 };
 
 const ActivityValue = ({
@@ -92,11 +97,18 @@ const ActivityValue = ({
   text,
   status,
   textSize = 'xl',
+  valueClassName,
 }: ActivityValueProps) => (
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
       <div
-        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-700'}`}
+        className={cn(
+          textSize === '2xl' ? 'text-2xl' : 'text-xl',
+          'font-semibold',
+          // A frozen metric stays grey even during the milestone run — the
+          // celebration must not paint over a value that stopped updating.
+          isFrozen(status) ? 'text-gray-400' : (valueClassName ?? 'text-purple-700')
+        )}
       >
         {value}
       </div>
@@ -144,6 +156,7 @@ type ActivityCardLinkProps = {
   value: string | number;
   isLinkExternal?: boolean;
   status?: MetricStatus;
+  valueClassName?: string;
 };
 
 type ActivityCardProps = {
@@ -171,6 +184,7 @@ const ActivityCard = ({
     value: primaryValue,
     status: primaryStatus,
     isLinkExternal: primaryIsLinkExternal = true,
+    valueClassName: primaryValueClassName,
   },
   secondary = {},
   tertiary = {},
@@ -218,6 +232,7 @@ const ActivityCard = ({
         text={primaryText}
         status={primaryStatus}
         textSize="2xl"
+        valueClassName={primaryValueClassName}
       />
       {secondaryValue && (
         <ActivityValue
@@ -376,24 +391,81 @@ const AgentToAgentCard = ({
   />
 );
 
-const TransactionsCard = ({ transactions, transactionsStatus }: TransactionsCardProps) => (
-  <ActivityCard
-    icon="txns.png"
-    alt="Transactions"
-    primary={{
-      value: transactions,
-      text: (
-        <>
-          txns
-          <StaleIndicator status={transactionsStatus} />
-        </>
-      ),
-      link: '/data#transactions',
-      status: transactionsStatus,
-      isLinkExternal: false,
-    }}
-  />
-);
+const TransactionsCard = ({
+  transactions,
+  transactionsStatus,
+  isMilestone = false,
+}: TransactionsCardProps) => {
+  const { containerRef, canvasRef, fire } = useMilestoneConfetti(isMilestone);
+  const [isPopping, setIsPopping] = useState(false);
+  const popTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => () => clearTimeout(popTimeoutRef.current), []);
+
+  const handleBadgeClick = useCallback(() => {
+    fire();
+    setIsPopping(true);
+    clearTimeout(popTimeoutRef.current);
+    popTimeoutRef.current = setTimeout(() => setIsPopping(false), 280);
+  }, [fire]);
+
+  const card = (
+    <ActivityCard
+      icon={isMilestone ? 'txns-milestone.png' : 'txns.png'}
+      alt="Transactions"
+      iconWidth={isMilestone ? 48 : 40}
+      iconHeight={isMilestone ? 48 : 40}
+      cardClassName={
+        isMilestone ? cn('milestone-card relative', isPopping && 'milestone-pop') : undefined
+      }
+      text={
+        isMilestone ? (
+          <button
+            type="button"
+            onClick={handleBadgeClick}
+            className="milestone-badge"
+            aria-label="Celebrate 20 million transactions"
+          >
+            <span aria-hidden>🏆</span> 20M milestone
+          </button>
+        ) : undefined
+      }
+      primary={{
+        value: transactions,
+        text: (
+          <>
+            txns
+            <StaleIndicator status={transactionsStatus} />
+          </>
+        ),
+        link: '/data#transactions',
+        status: transactionsStatus,
+        isLinkExternal: false,
+        valueClassName: isMilestone ? 'milestone-value' : undefined,
+      }}
+    />
+  );
+
+  if (!isMilestone) return card;
+
+  return (
+    // Plain `relative` on purpose: opacity / filter / transform / will-change
+    // here would make this a backdrop root and cut the canvas out of the card's
+    // backdrop, silently killing the confetti-under-glass effect.
+    <div ref={containerRef} className="relative w-full md:w-[300px]">
+      <canvas
+        ref={canvasRef}
+        aria-hidden
+        // Far wider than the card — canvas-confetti only draws inside its own
+        // canvas, so a tight box would clip the particles at the edge.
+        // Width/height are explicit: <canvas> is a replaced element with an
+        // intrinsic 300x150 size, so left+right alone would not stretch it.
+        className="pointer-events-none absolute -left-[130px] -top-[150px] w-[calc(100%+260px)] h-[calc(100%+240px)]"
+      />
+      {card}
+    </div>
+  );
+};
 
 const AgentsGrid = () => (
   <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
@@ -411,7 +483,19 @@ const AgentsGrid = () => (
   </div>
 );
 
-export const Activity = ({ metrics = null }: ActivityProps) => {
+export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityProps) => {
+  // Preview escape hatch: `?milestone=1` shows the celebration before the
+  // counter actually crosses. Applied after mount, so hydration is unaffected.
+  const [isMilestonePreview, setIsMilestonePreview] = useState(false);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('milestone') === '1') {
+      setIsMilestonePreview(true);
+    }
+  }, []);
+
+  const showMilestone = isTxnMilestone || isMilestonePreview;
+
   const processedMetrics = useMemo(() => {
     if (!metrics) {
       return {
@@ -539,6 +623,7 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
           <TransactionsCard
             transactions={processedMetrics.transactions}
             transactionsStatus={processedMetrics.transactionsStatus}
+            isMilestone={showMilestone}
           />
         </div>
       </div>
@@ -571,6 +656,7 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
         <TransactionsCard
           transactions={processedMetrics.transactions}
           transactionsStatus={processedMetrics.transactionsStatus}
+          isMilestone={showMilestone}
         />
         <Image
           src={`${imgPath}mobile-arrow3.png`}

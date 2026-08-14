@@ -4,7 +4,7 @@ import { TokenAddress } from './TokenAddress';
 
 import PropTypes from 'prop-types';
 
-export const PowersAiAgentEconomies = ({ metrics }) => (
+export const PowersAiAgentEconomies = ({ metrics, isTxnMilestone = false }) => (
   <div className="relative">
     <div className="activity-bg h-full" />
     <SectionWrapper
@@ -12,7 +12,7 @@ export const PowersAiAgentEconomies = ({ metrics }) => (
       backgroundType="NONE"
       customClasses="bg-slate-100 text-center py-20"
     >
-      <Activity metrics={metrics} />
+      <Activity metrics={metrics} isTxnMilestone={isTxnMilestone} />
       <TokenAddress />
     </SectionWrapper>
   </div>
@@ -20,4 +20,5 @@ export const PowersAiAgentEconomies = ({ metrics }) => (
 
 PowersAiAgentEconomies.propTypes = {
   metrics: PropTypes.shape({}),
+  isTxnMilestone: PropTypes.bool,
 };

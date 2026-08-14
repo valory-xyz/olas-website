@@ -309,3 +309,32 @@ export const PREDICT_STAKING_PROGRAMS_PEARL = {
   pearl_beta_mech_marketplace_3: '0x9d00a0551f20979080d3762005c9b74d7aa77b85',
   pearl_beta_mech_marketplace_4: '0xE2f80659dB1069f3B6a08af1A62064190c119543',
 };
+
+// ---------------------------------------------------------------------------
+// 20M transactions milestone — temporary celebration (remove after the run).
+// Everything for it is greppable by "MILESTONE" / "milestone".
+// ---------------------------------------------------------------------------
+
+/** Transaction count that turns the celebration on. */
+export const TXN_MILESTONE_VALUE = 20_000_000;
+
+/** When the celebration turns itself off. Keep the explicit Z — a bare date
+ *  parses as midnight UTC and silently ends the run a day early. */
+export const TXN_MILESTONE_END = '2026-08-22T23:59:59Z';
+
+/**
+ * Parse a count that a metric published as a display string ("19,937,011").
+ * Returns 0 for anything unparseable, so callers fail closed.
+ */
+export const parseFormattedCount = (value?: string | number | null): number => {
+  const digits = String(value ?? '').replace(/[^0-9]/g, '');
+  return digits ? Number(digits) : 0;
+};
+
+/** Whether the transactions metric has crossed the milestone and the run is still open. */
+export const isTxnMilestoneActive = (
+  transactionsValue?: string | number | null,
+  now: number = Date.now()
+): boolean =>
+  parseFormattedCount(transactionsValue) >= TXN_MILESTONE_VALUE &&
+  now < Date.parse(TXN_MILESTONE_END);
