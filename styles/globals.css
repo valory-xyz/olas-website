@@ -574,8 +574,8 @@ a:hover > .milestone-value {
   position: absolute;
   /* Seated so the brim's pale opening lands along the card's top edge rather
      than sinking into it — the hat rests on the corner, it doesn't lie on it. */
-  top: -86px;
-  right: -58px;
+  top: -71px;
+  right: -40px;
   z-index: 3;
   width: 120px;
   height: auto;
@@ -587,8 +587,8 @@ a:hover > .milestone-value {
    the section's horizontal clip and the hat looks sheared off. Tuck it in. */
 @media (max-width: 767px) {
   .milestone-hat {
-    top: -66px;
-    right: -18px;
+    top: -57px;
+    right: -32px;
     width: 96px;
   }
 }
