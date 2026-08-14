@@ -1,4 +1,5 @@
-import { REVALIDATE_DURATION } from 'common-util/constants';
+import type { MainMetricsData } from 'common-util/api/main-metrics';
+import { isTxnMilestoneActive, REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
 import Hero from 'components/HomepageSection/Hero';
@@ -11,7 +12,7 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home({ metrics }) {
+export default function Home({ metrics, isTxnMilestone }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function Home({ metrics }) {
       <Hero />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAiAgentEconomies metrics={metrics} />
+      <PowersAiAgentEconomies metrics={metrics} isTxnMilestone={isTxnMilestone} />
       <PropelledBy />
       <Media />
     </PageWrapper>
@@ -38,9 +39,19 @@ export const getStaticProps = async () => {
 
   const metrics = metricsSnapshot?.data ?? null;
 
+  // Resolved here rather than in the component: a fixed prop renders the same
+  // on server and client, so the date boundary can't cause a hydration mismatch.
+  // ISR (5 min) re-evaluates it, so the celebration starts and ends on its own.
+  const mainMetrics = metrics as MainMetricsData | null;
+  const isTxnMilestone = isTxnMilestoneActive(
+    mainMetrics?.transactions?.value,
+    mainMetrics?.milestoneReachedAt
+  );
+
   return {
     props: {
       metrics,
+      isTxnMilestone,
     },
     revalidate: REVALIDATE_DURATION,
   };

@@ -1,6 +1,9 @@
 import { fetchAllAgentMetrics } from 'common-util/api/main-metrics';
-import { saveSnapshot } from 'common-util/snapshot-storage';
+import { parseFormattedCount, TXN_MILESTONE_VALUE } from 'common-util/constants';
+import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { NextApiRequest, NextApiResponse } from 'next';
+
+import type { MainMetricsData } from 'common-util/api/main-metrics';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -12,6 +15,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!metrics) {
       throw new Error('No metrics returned from fetchAllAgentMetrics');
+    }
+
+    // Temporary, for the 20M celebration: record when the threshold was first
+    // crossed so the run can last a week from that moment rather than a date
+    // guessed in advance. Stamped once — afterwards the key is absent from new
+    // data, and the snapshot merge carries the original value forward.
+    const previous = await getSnapshot({ category: 'main' });
+    const alreadyStamped = (previous?.data as MainMetricsData | undefined)?.milestoneReachedAt;
+
+    if (!alreadyStamped) {
+      const transactions = parseFormattedCount(metrics.data?.transactions?.value);
+      if (transactions >= TXN_MILESTONE_VALUE) {
+        metrics.data.milestoneReachedAt = new Date().toISOString();
+      }
     }
 
     const url = await saveSnapshot({ category: 'main', data: metrics });

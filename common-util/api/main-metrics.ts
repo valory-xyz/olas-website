@@ -494,6 +494,13 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
 };
 
 export type MainMetricsData = {
+  /**
+   * ISO timestamp of the first refresh that saw transactions cross 20M, stamped
+   * once by the refresh endpoint and thereafter carried forward by the snapshot
+   * merge (a key absent from new data is kept from the old one). Temporary —
+   * goes away with the milestone celebration.
+   */
+  milestoneReachedAt?: string;
   dailyActiveAgents: MetricWithStatus<number | null>;
   olasStaked: MetricWithStatus<string | null>;
   transactions: MetricWithStatus<string | null>;

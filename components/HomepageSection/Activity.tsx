@@ -7,13 +7,17 @@ import { StaleIndicator, StaleMetricContent } from 'components/ui/StaleIndicator
 import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import { MetricStatus } from 'common-util/graphql/types';
+
+import { useMilestoneConfetti } from './useMilestoneConfetti';
 
 const imgPath = '/images/homepage/activity/';
 
 const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
+
+const MILESTONE_HOVER_SPEED = 2.1;
 
 // Format a USD metric, falling back to '--' when the value is missing/non-numeric
 // (e.g. a snapshot taken before this metric existed) so we never render "$NaN".
@@ -38,6 +42,7 @@ type ActivityValueProps = {
   text?: React.ReactNode;
   status?: MetricStatus;
   textSize?: 'xl' | '2xl';
+  valueClassName?: string;
 };
 
 type OlasIsBurnedArrowProps = {
@@ -69,6 +74,7 @@ type AgentToAgentCardProps = {
 type TransactionsCardProps = {
   transactions?: string;
   transactionsStatus?: MetricStatus;
+  isMilestone?: boolean;
 };
 
 type ActivityMetrics = {
@@ -83,6 +89,7 @@ type ActivityMetrics = {
 
 type ActivityProps = {
   metrics?: ActivityMetrics | null;
+  isTxnMilestone?: boolean;
 };
 
 const ActivityValue = ({
@@ -92,11 +99,18 @@ const ActivityValue = ({
   text,
   status,
   textSize = 'xl',
+  valueClassName,
 }: ActivityValueProps) => (
   <div className="flex flex-row gap-2 place-items-center">
     <LinkComponent href={href}>
       <div
-        className={`${textSize === '2xl' ? 'text-2xl' : 'text-xl'} font-semibold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-700'}`}
+        className={cn(
+          textSize === '2xl' ? 'text-2xl' : 'text-xl',
+          'font-semibold',
+          // A frozen metric stays grey even during the milestone run — the
+          // celebration must not paint over a value that stopped updating.
+          isFrozen(status) ? 'text-gray-400' : (valueClassName ?? 'text-purple-700')
+        )}
       >
         {value}
       </div>
@@ -144,6 +158,7 @@ type ActivityCardLinkProps = {
   value: string | number;
   isLinkExternal?: boolean;
   status?: MetricStatus;
+  valueClassName?: string;
 };
 
 type ActivityCardProps = {
@@ -171,6 +186,7 @@ const ActivityCard = ({
     value: primaryValue,
     status: primaryStatus,
     isLinkExternal: primaryIsLinkExternal = true,
+    valueClassName: primaryValueClassName,
   },
   secondary = {},
   tertiary = {},
@@ -218,6 +234,7 @@ const ActivityCard = ({
         text={primaryText}
         status={primaryStatus}
         textSize="2xl"
+        valueClassName={primaryValueClassName}
       />
       {secondaryValue && (
         <ActivityValue
@@ -376,24 +393,134 @@ const AgentToAgentCard = ({
   />
 );
 
-const TransactionsCard = ({ transactions, transactionsStatus }: TransactionsCardProps) => (
-  <ActivityCard
-    icon="txns.png"
-    alt="Transactions"
-    primary={{
-      value: transactions,
-      text: (
-        <>
-          txns
-          <StaleIndicator status={transactionsStatus} />
-        </>
-      ),
-      link: '/data#transactions',
-      status: transactionsStatus,
-      isLinkExternal: false,
-    }}
-  />
-);
+const TransactionsCard = ({
+  transactions,
+  transactionsStatus,
+  isMilestone = false,
+}: TransactionsCardProps) => {
+  const { containerRef, canvasRef, fire } = useMilestoneConfetti(isMilestone);
+  const stackRef = useRef<HTMLDivElement | null>(null);
+  const ringSpinRef = useRef<HTMLDivElement | null>(null);
+  const popRef = useRef<Animation | null>(null);
+
+  useEffect(() => () => popRef.current?.cancel(), []);
+
+  // Driven here rather than by toggling a CSS class: a class can't restart
+  // mid-flight, so spamming clicks left the previous run to finish before the
+  // next began, which is what made it stutter. Cancelling and replaying the
+  // animation restarts cleanly however fast it's clicked.
+  const pop = useCallback(() => {
+    const stack = stackRef.current;
+    if (!stack || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    popRef.current?.cancel();
+    popRef.current = stack.animate([{ scale: 1 }, { scale: 1.03 }, { scale: 1 }], {
+      duration: 260,
+      easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    });
+  }, []);
+
+  // Speed the ring up via playbackRate rather than a CSS duration swap: the
+  // swap keeps the animation's absolute time, which resolves to a different
+  // angle at the new duration and makes the ring jump. playbackRate leaves the
+  // current position alone, so one ring simply picks up pace.
+  const setRingSpeed = useCallback((rate: number) => {
+    ringSpinRef.current?.getAnimations().forEach((animation) => {
+      animation.updatePlaybackRate(rate);
+    });
+  }, []);
+
+  const handleCardClick = useCallback(
+    (event: React.MouseEvent) => {
+      // The value is a link to /data — let that click navigate instead of
+      // celebrating. Everything else on the card fires the confetti.
+      if ((event.target as HTMLElement).closest('a')) return;
+
+      fire();
+      pop();
+    },
+    [fire, pop]
+  );
+
+  const card = (
+    <ActivityCard
+      icon="txns.png"
+      alt="Transactions"
+      cardClassName={isMilestone ? 'milestone-card relative' : undefined}
+      text={
+        isMilestone ? (
+          <span className="milestone-caption">Celebrating 20M milestone!</span>
+        ) : undefined
+      }
+      primary={{
+        value: transactions,
+        text: (
+          <>
+            txns
+            <StaleIndicator status={transactionsStatus} />
+          </>
+        ),
+        link: '/data#transactions',
+        status: transactionsStatus,
+        isLinkExternal: false,
+        valueClassName: isMilestone ? 'milestone-value' : undefined,
+      }}
+    />
+  );
+
+  if (!isMilestone) return card;
+
+  return (
+    // Plain `relative` on purpose: opacity / filter / transform / will-change
+    // here would make this a backdrop root and cut the canvas out of the card's
+    // backdrop.
+    // Click-to-celebrate is a pointer-only easter egg layered on top of the
+    // automatic scroll volley — deliberately not a button, since making the
+    // card interactive would nest the value's /data link inside a control.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+    <div
+      ref={containerRef}
+      onClick={handleCardClick}
+      onMouseEnter={() => setRingSpeed(MILESTONE_HOVER_SPEED)}
+      onMouseLeave={() => setRingSpeed(1)}
+      className="relative w-full md:w-[300px]"
+    >
+      <canvas
+        ref={canvasRef}
+        aria-hidden
+        // Far wider than the card — canvas-confetti only draws inside its own
+        // canvas, so a tight box would clip the particles at the edge.
+        // Width/height are explicit: <canvas> is a replaced element with an
+        // intrinsic 300x150 size, so left+right alone would not stretch it.
+        className="milestone-confetti pointer-events-none absolute -left-[170px] -top-[190px] w-[calc(100%+340px)] h-[calc(100%+300px)]"
+      />
+      {/* Card and ring move as one: hover lift and click pop apply to this
+          wrapper, so the rim travels with the card instead of staying put.
+          The canvas is deliberately outside it — scaling the confetti with the
+          card would drag the particles around mid-flight. */}
+      <div ref={stackRef} className="milestone-stack">
+        {card}
+        {/* Sits over the card's corner, brim covering it and the open underside
+            facing us — worn, not tucked behind. Inside the stack, so it rides
+            along with the hover lift and the click pop rather than hanging
+            still while the card moves. */}
+        <Image
+          src={`${imgPath}party-hat.png`}
+          alt=""
+          aria-hidden
+          width={200}
+          height={183}
+          className="milestone-hat"
+        />
+        {/* Above the card so the rim covers its border. Two layers because the
+            gradient rotates while the mask that shapes it must not. */}
+        <div className="milestone-ring" aria-hidden>
+          <div ref={ringSpinRef} className="milestone-ring-spin" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AgentsGrid = () => (
   <div className="flex flex-row w-[124px] flex-wrap mb-2 px-auto">
@@ -411,7 +538,19 @@ const AgentsGrid = () => (
   </div>
 );
 
-export const Activity = ({ metrics = null }: ActivityProps) => {
+export const Activity = ({ metrics = null, isTxnMilestone = false }: ActivityProps) => {
+  // Preview escape hatch: `?milestone=1` shows the celebration before the
+  // counter actually crosses. Applied after mount, so hydration is unaffected.
+  const [isMilestonePreview, setIsMilestonePreview] = useState(false);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('milestone') === '1') {
+      setIsMilestonePreview(true);
+    }
+  }, []);
+
+  const showMilestone = isTxnMilestone || isMilestonePreview;
+
   const processedMetrics = useMemo(() => {
     if (!metrics) {
       return {
@@ -449,6 +588,16 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
       totalOperatorsStatus: metrics.totalOperators?.status,
     };
   }, [metrics]);
+
+  // Preview-only stand-in. Local builds frequently come up without a blob
+  // snapshot, leaving the card reading "--" so the celebration can't be judged.
+  // Needs BOTH ?milestone=1 and a missing value: a snapshot can genuinely fail
+  // in production, but only someone who typed the query param would ever see
+  // this — a deliberate trade-off for the run, not an unreachable branch.
+  const transactionsValue =
+    isMilestonePreview && processedMetrics.transactions === '--'
+      ? '20,012,345'
+      : processedMetrics.transactions;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -537,8 +686,9 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
             <p>AI Agent Bazaar is used</p>
           </div>
           <TransactionsCard
-            transactions={processedMetrics.transactions}
+            transactions={transactionsValue}
             transactionsStatus={processedMetrics.transactionsStatus}
+            isMilestone={showMilestone}
           />
         </div>
       </div>
@@ -569,8 +719,9 @@ export const Activity = ({ metrics = null }: ActivityProps) => {
           className="mx-auto mb-2"
         />
         <TransactionsCard
-          transactions={processedMetrics.transactions}
+          transactions={transactionsValue}
           transactionsStatus={processedMetrics.transactionsStatus}
+          isMilestone={showMilestone}
         />
         <Image
           src={`${imgPath}mobile-arrow3.png`}
