@@ -179,12 +179,16 @@ video {
   box-shadow: 0px 0px 0px 4px #FFF inset;
 }
 
+/* No backdrop-filter here on purpose. At 1px the blur was visually
+   indistinguishable from none, but it put every card that uses this class on
+   its own compositing layer that continuously re-reads the pixels behind it —
+   nine of them on the homepage alone. That standing cost is what makes a
+   loaded machine drop a frame and flash the cards away. */
 .activity-card-opaque {
   border-radius: 12px;
   border: 1px solid white;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.50) 0%, rgba(242, 244, 249, 0.50) 100%);
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
-  backdrop-filter: blur(1px);
 }
 
 .card-opaque {
@@ -409,11 +413,6 @@ tr, th {
 /* Must stay after .activity-card-opaque — same specificity, later wins. */
 .milestone-card {
   border-color: transparent;
-  /* Drop the inherited 1px backdrop-filter for the run of the celebration.
-     At 1px it contributes nothing visible, but it forces the card onto its own
-     composited layer that re-reads the pixels behind it — the exact class of
-     work that produces hard-to-reproduce compositing artefacts. */
-  backdrop-filter: none;
   /* Whole card celebrates on click — the handler lets the value's link through.
      Repeated clicking would otherwise double-click-select the caption and the
      number, so selection is off for the run of the celebration. */
@@ -519,6 +518,13 @@ tr, th {
   to {
     rotate: 360deg;
   }
+}
+
+/* Applied while the card is scrolled out of view. Both animations run forever
+   otherwise, and the compositor keeps servicing them for the whole visit. */
+.milestone-paused .milestone-ring-spin,
+.milestone-paused .milestone-card::after {
+  animation-play-state: paused;
 }
 
 .milestone-value {

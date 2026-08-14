@@ -13,6 +13,8 @@ import type { CreateTypes } from 'canvas-confetti';
 let hasAutoFired = false;
 
 const SECOND_VOLLEY_DELAY_MS = 900;
+/** Matches the selector in globals.css that halts the ring and glow. */
+const PAUSED_CLASS = 'milestone-paused';
 
 const COLORS = ['#7E22ED', '#A855F7', '#C084FC', '#F472B6', '#FBCFE8'];
 
@@ -96,6 +98,36 @@ export const useMilestoneConfetti = (enabled: boolean) => {
       clearTimeout(secondVolley);
     };
   }, [enabled, burst]);
+
+  /**
+   * Park the ring and the glow while the card is off-screen.
+   *
+   * Both run forever, and the compositor keeps servicing them the entire time
+   * a visitor spends anywhere on the page — including the long stretches where
+   * the card isn't even in view. The flywheel cards each sit on their own
+   * layer (they carry a backdrop-filter), so the less standing work there is,
+   * the less chance a loaded machine drops a frame while compositing them.
+   *
+   * Toggled through the DOM rather than state: this fires on every scroll past
+   * the section, and none of it needs to re-render React.
+   */
+  useEffect(() => {
+    if (!enabled) return undefined;
+
+    const element = containerRef.current;
+    if (!element || typeof IntersectionObserver === 'undefined') return undefined;
+
+    element.classList.add(PAUSED_CLASS);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => element.classList.toggle(PAUSED_CLASS, !entry.isIntersecting),
+      // Wake slightly before it scrolls in, so it is never caught mid-park.
+      { rootMargin: '150px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [enabled]);
 
   useEffect(
     () => () => {
