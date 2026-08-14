@@ -425,6 +425,23 @@ tr, th {
   box-shadow:
     0 0 28px 0 rgba(168, 85, 247, 0.28),
     0 8px 24px 0 rgba(24, 39, 75, 0.12);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+/* Affordance: nothing else on the card says "clickable". Lifting it echoes the
+   agent tiles above, which already lift on hover — same language, no new one. */
+.milestone-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 38px 0 rgba(168, 85, 247, 0.45),
+    0 14px 30px 0 rgba(24, 39, 75, 0.16);
+}
+
+/* The ring speeds up under the cursor — the card reads as alive, not just lit. */
+.milestone-card:hover::before {
+  animation-duration: 2.5s;
 }
 
 /* Gradient ring. The mask is on the pseudo-element only — putting it on the
@@ -485,11 +502,27 @@ a:hover > .milestone-value {
   filter: brightness(0.82);
 }
 
+/* The confetti canvas is a finite rectangle, so particles would visibly clip at
+   its edge — obvious once the card is click-spammed. Growing it forever is not
+   free (the whole area is cleared every frame), so instead the edges fade out
+   and particles dissolve rather than getting cut. Costs nothing: masking
+   happens at composite time, not during paint. */
+.milestone-confetti {
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
 .milestone-caption {
   /* slate-500 rather than the gray-400 used for frozen values: gray-400 on this
      background lands near 2.6:1, under the 4.5:1 floor for text this size.
      ml-auto pushes it to the card's right edge, opposite the icon. */
-  @apply ml-auto text-base font-normal text-slate-500;
+  @apply ml-auto text-sm font-normal text-slate-500;
 }
 
 .milestone-pop {
@@ -509,11 +542,21 @@ a:hover > .milestone-value {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .milestone-card::before {
+  .milestone-card::before,
+  .milestone-card:hover::before {
     animation: none;
   }
 
   .milestone-pop {
     animation: none;
+  }
+
+  /* Keep the glow as the hover signal, drop the movement. */
+  .milestone-card {
+    transition: box-shadow 180ms ease;
+  }
+
+  .milestone-card:hover {
+    transform: none;
   }
 }

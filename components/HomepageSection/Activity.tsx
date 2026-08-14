@@ -460,7 +460,7 @@ const TransactionsCard = ({
         // canvas, so a tight box would clip the particles at the edge.
         // Width/height are explicit: <canvas> is a replaced element with an
         // intrinsic 300x150 size, so left+right alone would not stretch it.
-        className="pointer-events-none absolute -left-[130px] -top-[150px] w-[calc(100%+260px)] h-[calc(100%+240px)]"
+        className="milestone-confetti pointer-events-none absolute -left-[170px] -top-[190px] w-[calc(100%+340px)] h-[calc(100%+300px)]"
       />
       {card}
     </div>
