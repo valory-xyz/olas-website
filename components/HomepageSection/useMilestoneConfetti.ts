@@ -13,7 +13,6 @@ import type { CreateTypes } from 'canvas-confetti';
 let hasAutoFired = false;
 
 const SECOND_VOLLEY_DELAY_MS = 900;
-const CLICK_THROTTLE_MS = 700;
 
 const COLORS = ['#7E22ED', '#A855F7', '#C084FC', '#F472B6', '#FBCFE8'];
 
@@ -21,7 +20,6 @@ export const useMilestoneConfetti = (enabled: boolean) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const instanceRef = useRef<CreateTypes | null>(null);
-  const lastClickRef = useRef(0);
 
   const getInstance = useCallback(async () => {
     if (!canvasRef.current) return null;
@@ -60,13 +58,12 @@ export const useMilestoneConfetti = (enabled: boolean) => {
     confetti({ ...shot, origin: { x: 0.66, y: 0.62 }, angle: 68 });
   }, [getInstance]);
 
-  /** Bonus volley for the badge button — throttled so clicks can't strobe it. */
-  const fire = useCallback(() => {
-    const now = Date.now();
-    if (now - lastClickRef.current < CLICK_THROTTLE_MS) return;
-    lastClickRef.current = now;
-    burst();
-  }, [burst]);
+  /**
+   * Bonus volley on click. Deliberately unthrottled — spamming it is the point.
+   * canvas-confetti folds every volley into one animation loop and drops each
+   * particle after `ticks`, so the cost stays bounded however hard it's mashed.
+   */
+  const fire = burst;
 
   useEffect(() => {
     if (!enabled || hasAutoFired) return undefined;

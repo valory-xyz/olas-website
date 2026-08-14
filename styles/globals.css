@@ -445,13 +445,13 @@ tr, th {
   background: conic-gradient(
     from var(--milestone-angle),
     #f472b6 0deg,
-    #ffffff 35deg,
-    #ffffff 125deg,
-    #a855f7 155deg,
-    #7e22ed 180deg,
-    #ffffff 215deg,
-    #ffffff 305deg,
-    #c084fc 335deg,
+    #ffffff 44deg,
+    #ffffff 116deg,
+    #a855f7 150deg,
+    #7e22ed 190deg,
+    #ffffff 224deg,
+    #ffffff 296deg,
+    #c084fc 330deg,
     #f472b6 360deg
   );
   -webkit-mask:
@@ -475,12 +475,21 @@ tr, th {
 
 .milestone-value {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600;
+  transition: filter 150ms ease;
+}
+
+/* Hover response on the number. brightness() rather than swapping gradient
+   stops, because background-image doesn't interpolate — the swap would snap
+   instead of easing. */
+a:hover > .milestone-value {
+  filter: brightness(0.82);
 }
 
 .milestone-caption {
   /* slate-500 rather than the gray-400 used for frozen values: gray-400 on this
-     background lands near 2.6:1, under the 4.5:1 floor for text this size. */
-  @apply text-base font-normal text-slate-500;
+     background lands near 2.6:1, under the 4.5:1 floor for text this size.
+     ml-auto pushes it to the card's right edge, opposite the icon. */
+  @apply ml-auto text-base font-normal text-slate-500;
 }
 
 .milestone-pop {
