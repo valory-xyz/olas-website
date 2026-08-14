@@ -566,26 +566,28 @@ a:hover > .milestone-value {
   position: relative;
 }
 
-/* Hat perched on the card's top-right corner, overhanging it like something
-   placed there rather than drawn into it. Above the ring so the rim passes
-   behind it; no pointer events so it never intercepts the card's click. */
+/* Hat worn on the card's top-right corner: the brim overlaps the corner and the
+   cone points up and out, so it sits above the card in paint order (behind it,
+   only the far rim showed and it read as a sticker). z-index clears the ring.
+   No pointer events, so it never intercepts the card's click. */
 .milestone-hat {
   position: absolute;
-  top: -58px;
-  right: -38px;
-  width: 104px;
+  top: -70px;
+  right: -54px;
+  z-index: 3;
+  width: 136px;
   height: auto;
   pointer-events: none;
-  filter: drop-shadow(0 6px 12px rgba(24, 39, 75, 0.2));
+  filter: drop-shadow(0 8px 14px rgba(24, 39, 75, 0.22));
 }
 
-/* On phones the card nearly fills the width, so an overhang this wide runs into
-   the section's clip and the hat looks cut off. Tuck it in. */
+/* On phones the card nearly fills the width, so this much overhang runs into
+   the section's horizontal clip and the hat looks sheared off. Tuck it in. */
 @media (max-width: 767px) {
   .milestone-hat {
-    top: -46px;
-    right: -6px;
-    width: 84px;
+    top: -48px;
+    right: -14px;
+    width: 100px;
   }
 }
 

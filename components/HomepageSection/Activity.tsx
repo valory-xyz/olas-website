@@ -444,10 +444,8 @@ const TransactionsCard = ({
 
   const card = (
     <ActivityCard
-      icon={isMilestone ? 'txns-milestone.png' : 'txns.png'}
+      icon="txns.png"
       alt="Transactions"
-      iconWidth={isMilestone ? 48 : 40}
-      iconHeight={isMilestone ? 48 : 40}
       cardClassName={isMilestone ? 'milestone-card relative' : undefined}
       text={
         isMilestone ? (
@@ -501,19 +499,19 @@ const TransactionsCard = ({
           The canvas is deliberately outside it — scaling the confetti with the
           card would drag the particles around mid-flight. */}
       <div ref={stackRef} className="milestone-stack">
-        {/* Before the card in paint order on purpose: the card covers the brim,
-            so the hat reads as worn on the corner rather than stuck on top of
-            it. Inside the stack, so it rides along with the hover lift and the
-            click pop instead of hanging in place while the card moves. */}
+        {card}
+        {/* Sits over the card's corner, brim covering it and the open underside
+            facing us — worn, not tucked behind. Inside the stack, so it rides
+            along with the hover lift and the click pop rather than hanging
+            still while the card moves. */}
         <Image
-          src={`${imgPath}milestone-hat.png`}
+          src={`${imgPath}party-hat.png`}
           alt=""
           aria-hidden
-          width={160}
-          height={146}
+          width={200}
+          height={183}
           className="milestone-hat"
         />
-        {card}
         {/* Above the card so the rim covers its border. Two layers because the
             gradient rotates while the mask that shapes it must not. */}
         <div className="milestone-ring" aria-hidden>
