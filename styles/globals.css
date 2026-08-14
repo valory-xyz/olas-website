@@ -445,13 +445,13 @@ tr, th {
   background: conic-gradient(
     from var(--milestone-angle),
     #f472b6 0deg,
-    #ffffff 45deg,
-    #ffffff 95deg,
-    #a855f7 140deg,
-    #7e22ed 185deg,
-    #ffffff 225deg,
-    #ffffff 275deg,
-    #c084fc 320deg,
+    #ffffff 35deg,
+    #ffffff 125deg,
+    #a855f7 155deg,
+    #7e22ed 180deg,
+    #ffffff 215deg,
+    #ffffff 305deg,
+    #c084fc 335deg,
     #f472b6 360deg
   );
   -webkit-mask:
@@ -478,7 +478,9 @@ tr, th {
 }
 
 .milestone-caption {
-  @apply text-base font-medium text-slate-600;
+  /* slate-500 rather than the gray-400 used for frozen values: gray-400 on this
+     background lands near 2.6:1, under the 4.5:1 floor for text this size. */
+  @apply text-base font-normal text-slate-500;
 }
 
 .milestone-pop {

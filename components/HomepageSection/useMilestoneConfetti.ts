@@ -85,7 +85,11 @@ export const useMilestoneConfetti = (enabled: boolean) => {
         // Two volleys: the first one is easy to scroll past and miss.
         secondVolley = setTimeout(burst, SECOND_VOLLEY_DELAY_MS);
       },
-      { threshold: 0.5 }
+      // Not `threshold: 0.5` — that measures how much of the card is visible,
+      // and the card is short enough to clear it while still at the bottom of
+      // the screen. Shrinking the root's bottom edge by half the viewport
+      // instead makes it fire when the card reaches the middle of the screen.
+      { threshold: 0, rootMargin: '0px 0px -50% 0px' }
     );
 
     observer.observe(element);
