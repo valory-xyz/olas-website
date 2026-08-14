@@ -19,7 +19,7 @@ const agents = ['predict', 'babydegen', 'mech', 'agentsfun'];
 
 // Keyframes name from globals.css — used to find the ring animation at runtime.
 const MILESTONE_SPIN = 'milestone-border-spin';
-const MILESTONE_HOVER_SPEED = 1.4;
+const MILESTONE_HOVER_SPEED = 2.1;
 
 // Format a USD metric, falling back to '--' when the value is missing/non-numeric
 // (e.g. a snapshot taken before this metric existed) so we never render "$NaN".
@@ -401,10 +401,24 @@ const TransactionsCard = ({
   isMilestone = false,
 }: TransactionsCardProps) => {
   const { containerRef, canvasRef, fire } = useMilestoneConfetti(isMilestone);
-  const [isPopping, setIsPopping] = useState(false);
-  const popTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const popRef = useRef<Animation | null>(null);
 
-  useEffect(() => () => clearTimeout(popTimeoutRef.current), []);
+  useEffect(() => () => popRef.current?.cancel(), []);
+
+  // Driven here rather than by toggling a CSS class: a class can't restart
+  // mid-flight, so spamming clicks left the previous run to finish before the
+  // next began, which is what made it stutter. Cancelling and replaying the
+  // animation restarts cleanly however fast it's clicked.
+  const pop = useCallback(() => {
+    const card = containerRef.current?.querySelector('.milestone-card');
+    if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    popRef.current?.cancel();
+    popRef.current = card.animate([{ scale: 1 }, { scale: 1.03 }, { scale: 1 }], {
+      duration: 260,
+      easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    });
+  }, [containerRef]);
 
   // Speed the ring up via playbackRate rather than a CSS duration swap: the
   // swap keeps the animation's absolute time, which resolves to a different
@@ -429,11 +443,9 @@ const TransactionsCard = ({
       if ((event.target as HTMLElement).closest('a')) return;
 
       fire();
-      setIsPopping(true);
-      clearTimeout(popTimeoutRef.current);
-      popTimeoutRef.current = setTimeout(() => setIsPopping(false), 280);
+      pop();
     },
-    [fire]
+    [fire, pop]
   );
 
   const card = (
@@ -442,9 +454,7 @@ const TransactionsCard = ({
       alt="Transactions"
       iconWidth={isMilestone ? 48 : 40}
       iconHeight={isMilestone ? 48 : 40}
-      cardClassName={
-        isMilestone ? cn('milestone-card relative', isPopping && 'milestone-pop') : undefined
-      }
+      cardClassName={isMilestone ? 'milestone-card relative' : undefined}
       text={isMilestone ? <span className="milestone-caption">20M milestone</span> : undefined}
       primary={{
         value: transactions,
