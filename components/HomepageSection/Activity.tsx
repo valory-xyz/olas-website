@@ -449,7 +449,11 @@ const TransactionsCard = ({
       iconWidth={isMilestone ? 48 : 40}
       iconHeight={isMilestone ? 48 : 40}
       cardClassName={isMilestone ? 'milestone-card relative' : undefined}
-      text={isMilestone ? <span className="milestone-caption">20M milestone</span> : undefined}
+      text={
+        isMilestone ? (
+          <span className="milestone-caption">Celebrating 20M milestone!</span>
+        ) : undefined
+      }
       primary={{
         value: transactions,
         text: (

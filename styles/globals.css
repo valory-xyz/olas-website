@@ -179,15 +179,18 @@ video {
   box-shadow: 0px 0px 0px 4px #FFF inset;
 }
 
-/* No backdrop-filter here on purpose. At 1px the blur was visually
-   indistinguishable from none, but it put every card that uses this class on
-   its own compositing layer that continuously re-reads the pixels behind it —
-   nine of them on the homepage alone. That standing cost is what makes a
-   loaded machine drop a frame and flash the cards away. */
+/* No backdrop-filter here on purpose: it put every card using this class on its
+   own compositing layer that continuously re-reads the pixels behind it — nine
+   of them on the homepage alone — and that standing cost is what makes a loaded
+   machine drop a frame and flash the cards away.
+   The 1px blur was doing one real job, though: softening the dotted background
+   showing through the half-transparent card. Dropping it let the dots read as a
+   crisp grid and the cards look see-through. The fill carries that now, which
+   costs nothing to composite. */
 .activity-card-opaque {
   border-radius: 12px;
   border: 1px solid white;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.50) 0%, rgba(242, 244, 249, 0.50) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(242, 244, 249, 0.85) 100%);
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
