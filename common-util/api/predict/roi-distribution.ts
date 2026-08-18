@@ -10,6 +10,7 @@ import {
   getOmenDailyProfitStatsQuery,
   getOmenTraderAgentsQuery,
   getPolymarketDailyProfitStatsQuery,
+  getPolymarketQuestionTitlesQuery,
   getPolymarketTraderAgentsQuery,
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -17,6 +18,9 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
 
 const LIMIT = 1000;
+// conditionIds per getPolymarketQuestionTitlesQuery batch (keeps the inlined
+// id_in list well under request-size limits).
+const TITLE_BATCH_SIZE = 500;
 // Process at most this many days per cron run to stay within timeout
 const MAX_DAYS_PER_RUN = 30;
 const DAY_SECONDS = 86400;
@@ -81,12 +85,13 @@ export type DailyAgentEntry = {
    */
   mechRequests: number;
   /**
-   * Omenstrat-only: cost basis (stake + fees) of bets that *settled* on this day.
-   * Lets windowed ROI use `profit / (tradedSettled + feesSettled)` instead of
-   * the broken `payout - profit` derivation, which mixed bet/resolution/redeem
-   * days. Missing on polystrat entries (subgraph doesn't expose fees there).
+   * Cost basis of bets that *settled* on this day — the denominator for
+   * windowed ROI (`payout - profit` derivation is wrong here: the money fields
+   * land on different days). Omenstrat values are 18 decimals (stake + fees);
+   * polystrat values are USDC 1e6, scaled at read time.
    */
   tradedSettled?: string;
+  // Omenstrat-only (no per-trade fees on Polymarket).
   feesSettled?: string;
 };
 
@@ -124,10 +129,16 @@ type DailyStatEntry = {
   totalBets: number;
   totalPayout: string;
   dailyProfit: string;
-  // Omenstrat-only fields (returned by getOmenDailyProfitStatsQuery).
   dailyTradedSettled?: string;
+  // Omenstrat-only (the polymarket squid has no per-trade fees).
   dailyFeesSettled?: string;
   profitParticipants: Array<{ question?: string; metadata?: { title: string } }>;
+};
+
+// Raw squid row: profitParticipants is a list of conditionId strings, resolved
+// to titles (getPolymarketQuestionTitlesQuery) before entering the shared shape.
+type PolystratRawDailyStatEntry = Omit<DailyStatEntry, 'profitParticipants'> & {
+  profitParticipants: string[];
 };
 
 type MechRequestEntry = {
@@ -196,7 +207,7 @@ const fetchPolystratDailyStats = async (
   dayStartTs: number,
   dayEndTs: number
 ): Promise<DailyStatsResult> => {
-  const results: DailyStatEntry[] = [];
+  const raw: PolystratRawDailyStatEntry[] = [];
   let skip = 0;
   while (true) {
     try {
@@ -207,17 +218,46 @@ const fetchPolystratDailyStats = async (
           first: LIMIT,
           skip,
         })
-      )) as { dailyProfitStatistics: DailyStatEntry[] };
+      )) as { dailyProfitStatistics: PolystratRawDailyStatEntry[] };
       const page = response?.dailyProfitStatistics ?? [];
-      results.push(...page);
+      raw.push(...page);
       if (page.length < LIMIT) break;
       skip += LIMIT;
     } catch (e) {
       console.error('Error fetching Polystrat daily stats', e);
-      return { stats: results, ok: false };
+      return { stats: [], ok: false };
     }
   }
-  return { stats: results, ok: true };
+
+  // Resolve profitParticipants conditionIds to market titles (used downstream
+  // for QMR consumption). Ids without a title are rejected because they can't
+  // match a mech-request.
+  const ids = new Set<string>();
+  for (const stat of raw) for (const id of stat.profitParticipants ?? []) ids.add(id);
+
+  const titleById = new Map<string, string>();
+  const idList = [...ids];
+  for (let i = 0; i < idList.length; i += TITLE_BATCH_SIZE) {
+    try {
+      const response = (await polymarketAgentsGraphClient.request(
+        getPolymarketQuestionTitlesQuery(idList.slice(i, i + TITLE_BATCH_SIZE))
+      )) as { questions: Array<{ id: string; metadata?: { title: string } }> };
+      for (const q of response?.questions ?? []) {
+        if (q.metadata?.title) titleById.set(q.id, q.metadata.title);
+      }
+    } catch (e) {
+      console.error('Error fetching Polystrat question titles', e);
+      return { stats: [], ok: false };
+    }
+  }
+
+  const stats: DailyStatEntry[] = raw.map((stat) => ({
+    ...stat,
+    profitParticipants: (stat.profitParticipants ?? [])
+      .filter((id) => titleById.has(id))
+      .map((id) => ({ metadata: { title: titleById.get(id) as string } })),
+  }));
+  return { stats, ok: true };
 };
 
 // ─── Incremental mech request fetcher ────────────────────────────────────────
@@ -595,11 +635,9 @@ const updateAgentBlueprintData = async (
             profit: stat.dailyProfit,
             payout: stat.totalPayout,
             mechRequests,
+            tradedSettled: stat.dailyTradedSettled ?? '0',
             ...(agentBlueprint === 'omenstrat'
-              ? {
-                  tradedSettled: stat.dailyTradedSettled ?? '0',
-                  feesSettled: stat.dailyFeesSettled ?? '0',
-                }
+              ? { feesSettled: stat.dailyFeesSettled ?? '0' }
               : {}),
           };
         }
@@ -817,17 +855,14 @@ const computeAgentBlueprintHistogram = (
       }
 
       // 1. Scale everything to 18 decimals (USDC 10^6 * 10^12 = 10^18)
-      const scaledPayout = totals.payout * scale;
       const scaledProfit = totals.profit * scale;
 
-      // 2. Trading costs basis.
-      //   Omenstrat: use the per-day settled fields (cost basis of bets that
-      //   resolved that day), summed over the window. Already 18 decimals.
-      //   Polystrat: keep the legacy `payout - profit` derivation. The settled
-      //   fields aren't backfilled there yet; revisit when polymarket exposes
-      //   dailyTradedSettled per the same subgraph PR.
+      // 2. Trading costs basis: the per-day settled fields (cost basis of bets
+      //    that resolved that day), summed over the window. Omenstrat entries
+      //    are already 18 decimals; polystrat's are USDC 1e6, scaled below.
+      //    feesSettled is 0 for polystrat (no per-trade fees on Polymarket).
       const tradingCosts = isPolystrat
-        ? scaledPayout - scaledProfit
+        ? totals.tradedSettled * scale
         : totals.tradedSettled + totals.feesSettled;
 
       // Skip zero trading costs considering it as "not enough data"
@@ -936,8 +971,10 @@ export const computeWindowedNetGainAndCosts = (
 
   for (const totals of agentTotals.values()) {
     const scaledProfit = totals.profit * scale;
+    // Same cost basis as the histogram: settled fields summed over the window
+    // (polystrat's are USDC 1e6 → scaled; feesSettled is 0 there).
     const tradingCosts = isPolystrat
-      ? totals.payout * scale - scaledProfit
+      ? totals.tradedSettled * scale
       : totals.tradedSettled + totals.feesSettled;
     if (tradingCosts <= 0n) continue;
     const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;

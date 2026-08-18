@@ -199,10 +199,6 @@ export const PlatformActivitySection = ({
     value: isNil(finalRoiValue) ? null : `${Math.round(finalRoiValue)}%`,
     status: m.roiStatus,
     href: `/data#${platform}-predict-roi`,
-    warning:
-      platform === 'polystrat' ? (
-        <p>Due to recent updates on Polymarket this metric temporarily shows incorrect values</p>
-      ) : undefined,
   };
 
   const accuracyValue = m.successRate?.[activeWindow] ?? null;

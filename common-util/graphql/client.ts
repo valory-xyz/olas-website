@@ -66,8 +66,9 @@ export const predictAgentsGraphClient = new GraphQLClient(
   requestConfig
 );
 
+// SQD squid, not a subgraph — queries use the OpenReader dialect.
 export const polymarketAgentsGraphClient = new GraphQLClient(
-  process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL,
+  process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL,
   requestConfig
 );
 

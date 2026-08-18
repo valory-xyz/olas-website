@@ -2,7 +2,8 @@ import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMechRequestsQuery,
-  getPolymarketMarketsDataQuery,
+  getPolymarketDailyProfitStatsQuery,
+  getPolymarketTraderAgentsQuery,
   getStakingRewardsByTimeRangeQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
@@ -18,7 +19,13 @@ export const PolystratRoiInfo = () => {
   const [copied, setCopied] = useState(false);
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
-  const marketsData = getPolymarketMarketsDataQuery({ first: 1000, pages: 10 });
+  const dailyProfitStats = getPolymarketDailyProfitStatsQuery({
+    date_gte: getMidnightUtcTimestampDaysAgo(7),
+    date_lte: getMidnightUtcTimestampDaysAgo(1),
+    first: 1000,
+    skip: 0,
+  });
+  const traderAgents = getPolymarketTraderAgentsQuery({ first: 1000, skip: 0 });
   const stakingRewards = getStakingRewardsByTimeRangeQuery({
     first: 1000,
     timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
@@ -32,7 +39,7 @@ export const PolystratRoiInfo = () => {
   });
 
   const copyEndpointToClipboard = async () => {
-    const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL;
+    const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL;
     if (url) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -90,21 +97,21 @@ export const PolystratRoiInfo = () => {
           {totalMechRequests} {mechRequests}
         </CodeSnippet>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Markets Data Query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Trading Data Queries</h3>
 
         <div className="max-w-[800px]">
           <span className="block mb-2">Used for getting:</span>
           <ul className="list-decimal list-inside space-y-1">
             <li>
-              All open markets, needed in order to understand which markets are open and use it to
-              subtract needed amount of mech requests from the total
+              Per-agent daily statistics (example shows the 7-day window): daily profit, payouts,
+              and the settled cost basis that windowed ROI divides by
             </li>
-            <li>Cumulative payout and traded amounts for settled markets</li>
+            <li>Lifetime per-agent totals (settled volume, payouts) for the Max window</li>
           </ul>
         </div>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>
-          <code>{process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL}</code>
+          <code>{process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL}</code>
           <button
             onClick={copyEndpointToClipboard}
             className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
@@ -118,9 +125,14 @@ export const PolystratRoiInfo = () => {
           </button>
         </p>
         <CodeSnippet>
-          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL} \\
+          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL} \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ query: marketsData })}'`}
+  -d '${JSON.stringify({ query: dailyProfitStats })}'`}
+        </CodeSnippet>
+        <CodeSnippet>
+          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL} \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ query: traderAgents })}'`}
         </CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Rewards query</h3>

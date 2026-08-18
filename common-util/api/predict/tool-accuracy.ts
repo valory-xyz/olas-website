@@ -275,12 +275,10 @@ async function fetchPolymarketResolvedBets(): Promise<PolymarketBet[]> {
   );
 
   const allBets = Object.entries(data)
-    .filter(([key]) => key !== '_meta')
+    .filter(([key]) => key !== 'squidStatus')
     .flatMap(([, value]) => value) as PolymarketBet[];
 
-  // Only keep resolved bets. Guard against bets whose `question` is null
-  // (the subgraph started returning these ~2026-05; an unguarded
-  // `bet.question.resolution` throws and the whole snapshot computation fails).
+  // Keep only resolved bets.
   return allBets.filter((bet) => bet.question?.resolution != null);
 }
 
