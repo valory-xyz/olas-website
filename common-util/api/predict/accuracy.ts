@@ -125,7 +125,8 @@ type PolyBetRow = {
   outcomeIndex: number;
   question: { resolution: { winningIndex: number } | null } | null;
 };
-type PolyBetsResponse = WithMeta<{ bets: PolyBetRow[] }>;
+// The squid handles errors differently (it stops advancing), so the lag check covers them.
+type PolyBetsResponse = { bets: PolyBetRow[]; squidStatus?: { height: number } };
 
 const fetchPolyDayBuckets: FetchDayBuckets = async (
   startDay,
@@ -150,8 +151,9 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
     )) as PolyBetsResponse;
 
     if (!metaChecked) {
-      if (response?._meta?.hasIndexingErrors) indexingErrors.push('predict:polygon');
-      if (chainBlock && checkSubgraphLag(chainBlock, response?._meta?.block?.number, 'polygon')) {
+      const height = response?.squidStatus?.height;
+      // A missing height means the squid can't prove freshness — treat as lagging.
+      if (height == null || (chainBlock && checkSubgraphLag(chainBlock, height, 'polygon'))) {
         laggingSubgraphs.push('predict:polygon');
       }
       metaChecked = true;

@@ -2,7 +2,6 @@
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData } from 'common-util/api/predict/roi-distribution';
-import { WarningIndicator } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -161,13 +160,6 @@ export const RoiDistributionChart = ({
           <h3 className="text-lg font-semibold text-gray-900">
             {datasetMeta.label} Partial ROI Distribution
           </h3>
-          {!isOmen && (
-            <WarningIndicator>
-              <p>
-                Due to recent updates on Polymarket this chart temporarily shows incorrect values
-              </p>
-            </WarningIndicator>
-          )}
         </div>
 
         <Tabs

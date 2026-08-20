@@ -788,14 +788,15 @@ export const getOmenDailyBrierStatsQuery = ({ date_gte, date_lte, first, skip })
   }
 `;
 
+// `profitParticipants` is a list of conditionId strings — resolve titles with
+// getPolymarketQuestionTitlesQuery.
 export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
   query PolymarketDailyProfitStats {
     dailyProfitStatistics(
-      first: ${first}
-      skip: ${skip}
-      where: { date_gte: ${date_gte}, date_lte: ${date_lte} }
-      orderBy: date
-      orderDirection: asc
+      limit: ${first}
+      offset: ${skip}
+      where: { date_gte: "${date_gte}", date_lte: "${date_lte}" }
+      orderBy: [date_ASC, id_ASC]
     ) {
       traderAgent {
         id
@@ -804,10 +805,19 @@ export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, 
       totalBets
       totalPayout
       dailyProfit
-      profitParticipants {
-        metadata {
-          title
-        }
+      dailyTradedSettled
+      profitParticipants
+    }
+  }
+`;
+
+// conditionId -> market title lookup for profitParticipants (batch by ~500 ids).
+export const getPolymarketQuestionTitlesQuery = (ids: string[]) => gql`
+  query PolymarketQuestionTitles {
+    questions(limit: ${ids.length}, where: { id_in: ${JSON.stringify(ids)} }) {
+      id
+      metadata {
+        title
       }
     }
   }
@@ -861,7 +871,7 @@ export const getPolymarketTraderAgentsQuery = ({
   skip: number;
 }) => gql`
   query PolymarketTraderAgents {
-    traderAgents(first: ${first}, skip: ${skip}) {
+    traderAgents(limit: ${first}, offset: ${skip}, orderBy: id_ASC) {
       id
       totalTradedSettled
       totalPayout
@@ -1026,56 +1036,6 @@ export const dailyContributePerformancesQuery = gql`
   }
 `;
 
-// Query for ROI calculation of polymarket
-export const getPolymarketMarketsDataQuery = ({
-  first,
-  pages,
-}: {
-  first: number;
-  pages: number;
-}) => {
-  const queries = [];
-  for (let i = 0; i < pages; i++) {
-    queries.push(`
-      page${i}: marketParticipants(
-        first: ${first}
-        skip: ${i * first}
-        orderBy: createdAt
-        orderDirection: desc
-      ) {
-        id
-        question {
-          id
-          resolution {
-            id
-            winningIndex
-          }
-          metadata {
-            id
-            title
-          }
-        }
-      }
-    `);
-  }
-
-  return gql`
-    query getPolymarketOpenMarkets {
-      ${queries.join('\n')}
-      global(id: "") {
-        totalPayout
-        totalTradedSettled
-      }
-      _meta {
-        hasIndexingErrors
-        block {
-          number
-        }
-      }
-    }
-  `;
-};
-
 export const getMechRequestsBySenderWithToolQuery = ({
   sender,
   timestamp_gt,
@@ -1104,31 +1064,6 @@ export const getMechRequestsBySenderWithToolQuery = ({
   }
 `;
 
-export const getPolymarketBetsQuery = ({ first, pages }: { first: number; pages: number }) => {
-  const queries = [];
-  for (let i = 0; i < pages; i++) {
-    queries.push(`
-      page${i}: bets(
-        first: ${first}
-        skip: ${i * first}
-        orderBy: blockTimestamp
-        orderDirection: desc
-      ) {
-        id
-        outcomeIndex
-        question {
-          id
-          resolution {
-            id
-            winningIndex
-          }
-        }
-      }
-    `);
-  }
-  return gql`query getPolymarketClosedMarkets { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
-};
-
 // Polymarket bets within a [blockTimestamp_gte, blockTimestamp_lt) window, cursor-paged.
 // Powers the windowed prediction-accuracy accumulator (predict-accuracy/polystrat),
 // bucketed by placement day. Polymarket has no `currentAnswer` server-side filter, so
@@ -1140,15 +1075,9 @@ export const getPolymarketBetsByTimeRangeQuery = ({
 }) => gql`
   query PolymarketBetsByTimeRange {
     bets(
-      first: ${first}
-      where: {
-        and: [
-          { blockTimestamp_gte: ${blockTimestamp_gte} }
-          { blockTimestamp_lt: ${blockTimestamp_lt} }
-        ]
-      }
-      orderBy: blockTimestamp
-      orderDirection: desc
+      limit: ${first}
+      where: { blockTimestamp_gte: "${blockTimestamp_gte}", blockTimestamp_lt: "${blockTimestamp_lt}" }
+      orderBy: blockTimestamp_DESC
     ) {
       blockTimestamp
       outcomeIndex
@@ -1158,11 +1087,8 @@ export const getPolymarketBetsByTimeRangeQuery = ({
         }
       }
     }
-    _meta {
-      hasIndexingErrors
-      block {
-        number
-      }
+    squidStatus {
+      height
     }
   }
 `;
@@ -1178,10 +1104,9 @@ export const getPolymarketBetsWithBettorQuery = ({
   for (let i = 0; i < pages; i++) {
     queries.push(`
       page${i}: bets(
-        first: ${first}
-        skip: ${i * first}
-        orderBy: blockTimestamp
-        orderDirection: desc
+        limit: ${first}
+        offset: ${i * first}
+        orderBy: [blockTimestamp_DESC, id_DESC]
       ) {
         id
         blockTimestamp
@@ -1201,7 +1126,7 @@ export const getPolymarketBetsWithBettorQuery = ({
       }
     `);
   }
-  return gql`query PolymarketBetsWithBettor { ${queries.join('\n')} _meta { hasIndexingErrors block { number } } }`;
+  return gql`query PolymarketBetsWithBettor { ${queries.join('\n')} squidStatus { height } }`;
 };
 
 // cumulativeFeesUsd / cumulativeExternalFeesUsd are fetched for schema parity
@@ -1254,4 +1179,3 @@ export const liquidityL2Query = gql`
     }
   }
 `;
-

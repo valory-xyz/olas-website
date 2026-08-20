@@ -18,7 +18,7 @@ export const PolystratAccuracyInfo = () => {
   });
 
   const copyEndpointToClipboard = async () => {
-    const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL;
+    const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL;
     if (url) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -49,7 +49,7 @@ export const PolystratAccuracyInfo = () => {
         </p>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>
-          <code>{process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL}</code>
+          <code>{process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL}</code>
           <button
             onClick={copyEndpointToClipboard}
             className="p-1 border rounded-md border-slate-300 hover:bg-slate-100 transition-colors"
@@ -63,7 +63,7 @@ export const PolystratAccuracyInfo = () => {
           </button>
         </p>
         <CodeSnippet>
-          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SUBGRAPH_URL} \\
+          {`curl -X POST ${process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL} \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify({ query: windowedBets })}'`}
         </CodeSnippet>
