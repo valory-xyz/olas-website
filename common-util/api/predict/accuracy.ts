@@ -151,7 +151,9 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
     )) as PolyBetsResponse;
 
     if (!metaChecked) {
-      if (chainBlock && checkSubgraphLag(chainBlock, response?.squidStatus?.height, 'polygon')) {
+      const height = response?.squidStatus?.height;
+      // A missing height means the squid can't prove freshness — treat as lagging.
+      if (height == null || (chainBlock && checkSubgraphLag(chainBlock, height, 'polygon'))) {
         laggingSubgraphs.push('predict:polygon');
       }
       metaChecked = true;

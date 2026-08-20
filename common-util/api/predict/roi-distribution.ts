@@ -251,6 +251,13 @@ const fetchPolystratDailyStats = async (
     }
   }
 
+  if (idList.length > 0 && titleById.size === 0) {
+    console.error(
+      `Polystrat question-title lookup resolved 0 of ${idList.length} conditionIds — treating as a fetch failure`
+    );
+    return { stats: [], ok: false };
+  }
+
   const stats: DailyStatEntry[] = raw.map((stat) => ({
     ...stat,
     profitParticipants: (stat.profitParticipants ?? [])
@@ -814,8 +821,8 @@ const computeAgentBlueprintHistogram = (
       profit: bigint;
       payout: bigint;
       mechRequests: number;
-      tradedSettled: bigint; // omenstrat only — 0n for polystrat
-      feesSettled: bigint;
+      tradedSettled: bigint;
+      feesSettled: bigint; // omenstrat only — 0n for polystrat
     };
     const agentTotals = new Map<string, Totals>();
 

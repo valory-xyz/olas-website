@@ -796,7 +796,7 @@ export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, 
       limit: ${first}
       offset: ${skip}
       where: { date_gte: "${date_gte}", date_lte: "${date_lte}" }
-      orderBy: date_ASC
+      orderBy: [date_ASC, id_ASC]
     ) {
       traderAgent {
         id
@@ -871,7 +871,7 @@ export const getPolymarketTraderAgentsQuery = ({
   skip: number;
 }) => gql`
   query PolymarketTraderAgents {
-    traderAgents(limit: ${first}, offset: ${skip}) {
+    traderAgents(limit: ${first}, offset: ${skip}, orderBy: id_ASC) {
       id
       totalTradedSettled
       totalPayout
@@ -1106,7 +1106,7 @@ export const getPolymarketBetsWithBettorQuery = ({
       page${i}: bets(
         limit: ${first}
         offset: ${i * first}
-        orderBy: blockTimestamp_DESC
+        orderBy: [blockTimestamp_DESC, id_DESC]
       ) {
         id
         blockTimestamp
