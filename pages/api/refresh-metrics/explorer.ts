@@ -22,6 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const previousSnapshot = await getSnapshot({ category: 'explorer' });
     const previousData = previousSnapshot?.data as ExplorerMetricsData | undefined;
     const previous = previousData?.omenstrat?.value ?? null;
+    const polystratPrevious = previousData?.polystrat?.value ?? null;
     const mechPrevious = previousData?.mech?.value ?? null;
 
     // Mech ATA has no daily aggregate, so it's event-counted per day (Method A): the cron
@@ -30,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //   /api/refresh-metrics/explorer?ataFromDays=400&ataToDays=250  (then 250→100, 100→0)
     const metrics = await fetchAllExplorerMetrics({
       previous,
+      polystratPrevious,
       accuracyPages: toInt(req.query.accuracyPages),
       roiDays: toInt(req.query.roiDays),
       mechPrevious,
@@ -44,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const url = await saveSnapshot({ category: 'explorer', data: metrics });
 
     const value = metrics.data.omenstrat.value;
+    const polystrat = metrics.data.polystrat.value;
     const optimus = metrics.data.babydegenOptimus.value;
     const modius = metrics.data.babydegenModius.value;
     const basius = metrics.data.babydegenBasius.value;
@@ -63,6 +66,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         transactions: value.transactions.length,
         accuracy: value.accuracy.length,
         roi: value.roi.length,
+      },
+      polystratCounts: polystrat && {
+        daa: polystrat.daa.length,
+        transactions: polystrat.transactions.length,
+        accuracy: polystrat.accuracy.length,
       },
       babydegenCounts: {
         optimus: seriesCounts(optimus),

@@ -65,7 +65,7 @@ export const MetricSelector = ({
             <span className="flex items-center gap-1 text-[14px] leading-5 tracking-[0.14px] text-[#78879c]">
               {metric.label}
               {metric.tooltip && (
-                <Popover side="top" contentClassName="whitespace-nowrap">
+                <Popover side="top" contentClassName="max-w-[320px]">
                   {metric.tooltip}
                 </Popover>
               )}

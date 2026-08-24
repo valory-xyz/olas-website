@@ -27,8 +27,9 @@ type AgentData = {
 
 /**
  * All economies the Explorer can show: economy id → agent id → that agent's data.
- * Single-agent economies (Predict → Omenstrat) have one entry; multi-agent ones
- * (Babydegen → Optimus + Modius) have several, surfaced via a sub-toggle.
+ * Single-agent economies (Mech) have one entry; multi-agent ones (Predict →
+ * Omenstrat + Polystrat, Babydegen → Optimus + Basius + Modius) have several,
+ * surfaced via a sub-toggle.
  */
 export type ExplorerEconomies = Record<string, Record<string, AgentData>>;
 
@@ -111,6 +112,8 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     // Unweighted mean of the daily win-rates we have data for.
     headline: (s) =>
       s.length ? `${Math.round(s.reduce((sum, p) => sum + p.count, 0) / s.length)}%` : '--',
+    tooltip: () =>
+      'Average daily win rate, based on bets placed each day. Days with too few resolved bets are excluded.',
     selectable: (s) => s.length > 0,
   },
   aum: {
@@ -136,8 +139,9 @@ type EconomyMeta = { name: string; metrics: string[]; agents: AgentMeta[] };
 
 // Per-economy ordered metric tiles + its agents (label/icon + heatmap colour ramp).
 // The active metric resets to the first key on an economy switch; the active agent
-// resets to the economy's first agent. Babydegen colour-codes Optimus (red) vs Modius
-// (lime); Predict (purple) and Mech (teal) are single-agent.
+// resets to the economy's first agent. Predict colour-codes Omenstrat (purple) vs
+// Polystrat (indigo); Babydegen Optimus (red) / Basius (blue) / Modius (lime); Mech
+// (teal) is single-agent.
 const ECONOMY_META: Record<string, EconomyMeta> = {
   predict: {
     name: 'Predict',
@@ -148,6 +152,13 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         label: 'Omenstrat',
         icon: '/images/predict-page/omenstrat-icon.png',
         ramp: 'purple',
+      },
+      {
+        key: 'polystrat',
+        label: 'Polystrat',
+        icon: '/images/predict-page/polystrat-icon.png',
+        ramp: 'indigo',
+        marker: { date: '2026-02-10', label: 'Polystrat launched publicly' },
       },
     ],
   },

@@ -1,10 +1,14 @@
 import { GraphQLClient } from 'graphql-request';
 
-import { OMENSTRAT_AGENT_CLASSIFICATION } from 'common-util/constants';
+import {
+  OMENSTRAT_AGENT_CLASSIFICATION,
+  POLYSTRAT_AGENT_CLASSIFICATION,
+} from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
 import {
   BABYDEGEN_GRAPH_CLIENTS,
   MARKETPLACE_GRAPH_CLIENTS,
+  polymarketAgentsGraphClient,
   predictAgentsGraphClient,
   REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
@@ -19,6 +23,7 @@ import {
   explorerOmenstratSeriesQuery,
   getExplorerBetsQuery,
   getExplorerDailyProfitStatsQuery,
+  getPolymarketBetsByTimeRangeQuery,
   mechAtaTransactionsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -74,8 +79,8 @@ type DailyOmenstratResponse = WithMeta<{ dailyAgentPerformances: DailyOmenstratR
 // under agentId 12 contribute only ~45 active-day rows (mostly zero-activity test
 // services) — below the heatmap's quantile colour resolution, so they need no filtering.
 const OMENSTRAT_AGENT_IDS = [...OMENSTRAT_AGENT_CLASSIFICATION.valory_trader, 12];
-const CHAIN = 'gnosis';
-const SOURCE = 'registry:gnosis:explorer';
+// Polystrat (Polymarket) trader agents on Polygon — agentId 86 only.
+const POLYSTRAT_AGENT_IDS = POLYSTRAT_AGENT_CLASSIFICATION.valory_trader;
 
 // Wide enough to cover the trader's first active day (2023-07-12). The transform
 // trims leading zero-days, so an over-wide window just self-trims to inception.
@@ -199,23 +204,27 @@ const pageRegistryRows = async (
   return { rows, meta };
 };
 
-// Registry-derived DAA + transactions for Omenstrat (Gnosis).
+// Registry-derived DAA + transactions for one trader fleet (Omenstrat on Gnosis,
+// Polystrat on Polygon).
 const fetchRegistrySeries = async (
+  chain: 'gnosis' | 'polygon',
+  agentIds: number[],
   timestampGt: number,
   timestampLt: number
 ): Promise<MetricWithStatus<RegistrySeries | null>> => {
+  const source = `registry:${chain}:explorer`;
   try {
     const { rows, meta } = await pageRegistryRows(
-      REGISTRY_GRAPH_CLIENTS.gnosis,
-      OMENSTRAT_AGENT_IDS,
+      REGISTRY_GRAPH_CLIENTS[chain],
+      agentIds,
       timestampGt,
       timestampLt
     );
 
-    const chainBlock = await getChainBlockNumber(CHAIN);
-    const indexingErrors = meta?.hasIndexingErrors ? [SOURCE] : [];
-    const laggingSubgraphs = checkSubgraphLag(chainBlock, meta?.block?.number, CHAIN)
-      ? [SOURCE]
+    const chainBlock = await getChainBlockNumber(chain);
+    const indexingErrors = meta?.hasIndexingErrors ? [source] : [];
+    const laggingSubgraphs = checkSubgraphLag(chainBlock, meta?.block?.number, chain)
+      ? [source]
       : [];
 
     return {
@@ -223,10 +232,10 @@ const fetchRegistrySeries = async (
       status: createStaleStatus({ indexingErrors, fetchErrors: [], laggingSubgraphs }),
     };
   } catch (error) {
-    console.error(`Error fetching from ${SOURCE}:`, error);
+    console.error(`Error fetching from ${source}:`, error);
     // Return null/stale; saveSnapshot's mergeWithFallback keeps the last good
     // series in the blob, so a flaky-subgraph run never blanks the page.
-    return { value: null, status: getFetchErrorAndCreateStaleStatus(SOURCE) };
+    return { value: null, status: getFetchErrorAndCreateStaleStatus(source) };
   }
 };
 
@@ -394,6 +403,8 @@ const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoin
 export type ExplorerFetchOptions = {
   /** Prior stored Omenstrat series to merge fresh windows into — preserves a deep backfill. */
   previous?: ExplorerSeries | null;
+  /** Prior stored Polystrat series to merge the fresh accuracy window into. */
+  polystratPrevious?: PolystratExplorerSeries | null;
   /** Accuracy bet pages to fetch (shallow cron default; large for a backfill). */
   accuracyPages?: number;
   /** ROI window in days (shallow cron default; large for a backfill). */
@@ -444,7 +455,7 @@ export const fetchOmenstratExplorerSeries = async (
   // Fetch in parallel; isolate each predict-agents query's failure so a flaky run
   // never blanks DAA/Transactions (a failed accuracy/roi window keeps prior history).
   const [registry, accuracy, roi] = await Promise.all([
-    fetchRegistrySeries(timestampGt, timestampLt),
+    fetchRegistrySeries('gnosis', OMENSTRAT_AGENT_IDS, timestampGt, timestampLt),
     fetchOmenstratDailyAccuracy(accuracyPages).catch((error) => {
       console.error(`Error fetching ${ACCURACY_SOURCE}:`, error);
       return null;
@@ -467,6 +478,117 @@ export const fetchOmenstratExplorerSeries = async (
       roi: mergeSeries(previous?.roi, roi ?? []),
     },
     // Registry drives staleness; accuracy/roi are best-effort.
+    status: registry.status,
+  };
+};
+
+// ── Polystrat (Polygon registry + predict-polymarket squid) ──────────────────
+const POLYSTRAT_ACCURACY_SOURCE = 'predict:polygon:explorer-accuracy';
+// Lower than Omenstrat's MIN_BETS_PER_DAY: Polystrat places ~2-15 bets/day (vs hundreds
+// on Omen), so 10 would blank most days. 3 still drops the only-extremes days (1-2 bets
+// can only show 0/50/100%).
+const POLYSTRAT_MIN_BETS_PER_DAY = 3;
+
+/** Polystrat daily series — registry DAA/transactions + squid-derived accuracy. */
+export type PolystratExplorerSeries = RegistrySeries & {
+  /** Prediction Accuracy — daily win-rate (%) of resolved bets; days below POLYSTRAT_MIN_BETS_PER_DAY omitted. */
+  accuracy: DaaSeriesPoint[];
+};
+
+type PolymarketBet = {
+  blockTimestamp: string;
+  outcomeIndex: number;
+  question: { resolution: { winningIndex: number } | null } | null;
+};
+
+/**
+ * Daily Prediction Accuracy for Polystrat — same shape and cursor paging as
+ * fetchOmenstratDailyAccuracy, but sourced from the predict-polymarket squid. The
+ * squid has no server-side resolution filter, so unresolved bets come back and are
+ * skipped in code — they get counted on a later run, once their market resolves and
+ * the recent window is re-fetched.
+ */
+const fetchPolystratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesPoint[]> => {
+  const bets: PolymarketBet[] = [];
+  const pages = Math.min(maxPages, ACCURACY_MAX_PAGES);
+  let cursor = ACCURACY_CURSOR_START;
+  for (let page = 0; page < pages; page += 1) {
+    let pageRows: PolymarketBet[];
+    try {
+      const data = (await requestWithRetry(() =>
+        polymarketAgentsGraphClient.request(
+          getPolymarketBetsByTimeRangeQuery({
+            first: ACCURACY_BET_PAGE_SIZE,
+            blockTimestamp_gte: 0,
+            blockTimestamp_lt: cursor,
+          })
+        )
+      )) as { bets: PolymarketBet[] };
+      pageRows = data?.bets ?? [];
+    } catch (error) {
+      console.error(
+        `${POLYSTRAT_ACCURACY_SOURCE}: page ${page} failed after retries; keeping ${bets.length} bets`,
+        error
+      );
+      break;
+    }
+    if (pageRows.length === 0) break;
+    bets.push(...pageRows);
+    // Next page: bets strictly older than this page's last (oldest) bet — same
+    // page-boundary tradeoff as the Omenstrat accuracy cursor above.
+    cursor = Number(pageRows[pageRows.length - 1].blockTimestamp);
+    if (pageRows.length < ACCURACY_BET_PAGE_SIZE) break;
+  }
+
+  const byDay = new Map<string, { correct: number; total: number }>();
+  bets.forEach((bet) => {
+    const winningIndex = bet.question?.resolution?.winningIndex;
+    if (winningIndex == null || winningIndex < 0) return;
+    const date = new Date(Number(bet.blockTimestamp) * 1000).toISOString().slice(0, 10);
+    const entry = byDay.get(date) ?? { correct: 0, total: 0 };
+    entry.total += 1;
+    if (Number(bet.outcomeIndex) === Number(winningIndex)) entry.correct += 1;
+    byDay.set(date, entry);
+  });
+
+  return Array.from(byDay.entries())
+    .filter(([, e]) => e.total >= POLYSTRAT_MIN_BETS_PER_DAY)
+    .map(([date, e]) => ({ date, count: Math.round((e.correct / e.total) * 100) }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+};
+
+/**
+ * Fetch Polystrat's daily series for the Explorer heatmap: DAA + transactions from
+ * the Polygon registry subgraph (full, cheap), and Prediction Accuracy from the
+ * predict-polymarket squid (a recent window, merged into the prior stored series).
+ */
+export const fetchPolystratExplorerSeries = async (
+  options: ExplorerFetchOptions = {}
+): Promise<MetricWithStatus<PolystratExplorerSeries | null>> => {
+  const { polystratPrevious = null, accuracyPages = ACCURACY_DEFAULT_PAGES } = options;
+
+  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+
+  const [registry, accuracy] = await Promise.all([
+    fetchRegistrySeries('polygon', POLYSTRAT_AGENT_IDS, timestampGt, timestampLt),
+    fetchPolystratDailyAccuracy(accuracyPages).catch((error) => {
+      console.error(`Error fetching ${POLYSTRAT_ACCURACY_SOURCE}:`, error);
+      return null;
+    }),
+  ]);
+
+  if (!registry.value) {
+    return { value: null, status: registry.status };
+  }
+
+  return {
+    value: {
+      ...registry.value,
+      // Window-merge into prior history: a failed fetch ([]) leaves `previous` intact.
+      accuracy: mergeSeries(polystratPrevious?.accuracy, accuracy ?? []),
+    },
+    // Registry drives staleness; accuracy is best-effort.
     status: registry.status,
   };
 };
@@ -778,6 +900,8 @@ export const fetchMechExplorerSeries = async (
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
+  /** Polystrat (Polygon, agentId 86) — registry DAA/transactions + squid accuracy. */
+  polystrat: MetricWithStatus<PolystratExplorerSeries | null>;
   /** Optimus (Optimism) — its own series so it can self-heal independently of Modius. */
   babydegenOptimus: MetricWithStatus<BabydegenAgentSeries | null>;
   /** Modius (Mode, wound down) — separate series for independent fallback + colour. */
@@ -802,9 +926,10 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const [omenstrat, babydegenOptimus, babydegenModius, babydegenBasius, mech] = await Promise.all(
-      [
+    const [omenstrat, polystrat, babydegenOptimus, babydegenModius, babydegenBasius, mech] =
+      await Promise.all([
         fetchOmenstratExplorerSeries(options),
+        fetchPolystratExplorerSeries(options),
         fetchBabydegenAgentSeries('optimism'),
         fetchBabydegenAgentSeries('mode'),
         fetchBabydegenAgentSeries('base'),
@@ -813,10 +938,9 @@ export const fetchAllExplorerMetrics = async (
           ataFromDays: options.ataFromDays,
           ataToDays: options.ataToDays,
         }),
-      ]
-    );
+      ]);
     return {
-      data: { omenstrat, babydegenOptimus, babydegenModius, babydegenBasius, mech },
+      data: { omenstrat, polystrat, babydegenOptimus, babydegenModius, babydegenBasius, mech },
       timestamp: Date.now(),
     };
   } catch (error) {
