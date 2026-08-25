@@ -113,13 +113,30 @@ export const HEATMAP_LEVEL_COLORS_TEAL = [
   '#0a4a40', // 8 — deepest (dark teal)
 ];
 
-export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal' | 'blue';
+// Polystrat indigo ramp — anchored on the Polystrat icon's deep navy. The navy is too
+// dark for straight white → brand tints (the light steps would read as the empty grey),
+// so like the teal ramp, levels 1–6 interpolate white → mid indigo and 7–8 deepen past
+// it into the icon navy #14127a.
+export const HEATMAP_LEVEL_COLORS_INDIGO = [
+  '#dfe5ee', // 0 — empty
+  '#e0e4fb', // 1
+  '#c2c9f6', // 2
+  '#a3aeef', // 3
+  '#8492e6', // 4
+  '#6577da', // 5
+  '#465bcb', // 6 — mid indigo
+  '#2b3aa6', // 7 — deeper
+  '#14127a', // 8 — deepest (Polystrat icon navy)
+];
+
+export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal' | 'blue' | 'indigo';
 export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
   purple: HEATMAP_LEVEL_COLORS,
   red: HEATMAP_LEVEL_COLORS_RED,
   lime: HEATMAP_LEVEL_COLORS_LIME,
   teal: HEATMAP_LEVEL_COLORS_TEAL,
   blue: HEATMAP_LEVEL_COLORS_BLUE,
+  indigo: HEATMAP_LEVEL_COLORS_INDIGO,
 };
 
 // row (0=Sun … 6=Sat) → label. All seven.

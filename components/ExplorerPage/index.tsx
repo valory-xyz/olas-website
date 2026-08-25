@@ -27,8 +27,9 @@ type AgentData = {
 
 /**
  * All economies the Explorer can show: economy id → agent id → that agent's data.
- * Single-agent economies (Predict → Omenstrat) have one entry; multi-agent ones
- * (Babydegen → Optimus + Modius) have several, surfaced via a sub-toggle.
+ * Single-agent economies (Mech) have one entry; multi-agent ones (Predict →
+ * Omenstrat + Polystrat, Babydegen → Optimus + Basius + Modius) have several,
+ * surfaced via a sub-toggle.
  */
 export type ExplorerEconomies = Record<string, Record<string, AgentData>>;
 
@@ -68,7 +69,9 @@ type MetricDef = {
 
 // Metric → the noun used in the header/tooltip, how the tooltip value reads, the heatmap
 // colour scale, and how the headline tile value is computed from its daily series.
-const METRIC_CONFIG: Record<string, MetricDef> = {
+// An empty series renders '--' + a dimmed tile, never a real-looking 0 (a new agent's
+// pre-first-cron state, or a failed fetch with nothing to fall back on).
+const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum', MetricDef> = {
   daa: {
     label: 'Daily Active Agents',
     // Tile shows the latest day's value, so label it "Latest DAAs"; the heatmap header
@@ -78,21 +81,21 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     kind: 'count',
     scale: 'sequential',
     // Latest day's active-agent count.
-    headline: (s) => formatCount(s.length ? s[s.length - 1].count : 0),
+    headline: (s) => (s.length ? formatCount(s[s.length - 1].count) : '--'),
     // Spell out the day the headline value is for, e.g. "Daily Active Agents of June 29, 2026".
     tooltip: (s) =>
       s.length
         ? `Daily Active Agents as of ${dayjs(s[s.length - 1].date).format('MMMM D, YYYY')}`
         : undefined,
-    selectable: () => true,
+    selectable: (s) => s.length > 0,
   },
   transactions: {
     label: 'Total Transactions',
     unit: 'transactions',
     kind: 'count',
     scale: 'sequential',
-    headline: (s) => formatCount(s.reduce((sum, p) => sum + p.count, 0)),
-    selectable: () => true,
+    headline: (s) => (s.length ? formatCount(s.reduce((sum, p) => sum + p.count, 0)) : '--'),
+    selectable: (s) => s.length > 0,
   },
   ata: {
     label: 'Agent-to-Agent Transactions',
@@ -111,6 +114,8 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     // Unweighted mean of the daily win-rates we have data for.
     headline: (s) =>
       s.length ? `${Math.round(s.reduce((sum, p) => sum + p.count, 0) / s.length)}%` : '--',
+    tooltip: () =>
+      'Average of each day’s win rate, with every day weighted equally regardless of bet count. Days with too few resolved bets are excluded.',
     selectable: (s) => s.length > 0,
   },
   aum: {
@@ -132,12 +137,16 @@ type AgentMeta = {
   /** A notable day to ring + annotate on the heatmap (e.g. a retirement or launch date). */
   marker?: { date: string; label: string };
 };
-type EconomyMeta = { name: string; metrics: string[]; agents: AgentMeta[] };
+// Keys constrained to METRIC_CONFIG's — a typo'd metric would otherwise compile and
+// crash the page at config.tileLabel.
+type MetricKey = keyof typeof METRIC_CONFIG;
+type EconomyMeta = { name: string; metrics: MetricKey[]; agents: AgentMeta[] };
 
 // Per-economy ordered metric tiles + its agents (label/icon + heatmap colour ramp).
 // The active metric resets to the first key on an economy switch; the active agent
-// resets to the economy's first agent. Babydegen colour-codes Optimus (red) vs Modius
-// (lime); Predict (purple) and Mech (teal) are single-agent.
+// resets to the economy's first agent. Predict colour-codes Omenstrat (purple) vs
+// Polystrat (indigo); Babydegen Optimus (red) / Basius (blue) / Modius (lime); Mech
+// (teal) is single-agent.
 const ECONOMY_META: Record<string, EconomyMeta> = {
   predict: {
     name: 'Predict',
@@ -148,6 +157,13 @@ const ECONOMY_META: Record<string, EconomyMeta> = {
         label: 'Omenstrat',
         icon: '/images/predict-page/omenstrat-icon.png',
         ramp: 'purple',
+      },
+      {
+        key: 'polystrat',
+        label: 'Polystrat',
+        icon: '/images/predict-page/polystrat-icon.png',
+        ramp: 'indigo',
+        marker: { date: '2026-02-10', label: 'Polystrat launched publicly' },
       },
     ],
   },

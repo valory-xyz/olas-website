@@ -1093,6 +1093,17 @@ export const getPolymarketBetsByTimeRangeQuery = ({
   }
 `;
 
+/** One row of getPolymarketBetsByTimeRangeQuery — shared by every consumer so a squid
+ * schema change forces all of them to be touched together. */
+export type PolymarketBetRow = {
+  blockTimestamp: string;
+  outcomeIndex: number;
+  question: { resolution: { winningIndex: number } | null } | null;
+};
+// The squid handles errors differently from a subgraph (it stops advancing instead of
+// erroring), so freshness comes from squidStatus.height via a lag check.
+export type PolymarketBetsResponse = { bets: PolymarketBetRow[]; squidStatus?: { height: number } };
+
 export const getPolymarketBetsWithBettorQuery = ({
   first,
   pages,

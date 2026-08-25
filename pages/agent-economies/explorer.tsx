@@ -30,6 +30,10 @@ export const getStaticProps = async () => {
         series: data?.omenstrat?.value ?? { daa: [], transactions: [], accuracy: [], roi: [] },
         status: data?.omenstrat?.status ?? null,
       },
+      polystrat: {
+        series: data?.polystrat?.value ?? { daa: [], transactions: [], accuracy: [] },
+        status: data?.polystrat?.status ?? null,
+      },
     },
     babydegen: {
       optimus: {

@@ -7,6 +7,7 @@ import {
 import {
   getOmenBetsByTimeRangeQuery,
   getPolymarketBetsByTimeRangeQuery,
+  PolymarketBetsResponse,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
@@ -31,7 +32,8 @@ const BACKFILL_CHUNK_DAYS = 30;
 // roi-distribution.ts (and OMEN_GENESIS_DAY in omenstrat-brier.ts). Backfill walks
 // down to here, no further.
 const OMEN_GENESIS_DAY = 1763769600;
-const POLYMARKET_GENESIS_DAY = 1768867200;
+// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
+const POLYMARKET_GENESIS_DAY = 1768521600;
 
 // JSON-safe per-day bucket: settled bets and how many were correct.
 type AccuracyBucket = { won: number; total: number };
@@ -120,14 +122,6 @@ const fetchOmenDayBuckets: FetchDayBuckets = async (
   return perDay;
 };
 
-type PolyBetRow = {
-  blockTimestamp: string;
-  outcomeIndex: number;
-  question: { resolution: { winningIndex: number } | null } | null;
-};
-// The squid handles errors differently (it stops advancing), so the lag check covers them.
-type PolyBetsResponse = { bets: PolyBetRow[]; squidStatus?: { height: number } };
-
 const fetchPolyDayBuckets: FetchDayBuckets = async (
   startDay,
   endDay,
@@ -148,7 +142,7 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
         blockTimestamp_gte: startDay,
         blockTimestamp_lt: cursor,
       })
-    )) as PolyBetsResponse;
+    )) as PolymarketBetsResponse;
 
     if (!metaChecked) {
       const height = response?.squidStatus?.height;
