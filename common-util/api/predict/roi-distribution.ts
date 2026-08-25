@@ -36,7 +36,8 @@ const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 // Genesis timestamps (UTC midnight) for each agent type
 const OMEN_GENESIS_TS = 1763769600;
-const POLYMARKET_GENESIS_TS = 1768867200;
+// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
+const POLYMARKET_GENESIS_TS = 1768521600;
 // Earliest block timestamp to consider when fetching mech requests
 const GNOSIS_MECH_REQUESTS_GENESIS_TS = 1763078400;
 const POLYGON_MECH_REQUESTS_GENESIS_TS = 1763078400;

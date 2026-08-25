@@ -69,7 +69,9 @@ type MetricDef = {
 
 // Metric → the noun used in the header/tooltip, how the tooltip value reads, the heatmap
 // colour scale, and how the headline tile value is computed from its daily series.
-const METRIC_CONFIG: Record<string, MetricDef> = {
+// An empty series renders '--' + a dimmed tile, never a real-looking 0 (a new agent's
+// pre-first-cron state, or a failed fetch with nothing to fall back on).
+const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum', MetricDef> = {
   daa: {
     label: 'Daily Active Agents',
     // Tile shows the latest day's value, so label it "Latest DAAs"; the heatmap header
@@ -79,21 +81,21 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     kind: 'count',
     scale: 'sequential',
     // Latest day's active-agent count.
-    headline: (s) => formatCount(s.length ? s[s.length - 1].count : 0),
+    headline: (s) => (s.length ? formatCount(s[s.length - 1].count) : '--'),
     // Spell out the day the headline value is for, e.g. "Daily Active Agents of June 29, 2026".
     tooltip: (s) =>
       s.length
         ? `Daily Active Agents as of ${dayjs(s[s.length - 1].date).format('MMMM D, YYYY')}`
         : undefined,
-    selectable: () => true,
+    selectable: (s) => s.length > 0,
   },
   transactions: {
     label: 'Total Transactions',
     unit: 'transactions',
     kind: 'count',
     scale: 'sequential',
-    headline: (s) => formatCount(s.reduce((sum, p) => sum + p.count, 0)),
-    selectable: () => true,
+    headline: (s) => (s.length ? formatCount(s.reduce((sum, p) => sum + p.count, 0)) : '--'),
+    selectable: (s) => s.length > 0,
   },
   ata: {
     label: 'Agent-to-Agent Transactions',
@@ -113,7 +115,7 @@ const METRIC_CONFIG: Record<string, MetricDef> = {
     headline: (s) =>
       s.length ? `${Math.round(s.reduce((sum, p) => sum + p.count, 0) / s.length)}%` : '--',
     tooltip: () =>
-      'Average daily win rate, based on bets placed each day. Days with too few resolved bets are excluded.',
+      'Average of each day’s win rate, with every day weighted equally regardless of bet count. Days with too few resolved bets are excluded.',
     selectable: (s) => s.length > 0,
   },
   aum: {
@@ -135,7 +137,10 @@ type AgentMeta = {
   /** A notable day to ring + annotate on the heatmap (e.g. a retirement or launch date). */
   marker?: { date: string; label: string };
 };
-type EconomyMeta = { name: string; metrics: string[]; agents: AgentMeta[] };
+// Keys constrained to METRIC_CONFIG's — a typo'd metric would otherwise compile and
+// crash the page at config.tileLabel.
+type MetricKey = keyof typeof METRIC_CONFIG;
+type EconomyMeta = { name: string; metrics: MetricKey[]; agents: AgentMeta[] };
 
 // Per-economy ordered metric tiles + its agents (label/icon + heatmap colour ramp).
 // The active metric resets to the first key on an economy switch; the active agent

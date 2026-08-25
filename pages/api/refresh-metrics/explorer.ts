@@ -19,6 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Keep params under what fits the 300s function limit (≈ accuracyPages 400 / roiDays
     // 365) — if the invocation overruns it's killed before saveSnapshot and nothing is
     // written. Go deeper by re-running with larger windows (each run merges into prior).
+    // Note accuracyPages caps BOTH accuracy loops (Omenstrat + Polystrat); each stops at
+    // its first short page, so the budget above still holds at current bet volumes.
     const previousSnapshot = await getSnapshot({ category: 'explorer' });
     const previousData = previousSnapshot?.data as ExplorerMetricsData | undefined;
     const previous = previousData?.omenstrat?.value ?? null;

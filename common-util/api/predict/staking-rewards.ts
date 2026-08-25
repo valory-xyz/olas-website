@@ -18,7 +18,8 @@ const BACKFILL_CHUNK_DAYS = 30;
 
 // UTC-midnight genesis days, mirroring roi-distribution.ts / omenstrat-brier.ts.
 const OMEN_GENESIS_DAY = 1763769600;
-const POLYMARKET_GENESIS_DAY = 1768867200;
+// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
+const POLYMARKET_GENESIS_DAY = 1768521600;
 
 // dayTimestamp (UTC midnight, string) -> summed rewardAmount that day (1e18 OLAS,
 // stored as a decimal string so the BigInt survives JSON).

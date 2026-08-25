@@ -25,6 +25,8 @@ import {
   getExplorerDailyProfitStatsQuery,
   getPolymarketBetsByTimeRangeQuery,
   mechAtaTransactionsQuery,
+  PolymarketBetRow,
+  PolymarketBetsResponse,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -155,8 +157,8 @@ const transformExplorerSeries = (
 
 // Page a registry subgraph's daily per-agent rows (the subgraph caps `first` at 1000,
 // so we skip-page until a short page). Chain-agnostic — `explorerOmenstratSeriesQuery`
-// is parameterised by `agentIds`, so the same query serves Omenstrat (Gnosis) and
-// Babydegen (Optimism + Mode). Returns the last page's `_meta` for lag/error detection.
+// is parameterised by `agentIds`, so the same query serves every registry-backed fleet
+// across chains. Returns the last page's `_meta` for lag/error detection.
 const pageRegistryRows = async (
   client: GraphQLClient,
   agentIds: number[],
@@ -473,7 +475,9 @@ export const fetchOmenstratExplorerSeries = async (
   return {
     value: {
       ...registry.value,
-      // Window-merge into prior history: a failed fetch ([]) leaves `previous` intact.
+      // Window-merge into prior history: fresh days overwrite stored ones. A fully-failed
+      // fetch ([]) leaves `previous` intact, but a partially-failed one can overwrite the
+      // oldest reached day with a partial sample (healed on the next full-window run).
       accuracy: mergeSeries(previous?.accuracy, accuracy ?? []),
       roi: mergeSeries(previous?.roi, roi ?? []),
     },
@@ -495,25 +499,24 @@ export type PolystratExplorerSeries = RegistrySeries & {
   accuracy: DaaSeriesPoint[];
 };
 
-type PolymarketBet = {
-  blockTimestamp: string;
-  outcomeIndex: number;
-  question: { resolution: { winningIndex: number } | null } | null;
-};
-
 /**
  * Daily Prediction Accuracy for Polystrat — same shape and cursor paging as
  * fetchOmenstratDailyAccuracy, but sourced from the predict-polymarket squid. The
  * squid has no server-side resolution filter, so unresolved bets come back and are
  * skipped in code — they get counted on a later run, once their market resolves and
- * the recent window is re-fetched.
+ * the recent window is re-fetched. Also returns the squid's indexed height (null if
+ * no page succeeded) so the caller can lag-check it — a stalled squid returns a
+ * successful-looking response with frozen data, so height is the only freshness signal.
  */
-const fetchPolystratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesPoint[]> => {
-  const bets: PolymarketBet[] = [];
+const fetchPolystratDailyAccuracy = async (
+  maxPages: number
+): Promise<{ series: DaaSeriesPoint[]; squidHeight: number | null }> => {
+  const bets: PolymarketBetRow[] = [];
+  let squidHeight: number | null = null;
   const pages = Math.min(maxPages, ACCURACY_MAX_PAGES);
   let cursor = ACCURACY_CURSOR_START;
   for (let page = 0; page < pages; page += 1) {
-    let pageRows: PolymarketBet[];
+    let pageRows: PolymarketBetRow[];
     try {
       const data = (await requestWithRetry(() =>
         polymarketAgentsGraphClient.request(
@@ -523,8 +526,9 @@ const fetchPolystratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesP
             blockTimestamp_lt: cursor,
           })
         )
-      )) as { bets: PolymarketBet[] };
+      )) as PolymarketBetsResponse;
       pageRows = data?.bets ?? [];
+      squidHeight = squidHeight ?? data?.squidStatus?.height ?? null;
     } catch (error) {
       console.error(
         `${POLYSTRAT_ACCURACY_SOURCE}: page ${page} failed after retries; keeping ${bets.length} bets`,
@@ -551,10 +555,11 @@ const fetchPolystratDailyAccuracy = async (maxPages: number): Promise<DaaSeriesP
     byDay.set(date, entry);
   });
 
-  return Array.from(byDay.entries())
+  const series = Array.from(byDay.entries())
     .filter(([, e]) => e.total >= POLYSTRAT_MIN_BETS_PER_DAY)
     .map(([date, e]) => ({ date, count: Math.round((e.correct / e.total) * 100) }))
     .sort((a, b) => a.date.localeCompare(b.date));
+  return { series, squidHeight };
 };
 
 /**
@@ -570,26 +575,43 @@ export const fetchPolystratExplorerSeries = async (
   const timestampLt = getMidnightUtcTimestampDaysAgo(0);
   const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
 
-  const [registry, accuracy] = await Promise.all([
+  // fetchPolystratDailyAccuracy swallows per-page errors internally (a total failure
+  // surfaces as squidHeight null), so no .catch is needed here.
+  const [registry, accuracy, chainBlock] = await Promise.all([
     fetchRegistrySeries('polygon', POLYSTRAT_AGENT_IDS, timestampGt, timestampLt),
-    fetchPolystratDailyAccuracy(accuracyPages).catch((error) => {
-      console.error(`Error fetching ${POLYSTRAT_ACCURACY_SOURCE}:`, error);
-      return null;
-    }),
+    fetchPolystratDailyAccuracy(accuracyPages),
+    getChainBlockNumber('polygon'),
   ]);
 
   if (!registry.value) {
     return { value: null, status: registry.status };
   }
 
+  // The squid doesn't error when unhealthy — it stops advancing — so a missing or
+  // lagging height marks the accuracy source stale (indicator only; registry data
+  // stays live, so nothing is frozen).
+  const accuracyLagging =
+    accuracy.squidHeight == null || checkSubgraphLag(chainBlock, accuracy.squidHeight, 'polygon');
+  const status = accuracyLagging
+    ? createStaleStatus({
+        indexingErrors: registry.status.indexingErrors,
+        fetchErrors: registry.status.fetchErrors,
+        laggingSubgraphs: [
+          ...(registry.status.laggingSubgraphs ?? []),
+          POLYSTRAT_ACCURACY_SOURCE,
+        ],
+      })
+    : registry.status;
+
   return {
     value: {
       ...registry.value,
-      // Window-merge into prior history: a failed fetch ([]) leaves `previous` intact.
-      accuracy: mergeSeries(polystratPrevious?.accuracy, accuracy ?? []),
+      // Window-merge into prior history: fresh days overwrite stored ones. A fully-failed
+      // fetch ([]) leaves `previous` intact, but a partially-failed one can overwrite the
+      // oldest reached day with a partial sample (healed on the next full-window run).
+      accuracy: mergeSeries(polystratPrevious?.accuracy, accuracy.series),
     },
-    // Registry drives staleness; accuracy is best-effort.
-    status: registry.status,
+    status,
   };
 };
 
