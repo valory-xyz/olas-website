@@ -7,8 +7,12 @@ import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
  * Full details: docs/mech-analytics-migration.md
  */
 
-/** One switch that turns on all mech-analytics read paths. */
-export const USE_MECH_ANALYTICS = process.env.USE_MECH_ANALYTICS === 'true';
+/** One switch that turns on all mech-analytics read paths. Default ON
+ * after the mech-analytics cutover (undelivered rows admitted as shell
+ * shape in mech-analytics PR #36 + placeholder repair against the
+ * marketplace subgraph); explicit ``USE_MECH_ANALYTICS=false`` still
+ * routes reads back through the subgraph as a rollback lever. */
+export const USE_MECH_ANALYTICS = process.env.USE_MECH_ANALYTICS !== 'false';
 
 const PAGE_SIZE = 5000; // endpoint max limit
 
