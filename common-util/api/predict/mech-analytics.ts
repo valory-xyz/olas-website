@@ -10,9 +10,17 @@ import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
 /** One switch that turns on all mech-analytics read paths. Default ON
  * after the mech-analytics cutover (undelivered rows admitted as shell
  * shape in mech-analytics PR #36 + placeholder repair against the
- * marketplace subgraph); explicit ``USE_MECH_ANALYTICS=false`` still
- * routes reads back through the subgraph as a rollback lever. */
-export const USE_MECH_ANALYTICS = process.env.USE_MECH_ANALYTICS !== 'false';
+ * marketplace subgraph). Two knobs turn it back off:
+ *   * ``USE_MECH_ANALYTICS=false`` (case-insensitive) — the operator
+ *     rollback lever during an incident; case-insensitive so a typo
+ *     under pressure (``FALSE`` / ``False``) still rolls back.
+ *   * ``MECH_ANALYTICS_URL`` unset — automatic fallback for previews
+ *     and local dev that never wired the API URL, so a missing
+ *     endpoint doesn't 500 refresh runs on every reload. Prod always
+ *     has the URL set; this only affects environments that don't. */
+const rawFlag = process.env.USE_MECH_ANALYTICS ?? '';
+export const USE_MECH_ANALYTICS =
+  rawFlag.toLowerCase() !== 'false' && !!process.env.MECH_ANALYTICS_URL;
 
 const PAGE_SIZE = 5000; // endpoint max limit
 
