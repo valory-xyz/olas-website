@@ -1,20 +1,24 @@
 # mech-analytics migration spec
 
-> **Status:** `USE_MECH_ANALYTICS` is off everywhere.
+> **Status:** `USE_MECH_ANALYTICS` defaults on after the mech-analytics
+> cutover (PR #560). An unset env var routes reads through mech-analytics;
+> setting `USE_MECH_ANALYTICS=false` is the one-liner rollback lever that
+> sends reads back through the subgraph.
 > **Next steps:**
-> 1. Turn the flag on in a Vercel preview deployment. Run the checks from the
->    "Verification" section. The flag-on numbers must be equal to the flag-off
->    numbers for the same time window.
-> 2. Turn the flag on in production at cut-over. Watch for 24–48 hours.
-> 3. Remove the flag and the subgraph code paths.
+> 1. Watch production for 24-48 hours after the flag flip. If any regression
+>    surfaces, set `USE_MECH_ANALYTICS=false` in the deployment env and
+>    redeploy.
+> 2. Once stable for one release, delete the flag and the subgraph code paths.
 >
-> **Last verified against code:** 2026-07-27. Update this header when the flag
+> **Last verified against code:** 2026-08-27. Update this header when the flag
 > state changes.
 
 This document tells why and how the website moves its per-request
 marketplace-subgraph reads to the
 [mech-analytics](https://github.com/valory-xyz/mech-analytics) API.
-The `USE_MECH_ANALYTICS` flag controls all new read paths. Default: off.
+The `USE_MECH_ANALYTICS` flag controls all new read paths. Default: on after
+the cutover (unset env var routes through mech-analytics; set
+`USE_MECH_ANALYTICS=false` for the rollback path).
 
 ## Background
 
@@ -161,12 +165,16 @@ endpoint — that is a different metric.
 
 ## Rollout
 
-1. Merge with `USE_MECH_ANALYTICS=false`. Nothing changes in production.
-2. Set `MECH_ANALYTICS_URL` and turn the flag on in a preview, after
-   mech-analytics is deployed and caught up. Run the checks below.
-3. Turn the flag on in production at cut-over. Watch for 24–48 hours: blob
-   `fetchErrors`, the StaleIndicator on predict ROI, the tool-accuracy table.
-   To roll back, turn the flag off.
+Steps 1-3 have already run. Only step 4 is left; see the header for the
+current status.
+
+1. ~~Merge with `USE_MECH_ANALYTICS=false`.~~ Done (PR #548).
+2. ~~Set `MECH_ANALYTICS_URL` and turn the flag on in a preview~~. Done — parity
+   checks matched user-visible metrics exactly.
+3. ~~Flip the default to on at cut-over~~. Done (PR #560). Watch for 24-48
+   hours: blob `fetchErrors`, the StaleIndicator on predict ROI, the
+   tool-accuracy table. To roll back, set `USE_MECH_ANALYTICS=false` in the
+   deployment env.
 4. After the watch window: remove the flag and the subgraph code paths. Update
    the `/data` page snippets (`OmenstratRoiInfo`, `PolystratRoiInfo`) to show
    the API instead of the retired subgraph queries.
