@@ -596,10 +596,7 @@ export const fetchPolystratExplorerSeries = async (
     ? createStaleStatus({
         indexingErrors: registry.status.indexingErrors,
         fetchErrors: registry.status.fetchErrors,
-        laggingSubgraphs: [
-          ...(registry.status.laggingSubgraphs ?? []),
-          POLYSTRAT_ACCURACY_SOURCE,
-        ],
+        laggingSubgraphs: [...(registry.status.laggingSubgraphs ?? []), POLYSTRAT_ACCURACY_SOURCE],
       })
     : registry.status;
 

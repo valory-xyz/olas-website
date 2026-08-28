@@ -1147,6 +1147,10 @@ export const liquidityEthQuery = gql`
   query LiquidityEth {
     lptokenMetrics(id: "global") {
       treasuryPercentage
+      totalSupply
+      treasurySupply
+      currentReserve0
+      currentReserve1
       ethUsdPrice
       maticUsdPrice
       solUsdPrice

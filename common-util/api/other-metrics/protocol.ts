@@ -6,13 +6,17 @@ import {
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import { liquidityEthQuery, liquidityL2Query } from 'common-util/graphql/queries';
-import { MetricWithStatus, SubgraphMeta } from 'common-util/graphql/types';
+import { MetricStatus, MetricWithStatus, SubgraphMeta } from 'common-util/graphql/types';
 
 // ─── Subgraph response types ─────────────────────────────────────────────────
 
 type EthSubgraphResponse = {
   lptokenMetrics: {
     treasuryPercentage: string;
+    totalSupply?: string;
+    treasurySupply?: string;
+    currentReserve0?: string; // OLAS (token0 by address ordering on Uniswap V2)
+    currentReserve1?: string; // WETH
     ethUsdPrice: string;
     maticUsdPrice: string;
     solUsdPrice: string;
@@ -116,6 +120,10 @@ function computeShare(bridgedBalance: bigint, totalSupply: bigint): number {
 
 type PoolConfig = {
   originChain: string; // key into bridgedPOLHoldings[].originChain
+  // Which reserve holds OLAS, and the paired token's reserve/symbol/decimals —
+  // used for the protocol-owned token amounts shown in the POL spread tooltips.
+  olasReserve: 'reserve0' | 'reserve1';
+  paired: { reserve: 'reserve0' | 'reserve1'; symbol: string; decimals: number };
   computeTvlUsd: (pool: L2Pool, prices: Prices) => number | null;
   computeTotalFeesUsd: (pool: L2Pool, prices: Prices) => number | null;
 };
@@ -126,6 +134,8 @@ type PoolConfig = {
 const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   gnosis: {
     originChain: 'gnosis',
+    olasReserve: 'reserve0',
+    paired: { reserve: 'reserve1', symbol: 'WXDAI', decimals: 18 },
     // OLAS-WXDAI: reserve0=OLAS, reserve1=WXDAI (stablecoin ≈ $1)
     computeTvlUsd: (pool) => pairedFromReserve(pool.reserve1, 18) * 2,
     computeTotalFeesUsd: (pool) => {
@@ -136,6 +146,8 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   polygon: {
     originChain: 'polygon',
+    olasReserve: 'reserve1',
+    paired: { reserve: 'reserve0', symbol: 'WMATIC', decimals: 18 },
     // OLAS-WMATIC: reserve0=WMATIC, reserve1=OLAS
     computeTvlUsd: (pool, prices) => {
       if (prices.matic <= 0) return null;
@@ -156,6 +168,8 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   arbitrum: {
     originChain: 'arbitrum',
+    olasReserve: 'reserve0',
+    paired: { reserve: 'reserve1', symbol: 'WETH', decimals: 18 },
     // OLAS-WETH: reserve0=OLAS, reserve1=WETH
     computeTvlUsd: (pool, prices) => {
       if (prices.eth <= 0) return null;
@@ -176,6 +190,8 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   optimism: {
     originChain: 'optimism',
+    olasReserve: 'reserve1',
+    paired: { reserve: 'reserve0', symbol: 'WETH', decimals: 18 },
     // WETH-OLAS: reserve0=WETH, reserve1=OLAS
     computeTvlUsd: (pool, prices) => {
       if (prices.eth <= 0) return null;
@@ -196,6 +212,8 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   celo: {
     originChain: 'celo',
+    olasReserve: 'reserve1',
+    paired: { reserve: 'reserve0', symbol: 'CELO', decimals: 18 },
     // CELO-OLAS: reserve0=CELO, reserve1=OLAS. CELO/USD from Chainlink on Celo.
     computeTvlUsd: (pool) => {
       const r0 = BigInt(pool.reserve0);
@@ -223,6 +241,8 @@ const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   // OLAS-USDC: reserve0=OLAS(18), reserve1=USDC(6)
   [BASE_POOL_OLAS_USDC]: {
     originChain: 'base',
+    olasReserve: 'reserve0',
+    paired: { reserve: 'reserve1', symbol: 'USDC', decimals: 6 },
     computeTvlUsd: (pool) => pairedFromReserve(pool.reserve1, 6) * 2,
     computeTotalFeesUsd: (pool) => {
       const fees = parseFeesPair(pool);
@@ -233,6 +253,8 @@ const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   // WETH-OLAS: reserve0=WETH(18), reserve1=OLAS(18)
   [BASE_POOL_WETH_OLAS]: {
     originChain: 'base-weth',
+    olasReserve: 'reserve1',
+    paired: { reserve: 'reserve0', symbol: 'WETH', decimals: 18 },
     computeTvlUsd: (pool, prices) => {
       if (prices.eth <= 0) return null;
       return pairedFromReserve(pool.reserve0, 18) * 2 * prices.eth;
@@ -267,10 +289,12 @@ const isSaneUsd = (n: number, max: number): boolean => Number.isFinite(n) && n >
 
 // ─── Solana ─────────────────────────────────────────────────────────────────
 
-const SOL_VAULT_ACCOUNT = 'CLA8hU8SkdCZ9cJVLMfZQfcgAsywZ9txBJ6qrRAqthLx';
+// Token vaults of the Orca WSOL-OLAS whirlpool (5dMKUYJDsjZkAD3wiV3ViQkuq9pSmWQ5eAzcQLtDnUT3).
+const SOL_VAULT_ACCOUNT = 'CLA8hU8SkdCZ9cJVLMfZQfcgAsywZ9txBJ6qrRAqthLx'; // WSOL
+const SOL_OLAS_VAULT_ACCOUNT = '6E8pzDK8uwpENc49kp5xo5EGydYjtamPSmUKXxum4ybb'; // OLAS
 const SOLANA_TREASURY_SHARE = 0.99995;
 
-async function fetchSolanaVaultBalance(): Promise<number | null> {
+async function fetchSolanaVaultBalance(account: string): Promise<number | null> {
   const rpcUrl = process.env.SOLANA_RPC;
   if (!rpcUrl) return null;
 
@@ -282,13 +306,13 @@ async function fetchSolanaVaultBalance(): Promise<number | null> {
         jsonrpc: '2.0',
         id: 1,
         method: 'getTokenAccountBalance',
-        params: [SOL_VAULT_ACCOUNT],
+        params: [account],
       }),
     });
     const data = await response.json();
     return data?.result?.value?.uiAmount ?? null;
   } catch (error) {
-    console.error('Error fetching Solana vault balance:', error);
+    console.error(`Error fetching Solana vault balance (${account}):`, error);
     return null;
   }
 }
@@ -298,9 +322,43 @@ async function fetchSolanaVaultBalance(): Promise<number | null> {
 const L2_CHAINS = ['gnosis', 'polygon', 'arbitrum', 'optimism', 'base', 'celo'] as const;
 type L2Chain = (typeof L2_CHAINS)[number];
 
+// UI-facing chain keys for the per-chain POL spread. Base's two pools
+// ('base' + 'base-weth' originChains) are merged under 'base'.
+export const POL_CHAIN_KEYS = [
+  'ethereum',
+  'gnosis',
+  'polygon',
+  'arbitrum',
+  'optimism',
+  'base',
+  'celo',
+  'solana',
+] as const;
+export type PolChainKey = (typeof POL_CHAIN_KEYS)[number];
+
+export type PolChainTokenAmount = { symbol: string; amount: number };
+
+// Protocol-owned USD value plus the underlying token amounts (OLAS first),
+// shown in the homepage POL spread tooltips.
+export type PolChainValue = { usd: number; tokens: PolChainTokenAmount[] };
+
+export type PolByChain = Record<PolChainKey, MetricWithStatus<PolChainValue | null>>;
+
+type ChainErrorBags = {
+  indexingErrors: string[];
+  fetchErrors: string[];
+  laggingSubgraphs: string[];
+};
+
+// Plain record (not a single metric wrapping a record) so mergeSnapshotTree
+// recurses to each chain leaf and applies keep-last-valid per chain.
+const nullPolByChain = (status: MetricStatus): PolByChain =>
+  Object.fromEntries(POL_CHAIN_KEYS.map((key) => [key, { value: null, status }])) as PolByChain;
+
 type ProtocolMetricsResult = {
   totalProtocolOwnedLiquidity: MetricWithStatus<number | null>;
   totalProtocolRevenue: MetricWithStatus<number | null>;
+  polByChain: PolByChain;
 };
 
 async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
@@ -315,24 +373,47 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   let polPartial = false;
   let feesPartial = false;
 
+  // Per-chain POL spread: value accumulator + error bags + hard-fail flag per
+  // UI chain key. A failed chain publishes null so the merge freezes it alone.
+  const polUsdByChain: Partial<Record<PolChainKey, number>> = {};
+  const polTokensByChain: Partial<Record<PolChainKey, Record<string, number>>> = {};
+  const polChainFailed: Partial<Record<PolChainKey, boolean>> = {};
+  const addChainToken = (chain: PolChainKey, symbol: string, amount: number) => {
+    const tokens = (polTokensByChain[chain] ??= {});
+    tokens[symbol] = (tokens[symbol] ?? 0) + amount;
+  };
+  const chainErrors = Object.fromEntries(
+    POL_CHAIN_KEYS.map((key) => [
+      key,
+      { indexingErrors: [], fetchErrors: [], laggingSubgraphs: [] },
+    ])
+  ) as Record<PolChainKey, ChainErrorBags>;
+  // Ethereum supplies prices + bridged balances for every chain, so its
+  // indexing errors / lag affect all 8 spreads.
+  const pushToAllChains = (bag: keyof ChainErrorBags, source: string) => {
+    POL_CHAIN_KEYS.forEach((key) => chainErrors[key][bag].push(source));
+  };
+
   const ethClient = LIQUIDITY_GRAPH_CLIENTS.ethereum;
 
   // Kick off subgraph fetches AND chain-block lookups in parallel. Previously
   // getChainBlockNumber() was serialized inside the L2 loop, costing ~6 RPC
   // round-trips on the critical path.
-  const [ethResult, ethBlockResult, solBalanceResult, ...l2Results] = await Promise.allSettled([
-    ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
-    getChainBlockNumber('ethereum'),
-    fetchSolanaVaultBalance(),
-    ...L2_CHAINS.flatMap((chain) => [
-      (async () => {
-        const client = LIQUIDITY_GRAPH_CLIENTS[chain];
-        const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
-        return { chain, data };
-      })(),
-      getChainBlockNumber(chain) as Promise<number | null>,
-    ]),
-  ]);
+  const [ethResult, ethBlockResult, solBalanceResult, solOlasBalanceResult, ...l2Results] =
+    await Promise.allSettled([
+      ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
+      getChainBlockNumber('ethereum'),
+      fetchSolanaVaultBalance(SOL_VAULT_ACCOUNT),
+      fetchSolanaVaultBalance(SOL_OLAS_VAULT_ACCOUNT),
+      ...L2_CHAINS.flatMap((chain) => [
+        (async () => {
+          const client = LIQUIDITY_GRAPH_CLIENTS[chain];
+          const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
+          return { chain, data };
+        })(),
+        getChainBlockNumber(chain) as Promise<number | null>,
+      ]),
+    ]);
 
   // Ethereum subgraph is required for prices, bridged balances, and ETH POL/fees.
   if (ethResult.status !== 'fulfilled') {
@@ -341,15 +422,20 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     return {
       totalProtocolOwnedLiquidity: { value: null, status },
       totalProtocolRevenue: { value: null, status },
+      polByChain: nullPolByChain(status),
     };
   }
 
   const ethData = ethResult.value;
 
-  if (ethData._meta?.hasIndexingErrors) indexingErrors.push('liquidity:ethereum');
+  if (ethData._meta?.hasIndexingErrors) {
+    indexingErrors.push('liquidity:ethereum');
+    pushToAllChains('indexingErrors', 'liquidity:ethereum');
+  }
   const ethBlock = ethBlockResult.status === 'fulfilled' ? ethBlockResult.value : null;
   if (checkSubgraphLag(ethBlock, ethData._meta?.block?.number, 'ethereum')) {
     laggingSubgraphs.push('liquidity:ethereum');
+    pushToAllChains('laggingSubgraphs', 'liquidity:ethereum');
   }
 
   // Prices from Chainlink (stored by Ethereum subgraph, 8 decimals)
@@ -361,6 +447,22 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
   // Ethereum POL (pre-computed by subgraph)
   const ethPolUsd = Number(BigInt(ethData.lptokenMetrics.protocolOwnedLiquidityUsd)) / 1e8;
+  if (isSaneUsd(ethPolUsd, MAX_POOL_TVL_USD)) {
+    polUsdByChain.ethereum = ethPolUsd;
+    // Composition: treasury's share of the Uniswap V2 OLAS-WETH reserves.
+    // Fields are optional (older subgraph deployments) — tooltip simply omits
+    // the amounts when absent.
+    const { totalSupply, treasurySupply, currentReserve0, currentReserve1 } =
+      ethData.lptokenMetrics;
+    if (totalSupply && treasurySupply && currentReserve0 && currentReserve1) {
+      const ethShare = computeShare(BigInt(treasurySupply), BigInt(totalSupply));
+      addChainToken('ethereum', 'OLAS', pairedFromReserve(currentReserve0, 18) * ethShare);
+      addChainToken('ethereum', 'WETH', pairedFromReserve(currentReserve1, 18) * ethShare);
+    }
+  } else {
+    chainErrors.ethereum.fetchErrors.push('liquidity:ethereum:pol-out-of-bounds');
+    polChainFailed.ethereum = true;
+  }
 
   // Ethereum fees (pre-computed by subgraph, 8 decimals).
   // `!= null` (loose) intentionally catches both null and undefined, since the
@@ -398,6 +500,8 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     if (subgraphResult.status !== 'fulfilled') {
       console.error(`Error fetching ${chain} liquidity subgraph:`, subgraphResult.reason);
       fetchErrors.push(source);
+      chainErrors[chain].fetchErrors.push(source);
+      polChainFailed[chain] = true;
       polPartial = true;
       feesPartial = true;
       continue;
@@ -406,17 +510,24 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     try {
       const { data } = subgraphResult.value;
 
-      if (data._meta?.hasIndexingErrors) indexingErrors.push(source);
+      if (data._meta?.hasIndexingErrors) {
+        indexingErrors.push(source);
+        chainErrors[chain].indexingErrors.push(source);
+      }
       const chainBlock = blockResult.status === 'fulfilled' ? blockResult.value : null;
       if (blockResult.status !== 'fulfilled') {
         laggingSubgraphs.push(source);
+        chainErrors[chain].laggingSubgraphs.push(source);
       } else if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
         laggingSubgraphs.push(source);
+        chainErrors[chain].laggingSubgraphs.push(source);
       }
 
       const pools = data.poolMetrics_collection || [];
       if (pools.length === 0) {
         fetchErrors.push(source);
+        chainErrors[chain].fetchErrors.push(source);
+        polChainFailed[chain] = true;
         polPartial = true;
         feesPartial = true;
         continue;
@@ -464,6 +575,11 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
             `[protocol-metrics] ${poolSource} TVL unavailable (missing price or reserves) — skipping`
           );
           fetchErrors.push(poolSource);
+          // One bad pool nulls the whole chain figure (matters for Base's two
+          // pools) — the merge holds the chain's last-good combined value
+          // rather than publishing a misleading half-sum.
+          chainErrors[chain].fetchErrors.push(poolSource);
+          polChainFailed[chain] = true;
           polPartial = true;
           feesPartial = true;
           continue;
@@ -475,6 +591,8 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
         if (!isSaneUsd(tvl, MAX_POOL_TVL_USD)) {
           console.error(`[protocol-metrics] ${poolSource} TVL out of bounds: $${tvl} — skipping`);
           fetchErrors.push(poolSource);
+          chainErrors[chain].fetchErrors.push(poolSource);
+          polChainFailed[chain] = true;
           polPartial = true;
           feesPartial = true;
           continue;
@@ -485,6 +603,13 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
           BigInt(pool.totalSupply)
         );
         totalPolUsd += tvl * share;
+        polUsdByChain[chain] = (polUsdByChain[chain] ?? 0) + tvl * share;
+        addChainToken(chain, 'OLAS', pairedFromReserve(pool[config.olasReserve], 18) * share);
+        addChainToken(
+          chain,
+          config.paired.symbol,
+          pairedFromReserve(pool[config.paired.reserve], config.paired.decimals) * share
+        );
 
         const totalFees = config.computeTotalFeesUsd(pool, prices);
         if (totalFees === null) {
@@ -505,6 +630,8 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     } catch (error) {
       console.error(`Error processing ${chain} liquidity:`, error);
       fetchErrors.push(source);
+      chainErrors[chain].fetchErrors.push(source);
+      polChainFailed[chain] = true;
       polPartial = true;
       feesPartial = true;
     }
@@ -512,10 +639,20 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
   // Solana: 2 × SOL_vault × SOL/USD × treasury_share (~99.995%). No fees (no subgraph).
   const solBalance = solBalanceResult.status === 'fulfilled' ? solBalanceResult.value : null;
+  const solOlasBalance =
+    solOlasBalanceResult.status === 'fulfilled' ? solOlasBalanceResult.value : null;
   if (solBalance !== null && prices.sol > 0) {
     totalPolUsd += solBalance * 2 * prices.sol * SOLANA_TREASURY_SHARE;
+    polUsdByChain.solana = solBalance * 2 * prices.sol * SOLANA_TREASURY_SHARE;
+    addChainToken('solana', 'WSOL', solBalance * SOLANA_TREASURY_SHARE);
+    // OLAS side is display-only (tooltip) — its absence doesn't fail the chain.
+    if (solOlasBalance !== null) {
+      addChainToken('solana', 'OLAS', solOlasBalance * SOLANA_TREASURY_SHARE);
+    }
   } else {
     fetchErrors.push('liquidity:solana');
+    chainErrors.solana.fetchErrors.push('liquidity:solana');
+    polChainFailed.solana = true;
     polPartial = true;
   }
 
@@ -542,6 +679,24 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     feesValue = null;
   }
 
+  const polByChain = Object.fromEntries(
+    POL_CHAIN_KEYS.map((key) => {
+      const usd = polUsdByChain[key];
+      let value: PolChainValue | null = null;
+      if (!polChainFailed[key] && usd !== undefined) {
+        const tokens = Object.entries(polTokensByChain[key] ?? {})
+          .map(([symbol, amount]) => ({ symbol, amount }))
+          .sort((a, b) => {
+            if (a.symbol === 'OLAS') return -1;
+            if (b.symbol === 'OLAS') return 1;
+            return a.symbol.localeCompare(b.symbol);
+          });
+        value = { usd: Math.round(usd), tokens };
+      }
+      return [key, { value, status: createStaleStatus(chainErrors[key]) }];
+    })
+  ) as PolByChain;
+
   return {
     totalProtocolOwnedLiquidity: {
       value: polValue,
@@ -559,6 +714,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
         laggingSubgraphs,
       }),
     },
+    polByChain,
   };
 }
 
@@ -571,6 +727,7 @@ export const fetchProtocolMetrics = async (): Promise<ProtocolMetricsResult> => 
     return {
       totalProtocolOwnedLiquidity: { value: null, status },
       totalProtocolRevenue: { value: null, status },
+      polByChain: nullPolByChain(status),
     };
   }
 };

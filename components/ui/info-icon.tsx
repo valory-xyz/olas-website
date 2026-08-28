@@ -1,8 +1,8 @@
-export const InfoIcon = ({ fill = 'currentColor' }) => (
+export const InfoIcon = ({ fill = 'currentColor', size = 20 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
+    width={size}
+    height={size}
     viewBox="0 0 1024 1024"
     fill={fill}
   >

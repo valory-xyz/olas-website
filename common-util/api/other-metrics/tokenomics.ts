@@ -81,8 +81,7 @@ const fetchSupplyDistribution = async (): Promise<MetricWithStatus<SupplyDistrib
     }
 
     const totalSupply = BigInt(raw);
-    const circulatingSupply =
-      totalSupply > 0n ? totalSupply - (veOlas + dao + valory) : 0n;
+    const circulatingSupply = totalSupply > 0n ? totalSupply - (veOlas + dao + valory) : 0n;
 
     return {
       value: {

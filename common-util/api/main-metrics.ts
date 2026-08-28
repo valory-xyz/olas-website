@@ -23,7 +23,7 @@ import {
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
-import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
+import { fetchMechMarketplaceFees, MechFeesByToken } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
@@ -494,19 +494,13 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
 };
 
 export type MainMetricsData = {
-  /**
-   * ISO timestamp of the first refresh that saw transactions cross 20M, stamped
-   * once by the refresh endpoint and thereafter carried forward by the snapshot
-   * merge (a key absent from new data is kept from the old one). Temporary —
-   * goes away with the milestone celebration.
-   */
-  milestoneReachedAt?: string;
   dailyActiveAgents: MetricWithStatus<number | null>;
   olasStaked: MetricWithStatus<string | null>;
   transactions: MetricWithStatus<string | null>;
   ataTransactions: MetricWithStatus<string | null>;
   mechFees: MetricWithStatus<string | null>;
   feesCollected: MetricWithStatus<string | null>;
+  feesCollectedByToken: MetricWithStatus<MechFeesByToken | null>;
   totalOperators: MetricWithStatus<number | null>;
 };
 
@@ -523,7 +517,7 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
       transactionsResult,
       ataTransactionsResult,
       mechFeesResult,
-      feesCollectedResult,
+      marketplaceFeesResult,
       totalOperatorsResult,
     ] = await Promise.all([
       fetchDailyAgentPerformance(),
@@ -531,7 +525,7 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
       fetchTransactions(),
       fetchAtaTransactions(),
       fetchMechFees(),
-      fetchMechMarketplaceFeesCollected(),
+      fetchMechMarketplaceFees(),
       fetchTotalOperators(),
     ]);
 
@@ -542,7 +536,8 @@ export const fetchAllAgentMetrics = async (): Promise<MainMetricsSnapshot | null
         transactions: transactionsResult,
         ataTransactions: ataTransactionsResult,
         mechFees: mechFeesResult,
-        feesCollected: feesCollectedResult,
+        feesCollected: marketplaceFeesResult.feesCollected,
+        feesCollectedByToken: marketplaceFeesResult.feesCollectedByToken,
         totalOperators: totalOperatorsResult,
       },
       timestamp: Date.now(),

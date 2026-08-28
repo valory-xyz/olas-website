@@ -248,6 +248,40 @@ test('mergeSnapshotTree: warns when metrics are nested in an array (no fallback 
   assert.match(warnings[0], /series/);
 });
 
+test('mergeSnapshotTree: a per-chain metric record freezes failed chains independently', () => {
+  // The polByChain shape: a plain record of MetricWithStatus leaves. One chain's hard
+  // failure must hold that chain's last-good value alone — the others publish live.
+  const merged = mergeSnapshotTree(
+    {
+      polByChain: {
+        gnosis: { value: null, status: status({ stale: true, fetchErrors: ['liquidity:gnosis'] }) },
+        base: { value: 127162, status: status() },
+      },
+    },
+    {
+      polByChain: {
+        gnosis: { value: 273628, status: status({ lastValidAt: OLD_VALID_AT }) },
+        base: { value: 100000, status: status({ lastValidAt: OLD_VALID_AT }) },
+      },
+    },
+    NOW
+  );
+  assert.equal(merged.polByChain.gnosis.value, 273628);
+  assert.equal(merged.polByChain.gnosis.status.frozen, true);
+  assert.equal(merged.polByChain.base.value, 127162);
+  assert.equal(merged.polByChain.base.status.frozen, false);
+});
+
+test('mergeSnapshotTree: a per-chain record absent from the old snapshot publishes fresh', () => {
+  const merged = mergeSnapshotTree(
+    { polByChain: { gnosis: { value: 273628, status: status() } } },
+    { totalProtocolOwnedLiquidity: { value: 1, status: status() } },
+    NOW
+  );
+  assert.equal(merged.polByChain.gnosis.value, 273628);
+  assert.equal(merged.polByChain.gnosis.status.frozen, false);
+});
+
 test('mergeSnapshotTree: a metric gaining a new sibling keeps both', () => {
   const merged = mergeSnapshotTree(
     { a: { value: 1, status: status() }, b: { value: 2, status: status() } },
