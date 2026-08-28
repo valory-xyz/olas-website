@@ -3,7 +3,8 @@ import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 
-import { DIAGRAM, FEE_SWITCHES, TOOLTIPS } from './constants';
+import { DIAGRAM, FEE_SWITCHES } from './constants';
+import { PolFeeSwitchTooltip } from './PolFeeSwitchTooltip';
 
 // Economy tip colors match the strong end of their stroke gradients below.
 const COLORS = {
@@ -239,9 +240,9 @@ export const FlywheelConnectors = () => (
         align="center"
         side="bottom"
         iconSize={16}
-        contentClassName="w-[320px] text-left font-normal"
+        contentClassName="w-[382px] text-left font-normal"
       >
-        {TOOLTIPS.polFeeSwitch}
+        <PolFeeSwitchTooltip />
       </Popover>
     </div>
 

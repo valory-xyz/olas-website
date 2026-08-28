@@ -16,8 +16,6 @@ export type ProtocolActivityMetrics = {
 
 export const TOOLTIPS = {
   dailyActiveAgents: '7-day average Daily Active Agents',
-  // Final copy pending.
-  polFeeSwitch: 'The PoL fee switch is currently off.',
   marketplaceFees: 'A 15% fee is taken on payments between AI agents on the Olas Marketplace.',
 } as const;
 

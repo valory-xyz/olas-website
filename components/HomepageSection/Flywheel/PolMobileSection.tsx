@@ -2,8 +2,9 @@ import { Popover } from 'components/ui/popover';
 import Image from 'next/image';
 
 import { ChainPillCard } from './ChainPill';
-import { CHAIN_PILLS, FEE_SWITCHES, ProtocolActivityMetrics, TOOLTIPS } from './constants';
+import { CHAIN_PILLS, FEE_SWITCHES, ProtocolActivityMetrics } from './constants';
 import { FeesFromPolCard } from './FeesFromPolCard';
+import { PolFeeSwitchTooltip } from './PolFeeSwitchTooltip';
 
 // Grid order follows the mobile design (roughly by PoL size).
 const MOBILE_CHAIN_ORDER = [
@@ -87,28 +88,29 @@ export const PolMobileSection = ({ protocolMetrics }: PolMobileSectionProps) => 
 
     <FeesFromPolCard protocolMetrics={protocolMetrics} className="w-full" />
 
-    {/* Vertical drop from the fees card, then the OFF valve sitting on a short
-        line (knob centered under the drop), with its label to the right. */}
+    {/* Vertical drop from the fees card ending in the OFF valve, rotated to
+        lie horizontally (tail left, knob under the line), label to the right. */}
     <div className="flex flex-col items-center">
-      <div className="h-7 w-[3px] bg-[#94a3b8]" />
-      <div className="relative h-[42px] w-[180px]">
-        <div className="absolute left-[34px] top-[9px] w-[56px] h-[3px] bg-[#94a3b8]" />
+      <div className="h-10 w-[3px] bg-[#94a3b8]" />
+      <div className="relative h-[45px] w-full -mt-[10px]">
+        {/* Image center sits 11.5px left of the column axis so the KNOB
+            (11.5px from the rotated image's center) lands exactly on it. */}
         <Image
           src="/images/homepage/activity/fee-switch-off.png"
           alt="Fee switch off"
           width={22}
           height={45}
-          className="absolute left-[79px] top-[-24px]"
+          className="absolute left-[calc(50%-22.5px)] top-0 -rotate-90"
         />
-        <div className="absolute left-[108px] top-0 flex flex-row gap-[2px] text-xs font-bold leading-5 text-black">
+        <div className="absolute left-[calc(50%+24px)] top-1/2 -translate-y-1/2 flex flex-row items-center gap-[2px] text-xs font-bold leading-5 text-black">
           <p>{FEE_SWITCHES.pol}</p>
           <Popover
             align="center"
             side="bottom"
             iconSize={16}
-            contentClassName="w-[320px] text-left font-normal"
+            contentClassName="max-w-[90vw] w-[382px] text-left font-normal"
           >
-            {TOOLTIPS.polFeeSwitch}
+            <PolFeeSwitchTooltip />
           </Popover>
         </div>
       </div>
