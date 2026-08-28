@@ -4,11 +4,10 @@ import { TokenAddress } from './TokenAddress';
 
 import PropTypes from 'prop-types';
 
-export const PowersAiAgentEconomies = ({ metrics, isTxnMilestone = false }) => (
-  // overflow-x-clip: the milestone confetti canvas reaches well past the card
-  // so particles aren't cut off, which on a phone put it past the viewport and
-  // gave the whole page a horizontal scroll. `clip` (not `hidden`) contains it
-  // without creating a scroll container or affecting vertical overflow.
+export const PowersAiAgentEconomies = ({ metrics, protocolMetrics = null }) => (
+  // overflow-x-clip: the flywheel's fixed-width canvas overflows narrow
+  // viewports before it scales down; `clip` (not `hidden`) contains it without
+  // creating a scroll container or affecting vertical overflow.
   <div className="relative overflow-x-clip">
     <div className="activity-bg h-full" />
     <SectionWrapper
@@ -16,7 +15,7 @@ export const PowersAiAgentEconomies = ({ metrics, isTxnMilestone = false }) => (
       backgroundType="NONE"
       customClasses="bg-slate-100 text-center py-20"
     >
-      <Activity metrics={metrics} isTxnMilestone={isTxnMilestone} />
+      <Activity metrics={metrics} protocolMetrics={protocolMetrics} />
       <TokenAddress />
     </SectionWrapper>
   </div>
@@ -24,5 +23,5 @@ export const PowersAiAgentEconomies = ({ metrics, isTxnMilestone = false }) => (
 
 PowersAiAgentEconomies.propTypes = {
   metrics: PropTypes.shape({}),
-  isTxnMilestone: PropTypes.bool,
+  protocolMetrics: PropTypes.shape({}),
 };

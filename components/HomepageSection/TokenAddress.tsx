@@ -33,7 +33,7 @@ const TokenDropdown = ({ activeTab, setActiveTab, setCurrentAddress }) => {
     <div className="flex md:hidden text-left w-full mb-4 relative" ref={dropdownRef}>
       <button
         type="button"
-        className="w-full flex items-center justify-between bg-white rounded-lg p-2"
+        className="w-full h-12 flex items-center justify-between gap-3 bg-white rounded-lg p-3 border border-[#D7DDEA]"
         onClick={() => setOpenDropdown((prevValue) => !prevValue)}
         aria-expanded={openDropdown}
         aria-haspopup="true"
@@ -132,8 +132,20 @@ export const TokenAddress = () => {
 
   return (
     <div className="place-items-center mt-20">
-      <Image src="/images/homepage/olas-token.png" alt="OLAS token" width={487} height={444} />
-      <Card className="absolute z-20 card-opaque w-[90%] md:w-[648px] left-1/2 transform -translate-x-1/2 -translate-y-[200px] pt-4 p-6 bg-white flex flex-col">
+      <Card
+        className="card-opaque w-[90%] md:w-[648px] mx-auto pt-4 p-6 flex flex-col"
+        style={{
+          background: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(24px)',
+          boxShadow: [
+            '0px 6px 12px 0px rgba(151, 164, 186, 0.11)',
+            '0px 22px 22px 0px rgba(151, 164, 186, 0.1)',
+            '0px 50px 30px 0px rgba(151, 164, 186, 0.06)',
+            '0px 88px 35px 0px rgba(151, 164, 186, 0.02)',
+            '0px 138px 39px 0px rgba(151, 164, 186, 0)',
+          ].join(', '),
+        }}
+      >
         <TokenDropdown
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -163,11 +175,13 @@ export const TokenAddress = () => {
           Copied to clipboard
         </Card>
       )}
+      {/* No z-index here: the Card's backdrop-filter forms a stacking context,
+          and elevated buttons would show through its expanded dropdown. */}
       <div className="flex flex-row gap-4 mt-14 w-fit mx-auto">
-        <Button variant="default" size="lg" asChild className="z-10">
+        <Button variant="default" size="lg" asChild>
           <Link href="/olas-token#token-details">Get OLAS</Link>
         </Button>
-        <Button variant="outline" size="lg" asChild className="z-10">
+        <Button variant="outline" size="lg" asChild>
           <Link href="/olas-token">Tokenomics</Link>
         </Button>
       </div>

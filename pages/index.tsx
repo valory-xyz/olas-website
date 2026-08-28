@@ -1,5 +1,5 @@
-import type { MainMetricsData } from 'common-util/api/main-metrics';
-import { isTxnMilestoneActive, REVALIDATE_DURATION } from 'common-util/constants';
+import type { OtherMetricsData } from 'common-util/api/other-metrics';
+import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
 import Hero from 'components/HomepageSection/Hero';
@@ -12,7 +12,7 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home({ metrics, isTxnMilestone }) {
+export default function Home({ metrics, protocolMetrics }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Home({ metrics, isTxnMilestone }) {
       <Hero />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAiAgentEconomies metrics={metrics} isTxnMilestone={isTxnMilestone} />
+      <PowersAiAgentEconomies metrics={metrics} protocolMetrics={protocolMetrics} />
       <PropelledBy />
       <Media />
     </PageWrapper>
@@ -35,23 +35,20 @@ export default function Home({ metrics, isTxnMilestone }) {
 }
 
 export const getStaticProps = async () => {
-  const metricsSnapshot = await getSnapshot({ category: 'main' });
+  const [metricsSnapshot, otherSnapshot] = await Promise.all([
+    getSnapshot({ category: 'main' }),
+    getSnapshot({ category: 'other' }),
+  ]);
 
   const metrics = metricsSnapshot?.data ?? null;
-
-  // Resolved here rather than in the component: a fixed prop renders the same
-  // on server and client, so the date boundary can't cause a hydration mismatch.
-  // ISR (5 min) re-evaluates it, so the celebration starts and ends on its own.
-  const mainMetrics = metrics as MainMetricsData | null;
-  const isTxnMilestone = isTxnMilestoneActive(
-    mainMetrics?.transactions?.value,
-    mainMetrics?.milestoneReachedAt
-  );
+  // Only the protocol slice — the rest of the 'other' snapshot (tokenomics
+  // series, holders) would bloat the page JSON for nothing.
+  const protocolMetrics = (otherSnapshot?.data as OtherMetricsData | null)?.protocol ?? null;
 
   return {
     props: {
       metrics,
-      isTxnMilestone,
+      protocolMetrics,
     },
     revalidate: REVALIDATE_DURATION,
   };

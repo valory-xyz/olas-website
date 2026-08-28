@@ -222,20 +222,28 @@ const readTrackerFeesUsd = async (
   return Number(formatUnits(collected + drained, tracker.decimals));
 };
 
+// Per-token totals for the homepage tooltip breakdown (token symbol → amount in
+// that token, which for these ~$1 trackers is also USD).
+export type MechFeesByToken = Record<string, number>;
+
+export type MechMarketplaceFees = {
+  feesCollected: MetricWithStatus<string | null>;
+  feesCollectedByToken: MetricWithStatus<MechFeesByToken | null>;
+};
+
 /**
- * Sums `collectedFees()` (in USD) across all USD-pegged BalanceTrackers and returns
- * the total as a `MetricWithStatus<string | null>` (string matches the `mechFees`
- * shape used elsewhere). Used by both the `main` snapshot (homepage "fees collected")
- * and the `agent-economies` snapshot (mech page "Marketplace Fees Collected").
+ * Sums `collectedFees()` (in USD) across all USD-pegged BalanceTrackers. Returns the
+ * total (string matches the `mechFees` shape used elsewhere) plus the per-token
+ * breakdown, both sharing one status. Used by the `main` snapshot (homepage
+ * "fees collected" + its tooltip).
  */
-export const fetchMechMarketplaceFeesCollected = async (): Promise<
-  MetricWithStatus<string | null>
-> => {
+export const fetchMechMarketplaceFees = async (): Promise<MechMarketplaceFees> => {
   const fetchErrors: string[] = [];
 
   const results = await Promise.allSettled(USD_PEGGED_FEE_TRACKERS.map(readTrackerFeesUsd));
 
   let totalUsd = 0;
+  const byToken: MechFeesByToken = {};
   results.forEach((result, i) => {
     const { chain, token } = USD_PEGGED_FEE_TRACKERS[i];
     if (result.status === 'rejected') {
@@ -244,15 +252,26 @@ export const fetchMechMarketplaceFeesCollected = async (): Promise<
       return;
     }
     totalUsd += result.value;
+    byToken[token] = (byToken[token] ?? 0) + result.value;
   });
 
   // All reads failed — bubble up null so mergeWithFallback preserves the last valid value.
   if (fetchErrors.length === USD_PEGGED_FEE_TRACKERS.length) {
-    return { value: null, status: getFetchErrorAndCreateStaleStatus('collectedFees:all') };
+    const status = getFetchErrorAndCreateStaleStatus('collectedFees:all');
+    return {
+      feesCollected: { value: null, status },
+      feesCollectedByToken: { value: null, status },
+    };
   }
 
+  const status = createStaleStatus({ indexingErrors: [], fetchErrors, laggingSubgraphs: [] });
   return {
-    value: totalUsd.toFixed(2),
-    status: createStaleStatus({ indexingErrors: [], fetchErrors, laggingSubgraphs: [] }),
+    feesCollected: { value: totalUsd.toFixed(2), status },
+    feesCollectedByToken: { value: byToken, status },
   };
 };
+
+/** Total-only wrapper kept for the `agent-economies` snapshot (mech page). */
+export const fetchMechMarketplaceFeesCollected = async (): Promise<
+  MetricWithStatus<string | null>
+> => (await fetchMechMarketplaceFees()).feesCollected;

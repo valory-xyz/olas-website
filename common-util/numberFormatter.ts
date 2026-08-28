@@ -40,6 +40,19 @@ export const formatEthNumber = (
   return formatter.format(Number(numberInEth));
 };
 
+// Format a USD metric, falling back to '--' when the value is missing/non-numeric
+// (e.g. a snapshot taken before this metric existed) so we never render "$NaN".
+export const formatUsd = (value?: string | number | null, fractionDigits?: number) => {
+  const num = Number(value);
+  if (value == null || !Number.isFinite(num)) return '--';
+  return `$${num.toLocaleString(
+    'en-US',
+    fractionDigits != null
+      ? { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }
+      : undefined
+  )}`;
+};
+
 const OG_COMPACT: Intl.NumberFormatOptions = {
   notation: 'compact',
   compactDisplay: 'short',
