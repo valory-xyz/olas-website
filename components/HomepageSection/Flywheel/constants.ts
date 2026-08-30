@@ -14,11 +14,6 @@ export type ProtocolActivityMetrics = {
   polByChain?: Partial<Record<PolChainKey, MetricWithStatus<PolChainValue | null>>>;
 } | null;
 
-export const TOOLTIPS = {
-  dailyActiveAgents: '7-day average Daily Active Agents',
-  marketplaceFees: 'A 15% fee is taken on payments between AI agents on the Olas Marketplace.',
-} as const;
-
 // Token icons for tooltip amount rows. WETH/WXDAI/WMATIC/CELO/WSOL reuse the
 // matching chain icon — no dedicated token assets exist yet.
 export const TOKEN_ICONS: Record<string, string> = {
@@ -173,13 +168,4 @@ export const ECONOMY_PILLS: EconomyPillConfig[] = [
     ),
     style: { top: 896, right: 26 },
   },
-];
-
-// Placeholder set until dedicated avatar assets arrive.
-export const DAA_AVATARS = [
-  '/images/homepage/modius.png',
-  '/images/homepage/optimus.png',
-  '/images/homepage/predict.png',
-  '/images/homepage/agentsfun.png',
-  '/images/homepage/8baller.png',
 ];
