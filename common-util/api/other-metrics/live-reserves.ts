@@ -1,5 +1,5 @@
-import { CHAIN_CONFIG } from 'common-util/constants';
-import { Abi, createPublicClient, http } from 'viem';
+import { getChainReader } from 'common-util/web3';
+import { Abi } from 'viem';
 
 // Live pool reserves read via RPC. The per-chain liquidity subgraphs index the
 // pool contract only, so Balancer swaps (executed on the Vault) never reach
@@ -45,38 +45,30 @@ const UNISWAP_V2_PAIR_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
+  {
+    inputs: [],
+    name: 'token0',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'token1',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const;
 
 // Raw reserves in token-address order (reserve0 = lower address), matching the
-// subgraph's reserve0/reserve1 convention. `tokens` is present when the source
-// reports token addresses (Balancer Vault) so callers can verify ordering.
+// subgraph's reserve0/reserve1 convention. `tokens` carries the source-reported
+// token addresses (Vault getPoolTokens / pair token0+token1) so callers can
+// verify ordering.
 export type LiveReserves = {
   reserve0: string;
   reserve1: string;
-  tokens?: [string, string];
-};
-
-// viem's overloaded `readContract` generic mis-resolves under this repo's
-// tsconfig; call through a narrowed signature (see common-util/web3.ts).
-type ReadContractFn = (params: {
-  address: `0x${string}`;
-  abi: Abi;
-  functionName: string;
-  args?: unknown[];
-}) => Promise<unknown>;
-
-const readersByChain: Record<string, ReadContractFn> = {};
-
-const getReader = (chain: string): ReadContractFn | null => {
-  if (readersByChain[chain]) return readersByChain[chain];
-  const rpcUrl = CHAIN_CONFIG[chain]?.rpc;
-  if (!rpcUrl) {
-    console.error(`[live-reserves] no RPC configured for chain: ${chain}`);
-    return null;
-  }
-  const client = createPublicClient({ transport: http(rpcUrl) });
-  readersByChain[chain] = client.readContract as unknown as ReadContractFn;
-  return readersByChain[chain];
+  tokens: [string, string];
 };
 
 export const fetchBalancerPoolReserves = async (
@@ -84,7 +76,7 @@ export const fetchBalancerPoolReserves = async (
   poolAddress: string
 ): Promise<LiveReserves | null> => {
   try {
-    const read = getReader(chain);
+    const read = getChainReader(chain);
     if (!read) return null;
 
     const poolId = (await read({
@@ -101,7 +93,9 @@ export const fetchBalancerPoolReserves = async (
     })) as [string[], bigint[], bigint];
 
     const [tokens, balances] = result;
-    if (!tokens || !balances || tokens.length < 2 || balances.length < 2) return null;
+    // Exactly two tokens: a pool of any other shape would silently mis-map
+    // onto the two-reserve config, so fail it instead.
+    if (!tokens || !balances || tokens.length !== 2 || balances.length !== 2) return null;
 
     return {
       reserve0: balances[0].toString(),
@@ -119,18 +113,28 @@ export const fetchUniswapV2PairReserves = async (
   pairAddress: string
 ): Promise<LiveReserves | null> => {
   try {
-    const read = getReader(chain);
+    const read = getChainReader(chain);
     if (!read) return null;
 
-    const result = (await read({
+    const pairContract = {
       address: pairAddress as `0x${string}`,
       abi: UNISWAP_V2_PAIR_ABI as unknown as Abi,
-      functionName: 'getReserves',
-    })) as [bigint, bigint, number];
+    };
+    const [reserves, token0, token1] = (await Promise.all([
+      read({ ...pairContract, functionName: 'getReserves' }),
+      read({ ...pairContract, functionName: 'token0' }),
+      read({ ...pairContract, functionName: 'token1' }),
+    ])) as [[bigint, bigint, number], string, string];
 
-    if (result?.[0] === undefined || result?.[1] === undefined) return null;
+    if (reserves?.[0] === undefined || reserves?.[1] === undefined || !token0 || !token1) {
+      return null;
+    }
 
-    return { reserve0: result[0].toString(), reserve1: result[1].toString() };
+    return {
+      reserve0: reserves[0].toString(),
+      reserve1: reserves[1].toString(),
+      tokens: [token0, token1],
+    };
   } catch (error) {
     console.error(`[live-reserves] UniswapV2 read failed (${chain} ${pairAddress}):`, error);
     return null;

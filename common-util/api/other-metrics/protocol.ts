@@ -600,14 +600,15 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
         }
 
         // Guard a mis-ordered config: OLAS must sit at the configured reserve
-        // index (the Vault reports token addresses; UniV2 reads don't).
+        // index (both readers report token addresses).
         const olasAddress = OLAS_TOKEN_ADDRESS_BY_CHAIN[chain];
         const olasIndex = config.olasReserve === 'reserve0' ? 0 : 1;
-        if (
-          live.tokens &&
-          olasAddress &&
-          live.tokens[olasIndex].toLowerCase() !== olasAddress.toLowerCase()
-        ) {
+        if (!olasAddress) {
+          console.warn(
+            `[protocol-metrics] ${poolSource} no OLAS address for '${chain}' in tokens.json — token order unverified`
+          );
+        }
+        if (olasAddress && live.tokens[olasIndex].toLowerCase() !== olasAddress.toLowerCase()) {
           console.error(
             `[protocol-metrics] ${poolSource} token order mismatch: expected OLAS (${olasAddress}) at ${config.olasReserve}, got ${live.tokens[olasIndex]}`
           );

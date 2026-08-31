@@ -19,7 +19,7 @@ Observed drift (2026-08-31, subgraph vs Vault `getPoolTokens`):
 | Base (WETH) | 703,260 OLAS / 10.7 WETH | 863,113 OLAS / 8.8 WETH | +22% |
 | Base (USDC) | 1,935,573 OLAS / 36,612 USDC | 1,681,688 OLAS / 42,202 USDC | −13% |
 | Polygon | 861,188 OLAS / 297,526 WMATIC | 940,407 OLAS / 274,969 WMATIC | +8% |
-| Gnosis | drift ~2% (recent join/exit) | | |
+| Gnosis | ~2% drift (recent join/exit) | — | ~2% |
 
 Stale reserves corrupt three published outputs:
 
@@ -41,7 +41,8 @@ from `CHAIN_CONFIG`):
 
 - **Balancer pools**: pool `getPoolId()` → Vault `getPoolTokens(poolId)`. The poolId is
   derived on-chain rather than hardcoded so a future pool only needs a `PoolConfig` entry.
-- **Uniswap V2 pairs** (Celo): pair `getReserves()`.
+- **Uniswap V2 pairs** (Celo): pair `getReserves()` + `token0()`/`token1()` so the
+  token-order guard applies here too.
 
 Both return reserves in token-address order (reserve0 = lower address) — the same
 convention the subgraph uses — so `protocol.ts` swaps them into the pool object
@@ -60,4 +61,4 @@ value, exactly like a subgraph fetch failure.
 The proper fix is in the subgraphs themselves: index the Vault's `Swap` event filtered by
 poolId (or refresh reserves via `getPoolTokens` calls in existing handlers). Once deployed,
 the on-chain reads here become a redundant safety net and could be removed — or kept, since
-they are cheap (≤2 `eth_call`s per pool per cron run).
+they are cheap (≤3 `eth_call`s per pool per cron run).
