@@ -12,9 +12,7 @@ const list = [
     imageSrc: 'synthesis.png',
     location: 'Remote',
     date: 'March 13-22, 2026',
-    link: 'https://synthesis.md/hack/#olas',
-    type: 'button',
-    status: 'Ongoing',
+    status: 'Completed',
     prizePool: '3,000 USD',
     projectTags: [
       'Mech Marketplace - Demand Side',

@@ -1,9 +1,14 @@
 import { MetricStatus } from 'common-util/graphql/types';
 import { useEffect, useRef, useState } from 'react';
 
-import { AgentToAgentCard, OlasBurnedCard, TransactionsCard, UsersCard } from '../ActivityCards';
+import {
+  AgentToAgentCard,
+  DailyActiveAgentsCard,
+  OlasBurnedCard,
+  TransactionsCard,
+  UsersCard,
+} from '../ActivityCards';
 import { DIAGRAM, ECONOMY_PILLS, ProtocolActivityMetrics } from './constants';
-import { DailyActiveAgentsAvatarsCard } from './DailyActiveAgentsAvatarsCard';
 import { EconomyPill } from './EconomyPill';
 import { FeesFromPolCard } from './FeesFromPolCard';
 import { FlywheelConnectors } from './FlywheelConnectors';
@@ -95,7 +100,7 @@ export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopPro
         </div>
 
         <div className="absolute left-[1004px] top-[335px] z-10">
-          <DailyActiveAgentsAvatarsCard
+          <DailyActiveAgentsCard
             dailyActiveAgents={metrics.dailyActiveAgents}
             dailyActiveAgentsStatus={metrics.dailyActiveAgentsStatus}
           />

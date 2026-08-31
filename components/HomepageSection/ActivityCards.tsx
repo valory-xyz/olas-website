@@ -10,7 +10,7 @@ import { cn } from 'lib/utils';
 import Image from 'next/image';
 
 import { formatTokenAmount } from './Flywheel/ChainPill';
-import { MARKETPLACE_FEE_TOKENS, TOKEN_ICONS, TOOLTIPS } from './Flywheel/constants';
+import { MARKETPLACE_FEE_TOKENS, TOKEN_ICONS } from './Flywheel/constants';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -358,7 +358,7 @@ export const AgentToAgentCard = ({
           fees collected
           <StaleIndicator status={feesCollectedStatus} />
           <Popover contentClassName="max-w-[400px] text-left font-normal">
-            {TOOLTIPS.marketplaceFees}
+            A 15% fee is taken on payments between AI agents on the Olas Marketplace.
             {MARKETPLACE_FEE_TOKENS.some(
               ({ symbol }) => feesCollectedByToken?.[symbol] != null
             ) && (
