@@ -28,6 +28,8 @@ const parseIrrelevantTools = (envValue: string | undefined): Set<string> => {
   return new Set();
 };
 
+const MIN_ACCURACY_PERCENT = 50;
+
 const IRRELEVANT_TOOLS: Record<Platform, Set<string>> = {
   omenstrat: parseIrrelevantTools(process.env.NEXT_PUBLIC_OMENSTRAT_IRRELEVANT_TOOLS),
   polystrat: parseIrrelevantTools(process.env.NEXT_PUBLIC_POLYSTRAT_IRRELEVANT_TOOLS),
@@ -39,7 +41,11 @@ export const ToolAccuracyTable = ({ data, platform, className, id }: ToolAccurac
   if (!data || (!data.omenstrat?.length && !data.polystrat?.length)) return null;
 
   const irrelevant = IRRELEVANT_TOOLS[platform];
-  const filteredRows = rows ? rows.filter((r) => !irrelevant.has(r.tool.toLowerCase())) : [];
+  const filteredRows = rows
+    ? rows.filter(
+        (r) => !irrelevant.has(r.tool.toLowerCase()) && r.accuracy >= MIN_ACCURACY_PERCENT
+      )
+    : [];
   const sortedRows = filteredRows.sort((a, b) => b.accuracy - a.accuracy);
 
   return (
