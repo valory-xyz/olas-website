@@ -5,9 +5,8 @@ import {
   REGISTRY_SUBGRAPH_URLS,
 } from 'common-util/constants';
 import { agentTxCountsQuery, registryGlobalsQuery } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const TransactionsInfo = () => {
@@ -30,9 +29,9 @@ export const TransactionsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{registryGlobalsQuery}</CodeSnippet>
@@ -70,12 +69,12 @@ export const TransactionsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph link:{' '}
-            <ExternalLink
-              href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL)}
+            <SubgraphLink
+              apiUrl={process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL}
               className="mr-2"
             >
               Gnosis
-            </ExternalLink>
+            </SubgraphLink>
           </p>
           <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>
         </div>
@@ -106,12 +105,12 @@ export const TransactionsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph link:{' '}
-            <ExternalLink
-              href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL)}
+            <SubgraphLink
+              apiUrl={process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL}
               className="mr-2"
             >
               Polygon
-            </ExternalLink>
+            </SubgraphLink>
           </p>
           <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>
         </div>

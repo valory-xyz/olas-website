@@ -9,10 +9,9 @@ import {
   getStakingRewardsByTimeRangeQuery,
   totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { CodeSnippet } from './CodeSnippet';
@@ -84,11 +83,9 @@ export const OmenstratRoiInfo = () => {
         </div>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL}>
             Gnosis
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>
           {totalMechRequests} {mechRequests}
@@ -136,11 +133,9 @@ export const OmenstratRoiInfo = () => {
         </p>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL}>
             Gnosis
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{stakingRewards}</CodeSnippet>
       </div>

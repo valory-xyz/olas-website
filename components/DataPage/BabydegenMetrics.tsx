@@ -4,9 +4,8 @@ import {
   dailyBabydegenPopulationMetricsQuery,
   dailyStakingGlobalsSnapshotsQuery,
 } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 const MODIUS_FIXED_END_TIMESTAMP = Math.floor(new Date(MODIUS_FIXED_END_DATE_UTC).getTime() / 1000);
@@ -48,55 +47,45 @@ export const BabydegenMetricsInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>BabyDegen Population Metrics Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL}>
             Optimism BabyDegen
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{dailyBabydegenPopulationMetricsQuery({ first: 10 })}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Optimism Staking Snapshots Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL}>
             Optimism Staking
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery({ first: 10 })}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>Basius Population Metrics Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL}>
             Base BabyDegen
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{dailyBabydegenPopulationMetricsQuery({ first: 10 })}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Base Staking Snapshots Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL}>
             Base Staking
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{dailyStakingGlobalsSnapshotsQuery({ first: 10 })}</CodeSnippet>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold mt-10`}>Modius Population Metrics Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL}>
             Mode BabyDegen
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>
           {dailyBabydegenPopulationMetricsQuery({
@@ -108,9 +97,9 @@ export const BabydegenMetricsInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Modius Staking Snapshots Query</h3>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink href={process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL}>
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL}>
             Mode Staking
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>
           {dailyStakingGlobalsSnapshotsQuery({

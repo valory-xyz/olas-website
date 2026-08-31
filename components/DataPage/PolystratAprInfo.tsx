@@ -1,8 +1,7 @@
 import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import { stakingContractsQuery } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const PolystratAprInfo = () => {
@@ -21,11 +20,9 @@ export const PolystratAprInfo = () => {
 
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL)}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL}>
             Polygon
-          </ExternalLink>
+          </SubgraphLink>
         </p>
 
         <p>Query:</p>
