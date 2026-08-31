@@ -9,23 +9,34 @@ type SubgraphLinkProps = {
 };
 
 /**
- * Names a subgraph on the data-verification page, linking to its Graph
- * Explorer page when one exists.
+ * Names a subgraph on the data-verification page.
  *
- * Subgraphs served from The Graph's gateway have a browsable Explorer entry.
- * Self-hosted ones do not — they only answer POST — so those render as plain
- * text rather than as a link that resolves to a 405.
+ * Links to it when there is something to open — a Graph Explorer page, or our
+ * proxy, which redirects GET to a playground. Legacy direct hosts only answer
+ * POST, so linking those sends the reader to a blank 405; those render as the
+ * chain name followed by the endpoint itself, which is what someone verifying a
+ * metric needs in order to run the query below.
  */
 export const SubgraphLink = ({ children, apiUrl, className = '' }: SubgraphLinkProps) => {
   const explorerUrl = getSubgraphExplorerUrl(apiUrl);
 
-  if (!explorerUrl) {
-    return <span className={`text-slate-700 ${className}`}>{children}</span>;
+  if (explorerUrl) {
+    return (
+      <ExternalLink href={explorerUrl} className={className}>
+        {children}
+      </ExternalLink>
+    );
   }
 
   return (
-    <ExternalLink href={explorerUrl} className={className}>
+    <span className={`text-slate-700 ${className}`}>
       {children}
-    </ExternalLink>
+      {apiUrl ? (
+        <>
+          {' '}
+          <code className="bg-gray-100 rounded px-1 py-0.5 text-sm break-all">{apiUrl}</code>
+        </>
+      ) : null}
+    </span>
   );
 };
