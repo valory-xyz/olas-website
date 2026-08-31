@@ -117,6 +117,7 @@ ESLint rule (`.eslintrc.json`): **never default- or namespace-import `lodash`** 
 Index of design documents. Read the matching spec BEFORE you change the listed areas. Keep this list an index — put details in the spec, not here.
 
 - `docs/mech-analytics-migration.md` — off-chain mech-request migration (subgraph → mech-analytics API, `USE_MECH_ANALYTICS` flag). Read before changing `common-util/api/predict/*` (`roi-distribution.ts`, `tool-accuracy.ts`, `mech-analytics.ts`) or any marketplace per-request query.
+- `docs/pol-live-reserves.md` — why POL valuation reads pool reserves on-chain instead of from the liquidity subgraphs (Balancer vault swaps are invisible to pool-contract subgraphs). Read before changing `common-util/api/other-metrics/protocol.ts` or `live-reserves.ts`.
 
 ## Important Implementation Details
 

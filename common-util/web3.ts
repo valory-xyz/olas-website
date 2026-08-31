@@ -1,3 +1,4 @@
+import { CHAIN_CONFIG } from 'common-util/constants';
 import { Abi, createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import olasAbi from '../data/ABIs/Olas.json';
@@ -22,15 +23,34 @@ const ethereumClient = createPublicClient({
  * here — the ABIs are validated against the live contracts and results are cast
  * to the shapes the callers expect — so we call through a narrowed signature.
  */
-type ReadContractParams = {
+export type ReadContractParams = {
   address: `0x${string}`;
   abi: Abi;
   functionName: string;
   args?: unknown[];
 };
-const readContract = ethereumClient.readContract as unknown as (
-  params: ReadContractParams
-) => Promise<unknown>;
+export type ReadContractFn = (params: ReadContractParams) => Promise<unknown>;
+
+const narrowReadContract = (client: { readContract: unknown }): ReadContractFn =>
+  client.readContract as ReadContractFn;
+
+const readContract = narrowReadContract(ethereumClient);
+
+// Per-chain read-contract functions built from CHAIN_CONFIG RPCs (server-only).
+// Note: unlike the Ethereum reader above, there is no public-RPC fallback — a
+// missing env var returns null and the caller fails that chain's metric.
+const readersByChain: Record<string, ReadContractFn> = {};
+
+export const getChainReader = (chain: string): ReadContractFn | null => {
+  if (readersByChain[chain]) return readersByChain[chain];
+  const rpcUrl = CHAIN_CONFIG[chain]?.rpc;
+  if (!rpcUrl) {
+    console.error(`[web3] no RPC configured for chain: ${chain}`);
+    return null;
+  }
+  readersByChain[chain] = narrowReadContract(createPublicClient({ transport: http(rpcUrl) }));
+  return readersByChain[chain];
+};
 
 /**
  * Read-only call against the OLAS token contract on Ethereum mainnet.
