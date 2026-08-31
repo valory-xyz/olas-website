@@ -5,9 +5,8 @@ import {
   newMechFeesQuery,
   newMechFeesTotalsQuery,
 } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const MechTurnoverInfo = () => {
@@ -30,18 +29,18 @@ export const MechTurnoverInfo = () => {
 
         <p className="text-purple-600">
           Subgraph links:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL)}
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
             className="mr-2"
           >
             Gnosis
-          </ExternalLink>
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL)}
+          </SubgraphLink>
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
             className="mr-2"
           >
             Base
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{newMechFeesQuery}</CodeSnippet>
 
@@ -49,13 +48,9 @@ export const MechTurnoverInfo = () => {
 
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(
-              process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL
-            )}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}>
             Gnosis
-          </ExternalLink>
+          </SubgraphLink>
         </p>
 
         <p className="text-sm text-gray-600">
@@ -77,31 +72,27 @@ export const MechTurnoverInfo = () => {
         <h4 className="font-semibold">New Mech Fees Totals</h4>
         <p className="text-purple-600">
           Subgraph links:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL)}
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
             className="mr-2"
           >
             Gnosis
-          </ExternalLink>
-          <ExternalLink
-            href={getSubgraphExplorerUrl(process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL)}
+          </SubgraphLink>
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
             className="mr-2"
           >
             Base
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{newMechFeesTotalsQuery}</CodeSnippet>
 
         <h4 className="font-semibold">Legacy Mech Fees Totals</h4>
         <p className="text-purple-600">
           Subgraph link:{' '}
-          <ExternalLink
-            href={getSubgraphExplorerUrl(
-              process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL
-            )}
-          >
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL}>
             Gnosis
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{legacyMechFeesTotalsQuery}</CodeSnippet>
       </div>

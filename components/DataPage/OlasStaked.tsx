@@ -1,9 +1,8 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { STAKING_SUBGRAPH_URLS } from 'common-util/constants';
 import { stakingGlobalsQuery } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const OlasStakedInfo = () => {
@@ -25,9 +24,9 @@ export const OlasStakedInfo = () => {
         <p className="text-purple-600">
           Subgraph links:{' '}
           {STAKING_SUBGRAPH_URLS.map(({ key, url }) => (
-            <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+            <SubgraphLink key={key} apiUrl={url} className="mr-2">
               {key.charAt(0).toUpperCase() + key.slice(1)}
-            </ExternalLink>
+            </SubgraphLink>
           ))}
         </p>
         <CodeSnippet>{stakingGlobalsQuery}</CodeSnippet>
