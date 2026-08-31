@@ -50,8 +50,11 @@ The shared client code is in `common-util/api/predict/mech-analytics.ts`.
 - Explorer DAA and ATA series.
 - Mech DAA (registry subgraph) and all fee subgraphs.
 - On-chain `collectedFees`.
-- `senderTotal` in ROI: `totalLegacyRequests + totalMarketplaceRequests` grows
-  at settlement time, so the subgraph read stays correct.
+- `senderTotal` in ROI: `totalLegacyRequests` grows at settlement time, so the
+  subgraph read stays correct. It is the all-inclusive counter (legacy +
+  marketplace + off-chain, despite the name) — never add
+  `totalMarketplaceRequests` on top, that double-counts every request
+  (docs/predict-roi-accounting.md).
 
 mech-analytics cannot serve these paths. It has no public chain-level endpoint.
 It covers 4 chains; the website queries 6 marketplace chains. It has no DAA
@@ -96,17 +99,24 @@ The QMR blob gets these fields (additive; no `SCHEMA_VERSIONS` change):
 - `lastMechRequestTimestamp` — we continue to write it (max saved
   `requested_at`). A flag-off rollback continues the subgraph path from it.
 
-**First flag-on run: rebuild, do not merge.** We cannot match subgraph-era QMR
-entries with analytics rows. The live writer sets `requested_at` to the mech
-authorization time, not to the block timestamp. Titles can also differ. So the
-run drops the old map and fetches the open set: `since=<now−14d>` and
-`resolved=false`. Rows with `resolution_status='invalid'` are skipped, but
-their IDs go into the map, so later re-serves are also skipped. The watermark
-becomes a `runStart` value taken *before* the fetch. Rows scored during the
-fetch and excluded by `resolved=false` then appear in the next incremental
-run. If the rebuild fails, we save nothing and try again on the next run. A
-partial rebuild is dangerous: it makes `openRequestCount` too low, and then
-`settledMechRequests` becomes too high.
+**Rebuild run (no valid watermark): fetch the full window, merge into the open
+set.** The run fetches `since=<now−14d>` with no `resolved` filter — pending
+and resolved rows alike; resolved rows are still needed because their
+settlement day may not be processed yet. The additions are merged into the
+existing QMR map via `mergeQmr` with per-(title, agent, timestamp) dedupe —
+the map is never wiped. The dedupe is exact for analytics-born entries; a
+subgraph-born entry can differ in `requested_at` (the live writer uses mech
+authorization time, not block time) or title, and then survives as a duplicate
+until the TTL flush — a small, bounded over-count accepted for rebuilds. Rows
+with `resolution_status='invalid'` are skipped, but their IDs go into the map,
+so later re-serves are also skipped. The watermark becomes a `runStart` value
+taken *before* the fetch, so rows scored during the fetch appear in the next
+incremental run. If the rebuild fails or returns zero rows, we save nothing
+and try again on the next run. A partial rebuild is dangerous: it makes
+`openRequestCount` too low, and then `settledMechRequests` becomes too high.
+A rebuild can be forced with `?rebuildMech=1` on
+`/api/refresh-metrics/predict-roi-distribution` (drops the stored watermark) —
+read the rebuild caveats in docs/predict-roi-accounting.md first.
 
 **Incremental runs.** Query: `since_computed_at=<watermark>` and
 `since=<now−14d>`, with no `resolved` filter (a recent request with a fast
@@ -143,9 +153,10 @@ endpoint — that is a different metric.
 
 ## Known risks and one-time effects
 
-- **First-run loss.** The rebuild drops entries for markets that settled
-  before the flip, when the settlement day was not yet processed. Cost: about
-  one day of byDay fee attribution, one time.
+- **Rebuild attribution shift.** In a rebuild, requests whose settlement day
+  was already processed cannot be matched anymore; the TTL flush books them on
+  their request day instead. See the rebuild caveats in
+  docs/predict-roi-accounting.md.
 - **Rollback overlap.** A flag-off run continues from
   `lastMechRequestTimestamp`. The live-writer `requested_at` is less than or
   equal to the block timestamp, so the subgraph path can read a small overlap

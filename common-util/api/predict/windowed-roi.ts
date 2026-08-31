@@ -27,6 +27,25 @@ const WINDOWS: { key: WindowKey; days: number | null }[] = [
   { key: 'max', days: null },
 ];
 
+// True when the last 7 full days settled trading volume but booked zero mech
+// requests. Predict agents always pay mech fees before betting, so this
+// combination means QMR attribution is broken.
+const hasZeroMechAttribution = (data: AgentBlueprintRoiData): boolean => {
+  const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
+  const cutoffTs = yesterdayTs - 6 * DAY_SECONDS;
+  let mechRequests = 0;
+  let settledCosts = 0n;
+  for (const [dayKey, day] of Object.entries(data.byDay ?? {})) {
+    const dayTs = Number(dayKey);
+    if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
+    for (const entry of Object.values(day.agents ?? {})) {
+      mechRequests += entry.mechRequests;
+      settledCosts += BigInt(entry.tradedSettled ?? '0');
+    }
+  }
+  return settledCosts > 0n && mechRequests === 0;
+};
+
 export type WindowedRoi = {
   // Prediction-only ROI per window (excludes staking rewards).
   partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
@@ -81,6 +100,10 @@ const computePlatformWindowedRoi = async (
     // UTC midnight and the daily cron run.
     if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
+    }
+    // Missing mech cost overstates ROI — surface it as staleness.
+    if (hasZeroMechAttribution(roiData)) {
+      roiFetchErrors.push(`roi-distribution:${source}:mech-attribution-zero`);
     }
   }
 

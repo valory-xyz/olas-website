@@ -48,8 +48,9 @@ export type ExplorerSeries = RegistrySeries & {
    */
   accuracy: DaaSeriesPoint[];
   /**
-   * Return on Investment — daily partial ROI (%), `profit / (payout − profit)`
-   * summed across agents. Can be negative. Sparse, bounded to a recent window
+   * Return on Investment — daily partial ROI (%): settlement-day profit over the
+   * settled cost basis (`dailyTradedSettled + dailyFeesSettled`), summed across
+   * agents. Can be negative. Sparse, bounded to a recent window
    * (ROI_WINDOW_DAYS) since the per-agent daily rows are high-volume.
    */
   roi: DaaSeriesPoint[];
@@ -331,15 +332,16 @@ const MIN_BETS_PER_DAY_ROI = 20;
 type DailyProfitRow = {
   date: string; // UTC-midnight unix timestamp (string)
   totalBets: string;
-  totalPayout: string;
   dailyProfit: string;
+  dailyTradedSettled: string;
+  dailyFeesSettled: string;
 };
 
 /**
  * Daily Return on Investment — for each UTC day, partial ROI (%) across all trader
- * agents: `profit / cost`, with `cost = payout − profit` (the fields this subgraph
- * version exposes; the per-day traded+fees cost basis isn't available here). Can be
- * negative. Fetches a `windowDays` range — shallow for the cron, deep for a backfill.
+ * agents: `profit / cost`, with `cost = dailyTradedSettled + dailyFeesSettled`, the
+ * cost basis of the bets that settled that day (docs/predict-roi-accounting.md).
+ * Can be negative. Fetches a `windowDays` range — shallow for the cron, deep for a backfill.
  */
 const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoint[]> => {
   const newest = getMidnightUtcTimestampDaysAgo(0);
@@ -383,21 +385,20 @@ const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoin
     chunkLte = chunkGte - ONE_DAY_SECONDS; // next chunk ends the day before this one
   }
 
-  const byDay = new Map<string, { profit: bigint; payout: bigint; bets: number }>();
+  const byDay = new Map<string, { profit: bigint; cost: bigint; bets: number }>();
   rows.forEach((r) => {
     const date = new Date(Number(r.date) * 1000).toISOString().slice(0, 10);
-    const entry = byDay.get(date) ?? { profit: 0n, payout: 0n, bets: 0 };
+    const entry = byDay.get(date) ?? { profit: 0n, cost: 0n, bets: 0 };
     entry.profit += BigInt(r.dailyProfit || '0');
-    entry.payout += BigInt(r.totalPayout || '0');
+    entry.cost += BigInt(r.dailyTradedSettled || '0') + BigInt(r.dailyFeesSettled || '0');
     entry.bets += Number(r.totalBets || 0);
     byDay.set(date, entry);
   });
 
   const series: DaaSeriesPoint[] = [];
   byDay.forEach((entry, date) => {
-    const cost = entry.payout - entry.profit;
-    if (entry.bets < MIN_BETS_PER_DAY_ROI || cost <= 0n) return;
-    series.push({ date, count: Math.round(Number((entry.profit * 10000n) / cost) / 100) });
+    if (entry.bets < MIN_BETS_PER_DAY_ROI || entry.cost <= 0n) return;
+    series.push({ date, count: Math.round(Number((entry.profit * 10000n) / entry.cost) / 100) });
   });
   return series.sort((a, b) => a.date.localeCompare(b.date));
 };

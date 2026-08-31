@@ -101,8 +101,9 @@ type QmrFetchData = {
  * Result of a mech-analytics QMR fetch.
  * `null` = a rebuild failed or returned no rows at all. Save nothing; the
  * next run retries the rebuild.
- * `kind: 'rebuild'` = the caller must drop the existing QMR map: `additions`
- * holds the complete open set.
+ * `kind: 'rebuild'` = the caller must merge `additions` into the existing QMR
+ * map with per-(title, agent, timestamp) dedupe — the fetched window overlaps
+ * requests the blob may already hold.
  * `kind: 'incremental', ok: false` = a page failed. The result can still be
  * saved: the next run fetches the missed rows again, and `ingestedRequestIds`
  * filters out the rows we already have.
@@ -114,7 +115,9 @@ export type AnalyticsQmrUpdate =
 
 /**
  * Fetches mech requests for the QMR blob.
- * The first flag-on run rebuilds the whole open set (`resolved=false`).
+ * A run without a valid watermark (first flag-on run, or a forced
+ * `?rebuildMech=1`) rebuilds from the full QMR window — pending and resolved
+ * rows alike (docs/predict-roi-accounting.md).
  * Later runs fetch only rows scored after the watermark (`since_computed_at`)
  * and skip request ids we already have — the API sends a row again every
  * time its resolution updates, so ids are the only safe way to avoid
@@ -157,9 +160,8 @@ export const fetchMechRequestsFromAnalytics = async (
     since: new Date(windowStartSec * 1000).toISOString(),
     limit: String(PAGE_SIZE),
   };
-  if (isRebuild) {
-    params.resolved = 'false';
-  } else {
+  // Rebuild: no extra filter — the full window, pending and resolved rows.
+  if (!isRebuild) {
     params.since_computed_at = lastComputedAt as string;
   }
 
