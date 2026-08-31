@@ -1,3 +1,4 @@
+import { DEFAULT_MECH_FEE } from 'common-util/constants';
 import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import { getSnapshot } from 'common-util/snapshot-storage';
@@ -27,10 +28,17 @@ const WINDOWS: { key: WindowKey; days: number | null }[] = [
   { key: 'max', days: null },
 ];
 
-// True when the last 7 full days settled trading volume but booked zero mech
-// requests. Predict agents always pay mech fees before betting, so this
-// combination means QMR attribution is broken.
-const hasZeroMechAttribution = (data: AgentBlueprintRoiData): boolean => {
+// Booked mech fees below this share of settled costs mean QMR attribution is
+// broken. Healthy weeks run 200–600bps; the 2026-08 Polystrat incident ran
+// ~16bps (derivation: docs/predict-roi-accounting.md, Observability).
+const MIN_MECH_FEE_BPS = 50n;
+
+// True when the last 7 full days settled trading volume with implausibly low
+// booked mech cost. Predict agents always pay mech fees before betting, and a
+// broken QMR feed books a trickle, not a clean zero — so this is a ratio
+// check, not a zero check. `scale` lifts tradedSettled to 18 decimals
+// (polystrat entries are USDC 1e6).
+const hasLowMechAttribution = (data: AgentBlueprintRoiData, scale: bigint): boolean => {
   const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
   const cutoffTs = yesterdayTs - 6 * DAY_SECONDS;
   let mechRequests = 0;
@@ -40,10 +48,11 @@ const hasZeroMechAttribution = (data: AgentBlueprintRoiData): boolean => {
     if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
     for (const entry of Object.values(day.agents ?? {})) {
       mechRequests += entry.mechRequests;
-      settledCosts += BigInt(entry.tradedSettled ?? '0');
+      settledCosts += BigInt(entry.tradedSettled ?? '0') * scale;
     }
   }
-  return settledCosts > 0n && mechRequests === 0;
+  const mechFees = BigInt(mechRequests) * DEFAULT_MECH_FEE;
+  return settledCosts > 0n && mechFees * 10000n < settledCosts * MIN_MECH_FEE_BPS;
 };
 
 export type WindowedRoi = {
@@ -102,8 +111,8 @@ const computePlatformWindowedRoi = async (
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
     }
     // Missing mech cost overstates ROI — surface it as staleness.
-    if (hasZeroMechAttribution(roiData)) {
-      roiFetchErrors.push(`roi-distribution:${source}:mech-attribution-zero`);
+    if (hasLowMechAttribution(roiData, isPolystrat ? 10n ** 12n : 1n)) {
+      roiFetchErrors.push(`roi-distribution:${source}:mech-attribution-low`);
     }
   }
 

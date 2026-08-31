@@ -60,25 +60,39 @@ export const senderLifetimeRequests = (sender: { totalLegacyRequests: string }):
   Number(sender.totalLegacyRequests);
 
 /**
- * Merges freshly fetched QMR additions into the existing open set (mutates and
- * returns `existing`). Pass `dedupeTimestamps: true` for a rebuild, whose
- * fetched window overlaps requests the set already holds: a (title, agent,
- * timestamp) triple already stored is not added again. Incremental runs pass
- * false — their rows are deduplicated by request id upstream, and two distinct
- * same-second requests must both count.
+ * Merges freshly fetched QMR additions into the existing open set (mutates
+ * `existing`, returns it with the number of timestamps actually added). Pass
+ * `dedupeTimestamps: true` for a rebuild, whose fetched window overlaps
+ * requests the set already holds: the dedupe is count-aware per (title, agent,
+ * timestamp) — each stored copy of a timestamp absorbs one incoming copy, so
+ * the merged list keeps max(stored, incoming) same-second requests, never
+ * fewer. Incremental runs pass false — their rows are deduplicated by request
+ * id upstream, and two distinct same-second requests must both count.
  */
 export const mergeQmr = (
   existing: QmrMap,
   additions: QmrMap,
   dedupeTimestamps: boolean
-): QmrMap => {
+): { merged: QmrMap; added: number } => {
+  let added = 0;
   for (const [title, agentLists] of Object.entries(additions)) {
     if (!existing[title]) existing[title] = {};
     for (const [agentId, tsList] of Object.entries(agentLists)) {
       const current = existing[title][agentId] ?? [];
-      const incoming = dedupeTimestamps ? tsList.filter((ts) => !current.includes(ts)) : tsList;
+      let incoming = tsList;
+      if (dedupeTimestamps) {
+        const held = new Map<number, number>();
+        for (const ts of current) held.set(ts, (held.get(ts) ?? 0) + 1);
+        incoming = tsList.filter((ts) => {
+          const left = held.get(ts) ?? 0;
+          if (left === 0) return true;
+          held.set(ts, left - 1);
+          return false;
+        });
+      }
+      added += incoming.length;
       existing[title][agentId] = [...current, ...incoming].sort((a, b) => a - b);
     }
   }
-  return existing;
+  return { merged: existing, added };
 };

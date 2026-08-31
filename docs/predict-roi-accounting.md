@@ -70,7 +70,9 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   `resolved=false` once silently dropped every already-resolved request in the
   window — Polystrat windows then booked ~zero mech cost.
 - **Merge** into the existing open set, deduplicating per (title, agent,
-  timestamp) — never wipe it.
+  timestamp) — never wipe it. The dedupe is count-aware: each stored copy of a
+  timestamp absorbs one incoming copy, so N same-second requests survive a
+  rebuild as N, not 1.
 - Known rebuild caveats (why `rebuildMech=1` is a deliberate lever, not a
   routine): requests whose settlement day was already processed can only be
   TTL-flushed onto their request day, and if they were already matched back
@@ -81,11 +83,17 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
 
 - `AgentBlueprintRoiData.mechAttribution` (`matched` / `flushed` / `ingested` /
   `openRequests` / `runAt`) is written on every run and returned by the refresh
-  endpoint.
-- `windowed-roi.ts` raises `roi-distribution:<agent>:mech-attribution-zero`
-  when a full active week settled trading volume with zero booked mech
-  requests — the page's `StaleIndicator` then flags the metric. That exact
-  silent failure ran for months before 2026-08.
+  endpoint. `ingested` is counted post-dedupe (what the merge actually added),
+  so the counters reconcile.
+- `windowed-roi.ts` raises `roi-distribution:<agent>:mech-attribution-low`
+  when, over the last 7 full days, booked mech fees fall below
+  `MIN_MECH_FEE_BPS` (0.5%) of settled trading costs — the page's
+  `StaleIndicator` then flags the metric. A ratio, not a zero check: the
+  2026-08 failure booked a trickle (15 of ~580 weekly requests), never a clean
+  zero. Threshold derivation (live data, 2026-08-31, week of 08-23..08-29):
+  healthy Polystrat ≈ 630bps (580 req × 0.01 / 92.7 USDC settled), healthy
+  Omenstrat ≈ 200bps floor (≥5,511 bets ≥ as many requests / 2,796 xDAI);
+  the broken feed ran ≈ 16bps. 50bps sits ≥4× from both sides.
 
 ## History (what shipped wrong, for regression context)
 

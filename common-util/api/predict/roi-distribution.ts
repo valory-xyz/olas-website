@@ -132,9 +132,10 @@ export type AgentBlueprintRoiData = {
   /**
    * Mech-request attribution counters from the run that wrote this blob:
    * `matched` requests were consumed onto settlement days, `flushed` were
-   * TTL-expired onto their request day, `ingested` arrived this run,
+   * TTL-expired onto their request day, `ingested` were added this run
+   * (post-dedupe, so the counters reconcile against `openRequests`), and
    * `openRequests` remain pending. Windowed ROI raises a fetchError when
-   * these stay at zero while trading is active.
+   * booked mech cost stays implausibly low while trading is active.
    */
   mechAttribution?: {
     matched: number;
@@ -567,12 +568,9 @@ const updateAgentBlueprintData = async (
   if (!mechRequestsOk) runFetchErrors.push('mech-requests');
   // A rebuild's window overlaps requests already in the open set — dedupe them;
   // an incremental batch is already deduplicated by request id upstream.
-  qmr = mergeQmr(qmr, additions, wasRebuild);
-  const ingestedCount = Object.values(additions).reduce(
-    (sum, agentLists) =>
-      sum + Object.values(agentLists).reduce((s, tsList) => s + tsList.length, 0),
-    0
-  );
+  // `added` is post-dedupe, so mechAttribution counters reconcile.
+  const { merged, added: ingestedCount } = mergeQmr(qmr, additions, wasRebuild);
+  qmr = merged;
 
   // Pre-calculate normalized mapping for Step 2 matching
   // normalizedKey -> originalKey
