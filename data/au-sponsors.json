@@ -21,7 +21,7 @@
         },
         {
           "name": "Flock",
-          "iconFileName": "friends/flock.svg",
+          "iconFileName": "partners/flock.svg",
           "width": 144,
           "height": 37
         },
@@ -133,7 +133,7 @@
       "smallIcons": [
         {
           "name": "Nevermined",
-          "iconFileName": "builders/nevermined.png",
+          "iconFileName": "partners/nevermined.png",
           "width": 83,
           "height": 13
         },
@@ -157,7 +157,7 @@
         },
         {
           "name": "Naptha AI",
-          "iconFileName": "builders/naptha-ai.png",
+          "iconFileName": "partners/naptha-ai.png",
           "width": 87,
           "height": 22
         },
