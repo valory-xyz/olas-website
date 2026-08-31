@@ -1,7 +1,7 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { ataTransactionsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const AtaTransactionsInfo = () => {
@@ -23,27 +23,27 @@ export const AtaTransactionsInfo = () => {
 
         <p className="text-purple-600">
           Subgraph links:{' '}
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL}
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL}
             className="mr-2"
           >
             Gnosis Marketplace
-          </ExternalLink>
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}
+          </SubgraphLink>
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}
             className="mr-2"
           >
             Base Marketplace
-          </ExternalLink>
-          <ExternalLink
-            href={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
+          </SubgraphLink>
+          <SubgraphLink
+            apiUrl={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
             className="mr-2"
           >
             Polygon Marketplace
-          </ExternalLink>
-          <ExternalLink href={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
+          </SubgraphLink>
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
             Optimism Marketplace
-          </ExternalLink>
+          </SubgraphLink>
         </p>
         <CodeSnippet>{ataTransactionsQuery}</CodeSnippet>
       </div>

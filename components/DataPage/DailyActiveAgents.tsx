@@ -13,9 +13,8 @@ import {
   dailyMechAgentPerformancesQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { ExternalLink } from 'components/ui/typography';
+import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const DailyActiveAgentsInfo = () => {
@@ -40,9 +39,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyAgentPerformancesQuery}</CodeSnippet>
@@ -71,9 +70,9 @@ export const DailyActiveAgentsInfo = () => {
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => ['mode', 'optimism'].includes(key)).map(
               ({ key, url }) => (
-                <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+                <SubgraphLink key={key} apiUrl={url} className="mr-2">
                   {key.charAt(0).toUpperCase() + key.slice(1)}
-                </ExternalLink>
+                </SubgraphLink>
               )
             )}
           </p>
@@ -84,9 +83,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyBasiusPerformancesQuery}</CodeSnippet>
@@ -110,9 +109,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyAgentsFunPerformancesQuery}</CodeSnippet>
@@ -139,9 +138,9 @@ export const DailyActiveAgentsInfo = () => {
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) =>
               ['gnosis', 'base', 'polygon', 'optimism'].includes(key)
             ).map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
@@ -163,9 +162,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph link:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <p>
@@ -193,9 +192,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph link:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'polygon').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
 
@@ -227,9 +226,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
@@ -239,9 +238,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'optimism').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
@@ -265,9 +264,9 @@ export const DailyActiveAgentsInfo = () => {
           <p className="text-purple-600">
             Subgraph links:{' '}
             {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <ExternalLink key={key} href={getSubgraphExplorerUrl(url)} className="mr-2">
+              <SubgraphLink key={key} apiUrl={url} className="mr-2">
                 {key.charAt(0).toUpperCase() + key.slice(1)}
-              </ExternalLink>
+              </SubgraphLink>
             ))}
           </p>
           <CodeSnippet>{dailyContributePerformancesQuery}</CodeSnippet>
