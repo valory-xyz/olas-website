@@ -64,7 +64,7 @@ Coverage varies by category (e.g. `BABYDEGEN_GRAPH_CLIENTS` only has Optimism + 
 3. `saveSnapshot({ category, data })` in `common-util/snapshot-storage.ts` merges with the previous blob via `mergeWithFallback`, which delegates the per-metric decision to `resolveMergedMetric` in `common-util/graphql/metric-status.ts`: it keeps the last valid value only when the new value is null or a source **hard-failed** (`fetchErrors`/`indexingErrors`), marking `status.frozen = true`. A **lagging** subgraph still publishes its live value — lag sets `status.stale` (the indicator) but not `frozen` (the grey-out). It then writes to Vercel Blob with `addRandomSuffix: false` and `allowOverwrite: true` so the filename is stable.
 4. Pages read snapshots in `getStaticProps` via `getSnapshot({ category })` (e.g. `pages/index.tsx` for the `main` snapshot) and surface staleness through `<StaleIndicator>` UI. Grey out a value with `isFrozen(status)`, never `status.stale` — otherwise a live-but-lagging number renders as dead.
 
-Categories: `main`, `predict`, `agent-economies`, `other`. Plus daily snapshots for `predict-roi-distribution` (per agent) and `predict-tool-accuracy`.
+Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus daily snapshots for `predict-roi-distribution` (per agent), `predict-tool-accuracy`, and `staking-apr` (per-chain history of the *active* staking programs — the nominees of the `VoteWeighting` contract on Ethereum — and their APRs, appended daily; the hourly `predict` refresh derives windowed max APR from this blob via `computeAprWindows` in `common-util/api/staking-apr.ts` instead of querying subgraphs itself).
 
 **`MetricWithStatus<T>` shape**: every metric is `{ value, status: { stale, frozen, lastValidAt, indexingErrors, fetchErrors, laggingSubgraphs } }`. Use `createStaleStatus`, `getFetchErrorAndCreateStaleStatus`, and `checkSubgraphLag` from `common-util/graphql/metric-utils.ts` to populate it, and `readGlobalField` to read off a subgraph's singleton `global` — never `data.global?.x ?? 0`, which turns a mid-reindex `global: null` into a silent zero published as healthy. The pure decision helpers live in `metric-status.ts` and are covered by `yarn metric-status:test` (a required CI check). `CHAIN_CONFIG` in `common-util/constants.ts` derives each chain's `lagLimit` from a measured `blockTimeSec` and a `lagToleranceHours` that scales with the chain's share of the totals (12h for ethereum/gnosis, 48h for the sub-2% chains). Set the tolerance in hours — never hand-write a block count.
 
@@ -88,6 +88,8 @@ Categories: `main`, `predict`, `agent-economies`, `other`. Plus daily snapshots 
   - `/api/refresh-metrics/predict-roi-distribution?agent=omenstrat` — daily 03:00 UTC
   - `/api/refresh-metrics/predict-roi-distribution?agent=polystrat` — daily 04:00 UTC
   - `/api/refresh-metrics/predict-tool-accuracy` — daily 05:00 UTC
+  - `/api/refresh-metrics/explorer` — daily 06:00 UTC
+  - `/api/refresh-metrics/staking-apr` — daily 01:30 UTC (before the hourly `predict` run at 02:00 picks it up)
 
 ### Environment Variables
 
