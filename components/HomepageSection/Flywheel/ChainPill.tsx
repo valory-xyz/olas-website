@@ -56,6 +56,7 @@ export const ChainPillCard = ({
         {formatUsd(value?.usd)}
       </span>
       <Popover
+        omitSrText
         contentClassName="max-w-[360px] text-left font-normal"
         onOpenChange={onTooltipOpenChange}
       >

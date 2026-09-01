@@ -36,6 +36,11 @@ export const Tabs = ({ items, activeKey, onChange, fullWidth = false }: TabsProp
           <button
             key={key}
             type="button"
+            // Toggle-button semantics rather than role="tab": only some consumers swap a
+            // panel, so tab semantics would need an aria-controls/tabpanel pair they
+            // cannot honestly provide. Without this the selected tab is expressed only
+            // as a background colour, which no crawler or screen reader can read.
+            aria-pressed={isActive}
             aria-disabled={disabled || undefined}
             onClick={() => {
               if (!disabled) onChange(key);

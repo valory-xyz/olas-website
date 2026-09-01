@@ -237,6 +237,7 @@ export const FlywheelConnectors = () => (
     <div className="absolute left-[334px] top-[661px] -translate-x-1/2 flex flex-row gap-[2px] text-xs font-bold leading-5 text-black">
       <p>{FEE_SWITCHES.pol}</p>
       <Popover
+        omitSrText
         align="center"
         side="bottom"
         iconSize={16}
@@ -250,6 +251,7 @@ export const FlywheelConnectors = () => (
     <div className="absolute left-[168px] top-[720px] flex flex-row gap-[2px] text-xs font-bold leading-5 text-black">
       <p>{FEE_SWITCHES.marketplace}</p>
       <Popover
+        omitSrText
         align="center"
         side="right"
         iconSize={16}

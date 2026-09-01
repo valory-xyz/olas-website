@@ -1,7 +1,7 @@
 import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
-import { buildMetricContext } from 'components/ui/MetricContext';
+import { buildMetricContext, formatFullNumber } from 'components/ui/MetricContext';
 import { CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
 
 type Metric = Partial<MetricWithStatus<number | string>>;
@@ -162,16 +162,25 @@ export const ActivitySummary = ({
           window: 'current value, not cumulative',
           asOfFallback: protocolSnapshotTimestamp,
         }),
-        ...polChains.map(({ label, metric }) =>
-          buildMetricContext({
+        ...polChains.map(({ label, metric }) => {
+          // Token composition comes from the pill's tooltip, which never reaches the
+          // DOM and renders twice besides. Named here so each chain's holding is
+          // readable once.
+          const tokens = metric?.value?.tokens ?? [];
+          const composition = tokens.length
+            ? `, held as ${tokens
+                .map((t) => `${formatFullNumber(t.amount) ?? t.amount} ${t.symbol}`)
+                .join(' and ')}`
+            : '';
+          return buildMetricContext({
             value: metric?.value?.usd,
             isMoney: true,
             status: metric?.status,
-            noun: `of protocol-owned liquidity held by the Olas Treasury on ${label}`,
+            noun: `of protocol-owned liquidity held by the Olas Treasury on ${label}${composition}`,
             window: 'current value, not cumulative',
             asOfFallback: protocolSnapshotTimestamp,
-          })
-        ),
+          });
+        }),
       ]
     : [];
 
@@ -185,7 +194,12 @@ export const ActivitySummary = ({
     asOfFallback: protocolSnapshotTimestamp,
   });
 
-  const lines = [...activityLines, ...polLines, polFeesLine].filter(Boolean);
+  const feeSwitchLines = [
+    'The Mech Marketplace fee is currently switched on. A 15% fee is taken on payments between AI agents on the Olas Marketplace; the Governors of the Olas Protocol can turn it on or off, and it is designed to buy back and burn OLAS as the marketplace is used.',
+    'Fees from protocol-owned liquidity are currently switched off and stay in the pools. Turning them on is subject to the implementation of AIP-7, which is designed to burn OLAS and send the remaining tokens to the Olas Treasury.',
+  ];
+
+  const lines = [...activityLines, ...polLines, polFeesLine, ...feeSwitchLines].filter(Boolean);
 
   if (lines.length === 0) return null;
 

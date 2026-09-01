@@ -11,6 +11,15 @@ type PopoverProps = {
   contentClassName?: string;
   iconSize?: number;
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Skip the screen-reader-only copy of `children`.
+   *
+   * Radix portals the tooltip and only mounts it while open, so its content never
+   * reaches the served HTML — by default we emit a hidden duplicate so crawlers and
+   * assistive tech can read it. Set this where the surrounding `MetricContext`
+   * sentence already states the same thing, to avoid saying it twice.
+   */
+  omitSrText?: boolean;
 };
 
 export const Popover = ({
@@ -22,6 +31,7 @@ export const Popover = ({
   contentClassName,
   iconSize,
   onOpenChange,
+  omitSrText = false,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
 
@@ -58,6 +68,10 @@ export const Popover = ({
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
+      {/* The same content, always in the DOM and visually hidden. Purely
+          presentational in every current call site, so rendering it twice is safe;
+          where children contain a link this does add a second focusable copy. */}
+      {!omitSrText && <span className="sr-only">{children}</span>}
     </Tooltip.Provider>
   );
 };
