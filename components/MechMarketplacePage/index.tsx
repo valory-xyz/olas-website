@@ -6,10 +6,10 @@ import { MarketplaceMetrics } from './MarketplaceMetrics';
 import { MechAgentsInAction } from './MechAgentsInAction';
 import { WhyUseMechMarketplace } from './WhyUseMechMarketplace';
 
-const MechMarketplace = ({ metrics }) => (
+const MechMarketplace = ({ metrics, snapshotTimestamp }) => (
   <>
     <Hero />
-    <MarketplaceMetrics metrics={metrics} />
+    <MarketplaceMetrics metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
     <Info />
     <WhyUseMechMarketplace />
     <BenefitFromMM />

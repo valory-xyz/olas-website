@@ -5,8 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricContext } from 'components/ui/MetricContext';
 
-export const OperateMetrics = ({ metrics }) => {
+export const OperateMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const data = useMemo(
     () => [
       {
@@ -17,6 +18,11 @@ export const OperateMetrics = ({ metrics }) => {
         value: metrics?.totalOperators?.value?.toLocaleString(),
         status: metrics?.totalOperators?.status,
         source: '/data#operators',
+        context: {
+          noun: 'unique operators who have run Olas agents',
+          scope: 'across all supported chains',
+          window: 'all time',
+        },
       },
       {
         id: 'DAA',
@@ -26,6 +32,11 @@ export const OperateMetrics = ({ metrics }) => {
         value: metrics?.dailyActiveAgents?.value?.toLocaleString(),
         status: metrics?.dailyActiveAgents?.status,
         source: '/data#daily-active-agents',
+        context: {
+          noun: 'daily active Olas agents, measured as unique multisigs active each day',
+          scope: 'across all supported chains',
+          window: '7-day average',
+        },
       },
     ],
     [metrics]
@@ -78,6 +89,12 @@ export const OperateMetrics = ({ metrics }) => {
                 )}
               </div>
               <span className="block text-lg text-slate-700">{item.subText}</span>
+              <MetricContext
+                value={item.value}
+                status={item.status}
+                asOfFallback={snapshotTimestamp}
+                {...item.context}
+              />
             </div>
           );
         })}

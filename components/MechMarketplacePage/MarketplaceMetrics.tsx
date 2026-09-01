@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export const MarketplaceMetrics = ({ metrics }) => {
+export const MarketplaceMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const { mechFees, ataTransactions } = metrics ?? {};
 
   const marketplaceData = useMemo(() => {
@@ -22,6 +22,12 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isExternal: false,
             imageSrc: 'money-bag.png',
             imageWidth: 24,
+            context: {
+              // One canonical name, with the aliases named so the four labels
+              // across the site resolve to a single metric rather than four.
+              noun: 'in Olas marketplace turnover — the total fees collected from the Mech Marketplace, also shown elsewhere as "Total Task Payments", "Mech Turnover" and "turnover"',
+              window: 'all time',
+            },
           },
           {
             key: 'ataTransactions',
@@ -33,6 +39,11 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isExternal: false,
             imageSrc: 'agent-to-agent.png',
             imageWidth: 80,
+            context: {
+              noun: 'agent-to-agent transactions — a subset of total Olas agent transactions, not the same figure',
+              scope: 'across Gnosis, Base, Polygon and Optimism',
+              window: 'all time',
+            },
           },
         ],
       },
@@ -42,7 +53,7 @@ export const MarketplaceMetrics = ({ metrics }) => {
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
       {marketplaceData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
+        <MetricsCard key={index} metrics={data} snapshotTimestamp={snapshotTimestamp} />
       ))}
       <div className="mt-8 text-center">
         <Link

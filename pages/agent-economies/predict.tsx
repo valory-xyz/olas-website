@@ -12,7 +12,7 @@ import { WhatIsOlasPredict } from 'components/AgentEconomies/PredictPage/WhatIsO
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const Predict = ({ metrics, roiDistribution, toolAccuracy }) => (
+const Predict = ({ metrics, roiDistribution, toolAccuracy, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="Predict"
@@ -21,7 +21,12 @@ const Predict = ({ metrics, roiDistribution, toolAccuracy }) => (
     />
 
     <PredictHero />
-    <Activity metrics={metrics} roiDistribution={roiDistribution} toolAccuracy={toolAccuracy} />
+    <Activity
+      metrics={metrics}
+      roiDistribution={roiDistribution}
+      toolAccuracy={toolAccuracy}
+      snapshotTimestamp={snapshotTimestamp}
+    />
     <WhatIsOlasPredict />
     <GetInvolved />
   </PageWrapper>
@@ -55,6 +60,7 @@ export const getStaticProps = async () => {
       metrics,
       roiDistribution,
       toolAccuracy,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

@@ -4,6 +4,7 @@ import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
+import { MetricContext } from 'components/ui/MetricContext';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -106,7 +107,17 @@ const processPredictMetrics = (
   };
 };
 
-const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText, id }) => {
+const DaaCard = ({
+  title,
+  imgSrc,
+  daaValue,
+  status,
+  href,
+  popoverText,
+  id,
+  context = null,
+  snapshotTimestamp = null,
+}) => {
   return (
     <Card
       id={id}
@@ -129,11 +140,24 @@ const DaaCard = ({ title, imgSrc, daaValue, status, href, popoverText, id }) => 
       <div className="flex self-center gap-2">
         Daily Active Agents (DAAs) <Popover>{popoverText}</Popover>
       </div>
+      {context && (
+        <MetricContext
+          value={daaValue}
+          status={status}
+          asOfFallback={snapshotTimestamp}
+          {...context}
+        />
+      )}
     </Card>
   );
 };
 
-export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccuracy }) => {
+export const Activity = ({
+  metrics: initialMetrics,
+  roiDistribution,
+  toolAccuracy,
+  snapshotTimestamp = null,
+}) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
@@ -152,6 +176,11 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
             status={metrics.omenstrat.dailyActiveAgentsStatus}
             href="/data#omenstrat-daily-active-agents"
             popoverText="7-day average Daily Active Agents for Omenstrat (Omen)"
+            snapshotTimestamp={snapshotTimestamp}
+            context={{
+              noun: 'daily active Omenstrat agents trading Omen prediction markets on Gnosis, measured as unique multisigs active each day',
+              window: '7-day average',
+            }}
           />
 
           {/* Polystrat DAA Card */}
@@ -163,6 +192,11 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
             status={metrics.polystrat.dailyActiveAgentsStatus}
             href="/data#polystrat-daily-active-agents"
             popoverText="7-day average Daily Active Agents for Polystrat (Polymarket)"
+            snapshotTimestamp={snapshotTimestamp}
+            context={{
+              noun: 'daily active Polystrat agents trading Polymarket prediction markets on Polygon, measured as unique multisigs active each day',
+              window: '7-day average',
+            }}
           />
 
           {/* Switcher-driven per-platform performance & lifetime activity */}
@@ -170,6 +204,7 @@ export const Activity = ({ metrics: initialMetrics, roiDistribution, toolAccurac
             metrics={{ omenstrat: metrics.omenstrat, polystrat: metrics.polystrat }}
             platform={platform}
             onPlatformChange={setPlatform}
+            snapshotTimestamp={snapshotTimestamp}
             className="md:col-span-2"
           />
 

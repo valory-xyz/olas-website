@@ -18,6 +18,7 @@ import { EconomySelector } from 'components/ExplorerPage/EconomySelector';
 import { MetricSelector, type ExplorerMetric } from 'components/ExplorerPage/MetricSelector';
 import { YearFilter } from 'components/ExplorerPage/YearFilter';
 import { cn } from 'lib/utils';
+import { buildMetricContext } from 'components/ui/MetricContext';
 
 /** One agent's heatmap data: metric-key → daily series, plus its staleness status. */
 type AgentData = {
@@ -35,6 +36,8 @@ export type ExplorerEconomies = Record<string, Record<string, AgentData>>;
 
 type ExplorerProps = {
   economies: ExplorerEconomies;
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
 };
 
 type MetricKind = 'count' | 'percent' | 'usd';
@@ -259,7 +262,7 @@ const FilterIcon = () => (
   </svg>
 );
 
-const Explorer = ({ economies }: ExplorerProps) => {
+const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
   const [activeEconomy, setActiveEconomy] = useState('predict');
   const [activeAgent, setActiveAgent] = useState('omenstrat');
   const [activeMetric, setActiveMetric] = useState('daa');
@@ -313,6 +316,40 @@ const Explorer = ({ economies }: ExplorerProps) => {
       tooltip: config.tooltip?.(metricSeries),
     };
   });
+
+  // Date span actually plotted, which is the real window behind every tile value.
+  const plottedRange = useMemo(() => {
+    if (!activeSeries.length) return null;
+    return {
+      from: dayjs(activeSeries[0].date).format('D MMMM YYYY'),
+      to: dayjs(activeSeries[activeSeries.length - 1].date).format('D MMMM YYYY'),
+    };
+  }, [activeSeries]);
+
+  const metricSummaryLines = useMemo(
+    () =>
+      economyMeta.metrics
+        .map((key) => {
+          const config = METRIC_CONFIG[key];
+          const metricSeries = series[key] ?? [];
+          if (!metricSeries.length) return null;
+          const range =
+            metricSeries.length > 1
+              ? `covering ${dayjs(metricSeries[0].date).format('D MMMM YYYY')} to ${dayjs(
+                  metricSeries[metricSeries.length - 1].date
+                ).format('D MMMM YYYY')}`
+              : undefined;
+          return buildMetricContext({
+            value: config.headline(metricSeries),
+            status,
+            noun: `${config.label.toLowerCase()} for ${agentMeta.label} in the ${economyMeta.name} agent economy`,
+            window: range,
+            asOfFallback: snapshotTimestamp,
+          });
+        })
+        .filter(Boolean),
+    [economyMeta, series, agentMeta.label, status, snapshotTimestamp]
+  );
 
   const handleEconomy = (key: string) => {
     if (!Object.hasOwn(ECONOMY_META, key)) return;
@@ -392,6 +429,22 @@ const Explorer = ({ economies }: ExplorerProps) => {
       )}
 
       {/* Metric tiles — full-width band with centered 872 rails; active drives the heatmap */}
+      <section aria-label="Explorer metrics summary" className="sr-only">
+        <p>
+          {`Showing the ${economyMeta.name} agent economy${
+            economyMeta.agents.length > 1 ? `, agent ${agentMeta.label}` : ''
+          }${
+            plottedRange
+              ? `, plotting daily data from ${plottedRange.from} to ${plottedRange.to}`
+              : ''
+          }.`}
+        </p>
+        <ul>
+          {metricSummaryLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </section>
       <MetricSelector metrics={metrics} activeKey={activeMetric} onChange={handleMetric} />
 
       {/* Series header + filter pill — centered 872 column (Figma 20754:3512).

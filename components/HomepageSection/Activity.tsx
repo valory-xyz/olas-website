@@ -16,6 +16,7 @@ import {
 import { FlywheelDesktop } from './Flywheel/FlywheelDesktop';
 import { PolMobileSection } from './Flywheel/PolMobileSection';
 import type { ProtocolActivityMetrics } from './Flywheel/constants';
+import { ActivitySummary } from './ActivitySummary';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -33,9 +34,15 @@ type ActivityMetrics = {
 type ActivityProps = {
   metrics?: ActivityMetrics | null;
   protocolMetrics?: ProtocolActivityMetrics;
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
 };
 
-export const Activity = ({ metrics = null, protocolMetrics = null }: ActivityProps) => {
+export const Activity = ({
+  metrics = null,
+  protocolMetrics = null,
+  snapshotTimestamp = null,
+}: ActivityProps) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) {
       return {
@@ -78,6 +85,7 @@ export const Activity = ({ metrics = null, protocolMetrics = null }: ActivityPro
 
   return (
     <div>
+      <ActivitySummary metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
       <div className="max-w-4xl mx-auto">
         <SectionHeading
           color="text-gray-900"

@@ -12,7 +12,7 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home({ metrics, protocolMetrics }) {
+export default function Home({ metrics, protocolMetrics, snapshotTimestamp }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +27,11 @@ export default function Home({ metrics, protocolMetrics }) {
       <Hero />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAiAgentEconomies metrics={metrics} protocolMetrics={protocolMetrics} />
+      <PowersAiAgentEconomies
+        metrics={metrics}
+        protocolMetrics={protocolMetrics}
+        snapshotTimestamp={snapshotTimestamp}
+      />
       <PropelledBy />
       <Media />
     </PageWrapper>
@@ -49,6 +53,9 @@ export const getStaticProps = async () => {
     props: {
       metrics,
       protocolMetrics,
+      // Fallback "as of" for metrics whose source is lagging: `status.lastValidAt`
+      // is null in that case, but the snapshot itself is still dated.
+      snapshotTimestamp: metricsSnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

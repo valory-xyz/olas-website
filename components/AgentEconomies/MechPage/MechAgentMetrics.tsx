@@ -8,12 +8,14 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { buildMetricContext } from 'components/ui/MetricContext';
 
-export const MechAgentMetrics = ({ metrics }) => {
+export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const data = useMemo(
     () => [
       {
         id: 'predict',
+        contextNoun: 'task requests to Mech agents originating from the Predict agent economy',
         label: (
           <div className="flex flex-col gap-2 mb-3">
             <Image alt="Mech" src="/images/agents/predict.png" width="35" height="35" />
@@ -26,6 +28,7 @@ export const MechAgentMetrics = ({ metrics }) => {
       },
       {
         id: 'agentsfun',
+        contextNoun: 'task requests to Mech agents originating from the Agents.fun agent economy',
         label: (
           <div className="flex flex-col gap-2 mb-3">
             <Image
@@ -43,6 +46,7 @@ export const MechAgentMetrics = ({ metrics }) => {
       },
       {
         id: 'contribute',
+        contextNoun: 'task requests to Mech agents originating from the Contribute agent economy',
         label: (
           <div className="flex flex-col gap-2 mb-3">
             <Image alt="Mech" src="/images/agents/contribute.svg" width="35" height="35" />
@@ -55,6 +59,8 @@ export const MechAgentMetrics = ({ metrics }) => {
       },
       {
         id: 'governatooor',
+        contextNoun:
+          'task requests to Mech agents originating from the Governatooorr agent economy',
         label: (
           <div className="flex flex-col gap-2 mb-3">
             <Image alt="Mech" src="/images/agents/governatooorr.svg" width="35" height="35" />
@@ -67,6 +73,7 @@ export const MechAgentMetrics = ({ metrics }) => {
       },
       {
         id: 'other',
+        contextNoun: 'task requests to Mech agents originating from other sources',
         label: (
           <div className="flex flex-col gap-2 mb-3">
             <div className="w-[35px] h-[35px]"></div>
@@ -81,8 +88,52 @@ export const MechAgentMetrics = ({ metrics }) => {
     [metrics]
   );
 
+  const summaryLines = [
+    buildMetricContext({
+      // Floored to match the number the card renders; the raw 7-day mean is fractional.
+      value:
+        typeof metrics?.dailyActiveAgents?.value === 'number'
+          ? Math.floor(metrics.dailyActiveAgents.value)
+          : metrics?.dailyActiveAgents?.value,
+      status: metrics?.dailyActiveAgents?.status,
+      noun: 'daily active Olas Mech agents, measured as unique multisigs active each day',
+      window: '7-day average',
+      asOfFallback: snapshotTimestamp,
+    }),
+    buildMetricContext({
+      value: metrics?.totalRequests?.value,
+      status: metrics?.totalRequests?.status,
+      noun: 'task requests made to Olas Mech agents by other agent economies',
+      window: 'all time',
+      asOfFallback: snapshotTimestamp,
+    }),
+    buildMetricContext({
+      value: metrics?.totalDeliveries?.value,
+      status: metrics?.totalDeliveries?.status,
+      noun: 'task deliveries completed by Olas Mech agents',
+      window: 'all time',
+      asOfFallback: snapshotTimestamp,
+    }),
+    ...data.map((item) =>
+      buildMetricContext({
+        value: item.value,
+        status: item.status,
+        noun: `${item.contextNoun}, which is one component of the total Mech requests above and not a separate total`,
+        window: 'all time',
+        asOfFallback: snapshotTimestamp,
+      })
+    ),
+  ].filter(Boolean);
+
   return (
     <SectionWrapper customClasses="text-center py-16 border-t" id="stats">
+      <section aria-label="Olas Mech agent economy metrics summary" className="sr-only">
+        <ul>
+          {summaryLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </section>
       <div className="text-7xl lg:text-9xl mb-8 max-w-[850px] mx-auto w-full">
         <Card className="flex flex-col gap-6 p-8 mb-8 mx-auto border border-purple-200 rounded-full text-xl w-fit rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center">
           <div className="flex items-center">

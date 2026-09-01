@@ -11,7 +11,7 @@ import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
-const Mech = ({ mech, mechFees }) => (
+const Mech = ({ mech, mechFees, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="Mech"
@@ -20,7 +20,7 @@ const Mech = ({ mech, mechFees }) => (
     />
 
     <MechHero />
-    <MechAgentMetrics metrics={mech} />
+    <MechAgentMetrics metrics={mech} snapshotTimestamp={snapshotTimestamp} />
     <FeeMetrics metrics={mechFees} />
     <WhatIsOlasMech />
     <WhyOlasMech />
@@ -36,6 +36,7 @@ export const getStaticProps = async () => {
     props: {
       mech: data?.mech || null,
       mechFees: data?.mechFees || null,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

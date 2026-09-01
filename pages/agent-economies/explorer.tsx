@@ -6,15 +6,16 @@ import Meta from 'components/Meta';
 
 type ExplorerPageProps = {
   economies: ExplorerEconomies;
+  snapshotTimestamp?: number | null;
 };
 
-const ExplorerPage = ({ economies }: ExplorerPageProps) => (
+const ExplorerPage = ({ economies, snapshotTimestamp = null }: ExplorerPageProps) => (
   <PageWrapper>
     <Meta
       pageTitle="Explore agent-economy activity"
       description="A visual, time-aware view of agent-economy activity."
     />
-    <Explorer economies={economies} />
+    <Explorer economies={economies} snapshotTimestamp={snapshotTimestamp} />
   </PageWrapper>
 );
 
@@ -58,7 +59,7 @@ export const getStaticProps = async () => {
   };
 
   return {
-    props: { economies },
+    props: { economies, snapshotTimestamp: snapshot?.timestamp ?? null },
     // Snapshot refreshes daily; revalidate hourly so the (future) predict-derived
     // Accuracy/ROI tiles can stay hourly-fresh without a new explorer job.
     revalidate: 60 * 60,

@@ -10,6 +10,7 @@ import {
 } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
+import { MetricContext } from 'components/ui/MetricContext';
 import type { WindowedMetric, WindowKey } from 'common-util/api/predict';
 import { isNil } from 'lodash';
 import Image from 'next/image';
@@ -50,6 +51,8 @@ type PlatformActivitySectionProps = {
   platform: Platform;
   onPlatformChange: (next: Platform) => void;
   className?: string;
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
 };
 
 const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
@@ -93,9 +96,43 @@ type MetricItemProps = {
   status?: MetricStatus;
   href?: string;
   warning?: ReactNode;
+  /**
+   * Machine-readable context. Essential here: the selected time range is React state
+   * expressed only as a highlighted tab, so a bare "69%" carries no window at all in
+   * the text layer, and the tab labels serialise as the single token "7D30D90DMax".
+   */
+  context?: { noun: string; scope?: string; window?: string };
+  asOfFallback?: number | null;
 };
 
-const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) => {
+/** The window as prose, for the machine-readable sentence. */
+const WINDOW_PHRASE: Record<WindowKey, string> = {
+  '7d': 'over the last 7 days',
+  '30d': 'over the last 30 days',
+  '90d': 'over the last 90 days',
+  max: 'over all time',
+};
+
+/** Short form, for phrasings where the descriptive clause would not fit grammatically. */
+const PLATFORM_NAME: Record<Platform, string> = {
+  omenstrat: 'Omenstrat',
+  polystrat: 'Polystrat',
+};
+
+const PLATFORM_PHRASE: Record<Platform, string> = {
+  omenstrat: 'Omenstrat agents trading Omen prediction markets on Gnosis',
+  polystrat: 'Polystrat agents trading Polymarket prediction markets on Polygon',
+};
+
+const MetricItem = ({
+  label,
+  value,
+  status,
+  href,
+  warning,
+  context,
+  asOfFallback,
+}: MetricItemProps) => {
   // Match the brand colour of the linked metrics (Link is text-purple-600) so an
   // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
   const valueClass = `text-2xl font-bold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-600'}`;
@@ -116,6 +153,9 @@ const MetricItem = ({ label, value, status, href, warning }: MetricItemProps) =>
           <StaleIndicator status={status} />
         )}
       </div>
+      {context && (
+        <MetricContext value={value} status={status} asOfFallback={asOfFallback} {...context} />
+      )}
     </div>
   );
 };
@@ -155,6 +195,7 @@ export const PlatformActivitySection = ({
   platform,
   onPlatformChange,
   className,
+  snapshotTimestamp = null,
 }: PlatformActivitySectionProps) => {
   const m = metrics[platform];
 
@@ -167,6 +208,13 @@ export const PlatformActivitySection = ({
     hasWindowData(m.apr) ||
     hasWindowData(m.brierScore);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('7d');
+
+  // The tab strip is forced to `max` when no windowed data exists, so the effective
+  // window — not `activeWindow` — is what the values actually represent.
+  const effectiveWindow: WindowKey = isWindowed ? activeWindow : 'max';
+  const windowPhrase = WINDOW_PHRASE[effectiveWindow];
+  const platformPhrase = PLATFORM_PHRASE[platform];
+  const platformName = PLATFORM_NAME[platform];
 
   const tradingRoiValue = m.partialRoi?.[activeWindow] ?? null;
   const totalRoiValue = m.finalRoi?.[activeWindow] ?? null;
@@ -201,6 +249,11 @@ export const PlatformActivitySection = ({
     value: isNil(tradingRoiValue) ? null : `${Math.round(tradingRoiValue)}%`,
     status: m.partialRoiStatus,
     href: `/data#${platform}-predict-roi`,
+    context: {
+      noun: `average trading return on investment for ${platformPhrase}, from prediction performance only and excluding staking rewards`,
+      window: windowPhrase,
+    },
+    asOfFallback: snapshotTimestamp,
   };
 
   const accuracyValue = m.successRate?.[activeWindow] ?? null;
@@ -222,6 +275,11 @@ export const PlatformActivitySection = ({
     value: isNil(accuracyValue) ? null : `${accuracyValue.toFixed(0)}%`,
     status: m.successRateStatus,
     href: `/data#${platform}-predict-accuracy`,
+    context: {
+      noun: `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}`,
+      window: windowPhrase,
+    },
+    asOfFallback: snapshotTimestamp,
   };
 
   const aprValue = m.apr?.[activeWindow] ?? null;
@@ -230,6 +288,13 @@ export const PlatformActivitySection = ({
     value: isNil(aprValue) ? null : `${aprValue}%`,
     status: m.aprStatus,
     href: `/data#${platform}-predict-apr`,
+    context: {
+      noun: `OLAS staking annual percentage rate for ${platformPhrase}`,
+      // Called out explicitly: this one metric does not follow the time-range tabs,
+      // so a reader must not apply the selected window to it.
+      window: 'a current rate, not affected by the selected time range',
+    },
+    asOfFallback: snapshotTimestamp,
   };
 
   const brierValue = m.brierScore?.[activeWindow] ?? null;
@@ -251,6 +316,11 @@ export const PlatformActivitySection = ({
     value: isNil(brierValue) ? null : brierValue.toFixed(2),
     status: m.brierStatus,
     href: `/data#${platform}-predict-brier`,
+    context: {
+      noun: `mean Brier score for ${platformPhrase}, measuring forecast calibration where lower is better — 0 is a perfect forecast, about 0.25 is no better than a coin flip, and 1 is maximally wrong`,
+      window: windowPhrase,
+    },
+    asOfFallback: snapshotTimestamp,
   };
 
   // All performance metrics respond to the time-range tabs. Brier is a 4th metric on
@@ -262,18 +332,30 @@ export const PlatformActivitySection = ({
     ...(platform === 'omenstrat' ? [brierItem] : []),
   ];
 
+  // These are lifetime counts and do not follow the time-range tabs, so each says
+  // "all time" explicitly rather than inheriting the selected window by proximity.
   const lifetimeItems: MetricItemProps[] = [
     {
       label: 'Traders',
       value: isNil(m.traderTxs) ? null : m.traderTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,
+      context: {
+        noun: `transactions by trader agents on ${platformName}, a subset of total ${platformName} transactions`,
+        window: 'all time',
+      },
+      asOfFallback: snapshotTimestamp,
     },
     {
       label: 'Mechs: Prediction Brokers',
       value: isNil(m.mechTxs) ? null : m.mechTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,
+      context: {
+        noun: `transactions by mech agents acting as prediction brokers on ${platformName}, a subset of total ${platformName} transactions`,
+        window: 'all time',
+      },
+      asOfFallback: snapshotTimestamp,
     },
   ];
 
@@ -283,6 +365,11 @@ export const PlatformActivitySection = ({
       value: isNil(m.marketCreatorTxs) ? null : m.marketCreatorTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,
+      context: {
+        noun: `transactions by market creator and closer agents on ${platformName}, a subset of total ${platformName} transactions`,
+        window: 'all time',
+      },
+      asOfFallback: snapshotTimestamp,
     });
   }
 

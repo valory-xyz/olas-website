@@ -4,13 +4,13 @@ import Build from 'components/BuildPage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const BuildPage = ({ metrics }) => (
+const BuildPage = ({ metrics, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="Build"
       description="Build on the Olas protocol: create AI agents and contribute code. Builders may earn Dev Rewards when developer incentives are active."
     />
-    <Build metrics={metrics} />
+    <Build metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
   </PageWrapper>
 );
 
@@ -19,6 +19,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       metrics: snapshot?.data || null,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };
