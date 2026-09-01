@@ -36,12 +36,15 @@ type ActivityProps = {
   protocolMetrics?: ProtocolActivityMetrics;
   /** Fallback as-of timestamp for metrics whose source is lagging. */
   snapshotTimestamp?: number | null;
+  /** As-of fallback for the protocol-owned-liquidity lines, from the `other` snapshot. */
+  protocolSnapshotTimestamp?: number | null;
 };
 
 export const Activity = ({
   metrics = null,
   protocolMetrics = null,
   snapshotTimestamp = null,
+  protocolSnapshotTimestamp = null,
 }: ActivityProps) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) {
@@ -89,6 +92,7 @@ export const Activity = ({
         metrics={metrics}
         protocolMetrics={protocolMetrics}
         snapshotTimestamp={snapshotTimestamp}
+        protocolSnapshotTimestamp={protocolSnapshotTimestamp}
       />
       <div className="max-w-4xl mx-auto">
         <SectionHeading

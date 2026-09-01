@@ -1,10 +1,10 @@
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
+import { isFrozen } from 'common-util/graphql/metric-utils';
+import type { MetricWithStatus } from 'common-util/graphql/types';
 import { buildMetricContext } from 'components/ui/MetricContext';
 import { CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
 
-type Metric = {
-  value?: number | string;
-  status?: import('common-util/graphql/types').MetricStatus;
-};
+type Metric = Partial<MetricWithStatus<number | string>>;
 
 type ActivitySummaryProps = {
   metrics?: {
@@ -20,6 +20,12 @@ type ActivitySummaryProps = {
    *  dollar figures whose chain name lives only in an icon alt and a tooltip. */
   protocolMetrics?: ProtocolActivityMetrics;
   snapshotTimestamp?: number | null;
+  /**
+   * Timestamp of the `other` snapshot, which is where the protocol-owned-liquidity
+   * metrics come from. It refreshes every 6 hours against the main snapshot's hourly
+   * cadence, so the two must not share a fallback.
+   */
+  protocolSnapshotTimestamp?: number | null;
 };
 
 /**
@@ -36,6 +42,7 @@ export const ActivitySummary = ({
   metrics,
   protocolMetrics,
   snapshotTimestamp = null,
+  protocolSnapshotTimestamp = null,
 }: ActivitySummaryProps) => {
   if (!metrics && !protocolMetrics) return null;
 
@@ -55,7 +62,7 @@ export const ActivitySummary = ({
           value: metrics.ataTransactions?.value,
           status: metrics.ataTransactions?.status,
           noun: 'agent-to-agent transactions, which are a subset of the total Olas agent transactions above and not a separate total',
-          scope: 'across Gnosis, Base, Polygon and Optimism',
+          scope: `across ${MARKETPLACE_CHAIN_SCOPE}`,
           window: 'all time',
           asOfFallback,
         }),
@@ -73,7 +80,10 @@ export const ActivitySummary = ({
           isMoney: true,
           // One canonical name, with the aliases named, so the four labels used across
           // the site resolve to a single metric rather than four different ones.
-          noun: 'in Olas marketplace turnover — the total fees collected from the Mech Marketplace, also shown elsewhere as "Total Task Payments", "Total Marketplace Turnover" and "Mech Turnover"',
+          // Homepage/marketplace turnover aggregates Gnosis + Base + legacy only
+          // (fetchMechFees); the mech page sums all seven marketplace chains, so the
+          // two must not be named as one figure.
+          noun: 'in Olas marketplace turnover — fees collected from the Mech Marketplace on Gnosis and Base, plus the legacy mech contracts',
           window: 'all time',
           asOfFallback,
         }),
@@ -127,10 +137,14 @@ export const ActivitySummary = ({
         buildMetricContext({
           value: polTotal,
           isMoney: true,
-          status: polChains[0].metric?.status,
+          // Any frozen chain makes the sum partly held-over, so surface that status
+          // rather than whichever chain happens to be first.
+          status:
+            polChains.find(({ metric }) => isFrozen(metric?.status))?.metric?.status ??
+            polChains[0].metric?.status,
           noun: `in total protocol-owned liquidity held by the Olas Treasury, which is the sum of the ${polChains.length} per-chain figures that follow and not additional to them`,
           window: 'current value, not cumulative',
-          asOfFallback: snapshotTimestamp,
+          asOfFallback: protocolSnapshotTimestamp,
         }),
         ...polChains.map(({ label, metric }) =>
           buildMetricContext({
@@ -139,7 +153,7 @@ export const ActivitySummary = ({
             status: metric?.status,
             noun: `of protocol-owned liquidity held by the Olas Treasury on ${label}`,
             window: 'current value, not cumulative',
-            asOfFallback: snapshotTimestamp,
+            asOfFallback: protocolSnapshotTimestamp,
           })
         ),
       ]
@@ -152,10 +166,15 @@ export const ActivitySummary = ({
     noun: "in cumulative swap fees earned by the Olas Treasury's protocol-owned liquidity positions, which is separate from Mech Marketplace fees",
     scope: 'across all supported chains',
     window: 'all time',
-    asOfFallback: snapshotTimestamp,
+    asOfFallback: protocolSnapshotTimestamp,
   });
 
-  const lines = [...activityLines, ...polLines, polFeesLine].filter(Boolean);
+  // Stated separately rather than inside the turnover sentence, which already carries
+  // its own scope and as-of clause.
+  const turnoverScopeNote =
+    'The Mech economy page publishes a broader "Total Task Payments" figure covering every supported chain. It and the turnover above are different aggregations that agree only while the remaining chains hold no fees, so they should not be treated as one number.';
+
+  const lines = [...activityLines, ...polLines, polFeesLine, turnoverScopeNote].filter(Boolean);
 
   if (lines.length === 0) return null;
 

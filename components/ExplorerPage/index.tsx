@@ -62,6 +62,8 @@ type MetricDef = {
   scale: ColorScale;
   /** Headline tile value derived from the metric's series. */
   headline: (series: DaaSeriesPoint[]) => string;
+  /** How `headline` reduces the series — drives the window phrase in the text summary. */
+  headlineKind: 'latest' | 'sum' | 'mean';
   /** Whether the tile is selectable — false dims it + shows "coming soon". */
   selectable: (series: DaaSeriesPoint[]) => boolean;
   /** Tile label override (defaults to `label`); lets the tile read differently from the heatmap header. */
@@ -76,6 +78,7 @@ type MetricDef = {
 // pre-first-cron state, or a failed fetch with nothing to fall back on).
 const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum', MetricDef> = {
   daa: {
+    headlineKind: 'latest',
     label: 'Daily Active Agents',
     // Tile shows the latest day's value, so label it "Latest DAAs"; the heatmap header
     // keeps the descriptive "Daily Active Agents" (it plots the full daily history).
@@ -93,6 +96,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   transactions: {
+    headlineKind: 'sum',
     label: 'Total Transactions',
     unit: 'transactions',
     kind: 'count',
@@ -101,6 +105,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   ata: {
+    headlineKind: 'sum',
     label: 'Agent-to-Agent Transactions',
     unit: 'A2A txns',
     kind: 'count',
@@ -110,6 +115,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   accuracy: {
+    headlineKind: 'mean',
     label: 'Avg Prediction Accuracy',
     unit: 'accuracy',
     kind: 'percent',
@@ -122,6 +128,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   aum: {
+    headlineKind: 'latest',
     label: 'Assets Under Management',
     unit: '',
     kind: 'usd',
@@ -333,12 +340,18 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
           const config = METRIC_CONFIG[key];
           const metricSeries = series[key] ?? [];
           if (!metricSeries.length) return null;
+          // The window has to match how the headline was reduced: a latest-day value
+          // is not "covering" a range, and the accuracy figure is a mean, not a total.
+          const first = dayjs(metricSeries[0].date).format('D MMMM YYYY');
+          const last = dayjs(metricSeries[metricSeries.length - 1].date).format('D MMMM YYYY');
           const range =
-            metricSeries.length > 1
-              ? `covering ${dayjs(metricSeries[0].date).format('D MMMM YYYY')} to ${dayjs(
-                  metricSeries[metricSeries.length - 1].date
-                ).format('D MMMM YYYY')}`
-              : undefined;
+            config.headlineKind === 'latest'
+              ? `on ${last}, the most recent day with data`
+              : metricSeries.length > 1
+                ? config.headlineKind === 'mean'
+                  ? `a daily average over ${first} to ${last}`
+                  : `summed over ${first} to ${last}`
+                : undefined;
           return buildMetricContext({
             value: config.headline(metricSeries),
             status,

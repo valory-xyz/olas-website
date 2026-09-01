@@ -12,7 +12,12 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home({ metrics, protocolMetrics, snapshotTimestamp }) {
+export default function Home({
+  metrics,
+  protocolMetrics,
+  snapshotTimestamp,
+  protocolSnapshotTimestamp,
+}) {
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +36,7 @@ export default function Home({ metrics, protocolMetrics, snapshotTimestamp }) {
         metrics={metrics}
         protocolMetrics={protocolMetrics}
         snapshotTimestamp={snapshotTimestamp}
+        protocolSnapshotTimestamp={protocolSnapshotTimestamp}
       />
       <PropelledBy />
       <Media />
@@ -56,6 +62,8 @@ export const getStaticProps = async () => {
       // Fallback "as of" for metrics whose source is lagging: `status.lastValidAt`
       // is null in that case, but the snapshot itself is still dated.
       snapshotTimestamp: metricsSnapshot?.timestamp ?? null,
+      // PoL metrics come from the `other` snapshot, which refreshes on its own cadence.
+      protocolSnapshotTimestamp: otherSnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

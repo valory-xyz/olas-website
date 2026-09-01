@@ -1,5 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 
+import { MARKETPLACE_CHAIN_KEYS } from 'common-util/constants';
+
 const requestConfig = {
   jsonSerializer: {
     parse: JSON.parse,
@@ -102,6 +104,20 @@ export const BABYDEGEN_GRAPH_CLIENTS = {
   mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
 };
+
+// The published scope of every marketplace metric is derived from MARKETPLACE_CHAIN_KEYS,
+// so a chain added here without updating that list would silently make those sentences
+// wrong. Fail loudly in development rather than shipping a false claim.
+if (process.env.NODE_ENV !== 'production') {
+  const declared = Object.keys(MARKETPLACE_GRAPH_CLIENTS).sort().join(',');
+  const documented = [...MARKETPLACE_CHAIN_KEYS].sort().join(',');
+  if (declared !== documented) {
+    console.error(
+      `[client] MARKETPLACE_GRAPH_CLIENTS (${declared}) and MARKETPLACE_CHAIN_KEYS (${documented}) ` +
+        'have diverged — update MARKETPLACE_CHAIN_KEYS in common-util/constants.ts.'
+    );
+  }
+}
 
 export const MECH_FEES_GRAPH_CLIENTS = {
   gnosis: new GraphQLClient(

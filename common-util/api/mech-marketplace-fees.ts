@@ -125,7 +125,7 @@ const DRAINED_TOPIC0 = '0xb2559daa129ad136aac2133ac6a0c75920abbef7d6663a017a94e1
 // The Mech Marketplace 15% fee went live on 2026-06-15 ~06:30 UTC (proposal executed on
 // Ethereum, bridged to the L2s minutes later). `drain()` reverts on zero collectedFees,
 // so no `Drained` event can exist before this — we start the scan just before it.
-const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
+export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
 
 // Measured per-chain block time. Previously derived from lagLimit, which only held while
 // every chain used the same 12h tolerance — tolerances now vary, so read it directly.

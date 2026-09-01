@@ -1,6 +1,9 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { isNil } from 'lodash';
+import { FEE_LIVE_SINCE_SEC } from 'common-util/api/mech-marketplace-fees';
 import { formatFullNumber } from 'components/ui/MetricContext';
+import { formatUtcAsOf } from 'common-util/time';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { useWindowWidth } from 'hooks';
@@ -11,7 +14,7 @@ import { Chart } from 'react-google-charts';
 const formatToTooltip = ({ from, to }) =>
   `${from.label} → ${to.label} | $${to.value.toFixed(2)} (${Number((to.value / from.value) * 100).toFixed(2)}%)`;
 
-export const FeeMetrics = ({ metrics }) => {
+export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const windowWidth = useWindowWidth();
 
   const chartSizes = useMemo(() => {
@@ -157,16 +160,30 @@ export const FeeMetrics = ({ metrics }) => {
   // the marketplace fee (the fee leaves separately via `Drained`). The Sankey keeps its
   // branches balanced by deriving the realised width as claimed − fees, so the picture
   // reads as two amounts where the data holds one. Stated here so the tiles are not summed.
-  const feeFlowSummary = [
-    `Total task payments ${formatFullNumber(formerData.total.value, { isMoney: true })} is the gross amount paid by requesting agents.`,
-    `Claimed payments and realised mech earnings both show ${formatFullNumber(formerData.claimed.value, { isMoney: true })}. These are one figure under two names — the total withdrawn by mechs, already net of the marketplace fee — not two separate amounts to be added together.`,
-    `Unclaimed payments ${formatFullNumber(formerData.unclaimed.value, { isMoney: true })} is the remainder still held by the balance trackers.`,
-    `Fees collected ${formatFullNumber(formerData.burned.value, { isMoney: true })} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on 15 June 2026.`,
-  ].join(' ');
+  // Date the 15% marketplace fee was switched on, from the same constant the fee scan
+  // uses, so the prose cannot drift from the data behind it.
+  const feeLiveSince = (formatUtcAsOf(FEE_LIVE_SINCE_SEC * 1000) ?? '').replace(
+    / \d{2}:\d{2} UTC$/,
+    ''
+  );
+  const feeFlowAsOf = formatUtcAsOf(metrics?.totalFees?.status?.lastValidAt ?? snapshotTimestamp);
+
+  const feeFlowSummary = isNil(metrics?.totalFees?.value)
+    ? null
+    : [
+        `Total task payments ${formatFullNumber(formerData.total.value, { isMoney: true })} is the gross amount paid by requesting agents.`,
+        formerData.claimed.value === formerData.recieved.value
+          ? `Claimed payments and realised mech earnings both show ${formatFullNumber(formerData.claimed.value, { isMoney: true })}. These are one figure under two names — the total withdrawn by mechs, already net of the marketplace fee — not two separate amounts to be added together.`
+          : `Claimed payments is ${formatFullNumber(formerData.claimed.value, { isMoney: true })} and realised mech earnings is ${formatFullNumber(formerData.recieved.value, { isMoney: true })}. Realised earnings are the portion mechs keep after the marketplace fee, so the two are not additive.`,
+        `Unclaimed payments ${formatFullNumber(formerData.unclaimed.value, { isMoney: true })} is the remainder still held by the balance trackers.`,
+        `Fees collected ${formatFullNumber(formerData.burned.value, { isMoney: true })} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}.`,
+      ]
+        .concat(feeFlowAsOf ? [`All figures as of ${feeFlowAsOf}.`] : [])
+        .join(' ');
 
   return (
     <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="fee-flow">
-      <p className="sr-only">{feeFlowSummary}</p>
+      {feeFlowSummary && <p className="sr-only">{feeFlowSummary}</p>}
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
           Mech Marketplace Fee Flow

@@ -21,7 +21,7 @@ const Mech = ({ mech, mechFees, snapshotTimestamp }) => (
 
     <MechHero />
     <MechAgentMetrics metrics={mech} snapshotTimestamp={snapshotTimestamp} />
-    <FeeMetrics metrics={mechFees} />
+    <FeeMetrics metrics={mechFees} snapshotTimestamp={snapshotTimestamp} />
     <WhatIsOlasMech />
     <WhyOlasMech />
     <GetInvolved />

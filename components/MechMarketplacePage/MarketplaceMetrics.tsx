@@ -1,3 +1,4 @@
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { ChevronRight } from 'lucide-react';
@@ -25,7 +26,10 @@ export const MarketplaceMetrics = ({ metrics, snapshotTimestamp = null }) => {
             context: {
               // One canonical name, with the aliases named so the four labels
               // across the site resolve to a single metric rather than four.
-              noun: 'in Olas marketplace turnover — the total fees collected from the Mech Marketplace, also shown elsewhere as "Total Task Payments", "Mech Turnover" and "turnover"',
+              // Homepage/marketplace turnover aggregates Gnosis + Base + legacy only
+              // (fetchMechFees); the mech page sums all seven marketplace chains, so the
+              // two must not be named as one figure.
+              noun: 'in Olas marketplace turnover — fees collected from the Mech Marketplace on Gnosis and Base, plus the legacy mech contracts',
               window: 'all time',
             },
           },
@@ -41,7 +45,7 @@ export const MarketplaceMetrics = ({ metrics, snapshotTimestamp = null }) => {
             imageWidth: 80,
             context: {
               noun: 'agent-to-agent transactions — a subset of total Olas agent transactions, not the same figure',
-              scope: 'across Gnosis, Base, Polygon and Optimism',
+              scope: `across ${MARKETPLACE_CHAIN_SCOPE}`,
               window: 'all time',
             },
           },
