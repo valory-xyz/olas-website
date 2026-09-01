@@ -85,7 +85,11 @@ export const Activity = ({
 
   return (
     <div>
-      <ActivitySummary metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
+      <ActivitySummary
+        metrics={metrics}
+        protocolMetrics={protocolMetrics}
+        snapshotTimestamp={snapshotTimestamp}
+      />
       <div className="max-w-4xl mx-auto">
         <SectionHeading
           color="text-gray-900"
@@ -143,8 +147,11 @@ export const Activity = ({
         <AgentToAgentCard
           ataTransactions={processedMetrics.ataTransactions}
           mechFees={processedMetrics.mechFees}
+          feesCollected={processedMetrics.feesCollected}
+          feesCollectedByToken={processedMetrics.feesCollectedByToken}
           ataTransactionsStatus={processedMetrics.ataTransactionsStatus}
           mechFeesStatus={processedMetrics.mechFeesStatus}
+          feesCollectedStatus={processedMetrics.feesCollectedStatus}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />
