@@ -21,14 +21,16 @@ export type Platform = 'polystrat' | 'omenstrat';
 type MetricStatus = StaleIndicatorProps['status'];
 
 export type PlatformMetrics = {
-  // APR is a current staking rate (no time series) — the only un-windowed metric.
-  apr: number | null;
+  // Windowed max OLAS staking APR across the contracts nominated within each range.
+  apr: WindowedMetric<number | null> | null;
   aprStatus: MetricStatus;
-  // Windowed ROI: finalRoi = prediction + staking rewards; partialRoi = prediction only.
+  // Windowed ROI: partialRoi (trading, prediction-only) is the headline; finalRoi
+  // (total, incl. staking rewards) shows in the popover.
   partialRoi: WindowedMetric<number | null> | null;
   finalRoi: WindowedMetric<number | null> | null;
-  // roiStatus tracks finalRoi (the headline); partialRoiStatus tracks the popover value,
-  // which can be fresh while finalRoi is still stale (e.g. staking rewards backfilling).
+  // roiStatus tracks finalRoi (the popover value), which can be stale while the
+  // headline is fresh (e.g. staking rewards backfilling); partialRoiStatus tracks
+  // the headline.
   roiStatus: MetricStatus;
   partialRoiStatus: MetricStatus;
   // Windowed prediction accuracy (% correct per time range).
@@ -71,7 +73,7 @@ const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
 ];
 
 // A windowed metric only carries data once at least one of its windows is non-null.
-// On a fresh predict-v2 blob mid-backfill every window is null, so this stays false and
+// On a fresh predict blob mid-backfill every window is null, so this stays false and
 // the non-max tabs remain disabled (matching getTimeRangeTabs below).
 const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
   !isNil(w) && Object.values(w).some((v) => !isNil(v));
@@ -156,48 +158,48 @@ export const PlatformActivitySection = ({
 }: PlatformActivitySectionProps) => {
   const m = metrics[platform];
 
-  // ROI, Accuracy (both platforms) and Brier (Omenstrat) are windowed, so tabs are
-  // enabled once any windowed metric has at least one non-null window (not merely a
-  // present-but-all-null object from a mid-backfill blob).
+  // Tabs are enabled once any windowed metric has at least one non-null window (not
+  // merely a present-but-all-null object from a mid-backfill blob).
   const isWindowed =
     hasWindowData(m.partialRoi) ||
     hasWindowData(m.finalRoi) ||
     hasWindowData(m.successRate) ||
+    hasWindowData(m.apr) ||
     hasWindowData(m.brierScore);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('7d');
 
-  const finalRoiValue = m.finalRoi?.[activeWindow] ?? null;
-  const partialRoiValue = m.partialRoi?.[activeWindow] ?? null;
+  const tradingRoiValue = m.partialRoi?.[activeWindow] ?? null;
+  const totalRoiValue = m.finalRoi?.[activeWindow] ?? null;
   const roiItem: MetricItemProps = {
     label: (
       <span className="flex items-center gap-2">
-        Total ROI - Average{' '}
-        {!isNil(partialRoiValue) && (
+        Trading ROI - Average{' '}
+        {!isNil(totalRoiValue) && (
           <Popover>
             <div className="flex flex-col max-w-[320px] gap-4 text-base">
+              <p className="text-gray-500">
+                Trading ROI reflects only prediction performance, excluding staking rewards.
+              </p>
               <p className="text-gray-500">
                 Total ROI shows your agent&apos;s overall earnings, including profits from
                 predictions and staking rewards, minus all related costs.
               </p>
-              <p className="text-gray-500">
-                Partial ROI reflects only prediction performance, excluding staking rewards.
-              </p>
               <div className="flex justify-between">
-                <span className="text-gray-900">Partial ROI</span>
-                <span className={isFrozen(m.partialRoiStatus) ? 'text-gray-400' : ''}>
-                  {`${Math.round(partialRoiValue)}%`}
+                <span className="text-gray-900">Total ROI</span>
+                <span className={isFrozen(m.roiStatus) ? 'text-gray-400' : ''}>
+                  {`${Math.round(totalRoiValue)}%`}
                 </span>
               </div>
               <div className="text-sm">
-                <StaleMetricContent status={m.partialRoiStatus} />
+                <StaleMetricContent status={m.roiStatus} />
               </div>
             </div>
           </Popover>
         )}
       </span>
     ),
-    value: isNil(finalRoiValue) ? null : `${Math.round(finalRoiValue)}%`,
-    status: m.roiStatus,
+    value: isNil(tradingRoiValue) ? null : `${Math.round(tradingRoiValue)}%`,
+    status: m.partialRoiStatus,
     href: `/data#${platform}-predict-roi`,
   };
 
@@ -222,9 +224,10 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-predict-accuracy`,
   };
 
+  const aprValue = m.apr?.[activeWindow] ?? null;
   const aprItem: MetricItemProps = {
     label: 'OLAS Staking APR',
-    value: isNil(m.apr) ? null : `${m.apr}%`,
+    value: isNil(aprValue) ? null : `${aprValue}%`,
     status: m.aprStatus,
     href: `/data#${platform}-predict-apr`,
   };
@@ -250,10 +253,8 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-predict-brier`,
   };
 
-  // ROI, Accuracy and Brier (Omenstrat only) respond to the time-range tabs. APR is a
-  // current staking rate with no per-window data, so it simply stays constant as the
-  // tabs change. Brier is a 4th metric on Omenstrat only (predict-polymarket doesn't
-  // index Brier yet).
+  // All performance metrics respond to the time-range tabs. Brier is a 4th metric on
+  // Omenstrat only (predict-polymarket doesn't index Brier yet).
   const performanceItems: MetricItemProps[] = [
     roiItem,
     aprItem,

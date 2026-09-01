@@ -1,8 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import {
-  PREDICT_MARKET_DURATION_DAYS,
-  PREDICT_STAKING_PROGRAMS_PEARL,
-} from 'common-util/constants';
+import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
   getMarketsAndBetsQuery,
   getMechRequestsQuery,
@@ -23,7 +20,7 @@ export const OmenstratRoiInfo = () => {
   const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
   const stakingRewards = getStakingRewardsByTimeRangeQuery({
     first: 1000,
-    contractAddresses: Object.values(PREDICT_STAKING_PROGRAMS_PEARL),
+    contractAddresses: ['<predict staking contracts on Gnosis>'],
     timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
     timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
   });
@@ -54,16 +51,16 @@ export const OmenstratRoiInfo = () => {
           fees. Requests made for unresolved (open) markets are excluded to ensure accuracy. ROI is
           shown per <b>time range</b> (7D / 30D / 90D / Max): prediction profit and costs are
           aggregated per window from per-agent daily statistics, and staking rewards are summed over
-          the same window — scoped to the predict (Pearl) staking programs only — and valued at the
-          current OLAS/USD price.
+          the same window and valued at the current OLAS/USD price.
         </p>
 
         <ul className="list-disc list-inside space-y-1">
           <li>
-            <strong>Partial ROI</strong>: profit from prediction markets only.
+            <strong>Trading ROI</strong> (shown on the page): profit from prediction markets only.
           </li>
           <li>
-            <strong>Final ROI</strong>: includes staking rewards (OLAS converted to USD).
+            <strong>Total ROI</strong> (shown in the tooltip): includes staking rewards (OLAS
+            converted to USD).
           </li>
         </ul>
 
@@ -127,9 +124,8 @@ export const OmenstratRoiInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>3) Staking Rewards query</h3>
 
         <p className="max-w-[800px]">
-          Used for getting staking rewards (in OLAS) within a time range, scoped to the predict
-          (Pearl) staking programs only (example shows the 7-day window). The windowed sum is valued
-          at the current OLAS/USD price for Final ROI.
+          Used for getting staking rewards (in OLAS) within a time range (example shows the 7-day
+          window). The windowed sum is valued at the current OLAS/USD price for Final ROI.
         </p>
         <p className="text-purple-600">
           Subgraph link:{' '}

@@ -1,13 +1,16 @@
-import { PREDICT_STAKING_PROGRAMS_PEARL } from 'common-util/constants';
+import { PREDICT_STAKING_AGENT_IDS } from 'common-util/constants';
 import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
 } from 'common-util/graphql/metric-utils';
-import { getStakingRewardsByTimeRangeQuery } from 'common-util/graphql/queries';
+import {
+  getStakingRewardsByTimeRangeQuery,
+  stakingContractAgentIdsQuery,
+} from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
-import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
+import { loadSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { WindowedMetric, WindowKey } from './omenstrat-brier';
 
@@ -40,13 +43,41 @@ const emptyRewardWindows = (): WindowedMetric<string | null> => ({
 type RewardRow = { rewardAmount: string; blockTimestamp: string };
 type RewardsResponse = WithMeta<{ serviceRewardsHistories: RewardRow[] }>;
 
+type StakingContractAgentIdsResponse = {
+  stakingContracts: { instance: string; agentIds: string[] }[];
+};
+
+// Predict staking contract addresses, resolved from each contract's staked agent ids —
+// no hardcoded program list to maintain, and non-predict programs (LST, mech) drop out.
+const fetchPredictContractAddresses = async (
+  client: (typeof STAKING_GRAPH_CLIENTS)['gnosis'],
+  chain: 'gnosis' | 'polygon'
+): Promise<string[]> => {
+  const response = (await client.request(
+    stakingContractAgentIdsQuery
+  )) as StakingContractAgentIdsResponse;
+  const predictAgentIds = PREDICT_STAKING_AGENT_IDS[chain];
+  const addresses = (response?.stakingContracts || [])
+    .filter((contract) =>
+      (contract.agentIds || []).some((id) => predictAgentIds.includes(Number(id)))
+    )
+    .map((contract) => contract.instance.toLowerCase());
+
+  // The subgraph keeps every contract ever deployed, so an empty predict set can only be
+  // a bad response — throw rather than bake zero-reward days into the accumulator.
+  if (addresses.length === 0) {
+    throw new Error(`No predict staking contracts (agent ids ${predictAgentIds}) on ${chain}`);
+  }
+  return addresses;
+};
+
 const dayOf = (ts: number): number => Math.floor(ts / DAY) * DAY;
 
 // Sums rewardAmount per placement day for [startDay, endDay], cursor-paged by
 // blockTimestamp. Mutates indexingErrors/laggingSubgraphs as a side effect.
 const fetchDayBuckets = async (
   client: (typeof STAKING_GRAPH_CLIENTS)['gnosis'],
-  contractAddresses: string[] | undefined,
+  contractAddresses: string[],
   chain: 'gnosis' | 'polygon',
   startDay: number,
   endDay: number,
@@ -109,8 +140,7 @@ const fetchDayBuckets = async (
 const buildWindowedStakingRewards = async (
   category: string,
   chain: 'gnosis' | 'polygon',
-  genesisDay: number,
-  contractAddresses: string[] | undefined
+  genesisDay: number
 ): Promise<MetricWithStatus<WindowedMetric<string | null>>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
@@ -120,16 +150,25 @@ const buildWindowedStakingRewards = async (
   const yesterday = getMidnightUtcTimestampDaysAgo(1);
   const client = STAKING_GRAPH_CLIENTS[chain];
 
-  let existing: RewardsAccumulator | null = null;
-  try {
-    const snapshot = await getSnapshot({ category });
-    existing = (snapshot?.data as unknown as RewardsAccumulator) ?? null;
-  } catch (e) {
-    console.warn(`Could not load staking-rewards accumulator (${category}); rebuilding`, e);
+  // A transient blob read failure must not restart the genesis backfill: bail with a
+  // fetchError (mergeWithFallback holds the previous windows) and leave the blob untouched.
+  const loaded = await loadSnapshot({ category });
+  if (loaded.outcome === 'error') {
+    console.error(`Could not read staking-rewards accumulator (${category}):`, loaded.error);
+    fetchErrors.push(`${source}:accumulator-read`);
+    return {
+      value: emptyRewardWindows(),
+      status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
+    };
   }
+  const existing =
+    loaded.outcome === 'found' ? (loaded.snapshot.data as unknown as RewardsAccumulator) : null;
 
   try {
-    const chainBlock = await getChainBlockNumber(chain);
+    const [chainBlock, contractAddresses] = await Promise.all([
+      getChainBlockNumber(chain),
+      fetchPredictContractAddresses(client, chain),
+    ]);
 
     const buckets: Record<string, string> = { ...(existing?.buckets ?? {}) };
     let backfilledTo = existing?.backfilledTo ?? yesterday + DAY;
@@ -228,24 +267,14 @@ const buildWindowedStakingRewards = async (
 export type StakingRewardsWindows = MetricWithStatus<WindowedMetric<string | null>>;
 export type { WindowKey };
 
-// Omenstrat: filter to the predict (Pearl) staking programs only. The gnosis staking
-// subgraph indexes every Olas program on the chain — including LST — so we scope to
-// PREDICT_STAKING_PROGRAMS_PEARL (the Pearl-configured predict programs) rather than
-// the broader GNOSIS_STAKING_CONTRACTS list, which still mixes in non-predict programs
-// and would otherwise inflate predict final ROI.
+// Both chains sum only predict programs, resolved by staked agent id — the gnosis
+// staking subgraph indexes every Olas program on the chain (LST included).
 export const fetchOmenstratStakingRewards = (): Promise<StakingRewardsWindows> =>
-  buildWindowedStakingRewards(
-    'predict-staking-rewards/omenstrat',
-    'gnosis',
-    OMEN_GENESIS_DAY,
-    Object.values(PREDICT_STAKING_PROGRAMS_PEARL)
-  );
+  buildWindowedStakingRewards('predict-staking-rewards/omenstrat', 'gnosis', OMEN_GENESIS_DAY);
 
-// Polystrat: the polygon staking subgraph is predict-only, so sum unfiltered.
 export const fetchPolystratStakingRewards = (): Promise<StakingRewardsWindows> =>
   buildWindowedStakingRewards(
     'predict-staking-rewards/polystrat',
     'polygon',
-    POLYMARKET_GENESIS_DAY,
-    undefined
+    POLYMARKET_GENESIS_DAY
   );
