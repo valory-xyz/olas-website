@@ -1,3 +1,8 @@
+import {
+  fetchBalancerPoolReserves,
+  fetchUniswapV2PairReserves,
+} from 'common-util/api/other-metrics/live-reserves';
+import { OLAS_TOKEN_ADDRESS_BY_CHAIN } from 'common-util/constants';
 import { LIQUIDITY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
@@ -37,6 +42,9 @@ type EthSubgraphResponse = {
 
 type L2Pool = {
   id: string;
+  // Subgraph reserves drift between joins/exits (Balancer swaps bypass the
+  // pool contract), so valuation replaces them with live on-chain reads —
+  // see docs/pol-live-reserves.md.
   reserve0: string;
   reserve1: string;
   totalSupply: string;
@@ -120,6 +128,7 @@ function computeShare(bridgedBalance: bigint, totalSupply: bigint): number {
 
 type PoolConfig = {
   originChain: string; // key into bridgedPOLHoldings[].originChain
+  dex: 'balancer' | 'uniswapV2'; // which live-reserves reader to use
   // Which reserve holds OLAS, and the paired token's reserve/symbol/decimals —
   // used for the protocol-owned token amounts shown in the POL spread tooltips.
   olasReserve: 'reserve0' | 'reserve1';
@@ -134,6 +143,7 @@ type PoolConfig = {
 const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   gnosis: {
     originChain: 'gnosis',
+    dex: 'balancer',
     olasReserve: 'reserve0',
     paired: { reserve: 'reserve1', symbol: 'WXDAI', decimals: 18 },
     // OLAS-WXDAI: reserve0=OLAS, reserve1=WXDAI (stablecoin ≈ $1)
@@ -146,6 +156,7 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   polygon: {
     originChain: 'polygon',
+    dex: 'balancer',
     olasReserve: 'reserve1',
     paired: { reserve: 'reserve0', symbol: 'WMATIC', decimals: 18 },
     // OLAS-WMATIC: reserve0=WMATIC, reserve1=OLAS
@@ -168,6 +179,7 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   arbitrum: {
     originChain: 'arbitrum',
+    dex: 'balancer',
     olasReserve: 'reserve0',
     paired: { reserve: 'reserve1', symbol: 'WETH', decimals: 18 },
     // OLAS-WETH: reserve0=OLAS, reserve1=WETH
@@ -190,6 +202,7 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   optimism: {
     originChain: 'optimism',
+    dex: 'balancer',
     olasReserve: 'reserve1',
     paired: { reserve: 'reserve0', symbol: 'WETH', decimals: 18 },
     // WETH-OLAS: reserve0=WETH, reserve1=OLAS
@@ -212,6 +225,7 @@ const POOL_CONFIG_BY_CHAIN: Record<string, PoolConfig> = {
   },
   celo: {
     originChain: 'celo',
+    dex: 'uniswapV2', // Ubeswap V2 pair
     olasReserve: 'reserve1',
     paired: { reserve: 'reserve0', symbol: 'CELO', decimals: 18 },
     // CELO-OLAS: reserve0=CELO, reserve1=OLAS. CELO/USD from Chainlink on Celo.
@@ -241,6 +255,7 @@ const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   // OLAS-USDC: reserve0=OLAS(18), reserve1=USDC(6)
   [BASE_POOL_OLAS_USDC]: {
     originChain: 'base',
+    dex: 'balancer',
     olasReserve: 'reserve0',
     paired: { reserve: 'reserve1', symbol: 'USDC', decimals: 6 },
     computeTvlUsd: (pool) => pairedFromReserve(pool.reserve1, 6) * 2,
@@ -253,6 +268,7 @@ const BASE_POOL_CONFIG: Record<string, PoolConfig> = {
   // WETH-OLAS: reserve0=WETH(18), reserve1=OLAS(18)
   [BASE_POOL_WETH_OLAS]: {
     originChain: 'base-weth',
+    dex: 'balancer',
     olasReserve: 'reserve1',
     paired: { reserve: 'reserve0', symbol: 'WETH', decimals: 18 },
     computeTvlUsd: (pool, prices) => {
@@ -556,9 +572,55 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
         if (config) poolsToProcess.push({ pool: pools[0], config });
       }
 
-      for (const { pool, config } of poolsToProcess) {
-        const poolId = pool.id.toLowerCase();
+      // Valuation uses live on-chain reserves, not the subgraph's (which miss
+      // Balancer vault swaps) — see docs/pol-live-reserves.md.
+      const poolsWithLiveReserves = await Promise.all(
+        poolsToProcess.map(async (entry) => ({
+          ...entry,
+          live:
+            entry.config.dex === 'uniswapV2'
+              ? await fetchUniswapV2PairReserves(chain, entry.pool.id)
+              : await fetchBalancerPoolReserves(chain, entry.pool.id),
+        }))
+      );
+
+      for (const { pool: subgraphPool, config, live } of poolsWithLiveReserves) {
+        const poolId = subgraphPool.id.toLowerCase();
         const poolSource = `${source}:${poolId}`;
+
+        // No live reserves (RPC down / unexpected response) → fail the chain
+        // so the merge holds its last-good value, same as a TVL failure.
+        if (live === null) {
+          fetchErrors.push(`${poolSource}:live-reserves`);
+          chainErrors[chain].fetchErrors.push(`${poolSource}:live-reserves`);
+          polChainFailed[chain] = true;
+          polPartial = true;
+          feesPartial = true;
+          continue;
+        }
+
+        // Guard a mis-ordered config: OLAS must sit at the configured reserve
+        // index (both readers report token addresses).
+        const olasAddress = OLAS_TOKEN_ADDRESS_BY_CHAIN[chain];
+        const olasIndex = config.olasReserve === 'reserve0' ? 0 : 1;
+        if (!olasAddress) {
+          console.warn(
+            `[protocol-metrics] ${poolSource} no OLAS address for '${chain}' in tokens.json — token order unverified`
+          );
+        }
+        if (olasAddress && live.tokens[olasIndex].toLowerCase() !== olasAddress.toLowerCase()) {
+          console.error(
+            `[protocol-metrics] ${poolSource} token order mismatch: expected OLAS (${olasAddress}) at ${config.olasReserve}, got ${live.tokens[olasIndex]}`
+          );
+          fetchErrors.push(`${poolSource}:token-order`);
+          chainErrors[chain].fetchErrors.push(`${poolSource}:token-order`);
+          polChainFailed[chain] = true;
+          polPartial = true;
+          feesPartial = true;
+          continue;
+        }
+
+        const pool: L2Pool = { ...subgraphPool, reserve0: live.reserve0, reserve1: live.reserve1 };
 
         if (bridgedBalances[config.originChain] === undefined) {
           console.warn(
