@@ -99,6 +99,10 @@ jobs:
       # untested changes to this logic.
       - name: Run metric-status unit tests
         run: yarn metric-status:test
+      # roi-math holds the published Predict ROI arithmetic; every rule it encodes
+      # shipped wrong at least once (docs/predict-roi-accounting.md, History).
+      - name: Run roi-math unit tests
+        run: yarn roi-math:test
 
   install-hooks:
     name: Install-hook diff

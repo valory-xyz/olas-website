@@ -59,6 +59,25 @@ export const windowedNetGainAndCosts = (totals: {
 export const senderLifetimeRequests = (sender: { totalLegacyRequests: string }): number =>
   Number(sender.totalLegacyRequests);
 
+// Booked mech fees below this share of settled costs mean QMR attribution is
+// broken. Healthy weeks run 200–600bps; the 2026-08 Polystrat incident ran
+// ~16bps (derivation: docs/predict-roi-accounting.md, Observability).
+export const MIN_MECH_FEE_BPS = 50n;
+
+/**
+ * True when booked mech fees are implausibly low relative to settled trading
+ * costs (both 1e18-scaled). A ratio, not a zero check — a broken QMR feed
+ * books a trickle, not a clean zero.
+ */
+export const isLowMechAttribution = (totals: {
+  mechRequests: number;
+  settledCosts: bigint;
+  mechFeeWei: bigint;
+}): boolean => {
+  const mechFees = BigInt(totals.mechRequests) * totals.mechFeeWei;
+  return totals.settledCosts > 0n && mechFees * 10000n < totals.settledCosts * MIN_MECH_FEE_BPS;
+};
+
 /**
  * Merges freshly fetched QMR additions into the existing open set (mutates
  * `existing`, returns it with the number of timestamps actually added). Pass

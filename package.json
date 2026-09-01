@@ -17,7 +17,8 @@
     "license-check:test": "node --test scripts/license-check.test.mjs",
     "verify-mech-analytics-parity": "node scripts/verify-mech-analytics-parity.mjs",
     "verify-mech-analytics-parity:test": "node --test scripts/verify-mech-analytics-parity.test.mjs",
-    "metric-status:test": "node --test common-util/graphql/metric-status.test.mjs"
+    "metric-status:test": "node --test common-util/graphql/metric-status.test.mjs",
+    "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "5.2.6",

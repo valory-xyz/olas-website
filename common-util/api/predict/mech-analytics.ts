@@ -118,10 +118,11 @@ export type AnalyticsQmrUpdate =
  * A run without a valid watermark (first flag-on run, or a forced
  * `?rebuildMech=1`) rebuilds from the full QMR window — pending and resolved
  * rows alike (docs/predict-roi-accounting.md).
- * Later runs fetch only rows scored after the watermark (`since_computed_at`)
- * and skip request ids we already have — the API sends a row again every
- * time its resolution updates, so ids are the only safe way to avoid
- * counting a row twice.
+ * Later runs fetch only rows scored after the watermark (`since_computed_at`).
+ * Both paths skip request ids we already have — the API sends a row again
+ * every time its resolution updates, and a forced rebuild's window overlaps
+ * rows that were already ingested (and possibly matched onto a settlement
+ * day), so ids are the only safe way to avoid counting a row twice.
  */
 export const fetchMechRequestsFromAnalytics = async (
   chain: MechAnalyticsChain,
@@ -143,9 +144,7 @@ export const fetchMechRequestsFromAnalytics = async (
   const runStart = new Date().toISOString();
 
   const additions: Record<string, Record<string, number[]>> = {};
-  const ingestedRequestIds: Record<string, number> = isRebuild
-    ? {}
-    : { ...(previousIngestedIds ?? {}) };
+  const ingestedRequestIds: Record<string, number> = { ...(previousIngestedIds ?? {}) };
   let lastTimestamp = previousLastTimestamp;
   // Updated row by row, before the skip checks below. This order is safe only
   // because `ingestedRequestIds` is always checked before a row is ingested —

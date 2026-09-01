@@ -73,11 +73,17 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   timestamp) — never wipe it. The dedupe is count-aware: each stored copy of a
   timestamp absorbs one incoming copy, so N same-second requests survive a
   rebuild as N, not 1.
+- A forced `?rebuildMech=1` drops only the `lastComputedAt` watermark;
+  `ingestedRequestIds` is kept, so rows already ingested (and possibly matched
+  onto a settlement day) are suppressed by id, not double-booked. Rows the old
+  `resolved=false` filter lost were never ingested, so they are not in the map
+  and get picked up.
 - Known rebuild caveats (why `rebuildMech=1` is a deliberate lever, not a
-  routine): requests whose settlement day was already processed can only be
-  TTL-flushed onto their request day, and if they were already matched back
-  then they count twice; until the flush they also inflate `openRequests`,
-  temporarily understating the Max-window mech count.
+  routine): rows ingested while `USE_MECH_ANALYTICS` was off carry no
+  analytics request ids, so an already-matched one from that era can be
+  re-ingested and later TTL-flushed onto its request day, counting twice;
+  a rebuild also refetches the full 14-day window in one run against the
+  function's 300s budget.
 
 ## Observability
 
@@ -87,8 +93,11 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   so the counters reconcile.
 - `windowed-roi.ts` raises `roi-distribution:<agent>:mech-attribution-low`
   when, over the last 7 full days, booked mech fees fall below
-  `MIN_MECH_FEE_BPS` (0.5%) of settled trading costs — the page's
-  `StaleIndicator` then flags the metric. A ratio, not a zero check: the
+  `MIN_MECH_FEE_BPS` (0.5%) of settled trading costs. The alarm rides the
+  `laggingSubgraphs` channel: the page's `StaleIndicator` flags the metric
+  while the fresh value still publishes — a `fetchError` would instead make
+  `mergeWithFallback` freeze ROI on the held-over pre-recovery value for the
+  whole recovery window. A ratio, not a zero check: the
   2026-08 failure booked a trickle (15 of ~580 weekly requests), never a clean
   zero. Threshold derivation (live data, 2026-08-31, week of 08-23..08-29):
   healthy Polystrat ≈ 630bps (580 req × 0.01 / 92.7 USDC settled), healthy

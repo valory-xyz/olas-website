@@ -5,6 +5,7 @@ import { getSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { emptyWindows, WindowedMetric, WindowKey } from './omenstrat-brier';
 import { fetchOlasPriceInUsd } from './olas-price';
+import { isLowMechAttribution } from './roi-math';
 import { AgentBlueprintRoiData, computeWindowedNetGainAndCosts } from './roi-distribution';
 import {
   fetchOmenstratStakingRewards,
@@ -28,16 +29,10 @@ const WINDOWS: { key: WindowKey; days: number | null }[] = [
   { key: 'max', days: null },
 ];
 
-// Booked mech fees below this share of settled costs mean QMR attribution is
-// broken. Healthy weeks run 200–600bps; the 2026-08 Polystrat incident ran
-// ~16bps (derivation: docs/predict-roi-accounting.md, Observability).
-const MIN_MECH_FEE_BPS = 50n;
-
 // True when the last 7 full days settled trading volume with implausibly low
-// booked mech cost. Predict agents always pay mech fees before betting, and a
-// broken QMR feed books a trickle, not a clean zero — so this is a ratio
-// check, not a zero check. `scale` lifts tradedSettled to 18 decimals
-// (polystrat entries are USDC 1e6).
+// booked mech cost (predict agents always pay mech fees before betting).
+// Ratio decision + threshold live in roi-math.ts. `scale` lifts tradedSettled
+// to 18 decimals (polystrat entries are USDC 1e6).
 const hasLowMechAttribution = (data: AgentBlueprintRoiData, scale: bigint): boolean => {
   const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
   const cutoffTs = yesterdayTs - 6 * DAY_SECONDS;
@@ -51,8 +46,7 @@ const hasLowMechAttribution = (data: AgentBlueprintRoiData, scale: bigint): bool
       settledCosts += BigInt(entry.tradedSettled ?? '0') * scale;
     }
   }
-  const mechFees = BigInt(mechRequests) * DEFAULT_MECH_FEE;
-  return settledCosts > 0n && mechFees * 10000n < settledCosts * MIN_MECH_FEE_BPS;
+  return isLowMechAttribution({ mechRequests, settledCosts, mechFeeWei: DEFAULT_MECH_FEE });
 };
 
 export type WindowedRoi = {
@@ -95,6 +89,7 @@ const computePlatformWindowedRoi = async (
   const roiSnapshotStale =
     roiSnapshotTs != null && Date.now() - roiSnapshotTs > ROI_SNAPSHOT_MAX_AGE_MS;
   const roiFetchErrors: string[] = [];
+  const roiLagging: string[] = [];
   if (!roiData) {
     roiFetchErrors.push(`roi-distribution:${source}`);
   } else {
@@ -110,9 +105,11 @@ const computePlatformWindowedRoi = async (
     if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
     }
-    // Missing mech cost overstates ROI — surface it as staleness.
+    // Missing mech cost overstates ROI — surface it on the lag channel (stale
+    // indicator, value still publishes). A fetchError would make mergeWithFallback
+    // freeze ROI on the held-over pre-recovery value for the whole recovery window.
     if (hasLowMechAttribution(roiData, isPolystrat ? 10n ** 12n : 1n)) {
-      roiFetchErrors.push(`roi-distribution:${source}:mech-attribution-low`);
+      roiLagging.push(`roi-distribution:${source}:mech-attribution-low`);
     }
   }
 
@@ -143,6 +140,7 @@ const computePlatformWindowedRoi = async (
   const partialStatus = createStaleStatus({
     indexingErrors: [],
     fetchErrors: roiFetchErrors,
+    laggingSubgraphs: roiLagging,
   });
 
   // finalRoi additionally depends on the rewards accumulator and the OLAS price.
@@ -153,7 +151,7 @@ const computePlatformWindowedRoi = async (
       ...(olasUsdPrice ? [] : ['balancer:olas-price']),
       ...(rewards.status?.fetchErrors ?? []),
     ],
-    laggingSubgraphs: rewards.status?.laggingSubgraphs ?? [],
+    laggingSubgraphs: [...roiLagging, ...(rewards.status?.laggingSubgraphs ?? [])],
   });
 
   return {
