@@ -1,5 +1,6 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { formatFullNumber } from 'components/ui/MetricContext';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { useWindowWidth } from 'hooks';
@@ -151,8 +152,21 @@ export const FeeMetrics = ({ metrics }) => {
     },
   };
 
+  // Claimed Payments and Realised Mech Earnings publish the same figure: the subgraph's
+  // `totalFeesOutUSD` sums `Withdraw` events, which are what mechs actually receive after
+  // the marketplace fee (the fee leaves separately via `Drained`). The Sankey keeps its
+  // branches balanced by deriving the realised width as claimed − fees, so the picture
+  // reads as two amounts where the data holds one. Stated here so the tiles are not summed.
+  const feeFlowSummary = [
+    `Total task payments ${formatFullNumber(formerData.total.value, { isMoney: true })} is the gross amount paid by requesting agents.`,
+    `Claimed payments and realised mech earnings both show ${formatFullNumber(formerData.claimed.value, { isMoney: true })}. These are one figure under two names — the total withdrawn by mechs, already net of the marketplace fee — not two separate amounts to be added together.`,
+    `Unclaimed payments ${formatFullNumber(formerData.unclaimed.value, { isMoney: true })} is the remainder still held by the balance trackers.`,
+    `Fees collected ${formatFullNumber(formerData.burned.value, { isMoney: true })} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on 15 June 2026.`,
+  ].join(' ');
+
   return (
     <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="fee-flow">
+      <p className="sr-only">{feeFlowSummary}</p>
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
           Mech Marketplace Fee Flow
