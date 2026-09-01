@@ -106,6 +106,7 @@ export const OlasIsBurnedArrow = ({
     <div className="mb-auto mt-[47px] w-[76px] font-semibold text-sm md:mt-[58px] text-black z-20 content-center flex flex-row gap-2">
       <p>ON</p>
       <Popover
+        omitSrText
         align="center"
         side="right"
         contentClassName="w-[382px] text-left font-normal translate-x-2"
@@ -297,7 +298,7 @@ export const DailyActiveAgentsCard = ({
       text: (
         <>
           Daily Active Agents{' '}
-          <Popover>
+          <Popover omitSrText>
             7-day average Daily Active Agents
             {dailyActiveAgentsStatus?.stale && (
               <div className="mt-4">
@@ -357,7 +358,7 @@ export const AgentToAgentCard = ({
         <>
           fees collected
           <StaleIndicator status={feesCollectedStatus} />
-          <Popover contentClassName="max-w-[400px] text-left font-normal">
+          <Popover omitSrText contentClassName="max-w-[400px] text-left font-normal">
             A 15% fee is taken on payments between AI agents on the Olas Marketplace.
             {MARKETPLACE_FEE_TOKENS.some(
               ({ symbol }) => feesCollectedByToken?.[symbol] != null

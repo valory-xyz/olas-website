@@ -105,6 +105,7 @@ export const PolMobileSection = ({ protocolMetrics }: PolMobileSectionProps) => 
         <div className="absolute left-[calc(50%+24px)] top-1/2 -translate-y-1/2 flex flex-row items-center gap-[2px] text-xs font-bold leading-5 text-black">
           <p>{FEE_SWITCHES.pol}</p>
           <Popover
+            omitSrText
             align="center"
             side="bottom"
             iconSize={16}

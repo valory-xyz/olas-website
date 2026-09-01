@@ -139,7 +139,7 @@ const DaaCard = ({
         <StaleIndicator status={status} />
       </div>
       <div className="flex self-center gap-2">
-        Daily Active Agents (DAAs) <Popover>{popoverText}</Popover>
+        Daily Active Agents (DAAs) <Popover omitSrText>{popoverText}</Popover>
       </div>
       {context && (
         <MetricContext

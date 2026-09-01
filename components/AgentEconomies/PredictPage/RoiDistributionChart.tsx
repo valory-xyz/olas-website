@@ -104,6 +104,8 @@ export const RoiDistributionChart = ({
   const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
   const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
+  const activeRangeLabel =
+    activeRange === 'max' ? 'over all time' : `over the last ${activeRange.replace('d', '')} days`;
   const bins = data?.bins?.[activeDataKey] ?? null;
 
   const isOmen = platform === 'omenstrat';
@@ -161,6 +163,28 @@ export const RoiDistributionChart = ({
           onChange={(key) => setActiveRange(key as TimeRange)}
         />
       </div>
+
+      {/* Screen-reader-only mirror. The chart is a <canvas>, so it holds no text at any
+          point, and both the range and the platform live in React state — nothing in the
+          served HTML says which distribution is on screen. A summary, not a transcription:
+          the bin labels and their shares are what a reader would quote. */}
+      {bins && bins.length > 0 && (
+        <section aria-label={`${datasetMeta.label} partial ROI distribution`} className="sr-only">
+          <table>
+            <caption>
+              {`Partial ROI distribution for ${datasetMeta.label} agents, ${activeRangeLabel}. Each row is the share of agents whose partial ROI fell in that range; shares are percentages of agents, not amounts.`}
+            </caption>
+            <tbody>
+              {bins.map((bin) => (
+                <tr key={bin.label}>
+                  <th scope="row">{`Partial ROI ${bin.label}`}</th>
+                  <td>{`${datasetMeta.pick(bin).toFixed(1)}% of ${datasetMeta.label} agents`}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       {/* Chart area */}
       {chartData ? (
