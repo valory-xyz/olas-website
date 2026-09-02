@@ -9,6 +9,8 @@ export const PowersAiAgentEconomies = ({
   protocolMetrics = null,
   snapshotTimestamp = null,
   protocolSnapshotTimestamp = null,
+  olasBurned = null,
+  economySnapshotTimestamp = null,
 }) => (
   // overflow-x-clip: the flywheel's fixed-width canvas overflows narrow
   // viewports before it scales down; `clip` (not `hidden`) contains it without
@@ -25,6 +27,8 @@ export const PowersAiAgentEconomies = ({
         protocolMetrics={protocolMetrics}
         snapshotTimestamp={snapshotTimestamp}
         protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
       />
       <TokenAddress />
     </SectionWrapper>
@@ -36,4 +40,6 @@ PowersAiAgentEconomies.propTypes = {
   protocolMetrics: PropTypes.shape({}),
   snapshotTimestamp: PropTypes.number,
   protocolSnapshotTimestamp: PropTypes.number,
+  olasBurned: PropTypes.shape({}),
+  economySnapshotTimestamp: PropTypes.number,
 };

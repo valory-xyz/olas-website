@@ -263,21 +263,24 @@ export const BASIUS_STAKING_CONTRACTS = [
 export const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';
 export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09-18
 /**
- * Chains the Mech Marketplace subgraphs cover, in the order `MARKETPLACE_GRAPH_CLIENTS`
- * declares them. Lives here rather than in `graphql/client.ts` so components can state
- * a metric's scope without pulling GraphQL clients into the browser bundle;
- * `client.ts` asserts the two stay in step.
+ * Chains the Mech Marketplace is deployed on, derived from the chain roster above by
+ * subtraction so there is one list to maintain rather than two that can drift.
+ *
+ * Excluded:
+ *   celo — marketplace subgraph exists but is commented out in `MARKETPLACE_GRAPH_CLIENTS`
+ *   mode — no marketplace subgraph
+ *
+ * Lives here rather than in `graphql/client.ts` so components can state a metric's scope
+ * without pulling GraphQL clients into the browser bundle; `client.ts` asserts the two
+ * stay in step.
  */
-export const MARKETPLACE_CHAIN_KEYS = [
-  'gnosis',
-  'base',
-  'polygon',
-  'optimism',
-  'ethereum',
-  'arbitrum',
-] as const;
+const MARKETPLACE_EXCLUDED_CHAINS = ['celo', 'mode'] as const;
 
-/** The same list as prose, for machine-readable metric context. */
+export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
+  (chain) =>
+    !MARKETPLACE_EXCLUDED_CHAINS.includes(chain as (typeof MARKETPLACE_EXCLUDED_CHAINS)[number])
+);
+
 export const MARKETPLACE_CHAIN_SCOPE = (() => {
   const names = MARKETPLACE_CHAIN_KEYS.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;

@@ -17,6 +17,8 @@ export default function Home({
   protocolMetrics,
   snapshotTimestamp,
   protocolSnapshotTimestamp,
+  olasBurned,
+  economySnapshotTimestamp,
 }) {
   const router = useRouter();
 
@@ -37,6 +39,8 @@ export default function Home({
         protocolMetrics={protocolMetrics}
         snapshotTimestamp={snapshotTimestamp}
         protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
       />
       <PropelledBy />
       <Media />
@@ -45,9 +49,12 @@ export default function Home({
 }
 
 export const getStaticProps = async () => {
-  const [metricsSnapshot, otherSnapshot] = await Promise.all([
+  const [metricsSnapshot, otherSnapshot, economySnapshot] = await Promise.all([
     getSnapshot({ category: 'main' }),
     getSnapshot({ category: 'other' }),
+    // Only for `olasBurned`, so the burned sentence follows the data rather than
+    // asserting a hardcoded zero.
+    getSnapshot({ category: 'agent-economies' }),
   ]);
 
   const metrics = metricsSnapshot?.data ?? null;
@@ -64,6 +71,8 @@ export const getStaticProps = async () => {
       snapshotTimestamp: metricsSnapshot?.timestamp ?? null,
       // PoL metrics come from the `other` snapshot, which refreshes on its own cadence.
       protocolSnapshotTimestamp: otherSnapshot?.timestamp ?? null,
+      olasBurned: (economySnapshot?.data as any)?.mechFees?.olasBurned ?? null,
+      economySnapshotTimestamp: economySnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

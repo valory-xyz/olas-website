@@ -38,6 +38,9 @@ type ActivityProps = {
   snapshotTimestamp?: number | null;
   /** As-of fallback for the protocol-owned-liquidity lines, from the `other` snapshot. */
   protocolSnapshotTimestamp?: number | null;
+  /** OLAS burned to date, from the `agent-economies` snapshot. */
+  olasBurned?: { value?: number | string; status?: MetricStatus };
+  economySnapshotTimestamp?: number | null;
 };
 
 export const Activity = ({
@@ -45,6 +48,8 @@ export const Activity = ({
   protocolMetrics = null,
   snapshotTimestamp = null,
   protocolSnapshotTimestamp = null,
+  olasBurned,
+  economySnapshotTimestamp = null,
 }: ActivityProps) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) {
@@ -93,6 +98,8 @@ export const Activity = ({
         protocolMetrics={protocolMetrics}
         snapshotTimestamp={snapshotTimestamp}
         protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
       />
       <div className="max-w-4xl mx-auto">
         <SectionHeading

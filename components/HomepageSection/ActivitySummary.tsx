@@ -26,6 +26,10 @@ type ActivitySummaryProps = {
    * cadence, so the two must not share a fallback.
    */
   protocolSnapshotTimestamp?: number | null;
+  /** OLAS burned to date, from the `agent-economies` snapshot's mech-fee slice. */
+  olasBurned?: Metric;
+  /** Timestamp of the `agent-economies` snapshot, which `olasBurned` comes from. */
+  economySnapshotTimestamp?: number | null;
 };
 
 /**
@@ -43,6 +47,8 @@ export const ActivitySummary = ({
   protocolMetrics,
   snapshotTimestamp = null,
   protocolSnapshotTimestamp = null,
+  olasBurned,
+  economySnapshotTimestamp = null,
 }: ActivitySummaryProps) => {
   if (!metrics && !protocolMetrics) return null;
 
@@ -53,7 +59,7 @@ export const ActivitySummary = ({
         buildMetricContext({
           value: metrics.transactions?.value,
           status: metrics.transactions?.status,
-          noun: 'total transactions executed by all Olas agents',
+          noun: 'total on-chain transactions executed by all Olas agents',
           scope: 'across all supported chains',
           window: 'all time',
           asOfFallback,
@@ -114,10 +120,20 @@ export const ActivitySummary = ({
           window: 'all time',
           asOfFallback,
         }),
-        // Hardcoded to zero in the UI and in `mech-fees.ts`: the fee trackers currently
-        // live (USDC, xDAI) are non-OLAS and route to the Olas Treasury, so nothing is
-        // burned from them yet. Stated explicitly so "0" is not read as a failure.
-        '0 OLAS has been burned to date. Marketplace fees collected in non-OLAS tokens route to the Olas Treasury rather than being burned; OLAS-denominated fees would be burned, but no OLAS fee trackers are live yet.',
+        // Read from the metric rather than asserted, so the sentence stays true once
+        // OLAS-denominated fee trackers go live and the figure stops being zero. The
+        // explanation of *why* it is zero is attached only while it is.
+        buildMetricContext({
+          value: olasBurned?.value ?? 0,
+          status: olasBurned?.status,
+          unit: 'OLAS',
+          noun:
+            Number(olasBurned?.value ?? 0) > 0
+              ? 'burned to date from OLAS-denominated Mech Marketplace fees'
+              : 'burned to date — marketplace fees collected in non-OLAS tokens route to the Olas Treasury rather than being burned, and no OLAS fee trackers are live yet',
+          window: 'all time',
+          asOfFallback: economySnapshotTimestamp,
+        }),
       ]
     : [];
 
