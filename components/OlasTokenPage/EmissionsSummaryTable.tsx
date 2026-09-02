@@ -1,5 +1,8 @@
 import { getCumulativeEmissions } from 'common-util/charts';
 import { formatWeiNumber } from 'common-util/numberFormatter';
+import { formatUtcAsOf } from 'common-util/time';
+import { isFrozen } from 'common-util/graphql/metric-utils';
+import type { MetricStatus } from 'common-util/graphql/types';
 
 // The emissions series is denominated in wei, as the charts' own axis ticks show by
 // running every value through `formatWeiNumber`. Convert here too, or the table would
@@ -21,7 +24,12 @@ type EmissionData = { counter?: number; [key: string]: unknown };
 const ROWS: Array<{ label: string; fields: string[] }> = [
   { label: 'Dev rewards claimed (builders)', fields: ['devIncentivesTotalTopUp'] },
   { label: 'Dev rewards available for claiming (builders)', fields: ['availableDevIncentives'] },
-  { label: 'Staking rewards claimed (operators)', fields: ['totalClaimedStakingRewards'] },
+  {
+    // The activity-requirement rule explains only this pair's gap, not the dev or bond ones.
+    label:
+      'Staking rewards claimed (operators) — these sit in staking contracts until operators hit the respective activity requirements with their staked agents',
+    fields: ['totalClaimedStakingRewards'],
+  },
   { label: 'Staking rewards claimable (operators)', fields: ['totalClaimableStakingRewards'] },
   { label: 'Bond rewards claimed (bonders)', fields: ['totalBondsClaimed'] },
   { label: 'Bond rewards claimable (bonders)', fields: ['totalBondsClaimable'] },
@@ -47,12 +55,28 @@ const ROWS: Array<{ label: string; fields: string[] }> = [
  *
  * Same pattern as `TokenomicsSummaryTable`.
  */
-export const EmissionsSummaryTable = ({ emissions }: { emissions?: EmissionData[] }) => {
+export const EmissionsSummaryTable = ({
+  emissions,
+  status,
+  snapshotTimestamp = null,
+}: {
+  emissions?: EmissionData[];
+  status?: MetricStatus;
+  snapshotTimestamp?: number | null;
+}) => {
   if (!emissions?.length) return null;
 
-  const epochs = emissions.map((e) => Number(e.counter ?? 0)).filter((n) => Number.isFinite(n));
-  const firstEpoch = epochs.length ? Math.min(...epochs) : null;
-  const lastEpoch = epochs.length ? Math.max(...epochs) : null;
+  // `?? 0` would turn a missing counter into a finite 0 and yield "epochs 0 to 0",
+  // so parse first and drop what doesn't resolve.
+  const epochs = emissions
+    .map((e) => Number(e.counter))
+    .filter((n) => Number.isFinite(n))
+    .sort((a, b) => a - b);
+  const firstEpoch = epochs.length ? epochs[0] : null;
+  const lastEpoch = epochs.length ? epochs[epochs.length - 1] : null;
+  // min/max alone don't prove the range is unbroken, and "covering" claims it is.
+  const isContiguous =
+    firstEpoch !== null && lastEpoch !== null && epochs.length === lastEpoch - firstEpoch + 1;
 
   const rows = ROWS.map(({ label, fields }) => {
     const series = getCumulativeEmissions(emissions, fields);
@@ -60,18 +84,28 @@ export const EmissionsSummaryTable = ({ emissions }: { emissions?: EmissionData[
     return { label, total };
   }).filter((row) => typeof row.total === 'number' && Number.isFinite(row.total));
 
+  const asOf = formatUtcAsOf(status?.lastValidAt ?? snapshotTimestamp);
+  const caveat = isFrozen(status)
+    ? ' This is the last confirmed data; the live source is currently unavailable.'
+    : status?.laggingSubgraphs?.length
+      ? ' A source is behind the chain, so the latest epochs may be missing.'
+      : '';
+
   if (!rows.length) return null;
 
   return (
     <section aria-label="OLAS emissions summary" className="sr-only">
       <table>
         <caption>
-          {firstEpoch !== null && lastEpoch !== null
-            ? `Cumulative OLAS emissions to date, covering epochs ${firstEpoch} to ${lastEpoch}. Each figure is a running total across all epochs, not a per-epoch amount.`
-            : 'Cumulative OLAS emissions to date. Each figure is a running total across all epochs, not a per-epoch amount.'}
-          {
-            ' Claimed staking rewards sit in staking contracts until operators hit the respective activity requirements with their staked agents, which is why the claimed and claimable figures differ.'
-          }
+          {`Cumulative OLAS emissions${
+            firstEpoch !== null && lastEpoch !== null
+              ? isContiguous
+                ? `, epochs ${firstEpoch} to ${lastEpoch}`
+                : `, spanning epochs ${firstEpoch} to ${lastEpoch} with gaps`
+              : ''
+          }. Each figure is a running total, not a per-epoch amount. The latest epoch is still open, so rows fed by different fields may end on different epochs.${
+            asOf ? ` As of ${asOf}.` : ''
+          }${caveat}`}
         </caption>
         <tbody>
           {rows.map(({ label, total }) => (

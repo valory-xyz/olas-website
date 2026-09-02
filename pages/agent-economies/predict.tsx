@@ -12,13 +12,7 @@ import { WhatIsOlasPredict } from 'components/AgentEconomies/PredictPage/WhatIsO
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const Predict = ({
-  metrics,
-  roiDistribution,
-  toolAccuracy,
-  snapshotTimestamp,
-  polystratRoiTimestamp,
-}) => (
+const Predict = ({ metrics, roiDistribution, toolAccuracy, snapshotTimestamp, roiSnapshots }) => (
   <PageWrapper>
     <Meta
       pageTitle="Predict"
@@ -30,9 +24,9 @@ const Predict = ({
     <Activity
       metrics={metrics}
       roiDistribution={roiDistribution}
+      roiSnapshots={roiSnapshots}
       toolAccuracy={toolAccuracy}
       snapshotTimestamp={snapshotTimestamp}
-      polystratRoiTimestamp={polystratRoiTimestamp}
     />
     <WhatIsOlasPredict />
     <GetInvolved />
@@ -67,8 +61,19 @@ export const getStaticProps = async () => {
       metrics,
       roiDistribution,
       toolAccuracy,
+      // Per-platform snapshot freshness: the two ROI accumulators run as separate daily
+      // jobs, so one can be stale or backfilling while the other is current.
+      roiSnapshots: {
+        omenstrat: {
+          timestamp: omenRoiSnapshot?.timestamp ?? null,
+          isIncomplete: !omenRoiSnapshot?.data,
+        },
+        polystrat: {
+          timestamp: polyRoiSnapshot?.timestamp ?? null,
+          isIncomplete: !polyRoiSnapshot?.data,
+        },
+      },
       snapshotTimestamp: snapshot?.timestamp ?? null,
-      polystratRoiTimestamp: polyRoiSnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

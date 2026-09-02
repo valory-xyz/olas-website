@@ -3,12 +3,14 @@
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
 import { BinData, RangeKey, RoiDistribution } from 'common-util/api/predict/roi-distribution';
 import { Tabs } from 'components/ui/tabs';
+import { formatUtcAsOf } from 'common-util/time';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
 type TimeRange = '7d' | '30d' | '90d' | 'max';
+
 
 type DataPoint = {
   x: number;
@@ -87,6 +89,10 @@ type RoiDistributionChartProps = {
   platform: 'polystrat' | 'omenstrat';
   className?: string;
   id?: string;
+  /** As-of for the daily ROI snapshot behind this platform's histogram. */
+  snapshotTimestamp?: number | null;
+  /** True when that snapshot is stale or still backfilling. */
+  isIncomplete?: boolean;
 };
 
 const safeMidpoint = (min: number, max: number) => {
@@ -100,6 +106,8 @@ export const RoiDistributionChart = ({
   platform,
   className,
   id,
+  snapshotTimestamp = null,
+  isIncomplete = false,
 }: RoiDistributionChartProps) => {
   const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
@@ -107,6 +115,11 @@ export const RoiDistributionChart = ({
   const activeRangeLabel =
     activeRange === 'max' ? 'over all time' : `over the last ${activeRange.replace('d', '')} days`;
   const bins = data?.bins?.[activeDataKey] ?? null;
+
+  // An all-zero histogram is also what a missing blob produces, so the count decides
+  // whether there is a distribution to describe at all.
+  const agentCount = data?.netPositive?.[activeDataKey]?.[platform]?.agents ?? 0;
+  const asOf = formatUtcAsOf(snapshotTimestamp);
 
   const isOmen = platform === 'omenstrat';
   const datasetMeta = isOmen
@@ -158,6 +171,7 @@ export const RoiDistributionChart = ({
         </div>
 
         <Tabs
+          ariaLabel="ROI distribution time range"
           items={TIME_RANGES.map(({ key, label }) => ({ key, label }))}
           activeKey={activeRange}
           onChange={(key) => setActiveRange(key as TimeRange)}
@@ -168,17 +182,23 @@ export const RoiDistributionChart = ({
           point, and both the range and the platform live in React state — nothing in the
           served HTML says which distribution is on screen. A summary, not a transcription:
           the bin labels and their shares are what a reader would quote. */}
-      {bins && bins.length > 0 && (
+      {bins && bins.length > 0 && agentCount > 0 && (
         <section aria-label={`${datasetMeta.label} trading ROI distribution`} className="sr-only">
           <table>
             <caption>
-              {`Trading ROI distribution for ${datasetMeta.label} agents, ${activeRangeLabel}. Trading ROI reflects prediction performance only, excluding staking rewards. Each row is the share of agents whose trading ROI fell in that range; shares are percentages of agents, not amounts.`}
+              {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${activeRangeLabel}. ` +
+                `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
+                `Qualifying agents are those with positive trading costs${activeRange === 'max' ? ' and at least 10 lifetime bets' : ''}; percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
+                (asOf ? ` As of ${asOf}.` : '') +
+                (isIncomplete
+                  ? ' The underlying daily snapshot is stale or still backfilling, so this distribution may be incomplete.'
+                  : '')}
             </caption>
             <tbody>
               {bins.map((bin) => (
                 <tr key={bin.label}>
                   <th scope="row">{`Trading ROI ${bin.label}`}</th>
-                  <td>{`${datasetMeta.pick(bin).toFixed(1)}% of ${datasetMeta.label} agents`}</td>
+                  <td>{`${datasetMeta.pick(bin).toFixed(1)}% of qualifying ${datasetMeta.label} agents`}</td>
                 </tr>
               ))}
             </tbody>

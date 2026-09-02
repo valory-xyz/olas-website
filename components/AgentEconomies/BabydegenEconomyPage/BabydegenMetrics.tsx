@@ -185,8 +185,7 @@ export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
             <span className="text-purple-600 text-6xl">--</span>
           )}
           <div className="flex gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover omitSrText>7-day average Daily Active Agents</Popover>
+            Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
           <MetricContext
             value={
@@ -199,7 +198,13 @@ export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
           />
         </Card>
 
-        <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} fullWidth />
+        <Tabs
+          ariaLabel="BabyDegen agent economy"
+          items={TAB_ITEMS}
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          fullWidth
+        />
 
         {activeTab === 'basius' && (
           <BabydegenEconomyCard
