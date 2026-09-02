@@ -153,7 +153,7 @@ export const RoiDistributionChart = ({
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-gray-900">
-            {datasetMeta.label} Partial ROI Distribution
+            {datasetMeta.label} Trading ROI Distribution
           </h3>
         </div>
 
@@ -169,15 +169,15 @@ export const RoiDistributionChart = ({
           served HTML says which distribution is on screen. A summary, not a transcription:
           the bin labels and their shares are what a reader would quote. */}
       {bins && bins.length > 0 && (
-        <section aria-label={`${datasetMeta.label} partial ROI distribution`} className="sr-only">
+        <section aria-label={`${datasetMeta.label} trading ROI distribution`} className="sr-only">
           <table>
             <caption>
-              {`Partial ROI distribution for ${datasetMeta.label} agents, ${activeRangeLabel}. Each row is the share of agents whose partial ROI fell in that range; shares are percentages of agents, not amounts.`}
+              {`Trading ROI distribution for ${datasetMeta.label} agents, ${activeRangeLabel}. Trading ROI reflects prediction performance only, excluding staking rewards. Each row is the share of agents whose trading ROI fell in that range; shares are percentages of agents, not amounts.`}
             </caption>
             <tbody>
               {bins.map((bin) => (
                 <tr key={bin.label}>
-                  <th scope="row">{`Partial ROI ${bin.label}`}</th>
+                  <th scope="row">{`Trading ROI ${bin.label}`}</th>
                   <td>{`${datasetMeta.pick(bin).toFixed(1)}% of ${datasetMeta.label} agents`}</td>
                 </tr>
               ))}
