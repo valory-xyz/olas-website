@@ -16,6 +16,7 @@ import {
 import { FlywheelDesktop } from './Flywheel/FlywheelDesktop';
 import { PolMobileSection } from './Flywheel/PolMobileSection';
 import type { ProtocolActivityMetrics } from './Flywheel/constants';
+import { ActivitySummary } from './ActivitySummary';
 
 const imgPath = '/images/homepage/activity/';
 
@@ -33,9 +34,23 @@ type ActivityMetrics = {
 type ActivityProps = {
   metrics?: ActivityMetrics | null;
   protocolMetrics?: ProtocolActivityMetrics;
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
+  /** As-of fallback for the protocol-owned-liquidity lines, from the `other` snapshot. */
+  protocolSnapshotTimestamp?: number | null;
+  /** OLAS burned to date, from the `agent-economies` snapshot. */
+  olasBurned?: { value?: number | string; status?: MetricStatus };
+  economySnapshotTimestamp?: number | null;
 };
 
-export const Activity = ({ metrics = null, protocolMetrics = null }: ActivityProps) => {
+export const Activity = ({
+  metrics = null,
+  protocolMetrics = null,
+  snapshotTimestamp = null,
+  protocolSnapshotTimestamp = null,
+  olasBurned,
+  economySnapshotTimestamp = null,
+}: ActivityProps) => {
   const processedMetrics = useMemo(() => {
     if (!metrics) {
       return {
@@ -78,6 +93,14 @@ export const Activity = ({ metrics = null, protocolMetrics = null }: ActivityPro
 
   return (
     <div>
+      <ActivitySummary
+        metrics={metrics}
+        protocolMetrics={protocolMetrics}
+        snapshotTimestamp={snapshotTimestamp}
+        protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
+      />
       <div className="max-w-4xl mx-auto">
         <SectionHeading
           color="text-gray-900"
@@ -135,8 +158,11 @@ export const Activity = ({ metrics = null, protocolMetrics = null }: ActivityPro
         <AgentToAgentCard
           ataTransactions={processedMetrics.ataTransactions}
           mechFees={processedMetrics.mechFees}
+          feesCollected={processedMetrics.feesCollected}
+          feesCollectedByToken={processedMetrics.feesCollectedByToken}
           ataTransactionsStatus={processedMetrics.ataTransactionsStatus}
           mechFeesStatus={processedMetrics.mechFeesStatus}
+          feesCollectedStatus={processedMetrics.feesCollectedStatus}
         />
         <OlasIsBurnedArrow pointsDown className="mx-auto mb-2" />
         <OlasBurnedCard />

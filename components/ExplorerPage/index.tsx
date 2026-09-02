@@ -18,6 +18,7 @@ import { EconomySelector } from 'components/ExplorerPage/EconomySelector';
 import { MetricSelector, type ExplorerMetric } from 'components/ExplorerPage/MetricSelector';
 import { YearFilter } from 'components/ExplorerPage/YearFilter';
 import { cn } from 'lib/utils';
+import { buildMetricContext } from 'components/ui/MetricContext';
 
 /** One agent's heatmap data: metric-key → daily series, plus its staleness status. */
 type AgentData = {
@@ -35,6 +36,8 @@ export type ExplorerEconomies = Record<string, Record<string, AgentData>>;
 
 type ExplorerProps = {
   economies: ExplorerEconomies;
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
 };
 
 type MetricKind = 'count' | 'percent' | 'usd';
@@ -59,6 +62,8 @@ type MetricDef = {
   scale: ColorScale;
   /** Headline tile value derived from the metric's series. */
   headline: (series: DaaSeriesPoint[]) => string;
+  /** How `headline` reduces the series — drives the window phrase in the text summary. */
+  headlineKind: 'latest' | 'sum' | 'mean';
   /** Whether the tile is selectable — false dims it + shows "coming soon". */
   selectable: (series: DaaSeriesPoint[]) => boolean;
   /** Tile label override (defaults to `label`); lets the tile read differently from the heatmap header. */
@@ -73,6 +78,7 @@ type MetricDef = {
 // pre-first-cron state, or a failed fetch with nothing to fall back on).
 const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum', MetricDef> = {
   daa: {
+    headlineKind: 'latest',
     label: 'Daily Active Agents',
     // Tile shows the latest day's value, so label it "Latest DAAs"; the heatmap header
     // keeps the descriptive "Daily Active Agents" (it plots the full daily history).
@@ -90,6 +96,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   transactions: {
+    headlineKind: 'sum',
     label: 'Total Transactions',
     unit: 'transactions',
     kind: 'count',
@@ -98,6 +105,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   ata: {
+    headlineKind: 'sum',
     label: 'Agent-to-Agent Transactions',
     unit: 'A2A txns',
     kind: 'count',
@@ -107,6 +115,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   accuracy: {
+    headlineKind: 'mean',
     label: 'Avg Prediction Accuracy',
     unit: 'accuracy',
     kind: 'percent',
@@ -119,6 +128,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     selectable: (s) => s.length > 0,
   },
   aum: {
+    headlineKind: 'latest',
     label: 'Assets Under Management',
     unit: '',
     kind: 'usd',
@@ -259,7 +269,7 @@ const FilterIcon = () => (
   </svg>
 );
 
-const Explorer = ({ economies }: ExplorerProps) => {
+const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
   const [activeEconomy, setActiveEconomy] = useState('predict');
   const [activeAgent, setActiveAgent] = useState('omenstrat');
   const [activeMetric, setActiveMetric] = useState('daa');
@@ -313,6 +323,44 @@ const Explorer = ({ economies }: ExplorerProps) => {
       tooltip: config.tooltip?.(metricSeries),
     };
   });
+
+  // Date span actually plotted, which is the real window behind every tile value.
+  const plottedRange = useMemo(() => {
+    if (!activeSeries.length) return null;
+    return {
+      from: dayjs(activeSeries[0].date).format('D MMMM YYYY'),
+      to: dayjs(activeSeries[activeSeries.length - 1].date).format('D MMMM YYYY'),
+    };
+  }, [activeSeries]);
+
+  const metricSummaryLines = useMemo(
+    () =>
+      economyMeta.metrics
+        .map((key) => {
+          const config = METRIC_CONFIG[key];
+          const metricSeries = series[key] ?? [];
+          if (!metricSeries.length) return null;
+          // The window has to match how the headline was reduced: a latest-day value
+          // is not "covering" a range, and the accuracy figure is a mean, not a total.
+          const first = dayjs(metricSeries[0].date).format('D MMMM YYYY');
+          const last = dayjs(metricSeries[metricSeries.length - 1].date).format('D MMMM YYYY');
+          const WINDOW_BY_KIND: Record<typeof config.headlineKind, string | undefined> = {
+            latest: `on ${last}, the most recent day with data`,
+            mean: metricSeries.length > 1 ? `a daily average over ${first} to ${last}` : undefined,
+            sum: metricSeries.length > 1 ? `summed over ${first} to ${last}` : undefined,
+          };
+          const range = WINDOW_BY_KIND[config.headlineKind];
+          return buildMetricContext({
+            value: config.headline(metricSeries),
+            status,
+            noun: `${config.label.toLowerCase()} for ${agentMeta.label} in the ${economyMeta.name} agent economy`,
+            window: range,
+            asOfFallback: snapshotTimestamp,
+          });
+        })
+        .filter(Boolean),
+    [economyMeta, series, agentMeta.label, status, snapshotTimestamp]
+  );
 
   const handleEconomy = (key: string) => {
     if (!Object.hasOwn(ECONOMY_META, key)) return;
@@ -392,6 +440,22 @@ const Explorer = ({ economies }: ExplorerProps) => {
       )}
 
       {/* Metric tiles — full-width band with centered 872 rails; active drives the heatmap */}
+      <section aria-label="Explorer metrics summary" className="sr-only">
+        <p>
+          {`Showing the ${economyMeta.name} agent economy${
+            economyMeta.agents.length > 1 ? `, agent ${agentMeta.label}` : ''
+          }${
+            plottedRange
+              ? `, plotting daily data from ${plottedRange.from} to ${plottedRange.to}`
+              : ''
+          }.`}
+        </p>
+        <ul>
+          {metricSummaryLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </section>
       <MetricSelector metrics={metrics} activeKey={activeMetric} onChange={handleMetric} />
 
       {/* Series header + filter pill — centered 872 column (Figma 20754:3512).

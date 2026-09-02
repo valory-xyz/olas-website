@@ -1,10 +1,11 @@
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export const MarketplaceMetrics = ({ metrics }) => {
+export const MarketplaceMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const { mechFees, ataTransactions } = metrics ?? {};
 
   const marketplaceData = useMemo(() => {
@@ -22,6 +23,12 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isExternal: false,
             imageSrc: 'money-bag.png',
             imageWidth: 24,
+            context: {
+              // One canonical name, with the aliases named so the four labels
+              // across the site resolve to a single metric rather than four.
+              noun: 'in Olas marketplace turnover — total fees collected from the Mech Marketplace, including the legacy mech contracts. It is the same metric the Mech economy page publishes as "Total Task Payments" — the two are one figure and differ only by snapshot refresh timing',
+              window: 'all time',
+            },
           },
           {
             key: 'ataTransactions',
@@ -33,6 +40,11 @@ export const MarketplaceMetrics = ({ metrics }) => {
             isExternal: false,
             imageSrc: 'agent-to-agent.png',
             imageWidth: 80,
+            context: {
+              noun: 'agent-to-agent transactions — a subset of total Olas agent transactions, not the same figure',
+              scope: `across ${MARKETPLACE_CHAIN_SCOPE}`,
+              window: 'all time',
+            },
           },
         ],
       },
@@ -42,7 +54,7 @@ export const MarketplaceMetrics = ({ metrics }) => {
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
       {marketplaceData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
+        <MetricsCard key={index} metrics={data} snapshotTimestamp={snapshotTimestamp} />
       ))}
       <div className="mt-8 text-center">
         <Link

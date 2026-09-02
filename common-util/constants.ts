@@ -262,3 +262,36 @@ export const BASIUS_STAKING_CONTRACTS = [
 // Hardcoded values for Modius, suggested by Babydegen team
 export const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';
 export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09-18
+/**
+ * Chains the Mech Marketplace is deployed on, derived from the chain roster above by
+ * subtraction so there is one list to maintain rather than two that can drift.
+ *
+ * Excluded:
+ *   celo — marketplace subgraph exists but is commented out in `MARKETPLACE_GRAPH_CLIENTS`
+ *   mode — no marketplace subgraph
+ *
+ * Lives here rather than in `graphql/client.ts` so components can state a metric's scope
+ * without pulling GraphQL clients into the browser bundle; `client.ts` asserts the two
+ * stay in step.
+ */
+const MARKETPLACE_EXCLUDED_CHAINS = ['celo', 'mode'] as const;
+
+/**
+ * When the Mech Marketplace 15% fee was switched on (2026-06-15 ~06:30 UTC; proposal
+ * executed on Ethereum, bridged to the L2s minutes later). Lives here so components can
+ * state it without importing the RPC-scanning fee module and its viem client.
+ */
+export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
+
+export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
+  (chain) =>
+    !MARKETPLACE_EXCLUDED_CHAINS.includes(chain as (typeof MARKETPLACE_EXCLUDED_CHAINS)[number])
+);
+
+export const MARKETPLACE_CHAIN_SCOPE = (() => {
+  const names = MARKETPLACE_CHAIN_KEYS.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
+  const list = `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+  // Count first so it reads as a complete set, then the names so a reader can verify it.
+  // Both derived, so neither can drift from the aggregation being described.
+  return `all ${names.length} chains the Mech Marketplace is deployed on (${list})`;
+})();

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { StaleIndicator } from './ui/StaleIndicator';
 import { Card } from './ui/card';
 import { ExternalLink, Link } from './ui/typography';
+import { MetricContext } from './ui/MetricContext';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import { MetricStatus } from 'common-util/graphql/types';
 
@@ -15,24 +16,35 @@ export const fetchMetrics = async (fetchFunctions) => {
   }
 };
 
+type DisplayMetric = {
+  key: string;
+  imageSrc: string;
+  labelText: string;
+  source?: string;
+  metric?: string | number;
+  /** Used by `renderMetricValue` for the stale indicator and the grey-out. */
+  status?: MetricStatus;
+  isMoney?: boolean;
+  isExternal?: boolean;
+  subText?: string;
+  imageWidth?: number;
+  /**
+   * Machine-readable context for the number: what it counts, over what scope and
+   * window. Rendered screen-reader-only, so the visible card is unchanged.
+   */
+  context?: { noun: string; scope?: string; window?: string; unit?: string };
+};
+
 type MetricsCardProps = {
   metrics: {
     role: string;
-    displayMetrics: {
-      key: string;
-      imageSrc: string;
-      labelText: string;
-      source?: string;
-      metric?: string | number;
-      isMoney?: boolean;
-      isExternal?: boolean;
-      subText?: string;
-      imageWidth?: number;
-    }[];
+    displayMetrics: DisplayMetric[];
   };
+  /** Fallback as-of timestamp for metrics whose source is lagging. */
+  snapshotTimestamp?: number | null;
 };
 
-export const MetricsCard = ({ metrics }: MetricsCardProps) => {
+export const MetricsCard = ({ metrics, snapshotTimestamp }: MetricsCardProps) => {
   return (
     <Card className="lg:flex lg:flex-row grid grid-cols-1 mx-auto border border-purple-200 rounded-full text-xl rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center w-fit md:min-w-[440px]">
       {metrics.displayMetrics.map((metric, index) => {
@@ -59,6 +71,15 @@ export const MetricsCard = ({ metrics }: MetricsCardProps) => {
               {metric.labelText}
             </div>
             {renderMetricValue(metric)}
+            {metric.context && (
+              <MetricContext
+                value={metric.metric}
+                isMoney={metric.isMoney}
+                status={metric.status}
+                asOfFallback={snapshotTimestamp}
+                {...metric.context}
+              />
+            )}
             {metric.subText && <div className="flex gap-2">{metric.subText}</div>}
           </div>
         );

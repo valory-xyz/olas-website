@@ -4,10 +4,10 @@ import { Hero } from './Hero';
 import { WaysToGrow } from './WaysToGrow';
 import { WhatBuildersAreSaying } from './WhatBuildersAreSaying';
 
-const Build = ({ metrics }) => (
+const Build = ({ metrics, snapshotTimestamp }) => (
   <>
     <Hero />
-    <BuildMetrics metrics={metrics} />
+    <BuildMetrics metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
     <WaysToGrow />
     <WhatBuildersAreSaying />
     {/* <ReadyToBuild /> */}

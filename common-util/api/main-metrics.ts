@@ -402,19 +402,32 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [gnosisFeeResult, baseFeeResult, legacyFeeResult, gnosisBlockResult, baseBlockResult] =
-      await Promise.allSettled([
-        MECH_FEES_GRAPH_CLIENTS.gnosis.request(newMechFeesQuery),
-        MECH_FEES_GRAPH_CLIENTS.base.request(newMechFeesQuery),
-        legacyMechFeesGraphClient.request(legacyMechFeesQuery),
-        getChainBlockNumber('gnosis'),
-        getChainBlockNumber('base'),
-      ]);
+    // Every marketplace chain, matching agent-economies/mech-fees.ts. This used to query
+    // gnosis + base only, so the homepage turnover and the mech page's Total Task Payments
+    // were different aggregations that happened to agree while the other chains held no
+    // fees — see PR #569 review.
+    const chainKeys = Object.keys(MECH_FEES_GRAPH_CLIENTS) as Array<
+      keyof typeof MECH_FEES_GRAPH_CLIENTS
+    >;
 
-    const gnosisBlock =
-      gnosisBlockResult.status === 'fulfilled' ? (gnosisBlockResult.value as number | null) : null;
-    const baseBlock =
-      baseBlockResult.status === 'fulfilled' ? (baseBlockResult.value as number | null) : null;
+    const settled = await Promise.allSettled([
+      ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesQuery)),
+      legacyMechFeesGraphClient.request(legacyMechFeesQuery),
+      ...chainKeys.map((chain) => getChainBlockNumber(chain)),
+    ]);
+
+    const feeResults = settled.slice(0, chainKeys.length);
+    const legacyFeeResult = settled[chainKeys.length];
+    const blockResults = settled.slice(chainKeys.length + 1);
+
+    const blockByChain = Object.fromEntries(
+      chainKeys.map((chain, i) => [
+        chain,
+        blockResults[i]?.status === 'fulfilled'
+          ? ((blockResults[i] as PromiseFulfilledResult<number | null>).value ?? null)
+          : null,
+      ])
+    ) as Record<string, number | null>;
 
     let totalFees = 0;
 
@@ -451,7 +464,10 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
             fetchErrors
           )
         : readGlobalField(
-            (data as MechFeesResult).global,
+            // As in the ata/staked loops above and agent-economies/mech-fees.ts: the
+            // query succeeded, so a null Global just means no paid mech activity on this
+            // chain yet. Without the default it reads as a hard error and freezes turnover.
+            (data as MechFeesResult).global ?? { totalFeesInUSD: '0' },
             'totalFeesInUSD',
             `mechFees:${source}`,
             fetchErrors
@@ -464,20 +480,18 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
       totalFees += isLegacy ? Number(formatUnits(BigInt(raw), 18)) : Number(raw);
     };
 
-    processResult(
-      gnosisFeeResult as unknown as PromiseSettledResult<MechFeesResult>,
-      'gnosis',
-      gnosisBlock
-    );
-    processResult(
-      baseFeeResult as unknown as PromiseSettledResult<MechFeesResult>,
-      'base',
-      baseBlock
-    );
+    chainKeys.forEach((chain, i) => {
+      processResult(
+        feeResults[i] as unknown as PromiseSettledResult<MechFeesResult>,
+        chain,
+        blockByChain[chain]
+      );
+    });
+    // Legacy is Gnosis-only, so it is lag-checked against the Gnosis head.
     processResult(
       legacyFeeResult as unknown as PromiseSettledResult<LegacyMechFeesResult>,
       'legacy',
-      gnosisBlock
+      blockByChain.gnosis ?? null
     );
 
     return {

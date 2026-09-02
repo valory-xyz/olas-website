@@ -2,7 +2,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { useMemo } from 'react';
 
-export const GovernMetrics = ({ metrics }) => {
+export const GovernMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const governMetrics = metrics?.govern;
 
   const governData = useMemo(() => {
@@ -19,6 +19,11 @@ export const GovernMetrics = ({ metrics }) => {
           metric: Math.round(governMetrics.lockedOlas?.value),
           status: governMetrics.lockedOlas?.status,
           isExternal: false,
+          context: {
+            noun: 'currently locked as veOLAS for governance',
+            unit: 'OLAS',
+            window: 'current total, not cumulative',
+          },
         },
         {
           key: 'veOlasHolders',
@@ -28,6 +33,10 @@ export const GovernMetrics = ({ metrics }) => {
           metric: governMetrics.activeHolders?.value,
           status: governMetrics.activeHolders?.status,
           isExternal: false,
+          context: {
+            noun: 'addresses currently holding veOLAS',
+            window: 'current total, not cumulative',
+          },
         },
       ],
     };
@@ -39,7 +48,7 @@ export const GovernMetrics = ({ metrics }) => {
 
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
-      <MetricsCard metrics={governData} />
+      <MetricsCard metrics={governData} snapshotTimestamp={snapshotTimestamp} />
     </SectionWrapper>
   );
 };

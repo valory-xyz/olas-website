@@ -3,7 +3,7 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { useMemo } from 'react';
 
-export const ContributeMetrics = ({ metrics }) => {
+export const ContributeMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const contributeMetrics = metrics?.contribute;
 
   const contributeData = useMemo(() => {
@@ -20,6 +20,10 @@ export const ContributeMetrics = ({ metrics }) => {
             source: CONTRIBUTE_URL,
             metric: contributeMetrics.totalOlasContributors?.value,
             status: contributeMetrics.totalOlasContributors?.status,
+            context: {
+              noun: 'Contribute leaderboard participants with a linked wallet and non-zero points, which is narrower than everyone registered in the app',
+              window: 'all time',
+            },
           },
           {
             key: 'DailyContribute',
@@ -30,6 +34,10 @@ export const ContributeMetrics = ({ metrics }) => {
             metric: contributeMetrics.dailyActiveContributors?.value,
             status: contributeMetrics.dailyActiveContributors?.status,
             isExternal: false,
+            context: {
+              noun: 'daily active Contribute agents, measured as unique multisigs active each day',
+              window: '7-day average',
+            },
           },
         ],
       },
@@ -41,7 +49,7 @@ export const ContributeMetrics = ({ metrics }) => {
   return (
     <SectionWrapper customClasses="pt-16 pb-8">
       {contributeData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
+        <MetricsCard key={index} metrics={data} snapshotTimestamp={snapshotTimestamp} />
       ))}
     </SectionWrapper>
   );

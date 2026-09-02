@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 const roundOrNull = (v: number | null | undefined): number | null =>
   v == null ? null : Math.round(v);
 
-export const BondMetrics = ({ metrics }) => {
+export const BondMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const protocolMetrics = metrics?.protocol;
 
   const bondData = useMemo(() => {
@@ -26,6 +26,11 @@ export const BondMetrics = ({ metrics }) => {
             metric: roundOrNull(protocolMetrics.totalProtocolOwnedLiquidity?.value),
             status: protocolMetrics.totalProtocolOwnedLiquidity?.status,
             isMoney: true,
+            context: {
+              noun: 'total USD value of LP tokens held by the Olas Treasury',
+              scope: 'across all supported chains',
+              window: 'current value, not cumulative',
+            },
           },
           {
             key: 'fees',
@@ -36,6 +41,11 @@ export const BondMetrics = ({ metrics }) => {
             metric: roundOrNull(protocolMetrics.totalProtocolRevenue?.value),
             status: protocolMetrics.totalProtocolRevenue?.status,
             isMoney: true,
+            context: {
+              noun: "in cumulative swap fees earned by the Olas Treasury's LP positions",
+              scope: 'across all supported chains',
+              window: 'all time',
+            },
           },
         ],
       },
@@ -47,7 +57,7 @@ export const BondMetrics = ({ metrics }) => {
   return (
     <SectionWrapper id="stats" customClasses="mt-16">
       {bondData.map((data, index) => (
-        <MetricsCard key={index} metrics={data} />
+        <MetricsCard key={index} metrics={data} snapshotTimestamp={snapshotTimestamp} />
       ))}
     </SectionWrapper>
   );

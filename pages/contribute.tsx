@@ -4,13 +4,13 @@ import Contribute from 'components/ContributePage';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const ContributePage = ({ metrics }) => (
+const ContributePage = ({ metrics, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="Contribute"
       description="Enhance your network’s impact with Olas Contribute. Track and amplify contributions in crypto and AI with autonomous AI services."
     />
-    <Contribute metrics={metrics} />
+    <Contribute metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
   </PageWrapper>
 );
 
@@ -19,6 +19,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       metrics: snapshot?.data || null,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

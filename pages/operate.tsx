@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 import { getSnapshot } from 'common-util/snapshot-storage';
 
-const OperatePage = ({ metrics }) => {
+const OperatePage = ({ metrics, snapshotTimestamp }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const OperatePage = ({ metrics }) => {
         pageTitle="Operate"
         description="Become an Operator in the Olas ecosystem. Run AI agents and stake OLAS — staking rewards depend on agent activity and are not guaranteed. Get involved in running decentralized AI-powered systems."
       />
-      <Operate metrics={metrics} />
+      <Operate metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
     </PageWrapper>
   );
 };
@@ -36,6 +36,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       metrics: snapshot?.data || null,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

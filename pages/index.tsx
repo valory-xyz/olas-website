@@ -1,3 +1,4 @@
+import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
@@ -12,7 +13,14 @@ import Meta from 'components/Meta';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-export default function Home({ metrics, protocolMetrics }) {
+export default function Home({
+  metrics,
+  protocolMetrics,
+  snapshotTimestamp,
+  protocolSnapshotTimestamp,
+  olasBurned,
+  economySnapshotTimestamp,
+}) {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +35,14 @@ export default function Home({ metrics, protocolMetrics }) {
       <Hero />
       <OwnYourAgent />
       <AgentsWorkingTogether />
-      <PowersAiAgentEconomies metrics={metrics} protocolMetrics={protocolMetrics} />
+      <PowersAiAgentEconomies
+        metrics={metrics}
+        protocolMetrics={protocolMetrics}
+        snapshotTimestamp={snapshotTimestamp}
+        protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
+      />
       <PropelledBy />
       <Media />
     </PageWrapper>
@@ -35,9 +50,12 @@ export default function Home({ metrics, protocolMetrics }) {
 }
 
 export const getStaticProps = async () => {
-  const [metricsSnapshot, otherSnapshot] = await Promise.all([
+  const [metricsSnapshot, otherSnapshot, economySnapshot] = await Promise.all([
     getSnapshot({ category: 'main' }),
     getSnapshot({ category: 'other' }),
+    // Only for `olasBurned`, so the burned sentence follows the data rather than
+    // asserting a hardcoded zero.
+    getSnapshot({ category: 'agent-economies' }),
   ]);
 
   const metrics = metricsSnapshot?.data ?? null;
@@ -49,6 +67,14 @@ export const getStaticProps = async () => {
     props: {
       metrics,
       protocolMetrics,
+      // Fallback "as of" for metrics whose source is lagging: `status.lastValidAt`
+      // is null in that case, but the snapshot itself is still dated.
+      snapshotTimestamp: metricsSnapshot?.timestamp ?? null,
+      // PoL metrics come from the `other` snapshot, which refreshes on its own cadence.
+      protocolSnapshotTimestamp: otherSnapshot?.timestamp ?? null,
+      olasBurned:
+        (economySnapshot?.data as AgentEconomiesMetricsData)?.mechFees?.olasBurned ?? null,
+      economySnapshotTimestamp: economySnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

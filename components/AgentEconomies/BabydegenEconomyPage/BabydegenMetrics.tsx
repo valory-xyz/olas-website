@@ -14,6 +14,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { MetricContext } from 'components/ui/MetricContext';
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
@@ -21,7 +22,7 @@ const formatNumber = (num) => {
   return `${numTo1dp}%`;
 };
 
-const AprMetric = ({ item }) => {
+const AprMetric = ({ item, economyName, snapshotTimestamp }) => {
   const value = item.value === null ? '--' : item.value;
   const display =
     item.source && value !== '--' ? (
@@ -51,6 +52,13 @@ const AprMetric = ({ item }) => {
         <StaleIndicator status={item.status} />
       </div>
       <span className="text-xs text-slate-400">{item.hint}</span>
+      <MetricContext
+        value={item.value}
+        status={item.status}
+        asOfFallback={snapshotTimestamp}
+        noun={`${item.contextNoun} for ${economyName}`}
+        window={item.contextWindow}
+      />
     </div>
   );
 };
@@ -62,6 +70,8 @@ const BabydegenEconomyCard = ({
   sourceUrl = '/data#babydegen-metrics',
   image,
   title,
+  economyName,
+  snapshotTimestamp = null,
 }) => {
   const data = useMemo(() => {
     const baseSource = sourceUrl
@@ -76,6 +86,8 @@ const BabydegenEconomyCard = ({
         id: 'toUSDC',
         label: 'APR, Relative to USDC',
         hint: 'Moving Average 7D',
+        contextNoun: 'annual percentage rate measured relative to holding USDC',
+        contextWindow: '7-day moving average',
         value: metrics?.latestUsdcApr ? formatNumber(metrics.latestUsdcApr) : null,
         source: baseSource,
         status,
@@ -84,6 +96,8 @@ const BabydegenEconomyCard = ({
         id: 'toETH',
         label: 'APR, Relative to ETH',
         hint: 'Moving Average 7D',
+        contextNoun: 'annual percentage rate measured relative to holding ETH',
+        contextWindow: '7-day moving average',
         value: metrics?.latestEthApr ? formatNumber(metrics.latestEthApr) : null,
         source: baseSource,
         status,
@@ -92,6 +106,8 @@ const BabydegenEconomyCard = ({
         id: 'olasApr',
         label: 'APR, OLAS',
         hint: 'Via OLAS Staking',
+        contextNoun: 'annual percentage rate earned via OLAS staking',
+        contextWindow: 'a current rate',
         value: !isNil(metrics?.stakingAprCalculated)
           ? formatNumber(metrics.stakingAprCalculated)
           : metrics?.maxOlasApr
@@ -121,7 +137,12 @@ const BabydegenEconomyCard = ({
       </div>
       <div className="grid sm:grid-cols-3 gap-6">
         {data.map((item) => (
-          <AprMetric key={item.id} item={item} />
+          <AprMetric
+            key={item.id}
+            item={item}
+            economyName={economyName}
+            snapshotTimestamp={snapshotTimestamp}
+          />
         ))}
       </div>
     </Card>
@@ -134,7 +155,7 @@ const TAB_ITEMS = [
   { key: 'modius', label: 'Modius', icon: '/images/babydegen-econ-page/modius.png' },
 ];
 
-export const BabydegenMetrics = ({ metrics }) => {
+export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const [activeTab, setActiveTab] = useState('optimus');
 
   return (
@@ -166,6 +187,15 @@ export const BabydegenMetrics = ({ metrics }) => {
           <div className="flex gap-2">
             Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
+          <MetricContext
+            value={
+              metrics?.dailyActiveAgents?.value ? Math.floor(metrics.dailyActiveAgents.value) : null
+            }
+            status={metrics?.dailyActiveAgents?.status}
+            asOfFallback={snapshotTimestamp}
+            noun="daily active BabyDegen agents, measured as unique multisigs active each day"
+            window="7-day average"
+          />
         </Card>
 
         <Tabs items={TAB_ITEMS} activeKey={activeTab} onChange={setActiveTab} fullWidth />
@@ -176,6 +206,8 @@ export const BabydegenMetrics = ({ metrics }) => {
             image="/images/babydegen-econ-page/basius.png"
             metrics={metrics?.basius?.value}
             status={metrics?.basius?.status}
+            economyName="the Basius agent economy"
+            snapshotTimestamp={snapshotTimestamp}
           />
         )}
         {activeTab === 'optimus' && (
@@ -185,6 +217,8 @@ export const BabydegenMetrics = ({ metrics }) => {
             image="/images/babydegen-econ-page/optimus.png"
             metrics={metrics?.optimus?.value}
             status={metrics?.optimus?.status}
+            economyName="the Optimus agent economy"
+            snapshotTimestamp={snapshotTimestamp}
           />
         )}
         {activeTab === 'modius' && (
@@ -194,6 +228,8 @@ export const BabydegenMetrics = ({ metrics }) => {
             image="/images/babydegen-econ-page/modius.png"
             metrics={metrics?.modius?.value}
             status={metrics?.modius?.status}
+            economyName="the Modius agent economy"
+            snapshotTimestamp={snapshotTimestamp}
           />
         )}
         <div className="mt-8 flex justify-center">

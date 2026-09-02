@@ -4,7 +4,14 @@ import { TokenAddress } from './TokenAddress';
 
 import PropTypes from 'prop-types';
 
-export const PowersAiAgentEconomies = ({ metrics, protocolMetrics = null }) => (
+export const PowersAiAgentEconomies = ({
+  metrics,
+  protocolMetrics = null,
+  snapshotTimestamp = null,
+  protocolSnapshotTimestamp = null,
+  olasBurned = null,
+  economySnapshotTimestamp = null,
+}) => (
   // overflow-x-clip: the flywheel's fixed-width canvas overflows narrow
   // viewports before it scales down; `clip` (not `hidden`) contains it without
   // creating a scroll container or affecting vertical overflow.
@@ -15,7 +22,14 @@ export const PowersAiAgentEconomies = ({ metrics, protocolMetrics = null }) => (
       backgroundType="NONE"
       customClasses="bg-slate-100 text-center py-20"
     >
-      <Activity metrics={metrics} protocolMetrics={protocolMetrics} />
+      <Activity
+        metrics={metrics}
+        protocolMetrics={protocolMetrics}
+        snapshotTimestamp={snapshotTimestamp}
+        protocolSnapshotTimestamp={protocolSnapshotTimestamp}
+        olasBurned={olasBurned}
+        economySnapshotTimestamp={economySnapshotTimestamp}
+      />
       <TokenAddress />
     </SectionWrapper>
   </div>
@@ -24,4 +38,8 @@ export const PowersAiAgentEconomies = ({ metrics, protocolMetrics = null }) => (
 PowersAiAgentEconomies.propTypes = {
   metrics: PropTypes.shape({}),
   protocolMetrics: PropTypes.shape({}),
+  snapshotTimestamp: PropTypes.number,
+  protocolSnapshotTimestamp: PropTypes.number,
+  olasBurned: PropTypes.shape({}),
+  economySnapshotTimestamp: PropTypes.number,
 };

@@ -9,7 +9,7 @@ import { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 
-const Optimus = ({ metrics }) => (
+const Optimus = ({ metrics, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="Babydegen Economy"
@@ -17,7 +17,7 @@ const Optimus = ({ metrics }) => (
       ogPath="agent-economies/babydegen"
     />
     <Hero />
-    <BabydegenMetrics metrics={metrics} />
+    <BabydegenMetrics metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
     <Descriptions />
     <HowBabydegenEconomyWorks />
     {/* <Join /> */}
@@ -32,6 +32,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       metrics,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };
