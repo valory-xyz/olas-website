@@ -410,7 +410,7 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
       keyof typeof MECH_FEES_GRAPH_CLIENTS
     >;
 
-    const [...settled] = await Promise.allSettled([
+    const settled = await Promise.allSettled([
       ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesQuery)),
       legacyMechFeesGraphClient.request(legacyMechFeesQuery),
       ...chainKeys.map((chain) => getChainBlockNumber(chain)),
@@ -464,7 +464,10 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
             fetchErrors
           )
         : readGlobalField(
-            (data as MechFeesResult).global,
+            // As in the ata/staked loops above and agent-economies/mech-fees.ts: the
+            // query succeeded, so a null Global just means no paid mech activity on this
+            // chain yet. Without the default it reads as a hard error and freezes turnover.
+            (data as MechFeesResult).global ?? { totalFeesInUSD: '0' },
             'totalFeesInUSD',
             `mechFees:${source}`,
             fetchErrors

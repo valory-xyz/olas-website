@@ -121,5 +121,7 @@ export const MetricContext = (props: MetricContextProps) => {
   const sentence = buildMetricContext(props);
   if (!sentence) return null;
 
-  return <span className="sr-only">{sentence}</span>;
+  // Leading space via an expression (JSX would trim a literal one): without a boundary
+  // the extracted text glues onto whatever precedes it — "Operators3,704 unique…".
+  return <span className="sr-only">{` ${sentence}`}</span>;
 };

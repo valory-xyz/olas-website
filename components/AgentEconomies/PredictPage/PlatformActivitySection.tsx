@@ -289,10 +289,10 @@ export const PlatformActivitySection = ({
     status: m.aprStatus,
     href: `/data#${platform}-predict-apr`,
     context: {
-      noun: `OLAS staking annual percentage rate for ${platformPhrase}`,
-      // Called out explicitly: this one metric does not follow the time-range tabs,
-      // so a reader must not apply the selected window to it.
-      window: 'a current rate, not affected by the selected time range',
+      // `m.apr` became a WindowedMetric upstream, so this does follow the tabs: it is
+      // the maximum rate among contracts nominated during the selected window.
+      noun: `maximum OLAS staking annual percentage rate among contracts nominated for ${platformPhrase}`,
+      window: windowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };

@@ -91,10 +91,7 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const summaryLines = [
     buildMetricContext({
       // Floored to match the number the card renders; the raw 7-day mean is fractional.
-      value:
-        typeof metrics?.dailyActiveAgents?.value === 'number'
-          ? Math.floor(metrics.dailyActiveAgents.value)
-          : metrics?.dailyActiveAgents?.value,
+      value: metrics?.dailyActiveAgents?.value ? Math.floor(metrics.dailyActiveAgents.value) : null,
       status: metrics?.dailyActiveAgents?.status,
       noun: 'daily active Olas Mech agents, measured as unique multisigs active each day',
       window: '7-day average',

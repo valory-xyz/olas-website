@@ -21,7 +21,7 @@ export const ContributeMetrics = ({ metrics, snapshotTimestamp = null }) => {
             metric: contributeMetrics.totalOlasContributors?.value,
             status: contributeMetrics.totalOlasContributors?.status,
             context: {
-              noun: 'Olas contributors registered via the Contribute app',
+              noun: 'Contribute leaderboard participants with a linked wallet and non-zero points, which is narrower than everyone registered in the app',
               window: 'all time',
             },
           },

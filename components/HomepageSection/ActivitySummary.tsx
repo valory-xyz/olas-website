@@ -94,7 +94,7 @@ export const ActivitySummary = ({
           value: metrics.feesCollected?.value,
           status: metrics.feesCollected?.status,
           isMoney: true,
-          noun: 'in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it',
+          noun: 'in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it. Covers only the USD-pegged fee trackers and only since the fee went live on 15 June 2026',
           window: 'all time',
           asOfFallback,
         }),
@@ -121,7 +121,7 @@ export const ActivitySummary = ({
         // OLAS-denominated fee trackers go live and the figure stops being zero. The
         // explanation of *why* it is zero is attached only while it is.
         buildMetricContext({
-          value: olasBurned?.value ?? 0,
+          value: olasBurned?.value,
           status: olasBurned?.status,
           unit: 'OLAS',
           noun:
@@ -143,7 +143,9 @@ export const ActivitySummary = ({
     metric: protocolMetrics?.polByChain?.[key],
   })).filter(({ metric }) => typeof metric?.value?.usd === 'number');
 
-  const polTotal = polChains.reduce((sum, { metric }) => sum + (metric?.value?.usd ?? 0), 0);
+  // Published total rather than a sum of the rounded pills — the two differ by a couple
+  // of dollars, and the bond page publishes this same field.
+  const polTotal = protocolMetrics?.totalProtocolOwnedLiquidity?.value ?? null;
 
   const polLines = polChains.length
     ? [
@@ -153,9 +155,10 @@ export const ActivitySummary = ({
           // Any frozen chain makes the sum partly held-over, so surface that status
           // rather than whichever chain happens to be first.
           status:
+            protocolMetrics?.totalProtocolOwnedLiquidity?.status ??
             polChains.find(({ metric }) => isFrozen(metric?.status))?.metric?.status ??
             polChains[0].metric?.status,
-          noun: `in total protocol-owned liquidity held by the Olas Treasury, which is the sum of the ${polChains.length} per-chain figures that follow and not additional to them`,
+          noun: `in total protocol-owned liquidity held by the Olas Treasury, which the ${polChains.length} per-chain figures below break down rather than add to`,
           window: 'current value, not cumulative',
           asOfFallback: protocolSnapshotTimestamp,
         }),

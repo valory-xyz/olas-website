@@ -11,6 +11,8 @@ export const DIAGRAM = { width: 1320, height: 985 };
 // Everything optional: snapshots written before polByChain existed lack it.
 export type ProtocolActivityMetrics = {
   totalProtocolRevenue?: MetricWithStatus<number | null>;
+  /** Authoritative PoL total; summing the rounded per-chain pills drifts by a few dollars. */
+  totalProtocolOwnedLiquidity?: MetricWithStatus<number | null>;
   polByChain?: Partial<Record<PolChainKey, MetricWithStatus<PolChainValue | null>>>;
 } | null;
 

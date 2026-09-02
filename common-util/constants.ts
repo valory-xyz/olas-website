@@ -276,6 +276,13 @@ export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09
  */
 const MARKETPLACE_EXCLUDED_CHAINS = ['celo', 'mode'] as const;
 
+/**
+ * When the Mech Marketplace 15% fee was switched on (2026-06-15 ~06:30 UTC; proposal
+ * executed on Ethereum, bridged to the L2s minutes later). Lives here so components can
+ * state it without importing the RPC-scanning fee module and its viem client.
+ */
+export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
+
 export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
   (chain) =>
     !MARKETPLACE_EXCLUDED_CHAINS.includes(chain as (typeof MARKETPLACE_EXCLUDED_CHAINS)[number])
@@ -283,5 +290,8 @@ export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
 
 export const MARKETPLACE_CHAIN_SCOPE = (() => {
   const names = MARKETPLACE_CHAIN_KEYS.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
-  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+  const list = `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+  // Count first so it reads as a complete set, then the names so a reader can verify it.
+  // Both derived, so neither can drift from the aggregation being described.
+  return `all ${names.length} chains the Mech Marketplace is deployed on (${list})`;
 })();

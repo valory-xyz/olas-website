@@ -1,7 +1,7 @@
 import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { isNil } from 'lodash';
-import { FEE_LIVE_SINCE_SEC } from 'common-util/api/mech-marketplace-fees';
+import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
 import { formatFullNumber } from 'components/ui/MetricContext';
 import { formatUtcAsOf } from 'common-util/time';
 import { Popover } from 'components/ui/popover';

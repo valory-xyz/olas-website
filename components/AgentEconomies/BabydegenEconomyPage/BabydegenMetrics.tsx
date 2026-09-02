@@ -189,9 +189,7 @@ export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
           </div>
           <MetricContext
             value={
-              typeof metrics?.dailyActiveAgents?.value === 'number'
-                ? Math.floor(metrics.dailyActiveAgents.value)
-                : metrics?.dailyActiveAgents?.value
+              metrics?.dailyActiveAgents?.value ? Math.floor(metrics.dailyActiveAgents.value) : null
             }
             status={metrics?.dailyActiveAgents?.status}
             asOfFallback={snapshotTimestamp}
