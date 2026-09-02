@@ -19,6 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const updateFn = agent === 'omenstrat' ? updateOmenstratData : updatePolystratData;
   const mainCategory = `roi-distribution/${agent}-main`;
   const reqCategory = `roi-distribution/${agent}-requests`;
+  // ?rebuildMech=1 drops only the mech-analytics watermark, so this run
+  // refetches the full QMR window while ingestedRequestIds keeps suppressing
+  // rows that were already counted (a wiped id set would double-book already-
+  // matched requests). Read docs/predict-roi-accounting.md before using.
+  const rebuildMech = req.query.rebuildMech === '1';
 
   try {
     const [existing, existingQmr] = await Promise.all([
@@ -26,10 +31,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       getSnapshot({ category: reqCategory }),
     ]);
 
-    const { mainData, qmrData } = await updateFn(
-      (existing?.data as any) ?? null,
-      (existingQmr?.data as any) ?? null
-    );
+    const qmrIn = (existingQmr?.data as any) ?? null;
+    if (rebuildMech && qmrIn?.mechAnalytics) delete qmrIn.mechAnalytics.lastComputedAt;
+
+    const { mainData, qmrData } = await updateFn((existing?.data as any) ?? null, qmrIn);
 
     const [url] = await Promise.all([
       saveSnapshot({
@@ -49,6 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       generatedAt: new Date().toISOString(),
       url,
       fetchErrors: mainData.fetchErrors ?? [],
+      mechAttribution: mainData.mechAttribution,
     });
   } catch (error) {
     console.error(`Error refreshing ${agent} ROI distribution:`, error);
