@@ -16,6 +16,13 @@ import {
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
+import {
+  allTimeNetGainAndCosts,
+  mergeQmr,
+  roiPercent,
+  senderLifetimeRequests,
+  windowedNetGainAndCosts,
+} from './roi-math';
 
 const LIMIT = 1000;
 // conditionIds per getPolymarketQuestionTitlesQuery batch (keeps the inlined
@@ -98,6 +105,8 @@ export type DailyAgentEntry = {
 
 /** Per-agent all-time aggregates — used for 'max' distribution. */
 export type AllTimeAgentEntry = {
+  // Expected payout projected at market resolution (accrual basis), 1e18-scaled.
+  // See docs/predict-roi-accounting.md.
   payout: string;
   tradingCosts: string;
   mechRequests: number; // senders.total - sum of remaining QMR entries (open markets only)
@@ -120,6 +129,21 @@ export type AgentBlueprintRoiData = {
    * from a healthy one.
    */
   fetchErrors?: string[];
+  /**
+   * Mech-request attribution counters from the run that wrote this blob:
+   * `matched` requests were consumed onto settlement days, `flushed` were
+   * TTL-expired onto their request day, `ingested` were added this run
+   * (post-dedupe, so the counters reconcile against `openRequests`), and
+   * `openRequests` remain pending. Windowed ROI raises a staleness flag (on
+   * booked mech cost stays implausibly low while trading is active.
+   */
+  mechAttribution?: {
+    matched: number;
+    flushed: number;
+    ingested: number;
+    openRequests: number;
+    runAt: number;
+  };
 };
 
 // ─── Internal query types ────────────────────────────────────────────────────
@@ -152,21 +176,20 @@ type OmenTraderAgentEntry = {
   id: string;
   totalTradedSettled: string;
   totalFeesSettled: string;
-  totalPayout: string;
+  totalExpectedPayout: string;
   totalBets: string;
 };
 
 type PolyTraderAgentEntry = {
   id: string;
   totalTradedSettled: string;
-  totalPayout: string;
+  totalExpectedPayout: string;
   totalBets: string;
 };
 
 type SenderEntry = {
   id: string;
   totalLegacyRequests: string;
-  totalMarketplaceRequests: string;
 };
 
 // ─── Daily stat fetchers ─────────────────────────────────────────────────────
@@ -352,7 +375,8 @@ const fetchAllTimeAgents = async (
           const tradingCosts =
             (BigInt(agent.totalTradedSettled) + BigInt(agent.totalFeesSettled)) * SCALE;
           agentMap.set(agentId, {
-            payout: BigInt(agent.totalPayout) * SCALE,
+            // Accrual basis — payout projected at settlement, same as dailyProfit.
+            payout: BigInt(agent.totalExpectedPayout) * SCALE,
             tradingCosts,
             totalBets: Number(agent.totalBets ?? 0),
           });
@@ -366,7 +390,8 @@ const fetchAllTimeAgents = async (
           const agentId = agent.id.toLowerCase();
           // Polystrat costs = Traded * 10^12 (to bring USDC 6 dec up to 18 dec)
           agentMap.set(agentId, {
-            payout: BigInt(agent.totalPayout) * SCALE,
+            // Accrual basis — payout projected at settlement, same as dailyProfit.
+            payout: BigInt(agent.totalExpectedPayout) * SCALE,
             tradingCosts: BigInt(agent.totalTradedSettled) * SCALE,
             totalBets: Number(agent.totalBets ?? 0),
           });
@@ -392,10 +417,7 @@ const fetchAllTimeAgents = async (
       const page = response?.senders ?? [];
       for (const sender of page) {
         const agentId = sender.id.toLowerCase();
-        senderMap.set(
-          agentId,
-          Number(sender.totalLegacyRequests) + Number(sender.totalMarketplaceRequests)
-        );
+        senderMap.set(agentId, senderLifetimeRequests(sender));
       }
       if (page.length < LIMIT) break;
       skip += LIMIT;
@@ -509,6 +531,7 @@ const updateAgentBlueprintData = async (
   let additions: Record<string, Record<string, number[]>> = {};
   let newMechTs = existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs;
   let mechRequestsOk = false;
+  let wasRebuild = false;
   // Saved only while the flag is on. A flag-off run drops it, so turning
   // the flag on again starts with a fresh rebuild. An old watermark could
   // count the same rows twice.
@@ -524,11 +547,7 @@ const updateAgentBlueprintData = async (
     // null = the rebuild failed; keep everything as it is and retry next run.
     mechRequestsOk = result !== null && (result.kind === 'rebuild' || result.ok);
     if (result !== null) {
-      if (result.kind === 'rebuild') {
-        // Old entries from the subgraph cannot be matched with analytics rows,
-        // so we drop them and start fresh.
-        qmr = {};
-      }
+      wasRebuild = result.kind === 'rebuild';
       additions = result.additions;
       newMechTs = result.lastTimestamp;
       newMechAnalytics = {
@@ -547,14 +566,11 @@ const updateAgentBlueprintData = async (
     ));
   }
   if (!mechRequestsOk) runFetchErrors.push('mech-requests');
-  for (const [title, agentLists] of Object.entries(additions)) {
-    if (!qmr[title]) qmr[title] = {};
-    for (const [agentId, tsList] of Object.entries(agentLists)) {
-      const existing = qmr[title][agentId] ?? [];
-      // Merge ascending-sorted lists
-      qmr[title][agentId] = [...existing, ...tsList].sort((a, b) => a - b);
-    }
-  }
+  // A rebuild's window overlaps requests already in the open set — dedupe them;
+  // an incremental batch is already deduplicated by request id upstream.
+  // `added` is post-dedupe, so mechAttribution counters reconcile.
+  const { merged, added: ingestedCount } = mergeQmr(qmr, additions, wasRebuild);
+  qmr = merged;
 
   // Pre-calculate normalized mapping for Step 2 matching
   // normalizedKey -> originalKey
@@ -572,6 +588,9 @@ const updateAgentBlueprintData = async (
   };
 
   let lastDayTimestamp = existing?.lastDayTimestamp ?? endDay;
+  // Attribution counters — persisted as mechAttribution for observability.
+  let matchedCount = 0;
+  let flushedCount = 0;
 
   if (startDay <= endDay) {
     const totalDays = Math.floor((endDay - startDay) / DAY_SECONDS) + 1;
@@ -634,6 +653,7 @@ const updateAgentBlueprintData = async (
             const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
             if (matchedKey && tsList && tsList.length > 0) {
               mechRequests += tsList.length;
+              matchedCount += tsList.length;
               qmr[matchedKey][agentId] = [];
               qmrKeysUsedThisDay.add(matchedKey);
             }
@@ -695,6 +715,7 @@ const updateAgentBlueprintData = async (
           normalizedQmrMap.delete(normalizeTitle(title));
         }
       }
+      flushedCount = expiredCount;
       if (expiredCount > 0) {
         console.log(
           `[roi-dist:${agentBlueprint}] expired ${expiredCount} QMR entries older than ${QMR_MAX_AGE_DAYS} days`
@@ -720,8 +741,30 @@ const updateAgentBlueprintData = async (
   const allTimeAgents = allTimeOk ? fetchedAllTimeAgents : (existing?.allTimeAgents ?? {});
   if (!allTimeOk) runFetchErrors.push('all-time-agents');
 
+  let openRequests = 0;
+  for (const agentLists of Object.values(qmr)) {
+    for (const tsList of Object.values(agentLists)) openRequests += tsList?.length ?? 0;
+  }
+  const mechAttribution = {
+    matched: matchedCount,
+    flushed: flushedCount,
+    ingested: ingestedCount,
+    openRequests,
+    runAt: Math.floor(Date.now() / 1000),
+  };
+  console.log(
+    `[roi-dist:${agentBlueprint}] mech attribution: ingested=${ingestedCount} ` +
+      `matched=${matchedCount} flushed=${flushedCount} open=${openRequests}`
+  );
+
   return {
-    mainData: { byDay, lastDayTimestamp, allTimeAgents, fetchErrors: runFetchErrors },
+    mainData: {
+      byDay,
+      lastDayTimestamp,
+      allTimeAgents,
+      fetchErrors: runFetchErrors,
+      mechAttribution,
+    },
     qmrData: {
       questionMechRequests: qmr,
       lastMechRequestTimestamp: newMechTs,
@@ -799,12 +842,14 @@ const computeAgentBlueprintHistogram = (
         continue;
       }
 
-      // mechFees are already 18 decimals (USD/ETH/XDAI equivalent)
-      const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
-      const totalCosts = tradingCosts + mechFees;
-
-      // ROI = (Payout - TotalCosts) / TotalCosts
-      const roi = Number(((payout - totalCosts) * 10000n) / totalCosts) / 100;
+      // ROI = (Payout - TotalCosts) / TotalCosts; mech fees are already 18 decimals.
+      const { netGain, totalCosts } = allTimeNetGainAndCosts({
+        payout,
+        tradingCosts,
+        mechRequests: entry.mechRequests,
+        mechFeeWei: DEFAULT_MECH_FEE,
+      });
+      const roi = roiPercent(netGain, totalCosts);
 
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
@@ -862,29 +907,22 @@ const computeAgentBlueprintHistogram = (
         continue;
       }
 
-      // 1. Scale everything to 18 decimals (USDC 10^6 * 10^12 = 10^18)
-      const scaledProfit = totals.profit * scale;
-
-      // 2. Trading costs basis: the per-day settled fields (cost basis of bets
-      //    that resolved that day), summed over the window. Omenstrat entries
-      //    are already 18 decimals; polystrat's are USDC 1e6, scaled below.
-      //    feesSettled is 0 for polystrat (no per-trade fees on Polymarket).
-      const tradingCosts = isPolystrat
-        ? totals.tradedSettled * scale
-        : totals.tradedSettled + totals.feesSettled;
+      // Settlement-day cost basis, scaled to 18 decimals (polystrat entries are
+      // USDC 1e6, scale = 1e12; feesSettled is 0 there — no per-trade fees).
+      const tradingCosts = (totals.tradedSettled + totals.feesSettled) * scale;
 
       // Skip zero trading costs considering it as "not enough data"
       if (tradingCosts <= 0n) continue;
 
-      // 3. Add Mech Fees
-      const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
-      const totalCosts = tradingCosts + mechFees;
-
-      // 4. Net Gain = Profit (already scaled) - Mech Fees
-      const netGain = scaledProfit - mechFees;
-
-      // 5. Calculate ROI as percentage
-      const roi = Number((netGain * 10000n) / totalCosts) / 100;
+      const { netGain, totalCosts } = windowedNetGainAndCosts({
+        profit: totals.profit,
+        tradedSettled: totals.tradedSettled,
+        feesSettled: totals.feesSettled,
+        mechRequests: totals.mechRequests,
+        scale,
+        mechFeeWei: DEFAULT_MECH_FEE,
+      });
+      const roi = roiPercent(netGain, totalCosts);
 
       const binIdx = assignBin(roi);
       if (binIdx !== -1) {
@@ -931,10 +969,14 @@ export const computeWindowedNetGainAndCosts = (
     for (const entry of Object.values(data.allTimeAgents ?? {})) {
       const tradingCosts = BigInt(entry.tradingCosts); // already scaled
       if (tradingCosts <= 0n) continue;
-      const mechFees = BigInt(entry.mechRequests) * DEFAULT_MECH_FEE;
-      const agentTotalCosts = tradingCosts + mechFees;
-      netGain += BigInt(entry.payout) - agentTotalCosts;
-      totalCosts += agentTotalCosts;
+      const agent = allTimeNetGainAndCosts({
+        payout: BigInt(entry.payout),
+        tradingCosts,
+        mechRequests: entry.mechRequests,
+        mechFeeWei: DEFAULT_MECH_FEE,
+      });
+      netGain += agent.netGain;
+      totalCosts += agent.totalCosts;
     }
     return { netGain, totalCosts };
   }
@@ -978,16 +1020,20 @@ export const computeWindowedNetGainAndCosts = (
   }
 
   for (const totals of agentTotals.values()) {
-    const scaledProfit = totals.profit * scale;
     // Same cost basis as the histogram: settled fields summed over the window
     // (polystrat's are USDC 1e6 → scaled; feesSettled is 0 there).
-    const tradingCosts = isPolystrat
-      ? totals.tradedSettled * scale
-      : totals.tradedSettled + totals.feesSettled;
+    const tradingCosts = (totals.tradedSettled + totals.feesSettled) * scale;
     if (tradingCosts <= 0n) continue;
-    const mechFees = BigInt(totals.mechRequests) * DEFAULT_MECH_FEE;
-    netGain += scaledProfit - mechFees;
-    totalCosts += tradingCosts + mechFees;
+    const agent = windowedNetGainAndCosts({
+      profit: totals.profit,
+      tradedSettled: totals.tradedSettled,
+      feesSettled: totals.feesSettled,
+      mechRequests: totals.mechRequests,
+      scale,
+      mechFeeWei: DEFAULT_MECH_FEE,
+    });
+    netGain += agent.netGain;
+    totalCosts += agent.totalCosts;
   }
   return { netGain, totalCosts };
 };

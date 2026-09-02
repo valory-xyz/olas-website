@@ -144,7 +144,7 @@ export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
 
     global(id: "") {
       totalFeesSettled
-      totalPayout
+      totalExpectedPayout
       totalTradedSettled
     }
     _meta {
@@ -751,8 +751,8 @@ export const getOmenDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }
 `;
 
 // Lean daily profit stats for the Explorer ROI series — only the fields needed to
-// derive partial ROI (profit / (payout − profit)). Omits dailyTradedSettled /
-// dailyFeesSettled so it works on subgraph versions that predate those fields.
+// derive partial ROI: dailyProfit / (dailyTradedSettled + dailyFeesSettled), the
+// cost basis of the bets that settled that day (docs/predict-roi-accounting.md).
 export const getExplorerDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
   query ExplorerDailyProfitStats {
     dailyProfitStatistics(
@@ -764,8 +764,9 @@ export const getExplorerDailyProfitStatsQuery = ({ date_gte, date_lte, first, sk
     ) {
       date
       totalBets
-      totalPayout
       dailyProfit
+      dailyTradedSettled
+      dailyFeesSettled
     }
   }
 `;
@@ -858,13 +859,15 @@ export const getMechRequestsIncrementalQuery = ({
   }
 `;
 
+// Lifetime totals for the Max-window ROI. `totalExpectedPayout` is the payout
+// projected at market resolution (accrual basis — docs/predict-roi-accounting.md).
 export const getOmenTraderAgentsQuery = ({ first, skip }: { first: number; skip: number }) => gql`
   query OmenTraderAgents {
     traderAgents(first: ${first}, skip: ${skip}) {
       id
       totalTradedSettled
       totalFeesSettled
-      totalPayout
+      totalExpectedPayout
       totalBets
     }
   }
@@ -881,18 +884,20 @@ export const getPolymarketTraderAgentsQuery = ({
     traderAgents(limit: ${first}, offset: ${skip}, orderBy: id_ASC) {
       id
       totalTradedSettled
-      totalPayout
+      totalExpectedPayout
       totalBets
     }
   }
 `;
 
+// `totalLegacyRequests` counts every request kind (legacy, marketplace,
+// off-chain) — the complete lifetime count. `totalMarketplaceRequests` is a
+// subset of it; never add the two. See docs/predict-roi-accounting.md.
 export const getMarketplaceSendersQuery = ({ first, skip }: { first: number; skip: number }) => gql`
   query MarketplaceSenders {
     senders(first: ${first}, skip: ${skip}) {
       id
       totalLegacyRequests
-      totalMarketplaceRequests
     }
   }
 `;

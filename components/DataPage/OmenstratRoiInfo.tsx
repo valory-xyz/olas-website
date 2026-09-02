@@ -97,7 +97,10 @@ export const OmenstratRoiInfo = () => {
               All open markets, needed in order to understand which markets are open and use it to
               subtract needed amount of mech requests from the total
             </li>
-            <li>Cumulative payout, trades amounts and fees for open markets</li>
+            <li>
+              Cumulative expected payout (booked when a market resolves — redemption is never waited
+              for), trades amounts and fees for settled markets
+            </li>
           </ul>
         </div>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">

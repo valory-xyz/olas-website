@@ -105,7 +105,10 @@ export const PolystratRoiInfo = () => {
               Per-agent daily statistics (example shows the 7-day window): daily profit, payouts,
               and the settled cost basis that windowed ROI divides by
             </li>
-            <li>Lifetime per-agent totals (settled volume, payouts) for the Max window</li>
+            <li>
+              Lifetime per-agent totals for the Max window: settled volume and expected payouts
+              (booked when a market resolves — redemption is never waited for)
+            </li>
           </ul>
         </div>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
