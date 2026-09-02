@@ -1,9 +1,13 @@
 import {
-  GNOSIS_STAKING_CONTRACTS,
+  computeAprWindows,
+  StakingAprMetricsData,
+  STAKING_APR_CATEGORY,
+} from 'common-util/api/staking-apr';
+import {
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
 } from 'common-util/constants';
-import { REGISTRY_GRAPH_CLIENTS, STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   createStaleStatus,
   executeGraphQLQuery,
@@ -12,10 +16,9 @@ import {
 import {
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
-  stakingContractsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
-import { getMaxApr } from 'common-util/olasApr';
+import { getSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { fetchOmenstratAccuracy, fetchPolystratAccuracy } from './accuracy';
 import { emptyWindows, fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
@@ -40,10 +43,6 @@ type AgentTxCountsResponse = WithMeta<{
     id: string;
     txCount: string;
   }[];
-}>;
-
-type StakingContractsResponse = WithMeta<{
-  stakingContracts: any[];
 }>;
 
 // Helper function to transform DAA data
@@ -184,46 +183,41 @@ const fetchPolystratTxsByAgentType = async (): Promise<
   });
 };
 
-const fetchOmenstratOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
-  return executeGraphQLQuery<StakingContractsResponse, string>({
-    client: STAKING_GRAPH_CLIENTS.gnosis,
-    chain: 'gnosis',
-    query: stakingContractsQuery(GNOSIS_STAKING_CONTRACTS),
-    source: 'staking:gnosis',
-    transform: (data) => {
-      const contracts = data?.stakingContracts;
-      return `${getMaxApr(contracts)}`;
-    },
-  });
+// APR history is maintained nightly by /api/refresh-metrics/staking-apr (active
+// contracts = VoteWeighting nominees); here we only read that blob and derive the max
+// APR per time range. A missing snapshot or chain entry becomes a fetchError, so
+// mergeWithFallback holds the last published APR.
+const fetchOlasAprFromSnapshot = async (
+  chain: 'gnosis' | 'polygon'
+): Promise<MetricWithStatus<WindowedMetric<number | null>>> => {
+  const errorStatus = () => getFetchErrorAndCreateStaleStatus(`staking-apr:${chain}:snapshot`);
+  try {
+    const snapshot = await getSnapshot({ category: STAKING_APR_CATEGORY });
+    const metric = (snapshot?.data as StakingAprMetricsData | undefined)?.[chain];
+    if (!metric) return { value: emptyWindows(), status: errorStatus() };
+
+    return { value: computeAprWindows(metric.value, chain), status: metric.status };
+  } catch (error) {
+    console.error(`Error reading staking-apr snapshot for ${chain}:`, error);
+    return { value: emptyWindows(), status: errorStatus() };
+  }
 };
 
-const fetchPolystratOlasApr = async (): Promise<MetricWithStatus<string | null>> => {
-  return executeGraphQLQuery<StakingContractsResponse, string>({
-    client: STAKING_GRAPH_CLIENTS.polygon,
-    chain: 'polygon',
-    query: stakingContractsQuery([]), // Query all staking contracts on Polygon
-    source: 'staking:polygon',
-    transform: (data) => {
-      const contracts = data?.stakingContracts;
-      return `${getMaxApr(contracts)}`;
-    },
-  });
-};
+const fetchOmenstratOlasApr = () => fetchOlasAprFromSnapshot('gnosis');
+const fetchPolystratOlasApr = () => fetchOlasAprFromSnapshot('polygon');
 
 export type { WindowKey, WindowedMetric } from './omenstrat-brier';
 
-// Snapshot category for the predict metrics blob. The `-v2` suffix is a one-time
-// version bump: partialRoi/finalRoi/successRate changed shape (scalar -> windowed
-// per-range), a breaking schema change. Bumping the category (rather than the global
-// METRICS_PREFIX) isolates the migration to this blob so the Brier, roi-distribution
-// and accuracy accumulators don't get reset. Reader and writer must use this.
-export const PREDICT_SNAPSHOT_CATEGORY = 'predict-v2';
+// Reader and writer must use this; breaking shape changes are versioned via
+// SCHEMA_VERSIONS in snapshot-storage.ts.
+export const PREDICT_SNAPSHOT_CATEGORY = 'predict';
 
 export type PredictMetricsData = {
   // Omenstrat metrics
   omenstrat: {
     dailyActiveAgents: MetricWithStatus<number | null>;
-    apr: MetricWithStatus<string | null>;
+    // Max APR across contracts nominated at any point within each time range.
+    apr: MetricWithStatus<WindowedMetric<number | null>>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
     // Windowed prediction-only ROI (excludes staking rewards).
     partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
@@ -238,7 +232,7 @@ export type PredictMetricsData = {
   // Polystrat metrics
   polystrat: {
     dailyActiveAgents: MetricWithStatus<number | null>;
-    apr: MetricWithStatus<string | null>;
+    apr: MetricWithStatus<WindowedMetric<number | null>>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
     partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
     finalRoi: MetricWithStatus<WindowedMetric<number | null>>;
@@ -301,7 +295,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
         apr:
           omenstratAprResult.status === 'fulfilled'
             ? omenstratAprResult.value
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('omenstrat:apr') },
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('omenstrat:apr') },
         predictTxsByType:
           omenstratTxsResult.status === 'fulfilled'
             ? omenstratTxsResult.value
@@ -335,7 +329,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
         apr:
           polystratAprResult.status === 'fulfilled'
             ? polystratAprResult.value
-            : { value: null, status: getFetchErrorAndCreateStaleStatus('polystrat:apr') },
+            : { value: emptyWindows(), status: getFetchErrorAndCreateStaleStatus('polystrat:apr') },
         predictTxsByType:
           polystratTxsResult.status === 'fulfilled'
             ? polystratTxsResult.value

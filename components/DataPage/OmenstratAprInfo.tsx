@@ -1,12 +1,13 @@
 import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
-import { GNOSIS_STAKING_CONTRACTS } from 'common-util/constants';
+import { ETHERSCAN_URL, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
 import { stakingContractsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { ExternalLink } from 'components/ui/typography';
 import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const OmenstratAprInfo = () => {
-  const query = stakingContractsQuery(GNOSIS_STAKING_CONTRACTS);
+  const query = stakingContractsQuery(['<active staking contracts on Gnosis>']);
 
   return (
     <SectionWrapper id="omenstrat-predict-apr">
@@ -14,9 +15,15 @@ export const OmenstratAprInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          APR is computed from the OLAS staking contracts on Gnosis by querying rewards per second,
-          minimum staking deposit, and number of agent instances, then taking the maximum APR across
-          contracts.
+          APR is computed from the OLAS staking contracts on Gnosis, filtered to only the ones
+          nominated in the{' '}
+          <ExternalLink href={`${ETHERSCAN_URL}/address/${VOTE_WEIGHTING_ADDRESS}#readContract`}>
+            VoteWeighting contract
+          </ExternalLink>{' '}
+          on Ethereum (getAllNominees). For each of them we query rewards per second, minimum
+          staking deposit, and number of agent instances from the staking subgraph, then take the
+          maximum APR across contracts. For each time range, contracts nominated at any point within
+          that range are considered.
         </p>
 
         <p className="text-purple-600">

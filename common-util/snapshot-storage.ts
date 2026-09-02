@@ -4,6 +4,7 @@ import { ExplorerMetricsData } from 'common-util/api/explorer';
 import { MainMetricsData } from 'common-util/api/main-metrics';
 import { OtherMetricsData } from 'common-util/api/other-metrics';
 import { PredictMetricsData } from 'common-util/api/predict';
+import { StakingAprMetricsData } from 'common-util/api/staking-apr';
 import { mergeSnapshotTree } from 'common-util/graphql/metric-utils';
 
 // Blob filenames embed a schema version, so a breaking change to a snapshot's
@@ -17,7 +18,12 @@ const DEFAULT_SCHEMA_VERSION = '20260708';
 // Keyed by the category's first path segment ('roi-distribution/omenstrat-main'
 // → 'roi-distribution'), so blob families written by the same code version
 // together. Categories not listed here use DEFAULT_SCHEMA_VERSION.
-const SCHEMA_VERSIONS: Record<string, string> = {};
+const SCHEMA_VERSIONS: Record<string, string> = {
+  // 20260901: apr became windowed (was a scalar string).
+  predict: '20260901',
+  // 20260901: rebuild from genesis under the agent-id based predict contract filter.
+  'predict-staking-rewards': '20260901',
+};
 const CONTENT_TYPE = 'application/json';
 
 const getSnapshotFilename = (category: string) => {
@@ -36,7 +42,8 @@ type MetricsData =
   | PredictMetricsData
   | OtherMetricsData
   | AgentEconomiesMetricsData
-  | ExplorerMetricsData;
+  | ExplorerMetricsData
+  | StakingAprMetricsData;
 
 export type MetricsSnapshot = {
   data: MetricsData;
@@ -115,12 +122,14 @@ type GetSnapshotParams = {
  * merge — the first must write raw to bootstrap, the second must not write at all — but
  * both collapse to `null` through `getSnapshot`. `loadSnapshot` keeps them apart.
  */
-type LoadSnapshotResult =
+export type LoadSnapshotResult =
   | { outcome: 'found'; snapshot: MetricsSnapshot }
   | { outcome: 'absent' }
   | { outcome: 'error'; error: string };
 
-const loadSnapshot = async ({ category }: GetSnapshotParams): Promise<LoadSnapshotResult> => {
+export const loadSnapshot = async ({
+  category,
+}: GetSnapshotParams): Promise<LoadSnapshotResult> => {
   const filename = getSnapshotFilename(category);
   let blobUrl: string;
 

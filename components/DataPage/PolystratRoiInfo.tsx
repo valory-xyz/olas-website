@@ -27,6 +27,7 @@ export const PolystratRoiInfo = () => {
   const traderAgents = getPolymarketTraderAgentsQuery({ first: 1000, skip: 0 });
   const stakingRewards = getStakingRewardsByTimeRangeQuery({
     first: 1000,
+    contractAddresses: ['<predict staking contracts on Polygon>'],
     timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
     timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
   });
@@ -63,10 +64,11 @@ export const PolystratRoiInfo = () => {
 
         <ul className="list-disc list-inside space-y-1">
           <li>
-            <strong>Partial ROI</strong>: profit from prediction markets only.
+            <strong>Trading ROI</strong> (shown on the page): profit from prediction markets only.
           </li>
           <li>
-            <strong>Final ROI</strong>: includes staking rewards (OLAS converted to USD).
+            <strong>Total ROI</strong> (shown in the tooltip): includes staking rewards (OLAS
+            converted to USD).
           </li>
         </ul>
 

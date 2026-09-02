@@ -164,6 +164,9 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; l
     ])
   );
 
+// VoteWeighting on Ethereum — its nominees define the officially maintained staking programs.
+export const VOTE_WEIGHTING_ADDRESS = '0x95418b46d5566D3d1ea62C12Aea91227E566c5c1';
+
 export const TELEGRAM_INVITE_URL = 'https://t.me/olaschat';
 
 export const COINGECKO_URL = 'https://www.coingecko.com';
@@ -214,6 +217,14 @@ export const POLYSTRAT_AGENT_CLASSIFICATION = {
   mech: [9, 26, 29, 37, 36],
 };
 
+// Registry agent IDs (per chain) whose staking programs count as predict: trader agents
+// only. Filtering by the contract's staked agent ids keeps the list maintenance-free and
+// excludes non-predict programs (LST has no agent ids, mech stakes a mech agent).
+export const PREDICT_STAKING_AGENT_IDS: Record<'gnosis' | 'polygon', number[]> = {
+  gnosis: [25, 40],
+  polygon: [86],
+};
+
 // Mech agent classification used for categorized request counts
 export const MECH_AGENT_CLASSIFICATION = {
   predict: [14, 25, 13, 86],
@@ -251,61 +262,3 @@ export const BASIUS_STAKING_CONTRACTS = [
 // Hardcoded values for Modius, suggested by Babydegen team
 export const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';
 export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09-18
-export const GNOSIS_STAKING_CONTRACTS = [
-  '0xeF44Fb0842DDeF59D37f85D61A1eF492bbA6135d',
-  '0x389B46c259631Acd6a69Bde8B6cEe218230bAE8C',
-  '0x5344B7DD311e5d3DdDd46A4f71481bD7b05AAA3e',
-  '0xb964e44c126410df341ae04B13aB10A985fE3513',
-  '0x80faD33Cadb5F53f9D29F02Db97D682E8b101618',
-  '0x1c2F82413666d2a3fD8bC337b0268e62dDF67434',
-  '0x238EB6993b90a978ec6AAD7530d6429c949C08DA',
-  '0xDaF34eC46298b53a3d24CBCb431E84eBd23927dA',
-  '0x998dEFafD094817EF329f6dc79c703f1CF18bC90',
-  '0xaD9d891134443B443D7F30013c7e14Fe27F2E029',
-  '0xE56dF1E563De1B10715cB313D514af350D207212',
-  '0xBd59Ff0522aA773cB6074ce83cD1e4a05A457bc1',
-  '0x3052451e1eAee78e62E169AfdF6288F8791F2918',
-  '0x4Abe376Fda28c2F43b84884E5f822eA775DeA9F4',
-  '0x2546214aEE7eEa4bEE7689C81231017CA231Dc93',
-  '0xD7A3C8b975f71030135f1a66e9e23164d54fF455',
-  '0xdB9E2713c3dA3C403F2eA6E570eB978b00304e9E',
-  '0x1E90522b45c771DCF5f79645B9e96551d2ECaF62',
-  '0x6c65430515c70a3f5E62107CC301685B7D46f991',
-  '0x88eB38FF79fBa8C19943C0e5Acfa67D5876AdCC1',
-  '0x356C108D49C5eebd21c84c04E9162de41933030c',
-  '0x17dBAe44BC5618Cc254055b386A29576b4F87015',
-  '0xB0ef657b8302bd2c74B6E6D9B2b4b39145b19c6f',
-  '0x3112c1613eAC3dBAE3D4E38CeF023eb9E2C91CF7',
-  '0xF4a75F476801B3fBB2e7093aCDcc3576593Cc1fc',
-  '0x6C6D01e8eA8f806eF0c22F0ef7ed81D868C1aB39',
-  '0x1430107A785C3A36a0C1FC0ee09B9631e2E72aFf',
-  '0x041e679d04Fc0D4f75Eb937Dea729Df09a58e454',
-  '0x9d6e7aB0B5B48aE5c146936147C639fEf4575231',
-  '0x9fb17E549FefcCA630dd92Ea143703CeE4Ea4340',
-  '0xCAbD0C941E54147D40644CF7DA7e36d70DF46f44',
-  '0xAb10188207Ea030555f53C8A84339A92f473aa5e',
-  '0x8d7bE092d154b01d404f1aCCFA22Cef98C613B5D',
-  '0x9D00A0551F20979080d3762005C9B74D7Aa77b85',
-  '0xE2f80659dB1069f3B6a08af1A62064190c119543',
-  '0x75EECA6207be98cAc3fDE8a20eCd7B01e50b3472',
-  '0x9c7F6103e3a72E4d1805b9C683Ea5B370Ec1a99f',
-  '0xcdC603e0Ee55Aae92519f9770f214b2Be4967f7d',
-  '0x22D6cd3d587D8391C3aAE83a783f26c67ab54A85',
-  '0xaaEcdf4d0CBd6Ca0622892Ac6044472f3912A5f3',
-  '0x168aED532a0CD8868c22Fc77937Af78b363652B1',
-];
-
-export const PREDICT_STAKING_PROGRAMS_PEARL = {
-  pearl_alpha: '0xEE9F19b5DF06c7E8Bfc7B28745dcf944C504198A',
-  pearl_beta: '0xeF44Fb0842DDeF59D37f85D61A1eF492bbA6135d',
-  pearl_beta_2: '0x1c2F82413666d2a3fD8bC337b0268e62dDF67434',
-  pearl_beta_3: '0xBd59Ff0522aA773cB6074ce83cD1e4a05A457bc1',
-  pearl_beta_4: '0x3052451e1eAee78e62E169AfdF6288F8791F2918',
-  pearl_beta_5: '0x4Abe376Fda28c2F43b84884E5f822eA775DeA9F4',
-  pearl_beta_6: '0x6C6D01e8eA8f806eF0c22F0ef7ed81D868C1aB39',
-  pearl_beta_mech_marketplace: '0xDaF34eC46298b53a3d24CBCb431E84eBd23927dA',
-  'pearl_beta-mech_marketplace': '0xAb10188207Ea030555f53C8A84339A92f473aa5e',
-  pearl_beta_mech_marketplace_2: '0x8d7bE092d154b01d404f1aCCFA22Cef98C613B5D',
-  pearl_beta_mech_marketplace_3: '0x9d00a0551f20979080d3762005c9b74d7aa77b85',
-  pearl_beta_mech_marketplace_4: '0xE2f80659dB1069f3B6a08af1A62064190c119543',
-};

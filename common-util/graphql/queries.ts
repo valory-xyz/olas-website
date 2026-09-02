@@ -327,11 +327,21 @@ export const getOmenBetsByTimeRangeQuery = ({ first, timestamp_gte, timestamp_lt
   }
 `;
 
+// Staking contract instances with their staked registry agent ids — the basis for the
+// dynamic predict filter (see PREDICT_STAKING_AGENT_IDS in constants.ts).
+export const stakingContractAgentIdsQuery = gql`
+  {
+    stakingContracts(first: 1000) {
+      instance
+      agentIds
+    }
+  }
+`;
+
 // Staking reward checkpoints within a [timestamp_gte, timestamp_lt) window, cursor-paged.
 // Powers the windowed staking-rewards accumulator used by windowed final ROI.
-// `contractAddresses` scopes to the predict staking programs (omenstrat → the 12
-// PREDICT_STAKING_PROGRAMS_PEARL; polystrat → omit, the polygon staking subgraph is
-// predict-only). `rewardAmount` is 1e18-scaled OLAS, summable across rows.
+// `contractAddresses` scopes to the predict staking programs (resolved dynamically from
+// each contract's staked agent ids). `rewardAmount` is 1e18-scaled OLAS, summable across rows.
 export const getStakingRewardsByTimeRangeQuery = ({
   first,
   contractAddresses,
@@ -339,14 +349,11 @@ export const getStakingRewardsByTimeRangeQuery = ({
   timestamp_lt,
 }: {
   first: number;
-  contractAddresses?: string[];
+  contractAddresses: string[];
   timestamp_gte: number;
   timestamp_lt: number;
 }) => {
-  const contractFilter =
-    contractAddresses && contractAddresses.length > 0
-      ? `{ contractAddress_in: [${contractAddresses.map((a) => `"${a.toLowerCase()}"`).join(', ')}] }`
-      : '';
+  const contractFilter = `{ contractAddress_in: [${contractAddresses.map((a) => `"${a.toLowerCase()}"`).join(', ')}] }`;
   return gql`
   query StakingRewardsByTimeRange {
     serviceRewardsHistories(
