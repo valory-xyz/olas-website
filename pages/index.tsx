@@ -1,3 +1,4 @@
+import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
@@ -71,7 +72,8 @@ export const getStaticProps = async () => {
       snapshotTimestamp: metricsSnapshot?.timestamp ?? null,
       // PoL metrics come from the `other` snapshot, which refreshes on its own cadence.
       protocolSnapshotTimestamp: otherSnapshot?.timestamp ?? null,
-      olasBurned: (economySnapshot?.data as any)?.mechFees?.olasBurned ?? null,
+      olasBurned:
+        (economySnapshot?.data as AgentEconomiesMetricsData)?.mechFees?.olasBurned ?? null,
       economySnapshotTimestamp: economySnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,

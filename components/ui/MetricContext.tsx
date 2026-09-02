@@ -93,6 +93,9 @@ export const buildMetricContext = ({
 
   // `lastValidAt` is null while a source merely lags, so fall back to the snapshot's
   // own timestamp. If neither exists we omit the clause — never invent a time.
+  // Distinguish where the timestamp came from: `lastValidAt` genuinely dates the value,
+  // while the snapshot fallback only dates the run that failed to refresh it.
+  const hasOwnTimestamp = typeof status?.lastValidAt === 'number';
   const asOf = formatUtcAsOf(status?.lastValidAt ?? asOfFallback);
 
   const parts = [`${readableValue} ${noun}`];
@@ -102,11 +105,22 @@ export const buildMetricContext = ({
 
   const sentence = `${parts.join(', ')}.`;
 
-  // A frozen value is a held-over fallback, not this run's data. Say so rather than
-  // presenting a stale number as current.
-  return isFrozen(status)
-    ? `${sentence} This is the last confirmed value; the live source is currently unavailable.`
-    : sentence;
+  // Three distinct states, which `isFrozen` alone conflates:
+  //   frozen with a lastValidAt   → a genuinely held-over, previously confirmed value
+  //   frozen without one          → no usable prior value; the reading is incomplete and
+  //                                 the timestamp only dates the run that failed
+  //   lagging but live            → this run's data, but a lagging source may undercount
+  if (isFrozen(status)) {
+    return hasOwnTimestamp
+      ? `${sentence} This is the last confirmed value; the live source is currently unavailable.`
+      : `${sentence} This reading is incomplete — a source was unavailable and no earlier confirmed value exists, so the date above is when the failed refresh ran, not when the value was last valid.`;
+  }
+
+  if (status?.laggingSubgraphs?.length) {
+    return `${sentence} One or more sources are behind the chain, so this figure may undercount.`;
+  }
+
+  return sentence;
 };
 
 /**

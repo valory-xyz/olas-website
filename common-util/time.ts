@@ -39,6 +39,12 @@ export const formatUtcAsOf = (ms?: number | null): string | null => {
   return `${day} ${month} ${year} ${hours}:${minutes} UTC`;
 };
 
+/** Date-only form of {@link formatUtcAsOf}, e.g. `15 June 2026`. */
+export const formatUtcDate = (ms?: number | null): string | null => {
+  const full = formatUtcAsOf(ms);
+  return full === null ? null : full.replace(/ \d{2}:\d{2} UTC$/, '');
+};
+
 /** @returns the timestamp for 00:00 UTC N days ago */
 export const getMidnightUtcTimestampDaysAgo = (daysAgo) => {
   const now = new Date();

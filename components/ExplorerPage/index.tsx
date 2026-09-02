@@ -344,14 +344,12 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
           // is not "covering" a range, and the accuracy figure is a mean, not a total.
           const first = dayjs(metricSeries[0].date).format('D MMMM YYYY');
           const last = dayjs(metricSeries[metricSeries.length - 1].date).format('D MMMM YYYY');
-          const range =
-            config.headlineKind === 'latest'
-              ? `on ${last}, the most recent day with data`
-              : metricSeries.length > 1
-                ? config.headlineKind === 'mean'
-                  ? `a daily average over ${first} to ${last}`
-                  : `summed over ${first} to ${last}`
-                : undefined;
+          const WINDOW_BY_KIND: Record<typeof config.headlineKind, string | undefined> = {
+            latest: `on ${last}, the most recent day with data`,
+            mean: metricSeries.length > 1 ? `a daily average over ${first} to ${last}` : undefined,
+            sum: metricSeries.length > 1 ? `summed over ${first} to ${last}` : undefined,
+          };
+          const range = WINDOW_BY_KIND[config.headlineKind];
           return buildMetricContext({
             value: config.headline(metricSeries),
             status,

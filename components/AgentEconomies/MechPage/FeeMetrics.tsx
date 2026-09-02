@@ -3,7 +3,9 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { isNil } from 'lodash';
 import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
 import { formatFullNumber } from 'components/ui/MetricContext';
-import { formatUtcAsOf } from 'common-util/time';
+import { formatUtcAsOf, formatUtcDate } from 'common-util/time';
+import { isFrozen } from 'common-util/graphql/metric-utils';
+import type { MetricStatus } from 'common-util/graphql/types';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { useWindowWidth } from 'hooks';
@@ -162,28 +164,95 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
   // reads as two amounts where the data holds one. Stated here so the tiles are not summed.
   // Date the 15% marketplace fee was switched on, from the same constant the fee scan
   // uses, so the prose cannot drift from the data behind it.
-  const feeLiveSince = (formatUtcAsOf(FEE_LIVE_SINCE_SEC * 1000) ?? '').replace(
-    / \d{2}:\d{2} UTC$/,
-    ''
-  );
-  const feeFlowAsOf = formatUtcAsOf(metrics?.totalFees?.status?.lastValidAt ?? snapshotTimestamp);
+  const feeLiveSince = formatUtcDate(FEE_LIVE_SINCE_SEC * 1000) ?? '';
+  // Each statement is built from its own metric, not from `formerData` (which coerces a
+  // missing child to 0) and not dated from `totalFees` alone. A child that is missing is
+  // omitted rather than published as $0, and one that is frozen says so — the same
+  // contract `buildMetricContext` enforces for single values.
+  const feeSentence = (
+    metric: { value?: number | null; status?: MetricStatus } | undefined,
+    describe: (amount: string) => string
+  ): string | null => {
+    if (isNil(metric?.value)) return null;
+    const amount = formatFullNumber(metric.value, { isMoney: true });
+    if (!amount) return null;
+    const asOf = formatUtcAsOf(metric.status?.lastValidAt ?? snapshotTimestamp);
+    const caveat = isFrozen(metric.status)
+      ? ' This is the last confirmed value; the live source is currently unavailable.'
+      : '';
+    // Date each sentence only when the figures were not all captured together; otherwise
+    // one trailing stamp reads better than repeating the same date four times.
+    const stamp = asOf && asOf !== sharedAsOf ? ` As of ${asOf}.` : '';
+    return `${describe(amount)}${stamp}${caveat}`;
+  };
 
-  const feeFlowSummary = isNil(metrics?.totalFees?.value)
-    ? null
-    : [
-        `Total task payments ${formatFullNumber(formerData.total.value, { isMoney: true })} is the gross amount paid by requesting agents.`,
-        formerData.claimed.value === formerData.recieved.value
-          ? `Claimed payments and realised mech earnings both show ${formatFullNumber(formerData.claimed.value, { isMoney: true })}. These are one figure under two names — the total withdrawn by mechs, already net of the marketplace fee — not two separate amounts to be added together.`
-          : `Claimed payments is ${formatFullNumber(formerData.claimed.value, { isMoney: true })} and realised mech earnings is ${formatFullNumber(formerData.recieved.value, { isMoney: true })}. Realised earnings are the portion mechs keep after the marketplace fee, so the two are not additive.`,
-        `Unclaimed payments ${formatFullNumber(formerData.unclaimed.value, { isMoney: true })} is the remainder still held by the balance trackers.`,
-        `Fees collected ${formatFullNumber(formerData.burned.value, { isMoney: true })} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}.`,
-      ]
-        .concat(feeFlowAsOf ? [`All figures as of ${feeFlowAsOf}.`] : [])
-        .join(' ');
+  // If every child carries the same as-of, state it once at the end.
+  const childMetrics = [
+    metrics?.totalFees,
+    metrics?.claimedFees,
+    metrics?.recievedFees,
+    metrics?.unclaimedFees,
+    metrics?.protocolFees,
+  ];
+  const stamps = Array.from(
+    new Set(
+      childMetrics
+        .filter((m) => !isNil(m?.value))
+        .map((m) => formatUtcAsOf(m?.status?.lastValidAt ?? snapshotTimestamp))
+        .filter(Boolean)
+    )
+  );
+  const sharedAsOf = stamps.length === 1 ? stamps[0] : null;
+
+  const claimed = metrics?.claimedFees;
+  const received = metrics?.recievedFees;
+
+  const feeFlowSummary =
+    [
+      feeSentence(
+        metrics?.totalFees,
+        (a) => `Total task payments ${a} is the gross amount paid by requesting agents.`
+      ),
+      !isNil(claimed?.value) && !isNil(received?.value) && claimed.value === received.value
+        ? feeSentence(
+            claimed,
+            (a) =>
+              `Claimed payments and realised mech earnings both show ${a}. These are one figure under two names — the total withdrawn by mechs, already net of the marketplace fee — not two separate amounts to be added together.`
+          )
+        : [
+            feeSentence(claimed, (a) => `Claimed payments is ${a}.`),
+            feeSentence(
+              received,
+              (a) =>
+                `Realised mech earnings is ${a}, the portion mechs keep after the marketplace fee, so the two are not additive.`
+            ),
+          ]
+            .filter(Boolean)
+            .join(' ') || null,
+      feeSentence(
+        metrics?.unclaimedFees,
+        // Deliberately not called "still owed to mechs": it is in − out, so it also
+        // contains protocol fees that have left the mechs' entitlement.
+        (a) =>
+          `Unclaimed payments ${a} is the residual of task payments minus withdrawals, which also contains protocol fees not yet attributed, so it is not purely what is still owed to mechs.`
+      ),
+      feeSentence(
+        metrics?.protocolFees,
+        (a) =>
+          `Fees collected ${a} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}.`
+      ),
+    ]
+      .filter(Boolean)
+      .join(' ') || null;
+
+  const feeFlowText =
+    feeFlowSummary && sharedAsOf
+      ? `${feeFlowSummary} All figures as of ${sharedAsOf}.`
+      : feeFlowSummary;
 
   return (
     <SectionWrapper customClasses="text-center py-16 px-4 border-b" id="fee-flow">
-      {feeFlowSummary && <p className="sr-only">{feeFlowSummary}</p>}
+      {feeFlowText && <p className="sr-only">{feeFlowText}</p>}
       <div className="text-7xl lg:text-9xl mb-12 max-w-[1250px] mx-auto mb-4">
         <h2 className={`${SUB_HEADER_CLASS} font-semibold text-4xl mb-8`}>
           Mech Marketplace Fee Flow
