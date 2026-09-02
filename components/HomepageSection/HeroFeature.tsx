@@ -22,8 +22,6 @@ export const HeroFeature = ({ className }: { className?: string }) => (
       <span className="hero-feature-ring" aria-hidden="true">
         <span className="hero-feature-ring-spin" />
       </span>
-      {/* The arrow is inline rather than a flex sibling so it trails the last
-          word when the headline wraps, instead of parking beside both lines. */}
       <span className="hero-feature-pill">
         {HERO_FEATURE.headline}
         <svg
@@ -32,7 +30,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
           viewBox="0 0 12 12"
           fill="none"
           aria-hidden="true"
-          className="inline ml-1.5"
+          className="shrink-0"
         >
           <path
             d="M3 9L9 3M9 3H4M9 3V8"
@@ -45,7 +43,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
       </span>
     </a>
 
-    <div className="flex items-center gap-1.5 text-sm text-gray-500">
+    <div className="hero-feature-credit">
       <span>by</span>
       <Image
         src={`/images/featured-in/${HERO_FEATURE.logoFilename}`}

@@ -436,7 +436,7 @@ th {
 .hero-feature-stack {
   position: relative;
   display: inline-flex;
-  border-radius: 9999px;
+  border-radius: 56px;
   transition: translate 180ms ease;
 }
 
@@ -476,17 +476,19 @@ th {
   aspect-ratio: 1;
   translate: -50% -50%;
   /* White stops are what read as "shimmer". Each gets an explicit arc rather
-     than a single stop, so it lands as a broad highlight, not a thin seam. */
+     than a single stop, so it lands as a broad highlight, not a thin seam.
+     Stops stay in the spec's #7E22CE family so the rim reads as the same
+     border the design calls for, just lit. */
   background: conic-gradient(
-    #f472b6 0deg,
+    #7e22ce 0deg,
     #ffffff 44deg,
     #ffffff 116deg,
     #a855f7 150deg,
-    #7e22ed 190deg,
+    #7e22ce 190deg,
     #ffffff 224deg,
     #ffffff 296deg,
     #c084fc 330deg,
-    #f472b6 360deg
+    #7e22ce 360deg
   );
   animation: hero-feature-ring-spin 9s linear infinite;
 }
@@ -500,17 +502,41 @@ th {
 /* The hero sits on a video, so the pill needs its own ground to stay legible
    against whichever frame is showing. Kept translucent so the gradient behind
    still reads through. */
+/* The solid border is the design's own, and doubles as the fallback: the ring
+   above covers it exactly, so a browser that cannot composite the ring's mask
+   still shows the specified 1px #7E22CE edge rather than nothing. */
 .hero-feature-pill {
-  @apply relative block rounded-full px-5 py-2;
-  @apply text-sm md:text-base font-medium text-purple-700 text-center;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 56px;
+  border: 1px solid #7e22ce;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #7e22ce;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
   transition: background-color 150ms ease;
 }
 
 .hero-feature-stack:hover .hero-feature-pill {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Same type ramp as the pill, in the design's 50%-black. */
+.hero-feature-credit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
 }
 
 @media (prefers-reduced-motion: reduce) {
