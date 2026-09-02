@@ -69,6 +69,9 @@ export const EmissionsSummaryTable = ({ emissions }: { emissions?: EmissionData[
           {firstEpoch !== null && lastEpoch !== null
             ? `Cumulative OLAS emissions to date, covering epochs ${firstEpoch} to ${lastEpoch}. Each figure is a running total across all epochs, not a per-epoch amount.`
             : 'Cumulative OLAS emissions to date. Each figure is a running total across all epochs, not a per-epoch amount.'}
+          {
+            ' Claimed staking rewards sit in staking contracts until operators hit the respective activity requirements with their staked agents, which is why the claimed and claimable figures differ.'
+          }
         </caption>
         <tbody>
           {rows.map(({ label, total }) => (
