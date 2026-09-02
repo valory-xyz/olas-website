@@ -32,7 +32,7 @@ export const TOKEN_ICONS: Record<string, string> = {
 export const MARKETPLACE_FEE_TOKENS: Array<{ symbol: string; chainIcons: string[] }> = [
   {
     symbol: 'USDC',
-    chainIcons: ['eth', 'arbitrum', 'optimism', 'polygon', 'celo'].map(
+    chainIcons: ['eth', 'arbitrum', 'optimism', 'polygon', 'celo', 'base'].map(
       (chain) => `/images/homepage/addresses/${chain}-color.svg`
     ),
   },

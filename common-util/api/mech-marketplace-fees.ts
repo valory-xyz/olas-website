@@ -85,6 +85,12 @@ const USD_PEGGED_FEE_TRACKERS: {
     decimals: 6,
     token: 'USDC',
   },
+  {
+    chain: 'base',
+    address: '0x0443C55e151dBA13fae079518F9dd01ff9c21CB2',
+    decimals: 6,
+    token: 'USDC',
+  },
 ];
 
 // TODO: enable these once the corresponding mechs are in use and USD price conversion

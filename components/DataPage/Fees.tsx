@@ -44,6 +44,10 @@ export const FeesInfo = () => {
             url="https://polygonscan.com/address/0x5C50ebc17d002A4484585C8fbf62f51953493c0B#readContract"
             text="Polygon (USDC)"
           />
+          <Verify
+            url="https://basescan.org/address/0x0443C55e151dBA13fae079518F9dd01ff9c21CB2#readContract"
+            text="Base (USDC)"
+          />
         </div>
       </div>
     </SectionWrapper>
