@@ -86,10 +86,7 @@ export const ActivitySummary = ({
           isMoney: true,
           // One canonical name, with the aliases named, so the four labels used across
           // the site resolve to a single metric rather than four different ones.
-          // Homepage/marketplace turnover aggregates Gnosis + Base + legacy only
-          // (fetchMechFees); the mech page sums all seven marketplace chains, so the
-          // two must not be named as one figure.
-          noun: 'in Olas marketplace turnover — fees collected from the Mech Marketplace on Gnosis and Base, plus the legacy mech contracts',
+          noun: 'in Olas marketplace turnover — total fees collected from the Mech Marketplace, including the legacy mech contracts. It is the same metric the Mech economy page publishes as "Total Task Payments" — the two are one figure and differ only by snapshot refresh timing',
           window: 'all time',
           asOfFallback,
         }),
@@ -185,12 +182,7 @@ export const ActivitySummary = ({
     asOfFallback: protocolSnapshotTimestamp,
   });
 
-  // Stated separately rather than inside the turnover sentence, which already carries
-  // its own scope and as-of clause.
-  const turnoverScopeNote =
-    'The Mech economy page publishes a broader "Total Task Payments" figure covering every supported chain. It and the turnover above are different aggregations that agree only while the remaining chains hold no fees, so they should not be treated as one number.';
-
-  const lines = [...activityLines, ...polLines, polFeesLine, turnoverScopeNote].filter(Boolean);
+  const lines = [...activityLines, ...polLines, polFeesLine].filter(Boolean);
 
   if (lines.length === 0) return null;
 

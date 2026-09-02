@@ -26,10 +26,7 @@ export const MarketplaceMetrics = ({ metrics, snapshotTimestamp = null }) => {
             context: {
               // One canonical name, with the aliases named so the four labels
               // across the site resolve to a single metric rather than four.
-              // Homepage/marketplace turnover aggregates Gnosis + Base + legacy only
-              // (fetchMechFees); the mech page sums all seven marketplace chains, so the
-              // two must not be named as one figure.
-              noun: 'in Olas marketplace turnover — fees collected from the Mech Marketplace on Gnosis and Base, plus the legacy mech contracts',
+              noun: 'in Olas marketplace turnover — total fees collected from the Mech Marketplace, including the legacy mech contracts. It is the same metric the Mech economy page publishes as "Total Task Payments" — the two are one figure and differ only by snapshot refresh timing',
               window: 'all time',
             },
           },
