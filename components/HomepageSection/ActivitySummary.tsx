@@ -3,6 +3,7 @@ import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
 import { buildMetricContext, formatFullNumber } from 'components/ui/MetricContext';
 import { CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
+import { formatTokenAmount } from './Flywheel/ChainPill';
 
 type Metric = Partial<MetricWithStatus<number | string>>;
 
@@ -50,8 +51,6 @@ export const ActivitySummary = ({
   olasBurned,
   economySnapshotTimestamp = null,
 }: ActivitySummaryProps) => {
-  if (!metrics && !protocolMetrics) return null;
-
   const asOfFallback = snapshotTimestamp;
 
   const activityLines = metrics
@@ -167,10 +166,15 @@ export const ActivitySummary = ({
           // DOM and renders twice besides. Named here so each chain's holding is
           // readable once.
           const tokens = metric?.value?.tokens ?? [];
-          const composition = tokens.length
-            ? `, held as ${tokens
-                .map((t) => `${formatFullNumber(t.amount) ?? t.amount} ${t.symbol}`)
-                .join(' and ')}`
+          // Same formatter the pill tooltip uses, so one holding isn't published as two
+          // different numbers; comma-separated with a final "and" for more than two.
+          const parts = tokens.map((t) => `${formatTokenAmount(t.amount)} ${t.symbol}`);
+          const composition = parts.length
+            ? `, held as ${
+                parts.length > 1
+                  ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`
+                  : parts[0]
+              }`
             : '';
           return buildMetricContext({
             value: metric?.value?.usd,
@@ -195,11 +199,13 @@ export const ActivitySummary = ({
   });
 
   const feeSwitchLines = [
-    'The Mech Marketplace fee is currently switched on. A 15% fee is taken on payments between AI agents on the Olas Marketplace; the Governors of the Olas Protocol can turn it on or off, and it is designed to buy back and burn OLAS as the marketplace is used.',
+    'The Mech Marketplace fee is currently switched on. A 15% fee is taken on payments between AI agents on the Olas Marketplace; the Governors of the Olas Protocol can turn it on or off, and it is designed to buy back and burn OLAS as the marketplace is used, as set out in AIP-5.',
     'Fees from protocol-owned liquidity are currently switched off and stay in the pools. Turning them on is subject to the implementation of AIP-7, which is designed to burn OLAS and send the remaining tokens to the Olas Treasury.',
   ];
 
   const lines = [...activityLines, ...polLines, polFeesLine, ...feeSwitchLines].filter(Boolean);
+
+  if (lines.length === 0) return null;
 
   if (lines.length === 0) return null;
 

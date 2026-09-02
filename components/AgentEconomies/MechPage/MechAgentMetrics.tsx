@@ -156,8 +156,7 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
             <span className="text-purple-600 text-6xl">--</span>
           )}
           <div className="flex gap-2">
-            Daily Active Agents (DAAs){' '}
-            <Popover omitSrText>7-day average Daily Active Agents</Popover>
+            Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
         </Card>
         <p className="text-xl text-slate-700 mt-0 mb-4 mx-auto">

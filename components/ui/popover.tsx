@@ -12,14 +12,17 @@ type PopoverProps = {
   iconSize?: number;
   onOpenChange?: (open: boolean) => void;
   /**
-   * Skip the screen-reader-only copy of `children`.
+   * Plain-text version of the tooltip, emitted into the served HTML.
    *
-   * Radix portals the tooltip and only mounts it while open, so its content never
-   * reaches the served HTML — by default we emit a hidden duplicate so crawlers and
-   * assistive tech can read it. Set this where the surrounding `MetricContext`
-   * sentence already states the same thing, to avoid saying it twice.
+   * Radix portals the content and only mounts it while open, so `children` never reach
+   * a crawler. Opt in with a *string* rather than cloning `children`: duplicating
+   * arbitrary nodes put focusable links inside an invisible box, pulled whole tooltips
+   * into the accessible name of any `role="tab"`/button ancestor, and re-rendered
+   * stateful children (a healthy metric served "sources are behind the chain", with a
+   * locale-dependent timestamp). Leave unset where a `MetricContext` sentence nearby
+   * already says the same thing.
    */
-  omitSrText?: boolean;
+  srText?: string;
 };
 
 export const Popover = ({
@@ -31,7 +34,7 @@ export const Popover = ({
   contentClassName,
   iconSize,
   onOpenChange,
-  omitSrText = false,
+  srText,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
 
@@ -68,10 +71,9 @@ export const Popover = ({
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
-      {/* The same content, always in the DOM and visually hidden. Purely
-          presentational in every current call site, so rendering it twice is safe;
-          where children contain a link this does add a second focusable copy. */}
-      {!omitSrText && <span className="sr-only">{children}</span>}
+      {/* Plain text only — never a clone of `children`. Leading space so extraction
+          does not glue it to the preceding content. */}
+      {srText && <span className="sr-only">{` ${srText}`}</span>}
     </Tooltip.Provider>
   );
 };

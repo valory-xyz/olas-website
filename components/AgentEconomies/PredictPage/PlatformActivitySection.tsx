@@ -265,7 +265,7 @@ export const PlatformActivitySection = ({
     label: (
       <span className="flex items-center gap-2">
         Prediction Accuracy{' '}
-        <Popover omitSrText>
+        <Popover>
           <div className="flex flex-col max-w-[320px] gap-2 text-base text-gray-500">
             <p>
               Share of the agent&apos;s settled predictions that were correct, over the selected
@@ -280,7 +280,7 @@ export const PlatformActivitySection = ({
     status: m.successRateStatus,
     href: `/data#${platform}-predict-accuracy`,
     context: {
-      noun: `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}`,
+      noun: `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}. Each bet is counted on the day it was placed, once its market has resolved, so the window selects when bets were placed rather than when markets settled`,
       window: windowPhrase,
     },
     asOfFallback: snapshotTimestamp,
@@ -306,7 +306,7 @@ export const PlatformActivitySection = ({
     label: (
       <span className="flex items-center gap-2">
         Brier Score{' '}
-        <Popover omitSrText>
+        <Popover>
           <div className="flex flex-col max-w-[320px] gap-2 text-base text-gray-500">
             <p>
               The Brier score measures how well-calibrated the agent&apos;s predictions are.{' '}
@@ -388,6 +388,7 @@ export const PlatformActivitySection = ({
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="text-lg font-semibold">Performance</div>
             <Tabs
+              ariaLabel="Performance time range"
               items={getTimeRangeTabs(isWindowed)}
               activeKey={isWindowed ? activeWindow : 'max'}
               onChange={(key) => setActiveWindow(key as WindowKey)}

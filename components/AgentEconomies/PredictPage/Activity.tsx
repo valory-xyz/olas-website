@@ -139,7 +139,7 @@ const DaaCard = ({
         <StaleIndicator status={status} />
       </div>
       <div className="flex self-center gap-2">
-        Daily Active Agents (DAAs) <Popover omitSrText>{popoverText}</Popover>
+        Daily Active Agents (DAAs) <Popover>{popoverText}</Popover>
       </div>
       {context && (
         <MetricContext
@@ -158,7 +158,7 @@ export const Activity = ({
   roiDistribution,
   toolAccuracy,
   snapshotTimestamp = null,
-  polystratRoiTimestamp = null,
+  roiSnapshots = null,
 }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
@@ -215,7 +215,7 @@ export const Activity = ({
                 <NetPositiveRateCard
                   id="net-positive-rate"
                   netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
-                  asOf={polystratRoiTimestamp}
+                  asOf={roiSnapshots?.polystrat?.timestamp ?? null}
                 />
               ) : null
             }
@@ -223,6 +223,8 @@ export const Activity = ({
 
           {/* ROI Distribution Chart — filtered to the selected platform */}
           <RoiDistributionChart
+            snapshotTimestamp={roiSnapshots?.[platform]?.timestamp ?? null}
+            isIncomplete={roiSnapshots?.[platform]?.isIncomplete ?? false}
             id="roi-distribution"
             data={roiDistribution}
             platform={platform}
