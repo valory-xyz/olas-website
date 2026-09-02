@@ -115,6 +115,10 @@ const Supply = ({ metrics }) => {
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>
             <EmissionsToOperators emissions={emissions} loading={emissionsLoading} />
+            <p className="px-4 pb-4 text-sm text-slate-500">
+              * Claimed staking rewards sit in staking contracts until operators hit the respective
+              activity requirements with their staked agents.
+            </p>
           </div>
 
           <div className="flex flex-col col-span-2 border rounded-lg py-6 px-4">
