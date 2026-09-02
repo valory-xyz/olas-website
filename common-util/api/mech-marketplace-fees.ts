@@ -40,7 +40,8 @@ import { Abi, createPublicClient, formatUnits, http } from 'viem';
 
 // BalanceTracker addresses denominated in a ~= 1 USD token, so the raw on-chain
 // amount can be treated as USD after scaling by `decimals`. Sourced from the
-// new-mech-fees subgraph manifests (subgraph.<chain>.yaml).
+// new-mech-fees subgraph manifests (subgraph.<chain>.yaml) and, for Base USDC (not
+// indexed there), ai-registry-mech scripts/deployment/globals_base_mainnet.json.
 const USD_PEGGED_FEE_TRACKERS: {
   chain: keyof typeof CHAIN_CONFIG;
   address: `0x${string}`;
@@ -82,6 +83,12 @@ const USD_PEGGED_FEE_TRACKERS: {
   {
     chain: 'polygon',
     address: '0x5C50ebc17d002A4484585C8fbf62f51953493c0B',
+    decimals: 6,
+    token: 'USDC',
+  },
+  {
+    chain: 'base',
+    address: '0x0443C55e151dBA13fae079518F9dd01ff9c21CB2',
     decimals: 6,
     token: 'USDC',
   },
