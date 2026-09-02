@@ -134,7 +134,7 @@ export type AgentBlueprintRoiData = {
    * `matched` requests were consumed onto settlement days, `flushed` were
    * TTL-expired onto their request day, `ingested` were added this run
    * (post-dedupe, so the counters reconcile against `openRequests`), and
-   * `openRequests` remain pending. Windowed ROI raises a fetchError when
+   * `openRequests` remain pending. Windowed ROI raises a staleness flag (on
    * booked mech cost stays implausibly low while trading is active.
    */
   mechAttribution?: {
