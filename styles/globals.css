@@ -2,23 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "@fontsource/inter";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
-@import "@fontsource/inter/800.css";
+@import '@fontsource/inter';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     scroll-behavior: smooth;
   }
-  
-  [data-scroll-behavior="smooth"] {
+
+  [data-scroll-behavior='smooth'] {
     scroll-behavior: smooth;
   }
   :root {
@@ -147,7 +147,7 @@ video {
 }
 
 .shadow-overlay::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -160,8 +160,12 @@ video {
   border-bottom: none;
 }
 
-.transparent-gradient { 
-  background: radial-gradient(47.41% 45.97% at 50.57% 48.91%, rgba(255, 255, 255, 0.00) 65%, #ffffff 85%); 
+.transparent-gradient {
+  background: radial-gradient(
+    47.41% 45.97% at 50.57% 48.91%,
+    rgba(255, 255, 255, 0) 65%,
+    #ffffff 85%
+  );
 }
 
 .text-gradient {
@@ -170,13 +174,18 @@ video {
 
 .agent-economy-card {
   border-radius: 12px;
-  border: 1px solid #FFF;
-  background: radial-gradient(ellipse 585px 263px at top center, var(--gradient-color, rgba(126, 34, 237, 0.15)) 20%, #F2F4F9, rgba(242, 244, 249, 0.50) 100%);
+  border: 1px solid #fff;
+  background: radial-gradient(
+    ellipse 585px 263px at top center,
+    var(--gradient-color, rgba(126, 34, 237, 0.15)) 20%,
+    #f2f4f9,
+    rgba(242, 244, 249, 0.5) 100%
+  );
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
 .operate-card {
-  box-shadow: 0px 0px 0px 4px #FFF inset;
+  box-shadow: 0px 0px 0px 4px #fff inset;
 }
 
 /* No backdrop-filter here on purpose: it put every card using this class on its
@@ -201,24 +210,26 @@ video {
 }
 
 .card-opaque {
-  background: rgba(255, 255, 255, 0.80);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
 }
 
 .opaque-button:hover {
-  background: rgba(255, 255, 255, 0.50);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .selected-button {
-  background: rgba(255, 255, 255, 0.50);
+  background: rgba(255, 255, 255, 0.5);
 }
 
-td, th {
+td,
+th {
   padding-top: 8px;
   padding-bottom: 8px;
 }
 
-tr, th {
+tr,
+th {
   padding-right: 16px;
   padding-left: 16px;
 }
@@ -244,7 +255,7 @@ tr, th {
 
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/neue-machina.woff2')format('woff2');
+  src: url('/fonts/neue-machina.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -352,7 +363,8 @@ tr, th {
 .heatmap-cell {
   transform-origin: center;
   /* transform → hover lift; background-color → seamless recolour on a metric switch. */
-  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+  transition:
+    transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 350ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .heatmap-cell:hover {
@@ -371,7 +383,8 @@ tr, th {
   background: #fff;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.4);
-  transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1),
+  transition:
+    opacity 150ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
@@ -412,5 +425,106 @@ tr, th {
 @media (prefers-reduced-motion: reduce) {
   .explorer-reveal {
     animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero press feature — temporary, self-expiring (remove after the run).
+   --------------------------------------------------------------------------- */
+
+/* Pill + ring move as a unit, so the rim never lags behind the pill on hover. */
+.hero-feature-stack {
+  position: relative;
+  display: inline-flex;
+  border-radius: 9999px;
+  transition: translate 180ms ease;
+}
+
+.hero-feature-stack:hover {
+  translate: 0 -1px;
+}
+
+/* Gradient rim, in two layers. The outer layer holds a static mask that cuts
+   everything but a 1px rim; the inner layer carries the gradient and simply
+   rotates. Animating a conic-gradient's angle (the obvious one-element version)
+   repaints the rim every frame for as long as the feature runs; rotating a
+   finished layer is handled by the compositor, so nothing repaints at all. */
+.hero-feature-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  /* autoprefixer does not generate this — the webkit variant takes xor. */
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Square and oversized so no part of the rim is ever uncovered as it turns. */
+.hero-feature-ring-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  /* White stops are what read as "shimmer". Each gets an explicit arc rather
+     than a single stop, so it lands as a broad highlight, not a thin seam. */
+  background: conic-gradient(
+    #f472b6 0deg,
+    #ffffff 44deg,
+    #ffffff 116deg,
+    #a855f7 150deg,
+    #7e22ed 190deg,
+    #ffffff 224deg,
+    #ffffff 296deg,
+    #c084fc 330deg,
+    #f472b6 360deg
+  );
+  animation: hero-feature-ring-spin 9s linear infinite;
+}
+
+@keyframes hero-feature-ring-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* The hero sits on a video, so the pill needs its own ground to stay legible
+   against whichever frame is showing. Kept translucent so the gradient behind
+   still reads through. */
+.hero-feature-pill {
+  @apply relative block rounded-full px-5 py-2;
+  @apply text-sm md:text-base font-medium text-purple-700 text-center;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: background-color 150ms ease;
+}
+
+.hero-feature-stack:hover .hero-feature-pill {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The gradient still renders, just parked — a static multicolour rim rather
+     than a plain border. */
+  .hero-feature-ring-spin {
+    animation: none;
+  }
+
+  .hero-feature-stack {
+    transition: none;
+  }
+
+  .hero-feature-stack:hover {
+    translate: none;
   }
 }
