@@ -5,9 +5,12 @@ import Image from 'next/image';
 const CARD_HOVER_SHADOW =
   'group-hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]';
 
-// Paper grain, desaturated so it reads as speckle rather than colour noise.
-const CARD_GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
+// Paper speckle. feTurbulence alone lays down continuous grain, which greys the
+// whole card down; the colour matrix instead keeps a fixed slate and drives only
+// alpha off the noise, so anything below the threshold stays fully transparent
+// and what is left reads as scattered flecks.
+const CARD_SPECKLE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55 0 0 0 0 0.6 0 0 0 0 0.72 8 0 0 0 -5.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)'/%3E%3C/svg%3E\")";
 
 const Rule = () => <div className="h-px w-full bg-[#B7C1D2]" />;
 
@@ -30,7 +33,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
         'shadow-md transition-all duration-300 ease-in-out group-hover:scale-[1.01]',
         CARD_HOVER_SHADOW
       )}
-      style={{ backgroundColor: '#EDF0F5', backgroundImage: CARD_GRAIN }}
+      style={{ backgroundColor: '#F2F5FA', backgroundImage: CARD_SPECKLE }}
     >
       <Rule />
       <div className="mt-2 text-[12px] lg:text-[15px] leading-none text-center text-[#7B8698]">
