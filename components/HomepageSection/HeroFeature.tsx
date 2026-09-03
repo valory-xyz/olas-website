@@ -7,12 +7,12 @@ const CARD_HOVER_SHADOW =
 
 // Paper grain, desaturated so it reads as speckle rather than colour noise.
 const CARD_GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
 
-const Rule = () => <div className="h-px w-full bg-[#CBD3E1]" />;
+const Rule = () => <div className="h-px w-full bg-[#B7C1D2]" />;
 
 const Bar = ({ className }: { className: string }) => (
-  <div className={cn('h-[7px] lg:h-2 rounded bg-[#C7CFDD]', className)} />
+  <div className={cn('h-2 lg:h-2.5 rounded bg-[#C3CCDB]', className)} />
 );
 
 // Temporary press feature on the hero. Gated by isHeroFeatureActive.
@@ -26,7 +26,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
     <div
       className={cn(
         'w-[140px] lg:w-[180px] mx-auto rounded-[20px] lg:rounded-3xl',
-        'px-2.5 lg:px-3 pt-3 lg:pt-4 pb-11 lg:pb-14',
+        'px-2.5 lg:px-3 pt-3.5 lg:pt-[18px] pb-10 lg:pb-[52px]',
         'shadow-md transition-all duration-300 ease-in-out group-hover:scale-[1.01]',
         CARD_HOVER_SHADOW
       )}
@@ -48,12 +48,12 @@ export const HeroFeature = ({ className }: { className?: string }) => (
       </div>
 
       {/* Stand-in for the article: a thumbnail and its opening lines. */}
-      <div className="mt-3 lg:mt-4 flex items-start gap-2 lg:gap-2.5">
-        <div className="size-[38px] lg:size-[46px] shrink-0 rounded-lg bg-[#C7CFDD]" />
-        <div className="flex-1 space-y-[7px] lg:space-y-2">
+      <div className="mt-3 lg:mt-4 flex items-start gap-2 pl-2 lg:pl-[10px]">
+        <div className="w-[38px] h-[33px] lg:w-12 lg:h-[42px] shrink-0 rounded-lg bg-[#C3CCDB]" />
+        <div className="flex-1 pt-[3px] lg:pt-1 space-y-[5px] lg:space-y-1.5">
           <Bar className="w-full" />
-          <Bar className="w-4/5" />
-          <Bar className="w-3/5" />
+          <Bar className="w-[72%]" />
+          <Bar className="w-[47%]" />
         </div>
       </div>
     </div>
