@@ -57,17 +57,18 @@ type PlatformActivitySectionProps = {
   beforeMetrics?: ReactNode;
 };
 
-// Polystrat leads: it is the default platform, so it takes the leftmost slot.
+// Display order only — Polystrat is the default platform (see Activity.tsx) but
+// Omenstrat keeps the leftmost slot, matching the DAA cards above the switcher.
 const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
-  {
-    key: 'polystrat',
-    label: 'Polystrat',
-    icon: '/images/predict-page/polystrat-icon.png',
-  },
   {
     key: 'omenstrat',
     label: 'Omenstrat',
     icon: '/images/predict-page/omenstrat-icon.png',
+  },
+  {
+    key: 'polystrat',
+    label: 'Polystrat',
+    icon: '/images/predict-page/polystrat-icon.png',
   },
 ];
 
