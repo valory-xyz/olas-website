@@ -3,7 +3,6 @@
 import type { NetPositive } from 'common-util/api/predict/roi-distribution';
 import { Card } from 'components/ui/card';
 import { MetricContext } from 'components/ui/MetricContext';
-import { Popover } from 'components/ui/popover';
 import { ExternalLink } from 'components/ui/typography';
 import { isNil } from 'lodash';
 
@@ -31,7 +30,7 @@ const AGENT_WINDOW_PHRASE = 'over the last 30 days';
 const AXIS_STEP = 10;
 
 const AGENT_COLOR = '#4D74FF';
-const BASELINE_COLOR = '#94A3B8';
+const BASELINE_COLOR = '#A3AEBB';
 
 type NetPositiveRateCardProps = {
   /** Net-positive share for the selected 30-day window. */
@@ -42,9 +41,16 @@ type NetPositiveRateCardProps = {
   asOf?: number | null;
 };
 
-/** Round the axis up to the next 10% so both bars sit inside it. */
-const axisMaxFor = (highest: number) =>
+/** The last gridline: the first round step at or above the longest bar. */
+const lastTickFor = (highest: number) =>
   Math.max(AXIS_STEP, Math.ceil(highest / AXIS_STEP) * AXIS_STEP);
+
+/**
+ * The scale runs half a step past the last gridline, so a bar that reaches that
+ * gridline still stops short of the panel edge — and half a step is too little to
+ * earn a gridline of its own.
+ */
+const AXIS_HEADROOM = AXIS_STEP / 2;
 
 const RateBar = ({ value, axisMax, color }: { value: number; axisMax: number; color: string }) => (
   <div
@@ -72,8 +78,9 @@ export const NetPositiveRateCard = ({
 
   if (isNil(rate)) return null;
 
-  const axisMax = axisMaxFor(Math.max(rate, BASELINE.rate));
-  const ticks = Array.from({ length: axisMax / AXIS_STEP + 1 }, (_, i) => i * AXIS_STEP);
+  const lastTick = lastTickFor(Math.max(rate, BASELINE.rate));
+  const axisMax = lastTick + AXIS_HEADROOM;
+  const ticks = Array.from({ length: lastTick / AXIS_STEP + 1 }, (_, i) => i * AXIS_STEP);
   const multiplier = (rate / BASELINE.rate).toFixed(1);
 
   return (
@@ -83,28 +90,15 @@ export const NetPositiveRateCard = ({
     >
       <div className="grid gap-6 md:grid-cols-2">
         {/* Chart — the title sits inside the panel, above the legend */}
-        <div className="rounded-xl border border-slate-200 bg-white">
-          <div className="flex items-center gap-2 border-b border-slate-200 p-4">
-            <h3 className="text-lg font-semibold text-gray-900">Net-positive rate</h3>
-            <Popover>
-              <div className="flex max-w-[320px] flex-col gap-2 text-base text-gray-500">
-                <p>
-                  Share of Polystrat agents whose trading ROI was above zero over the last 30 days.
-                  Uses the same per-agent ROI as the distribution below, including only agents with
-                  enough trading history to be meaningful.
-                </p>
-                <p>
-                  The baseline counts individual Polymarket wallets, not agents, and covers a longer
-                  period — see the footnotes.
-                </p>
-              </div>
-            </Popover>
+        <div className="rounded-xl border border-slate-200 bg-gradient-to-t from-[#F2F4F9] to-[#FFFFFF]">
+          <div className="flex items-center gap-2 border-b border-slate-200 py-3 px-6">
+            <h3 className="text-lg font-semibold">Net-positive rate</h3>
           </div>
 
-          <div className="p-4">
+          <div className="p-6 pb-4">
             <div className="mb-4 flex flex-wrap items-center gap-4">
-              <LegendSwatch color={AGENT_COLOR}>Polystrat*</LegendSwatch>
-              <LegendSwatch color={BASELINE_COLOR}>{BASELINE.label}**</LegendSwatch>
+              <LegendSwatch color={AGENT_COLOR}>Polystrat</LegendSwatch>
+              <LegendSwatch color={BASELINE_COLOR}>{BASELINE.label}</LegendSwatch>
             </div>
 
             <div className="relative">
@@ -113,7 +107,7 @@ export const NetPositiveRateCard = ({
                 {ticks.map((tick) => (
                   <span
                     key={tick}
-                    className="absolute top-0 h-full w-px bg-slate-200"
+                    className="absolute top-0 h-full w-px bg-[#D7DDEA]"
                     style={{ left: `${(tick / axisMax) * 100}%` }}
                   />
                 ))}
@@ -127,14 +121,12 @@ export const NetPositiveRateCard = ({
 
             {/* Axis */}
             <div className="relative mt-2 h-5">
-              {ticks.map((tick, i) => (
+              {/* The last tick is no longer the right edge, so every label centres. */}
+              {ticks.map((tick) => (
                 <span
                   key={tick}
-                  className="absolute top-0 text-sm text-slate-500"
-                  style={{
-                    left: `${(tick / axisMax) * 100}%`,
-                    transform: i === ticks.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
-                  }}
+                  className="absolute top-0 -translate-x-1/2 text-sm text-slate-500"
+                  style={{ left: `${(tick / axisMax) * 100}%` }}
                 >
                   {tick}%
                 </span>
@@ -145,13 +137,15 @@ export const NetPositiveRateCard = ({
 
         {/* Comparison */}
         <div className="flex flex-col justify-between gap-6">
-          <p className="text-lg text-gray-900">
-            Polystrat win rate vs baseline traders:{' '}
-            <span className="text-2xl font-bold text-purple-600">{multiplier}x</span>
-            <sup>**</sup>
-          </p>
+          <div className="h-full flex items-center">
+            <p className="text-slate-600">
+              Polystrat win rate vs baseline traders:{' '}
+              <span className="font-medium text-lg text-black">{multiplier}x</span>
+              <sup>**</sup>
+            </p>
+          </div>
 
-          <div className="flex flex-col gap-1 text-sm text-slate-500">
+          <div className="flex flex-col gap-1 text-xs text-slate-500">
             <span>* - Polystrat reported time-range: {AGENT_WINDOW_LABEL}.</span>
             <span>
               ** - Baseline traders reported time-range: {BASELINE.window}. Source:{' '}
