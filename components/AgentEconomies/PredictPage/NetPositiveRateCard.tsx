@@ -41,15 +41,9 @@ type NetPositiveRateCardProps = {
   asOf?: number | null;
 };
 
-/** The last gridline: the first round step at or above the longest bar. */
 const lastTickFor = (highest: number) =>
   Math.max(AXIS_STEP, Math.ceil(highest / AXIS_STEP) * AXIS_STEP);
 
-/**
- * The scale runs half a step past the last gridline, so a bar that reaches that
- * gridline still stops short of the panel edge — and half a step is too little to
- * earn a gridline of its own.
- */
 const AXIS_HEADROOM = AXIS_STEP / 2;
 
 const RateBar = ({ value, axisMax, color }: { value: number; axisMax: number; color: string }) => (
