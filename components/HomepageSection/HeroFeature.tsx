@@ -5,6 +5,16 @@ import Image from 'next/image';
 const CARD_HOVER_SHADOW =
   'group-hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]';
 
+// Paper grain, desaturated so it reads as speckle rather than colour noise.
+const CARD_GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
+
+const Rule = () => <div className="h-px w-full bg-[#CBD3E1]" />;
+
+const Bar = ({ className }: { className: string }) => (
+  <div className={cn('h-[7px] lg:h-2 rounded bg-[#C7CFDD]', className)} />
+);
+
 // Temporary press feature on the hero. Gated by isHeroFeatureActive.
 export const HeroFeature = ({ className }: { className?: string }) => (
   <a
@@ -15,35 +25,35 @@ export const HeroFeature = ({ className }: { className?: string }) => (
   >
     <div
       className={cn(
-        'w-[140px] lg:w-[180px] mx-auto rounded-2xl bg-white px-4 py-4 lg:px-4 lg:py-5',
+        'w-[140px] lg:w-[180px] mx-auto rounded-[20px] lg:rounded-3xl',
+        'px-2.5 lg:px-3 pt-3 lg:pt-4 pb-11 lg:pb-14',
         'shadow-md transition-all duration-300 ease-in-out group-hover:scale-[1.01]',
         CARD_HOVER_SHADOW
       )}
+      style={{ backgroundColor: '#EDF0F5', backgroundImage: CARD_GRAIN }}
     >
-      <div className="text-[10px] lg:text-[11px] leading-none text-gray-500 text-center">
+      <Rule />
+      <div className="mt-2 text-[12px] lg:text-[15px] leading-none text-center text-[#7B8698]">
         Spotted on
       </div>
       <Image
         src={HERO_FEATURE.logoSrc}
         alt={HERO_FEATURE.outlet}
-        width={112}
-        height={29}
-        className="mx-auto mt-1.5 w-[86px] lg:w-[112px] h-auto"
+        width={108}
+        height={28}
+        className="mx-auto mt-1.5 w-[84px] lg:w-[108px] h-auto"
       />
+      <div className="mt-2.5 lg:mt-3">
+        <Rule />
+      </div>
 
-      {/* Stand-in for the article itself: a thumbnail and its opening lines. */}
-      <div className="mt-3 lg:mt-4 border-t border-gray-200 pt-3 lg:pt-4">
-        <div className="flex items-start gap-2">
-          <div className="size-10 lg:size-12 shrink-0 rounded bg-gray-200" />
-          <div className="flex-1 space-y-1.5 lg:space-y-2 pt-0.5">
-            <div className="h-1.5 rounded-full bg-gray-200" />
-            <div className="h-1.5 w-4/5 rounded-full bg-gray-200" />
-            <div className="h-1.5 w-3/5 rounded-full bg-gray-200" />
-          </div>
-        </div>
-        <div className="mt-2.5 lg:mt-3 space-y-1.5 lg:space-y-2">
-          <div className="h-1.5 rounded-full bg-gray-200" />
-          <div className="h-1.5 w-2/3 rounded-full bg-gray-200" />
+      {/* Stand-in for the article: a thumbnail and its opening lines. */}
+      <div className="mt-3 lg:mt-4 flex items-start gap-2 lg:gap-2.5">
+        <div className="size-[38px] lg:size-[46px] shrink-0 rounded-lg bg-[#C7CFDD]" />
+        <div className="flex-1 space-y-[7px] lg:space-y-2">
+          <Bar className="w-full" />
+          <Bar className="w-4/5" />
+          <Bar className="w-3/5" />
         </div>
       </div>
     </div>
