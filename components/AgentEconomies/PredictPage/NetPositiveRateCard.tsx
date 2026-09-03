@@ -144,7 +144,7 @@ export const NetPositiveRateCard = ({
         <div className="flex flex-col justify-between gap-6">
           <div className="h-full flex items-center">
             <p className="text-slate-600">
-              Polystrat win rate vs baseline traders:{' '}
+              Polystrat net-positive rate vs baseline traders:{' '}
               <span className="font-medium text-lg text-black">{multiplier}x</span>
               <sup>**</sup>
             </p>
