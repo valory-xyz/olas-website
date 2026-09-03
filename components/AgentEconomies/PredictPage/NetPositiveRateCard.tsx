@@ -70,8 +70,6 @@ export const NetPositiveRateCard = ({
 }: NetPositiveRateCardProps) => {
   const rate = netPositive?.rate ?? null;
 
-  // The card exists to make a comparison. Without our own number there is nothing
-  // to compare, so it stays out of the page rather than rendering a lone baseline.
   if (isNil(rate)) return null;
 
   const axisMax = axisMaxFor(Math.max(rate, BASELINE.rate));
@@ -81,65 +79,67 @@ export const NetPositiveRateCard = ({
   return (
     <Card
       id={id}
-      className={`flex flex-col gap-6 rounded-2xl border border-slate-200 bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] p-6 ${className ?? ''}`}
+      className={`flex flex-col gap-6 rounded-3xl border-none bg-[#F2F4F9] p-6 ${className ?? ''}`}
     >
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Net-positive rate</h3>
-        <Popover>
-          <div className="flex max-w-[320px] flex-col gap-2 text-base text-gray-500">
-            <p>
-              Share of Polystrat agents whose trading ROI was above zero over the last 30 days. Uses
-              the same per-agent ROI as the distribution below, including only agents with enough
-              trading history to be meaningful.
-            </p>
-            <p>
-              The baseline counts individual Polymarket wallets, not agents, and covers a longer
-              period — see the footnotes.
-            </p>
-          </div>
-        </Popover>
-      </div>
-
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Chart */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <div className="mb-4 flex flex-wrap items-center gap-4">
-            <LegendSwatch color={AGENT_COLOR}>Polystrat*</LegendSwatch>
-            <LegendSwatch color={BASELINE_COLOR}>{BASELINE.label}**</LegendSwatch>
+        {/* Chart — the title sits inside the panel, above the legend */}
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <div className="flex items-center gap-2 border-b border-slate-200 p-4">
+            <h3 className="text-lg font-semibold text-gray-900">Net-positive rate</h3>
+            <Popover>
+              <div className="flex max-w-[320px] flex-col gap-2 text-base text-gray-500">
+                <p>
+                  Share of Polystrat agents whose trading ROI was above zero over the last 30 days.
+                  Uses the same per-agent ROI as the distribution below, including only agents with
+                  enough trading history to be meaningful.
+                </p>
+                <p>
+                  The baseline counts individual Polymarket wallets, not agents, and covers a longer
+                  period — see the footnotes.
+                </p>
+              </div>
+            </Popover>
           </div>
 
-          <div className="relative">
-            {/* Gridlines, one per axis tick */}
-            <div aria-hidden className="absolute inset-0">
-              {ticks.map((tick) => (
+          <div className="p-4">
+            <div className="mb-4 flex flex-wrap items-center gap-4">
+              <LegendSwatch color={AGENT_COLOR}>Polystrat*</LegendSwatch>
+              <LegendSwatch color={BASELINE_COLOR}>{BASELINE.label}**</LegendSwatch>
+            </div>
+
+            <div className="relative">
+              {/* Gridlines, one per axis tick */}
+              <div aria-hidden className="absolute inset-0">
+                {ticks.map((tick) => (
+                  <span
+                    key={tick}
+                    className="absolute top-0 h-full w-px bg-slate-200"
+                    style={{ left: `${(tick / axisMax) * 100}%` }}
+                  />
+                ))}
+              </div>
+
+              <div className="relative flex flex-col gap-3 py-1">
+                <RateBar value={rate} axisMax={axisMax} color={AGENT_COLOR} />
+                <RateBar value={BASELINE.rate} axisMax={axisMax} color={BASELINE_COLOR} />
+              </div>
+            </div>
+
+            {/* Axis */}
+            <div className="relative mt-2 h-5">
+              {ticks.map((tick, i) => (
                 <span
                   key={tick}
-                  className="absolute top-0 h-full w-px bg-slate-200"
-                  style={{ left: `${(tick / axisMax) * 100}%` }}
-                />
+                  className="absolute top-0 text-sm text-slate-500"
+                  style={{
+                    left: `${(tick / axisMax) * 100}%`,
+                    transform: i === ticks.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
+                  }}
+                >
+                  {tick}%
+                </span>
               ))}
             </div>
-
-            <div className="relative flex flex-col gap-3 py-1">
-              <RateBar value={rate} axisMax={axisMax} color={AGENT_COLOR} />
-              <RateBar value={BASELINE.rate} axisMax={axisMax} color={BASELINE_COLOR} />
-            </div>
-          </div>
-
-          {/* Axis */}
-          <div className="relative mt-2 h-5">
-            {ticks.map((tick, i) => (
-              <span
-                key={tick}
-                className="absolute top-0 text-sm text-slate-500"
-                style={{
-                  left: `${(tick / axisMax) * 100}%`,
-                  transform: i === ticks.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
-                }}
-              >
-                {tick}%
-              </span>
-            ))}
           </div>
         </div>
 
