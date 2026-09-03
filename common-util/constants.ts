@@ -309,8 +309,12 @@ export const MARKETPLACE_CHAIN_SCOPE = (() => {
 export const HERO_FEATURE = {
   headline: 'Agentic Commerce Is Here As Mastercard Cloudflare And Olas Build Rails',
   outlet: 'Forbes',
-  /** Logo under public/images/featured-in — shared with the "As seen in" reel. */
-  logoFilename: 'forbes.svg',
+  /**
+   * Its own copy of the wordmark, cropped to the ink. The reel's `forbes.svg`
+   * centres the same paths in a 216-wide box, and at this size that padding
+   * lands as ~29px of dead space between "by" and the logo.
+   */
+  logoSrc: '/images/homepage/forbes-wordmark.svg',
   url: 'https://www.forbes.com/sites/sandycarter/2026/09/02/agentic-commerce-is-here-as-mastercard-cloudflare-and-olas-build-rails/',
 } as const;
 

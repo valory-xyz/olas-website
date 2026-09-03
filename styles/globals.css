@@ -2,23 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '@fontsource/inter';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/inter/800.css';
+@import "@fontsource/inter";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/inter/800.css";
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-
+  
   body {
     scroll-behavior: smooth;
   }
-
-  [data-scroll-behavior='smooth'] {
+  
+  [data-scroll-behavior="smooth"] {
     scroll-behavior: smooth;
   }
   :root {
@@ -147,7 +147,7 @@ video {
 }
 
 .shadow-overlay::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -160,12 +160,8 @@ video {
   border-bottom: none;
 }
 
-.transparent-gradient {
-  background: radial-gradient(
-    47.41% 45.97% at 50.57% 48.91%,
-    rgba(255, 255, 255, 0) 65%,
-    #ffffff 85%
-  );
+.transparent-gradient { 
+  background: radial-gradient(47.41% 45.97% at 50.57% 48.91%, rgba(255, 255, 255, 0.00) 65%, #ffffff 85%); 
 }
 
 .text-gradient {
@@ -174,18 +170,13 @@ video {
 
 .agent-economy-card {
   border-radius: 12px;
-  border: 1px solid #fff;
-  background: radial-gradient(
-    ellipse 585px 263px at top center,
-    var(--gradient-color, rgba(126, 34, 237, 0.15)) 20%,
-    #f2f4f9,
-    rgba(242, 244, 249, 0.5) 100%
-  );
+  border: 1px solid #FFF;
+  background: radial-gradient(ellipse 585px 263px at top center, var(--gradient-color, rgba(126, 34, 237, 0.15)) 20%, #F2F4F9, rgba(242, 244, 249, 0.50) 100%);
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
 .operate-card {
-  box-shadow: 0px 0px 0px 4px #fff inset;
+  box-shadow: 0px 0px 0px 4px #FFF inset;
 }
 
 /* No backdrop-filter here on purpose: it put every card using this class on its
@@ -210,26 +201,24 @@ video {
 }
 
 .card-opaque {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.80);
   backdrop-filter: blur(12px);
 }
 
 .opaque-button:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.50);
 }
 
 .selected-button {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.50);
 }
 
-td,
-th {
+td, th {
   padding-top: 8px;
   padding-bottom: 8px;
 }
 
-tr,
-th {
+tr, th {
   padding-right: 16px;
   padding-left: 16px;
 }
@@ -255,7 +244,7 @@ th {
 
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/neue-machina.woff2') format('woff2');
+  src: url('/fonts/neue-machina.woff2')format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -363,8 +352,7 @@ th {
 .heatmap-cell {
   transform-origin: center;
   /* transform → hover lift; background-color → seamless recolour on a metric switch. */
-  transition:
-    transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 350ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .heatmap-cell:hover {
@@ -383,8 +371,7 @@ th {
   background: #fff;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.4);
-  transition:
-    opacity 150ms cubic-bezier(0.22, 1, 0.36, 1),
+  transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
@@ -505,9 +492,6 @@ th {
   }
 }
 
-/* The hero sits on a video, so the pill needs its own ground to stay legible
-   against whichever frame is showing. Kept translucent so the gradient behind
-   still reads through. */
 /* The 1px border is transparent and exists only to reserve the rim's track, so
    the pill keeps the spec's box while the animated ring supplies the edge. A
    browser that cannot composite the ring's mask falls back to the same purple
@@ -541,7 +525,7 @@ th {
 .hero-feature-credit {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: rgba(0, 0, 0, 0.5);
   font-size: 16px;
   font-weight: 400;
