@@ -296,39 +296,20 @@ export const MARKETPLACE_CHAIN_SCOPE = (() => {
   return `all ${names.length} chains the Mech Marketplace is deployed on (${list})`;
 })();
 
-// ---------------------------------------------------------------------------
-// Hero press feature — temporary, self-expiring (remove after the run).
-// Everything for it is greppable by "HERO_FEATURE" / "hero-feature".
-// ---------------------------------------------------------------------------
-
-/**
- * The press piece promoted under the homepage hero subheading. A single object
- * so the copy, the outlet and the link can never drift apart across the two
- * hero breakpoints that render it.
- */
+// Hero press feature — temporary. Remove after the run; greppable by HERO_FEATURE.
 export const HERO_FEATURE = {
   headline: 'Agentic Commerce Is Here As Mastercard Cloudflare And Olas Build Rails',
   outlet: 'Forbes',
-  /**
-   * Its own copy of the wordmark, cropped to the ink. The reel's `forbes.svg`
-   * centres the same paths in a 216-wide box, and at this size that padding
-   * lands as ~29px of dead space between "by" and the logo.
-   */
+  // Cropped to the ink; the reel's forbes.svg has ~29px of padding at this size.
   logoSrc: '/images/homepage/forbes-wordmark.svg',
   url: 'https://www.forbes.com/sites/sandycarter/2026/09/02/agentic-commerce-is-here-as-mastercard-cloudflare-and-olas-build-rails/',
 } as const;
 
-/**
- * When the feature stops rendering — a month after the article ran (2026-09-02).
- * Keep the explicit Z: a bare date parses as midnight UTC and would cut the
- * last day off the run.
- */
+// A month after the article ran (2026-09-02). Keep the explicit Z.
 export const HERO_FEATURE_END = '2026-10-02T23:59:59Z';
 
-/** Whether the hero feature is still within its run. */
 export const isHeroFeatureActive = (now: number = Date.now()): boolean => {
   const endsAt = Date.parse(HERO_FEATURE_END);
-  // Fail closed: an unparseable end date hides the feature rather than
-  // stranding a stale press link on the homepage forever.
+  // Fail closed: an unparseable date hides the feature rather than stranding it.
   return !Number.isNaN(endsAt) && now < endsAt;
 };

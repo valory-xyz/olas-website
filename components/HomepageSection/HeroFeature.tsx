@@ -2,15 +2,7 @@ import { HERO_FEATURE } from 'common-util/constants';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
 
-/**
- * Temporary press feature under the hero subheading — a pill linking to the
- * article, with the outlet credited beneath it. Self-expires: see
- * `isHeroFeatureActive`, resolved in `getStaticProps` so the date boundary
- * cannot cause a hydration mismatch.
- *
- * The animated rim is the same two-layer masked ring used by the 20M milestone
- * card, so the shimmer reads as the site's own accent rather than a new one.
- */
+// Temporary press feature under the hero subheading. Gated by isHeroFeatureActive.
 export const HeroFeature = ({ className }: { className?: string }) => (
   <div className={cn('flex flex-col items-center gap-2 pointer-events-auto', className)}>
     <a
@@ -45,7 +37,6 @@ export const HeroFeature = ({ className }: { className?: string }) => (
 
     <div className="hero-feature-credit">
       <span>by</span>
-      {/* Sized to sit level with the 16px "by" beside it. */}
       <Image
         src={HERO_FEATURE.logoSrc}
         alt={HERO_FEATURE.outlet}

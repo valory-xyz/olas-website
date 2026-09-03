@@ -80,8 +80,7 @@ const Hero = ({ showFeature = false }: { showFeature?: boolean }) => (
         <h1 className="tracking-tight text-5xl md:text-6xl mb-6 lg:mb-12 text-black font-extrabold">
           Co-own AI
         </h1>
-        {/* The feature takes the space the subheading's bottom margin held, so the
-            chevrons stay where they are rather than being pushed off the section. */}
+        {/* The feature takes the space the subheading's bottom margin held. */}
         <div
           className={cn('text-xl leading-8 text-gray-900', showFeature ? 'mb-6' : 'mb-8 lg:mb-32')}
         >
