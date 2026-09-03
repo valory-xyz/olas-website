@@ -163,7 +163,7 @@ export const Activity = ({
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
-  const [platform, setPlatform] = useState<Platform>('omenstrat');
+  const [platform, setPlatform] = useState<Platform>('polystrat');
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
