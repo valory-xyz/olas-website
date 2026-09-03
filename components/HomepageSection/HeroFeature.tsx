@@ -45,11 +45,14 @@ export const HeroFeature = ({ className }: { className?: string }) => (
 
     <div className="hero-feature-credit">
       <span>by</span>
+      {/* Sized to sit level with the 16px "by" beside it — the reel's own logos
+          are far larger, so the shared asset needs its own scale here. */}
       <Image
         src={`/images/featured-in/${HERO_FEATURE.logoFilename}`}
         alt={HERO_FEATURE.outlet}
-        width={62}
-        height={8}
+        width={104}
+        height={13}
+        className="h-[13px] w-auto"
       />
     </div>
   </div>

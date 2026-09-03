@@ -456,6 +456,10 @@ th {
   padding: 1px;
   overflow: hidden;
   pointer-events: none;
+  /* Paints above the pill, not behind it. Behind, the pill's own border and its
+     backdrop-filter both cover the rim — which is what made the border read as
+     a flat purple line instead of the moving gradient. */
+  z-index: 1;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -475,18 +479,20 @@ th {
   width: 150%;
   aspect-ratio: 1;
   translate: -50% -50%;
-  /* White stops are what read as "shimmer". Each gets an explicit arc rather
-     than a single stop, so it lands as a broad highlight, not a thin seam.
-     Stops stay in the spec's #7E22CE family so the rim reads as the same
-     border the design calls for, just lit. */
+  /* Every stop stays in the spec's #7E22CE family: the milestone card could use
+     white highlights because it sat on a white card, but here the hero behind is
+     near-white, so a white arc erased that stretch of border instead of lighting
+     it. The lightest stop is a lilac, so the edge is continuous at every angle
+     and only its tone travels. Each highlight gets an explicit arc rather than a
+     single stop, so it lands as a broad sweep, not a thin seam. */
   background: conic-gradient(
     #7e22ce 0deg,
-    #ffffff 44deg,
-    #ffffff 116deg,
+    #ddc0fb 44deg,
+    #ddc0fb 116deg,
     #a855f7 150deg,
     #7e22ce 190deg,
-    #ffffff 224deg,
-    #ffffff 296deg,
+    #ddc0fb 224deg,
+    #ddc0fb 296deg,
     #c084fc 330deg,
     #7e22ce 360deg
   );
@@ -502,9 +508,11 @@ th {
 /* The hero sits on a video, so the pill needs its own ground to stay legible
    against whichever frame is showing. Kept translucent so the gradient behind
    still reads through. */
-/* The solid border is the design's own, and doubles as the fallback: the ring
-   above covers it exactly, so a browser that cannot composite the ring's mask
-   still shows the specified 1px #7E22CE edge rather than nothing. */
+/* The 1px border is transparent and exists only to reserve the rim's track, so
+   the pill keeps the spec's box while the animated ring supplies the edge. A
+   browser that cannot composite the ring's mask falls back to the same purple
+   via border-color, so the pill is never left edgeless.
+   background-clip stops the translucent white from tinting that track. */
 .hero-feature-pill {
   position: relative;
   display: flex;
@@ -514,6 +522,7 @@ th {
   border-radius: 56px;
   border: 1px solid #7e22ce;
   background: rgba(255, 255, 255, 0.3);
+  background-clip: padding-box;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   color: #7e22ce;
@@ -552,5 +561,14 @@ th {
 
   .hero-feature-stack:hover {
     translate: none;
+  }
+}
+
+/* Where the ring can actually be composited, the border beneath it is redundant
+   ink — and any hairline of it peeking past the rim's antialiased edge would
+   read as the flat border the design does not want. */
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .hero-feature-pill {
+    border-color: transparent;
   }
 }
