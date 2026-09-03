@@ -39,7 +39,7 @@ const BYDAY_RETENTION_DAYS = 90;
 // Minimum lifetime bets before an agent's ROI is included in the histogram.
 // Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
 // produce statistically meaningless ROIs that distort the tails.
-const MIN_TRADES_FOR_ROI_DISPLAY = 10;
+export const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 // Genesis timestamps (UTC midnight) for each agent type
 const OMEN_GENESIS_TS = 1763769600;
@@ -817,7 +817,8 @@ export type BinData = {
 export type RangeKey = 'd7' | 'd30' | 'd90' | 'all';
 
 /** What the Predict page reads: the per-range histograms plus their net-positive shares. */
-export type RoiDistribution = Record<RangeKey, BinData[]> & {
+export type RoiDistribution = {
+  bins: Record<RangeKey, BinData[]>;
   netPositive: Record<RangeKey, { omenstrat: NetPositive; polystrat: NetPositive }>;
 };
 
@@ -969,8 +970,9 @@ const computeAgentBlueprintHistogram = (
     bins: binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10),
     // Counted off the raw ROIs rather than by summing the >= 0 bins: the bin
     // shares are rounded to 0.1pp each, and ~20 of them compound into a
-    // visibly wrong headline.
-    netPositiveRate: Math.round((netPositiveAgents / activeAgents) * 1000) / 10,
+    // visibly wrong headline. Left unrounded here — a caller deriving a ratio
+    // from it would otherwise round twice.
+    netPositiveRate: (netPositiveAgents / activeAgents) * 100,
     agents: activeAgents,
   };
 };
@@ -1101,5 +1103,5 @@ export const computeAllRangeHistograms = (
     };
   }
 
-  return { ...bins, netPositive } as RoiDistribution;
+  return { bins, netPositive };
 };

@@ -1,6 +1,9 @@
 'use client';
 
-import type { NetPositive } from 'common-util/api/predict/roi-distribution';
+import {
+  MIN_TRADES_FOR_ROI_DISPLAY,
+  type NetPositive,
+} from 'common-util/api/predict/roi-distribution';
 import { Card } from 'components/ui/card';
 import { MetricContext } from 'components/ui/MetricContext';
 import { ExternalLink } from 'components/ui/typography';
@@ -19,6 +22,8 @@ const BASELINE = {
   // range reads as a subtraction.
   windowPhrase: 'April 2024 and April 2026',
   sample: '2.5 million Polymarket trader wallets',
+  // He applies no activity threshold at all, unlike our side of the comparison.
+  filter: 'no activity threshold',
   sourceTitle: 'How Many Traders Are Profitable on Polymarket',
   sourceUrl: 'https://sergeenkov.com/polymarket-profitability/',
 };
@@ -68,13 +73,14 @@ export const NetPositiveRateCard = ({
   id,
   asOf = null,
 }: NetPositiveRateCardProps) => {
-  const rate = netPositive?.rate ?? null;
+  if (!netPositive || isNil(netPositive.rate)) return null;
 
-  if (isNil(rate)) return null;
+  const { rate, agents } = netPositive;
 
   const lastTick = lastTickFor(Math.max(rate, BASELINE.rate));
   const axisMax = lastTick + AXIS_HEADROOM;
   const ticks = Array.from({ length: lastTick / AXIS_STEP + 1 }, (_, i) => i * AXIS_STEP);
+  // `rate` arrives unrounded, so the ratio is not rounded twice.
   const multiplier = (rate / BASELINE.rate).toFixed(1);
 
   return (
@@ -91,7 +97,12 @@ export const NetPositiveRateCard = ({
 
           <div className="p-6 pb-4">
             <div className="mb-4 flex flex-wrap items-center gap-4">
-              <LegendSwatch color={AGENT_COLOR}>Polystrat</LegendSwatch>
+              <LegendSwatch color={AGENT_COLOR}>
+                {/* One flex child, or the swatch gap lands between text and marker. */}
+                <span>
+                  Polystrat<sup>*</sup>
+                </span>
+              </LegendSwatch>
               <LegendSwatch color={BASELINE_COLOR}>{BASELINE.label}</LegendSwatch>
             </div>
 
@@ -140,7 +151,10 @@ export const NetPositiveRateCard = ({
           </div>
 
           <div className="flex flex-col gap-1 text-xs text-slate-500">
-            <span>* - Polystrat reported time-range: {AGENT_WINDOW_LABEL}.</span>
+            <span>
+              * - Polystrat reported time-range: {AGENT_WINDOW_LABEL}, across {agents} agents with
+              at least {MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets.
+            </span>
             <span>
               ** - Baseline traders reported time-range: {BASELINE.window}. Source:{' '}
               <ExternalLink className="align-baseline" href={BASELINE.sourceUrl}>
@@ -156,7 +170,7 @@ export const NetPositiveRateCard = ({
           misleading if either is dropped. */}
       <MetricContext
         value={`${rate.toFixed(1)}%`}
-        noun={`of Polystrat agents trading Polymarket prediction markets on Polygon were net-positive — their trading ROI was above zero — ${AGENT_WINDOW_PHRASE}, which is ${multiplier} times the ${BASELINE.rate}% of ${BASELINE.sample} that were net-positive between ${BASELINE.windowPhrase}`}
+        noun={`of the ${agents} Polystrat agents with at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets and a bet settled ${AGENT_WINDOW_PHRASE}, trading Polymarket prediction markets on Polygon, were net-positive — their trading ROI, net of mech fees, was above zero — which is ${multiplier} times the ${BASELINE.rate}% of ${BASELINE.sample} (${BASELINE.filter}) that were net-positive between ${BASELINE.windowPhrase}`}
         asOfFallback={asOf}
       />
     </Card>
