@@ -57,8 +57,6 @@ type PlatformActivitySectionProps = {
   beforeMetrics?: ReactNode;
 };
 
-// Display order only — Polystrat is the default platform (see Activity.tsx) but
-// Omenstrat keeps the leftmost slot, matching the DAA cards above the switcher.
 const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
   {
     key: 'omenstrat',
