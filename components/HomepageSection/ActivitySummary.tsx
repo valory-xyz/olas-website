@@ -1,4 +1,5 @@
-import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
+import { FEE_LIVE_SINCE_SEC, MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
+import { formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
 import { buildMetricContext } from 'components/ui/MetricContext';
@@ -53,6 +54,10 @@ export const ActivitySummary = ({
 }: ActivitySummaryProps) => {
   const asOfFallback = snapshotTimestamp;
 
+  // Derived, not typed out: FeeMetrics states the same date from the same constant, and
+  // a second hand-written copy is one that can disagree with the first.
+  const feeLiveSince = formatUtcDate(FEE_LIVE_SINCE_SEC * 1000) ?? '';
+
   const activityLines = metrics
     ? [
         buildMetricContext({
@@ -93,7 +98,7 @@ export const ActivitySummary = ({
           value: metrics.feesCollected?.value,
           status: metrics.feesCollected?.status,
           isMoney: true,
-          noun: 'in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it. Covers only the USD-pegged fee trackers and only since the fee went live on 15 June 2026',
+          noun: `in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it. Covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}`,
           window: 'all time',
           asOfFallback,
         }),
@@ -116,17 +121,17 @@ export const ActivitySummary = ({
           window: 'all time',
           asOfFallback,
         }),
-        // Read from the metric rather than asserted, so the sentence stays true once
-        // OLAS-denominated fee trackers go live and the figure stops being zero. The
-        // explanation of *why* it is zero is attached only while it is.
+        // Read from the metric rather than asserted, so the sentence stays true once the
+        // burn mechanism goes live and the figure stops being zero. The explanation of
+        // *why* it is zero is attached only while it is.
         buildMetricContext({
           value: olasBurned?.value,
           status: olasBurned?.status,
           unit: 'OLAS',
           noun:
             Number(olasBurned?.value ?? 0) > 0
-              ? 'burned to date from OLAS-denominated Mech Marketplace fees'
-              : 'burned to date — marketplace fees collected in non-OLAS tokens route to the Olas Treasury rather than being burned, and no OLAS fee trackers are live yet',
+              ? 'burned to date, bought back with Mech Marketplace fees'
+              : 'burned to date — Mech Marketplace fees are never denominated in OLAS; they are collected in other tokens and held until they are used to buy back and burn OLAS, and that burn mechanism is not live yet',
           window: 'all time',
           asOfFallback: economySnapshotTimestamp,
         }),

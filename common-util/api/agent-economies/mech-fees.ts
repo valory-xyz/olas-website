@@ -134,11 +134,11 @@ export const fetchMechFeeMetrics = async () => {
       recievedFees: createMetric(Number(outUsd.toFixed(6))),
       unclaimedFees: createMetric(Number(unclaimed.toFixed(6))),
       protocolFees: collectedFeesMetric,
-      // OLAS burned is a separate flow (OLAS-denominated fees → burned on Ethereum) and a
-      // different unit from the USD collected fees above. The trackers we currently count
-      // (USDC, xDAI) are non-OLAS and route to the Olas Treasury, not burned, so nothing is
-      // burned from them. TODO: compute the burned OLAS amount once OLAS mech trackers are
-      // added (see fetchMechMarketplaceFeesCollected).
+      // Zero because the burn mechanism is not live, not because these fees are the wrong
+      // kind: marketplace fees are never denominated in OLAS, so a burn can only happen by
+      // buying OLAS back with the fees collected in other tokens. Those collected fees are
+      // held until that happens. In OLAS, a different unit from the USD figures above.
+      // TODO: report the burned amount once the buy-back-and-burn mechanism is live.
       olasBurned: createMetric(0),
     };
   } catch (error) {

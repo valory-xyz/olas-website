@@ -3,6 +3,7 @@ import { ataTransactionsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
 
 export const AtaTransactionsInfo = () => {
   return (
@@ -11,8 +12,7 @@ export const AtaTransactionsInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks agent-to-agent transactions across the six chains the Mech Marketplace is deployed
-          on — Gnosis, Base, Polygon, Optimism, Ethereum and Arbitrum — from multiple subgraph
+          Tracks agent-to-agent transactions across {MARKETPLACE_CHAIN_SCOPE} from multiple subgraph
           sources. This metric aggregates transaction data from Mech Marketplace and Legacy Mech
           subgraphs to provide a comprehensive view of autonomous agent interaction volume and
           cross-chain activity.
