@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 
-import { MARKETPLACE_CHAIN_KEYS } from 'common-util/constants';
+import { MARKETPLACE_CHAIN_KEYS, MECH_FEES_CHAIN_KEYS } from 'common-util/constants';
 
 const requestConfig = {
   jsonSerializer: {
@@ -105,18 +105,32 @@ export const BABYDEGEN_GRAPH_CLIENTS = {
   base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
 };
 
-// The published scope of every marketplace metric is derived from MARKETPLACE_CHAIN_KEYS,
-// so a chain added here without updating that list would silently make those sentences
-// wrong. Fail loudly in development rather than shipping a false claim.
-if (process.env.NODE_ENV !== 'production') {
-  const declared = Object.keys(MARKETPLACE_GRAPH_CLIENTS).sort().join(',');
-  const documented = [...MARKETPLACE_CHAIN_KEYS].sort().join(',');
+// The published scope of every marketplace and mech-fee metric is derived from these key
+// lists, so a chain added to a client map without updating its list would silently make
+// those sentences wrong. Fail loudly in development rather than shipping a false claim.
+const assertChainsMatch = (
+  clientsName: string,
+  clients: Record<string, unknown>,
+  keysName: string,
+  keys: string[]
+) => {
+  const declared = Object.keys(clients).sort().join(',');
+  const documented = [...keys].sort().join(',');
   if (declared !== documented) {
     console.error(
-      `[client] MARKETPLACE_GRAPH_CLIENTS (${declared}) and MARKETPLACE_CHAIN_KEYS (${documented}) ` +
-        'have diverged — update MARKETPLACE_CHAIN_KEYS in common-util/constants.ts.'
+      `[client] ${clientsName} (${declared}) and ${keysName} (${documented}) have diverged — ` +
+        `update ${keysName} in common-util/constants.ts.`
     );
   }
+};
+
+if (process.env.NODE_ENV !== 'production') {
+  assertChainsMatch(
+    'MARKETPLACE_GRAPH_CLIENTS',
+    MARKETPLACE_GRAPH_CLIENTS,
+    'MARKETPLACE_CHAIN_KEYS',
+    MARKETPLACE_CHAIN_KEYS
+  );
 }
 
 export const MECH_FEES_GRAPH_CLIENTS = {
@@ -140,6 +154,15 @@ export const MECH_FEES_GRAPH_CLIENTS = {
     requestConfig
   ),
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  assertChainsMatch(
+    'MECH_FEES_GRAPH_CLIENTS',
+    MECH_FEES_GRAPH_CLIENTS,
+    'MECH_FEES_CHAIN_KEYS',
+    MECH_FEES_CHAIN_KEYS
+  );
+}
 
 export const legacyMechFeesGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,

@@ -1,4 +1,5 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { MECH_FEES_CHAIN_SCOPE } from 'common-util/constants';
 import {
   legacyMechFeesQuery,
   legacyMechFeesTotalsQuery,
@@ -16,12 +17,11 @@ export const MechTurnoverInfo = () => {
 
       <div className="space-y-6 mt-4">
         <p>
-          Tracks the total fees collected from the Mech Marketplace across every chain the
-          marketplace is deployed on — Gnosis, Base, Ethereum, Celo, Arbitrum, Polygon and Optimism
-          — plus legacy mech fees from Gnosis. New mech fees are already in USD, while legacy fees
-          are converted from wei to XDAI (treated as 1 USD equivalent) before being summed together
-          to provide the total mech marketplace turnover. This is the same figure the Mech economy
-          page publishes as &quot;Total Task Payments&quot;.
+          Tracks the total fees collected from the Mech Marketplace across {MECH_FEES_CHAIN_SCOPE},
+          plus legacy mech fees from Gnosis. New mech fees are already in USD, while legacy fees are
+          converted from wei to XDAI (treated as 1 USD equivalent) before being summed together to
+          provide the total mech marketplace turnover. This is the same figure the Mech economy page
+          publishes as &quot;Total Task Payments&quot;.
         </p>
 
         <p>The following queries aggregate mech fees from every source:</p>

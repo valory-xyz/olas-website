@@ -125,7 +125,7 @@ export const buildMetricContext = ({
 
   const sentence = `${parts.join(', ')}.`;
 
-  return `${sentence}${statusCaveat(status)}`;
+  return `${sentence}${statusCaveat(status, 'value', Boolean(asOf))}`;
 };
 
 /**
@@ -140,7 +140,12 @@ export const buildMetricContext = ({
  * `noun` names what the caveat is about, so a table of many values can say "data" where a
  * single tile says "value".
  */
-export const statusCaveat = (status?: MetricStatus, noun = 'value'): string => {
+export const statusCaveat = (
+  status?: MetricStatus,
+  noun = 'value',
+  /** False when the sentence carries no date, so the caveat must not refer to one. */
+  hasDate = true
+): string => {
   // Three distinct states, which `isFrozen` alone conflates:
   //   frozen with a lastValidAt   → a genuinely held-over, previously confirmed value
   //   frozen without one          → no usable prior value; the reading is incomplete and
@@ -149,7 +154,11 @@ export const statusCaveat = (status?: MetricStatus, noun = 'value'): string => {
   if (isFrozen(status)) {
     return typeof status?.lastValidAt === 'number'
       ? ` This is the last confirmed ${noun}; the live source is currently unavailable.`
-      : ` This reading is incomplete — a source was unavailable and no earlier confirmed ${noun} exists, so the date above is when the failed refresh ran, not when the ${noun} was last valid.`;
+      : ` This reading is incomplete — a source was unavailable and no earlier confirmed ${noun} exists${
+          hasDate
+            ? `, so the date above is when the failed refresh ran, not when the ${noun} was last valid`
+            : ''
+        }.`;
   }
 
   if (status?.laggingSubgraphs?.length) {

@@ -139,7 +139,7 @@ const PERFORMANCE_METRICS = {
     // `m.apr` became a WindowedMetric upstream, so this does follow the tabs: it is
     // the maximum rate among contracts nominated during the selected window.
     noun: (platformPhrase) =>
-      `maximum OLAS staking annual percentage rate among contracts nominated for ${platformPhrase}`,
+      `maximum OLAS staking annual percentage rate among the staking contracts for ${platformPhrase} that were nominated at any point in the window`,
     anchor: 'predict-apr',
   },
   accuracy: {

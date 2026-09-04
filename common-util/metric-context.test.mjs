@@ -159,6 +159,18 @@ test('a frozen value with no prior reading is called incomplete', () => {
   assert.ok(!sentence.includes('last confirmed value'), sentence);
 });
 
+test('the incomplete caveat does not point at a date that is not there', () => {
+  // With no `lastValidAt` and no fallback the sentence carries no date, so "the date
+  // above" would send a reader looking for something the text does not contain.
+  const sentence = buildMetricContext({
+    ...base,
+    status: { stale: true, frozen: true, fetchErrors: ['base'] },
+    asOfFallback: null,
+  });
+  assert.match(sentence, /reading is incomplete/);
+  assert.ok(!sentence.includes('date above'), sentence);
+});
+
 test('a healthy metric carries no caveat', () => {
   const sentence = buildMetricContext({ ...base, status: { lastValidAt: AS_OF } });
   assert.equal(sentence, `1,000 agent transactions, as of ${AS_OF_TEXT}.`);

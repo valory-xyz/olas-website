@@ -288,13 +288,39 @@ export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
     !MARKETPLACE_EXCLUDED_CHAINS.includes(chain as (typeof MARKETPLACE_EXCLUDED_CHAINS)[number])
 );
 
-export const MARKETPLACE_CHAIN_SCOPE = (() => {
-  const names = MARKETPLACE_CHAIN_KEYS.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
+/**
+ * Chains the mech-fee subgraphs cover. Only Mode is missing from the roster, so this is
+ * derived by subtraction too; `client.ts` asserts it matches `MECH_FEES_GRAPH_CLIENTS`.
+ */
+const MECH_FEES_EXCLUDED_CHAINS = ['mode'] as const;
+
+export const MECH_FEES_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
+  (chain) =>
+    !MECH_FEES_EXCLUDED_CHAINS.includes(chain as (typeof MECH_FEES_EXCLUDED_CHAINS)[number])
+);
+
+/**
+ * "all N chains … (A, B and C)" for a set of chain keys.
+ *
+ * Count first so it reads as a complete set, then the names so a reader can verify it.
+ * Both derived, so neither can drift from the aggregation being described — the same
+ * sentence was hand-written in four places before this.
+ */
+const chainScope = (keys: string[], what: string) => {
+  const names = keys.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
   const list = `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-  // Count first so it reads as a complete set, then the names so a reader can verify it.
-  // Both derived, so neither can drift from the aggregation being described.
-  return `all ${names.length} chains the Mech Marketplace is deployed on (${list})`;
-})();
+  return `all ${names.length} chains ${what} (${list})`;
+};
+
+export const MARKETPLACE_CHAIN_SCOPE = chainScope(
+  MARKETPLACE_CHAIN_KEYS,
+  'the Mech Marketplace is deployed on'
+);
+
+export const MECH_FEES_CHAIN_SCOPE = chainScope(
+  MECH_FEES_CHAIN_KEYS,
+  'the mech-fee subgraphs cover'
+);
 
 // Hero press feature — temporary. Remove after the run; greppable by HERO_FEATURE.
 export const HERO_FEATURE = {
