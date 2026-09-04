@@ -66,9 +66,12 @@ export const EmissionsSummaryTable = ({
 }) => {
   if (!emissions?.length) return null;
 
-  // `?? 0` would turn a missing counter into a finite 0 and yield "epochs 0 to 0",
-  // so parse first and drop what doesn't resolve.
-  const epochs = emissions
+  // The open epoch is in the series with every field null, and `getCumulativeEmissions`
+  // sums it as 0 — so counting it would make the caption claim coverage of an epoch that
+  // has not settled and contributes nothing. Drop it, along with counters that don't
+  // parse (`?? 0` would yield "epochs 0 to 0").
+  const settled = emissions.filter((e) => e?.blockTimestamp != null);
+  const epochs = settled
     .map((e) => Number(e.counter))
     .filter((n) => Number.isFinite(n))
     .sort((a, b) => a - b);
@@ -79,7 +82,7 @@ export const EmissionsSummaryTable = ({
     firstEpoch !== null && lastEpoch !== null && epochs.length === lastEpoch - firstEpoch + 1;
 
   const rows = ROWS.map(({ label, fields }) => {
-    const series = getCumulativeEmissions(emissions, fields);
+    const series = getCumulativeEmissions(settled, fields);
     const total = series.length ? series[series.length - 1] : null;
     return { label, total };
   }).filter((row) => typeof row.total === 'number' && Number.isFinite(row.total));
