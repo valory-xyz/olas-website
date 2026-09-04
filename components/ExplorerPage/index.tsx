@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MODIUS_FIXED_END_DATE_UTC } from 'common-util/constants';
 import { DaaSeriesPoint } from 'common-util/explorer';
@@ -333,12 +333,25 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
     };
   }, [activeSeries]);
 
-  const metricSummaryLines = useMemo(
-    () =>
-      economyMeta.metrics
+  /**
+   * The metric sentences for one economy/agent pair.
+   *
+   * Parameterised rather than closed over the active selection: the selectors are React
+   * state and the heatmap is a grid of coloured cells, so without describing the other
+   * pairs too, five of the six economy/agent combinations reach the served HTML as
+   * nothing at all.
+   */
+  const summaryLinesFor = useCallback(
+    (economyKey: string, agentKey: string) => {
+      const meta = ECONOMY_META[economyKey];
+      const agentSeries = economies[economyKey]?.[agentKey]?.series ?? {};
+      const agentStatus = economies[economyKey]?.[agentKey]?.status ?? null;
+      const agentLabel = meta.agents.find((a) => a.key === agentKey)?.label ?? agentKey;
+
+      return meta.metrics
         .map((key) => {
           const config = METRIC_CONFIG[key];
-          const metricSeries = series[key] ?? [];
+          const metricSeries = agentSeries[key] ?? [];
           if (!metricSeries.length) return null;
           // The window has to match how the headline was reduced: a latest-day value
           // is not "covering" a range, and the accuracy figure is a mean, not a total.
@@ -349,17 +362,23 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
             mean: metricSeries.length > 1 ? `a daily average over ${first} to ${last}` : undefined,
             sum: metricSeries.length > 1 ? `summed over ${first} to ${last}` : undefined,
           };
-          const range = WINDOW_BY_KIND[config.headlineKind];
           return buildMetricContext({
             value: config.headline(metricSeries),
-            status,
-            noun: `${config.label.toLowerCase()} for ${agentMeta.label} in the ${economyMeta.name} agent economy`,
-            window: range,
+            status: agentStatus,
+            label: config.tileLabel ?? config.label,
+            noun: `${config.label.toLowerCase()} for ${agentLabel} in the ${meta.name} agent economy`,
+            window: WINDOW_BY_KIND[config.headlineKind],
             asOfFallback: snapshotTimestamp,
           });
         })
-        .filter(Boolean),
-    [economyMeta, series, agentMeta.label, status, snapshotTimestamp]
+        .filter(Boolean);
+    },
+    [economies, snapshotTimestamp]
+  );
+
+  const metricSummaryLines = useMemo(
+    () => summaryLinesFor(activeEconomy, agentMeta.key),
+    [summaryLinesFor, activeEconomy, agentMeta.key]
   );
 
   const handleEconomy = (key: string) => {
@@ -441,7 +460,10 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
 
       {/* Metric tiles — full-width band with centered 872 rails; active drives the heatmap */}
       <section aria-label="Explorer metrics summary" className="sr-only">
-        <p>
+        {/* Announces an economy, agent or year change: the selectors are pills whose
+            only signal is a background colour, and the heatmap below is a grid of
+            coloured cells with no text. */}
+        <p role="status">
           {`Showing the ${economyMeta.name} agent economy${
             economyMeta.agents.length > 1 ? `, agent ${agentMeta.label}` : ''
           }${
@@ -456,6 +478,32 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
           ))}
         </ul>
       </section>
+
+      {/* The other five economy/agent pairs. `aria-hidden` because this duplicates for
+          machines what a screen-reader user reaches by using the selectors; the pair
+          they are on is described in full above. */}
+      <div className="sr-only" aria-hidden="true">
+        {Object.entries(ECONOMY_META).flatMap(([economyKey, meta]) =>
+          meta.agents.map((agent) => {
+            if (economyKey === activeEconomy && agent.key === agentMeta.key) return null;
+            const lines = summaryLinesFor(economyKey, agent.key);
+            if (lines.length === 0) return null;
+
+            return (
+              <section key={`${economyKey}-${agent.key}`}>
+                {/* Names its own pair: these are retrieved one at a time, so a heading
+                    saying "the selected economy" would identify nothing. */}
+                <h3>{`${agent.label} in the ${meta.name} agent economy`}</h3>
+                <ul>
+                  {lines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })
+        )}
+      </div>
       <MetricSelector metrics={metrics} activeKey={activeMetric} onChange={handleMetric} />
 
       {/* Series header + filter pill — centered 872 column (Figma 20754:3512).
