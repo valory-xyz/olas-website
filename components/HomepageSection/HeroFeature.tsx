@@ -26,7 +26,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
     <div
       className={cn(
         'w-[140px] lg:w-[180px] mx-auto rounded-2xl',
-        'px-2.5 pt-3.5 lg:pt-2.5 pb-10 lg:pb-[52px]',
+        'px-2 pt-3.5 lg:pt-2 pb-10 lg:pb-[52px]',
         'shadow-md transition-all duration-300 ease-in-out group-hover:scale-[1.01]',
         CARD_HOVER_SHADOW
       )}
