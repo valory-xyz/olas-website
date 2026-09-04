@@ -1,5 +1,6 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { MECH_FEES_CHAIN_SCOPE } from 'common-util/constants';
+import { MECH_FEES_CHAIN_KEYS, MECH_FEES_CHAIN_SCOPE } from 'common-util/constants';
+import { MECH_FEES_SUBGRAPH_URLS } from 'common-util/subgraph';
 import {
   legacyMechFeesQuery,
   legacyMechFeesTotalsQuery,
@@ -9,6 +10,20 @@ import {
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
+
+/**
+ * One link per mech-fee subgraph, derived from the chain list the paragraph above names.
+ * Listing two of the seven by hand is how the prose and the sources came to disagree.
+ */
+const MechFeesSubgraphLinks = () => (
+  <>
+    {MECH_FEES_CHAIN_KEYS.map((chain) => (
+      <SubgraphLink key={chain} apiUrl={MECH_FEES_SUBGRAPH_URLS[chain]} className="mr-2">
+        {chain.charAt(0).toUpperCase() + chain.slice(1)}
+      </SubgraphLink>
+    ))}
+  </>
+);
 
 export const MechTurnoverInfo = () => {
   return (
@@ -29,19 +44,7 @@ export const MechTurnoverInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>New Mech Marketplace Fees Query</h3>
 
         <p className="text-purple-600">
-          Subgraph links:{' '}
-          <SubgraphLink
-            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
-            className="mr-2"
-          >
-            Gnosis
-          </SubgraphLink>
-          <SubgraphLink
-            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
-            className="mr-2"
-          >
-            Base
-          </SubgraphLink>
+          Subgraph links: <MechFeesSubgraphLinks />
         </p>
         <CodeSnippet>{newMechFeesQuery}</CodeSnippet>
 
@@ -72,19 +75,7 @@ export const MechTurnoverInfo = () => {
 
         <h4 className="font-semibold">New Mech Fees Totals</h4>
         <p className="text-purple-600">
-          Subgraph links:{' '}
-          <SubgraphLink
-            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL}
-            className="mr-2"
-          >
-            Gnosis
-          </SubgraphLink>
-          <SubgraphLink
-            apiUrl={process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL}
-            className="mr-2"
-          >
-            Base
-          </SubgraphLink>
+          Subgraph links: <MechFeesSubgraphLinks />
         </p>
         <CodeSnippet>{newMechFeesTotalsQuery}</CodeSnippet>
 

@@ -6,10 +6,12 @@
  * is composed here, so the cases below are the contract worth asserting.
  */
 // Relative, extension-bearing specifiers so Node's type-stripping test runner can load
-// this module directly (it uses ESM resolution, which has no notion of the tsconfig
-// aliases). `metric-status.ts` already imports its sibling the same way. `isFrozen`
-// comes from `metric-status` rather than `metric-utils` because the latter pulls in the
-// GraphQL clients, which a unit test has no business booting.
+// this module directly: it uses ESM resolution, which has no notion of the tsconfig
+// aliases and will not resolve an extensionless specifier. `allowImportingTsExtensions`
+// is enabled for this (the project is already `noEmit`); `metric-status.ts` gets away
+// without it because its only sibling import is a type, which is erased.
+// `isFrozen` comes from `metric-status` rather than `metric-utils` because the latter
+// pulls in the GraphQL clients, which a unit test has no business booting.
 import { isFrozen } from './graphql/metric-status.ts';
 import type { MetricStatus } from './graphql/types.ts';
 import { formatUtcAsOf } from './time.ts';

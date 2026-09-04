@@ -12,7 +12,9 @@
  * It reads the built HTML rather than the source, so it checks what a crawler is
  * actually served, including pages assembled from props at build time.
  *
- * Run with `yarn metric-context:check` after `next build`.
+ * Runs in `postbuild`, so every Vercel build checks it. Warning-only when a build has no
+ * echoes at all (an unreachable metrics blob renders every tile as `--`), so a blob
+ * outage does not block a deploy; pass `--require-echoes` to make that fatal too.
  */
 
 /* eslint-disable no-console, no-undef -- standalone build script */
@@ -150,6 +152,26 @@ const stripScripts = (html) =>
 /** Visible text only: the hidden layer removed, then tags dropped. */
 const visibleText = (body) => normalise(stripSrOnly(body).replace(/<[^>]+>/g, ' '));
 
+/**
+ * How much visible text around an echo counts as "beside it".
+ *
+ * Searching the whole page would pass a drifted label whose old name happens to appear in
+ * unrelated body copy — "Traders", "Operators" and "Prediction Accuracy" are all ordinary
+ * words on these pages. A window keeps the match local without assuming the tile is
+ * immediately above: `MetricContext` renders beside its tile, but the Explorer and
+ * homepage summaries are page-level blocks whose tiles sit some way further down.
+ *
+ * Both directions for the same reason. This is a heuristic — it narrows the haystack, it
+ * does not prove the label belongs to that tile.
+ */
+const LABEL_PROXIMITY_CHARS = 1500;
+
+/** The visible text within `LABEL_PROXIMITY_CHARS` either side of a position in the markup. */
+const visibleTextAround = (body, index) =>
+  `${visibleText(body.slice(0, index)).slice(-LABEL_PROXIMITY_CHARS)} ${visibleText(
+    body.slice(index)
+  ).slice(0, LABEL_PROXIMITY_CHARS)}`;
+
 const main = async () => {
   const files = await collectHtmlFiles(PAGES_DIR);
   if (files.length === 0) {
@@ -172,7 +194,6 @@ const main = async () => {
     if (found.length === 0) continue;
 
     pagesWithContext += 1;
-    const visible = visibleText(body);
     const page = path.relative(PAGES_DIR, file).replace(/\\/g, '/');
 
     // Guard against the failure that already fooled this script once: the depth counter
@@ -195,9 +216,10 @@ const main = async () => {
       console.log(`  ${page}: ${found.length} echo(es)`);
     }
 
-    for (const [, label] of found) {
+    for (const match of found) {
+      const label = match[1];
       echoes += 1;
-      const matched = visible.includes(normalise(label));
+      const matched = visibleTextAround(onScreen, match.index).includes(normalise(label));
       if (verbose) console.log(`    ${matched ? 'ok  ' : 'MISS'} "${label}"`);
       if (!matched) {
         failures.push({ page, label });

@@ -172,12 +172,14 @@ const BabydegenEconomyCard = ({
 const ECONOMIES = [
   {
     key: 'basius',
+    tabLabel: 'Basius',
     title: 'Basius Agent Economy',
     image: '/images/babydegen-econ-page/basius.png',
     economyName: 'the Basius agent economy',
   },
   {
     key: 'optimus',
+    tabLabel: 'Optimus',
     title: 'Optimus Agent Economy',
     image: '/images/babydegen-econ-page/optimus.png',
     economyName: 'the Optimus agent economy',
@@ -185,6 +187,7 @@ const ECONOMIES = [
   },
   {
     key: 'modius',
+    tabLabel: 'Modius',
     title: 'Modius Agent Economy',
     image: '/images/babydegen-econ-page/modius.png',
     economyName: 'the Modius agent economy',
@@ -240,11 +243,12 @@ const HiddenEconomies = ({ metrics, activeTab, snapshotTimestamp }) => (
   </div>
 );
 
-const TAB_ITEMS = [
-  { key: 'basius', label: 'Basius', icon: '/images/babydegen-econ-page/basius.png' },
-  { key: 'optimus', label: 'Optimus', icon: '/images/babydegen-econ-page/optimus.png' },
-  { key: 'modius', label: 'Modius', icon: '/images/babydegen-econ-page/modius.png' },
-];
+// Derived, so the tab strip and the cards below can't list different economies.
+const TAB_ITEMS = ECONOMIES.map(({ key, tabLabel, image }) => ({
+  key,
+  label: tabLabel,
+  icon: image,
+}));
 
 export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
   const [activeTab, setActiveTab] = useState('optimus');

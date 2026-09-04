@@ -69,6 +69,18 @@ const MECH_SCALE: Record<'omenstrat' | 'polystrat', bigint> = {
  */
 export type RoiSnapshotIssue = 'missing' | 'stale' | 'backfilling' | 'errors' | 'low-mech-cost';
 
+/** The blob has not been rewritten in long enough that its data may no longer be current. */
+const isSnapshotStale = (timestamp?: number | null) =>
+  typeof timestamp === 'number' && Date.now() - timestamp > ROI_SNAPSHOT_MAX_AGE_MS;
+
+/**
+ * The `byDay` cursor is two or more days behind, so windowed values are computed from
+ * incomplete data. One day of tolerance covers the gap between UTC midnight and the
+ * daily cron run.
+ */
+const isBackfilling = (data: AgentBlueprintRoiData) =>
+  (data.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS;
+
 export const roiSnapshotIssue = (
   snapshot: {
     // `unknown`, because callers hold a generic `MetricsSnapshot` off the blob store and
@@ -80,17 +92,9 @@ export const roiSnapshotIssue = (
 ): RoiSnapshotIssue | null => {
   const data = snapshot?.data as AgentBlueprintRoiData | null | undefined;
   if (!data) return 'missing';
-
-  const timestamp = snapshot?.timestamp;
-  if (typeof timestamp === 'number' && Date.now() - timestamp > ROI_SNAPSHOT_MAX_AGE_MS) {
-    return 'stale';
-  }
+  if (isSnapshotStale(snapshot?.timestamp)) return 'stale';
   if ((data.fetchErrors ?? []).length > 0) return 'errors';
-  // A byDay cursor >=2 days behind means the windowed values are computed from incomplete
-  // data. 1 day of tolerance covers the gap between UTC midnight and the daily cron run.
-  if ((data.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
-    return 'backfilling';
-  }
+  if (isBackfilling(data)) return 'backfilling';
   // Last, because it is the subtlest: everything above is current and error-free, and the
   // histogram still understates costs.
   if (hasLowMechAttribution(data, MECH_SCALE[platform])) return 'low-mech-cost';
@@ -135,23 +139,20 @@ const computePlatformWindowedRoi = async (
   }
 
   // Missing blob → hard error; present-but-aging blob → stale error (propagates to UI).
-  const roiSnapshotStale =
-    roiSnapshotTs != null && Date.now() - roiSnapshotTs > ROI_SNAPSHOT_MAX_AGE_MS;
+  // Same predicates `roiSnapshotIssue` reports to the UI captions, so a caption cannot
+  // call a snapshot healthy while the metric status calls it stale.
   const roiFetchErrors: string[] = [];
   const roiLagging: string[] = [];
   if (!roiData) {
     roiFetchErrors.push(`roi-distribution:${source}`);
   } else {
-    if (roiSnapshotStale) roiFetchErrors.push(`roi-distribution:${source}:stale`);
+    if (isSnapshotStale(roiSnapshotTs)) roiFetchErrors.push(`roi-distribution:${source}:stale`);
     // Subgraph failures recorded by the daily refresh run that wrote the blob
     // (e.g. the all-time agents fetch failed and the previous totals were kept).
     for (const err of roiData.fetchErrors ?? []) {
       roiFetchErrors.push(`roi-distribution:${source}:${err}`);
     }
-    // A byDay cursor ≥2 days behind means the windowed values are computed from
-    // incomplete data, so flag it. 1 day of tolerance covers the gap between
-    // UTC midnight and the daily cron run.
-    if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
+    if (isBackfilling(roiData)) {
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
     }
     // Missing mech cost overstates ROI — surface it on the lag channel (stale

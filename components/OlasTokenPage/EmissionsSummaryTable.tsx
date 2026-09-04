@@ -50,8 +50,9 @@ const ROWS: Array<{ label: string; fields: string[] }> = [
  *
  * Deliberately a summary, not a transcription: the series run to hundreds of epochs, and
  * a full table would bloat the HTML while adding little a reader would ever quote. The
- * cumulative total is the last point of each running sum, which is what the charts'
- * right-hand edge shows.
+ * cumulative total is the last point of each running sum. It stops one epoch short of
+ * the charts' right-hand edge: the charts plot the open epoch's partial values, which
+ * this excludes so the totals are of settled epochs only.
  *
  * Same pattern as `TokenomicsSummaryTable`.
  */
@@ -102,7 +103,7 @@ export const EmissionsSummaryTable = ({
                 ? `, epochs ${firstEpoch} to ${lastEpoch}`
                 : `, spanning epochs ${firstEpoch} to ${lastEpoch} with gaps`
               : ''
-          }. Each figure is a running total, not a per-epoch amount. The latest epoch is still open, so rows fed by different fields may end on different epochs.${
+          }. Each figure is a running total, not a per-epoch amount, and every row ends on the same epoch. The open epoch is excluded, since its values are partial.${
             asOf ? ` As of ${asOf}.` : ''
           }${caveat}`}
         </caption>
