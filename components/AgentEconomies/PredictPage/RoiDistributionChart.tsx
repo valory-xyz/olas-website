@@ -11,7 +11,6 @@ ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
 type TimeRange = '7d' | '30d' | '90d' | 'max';
 
-
 type DataPoint = {
   x: number;
   y: number;
