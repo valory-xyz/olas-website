@@ -9,6 +9,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
+import { NetPositiveRateCard } from './NetPositiveRateCard';
 import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
@@ -157,6 +158,7 @@ export const Activity = ({
   roiDistribution,
   toolAccuracy,
   snapshotTimestamp = null,
+  polystratRoiTimestamp = null,
 }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
@@ -206,6 +208,17 @@ export const Activity = ({
             onPlatformChange={setPlatform}
             snapshotTimestamp={snapshotTimestamp}
             className="md:col-span-2"
+            // Net-positive rate — Polystrat only: the baseline is Polymarket-specific,
+            // so there is no comparable figure to show beside Omenstrat.
+            beforeMetrics={
+              platform === 'polystrat' ? (
+                <NetPositiveRateCard
+                  id="net-positive-rate"
+                  netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
+                  asOf={polystratRoiTimestamp}
+                />
+              ) : null
+            }
           />
 
           {/* ROI Distribution Chart — filtered to the selected platform */}

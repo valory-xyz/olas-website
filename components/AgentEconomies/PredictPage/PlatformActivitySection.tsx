@@ -53,6 +53,8 @@ type PlatformActivitySectionProps = {
   className?: string;
   /** Fallback as-of timestamp for metrics whose source is lagging. */
   snapshotTimestamp?: number | null;
+  /** Rendered between the switcher and the metric cards, so it follows the platform. */
+  beforeMetrics?: ReactNode;
 };
 
 const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
@@ -196,6 +198,7 @@ export const PlatformActivitySection = ({
   onPlatformChange,
   className,
   snapshotTimestamp = null,
+  beforeMetrics = null,
 }: PlatformActivitySectionProps) => {
   const m = metrics[platform];
 
@@ -376,6 +379,8 @@ export const PlatformActivitySection = ({
   return (
     <div className={`flex flex-col gap-6 ${className ?? ''}`}>
       <PlatformSwitcher platform={platform} onChange={onPlatformChange} />
+
+      {beforeMetrics}
 
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">

@@ -39,7 +39,7 @@ const BYDAY_RETENTION_DAYS = 90;
 // Minimum lifetime bets before an agent's ROI is included in the histogram.
 // Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
 // produce statistically meaningless ROIs that distort the tails.
-const MIN_TRADES_FOR_ROI_DISPLAY = 10;
+export const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 // Genesis timestamps (UTC midnight) for each agent type
 const OMEN_GENESIS_TS = 1763769600;
@@ -814,6 +814,29 @@ export type BinData = {
   polystrat: number;
 };
 
+export type RangeKey = 'd7' | 'd30' | 'd90' | 'all';
+
+/** What the Predict page reads: the per-range histograms plus their net-positive shares. */
+export type RoiDistribution = {
+  bins: Record<RangeKey, BinData[]>;
+  netPositive: Record<RangeKey, { omenstrat: NetPositive; polystrat: NetPositive }>;
+};
+
+/**
+ * Share of agents in the range whose ROI is above zero, alongside the histogram
+ * the same pass produces. `null` when no agent cleared the activity threshold —
+ * distinct from a genuine 0% (every agent under water).
+ */
+export type NetPositive = { rate: number | null; agents: number };
+
+type HistogramResult = { bins: number[]; netPositiveRate: number | null; agents: number };
+
+const emptyHistogram = (): HistogramResult => ({
+  bins: new Array<number>(ROI_BINS.length).fill(0),
+  netPositiveRate: null,
+  agents: 0,
+});
+
 const assignBin = (roi: number): number =>
   ROI_BINS.findIndex((bin) => roi >= bin.min && roi < bin.max);
 
@@ -821,9 +844,10 @@ const computeAgentBlueprintHistogram = (
   agentBlueprintData: AgentBlueprintRoiData,
   daysBack: number | null,
   isPolystrat: boolean
-): number[] => {
+): HistogramResult => {
   const binCounts = new Array<number>(ROI_BINS.length).fill(0);
   let activeAgents = 0;
+  let netPositiveAgents = 0;
   let excludedLowActivity = 0;
 
   if (daysBack === null) {
@@ -855,6 +879,7 @@ const computeAgentBlueprintHistogram = (
       if (binIdx !== -1) {
         binCounts[binIdx]++;
         activeAgents++;
+        if (roi > 0) netPositiveAgents++;
       }
     }
   } else {
@@ -928,6 +953,7 @@ const computeAgentBlueprintHistogram = (
       if (binIdx !== -1) {
         binCounts[binIdx]++;
         activeAgents++;
+        if (roi > 0) netPositiveAgents++;
       }
     }
   }
@@ -939,8 +965,16 @@ const computeAgentBlueprintHistogram = (
       `(< ${MIN_TRADES_FOR_ROI_DISPLAY} bets)`
   );
 
-  if (activeAgents === 0) return new Array<number>(ROI_BINS.length).fill(0);
-  return binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10);
+  if (activeAgents === 0) return emptyHistogram();
+  return {
+    bins: binCounts.map((count) => Math.round((count / activeAgents) * 1000) / 10),
+    // Counted off the raw ROIs rather than by summing the >= 0 bins: the bin
+    // shares are rounded to 0.1pp each, and ~20 of them compound into a
+    // visibly wrong headline. Left unrounded here — a caller deriving a ratio
+    // from it would otherwise round twice.
+    netPositiveRate: (netPositiveAgents / activeAgents) * 100,
+    agents: activeAgents,
+  };
 };
 
 /**
@@ -1041,27 +1075,33 @@ export const computeWindowedNetGainAndCosts = (
 export const computeAllRangeHistograms = (
   omenData: AgentBlueprintRoiData | null,
   polyData: AgentBlueprintRoiData | null
-): { d7: BinData[]; d30: BinData[]; d90: BinData[]; all: BinData[] } => {
-  const empty = new Array<number>(ROI_BINS.length).fill(0);
-  const ranges: Array<{ key: 'd7' | 'd30' | 'd90' | 'all'; days: number | null }> = [
+): RoiDistribution => {
+  const ranges: Array<{ key: RangeKey; days: number | null }> = [
     { key: 'd7', days: 7 },
     { key: 'd30', days: 30 },
     { key: 'd90', days: 90 },
     { key: 'all', days: null },
   ];
 
-  const result: Record<string, BinData[]> = {};
+  const bins = {} as Record<RangeKey, BinData[]>;
+  const netPositive = {} as Record<RangeKey, { omenstrat: NetPositive; polystrat: NetPositive }>;
   for (const { key, days } of ranges) {
-    const omenBins = omenData ? computeAgentBlueprintHistogram(omenData, days, false) : empty;
-    const polyBins = polyData ? computeAgentBlueprintHistogram(polyData, days, true) : empty;
-    result[key] = ROI_BINS.map((bin, i) => ({
+    const omen = omenData
+      ? computeAgentBlueprintHistogram(omenData, days, false)
+      : emptyHistogram();
+    const poly = polyData ? computeAgentBlueprintHistogram(polyData, days, true) : emptyHistogram();
+    bins[key] = ROI_BINS.map((bin, i) => ({
       label: bin.label,
       min: bin.min,
       max: bin.max,
-      omenstrat: omenBins[i],
-      polystrat: polyBins[i],
+      omenstrat: omen.bins[i],
+      polystrat: poly.bins[i],
     }));
+    netPositive[key] = {
+      omenstrat: { rate: omen.netPositiveRate, agents: omen.agents },
+      polystrat: { rate: poly.netPositiveRate, agents: poly.agents },
+    };
   }
 
-  return result as { d7: BinData[]; d30: BinData[]; d90: BinData[]; all: BinData[] };
+  return { bins, netPositive };
 };

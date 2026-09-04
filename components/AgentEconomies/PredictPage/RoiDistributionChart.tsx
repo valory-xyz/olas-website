@@ -1,7 +1,7 @@
 'use client';
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
-import { BinData } from 'common-util/api/predict/roi-distribution';
+import { BinData, RangeKey, RoiDistribution } from 'common-util/api/predict/roi-distribution';
 import { Tabs } from 'components/ui/tabs';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -9,13 +9,6 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
 type TimeRange = '7d' | '30d' | '90d' | 'max';
-
-type RoiDistributionData = {
-  d7: BinData[] | null;
-  d30: BinData[] | null;
-  d90: BinData[] | null;
-  all: BinData[] | null;
-};
 
 type DataPoint = {
   x: number;
@@ -26,7 +19,7 @@ type DataPoint = {
 const TIME_RANGES: Array<{
   key: TimeRange;
   label: string;
-  dataKey: keyof RoiDistributionData;
+  dataKey: RangeKey;
 }> = [
   { key: '7d', label: '7D', dataKey: 'd7' },
   { key: '30d', label: '30D', dataKey: 'd30' },
@@ -90,7 +83,7 @@ const ROI_DISTRIBUTION_CHART_OPTIONS: ChartOptions<'bar'> = {
 };
 
 type RoiDistributionChartProps = {
-  data: RoiDistributionData | null;
+  data: RoiDistribution | null;
   platform: 'polystrat' | 'omenstrat';
   className?: string;
   id?: string;
@@ -111,7 +104,7 @@ export const RoiDistributionChart = ({
   const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
   const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
-  const bins = data?.[activeDataKey] ?? null;
+  const bins = data?.bins?.[activeDataKey] ?? null;
 
   const isOmen = platform === 'omenstrat';
   const datasetMeta = isOmen
