@@ -502,10 +502,10 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
         </ul>
       </section>
 
-      {/* The other five economy/agent pairs. `aria-hidden` because this duplicates for
-          machines what a screen-reader user reaches by using the selectors; the pair
-          they are on is described in full above. */}
-      <div className="sr-only" aria-hidden="true">
+      {/* The other five economy/agent pairs. Screen-reader-only but not `aria-hidden` —
+          see `AllStatesTables` in `PlatformActivitySection` for why. Each section's
+          heading names its own pair, so it can be skipped to. */}
+      <div className="sr-only" data-selector-states="off-screen">
         {Object.entries(ECONOMY_META).flatMap(([economyKey, meta]) =>
           meta.agents.map((agent) => {
             if (economyKey === activeEconomy && agent.key === agentMeta.key) return null;

@@ -127,15 +127,17 @@ const classesOf = (raw) => raw.match(/\sclass="([^"]*)"/)?.[1]?.split(/\s+/) ?? 
 const stripSrOnly = (html) => stripElements(html, (raw) => classesOf(raw).includes('sr-only'));
 
 /**
- * Drops the all-states duplicates.
+ * Drops the off-screen selector-state mirrors, which mark themselves with
+ * `data-selector-states="off-screen"`.
  *
- * Those blocks deliberately describe selector states the page is not currently showing —
- * a BabyDegen metric while Predict is selected, say — so their labels have no visible
+ * Those blocks deliberately describe states the page is not currently showing — a
+ * BabyDegen metric while Predict is selected, say — so their labels have no visible
  * counterpart by definition, and requiring one would make the check unsatisfiable. They
- * are also generated from the same descriptor list as the visible tiles, so the drift
- * this script exists to catch cannot happen inside them.
+ * are generated from the same descriptor lists as the visible tiles, so the drift this
+ * script exists to catch cannot happen inside them.
  */
-const stripAriaHidden = (html) => stripElements(html, (raw) => /aria-hidden="true"/.test(raw));
+const stripOffScreenStates = (html) =>
+  stripElements(html, (raw) => /data-selector-states="off-screen"/.test(raw));
 
 /**
  * Drops `<script>` and `<style>` blocks.
@@ -188,7 +190,7 @@ const main = async () => {
   for (const file of files) {
     const body = stripScripts(await readFile(file, 'utf8'));
     // Only the sentences describing what is currently on screen are checkable.
-    const onScreen = stripAriaHidden(body);
+    const onScreen = stripOffScreenStates(body);
     const found = [...onScreen.matchAll(ECHO)];
     skipped += [...body.matchAll(ECHO)].length - found.length;
     if (found.length === 0) continue;
@@ -229,7 +231,7 @@ const main = async () => {
 
   console.log(
     `Checked ${echoes} label echo(es) across ${pagesWithContext} page(s) of ${files.length} built` +
-      `${skipped > 0 ? `, and skipped ${skipped} in aria-hidden all-states blocks` : ''}.`
+      `${skipped > 0 ? `, and skipped ${skipped} in off-screen selector-state blocks` : ''}.`
   );
 
   if (failures.length > 0) {

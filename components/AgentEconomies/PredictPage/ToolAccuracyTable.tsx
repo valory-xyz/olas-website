@@ -113,10 +113,10 @@ export const ToolAccuracyTable = ({ data, platform, className, id }: ToolAccurac
 
       {/* The platform the switcher is not on. Its rows exist only in React state, so a
           crawler fetching this page once sees one of the two leaderboards and nothing to
-          say the other exists. `aria-hidden` for the same reason as the other all-state
-          mirrors: a screen-reader user has the visible table and can switch to the other. */}
+          say the other exists. Screen-reader-only but not `aria-hidden` — see
+          `AllStatesTables` in `PlatformActivitySection` for why. */}
       {otherRows.length > 0 && (
-        <div className="sr-only" aria-hidden="true">
+        <div className="sr-only" data-selector-states="off-screen">
           <table>
             {/* Names its own platform: retrieved on its own, "the other tab" says nothing. */}
             <caption>

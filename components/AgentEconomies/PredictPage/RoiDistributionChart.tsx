@@ -273,11 +273,10 @@ export const RoiDistributionChart = ({
           a crawler fetching this page once would otherwise see an eighth of the data and
           no sign that the rest exists.
 
-          `aria-hidden` because this is a duplicate for machines: a screen-reader user has
-          the active table above and can switch tabs to change it, and reading three more
-          31-row tables they did not ask for would be a regression. Crawlers read the text
-          of the DOM and are unaffected. */}
-      <div className="sr-only" aria-hidden="true">
+          Screen-reader-only but not `aria-hidden` — see AllStatesTables in
+          PlatformActivitySection for why. Each table's caption names its platform and
+          range, so an assistive-technology user can skip to the one they want. */}
+      <div className="sr-only" data-selector-states="off-screen">
         {(['omenstrat', 'polystrat'] as const).map((other) =>
           PREDICT_WINDOWS.filter(({ key }) => !(other === platform && key === activeRange)).map(
             ({ key }) => (

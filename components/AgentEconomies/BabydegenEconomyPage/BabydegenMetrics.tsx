@@ -198,12 +198,11 @@ const ECONOMIES = [
 /**
  * The economies behind the other two tabs.
  *
- * `aria-hidden` because this duplicates for machines what a screen-reader user already
- * has: the active card is fully described above, and they can switch tabs to reach the
- * others. Crawlers read the DOM's text regardless.
+ * Screen-reader-only but not `aria-hidden` — see `AllStatesTables` in
+ * `PlatformActivitySection` for why. Each table's caption names its economy.
  */
 const HiddenEconomies = ({ metrics, activeTab, snapshotTimestamp }) => (
-  <div className="sr-only" aria-hidden="true">
+  <div className="sr-only" data-selector-states="off-screen">
     {ECONOMIES.filter(({ key }) => key !== activeTab).map(({ key, title, economyName }) => {
       const rows = buildAprItems(
         metrics?.[key]?.value,

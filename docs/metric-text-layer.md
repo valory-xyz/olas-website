@@ -70,6 +70,13 @@ The off-screen duplicates are generated from the same descriptor lists as the vi
 tiles — `PERFORMANCE_METRICS`, `ECONOMIES`, `METRIC_CONFIG` — so the hidden and visible
 descriptions of a metric cannot drift apart.
 
+They are `sr-only` and **must not** be `aria-hidden`. Both together would leave content no
+human can reach by any means, served only to crawlers, which is the shape Google's
+policies call hidden text. Visually-hidden copy is legitimate *because* it serves screen
+readers, so it has to actually serve them. They carry
+`data-selector-states="off-screen"` instead, which is how `metric-context:check` knows
+their labels have no visible counterpart to match.
+
 ## Testing
 
 - `yarn metric-context:test` — the sentence rules above, as unit tests. In CI.
