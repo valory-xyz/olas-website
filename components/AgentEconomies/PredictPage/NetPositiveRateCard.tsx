@@ -91,8 +91,8 @@ export const netPositiveSentence = (netPositive: NetPositive | null, asOf?: numb
 /**
  * The same sentence, for the states where the card itself does not render.
  *
- * `aria-hidden` for the same reason as the other all-state mirrors: when the card is on
- * screen a screen-reader user already has it, and this is the machine-readable duplicate.
+ * Screen-reader-only but not `aria-hidden` — see `AllStatesTables` in
+ * `PlatformActivitySection` for why.
  */
 export const NetPositiveRateSummary = ({
   netPositive,
@@ -104,7 +104,7 @@ export const NetPositiveRateSummary = ({
   const sentence = netPositiveSentence(netPositive, asOf);
   if (!sentence) return null;
   return (
-    <div className="sr-only" aria-hidden="true">
+    <div className="sr-only" data-selector-states="off-screen">
       <p>{sentence}</p>
     </div>
   );

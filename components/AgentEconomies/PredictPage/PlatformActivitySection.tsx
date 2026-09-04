@@ -299,10 +299,11 @@ const PlatformSwitcher = ({
  * fetching this page once therefore sees one of eight states and no sign that the other
  * seven exist — so all eight are written out here.
  *
- * `aria-hidden` because this is a duplicate for machines: the visible tiles already carry
- * the active state for a screen-reader user, who can switch to any other. Making them page
- * through eight redundant tables would be a regression, and crawlers read the DOM's text
- * either way.
+ * Screen-reader-only, but *not* `aria-hidden`. Hiding it from assistive technology as well
+ * would leave content no human can reach by any means, served only to crawlers — the shape
+ * Google's policies call hidden text. Visually-hidden copy is legitimate because it serves
+ * screen readers, so it has to actually serve them. Each table is skippable and its caption
+ * names its own state, which is what keeps the extra ones navigable rather than noise.
  */
 const AllStatesTables = ({
   metrics,
@@ -315,7 +316,7 @@ const AllStatesTables = ({
   activeWindow: WindowKey;
   snapshotTimestamp: number | null;
 }) => (
-  <div className="sr-only" aria-hidden="true">
+  <div className="sr-only" data-selector-states="off-screen">
     {PLATFORM_TABS.map(({ key: platform }) => {
       const m = metrics[platform];
       const platformPhrase = PLATFORM_PHRASE[platform];
