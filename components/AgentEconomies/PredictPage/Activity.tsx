@@ -224,8 +224,9 @@ export const Activity = ({
 
           {/* ROI Distribution Chart — filtered to the selected platform */}
           <RoiDistributionChart
-            snapshotTimestamp={roiSnapshots?.[platform]?.timestamp ?? null}
-            isIncomplete={roiSnapshots?.[platform]?.isIncomplete ?? false}
+            // Both platforms' snapshots: the mirror inside describes the platform that
+            // is not on screen too, and the two accumulators refresh independently.
+            snapshots={roiSnapshots}
             id="roi-distribution"
             data={roiDistribution}
             platform={platform}

@@ -88,10 +88,101 @@ type RoiDistributionChartProps = {
   platform: 'polystrat' | 'omenstrat';
   className?: string;
   id?: string;
-  /** As-of for the daily ROI snapshot behind this platform's histogram. */
-  snapshotTimestamp?: number | null;
-  /** True when that snapshot is stale or still backfilling. */
-  isIncomplete?: boolean;
+  /**
+   * Freshness per platform, not just the one on screen: the two ROI accumulators are
+   * separate daily jobs, so the mirror below must date each platform's tables with its
+   * own snapshot rather than borrowing the active one's.
+   */
+  snapshots?: Partial<Record<'polystrat' | 'omenstrat', RoiSnapshot>>;
+};
+
+/** As-of for one platform's daily ROI blob, and whether it is stale or still backfilling. */
+type RoiSnapshot = { timestamp?: number | null; isIncomplete?: boolean };
+
+const rangeLabelFor = (range: TimeRange) =>
+  range === 'max' ? 'over all time' : `over the last ${range.replace('d', '')} days`;
+
+type DatasetMeta = {
+  label: string;
+  background: string;
+  border: string;
+  pick: (bin: BinData) => number;
+};
+
+const DATASET_META: Record<'polystrat' | 'omenstrat', DatasetMeta> = {
+  omenstrat: {
+    label: 'Omenstrat',
+    background: OMENSTRAT_COLOR,
+    border: OMENSTRAT_COLOR_BORDER,
+    pick: (bin: BinData) => bin.omenstrat,
+  },
+  polystrat: {
+    label: 'Polystrat',
+    background: POLYSTRAT_COLOR,
+    border: POLYSTRAT_COLOR_BORDER,
+    pick: (bin: BinData) => bin.polystrat,
+  },
+};
+
+type RangeTableProps = {
+  range: TimeRange;
+  data: RoiDistribution | null;
+  platform: 'polystrat' | 'omenstrat';
+  datasetMeta: DatasetMeta;
+  asOf: string | null;
+  isIncomplete: boolean;
+};
+
+/**
+ * The distribution for one time range, as a table.
+ *
+ * The chart is a `<canvas>`, so it holds no text at any point, and both the range and the
+ * platform live in React state — without this, nothing in the served HTML says which
+ * distribution is on screen, let alone what the other three ranges hold.
+ *
+ * Every bin is listed rather than summarised: a distribution's shape is the answer, and a
+ * headline ("most agents are between -10% and 10%") throws away the tail that makes the
+ * chart worth reading. Returns null when the range has no qualifying population, so an
+ * empty histogram is never described as a real one — an all-zero histogram is also what a
+ * missing blob produces.
+ */
+const RoiRangeTable = ({
+  range,
+  data,
+  platform,
+  datasetMeta,
+  asOf,
+  isIncomplete,
+}: RangeTableProps) => {
+  const dataKey = TIME_RANGES.find((entry) => entry.key === range)?.dataKey ?? 'd7';
+  const bins = data?.bins?.[dataKey] ?? null;
+  const agentCount = data?.netPositive?.[dataKey]?.[platform]?.agents ?? 0;
+
+  if (!bins || bins.length === 0 || agentCount === 0) return null;
+
+  return (
+    <table>
+      {/* The caption names its own range: these tables are retrieved one at a time and
+          out of order, so a caption that says only "the selected range" is useless. */}
+      <caption>
+        {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${rangeLabelFor(range)}. ` +
+          `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
+          `Qualifying agents are those with positive trading costs${range === 'max' ? ' and at least 10 lifetime bets' : ''}; percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
+          (asOf ? ` As of ${asOf}.` : '') +
+          (isIncomplete
+            ? ' The underlying daily snapshot is stale or still backfilling, so this distribution may be incomplete.'
+            : '')}
+      </caption>
+      <tbody>
+        {bins.map((bin) => (
+          <tr key={bin.label}>
+            <th scope="row">{`Trading ROI ${bin.label}`}</th>
+            <td>{`${datasetMeta.pick(bin).toFixed(1)}% of qualifying ${datasetMeta.label} agents`}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
 const safeMidpoint = (min: number, max: number) => {
@@ -105,35 +196,18 @@ export const RoiDistributionChart = ({
   platform,
   className,
   id,
-  snapshotTimestamp = null,
-  isIncomplete = false,
+  snapshots = {},
 }: RoiDistributionChartProps) => {
   const [activeRange, setActiveRange] = useState<TimeRange>('7d');
 
   const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
-  const activeRangeLabel =
-    activeRange === 'max' ? 'over all time' : `over the last ${activeRange.replace('d', '')} days`;
+  const activeRangeLabel = rangeLabelFor(activeRange);
   const bins = data?.bins?.[activeDataKey] ?? null;
+  const datasetMeta = DATASET_META[platform];
 
-  // An all-zero histogram is also what a missing blob produces, so the count decides
-  // whether there is a distribution to describe at all.
-  const agentCount = data?.netPositive?.[activeDataKey]?.[platform]?.agents ?? 0;
-  const asOf = formatUtcAsOf(snapshotTimestamp);
-
-  const isOmen = platform === 'omenstrat';
-  const datasetMeta = isOmen
-    ? {
-        label: 'Omenstrat',
-        background: OMENSTRAT_COLOR,
-        border: OMENSTRAT_COLOR_BORDER,
-        pick: (bin: BinData) => bin.omenstrat,
-      }
-    : {
-        label: 'Polystrat',
-        background: POLYSTRAT_COLOR,
-        border: POLYSTRAT_COLOR_BORDER,
-        pick: (bin: BinData) => bin.polystrat,
-      };
+  const asOfFor = (key: 'polystrat' | 'omenstrat') =>
+    formatUtcAsOf(snapshots[key]?.timestamp ?? null);
+  const isIncompleteFor = (key: 'polystrat' | 'omenstrat') => snapshots[key]?.isIncomplete ?? false;
 
   const chartData = bins
     ? {
@@ -177,33 +251,48 @@ export const RoiDistributionChart = ({
         />
       </div>
 
-      {/* Screen-reader-only mirror. The chart is a <canvas>, so it holds no text at any
-          point, and both the range and the platform live in React state — nothing in the
-          served HTML says which distribution is on screen. A summary, not a transcription:
-          the bin labels and their shares are what a reader would quote. */}
-      {bins && bins.length > 0 && agentCount > 0 && (
-        <section aria-label={`${datasetMeta.label} trading ROI distribution`} className="sr-only">
-          <table>
-            <caption>
-              {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${activeRangeLabel}. ` +
-                `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
-                `Qualifying agents are those with positive trading costs${activeRange === 'max' ? ' and at least 10 lifetime bets' : ''}; percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
-                (asOf ? ` As of ${asOf}.` : '') +
-                (isIncomplete
-                  ? ' The underlying daily snapshot is stale or still backfilling, so this distribution may be incomplete.'
-                  : '')}
-            </caption>
-            <tbody>
-              {bins.map((bin) => (
-                <tr key={bin.label}>
-                  <th scope="row">{`Trading ROI ${bin.label}`}</th>
-                  <td>{`${datasetMeta.pick(bin).toFixed(1)}% of qualifying ${datasetMeta.label} agents`}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      )}
+      {/* Screen-reader-only mirror of the active range: announced on change, and the
+          only range a screen-reader user is currently looking at. */}
+      <section aria-label={`${datasetMeta.label} trading ROI distribution`} className="sr-only">
+        <p role="status">
+          {`Showing the ${datasetMeta.label} trading ROI distribution ${activeRangeLabel}.`}
+        </p>
+        <RoiRangeTable
+          range={activeRange}
+          data={data}
+          platform={platform}
+          datasetMeta={datasetMeta}
+          asOf={asOfFor(platform)}
+          isIncomplete={isIncompleteFor(platform)}
+        />
+      </section>
+
+      {/* The other seven distributions: the three ranges behind the other tabs, and all
+          four for the platform the switcher is not on. Both live only in React state, so
+          a crawler fetching this page once would otherwise see an eighth of the data and
+          no sign that the rest exists.
+
+          `aria-hidden` because this is a duplicate for machines: a screen-reader user has
+          the active table above and can switch tabs to change it, and reading three more
+          31-row tables they did not ask for would be a regression. Crawlers read the text
+          of the DOM and are unaffected. */}
+      <div className="sr-only" aria-hidden="true">
+        {(['omenstrat', 'polystrat'] as const).map((other) =>
+          TIME_RANGES.filter(({ key }) => !(other === platform && key === activeRange)).map(
+            ({ key }) => (
+              <RoiRangeTable
+                key={`${other}-${key}`}
+                range={key}
+                data={data}
+                platform={other}
+                datasetMeta={DATASET_META[other]}
+                asOf={asOfFor(other)}
+                isIncomplete={isIncompleteFor(other)}
+              />
+            )
+          )
+        )}
+      </div>
 
       {/* Chart area */}
       {chartData ? (
