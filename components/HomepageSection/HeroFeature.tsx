@@ -10,7 +10,7 @@ const CARD_HOVER_SHADOW =
 // alpha off the noise, so anything below the threshold stays fully transparent
 // and what is left reads as scattered flecks.
 const CARD_SPECKLE =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55 0 0 0 0 0.6 0 0 0 0 0.72 8 0 0 0 -5.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)'/%3E%3C/svg%3E\")";
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.63 0 0 0 0 0.68 0 0 0 0 0.78 8 0 0 0 -5.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)'/%3E%3C/svg%3E\")";
 
 const Rule = () => <div className="h-px w-full bg-[#B7C1D2]" />;
 
@@ -33,7 +33,7 @@ export const HeroFeature = ({ className }: { className?: string }) => (
         'shadow-md transition-all duration-300 ease-in-out group-hover:scale-[1.01]',
         CARD_HOVER_SHADOW
       )}
-      style={{ backgroundColor: '#F2F5FA', backgroundImage: CARD_SPECKLE }}
+      style={{ backgroundColor: '#F9FAFD', backgroundImage: CARD_SPECKLE }}
     >
       <Rule />
       <div className="mt-2 text-[12px] lg:text-[15px] leading-none text-center text-[#7B8698]">
