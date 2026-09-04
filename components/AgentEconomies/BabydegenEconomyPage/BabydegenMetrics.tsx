@@ -14,7 +14,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { isFrozen } from 'common-util/graphql/metric-utils';
-import { MetricContext } from 'components/ui/MetricContext';
+import { MetricContext, buildMetricContext } from 'components/ui/MetricContext';
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return null;
@@ -64,6 +64,59 @@ const AprMetric = ({ item, economyName, snapshotTimestamp }) => {
   );
 };
 
+/**
+ * The three APR figures a BabyDegen economy publishes.
+ *
+ * Lifted out of the card so the hidden mirror of the inactive tabs is generated from the
+ * same source as the visible one — otherwise the two descriptions of the same number
+ * drift apart the moment either is edited.
+ */
+const buildAprItems = (metrics, sourceUrl, status) => {
+  const baseSource = sourceUrl
+    ? { link: sourceUrl, isExternal: !sourceUrl.startsWith('/') }
+    : undefined;
+  const olasSource = sourceUrl?.startsWith('/')
+    ? baseSource
+    : { link: OPERATE_URL, isExternal: true };
+
+  return [
+    {
+      id: 'toUSDC',
+      label: 'APR, Relative to USDC',
+      hint: 'Moving Average 7D',
+      contextNoun: 'annual percentage rate measured relative to holding USDC',
+      contextWindow: '7-day moving average',
+      value: metrics?.latestUsdcApr ? formatNumber(metrics.latestUsdcApr) : null,
+      source: baseSource,
+      status,
+    },
+    {
+      id: 'toETH',
+      label: 'APR, Relative to ETH',
+      hint: 'Moving Average 7D',
+      contextNoun: 'annual percentage rate measured relative to holding ETH',
+      contextWindow: '7-day moving average',
+      value: metrics?.latestEthApr ? formatNumber(metrics.latestEthApr) : null,
+      source: baseSource,
+      status,
+    },
+    {
+      id: 'olasApr',
+      label: 'APR, OLAS',
+      hint: 'Via OLAS Staking',
+      contextNoun: 'annual percentage rate earned via OLAS staking',
+      contextWindow: 'a current rate',
+      value: !isNil(metrics?.stakingAprCalculated)
+        ? formatNumber(metrics.stakingAprCalculated)
+        : metrics?.maxOlasApr
+          ? formatNumber(metrics.maxOlasApr)
+          : null,
+      source: !isNil(metrics?.stakingAprCalculated) ? olasSource : undefined,
+      status,
+    },
+  ];
+};
+
 const BabydegenEconomyCard = ({
   isUnderConstruction = false,
   metrics,
@@ -74,51 +127,10 @@ const BabydegenEconomyCard = ({
   economyName,
   snapshotTimestamp = null,
 }) => {
-  const data = useMemo(() => {
-    const baseSource = sourceUrl
-      ? { link: sourceUrl, isExternal: !sourceUrl.startsWith('/') }
-      : undefined;
-    const olasSource = sourceUrl?.startsWith('/')
-      ? baseSource
-      : { link: OPERATE_URL, isExternal: true };
-
-    return [
-      {
-        id: 'toUSDC',
-        label: 'APR, Relative to USDC',
-        hint: 'Moving Average 7D',
-        contextNoun: 'annual percentage rate measured relative to holding USDC',
-        contextWindow: '7-day moving average',
-        value: metrics?.latestUsdcApr ? formatNumber(metrics.latestUsdcApr) : null,
-        source: baseSource,
-        status,
-      },
-      {
-        id: 'toETH',
-        label: 'APR, Relative to ETH',
-        hint: 'Moving Average 7D',
-        contextNoun: 'annual percentage rate measured relative to holding ETH',
-        contextWindow: '7-day moving average',
-        value: metrics?.latestEthApr ? formatNumber(metrics.latestEthApr) : null,
-        source: baseSource,
-        status,
-      },
-      {
-        id: 'olasApr',
-        label: 'APR, OLAS',
-        hint: 'Via OLAS Staking',
-        contextNoun: 'annual percentage rate earned via OLAS staking',
-        contextWindow: 'a current rate',
-        value: !isNil(metrics?.stakingAprCalculated)
-          ? formatNumber(metrics.stakingAprCalculated)
-          : metrics?.maxOlasApr
-            ? formatNumber(metrics.maxOlasApr)
-            : null,
-        source: !isNil(metrics?.stakingAprCalculated) ? olasSource : undefined,
-        status,
-      },
-    ];
-  }, [metrics, sourceUrl, status]);
+  const data = useMemo(
+    () => buildAprItems(metrics, sourceUrl, status),
+    [metrics, sourceUrl, status]
+  );
 
   return (
     <Card className="p-8 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] flex flex-col gap-6">
@@ -149,6 +161,84 @@ const BabydegenEconomyCard = ({
     </Card>
   );
 };
+
+/**
+ * The three BabyDegen economies, described once.
+ *
+ * The tab switcher swaps whole cards, so only one economy's numbers reach the served
+ * HTML; the other two exist solely in React state. Both the visible card and the hidden
+ * mirror below are built from this list.
+ */
+const ECONOMIES = [
+  {
+    key: 'basius',
+    title: 'Basius Agent Economy',
+    image: '/images/babydegen-econ-page/basius.png',
+    economyName: 'the Basius agent economy',
+  },
+  {
+    key: 'optimus',
+    title: 'Optimus Agent Economy',
+    image: '/images/babydegen-econ-page/optimus.png',
+    economyName: 'the Optimus agent economy',
+    isUnderConstruction: true,
+  },
+  {
+    key: 'modius',
+    title: 'Modius Agent Economy',
+    image: '/images/babydegen-econ-page/modius.png',
+    economyName: 'the Modius agent economy',
+    isUnderConstruction: true,
+  },
+];
+
+/**
+ * The economies behind the other two tabs.
+ *
+ * `aria-hidden` because this duplicates for machines what a screen-reader user already
+ * has: the active card is fully described above, and they can switch tabs to reach the
+ * others. Crawlers read the DOM's text regardless.
+ */
+const HiddenEconomies = ({ metrics, activeTab, snapshotTimestamp }) => (
+  <div className="sr-only" aria-hidden="true">
+    {ECONOMIES.filter(({ key }) => key !== activeTab).map(({ key, title, economyName }) => {
+      const rows = buildAprItems(
+        metrics?.[key]?.value,
+        '/data#babydegen-metrics',
+        metrics?.[key]?.status
+      )
+        .map((item) => ({
+          label: item.label,
+          sentence: buildMetricContext({
+            value: item.value,
+            noun: `${item.contextNoun} for ${economyName}`,
+            label: item.label,
+            window: item.contextWindow,
+            status: item.status,
+            asOfFallback: snapshotTimestamp,
+          }),
+        }))
+        .filter((row) => row.sentence);
+
+      if (rows.length === 0) return null;
+
+      return (
+        <table key={key}>
+          {/* Named per economy: retrieved on its own, "the selected economy" says nothing. */}
+          <caption>{`${title} — annual percentage rates.`}</caption>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.label}>
+                <th scope="row">{`${row.label} (${title})`}</th>
+                <td>{row.sentence}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    })}
+  </div>
+);
 
 const TAB_ITEMS = [
   { key: 'basius', label: 'Basius', icon: '/images/babydegen-econ-page/basius.png' },
@@ -208,38 +298,33 @@ export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
           fullWidth
         />
 
-        {activeTab === 'basius' && (
-          <BabydegenEconomyCard
-            title="Basius Agent Economy"
-            image="/images/babydegen-econ-page/basius.png"
-            metrics={metrics?.basius?.value}
-            status={metrics?.basius?.status}
-            economyName="the Basius agent economy"
-            snapshotTimestamp={snapshotTimestamp}
-          />
+        {/* Announces the swap: the tab strip serialises as one token and the card
+            below changes wholesale, so without this nothing signals the change. */}
+        <p className="sr-only" role="status">
+          {`Showing the ${ECONOMIES.find(({ key }) => key === activeTab)?.title}.`}
+        </p>
+
+        {ECONOMIES.filter(({ key }) => key === activeTab).map(
+          ({ key, title, image, economyName, isUnderConstruction }) => (
+            <BabydegenEconomyCard
+              key={key}
+              isUnderConstruction={isUnderConstruction}
+              title={title}
+              image={image}
+              metrics={metrics?.[key]?.value}
+              status={metrics?.[key]?.status}
+              economyName={economyName}
+              snapshotTimestamp={snapshotTimestamp}
+            />
+          )
         )}
-        {activeTab === 'optimus' && (
-          <BabydegenEconomyCard
-            isUnderConstruction
-            title="Optimus Agent Economy"
-            image="/images/babydegen-econ-page/optimus.png"
-            metrics={metrics?.optimus?.value}
-            status={metrics?.optimus?.status}
-            economyName="the Optimus agent economy"
-            snapshotTimestamp={snapshotTimestamp}
-          />
-        )}
-        {activeTab === 'modius' && (
-          <BabydegenEconomyCard
-            isUnderConstruction
-            title="Modius Agent Economy"
-            image="/images/babydegen-econ-page/modius.png"
-            metrics={metrics?.modius?.value}
-            status={metrics?.modius?.status}
-            economyName="the Modius agent economy"
-            snapshotTimestamp={snapshotTimestamp}
-          />
-        )}
+
+        <HiddenEconomies
+          metrics={metrics}
+          activeTab={activeTab}
+          snapshotTimestamp={snapshotTimestamp}
+        />
+
         <div className="mt-8 flex justify-center">
           <Button variant="default" size="lg" asChild>
             <NextLink href="/agent-economies/explorer?economy=babydegen">
