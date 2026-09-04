@@ -9,7 +9,7 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
 
-import { formatTokenAmount } from './Flywheel/ChainPill';
+import { formatTokenAmount } from 'common-util/numberFormatter';
 import { MARKETPLACE_FEE_TOKENS, TOKEN_ICONS } from './Flywheel/constants';
 
 const imgPath = '/images/homepage/activity/';

@@ -1,9 +1,9 @@
 import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
-import { buildMetricContext, formatFullNumber } from 'components/ui/MetricContext';
-import { CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
-import { formatTokenAmount } from './Flywheel/ChainPill';
+import { buildMetricContext } from 'components/ui/MetricContext';
+import { FEE_SWITCHES, CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
+import { formatTokenAmount } from 'common-util/numberFormatter';
 
 type Metric = Partial<MetricWithStatus<number | string>>;
 
@@ -192,20 +192,26 @@ export const ActivitySummary = ({
     value: protocolMetrics?.totalProtocolRevenue?.value,
     isMoney: true,
     status: protocolMetrics?.totalProtocolRevenue?.status,
-    noun: "in cumulative swap fees earned by the Olas Treasury's protocol-owned liquidity positions, which is separate from Mech Marketplace fees",
+    // The valuation rule matters and lives only in the (portaled) tooltip: the total is
+    // not a mark-to-market figure, so a reader comparing it against today's pool value
+    // would otherwise conclude the number is wrong.
+    noun: "in cumulative swap fees earned by the Olas Treasury's protocol-owned liquidity positions, which is separate from Mech Marketplace fees. Each fee is valued at the moment the protocol collects it, so the total is not revalued and its current value in the pools may differ",
     scope: 'across all supported chains',
     window: 'all time',
     asOfFallback: protocolSnapshotTimestamp,
   });
 
+  // Derived from the same constant the visible toggles render, so the hidden copy can't
+  // claim a switch is on while the diagram shows it off.
+  const switchState = (key: keyof typeof FEE_SWITCHES) =>
+    FEE_SWITCHES[key] === 'ON' ? 'switched on' : 'switched off';
+
   const feeSwitchLines = [
-    'The Mech Marketplace fee is currently switched on. A 15% fee is taken on payments between AI agents on the Olas Marketplace; the Governors of the Olas Protocol can turn it on or off, and it is designed to buy back and burn OLAS as the marketplace is used, as set out in AIP-5.',
-    'Fees from protocol-owned liquidity are currently switched off and stay in the pools. Turning them on is subject to the implementation of AIP-7, which is designed to burn OLAS and send the remaining tokens to the Olas Treasury.',
+    `The Mech Marketplace fee is currently ${switchState('marketplace')}. A 15% fee is taken on payments between AI agents on the Olas Marketplace; the Governors of the Olas Protocol can turn it on or off, and it is designed to buy back and burn OLAS as the marketplace is used, as set out in AIP-5.`,
+    `Fees from protocol-owned liquidity are currently ${switchState('pol')} and stay in the pools. Turning them on is subject to the implementation of AIP-7, which is designed to burn OLAS and send the remaining tokens to the Olas Treasury.`,
   ];
 
   const lines = [...activityLines, ...polLines, polFeesLine, ...feeSwitchLines].filter(Boolean);
-
-  if (lines.length === 0) return null;
 
   if (lines.length === 0) return null;
 

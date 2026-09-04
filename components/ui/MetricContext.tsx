@@ -1,6 +1,6 @@
 import { buildMetricContext, type MetricContextProps } from 'common-util/metric-context';
 
-export { buildMetricContext, formatFullNumber } from 'common-util/metric-context';
+export { buildMetricContext, formatFullNumber, statusCaveat } from 'common-util/metric-context';
 export type { MetricContextProps } from 'common-util/metric-context';
 
 /**

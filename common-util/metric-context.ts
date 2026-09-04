@@ -114,9 +114,6 @@ export const buildMetricContext = ({
 
   // `lastValidAt` is null while a source merely lags, so fall back to the snapshot's
   // own timestamp. If neither exists we omit the clause — never invent a time.
-  // Distinguish where the timestamp came from: `lastValidAt` genuinely dates the value,
-  // while the snapshot fallback only dates the run that failed to refresh it.
-  const hasOwnTimestamp = typeof status?.lastValidAt === 'number';
   const asOf = formatUtcAsOf(status?.lastValidAt ?? asOfFallback);
 
   // The label is quoted so a reader can match the sentence to what is on screen, and
@@ -128,20 +125,36 @@ export const buildMetricContext = ({
 
   const sentence = `${parts.join(', ')}.`;
 
+  return `${sentence}${statusCaveat(status)}`;
+};
+
+/**
+ * The health caveat for a metric, as a sentence to append (empty when healthy).
+ *
+ * Exported so the table mirrors that compose their own prose — the Mech fee flow, the
+ * emissions summary — say this the same way a single-value sentence does. It was written
+ * out by hand in three places, each with its own phrasing of "lagging", which is how a
+ * reader ends up unable to tell whether two differently-worded caveats mean the same
+ * thing.
+ *
+ * `noun` names what the caveat is about, so a table of many values can say "data" where a
+ * single tile says "value".
+ */
+export const statusCaveat = (status?: MetricStatus, noun = 'value'): string => {
   // Three distinct states, which `isFrozen` alone conflates:
   //   frozen with a lastValidAt   → a genuinely held-over, previously confirmed value
   //   frozen without one          → no usable prior value; the reading is incomplete and
   //                                 the timestamp only dates the run that failed
   //   lagging but live            → this run's data, but a lagging source may undercount
   if (isFrozen(status)) {
-    return hasOwnTimestamp
-      ? `${sentence} This is the last confirmed value; the live source is currently unavailable.`
-      : `${sentence} This reading is incomplete — a source was unavailable and no earlier confirmed value exists, so the date above is when the failed refresh ran, not when the value was last valid.`;
+    return typeof status?.lastValidAt === 'number'
+      ? ` This is the last confirmed ${noun}; the live source is currently unavailable.`
+      : ` This reading is incomplete — a source was unavailable and no earlier confirmed ${noun} exists, so the date above is when the failed refresh ran, not when the ${noun} was last valid.`;
   }
 
   if (status?.laggingSubgraphs?.length) {
-    return `${sentence} One or more sources are behind the chain, so this figure may undercount.`;
+    return ' One or more sources are behind the chain, so this figure may undercount.';
   }
 
-  return sentence;
+  return '';
 };
