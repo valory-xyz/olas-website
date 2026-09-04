@@ -11,19 +11,23 @@ type PopoverProps = {
   contentClassName?: string;
   iconSize?: number;
   onOpenChange?: (open: boolean) => void;
-  /**
-   * Plain-text version of the tooltip, emitted into the served HTML.
-   *
-   * Radix portals the content and only mounts it while open, so `children` never reach
-   * a crawler. Opt in with a *string* rather than cloning `children`: duplicating
-   * arbitrary nodes put focusable links inside an invisible box, pulled whole tooltips
-   * into the accessible name of any `role="tab"`/button ancestor, and re-rendered
-   * stateful children (a healthy metric served "sources are behind the chain", with a
-   * locale-dependent timestamp). Leave unset where a `MetricContext` sentence nearby
-   * already says the same thing.
-   */
-  srText?: string;
 };
+
+/*
+ * On why there is no screen-reader copy of the tooltip here.
+ *
+ * Radix portals the content and mounts it only while open, so `children` never reach a
+ * crawler. Cloning them into an `sr-only` sibling was tried and reverted: it put
+ * focusable links inside an invisible box, pulled whole tooltips into the accessible
+ * name of any button ancestor, and re-rendered stateful children (a healthy metric
+ * served "sources are behind the chain", with a locale-dependent timestamp).
+ *
+ * The facts those tooltips carry are published instead as one sentence in the page's
+ * summary — `ActivitySummary`, the Explorer summary, the metric mirrors — where each is
+ * stated once, in context, rather than duplicated everywhere the tooltip is rendered.
+ * If a tooltip fact is missing from the text layer, add it to the relevant summary; do
+ * not reintroduce a per-tooltip copy.
+ */
 
 export const Popover = ({
   children,
@@ -34,7 +38,6 @@ export const Popover = ({
   contentClassName,
   iconSize,
   onOpenChange,
-  srText,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
 
@@ -71,9 +74,6 @@ export const Popover = ({
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
-      {/* Plain text only — never a clone of `children`. Leading space so extraction
-          does not glue it to the preceding content. */}
-      {srText && <span className="sr-only">{` ${srText}`}</span>}
     </Tooltip.Provider>
   );
 };

@@ -12,6 +12,7 @@ import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
 import { MetricContext, buildMetricContext } from 'components/ui/MetricContext';
 import type { WindowedMetric, WindowKey } from 'common-util/api/predict';
+import { PLATFORM_NAME, PLATFORM_PHRASE, PREDICT_WINDOWS, windowPhrase } from './constants';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
@@ -70,13 +71,6 @@ const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
   },
 ];
 
-const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
-  { key: '7d', label: '7D' },
-  { key: '30d', label: '30D' },
-  { key: '90d', label: '90D' },
-  { key: 'max', label: 'Max' },
-];
-
 // A windowed metric only carries data once at least one of its windows is non-null.
 // On a fresh predict blob mid-backfill every window is null, so this stays false and
 // the non-max tabs remain disabled (matching getTimeRangeTabs below).
@@ -86,7 +80,7 @@ const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
 // ROI and Accuracy are windowed for both platforms; Brier adds a 4th windowed metric
 // on Omenstrat. When no windowed data is available yet, the non-max tabs stay disabled.
 const getTimeRangeTabs = (windowed: boolean) =>
-  TIME_RANGE_KEYS.map(({ key, label }) =>
+  PREDICT_WINDOWS.map(({ key, label }) =>
     windowed || key === 'max'
       ? { key, label }
       : { key, label, disabled: true, tooltip: 'Coming soon' }
@@ -107,25 +101,6 @@ type MetricItemProps = {
    */
   context?: { noun: string; scope?: string; window?: string };
   asOfFallback?: number | null;
-};
-
-/** The window as prose, for the machine-readable sentence. */
-const WINDOW_PHRASE: Record<WindowKey, string> = {
-  '7d': 'over the last 7 days',
-  '30d': 'over the last 30 days',
-  '90d': 'over the last 90 days',
-  max: 'over all time',
-};
-
-/** Short form, for phrasings where the descriptive clause would not fit grammatically. */
-const PLATFORM_NAME: Record<Platform, string> = {
-  omenstrat: 'Omenstrat',
-  polystrat: 'Polystrat',
-};
-
-const PLATFORM_PHRASE: Record<Platform, string> = {
-  omenstrat: 'Omenstrat agents trading Omen prediction markets on Gnosis',
-  polystrat: 'Polystrat agents trading Polymarket prediction markets on Polygon',
 };
 
 /**
@@ -325,7 +300,7 @@ const AllStatesTables = ({
       const platformPhrase = PLATFORM_PHRASE[platform];
       const platformName = PLATFORM_NAME[platform];
 
-      return TIME_RANGE_KEYS.map(({ key: window }) => {
+      return PREDICT_WINDOWS.map(({ key: window }) => {
         // The state already on screen; it is described by the visible tiles.
         if (platform === activePlatform && window === activeWindow) return null;
 
@@ -337,7 +312,7 @@ const AllStatesTables = ({
               value: isNil(value) ? null : metric.format(value),
               noun: metric.noun(platformPhrase),
               label: metric.labelText,
-              window: WINDOW_PHRASE[window],
+              window: windowPhrase(window),
               status: metric.readStatus(m),
               asOfFallback: snapshotTimestamp,
             });
@@ -352,12 +327,12 @@ const AllStatesTables = ({
             {/* The caption names its own platform and window: these tables are retrieved
                 one at a time, so "the selected range" would say nothing. */}
             <caption>
-              {`${platformName} prediction agent performance ${WINDOW_PHRASE[window]}.`}
+              {`${platformName} prediction agent performance ${windowPhrase(window)}.`}
             </caption>
             <tbody>
               {rows.map((row) => (
                 <tr key={row.labelText}>
-                  <th scope="row">{`${row.labelText} (${platformName}, ${WINDOW_PHRASE[window]})`}</th>
+                  <th scope="row">{`${row.labelText} (${platformName}, ${windowPhrase(window)})`}</th>
                   <td>{row.sentence}</td>
                 </tr>
               ))}
@@ -429,7 +404,7 @@ export const PlatformActivitySection = ({
   // The tab strip is forced to `max` when no windowed data exists, so the effective
   // window — not `activeWindow` — is what the values actually represent.
   const effectiveWindow: WindowKey = isWindowed ? activeWindow : 'max';
-  const windowPhrase = WINDOW_PHRASE[effectiveWindow];
+  const activeWindowPhrase = windowPhrase(effectiveWindow);
   const platformPhrase = PLATFORM_PHRASE[platform];
   const platformName = PLATFORM_NAME[platform];
 
@@ -470,7 +445,7 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-${roiMeta.anchor}`,
     context: {
       noun: roiMeta.noun(platformPhrase),
-      window: windowPhrase,
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
@@ -498,7 +473,7 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-${accuracyMeta.anchor}`,
     context: {
       noun: accuracyMeta.noun(platformPhrase),
-      window: windowPhrase,
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
@@ -513,7 +488,7 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-${aprMeta.anchor}`,
     context: {
       noun: aprMeta.noun(platformPhrase),
-      window: windowPhrase,
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
@@ -541,7 +516,7 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-${brierMeta.anchor}`,
     context: {
       noun: brierMeta.noun(platformPhrase),
-      window: windowPhrase,
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
@@ -581,7 +556,7 @@ export const PlatformActivitySection = ({
           swapping a panel, so without this a screen-reader user hears nothing when
           the whole card's meaning changes underneath them. */}
       <p className="sr-only" role="status">
-        {`Showing ${platformName} performance ${windowPhrase}.`}
+        {`Showing ${platformName} performance ${activeWindowPhrase}.`}
       </p>
 
       <AllStatesTables

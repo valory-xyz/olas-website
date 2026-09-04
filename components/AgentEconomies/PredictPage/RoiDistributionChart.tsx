@@ -1,32 +1,21 @@
 'use client';
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
-import { BinData, RangeKey, RoiDistribution } from 'common-util/api/predict/roi-distribution';
+import { BinData, RoiDistribution } from 'common-util/api/predict/roi-distribution';
+import type { WindowKey } from 'common-util/api/predict';
 import { Tabs } from 'components/ui/tabs';
+import { PREDICT_WINDOWS, windowDataKey, windowPhrase } from './constants';
 import { formatUtcAsOf } from 'common-util/time';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(LinearScale, BarElement, Tooltip, Legend);
 
-type TimeRange = '7d' | '30d' | '90d' | 'max';
-
 type DataPoint = {
   x: number;
   y: number;
   range: string;
 };
-
-const TIME_RANGES: Array<{
-  key: TimeRange;
-  label: string;
-  dataKey: RangeKey;
-}> = [
-  { key: '7d', label: '7D', dataKey: 'd7' },
-  { key: '30d', label: '30D', dataKey: 'd30' },
-  { key: '90d', label: '90D', dataKey: 'd90' },
-  { key: 'max', label: 'Max', dataKey: 'all' },
-];
 
 const OMENSTRAT_COLOR = '#A755F7';
 const POLYSTRAT_COLOR = '#4D74FF';
@@ -99,9 +88,6 @@ type RoiDistributionChartProps = {
 /** As-of for one platform's daily ROI blob, and whether it is stale or still backfilling. */
 type RoiSnapshot = { timestamp?: number | null; isIncomplete?: boolean };
 
-const rangeLabelFor = (range: TimeRange) =>
-  range === 'max' ? 'over all time' : `over the last ${range.replace('d', '')} days`;
-
 type DatasetMeta = {
   label: string;
   background: string;
@@ -125,7 +111,7 @@ const DATASET_META: Record<'polystrat' | 'omenstrat', DatasetMeta> = {
 };
 
 type RangeTableProps = {
-  range: TimeRange;
+  range: WindowKey;
   data: RoiDistribution | null;
   platform: 'polystrat' | 'omenstrat';
   datasetMeta: DatasetMeta;
@@ -154,7 +140,7 @@ const RoiRangeTable = ({
   asOf,
   isIncomplete,
 }: RangeTableProps) => {
-  const dataKey = TIME_RANGES.find((entry) => entry.key === range)?.dataKey ?? 'd7';
+  const dataKey = windowDataKey(range);
   const bins = data?.bins?.[dataKey] ?? null;
   const agentCount = data?.netPositive?.[dataKey]?.[platform]?.agents ?? 0;
 
@@ -165,7 +151,7 @@ const RoiRangeTable = ({
       {/* The caption names its own range: these tables are retrieved one at a time and
           out of order, so a caption that says only "the selected range" is useless. */}
       <caption>
-        {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${rangeLabelFor(range)}. ` +
+        {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${windowPhrase(range)}. ` +
           `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
           `Qualifying agents are those with positive trading costs${range === 'max' ? ' and at least 10 lifetime bets' : ''}; percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
           (asOf ? ` As of ${asOf}.` : '') +
@@ -198,10 +184,10 @@ export const RoiDistributionChart = ({
   id,
   snapshots = {},
 }: RoiDistributionChartProps) => {
-  const [activeRange, setActiveRange] = useState<TimeRange>('7d');
+  const [activeRange, setActiveRange] = useState<WindowKey>('7d');
 
-  const activeDataKey = TIME_RANGES.find((range) => range.key === activeRange)?.dataKey ?? 'd7';
-  const activeRangeLabel = rangeLabelFor(activeRange);
+  const activeDataKey = windowDataKey(activeRange);
+  const activeRangeLabel = windowPhrase(activeRange);
   const bins = data?.bins?.[activeDataKey] ?? null;
   const datasetMeta = DATASET_META[platform];
 
@@ -245,9 +231,9 @@ export const RoiDistributionChart = ({
 
         <Tabs
           ariaLabel="ROI distribution time range"
-          items={TIME_RANGES.map(({ key, label }) => ({ key, label }))}
+          items={PREDICT_WINDOWS.map(({ key, label }) => ({ key, label }))}
           activeKey={activeRange}
-          onChange={(key) => setActiveRange(key as TimeRange)}
+          onChange={(key) => setActiveRange(key as WindowKey)}
         />
       </div>
 
@@ -278,7 +264,7 @@ export const RoiDistributionChart = ({
           of the DOM and are unaffected. */}
       <div className="sr-only" aria-hidden="true">
         {(['omenstrat', 'polystrat'] as const).map((other) =>
-          TIME_RANGES.filter(({ key }) => !(other === platform && key === activeRange)).map(
+          PREDICT_WINDOWS.filter(({ key }) => !(other === platform && key === activeRange)).map(
             ({ key }) => (
               <RoiRangeTable
                 key={`${other}-${key}`}

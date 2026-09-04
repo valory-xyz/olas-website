@@ -1,7 +1,7 @@
 import { getCumulativeEmissions } from 'common-util/charts';
 import { formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUtcAsOf } from 'common-util/time';
-import { isFrozen } from 'common-util/graphql/metric-utils';
+import { statusCaveat } from 'components/ui/MetricContext';
 import type { MetricStatus } from 'common-util/graphql/types';
 
 // The emissions series is denominated in wei, as the charts' own axis ticks show by
@@ -85,11 +85,7 @@ export const EmissionsSummaryTable = ({
   }).filter((row) => typeof row.total === 'number' && Number.isFinite(row.total));
 
   const asOf = formatUtcAsOf(status?.lastValidAt ?? snapshotTimestamp);
-  const caveat = isFrozen(status)
-    ? ' This is the last confirmed data; the live source is currently unavailable.'
-    : status?.laggingSubgraphs?.length
-      ? ' A source is behind the chain, so the latest epochs may be missing.'
-      : '';
+  const caveat = statusCaveat(status, 'data');
 
   if (!rows.length) return null;
 

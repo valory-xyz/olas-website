@@ -70,6 +70,14 @@ type MetricDef = {
   tileLabel?: string;
   /** Optional hover tooltip for the tile (e.g. the date the headline value is for). */
   tooltip?: (series: DaaSeriesPoint[]) => string | undefined;
+  /**
+   * How the figure is computed, appended to the machine-readable sentence.
+   *
+   * For rules a reader cannot infer from the number and that live only in the (portaled)
+   * tooltip, which never reaches the DOM. Not for restating the window — the sentence
+   * already carries that.
+   */
+  methodology?: string;
 };
 
 // Metric → the noun used in the header/tooltip, how the tooltip value reads, the heatmap
@@ -125,6 +133,8 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
       s.length ? `${Math.round(s.reduce((sum, p) => sum + p.count, 0) / s.length)}%` : '--',
     tooltip: () =>
       'Average of each day’s win rate, with every day weighted equally regardless of bet count. Days with too few resolved bets are excluded.',
+    methodology:
+      'every day is weighted equally regardless of bet count, and days with too few resolved bets are excluded',
     selectable: (s) => s.length > 0,
   },
   aum: {
@@ -366,7 +376,9 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
             value: config.headline(metricSeries),
             status: agentStatus,
             label: config.tileLabel ?? config.label,
-            noun: `${config.label.toLowerCase()} for ${agentLabel} in the ${meta.name} agent economy`,
+            noun:
+              `${config.label.toLowerCase()} for ${agentLabel} in the ${meta.name} agent economy` +
+              (config.methodology ? ` — ${config.methodology}` : ''),
             window: WINDOW_BY_KIND[config.headlineKind],
             asOfFallback: snapshotTimestamp,
           });

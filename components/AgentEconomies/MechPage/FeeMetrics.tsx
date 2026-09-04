@@ -2,7 +2,7 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { isNil } from 'lodash';
 import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
-import { formatFullNumber } from 'components/ui/MetricContext';
+import { formatFullNumber, statusCaveat } from 'components/ui/MetricContext';
 import { formatUtcAsOf, formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricStatus } from 'common-util/graphql/types';
@@ -177,9 +177,7 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
     const amount = formatFullNumber(metric.value, { isMoney: true });
     if (!amount) return null;
     const asOf = formatUtcAsOf(metric.status?.lastValidAt ?? snapshotTimestamp);
-    const caveat = isFrozen(metric.status)
-      ? ' This is the last confirmed value; the live source is currently unavailable.'
-      : '';
+    const caveat = statusCaveat(metric.status);
     // Date each sentence only when the figures were not all captured together; otherwise
     // one trailing stamp reads better than repeating the same date four times.
     const stamp = asOf && asOf !== sharedAsOf ? ` As of ${asOf}.` : '';
