@@ -295,3 +295,21 @@ export const MARKETPLACE_CHAIN_SCOPE = (() => {
   // Both derived, so neither can drift from the aggregation being described.
   return `all ${names.length} chains the Mech Marketplace is deployed on (${list})`;
 })();
+
+// Hero press feature — temporary. Remove after the run; greppable by HERO_FEATURE.
+export const HERO_FEATURE = {
+  headline: 'Agentic Commerce Is Here As Mastercard Cloudflare And Olas Build Rails',
+  outlet: 'Forbes',
+  // Cropped to the ink; the reel's forbes.svg has ~29px of padding at this size.
+  logoSrc: '/images/homepage/forbes-wordmark.svg',
+  url: 'https://www.forbes.com/sites/sandycarter/2026/09/02/agentic-commerce-is-here-as-mastercard-cloudflare-and-olas-build-rails/',
+} as const;
+
+// A month after the article ran (2026-09-02). Keep the explicit Z.
+export const HERO_FEATURE_END = '2026-10-02T23:59:59Z';
+
+export const isHeroFeatureActive = (now: number = Date.now()): boolean => {
+  const endsAt = Date.parse(HERO_FEATURE_END);
+  // Fail closed: an unparseable date hides the feature rather than stranding it.
+  return !Number.isNaN(endsAt) && now < endsAt;
+};

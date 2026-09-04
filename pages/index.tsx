@@ -1,6 +1,6 @@
 import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import type { OtherMetricsData } from 'common-util/api/other-metrics';
-import { REVALIDATE_DURATION } from 'common-util/constants';
+import { REVALIDATE_DURATION, isHeroFeatureActive } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { AgentsWorkingTogether } from 'components/HomepageSection/AgentsWorkingTogether';
 import Hero from 'components/HomepageSection/Hero';
@@ -20,6 +20,7 @@ export default function Home({
   protocolSnapshotTimestamp,
   olasBurned,
   economySnapshotTimestamp,
+  showHeroFeature,
 }) {
   const router = useRouter();
 
@@ -32,7 +33,7 @@ export default function Home({
   return (
     <PageWrapper>
       <Meta ogPath="" />
-      <Hero />
+      <Hero showFeature={showHeroFeature} />
       <OwnYourAgent />
       <AgentsWorkingTogether />
       <PowersAiAgentEconomies
@@ -75,6 +76,10 @@ export const getStaticProps = async () => {
       olasBurned:
         (economySnapshot?.data as AgentEconomiesMetricsData)?.mechFees?.olasBurned ?? null,
       economySnapshotTimestamp: economySnapshot?.timestamp ?? null,
+      // Resolved here, not at render: deciding on the client would let the
+      // boundary fall between server and browser and cause a hydration
+      // mismatch. ISR picks the expiry up within REVALIDATE_DURATION.
+      showHeroFeature: isHeroFeatureActive(),
     },
     revalidate: REVALIDATE_DURATION,
   };

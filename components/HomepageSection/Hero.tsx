@@ -1,3 +1,4 @@
+import { HeroFeature } from 'components/HomepageSection/HeroFeature';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Tag } from 'components/ui/tag';
 import featuredIn from 'data/featuredIn.json';
@@ -39,7 +40,7 @@ const AsSeenIn = () => (
   </div>
 );
 
-const Hero = () => (
+const Hero = ({ showFeature = false }: { showFeature?: boolean }) => (
   <>
     <SectionWrapper
       customClasses="
@@ -64,6 +65,14 @@ const Hero = () => (
         <div className="transparent-gradient h-[2000px] w-[5000px] -bottom-[210px] -right-[1400px] absolute" />
       </div>
 
+      {/* Positioning sits on the wrapper, the float on the card: animate-float's
+          keyframes set transform, so they would override -translate-y-1/2. */}
+      {showFeature && (
+        <div className="absolute right-8 top-[45%] -translate-y-1/2 hidden lg:block">
+          <HeroFeature className="animate-float" />
+        </div>
+      )}
+
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 lg:hidden">
         <h1 className="tracking-tight text-5xl md:text-6xl mb-4 text-black font-extrabold">
           Co-own AI
@@ -71,6 +80,7 @@ const Hero = () => (
         <div className="max-md:text-lg text-xl leading-8 text-gray-900 mb-6">
           Olas enables everyone to own and monetize their AI agents.
         </div>
+        {showFeature && <HeroFeature className="animate-float mt-2" />}
       </div>
 
       <div className="absolute inset-x-0 h-[500px] 2xl:h-[600px] place-content-center mx-auto text-center align-middle hidden lg:block pointer-events-none">
