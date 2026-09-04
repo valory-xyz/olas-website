@@ -3,7 +3,7 @@ import {
   computeAllRangeHistograms,
   AgentBlueprintRoiData,
 } from 'common-util/api/predict/roi-distribution';
-import { isRoiSnapshotIncomplete } from 'common-util/api/predict/windowed-roi';
+import { roiSnapshotIssue } from 'common-util/api/predict/windowed-roi';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { Activity } from 'components/AgentEconomies/PredictPage/Activity';
@@ -63,17 +63,17 @@ export const getStaticProps = async () => {
       roiDistribution,
       toolAccuracy,
       // Per-platform snapshot freshness: the two ROI accumulators run as separate daily
-      // jobs, so one can be stale or backfilling while the other is current. Judged on
-      // blob age and byDay cursor — a missing blob can't be the signal, since then the
-      // histogram isn't computed and the table is omitted entirely.
+      // jobs, so one can be stale or backfilling while the other is current. The reason
+      // rather than a boolean, so a caption can name the actual problem — implausibly low
+      // mech costs overstate returns, which is a different warning from a late refresh.
       roiSnapshots: {
         omenstrat: {
           timestamp: omenRoiSnapshot?.timestamp ?? null,
-          isIncomplete: isRoiSnapshotIncomplete(omenRoiSnapshot),
+          issue: roiSnapshotIssue(omenRoiSnapshot, 'omenstrat'),
         },
         polystrat: {
           timestamp: polyRoiSnapshot?.timestamp ?? null,
-          isIncomplete: isRoiSnapshotIncomplete(polyRoiSnapshot),
+          issue: roiSnapshotIssue(polyRoiSnapshot, 'polystrat'),
         },
       },
       snapshotTimestamp: snapshot?.timestamp ?? null,

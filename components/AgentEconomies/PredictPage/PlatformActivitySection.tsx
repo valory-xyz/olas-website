@@ -119,9 +119,16 @@ type PerformanceMetric = {
   anchor: string;
   /** Restricts a metric to the platforms whose source actually indexes it. */
   platforms?: Platform[];
+  /**
+   * True for metrics with no visible tile. They are still published in the tables, but
+   * the label echo is dropped — there is no on-screen label for it to agree with.
+   */
+  hidden?: boolean;
 };
 
-const PERFORMANCE_METRICS = {
+type PerformanceKey = 'tradingRoi' | 'totalRoi' | 'apr' | 'accuracy' | 'brier';
+
+const PERFORMANCE_METRICS: Record<PerformanceKey, PerformanceMetric> = {
   tradingRoi: {
     labelText: 'Trading ROI - Average',
     read: (m, window) => m.partialRoi?.[window],
@@ -130,6 +137,20 @@ const PERFORMANCE_METRICS = {
     noun: (platformPhrase) =>
       `average trading return on investment for ${platformPhrase}, from prediction performance only and excluding staking rewards`,
     anchor: 'predict-roi',
+  },
+  // Total ROI has no tile of its own — it lives in the Trading ROI popover, which Radix
+  // portals and never serves. Listed here so it is published like every other metric,
+  // in all eight platform x window states, instead of only existing on hover.
+  totalRoi: {
+    labelText: 'Total ROI',
+    read: (m, window) => m.finalRoi?.[window],
+    readStatus: (m) => m.roiStatus,
+    format: (value) => `${Math.round(value)}%`,
+    noun: (platformPhrase) =>
+      `average total return on investment for ${platformPhrase}, including staking rewards as well as prediction performance and net of all related costs — the wider figure that trading ROI is a component of`,
+    anchor: 'predict-roi',
+    // No tile renders this; it is served only in the machine-readable tables.
+    hidden: true,
   },
   apr: {
     labelText: 'OLAS Staking APR',
@@ -162,10 +183,10 @@ const PERFORMANCE_METRICS = {
     // predict-polymarket doesn't index Brier yet.
     platforms: ['omenstrat'],
   },
-} satisfies Record<string, PerformanceMetric>;
+};
 
 /** Visible order of the performance tiles, and of the rows in the hidden table. */
-const PERFORMANCE_ORDER = ['tradingRoi', 'apr', 'accuracy', 'brier'] as const;
+const PERFORMANCE_ORDER: PerformanceKey[] = ['tradingRoi', 'totalRoi', 'apr', 'accuracy', 'brier'];
 
 /** Lifetime counts. These ignore the time-range tabs, but not the platform switcher. */
 const LIFETIME_METRICS: Array<{
@@ -301,17 +322,19 @@ const AllStatesTables = ({
       const platformName = PLATFORM_NAME[platform];
 
       return PREDICT_WINDOWS.map(({ key: window }) => {
-        // The state already on screen; it is described by the visible tiles.
-        if (platform === activePlatform && window === activeWindow) return null;
+        // The visible tiles already describe the state on screen — but only the metrics
+        // that have a tile. Total ROI has none, so for that one pair the table narrows to
+        // the tile-less metrics rather than being dropped entirely.
+        const isOnScreen = platform === activePlatform && window === activeWindow;
 
         const rows = PERFORMANCE_ORDER.map((key) => PERFORMANCE_METRICS[key])
-          .filter((metric) => appliesTo(metric, platform))
+          .filter((metric) => appliesTo(metric, platform) && (!isOnScreen || metric.hidden))
           .map((metric) => {
             const value = metric.read(m, window);
             const sentence = buildMetricContext({
               value: isNil(value) ? null : metric.format(value),
               noun: metric.noun(platformPhrase),
-              label: metric.labelText,
+              label: metric.hidden ? undefined : metric.labelText,
               window: windowPhrase(window),
               status: metric.readStatus(m),
               asOfFallback: snapshotTimestamp,

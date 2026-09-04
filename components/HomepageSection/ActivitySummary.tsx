@@ -14,6 +14,8 @@ type ActivitySummaryProps = {
     ataTransactions?: Metric;
     mechFees?: Metric;
     feesCollected?: Metric;
+    /** Per-token breakdown of `feesCollected`, e.g. `{ xDAI: 655.7, USDC: 100.7 }`. */
+    feesCollectedByToken?: Partial<MetricWithStatus<Record<string, number> | null>>;
     dailyActiveAgents?: Metric;
     olasStaked?: Metric;
     totalOperators?: Metric;
@@ -32,6 +34,29 @@ type ActivitySummaryProps = {
   olasBurned?: Metric;
   /** Timestamp of the `agent-economies` snapshot, which `olasBurned` comes from. */
   economySnapshotTimestamp?: number | null;
+};
+
+/**
+ * "held as 26,457,344 OLAS and 274 WETH" — a token breakdown as a trailing clause.
+ *
+ * Uses `formatTokenAmount`, the same formatter the pill tooltips use, so a holding is
+ * never published as two different numbers. Returns '' when there is nothing to list, so
+ * callers can interpolate it unconditionally.
+ */
+const tokenComposition = (
+  tokens: Record<string, number> | Array<{ symbol: string; amount: number }> | null | undefined,
+  lead: string
+): string => {
+  const entries = Array.isArray(tokens)
+    ? tokens.map((t) => [t.symbol, t.amount] as const)
+    : Object.entries(tokens ?? {});
+  const parts = entries
+    .filter(([, amount]) => typeof amount === 'number')
+    .map(([symbol, amount]) => `${formatTokenAmount(amount)} ${symbol}`);
+  if (!parts.length) return '';
+  const list =
+    parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
+  return `, ${lead} ${list}`;
 };
 
 /**
@@ -57,6 +82,11 @@ export const ActivitySummary = ({
   // Derived, not typed out: FeeMetrics states the same date from the same constant, and
   // a second hand-written copy is one that can disagree with the first.
   const feeLiveSince = formatUtcDate(FEE_LIVE_SINCE_SEC * 1000) ?? '';
+
+  // Which tokens the fee total is made of. Like the PoL composition above, this lives
+  // only in a pill tooltip that Radix never mounts into the served HTML, so the aggregate
+  // reaches a reader with no indication of what it is denominated in.
+  const feeTokens = tokenComposition(metrics?.feesCollectedByToken?.value, 'collected as');
 
   const activityLines = metrics
     ? [
@@ -90,7 +120,8 @@ export const ActivitySummary = ({
           isMoney: true,
           // One canonical name, with the aliases named, so the four labels used across
           // the site resolve to a single metric rather than four different ones.
-          noun: 'in Olas marketplace turnover — total fees collected from the Mech Marketplace, including the legacy mech contracts. It is the same metric the Mech economy page publishes as "Total Task Payments" — the two are one figure and differ only by snapshot refresh timing',
+          noun: 'in Olas marketplace turnover — total fees collected from the Mech Marketplace, including the legacy mech contracts',
+          note: 'It is the same metric the Mech economy page publishes as "Total Task Payments" — the two are one figure and differ only by snapshot refresh timing.',
           window: 'all time',
           asOfFallback,
         }),
@@ -98,7 +129,8 @@ export const ActivitySummary = ({
           value: metrics.feesCollected?.value,
           status: metrics.feesCollected?.status,
           isMoney: true,
-          noun: `in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it. Covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}`,
+          noun: `in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it${feeTokens}`,
+          note: `Covers only the USD-pegged fee trackers, and only since the fee went live on ${feeLiveSince}.`,
           window: 'all time',
           asOfFallback,
         }),
@@ -128,10 +160,14 @@ export const ActivitySummary = ({
           value: olasBurned?.value,
           status: olasBurned?.status,
           unit: 'OLAS',
-          noun:
+          noun: 'burned to date',
+          // Says only what this site knows. It does not index executed burns, so the zero
+          // is a placeholder, not a measurement — and any claim about how the protocol
+          // burns belongs to the protocol docs, not to a metric caption.
+          note:
             Number(olasBurned?.value ?? 0) > 0
-              ? 'burned to date, bought back with Mech Marketplace fees'
-              : 'burned to date — Mech Marketplace fees are never denominated in OLAS; they are collected in other tokens and held until they are used to buy back and burn OLAS, and that burn mechanism is not live yet',
+              ? undefined
+              : 'This figure is a placeholder rather than a measurement: this site does not yet index executed OLAS burns, so it does not track what the buy-back-and-burn module has burned.',
           window: 'all time',
           asOfFallback: economySnapshotTimestamp,
         }),
@@ -170,17 +206,7 @@ export const ActivitySummary = ({
           // Token composition comes from the pill's tooltip, which never reaches the
           // DOM and renders twice besides. Named here so each chain's holding is
           // readable once.
-          const tokens = metric?.value?.tokens ?? [];
-          // Same formatter the pill tooltip uses, so one holding isn't published as two
-          // different numbers; comma-separated with a final "and" for more than two.
-          const parts = tokens.map((t) => `${formatTokenAmount(t.amount)} ${t.symbol}`);
-          const composition = parts.length
-            ? `, held as ${
-                parts.length > 1
-                  ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`
-                  : parts[0]
-              }`
-            : '';
+          const composition = tokenComposition(metric?.value?.tokens, 'held as');
           return buildMetricContext({
             value: metric?.value?.usd,
             isMoney: true,
@@ -197,10 +223,11 @@ export const ActivitySummary = ({
     value: protocolMetrics?.totalProtocolRevenue?.value,
     isMoney: true,
     status: protocolMetrics?.totalProtocolRevenue?.status,
+    noun: "in cumulative swap fees earned by the Olas Treasury's protocol-owned liquidity positions, which is separate from Mech Marketplace fees",
     // The valuation rule matters and lives only in the (portaled) tooltip: the total is
     // not a mark-to-market figure, so a reader comparing it against today's pool value
     // would otherwise conclude the number is wrong.
-    noun: "in cumulative swap fees earned by the Olas Treasury's protocol-owned liquidity positions, which is separate from Mech Marketplace fees. Each fee is valued at the moment the protocol collects it, so the total is not revalued and its current value in the pools may differ",
+    note: 'Each fee is valued at the moment the protocol collects it, so the total is not revalued and its current value in the pools may differ.',
     scope: 'across all supported chains',
     window: 'all time',
     asOfFallback: protocolSnapshotTimestamp,
