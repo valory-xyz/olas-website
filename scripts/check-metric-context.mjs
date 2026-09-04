@@ -60,52 +60,95 @@ const decodeEntities = (text) =>
 const normalise = (text) => decodeEntities(text).replace(/\s+/g, ' ').trim();
 
 /**
- * Strips every `sr-only` element and its contents.
+ * Elements with no closing tag, which must not be counted as opening a subtree.
+ * React serialises these as `<img/>`, but not every one of them, so match by name.
+ */
+const VOID_ELEMENTS = new Set([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+]);
+
+/**
+ * Removes every element whose opening tag matches `isTarget`, along with its contents.
  *
  * A plain non-greedy `</span>` match stops at the first nested close tag, which silently
  * under-reports — it is how an earlier review nearly shipped "0 focusable links" when
  * there were five. So walk the tags and count depth.
  */
-const stripSrOnly = (html) => {
+const stripElements = (html, isTarget) => {
   const out = [];
-  const tag = /<(\/?)(\w+)[^>]*?>/g;
+  const tag = /<(\/?)([a-zA-Z][\w-]*)[^>]*?>/g;
   let cursor = 0;
   let depth = 0;
   let match;
 
   while ((match = tag.exec(html)) !== null) {
     const [raw, closing, name] = match;
+    const isVoid = VOID_ELEMENTS.has(name.toLowerCase()) || raw.endsWith('/>');
+
     if (depth === 0) {
-      const isSrOnly = !closing && /class="[^"]*\bsr-only\b/.test(raw);
-      if (isSrOnly) {
+      if (!closing && isTarget(raw)) {
         out.push(html.slice(cursor, match.index));
-        // Self-closing or void elements carry no children to skip.
-        if (!raw.endsWith('/>')) depth = 1;
+        if (!isVoid) depth = 1;
         cursor = tag.lastIndex;
       }
       continue;
     }
-    if (name === 'span' || depth > 0) {
-      if (closing) {
-        depth -= 1;
-        if (depth === 0) cursor = tag.lastIndex;
-      } else if (!raw.endsWith('/>')) {
-        depth += 1;
-      }
+
+    if (closing) {
+      depth -= 1;
+      if (depth === 0) cursor = tag.lastIndex;
+    } else if (!isVoid) {
+      depth += 1;
     }
   }
+
   out.push(html.slice(cursor));
   return out.join(' ');
 };
 
-/** Visible text only: hidden layer removed, tags and scripts dropped. */
-const visibleText = (html) =>
-  normalise(
-    stripSrOnly(html)
-      .replace(/<script[\s\S]*?<\/script>/g, ' ')
-      .replace(/<style[\s\S]*?<\/style>/g, ' ')
-      .replace(/<[^>]+>/g, ' ')
-  );
+/** The class list of an opening tag, so `sr-only` is matched as a whole token. */
+const classesOf = (raw) => raw.match(/\sclass="([^"]*)"/)?.[1]?.split(/\s+/) ?? [];
+
+const stripSrOnly = (html) => stripElements(html, (raw) => classesOf(raw).includes('sr-only'));
+
+/**
+ * Drops the all-states duplicates.
+ *
+ * Those blocks deliberately describe selector states the page is not currently showing —
+ * a BabyDegen metric while Predict is selected, say — so their labels have no visible
+ * counterpart by definition, and requiring one would make the check unsatisfiable. They
+ * are also generated from the same descriptor list as the visible tiles, so the drift
+ * this script exists to catch cannot happen inside them.
+ */
+const stripAriaHidden = (html) => stripElements(html, (raw) => /aria-hidden="true"/.test(raw));
+
+/**
+ * Drops `<script>` and `<style>` blocks.
+ *
+ * Must run *before* any tag walking: the Next.js data payload is JSON containing angle
+ * brackets, which the tag regex reads as unbalanced opening tags. That left the depth
+ * counter permanently inside a subtree and silently swallowed 53KB of a 56KB page — the
+ * check then passed on a deliberately drifted label because the only text left was the
+ * hidden sentence itself.
+ */
+const stripScripts = (html) =>
+  html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ');
+
+/** Visible text only: the hidden layer removed, then tags dropped. */
+const visibleText = (body) => normalise(stripSrOnly(body).replace(/<[^>]+>/g, ' '));
 
 const main = async () => {
   const files = await collectHtmlFiles(PAGES_DIR);
@@ -114,29 +157,57 @@ const main = async () => {
     process.exit(1);
   }
 
+  const verbose = process.argv.includes('--verbose');
   const failures = [];
   let echoes = 0;
+  let skipped = 0;
   let pagesWithContext = 0;
 
   for (const file of files) {
-    const html = await readFile(file, 'utf8');
-    const found = [...html.matchAll(ECHO)];
+    const body = stripScripts(await readFile(file, 'utf8'));
+    // Only the sentences describing what is currently on screen are checkable.
+    const onScreen = stripAriaHidden(body);
+    const found = [...onScreen.matchAll(ECHO)];
+    skipped += [...body.matchAll(ECHO)].length - found.length;
     if (found.length === 0) continue;
 
     pagesWithContext += 1;
-    const visible = visibleText(html);
+    const visible = visibleText(body);
     const page = path.relative(PAGES_DIR, file).replace(/\\/g, '/');
+
+    // Guard against the failure that already fooled this script once: the depth counter
+    // got stuck inside an element and ate the rest of the document, so the only text left
+    // was the hidden sentences themselves — every label then "matched" itself and a
+    // deliberately drifted one passed. The hidden layer is a small fraction of any page,
+    // so a strip that removes most of the markup is a broken walk, not a real result.
+    // (Compare markup, not extracted text: the Explorer heatmap is legitimately ~350KB of
+    // tags carrying under 1KB of words.)
+    const keptMarkup = stripSrOnly(body).length;
+    if (keptMarkup < body.length / 2) {
+      console.error(
+        `\nStripping sr-only elements removed ${body.length - keptMarkup} of ${body.length} chars of ${page}.` +
+          '\nThe HTML walk is broken — fix it rather than trusting this run.'
+      );
+      process.exit(1);
+    }
+
+    if (verbose) {
+      console.log(`  ${page}: ${found.length} echo(es)`);
+    }
 
     for (const [, label] of found) {
       echoes += 1;
-      if (!visible.includes(normalise(label))) {
+      const matched = visible.includes(normalise(label));
+      if (verbose) console.log(`    ${matched ? 'ok  ' : 'MISS'} "${label}"`);
+      if (!matched) {
         failures.push({ page, label });
       }
     }
   }
 
   console.log(
-    `Checked ${echoes} label echo(es) across ${pagesWithContext} page(s) of ${files.length} built.`
+    `Checked ${echoes} label echo(es) across ${pagesWithContext} page(s) of ${files.length} built` +
+      `${skipped > 0 ? `, and skipped ${skipped} in aria-hidden all-states blocks` : ''}.`
   );
 
   if (failures.length > 0) {
