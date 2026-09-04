@@ -73,6 +73,7 @@ export const MetricsCard = ({ metrics, snapshotTimestamp }: MetricsCardProps) =>
             {renderMetricValue(metric)}
             {metric.context && (
               <MetricContext
+                label={metric.labelText}
                 value={metric.metric}
                 isMoney={metric.isMoney}
                 status={metric.status}

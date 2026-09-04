@@ -94,6 +94,8 @@ const getTimeRangeTabs = (windowed: boolean) =>
 
 type MetricItemProps = {
   label: ReactNode;
+  /** Plain-text form of `label`, echoed into the hidden sentence so the two can't drift. */
+  labelText?: string;
   value: string | null;
   status?: MetricStatus;
   href?: string;
@@ -128,6 +130,7 @@ const PLATFORM_PHRASE: Record<Platform, string> = {
 
 const MetricItem = ({
   label,
+  labelText,
   value,
   status,
   href,
@@ -156,7 +159,13 @@ const MetricItem = ({
         )}
       </div>
       {context && (
-        <MetricContext value={value} status={status} asOfFallback={asOfFallback} {...context} />
+        <MetricContext
+          label={labelText}
+          value={value}
+          status={status}
+          asOfFallback={asOfFallback}
+          {...context}
+        />
       )}
     </div>
   );
@@ -250,6 +259,7 @@ export const PlatformActivitySection = ({
         )}
       </span>
     ),
+    labelText: 'Trading ROI - Average',
     value: isNil(tradingRoiValue) ? null : `${Math.round(tradingRoiValue)}%`,
     status: m.partialRoiStatus,
     href: `/data#${platform}-predict-roi`,
@@ -276,6 +286,7 @@ export const PlatformActivitySection = ({
         </Popover>
       </span>
     ),
+    labelText: 'Prediction Accuracy',
     value: isNil(accuracyValue) ? null : `${accuracyValue.toFixed(0)}%`,
     status: m.successRateStatus,
     href: `/data#${platform}-predict-accuracy`,
@@ -289,6 +300,7 @@ export const PlatformActivitySection = ({
   const aprValue = m.apr?.[activeWindow] ?? null;
   const aprItem: MetricItemProps = {
     label: 'OLAS Staking APR',
+    labelText: 'OLAS Staking APR',
     value: isNil(aprValue) ? null : `${aprValue}%`,
     status: m.aprStatus,
     href: `/data#${platform}-predict-apr`,
@@ -317,6 +329,7 @@ export const PlatformActivitySection = ({
         </Popover>
       </span>
     ),
+    labelText: 'Brier Score',
     value: isNil(brierValue) ? null : brierValue.toFixed(2),
     status: m.brierStatus,
     href: `/data#${platform}-predict-brier`,
@@ -341,6 +354,7 @@ export const PlatformActivitySection = ({
   const lifetimeItems: MetricItemProps[] = [
     {
       label: 'Traders',
+      labelText: 'Traders',
       value: isNil(m.traderTxs) ? null : m.traderTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,
@@ -352,6 +366,7 @@ export const PlatformActivitySection = ({
     },
     {
       label: 'Mechs: Prediction Brokers',
+      labelText: 'Mechs: Prediction Brokers',
       value: isNil(m.mechTxs) ? null : m.mechTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,
@@ -366,6 +381,7 @@ export const PlatformActivitySection = ({
   if (m.marketCreatorTxs !== undefined) {
     lifetimeItems.push({
       label: 'Market Creators & Closers',
+      labelText: 'Market Creators & Closers',
       value: isNil(m.marketCreatorTxs) ? null : m.marketCreatorTxs.toLocaleString(),
       status: m.txsStatus,
       href: `/data#${platform}-predict-transactions-by-type`,

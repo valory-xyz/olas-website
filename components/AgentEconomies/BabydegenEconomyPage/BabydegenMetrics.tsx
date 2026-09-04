@@ -53,6 +53,7 @@ const AprMetric = ({ item, economyName, snapshotTimestamp }) => {
       </div>
       <span className="text-xs text-slate-400">{item.hint}</span>
       <MetricContext
+        label={item.label}
         value={item.value}
         status={item.status}
         asOfFallback={snapshotTimestamp}
@@ -188,6 +189,7 @@ export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
             Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
           </div>
           <MetricContext
+            label="Daily Active Agents (DAAs)"
             value={
               metrics?.dailyActiveAgents?.value ? Math.floor(metrics.dailyActiveAgents.value) : null
             }

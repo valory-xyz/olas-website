@@ -90,6 +90,7 @@ export const OperateMetrics = ({ metrics, snapshotTimestamp = null }) => {
               </div>
               <span className="block text-lg text-slate-700">{item.subText}</span>
               <MetricContext
+                label={item.labelText}
                 value={item.value}
                 status={item.status}
                 asOfFallback={snapshotTimestamp}

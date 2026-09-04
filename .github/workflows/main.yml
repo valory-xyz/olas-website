@@ -99,6 +99,13 @@ jobs:
       # untested changes to this logic.
       - name: Run metric-status unit tests
         run: yarn metric-status:test
+      # metric-context composes every sentence in the machine-readable text layer. Its
+      # failures are silent by construction — nothing there is visible on screen — so the
+      # misleading cases (a held-over value read as live, lag read as a freeze) are pinned
+      # here rather than eyeballed. `yarn metric-context:check` covers the other half
+      # against built HTML; it needs a build, so it runs on previews, not here.
+      - name: Run metric-context unit tests
+        run: yarn metric-context:test
       # roi-math holds the published Predict ROI arithmetic; every rule it encodes
       # shipped wrong at least once (docs/predict-roi-accounting.md, History).
       - name: Run roi-math unit tests
