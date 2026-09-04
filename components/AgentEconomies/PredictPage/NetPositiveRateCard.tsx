@@ -171,6 +171,7 @@ export const NetPositiveRateCard = ({
           layer. Both windows are stated inline — they differ, and the sentence is
           misleading if either is dropped. */}
       <MetricContext
+        label="Net-positive rate"
         value={`${rate.toFixed(1)}%`}
         noun={`of the ${agents} Polystrat agents with at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets and a bet settled ${AGENT_WINDOW_PHRASE}, trading Polymarket prediction markets on Polygon, were net-positive — their trading ROI, net of mech fees, was above zero — which is ${multiplier} times the ${BASELINE.rate}% of ${BASELINE.sample} (${BASELINE.filter}) that were net-positive between ${BASELINE.windowPhrase}`}
         asOfFallback={asOf}

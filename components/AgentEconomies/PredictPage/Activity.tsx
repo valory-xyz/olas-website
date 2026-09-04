@@ -143,6 +143,7 @@ const DaaCard = ({
       </div>
       {context && (
         <MetricContext
+          label="Daily Active Agents (DAAs)"
           value={daaValue}
           status={status}
           asOfFallback={snapshotTimestamp}
