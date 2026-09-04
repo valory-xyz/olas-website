@@ -78,3 +78,16 @@ export const formatOgOlasSupplyWei = (wei: string | null | undefined): string =>
   if (wei == null || wei === '') return '—';
   return formatWeiNumber(wei, OG_COMPACT);
 };
+
+/**
+ * A token amount, with precision chosen from its magnitude: 2 decimals below 10,
+ * 1 below 1,000, none above. Large balances read as whole tokens while a fractional
+ * WETH balance keeps the digits that carry its value.
+ *
+ * Pass `fractionDigits` to fix the precision instead.
+ */
+export const formatTokenAmount = (amount: number, fractionDigits?: number) =>
+  amount.toLocaleString('en-US', {
+    maximumFractionDigits: fractionDigits ?? (amount < 10 ? 2 : amount < 1000 ? 1 : 0),
+    ...(fractionDigits != null ? { minimumFractionDigits: fractionDigits } : {}),
+  });

@@ -49,6 +49,59 @@ const hasLowMechAttribution = (data: AgentBlueprintRoiData, scale: bigint): bool
   return isLowMechAttribution({ mechRequests, settledCosts, mechFeeWei: DEFAULT_MECH_FEE });
 };
 
+/** Polystrat entries are USDC (1e6); lift them to the 18 decimals the ratio assumes. */
+const MECH_SCALE: Record<'omenstrat' | 'polystrat', bigint> = {
+  omenstrat: 1n,
+  polystrat: 10n ** 12n,
+};
+
+/**
+ * Why a ROI-distribution blob should not be described as a complete, current reading —
+ * or `null` when it can be.
+ *
+ * Returns the reason rather than a boolean so a caption can name the actual problem: a
+ * snapshot that has not refreshed, one still backfilling and one whose mech costs are
+ * implausibly low are three different warnings, and the last one means the returns are
+ * *overstated* rather than merely late.
+ *
+ * These are the same conditions this module raises as `:stale`, `:backfilling` and
+ * `:mech-attribution-low`, so the published caveat and the metric status cannot disagree.
+ */
+export type RoiSnapshotIssue = 'missing' | 'stale' | 'backfilling' | 'errors' | 'low-mech-cost';
+
+/** The blob has not been rewritten in long enough that its data may no longer be current. */
+const isSnapshotStale = (timestamp?: number | null) =>
+  typeof timestamp === 'number' && Date.now() - timestamp > ROI_SNAPSHOT_MAX_AGE_MS;
+
+/**
+ * The `byDay` cursor is two or more days behind, so windowed values are computed from
+ * incomplete data. One day of tolerance covers the gap between UTC midnight and the
+ * daily cron run.
+ */
+const isBackfilling = (data: AgentBlueprintRoiData) =>
+  (data.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS;
+
+export const roiSnapshotIssue = (
+  snapshot: {
+    // `unknown`, because callers hold a generic `MetricsSnapshot` off the blob store and
+    // narrow it at the point of use, as the Predict page already does for the histograms.
+    data?: unknown;
+    timestamp?: number | null;
+  } | null,
+  platform: 'omenstrat' | 'polystrat'
+): RoiSnapshotIssue | null => {
+  const data = snapshot?.data as AgentBlueprintRoiData | null | undefined;
+  if (!data) return 'missing';
+  if (isSnapshotStale(snapshot?.timestamp)) return 'stale';
+  if ((data.fetchErrors ?? []).length > 0) return 'errors';
+  if (isBackfilling(data)) return 'backfilling';
+  // Last, because it is the subtlest: everything above is current and error-free, and the
+  // histogram still understates costs.
+  if (hasLowMechAttribution(data, MECH_SCALE[platform])) return 'low-mech-cost';
+
+  return null;
+};
+
 export type WindowedRoi = {
   // Prediction-only ROI per window (excludes staking rewards).
   partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
@@ -86,29 +139,26 @@ const computePlatformWindowedRoi = async (
   }
 
   // Missing blob → hard error; present-but-aging blob → stale error (propagates to UI).
-  const roiSnapshotStale =
-    roiSnapshotTs != null && Date.now() - roiSnapshotTs > ROI_SNAPSHOT_MAX_AGE_MS;
+  // Same predicates `roiSnapshotIssue` reports to the UI captions, so a caption cannot
+  // call a snapshot healthy while the metric status calls it stale.
   const roiFetchErrors: string[] = [];
   const roiLagging: string[] = [];
   if (!roiData) {
     roiFetchErrors.push(`roi-distribution:${source}`);
   } else {
-    if (roiSnapshotStale) roiFetchErrors.push(`roi-distribution:${source}:stale`);
+    if (isSnapshotStale(roiSnapshotTs)) roiFetchErrors.push(`roi-distribution:${source}:stale`);
     // Subgraph failures recorded by the daily refresh run that wrote the blob
     // (e.g. the all-time agents fetch failed and the previous totals were kept).
     for (const err of roiData.fetchErrors ?? []) {
       roiFetchErrors.push(`roi-distribution:${source}:${err}`);
     }
-    // A byDay cursor ≥2 days behind means the windowed values are computed from
-    // incomplete data, so flag it. 1 day of tolerance covers the gap between
-    // UTC midnight and the daily cron run.
-    if ((roiData.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS) {
+    if (isBackfilling(roiData)) {
       roiFetchErrors.push(`roi-distribution:${source}:backfilling`);
     }
     // Missing mech cost overstates ROI — surface it on the lag channel (stale
     // indicator, value still publishes). A fetchError would make mergeWithFallback
     // freeze ROI on the held-over pre-recovery value for the whole recovery window.
-    if (hasLowMechAttribution(roiData, isPolystrat ? 10n ** 12n : 1n)) {
+    if (hasLowMechAttribution(roiData, MECH_SCALE[isPolystrat ? 'polystrat' : 'omenstrat'])) {
       roiLagging.push(`roi-distribution:${source}:mech-attribution-low`);
     }
   }

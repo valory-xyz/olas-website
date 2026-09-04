@@ -10,6 +10,11 @@ type ToolAccuracyTableProps = {
   id?: string;
 };
 
+const PLATFORM_LABELS: Record<Platform, string> = {
+  omenstrat: 'Omenstrat',
+  polystrat: 'Polystrat',
+};
+
 const PLATFORM_DESCRIPTIONS: Record<Platform, string> = {
   omenstrat:
     'These tools are designed to forecast outcomes on Omen. The leaderboard shows which tools had the strongest historical accuracy.',
@@ -35,18 +40,27 @@ const IRRELEVANT_TOOLS: Record<Platform, Set<string>> = {
   polystrat: parseIrrelevantTools(process.env.NEXT_PUBLIC_POLYSTRAT_IRRELEVANT_TOOLS),
 };
 
+/**
+ * The leaderboard rows for one platform: the same filter and ordering the visible table
+ * uses, so the mirror of the platform that is not on screen cannot rank tools differently
+ * from the one that is.
+ */
+const rankedRowsFor = (data: ToolAccuracyTableProps['data'], platform: Platform) =>
+  (data?.[platform] ?? [])
+    .filter(
+      (r) =>
+        !IRRELEVANT_TOOLS[platform].has(r.tool.toLowerCase()) && r.accuracy >= MIN_ACCURACY_PERCENT
+    )
+    .sort((a, b) => b.accuracy - a.accuracy);
+
 export const ToolAccuracyTable = ({ data, platform, className, id }: ToolAccuracyTableProps) => {
   const rows = data?.[platform] ?? null;
 
   if (!data || (!data.omenstrat?.length && !data.polystrat?.length)) return null;
 
-  const irrelevant = IRRELEVANT_TOOLS[platform];
-  const filteredRows = rows
-    ? rows.filter(
-        (r) => !irrelevant.has(r.tool.toLowerCase()) && r.accuracy >= MIN_ACCURACY_PERCENT
-      )
-    : [];
-  const sortedRows = filteredRows.sort((a, b) => b.accuracy - a.accuracy);
+  const sortedRows = rankedRowsFor(data, platform);
+  const otherPlatform: Platform = platform === 'omenstrat' ? 'polystrat' : 'omenstrat';
+  const otherRows = rankedRowsFor(data, otherPlatform);
 
   return (
     <Card
@@ -95,6 +109,29 @@ export const ToolAccuracyTable = ({ data, platform, className, id }: ToolAccurac
             ))}
           </TableBody>
         </Table>
+      )}
+
+      {/* The platform the switcher is not on. Its rows exist only in React state, so a
+          crawler fetching this page once sees one of the two leaderboards and nothing to
+          say the other exists. Screen-reader-only but not `aria-hidden` — see
+          `AllStatesTables` in `PlatformActivitySection` for why. */}
+      {otherRows.length > 0 && (
+        <div className="sr-only" data-selector-states="off-screen">
+          <table>
+            {/* Names its own platform: retrieved on its own, "the other tab" says nothing. */}
+            <caption>
+              {`${PLATFORM_LABELS[otherPlatform]} tool accuracy leaderboard. ${PLATFORM_DESCRIPTIONS[otherPlatform]} Tools below ${MIN_ACCURACY_PERCENT}% accuracy are excluded.`}
+            </caption>
+            <tbody>
+              {otherRows.map((row) => (
+                <tr key={row.tool}>
+                  <th scope="row">{`${row.tool} (${PLATFORM_LABELS[otherPlatform]})`}</th>
+                  <td>{`${row.accuracy}% accuracy over ${row.totalBets.toLocaleString()} trades, of which ${row.correctBets.toLocaleString()} were correct.`}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </Card>
   );

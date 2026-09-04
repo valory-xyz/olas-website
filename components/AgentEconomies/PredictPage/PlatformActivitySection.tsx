@@ -10,8 +10,9 @@ import {
 } from 'components/ui/StaleIndicator';
 import { Tabs } from 'components/ui/tabs';
 import { Link } from 'components/ui/typography';
-import { MetricContext } from 'components/ui/MetricContext';
+import { MetricContext, buildMetricContext } from 'components/ui/MetricContext';
 import type { WindowedMetric, WindowKey } from 'common-util/api/predict';
+import { PLATFORM_NAME, PLATFORM_PHRASE, PREDICT_WINDOWS, windowPhrase } from './constants';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
@@ -70,13 +71,6 @@ const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
   },
 ];
 
-const TIME_RANGE_KEYS: { key: WindowKey; label: string }[] = [
-  { key: '7d', label: '7D' },
-  { key: '30d', label: '30D' },
-  { key: '90d', label: '90D' },
-  { key: 'max', label: 'Max' },
-];
-
 // A windowed metric only carries data once at least one of its windows is non-null.
 // On a fresh predict blob mid-backfill every window is null, so this stays false and
 // the non-max tabs remain disabled (matching getTimeRangeTabs below).
@@ -86,7 +80,7 @@ const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
 // ROI and Accuracy are windowed for both platforms; Brier adds a 4th windowed metric
 // on Omenstrat. When no windowed data is available yet, the non-max tabs stay disabled.
 const getTimeRangeTabs = (windowed: boolean) =>
-  TIME_RANGE_KEYS.map(({ key, label }) =>
+  PREDICT_WINDOWS.map(({ key, label }) =>
     windowed || key === 'max'
       ? { key, label }
       : { key, label, disabled: true, tooltip: 'Coming soon' }
@@ -94,6 +88,8 @@ const getTimeRangeTabs = (windowed: boolean) =>
 
 type MetricItemProps = {
   label: ReactNode;
+  /** Plain-text form of `label`, echoed into the hidden sentence so the two can't drift. */
+  labelText?: string;
   value: string | null;
   status?: MetricStatus;
   href?: string;
@@ -107,27 +103,123 @@ type MetricItemProps = {
   asOfFallback?: number | null;
 };
 
-/** The window as prose, for the machine-readable sentence. */
-const WINDOW_PHRASE: Record<WindowKey, string> = {
-  '7d': 'over the last 7 days',
-  '30d': 'over the last 30 days',
-  '90d': 'over the last 90 days',
-  max: 'over all time',
+/**
+ * The windowed performance metrics, described once as data.
+ *
+ * Both the visible tiles and the hidden all-states table below read from this list, so
+ * the same number cannot be labelled or explained two different ways depending on which
+ * of the eight platform x window combinations you land on.
+ */
+type PerformanceMetric = {
+  labelText: string;
+  read: (m: PlatformMetrics, window: WindowKey) => number | null | undefined;
+  readStatus: (m: PlatformMetrics) => MetricStatus;
+  format: (value: number) => string;
+  noun: (platformPhrase: string) => string;
+  anchor: string;
+  /** Restricts a metric to the platforms whose source actually indexes it. */
+  platforms?: Platform[];
+  /**
+   * True for metrics with no visible tile. They are still published in the tables, but
+   * the label echo is dropped — there is no on-screen label for it to agree with.
+   */
+  hidden?: boolean;
 };
 
-/** Short form, for phrasings where the descriptive clause would not fit grammatically. */
-const PLATFORM_NAME: Record<Platform, string> = {
-  omenstrat: 'Omenstrat',
-  polystrat: 'Polystrat',
+type PerformanceKey = 'tradingRoi' | 'totalRoi' | 'apr' | 'accuracy' | 'brier';
+
+const PERFORMANCE_METRICS: Record<PerformanceKey, PerformanceMetric> = {
+  tradingRoi: {
+    labelText: 'Trading ROI - Average',
+    read: (m, window) => m.partialRoi?.[window],
+    readStatus: (m) => m.partialRoiStatus,
+    format: (value) => `${Math.round(value)}%`,
+    noun: (platformPhrase) =>
+      `average trading return on investment for ${platformPhrase}, from prediction performance only and excluding staking rewards`,
+    anchor: 'predict-roi',
+  },
+  // Total ROI has no tile of its own — it lives in the Trading ROI popover, which Radix
+  // portals and never serves. Listed here so it is published like every other metric,
+  // in all eight platform x window states, instead of only existing on hover.
+  totalRoi: {
+    labelText: 'Total ROI',
+    read: (m, window) => m.finalRoi?.[window],
+    readStatus: (m) => m.roiStatus,
+    format: (value) => `${Math.round(value)}%`,
+    noun: (platformPhrase) =>
+      `average total return on investment for ${platformPhrase}, including staking rewards as well as prediction performance and net of all related costs — the wider figure that trading ROI is a component of`,
+    anchor: 'predict-roi',
+    // No tile renders this; it is served only in the machine-readable tables.
+    hidden: true,
+  },
+  apr: {
+    labelText: 'OLAS Staking APR',
+    read: (m, window) => m.apr?.[window],
+    readStatus: (m) => m.aprStatus,
+    format: (value) => `${value}%`,
+    // `m.apr` became a WindowedMetric upstream, so this does follow the tabs: it is
+    // the maximum rate among contracts nominated during the selected window.
+    noun: (platformPhrase) =>
+      `maximum OLAS staking annual percentage rate among the staking contracts for ${platformPhrase} that were nominated at any point in the window`,
+    anchor: 'predict-apr',
+  },
+  accuracy: {
+    labelText: 'Prediction Accuracy',
+    read: (m, window) => m.successRate?.[window],
+    readStatus: (m) => m.successRateStatus,
+    format: (value) => `${value.toFixed(0)}%`,
+    noun: (platformPhrase) =>
+      `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}. Each bet is counted on the day it was placed, once its market has resolved, so the window selects when bets were placed rather than when markets settled`,
+    anchor: 'predict-accuracy',
+  },
+  brier: {
+    labelText: 'Brier Score',
+    read: (m, window) => m.brierScore?.[window],
+    readStatus: (m) => m.brierStatus,
+    format: (value) => value.toFixed(2),
+    noun: (platformPhrase) =>
+      `mean Brier score for ${platformPhrase}, measuring forecast calibration where lower is better — 0 is a perfect forecast, about 0.25 is no better than a coin flip, and 1 is maximally wrong`,
+    anchor: 'predict-brier',
+    // predict-polymarket doesn't index Brier yet.
+    platforms: ['omenstrat'],
+  },
 };
 
-const PLATFORM_PHRASE: Record<Platform, string> = {
-  omenstrat: 'Omenstrat agents trading Omen prediction markets on Gnosis',
-  polystrat: 'Polystrat agents trading Polymarket prediction markets on Polygon',
-};
+/** Visible order of the performance tiles, and of the rows in the hidden table. */
+const PERFORMANCE_ORDER: PerformanceKey[] = ['tradingRoi', 'totalRoi', 'apr', 'accuracy', 'brier'];
+
+/** Lifetime counts. These ignore the time-range tabs, but not the platform switcher. */
+const LIFETIME_METRICS: Array<{
+  labelText: string;
+  read: (m: PlatformMetrics) => number | null | undefined;
+  noun: (platformName: string) => string;
+}> = [
+  {
+    labelText: 'Traders',
+    read: (m) => m.traderTxs,
+    noun: (platformName) =>
+      `transactions by trader agents on ${platformName}, a subset of total ${platformName} transactions`,
+  },
+  {
+    labelText: 'Mechs: Prediction Brokers',
+    read: (m) => m.mechTxs,
+    noun: (platformName) =>
+      `transactions by mech agents acting as prediction brokers on ${platformName}, a subset of total ${platformName} transactions`,
+  },
+  {
+    labelText: 'Market Creators & Closers',
+    read: (m) => m.marketCreatorTxs,
+    noun: (platformName) =>
+      `transactions by market creator and closer agents on ${platformName}, a subset of total ${platformName} transactions`,
+  },
+];
+
+const appliesTo = (metric: PerformanceMetric, platform: Platform) =>
+  !metric.platforms || metric.platforms.includes(platform);
 
 const MetricItem = ({
   label,
+  labelText,
   value,
   status,
   href,
@@ -156,7 +248,13 @@ const MetricItem = ({
         )}
       </div>
       {context && (
-        <MetricContext value={value} status={status} asOfFallback={asOfFallback} {...context} />
+        <MetricContext
+          label={labelText}
+          value={value}
+          status={status}
+          asOfFallback={asOfFallback}
+          {...context}
+        />
       )}
     </div>
   );
@@ -176,6 +274,7 @@ const PlatformSwitcher = ({
         <button
           key={key}
           type="button"
+          aria-pressed={isActive}
           onClick={() => onChange(key)}
           className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors ${
             isActive ? 'bg-slate-200 text-gray-900' : 'text-slate-500 hover:text-slate-700'
@@ -187,6 +286,120 @@ const PlatformSwitcher = ({
             <span className="hidden sm:inline"> Agent Economy</span>
           </span>
         </button>
+      );
+    })}
+  </div>
+);
+
+/**
+ * Every platform x window combination, as tables.
+ *
+ * The switcher and the time-range tabs are React state expressed only as a highlighted
+ * button, and the tab strip itself serialises as the single token "7D30D90DMax". A crawler
+ * fetching this page once therefore sees one of eight states and no sign that the other
+ * seven exist — so all eight are written out here.
+ *
+ * Screen-reader-only, but *not* `aria-hidden`. Hiding it from assistive technology as well
+ * would leave content no human can reach by any means, served only to crawlers — the shape
+ * Google's policies call hidden text. Visually-hidden copy is legitimate because it serves
+ * screen readers, so it has to actually serve them. Each table is skippable and its caption
+ * names its own state, which is what keeps the extra ones navigable rather than noise.
+ */
+const AllStatesTables = ({
+  metrics,
+  activePlatform,
+  activeWindow,
+  snapshotTimestamp,
+}: {
+  metrics: { polystrat: PlatformMetrics; omenstrat: PlatformMetrics };
+  activePlatform: Platform;
+  activeWindow: WindowKey;
+  snapshotTimestamp: number | null;
+}) => (
+  <div className="sr-only" data-selector-states="off-screen">
+    {PLATFORM_TABS.map(({ key: platform }) => {
+      const m = metrics[platform];
+      const platformPhrase = PLATFORM_PHRASE[platform];
+      const platformName = PLATFORM_NAME[platform];
+
+      return PREDICT_WINDOWS.map(({ key: window }) => {
+        // The visible tiles already describe the state on screen — but only the metrics
+        // that have a tile. Total ROI has none, so for that one pair the table narrows to
+        // the tile-less metrics rather than being dropped entirely.
+        const isOnScreen = platform === activePlatform && window === activeWindow;
+
+        const rows = PERFORMANCE_ORDER.map((key) => PERFORMANCE_METRICS[key])
+          .filter((metric) => appliesTo(metric, platform) && (!isOnScreen || metric.hidden))
+          .map((metric) => {
+            const value = metric.read(m, window);
+            const sentence = buildMetricContext({
+              value: isNil(value) ? null : metric.format(value),
+              noun: metric.noun(platformPhrase),
+              label: metric.hidden ? undefined : metric.labelText,
+              window: windowPhrase(window),
+              status: metric.readStatus(m),
+              asOfFallback: snapshotTimestamp,
+            });
+            return sentence ? { labelText: metric.labelText, sentence } : null;
+          })
+          .filter(Boolean);
+
+        if (rows.length === 0) return null;
+
+        return (
+          <table key={`${platform}-${window}`}>
+            {/* The caption names its own platform and window: these tables are retrieved
+                one at a time, so "the selected range" would say nothing. */}
+            <caption>
+              {`${platformName} prediction agent performance ${windowPhrase(window)}.`}
+            </caption>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.labelText}>
+                  <th scope="row">{`${row.labelText} (${platformName}, ${windowPhrase(window)})`}</th>
+                  <td>{row.sentence}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      });
+    })}
+
+    {/* Lifetime counts ignore the window but not the switcher, so only the platform that
+        is not on screen is missing from the text layer. */}
+    {PLATFORM_TABS.filter(({ key }) => key !== activePlatform).map(({ key: platform }) => {
+      const m = metrics[platform];
+      const platformName = PLATFORM_NAME[platform];
+      const rows = LIFETIME_METRICS.filter((metric) => metric.read(m) !== undefined)
+        .map((metric) => {
+          const value = metric.read(m);
+          const sentence = buildMetricContext({
+            value: isNil(value) ? null : value,
+            noun: metric.noun(platformName),
+            label: metric.labelText,
+            window: 'all time',
+            status: m.txsStatus,
+            asOfFallback: snapshotTimestamp,
+          });
+          return sentence ? { labelText: metric.labelText, sentence } : null;
+        })
+        .filter(Boolean);
+
+      if (rows.length === 0) return null;
+
+      return (
+        <table key={`${platform}-lifetime`}>
+          <caption>{`${platformName} transactions by agent type, all time.`}</caption>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.labelText}>
+                <th scope="row">{`${row.labelText} (${platformName})`}</th>
+                <td>{row.sentence}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       );
     })}
   </div>
@@ -215,11 +428,12 @@ export const PlatformActivitySection = ({
   // The tab strip is forced to `max` when no windowed data exists, so the effective
   // window — not `activeWindow` — is what the values actually represent.
   const effectiveWindow: WindowKey = isWindowed ? activeWindow : 'max';
-  const windowPhrase = WINDOW_PHRASE[effectiveWindow];
+  const activeWindowPhrase = windowPhrase(effectiveWindow);
   const platformPhrase = PLATFORM_PHRASE[platform];
   const platformName = PLATFORM_NAME[platform];
 
-  const tradingRoiValue = m.partialRoi?.[activeWindow] ?? null;
+  const roiMeta = PERFORMANCE_METRICS.tradingRoi;
+  const tradingRoiValue = roiMeta.read(m, activeWindow) ?? null;
   const totalRoiValue = m.finalRoi?.[activeWindow] ?? null;
   const roiItem: MetricItemProps = {
     label: (
@@ -249,17 +463,19 @@ export const PlatformActivitySection = ({
         )}
       </span>
     ),
-    value: isNil(tradingRoiValue) ? null : `${Math.round(tradingRoiValue)}%`,
-    status: m.partialRoiStatus,
-    href: `/data#${platform}-predict-roi`,
+    labelText: roiMeta.labelText,
+    value: isNil(tradingRoiValue) ? null : roiMeta.format(tradingRoiValue),
+    status: roiMeta.readStatus(m),
+    href: `/data#${platform}-${roiMeta.anchor}`,
     context: {
-      noun: `average trading return on investment for ${platformPhrase}, from prediction performance only and excluding staking rewards`,
-      window: windowPhrase,
+      noun: roiMeta.noun(platformPhrase),
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
 
-  const accuracyValue = m.successRate?.[activeWindow] ?? null;
+  const accuracyMeta = PERFORMANCE_METRICS.accuracy;
+  const accuracyValue = accuracyMeta.read(m, activeWindow) ?? null;
   const accuracyItem: MetricItemProps = {
     label: (
       <span className="flex items-center gap-2">
@@ -275,32 +491,34 @@ export const PlatformActivitySection = ({
         </Popover>
       </span>
     ),
-    value: isNil(accuracyValue) ? null : `${accuracyValue.toFixed(0)}%`,
-    status: m.successRateStatus,
-    href: `/data#${platform}-predict-accuracy`,
+    labelText: accuracyMeta.labelText,
+    value: isNil(accuracyValue) ? null : accuracyMeta.format(accuracyValue),
+    status: accuracyMeta.readStatus(m),
+    href: `/data#${platform}-${accuracyMeta.anchor}`,
     context: {
-      noun: `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}`,
-      window: windowPhrase,
+      noun: accuracyMeta.noun(platformPhrase),
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
 
-  const aprValue = m.apr?.[activeWindow] ?? null;
+  const aprMeta = PERFORMANCE_METRICS.apr;
+  const aprValue = aprMeta.read(m, activeWindow) ?? null;
   const aprItem: MetricItemProps = {
-    label: 'OLAS Staking APR',
-    value: isNil(aprValue) ? null : `${aprValue}%`,
-    status: m.aprStatus,
-    href: `/data#${platform}-predict-apr`,
+    label: aprMeta.labelText,
+    labelText: aprMeta.labelText,
+    value: isNil(aprValue) ? null : aprMeta.format(aprValue),
+    status: aprMeta.readStatus(m),
+    href: `/data#${platform}-${aprMeta.anchor}`,
     context: {
-      // `m.apr` became a WindowedMetric upstream, so this does follow the tabs: it is
-      // the maximum rate among contracts nominated during the selected window.
-      noun: `maximum OLAS staking annual percentage rate among contracts nominated for ${platformPhrase}`,
-      window: windowPhrase,
+      noun: aprMeta.noun(platformPhrase),
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
 
-  const brierValue = m.brierScore?.[activeWindow] ?? null;
+  const brierMeta = PERFORMANCE_METRICS.brier;
+  const brierValue = brierMeta.read(m, activeWindow) ?? null;
   const brierItem: MetricItemProps = {
     label: (
       <span className="flex items-center gap-2">
@@ -316,12 +534,13 @@ export const PlatformActivitySection = ({
         </Popover>
       </span>
     ),
-    value: isNil(brierValue) ? null : brierValue.toFixed(2),
-    status: m.brierStatus,
-    href: `/data#${platform}-predict-brier`,
+    labelText: brierMeta.labelText,
+    value: isNil(brierValue) ? null : brierMeta.format(brierValue),
+    status: brierMeta.readStatus(m),
+    href: `/data#${platform}-${brierMeta.anchor}`,
     context: {
-      noun: `mean Brier score for ${platformPhrase}, measuring forecast calibration where lower is better — 0 is a perfect forecast, about 0.25 is no better than a coin flip, and 1 is maximally wrong`,
-      window: windowPhrase,
+      noun: brierMeta.noun(platformPhrase),
+      window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,
   };
@@ -332,53 +551,44 @@ export const PlatformActivitySection = ({
     roiItem,
     aprItem,
     accuracyItem,
-    ...(platform === 'omenstrat' ? [brierItem] : []),
+    ...(appliesTo(brierMeta, platform) ? [brierItem] : []),
   ];
 
   // These are lifetime counts and do not follow the time-range tabs, so each says
   // "all time" explicitly rather than inheriting the selected window by proximity.
-  const lifetimeItems: MetricItemProps[] = [
-    {
-      label: 'Traders',
-      value: isNil(m.traderTxs) ? null : m.traderTxs.toLocaleString(),
-      status: m.txsStatus,
-      href: `/data#${platform}-predict-transactions-by-type`,
-      context: {
-        noun: `transactions by trader agents on ${platformName}, a subset of total ${platformName} transactions`,
-        window: 'all time',
-      },
-      asOfFallback: snapshotTimestamp,
+  // `marketCreatorTxs` is absent (not null) on platforms that don't track it.
+  const lifetimeItems: MetricItemProps[] = LIFETIME_METRICS.filter(
+    (metric) => metric.read(m) !== undefined
+  ).map((metric) => ({
+    label: metric.labelText,
+    labelText: metric.labelText,
+    value: isNil(metric.read(m)) ? null : metric.read(m).toLocaleString(),
+    status: m.txsStatus,
+    href: `/data#${platform}-predict-transactions-by-type`,
+    context: {
+      noun: metric.noun(platformName),
+      window: 'all time',
     },
-    {
-      label: 'Mechs: Prediction Brokers',
-      value: isNil(m.mechTxs) ? null : m.mechTxs.toLocaleString(),
-      status: m.txsStatus,
-      href: `/data#${platform}-predict-transactions-by-type`,
-      context: {
-        noun: `transactions by mech agents acting as prediction brokers on ${platformName}, a subset of total ${platformName} transactions`,
-        window: 'all time',
-      },
-      asOfFallback: snapshotTimestamp,
-    },
-  ];
-
-  if (m.marketCreatorTxs !== undefined) {
-    lifetimeItems.push({
-      label: 'Market Creators & Closers',
-      value: isNil(m.marketCreatorTxs) ? null : m.marketCreatorTxs.toLocaleString(),
-      status: m.txsStatus,
-      href: `/data#${platform}-predict-transactions-by-type`,
-      context: {
-        noun: `transactions by market creator and closer agents on ${platformName}, a subset of total ${platformName} transactions`,
-        window: 'all time',
-      },
-      asOfFallback: snapshotTimestamp,
-    });
-  }
+    asOfFallback: snapshotTimestamp,
+  }));
 
   return (
     <div className={`flex flex-col gap-6 ${className ?? ''}`}>
       <PlatformSwitcher platform={platform} onChange={onPlatformChange} />
+
+      {/* Announces the switch. Both selectors change values in place rather than
+          swapping a panel, so without this a screen-reader user hears nothing when
+          the whole card's meaning changes underneath them. */}
+      <p className="sr-only" role="status">
+        {`Showing ${platformName} performance ${activeWindowPhrase}.`}
+      </p>
+
+      <AllStatesTables
+        metrics={metrics}
+        activePlatform={platform}
+        activeWindow={effectiveWindow}
+        snapshotTimestamp={snapshotTimestamp}
+      />
 
       {beforeMetrics}
 
@@ -387,6 +597,7 @@ export const PlatformActivitySection = ({
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="text-lg font-semibold">Performance</div>
             <Tabs
+              ariaLabel="Performance time range"
               items={getTimeRangeTabs(isWindowed)}
               activeKey={isWindowed ? activeWindow : 'max'}
               onChange={(key) => setActiveWindow(key as WindowKey)}

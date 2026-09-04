@@ -9,7 +9,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
-import { NetPositiveRateCard } from './NetPositiveRateCard';
+import { NetPositiveRateCard, NetPositiveRateSummary } from './NetPositiveRateCard';
 import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
@@ -143,6 +143,7 @@ const DaaCard = ({
       </div>
       {context && (
         <MetricContext
+          label="Daily Active Agents (DAAs)"
           value={daaValue}
           status={status}
           asOfFallback={snapshotTimestamp}
@@ -158,7 +159,7 @@ export const Activity = ({
   roiDistribution,
   toolAccuracy,
   snapshotTimestamp = null,
-  polystratRoiTimestamp = null,
+  roiSnapshots = null,
 }) => {
   const metrics = useMemo(() => {
     return processPredictMetrics(initialMetrics);
@@ -215,14 +216,24 @@ export const Activity = ({
                 <NetPositiveRateCard
                   id="net-positive-rate"
                   netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
-                  asOf={polystratRoiTimestamp}
+                  asOf={roiSnapshots?.polystrat?.timestamp ?? null}
                 />
-              ) : null
+              ) : (
+                // The card is Polystrat-only, and Omenstrat is the default, so without
+                // this the comparison never reaches the served HTML at all.
+                <NetPositiveRateSummary
+                  netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
+                  asOf={roiSnapshots?.polystrat?.timestamp ?? null}
+                />
+              )
             }
           />
 
           {/* ROI Distribution Chart — filtered to the selected platform */}
           <RoiDistributionChart
+            // Both platforms' snapshots: the mirror inside describes the platform that
+            // is not on screen too, and the two accumulators refresh independently.
+            snapshots={roiSnapshots}
             id="roi-distribution"
             data={roiDistribution}
             platform={platform}

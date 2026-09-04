@@ -5,7 +5,7 @@ import {
   type NetPositive,
 } from 'common-util/api/predict/roi-distribution';
 import { Card } from 'components/ui/card';
-import { MetricContext } from 'components/ui/MetricContext';
+import { buildMetricContext } from 'components/ui/MetricContext';
 import { ExternalLink } from 'components/ui/typography';
 import { isNil } from 'lodash';
 
@@ -66,6 +66,49 @@ const LegendSwatch = ({ color, children }: { color: string; children: React.Reac
     {children}
   </span>
 );
+
+/**
+ * The comparison as one sentence, separately from the card that draws it.
+ *
+ * The card is Polystrat-only by design — there is no Omenstrat baseline to compare
+ * against — so it unmounts whenever the switcher is on Omenstrat, which is the default.
+ * Without this the whole comparison is absent from the served HTML. Both bars are CSS,
+ * so the figures exist nowhere else in the DOM either way.
+ */
+export const netPositiveSentence = (netPositive: NetPositive | null, asOf?: number | null) => {
+  if (!netPositive || isNil(netPositive.rate)) return null;
+  const { rate, agents } = netPositive;
+  const multiplier = (rate / BASELINE.rate).toFixed(1);
+
+  return buildMetricContext({
+    label: 'Net-positive rate',
+    value: `${rate.toFixed(1)}%`,
+    noun: `of the ${agents} Polystrat agents with at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets and a bet settled ${AGENT_WINDOW_PHRASE}, trading Polymarket prediction markets on Polygon, were net-positive — their trading ROI, net of mech fees, was above zero — which is ${multiplier} times the ${BASELINE.rate}% of ${BASELINE.sample} (${BASELINE.filter}) that were net-positive between ${BASELINE.windowPhrase}`,
+    asOfFallback: asOf,
+  });
+};
+
+/**
+ * The same sentence, for the states where the card itself does not render.
+ *
+ * Screen-reader-only but not `aria-hidden` — see `AllStatesTables` in
+ * `PlatformActivitySection` for why.
+ */
+export const NetPositiveRateSummary = ({
+  netPositive,
+  asOf = null,
+}: {
+  netPositive: NetPositive | null;
+  asOf?: number | null;
+}) => {
+  const sentence = netPositiveSentence(netPositive, asOf);
+  if (!sentence) return null;
+  return (
+    <div className="sr-only" data-selector-states="off-screen">
+      <p>{sentence}</p>
+    </div>
+  );
+};
 
 export const NetPositiveRateCard = ({
   netPositive,
@@ -170,11 +213,7 @@ export const NetPositiveRateCard = ({
       {/* The bars are CSS, so the whole comparison exists only here in the text
           layer. Both windows are stated inline — they differ, and the sentence is
           misleading if either is dropped. */}
-      <MetricContext
-        value={`${rate.toFixed(1)}%`}
-        noun={`of the ${agents} Polystrat agents with at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets and a bet settled ${AGENT_WINDOW_PHRASE}, trading Polymarket prediction markets on Polygon, were net-positive — their trading ROI, net of mech fees, was above zero — which is ${multiplier} times the ${BASELINE.rate}% of ${BASELINE.sample} (${BASELINE.filter}) that were net-positive between ${BASELINE.windowPhrase}`}
-        asOfFallback={asOf}
-      />
+      <span className="sr-only">{` ${netPositiveSentence(netPositive, asOf)}`}</span>
     </Card>
   );
 };

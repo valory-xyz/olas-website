@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && node scripts/check-metric-context.mjs",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\"",
@@ -18,6 +18,8 @@
     "verify-mech-analytics-parity": "node scripts/verify-mech-analytics-parity.mjs",
     "verify-mech-analytics-parity:test": "node --test scripts/verify-mech-analytics-parity.test.mjs",
     "metric-status:test": "node --test common-util/graphql/metric-status.test.mjs",
+    "metric-context:test": "node --test common-util/metric-context.test.mjs",
+    "metric-context:check": "node scripts/check-metric-context.mjs",
     "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs"
   },
   "dependencies": {

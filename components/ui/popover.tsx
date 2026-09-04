@@ -13,6 +13,10 @@ type PopoverProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
+// No screen-reader copy of the tooltip is emitted here, on purpose: cloning the children
+// into an `sr-only` sibling was tried and reverted. The facts belong in the page summary
+// instead — see docs/metric-text-layer.md, "Why tooltips have no screen-reader copy".
+
 export const Popover = ({
   children,
   text,

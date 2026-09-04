@@ -16,6 +16,7 @@ import { LearnMoreAboutTokenomics } from './LearnMoreAboutTokenomics';
 import { OlasProtocol } from './OlasProtocol';
 import { SupplyPieChart } from './SupplyPieChart';
 import { TokenDetails } from './TokenDetails';
+import { EmissionsSummaryTable } from './EmissionsSummaryTable';
 import { TokenomicsSummaryTable } from './TokenomicsSummaryTable';
 import { TokenHoldersMetric } from './TokenHoldersMetric';
 import { UsagePieChart } from './UsagePieChart';
@@ -24,7 +25,7 @@ import { UsagePieChart } from './UsagePieChart';
 // and bar element – required due to chart.js tree shaking
 Chart.register(CategoryScale, LinearScale, BarElement);
 
-const Supply = ({ metrics }) => {
+const Supply = ({ metrics, snapshotTimestamp = null }) => {
   const tokenomics = metrics?.tokenomics;
 
   const schedule = tokenomics?.emissionSchedule?.value;
@@ -40,6 +41,11 @@ const Supply = ({ metrics }) => {
       <SectionWrapper id="supply">
         <div className="text-5xl font-bold mb-16 tracking-tight text-black text-center">Supply</div>
         <TokenomicsSummaryTable tokenomics={tokenomics} />
+        <EmissionsSummaryTable
+          emissions={emissions}
+          status={tokenomics?.emissions?.status}
+          snapshotTimestamp={snapshotTimestamp}
+        />
         <div className="flex-row lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="border rounded-lg mb-8 lg:mb-0">
             <div id="token-supply" />
@@ -113,6 +119,10 @@ const Supply = ({ metrics }) => {
               <h2 className="text-xl mb-2 font-bold">Emissions to Operators</h2>
             </div>
             <EmissionsToOperators emissions={emissions} loading={emissionsLoading} />
+            <p className="px-4 pb-4 text-sm text-slate-500">
+              Claimed staking rewards sit in staking contracts until operators hit the respective
+              activity requirements with their staked agents.
+            </p>
           </div>
 
           <div className="flex flex-col col-span-2 border rounded-lg py-6 px-4">
@@ -176,11 +186,11 @@ const Supply = ({ metrics }) => {
   );
 };
 
-const OlasToken = ({ metrics }) => (
+const OlasToken = ({ metrics, snapshotTimestamp = null }) => (
   <>
     <Hero />
     <TokenHoldersMetric metrics={metrics} />
-    <Supply metrics={metrics} />
+    <Supply metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
     <OlasProtocol />
     <GetInvolved />
     <TokenDetails />
