@@ -134,11 +134,10 @@ export const fetchMechFeeMetrics = async () => {
       recievedFees: createMetric(Number(outUsd.toFixed(6))),
       unclaimedFees: createMetric(Number(unclaimed.toFixed(6))),
       protocolFees: collectedFeesMetric,
-      // Zero because the burn mechanism is not live, not because these fees are the wrong
-      // kind: marketplace fees are never denominated in OLAS, so a burn can only happen by
-      // buying OLAS back with the fees collected in other tokens. Those collected fees are
-      // held until that happens. In OLAS, a different unit from the USD figures above.
-      // TODO: report the burned amount once the buy-back-and-burn mechanism is live.
+      // A hardcoded placeholder, not a measurement: we do not index the burns executed by
+      // the buy-back-and-burn module, so there is nothing here to sum. Denominated in
+      // OLAS, a different unit from the USD figures above.
+      // TODO: read executed burns from BuyBackBurner and report the real total.
       olasBurned: createMetric(0),
     };
   } catch (error) {

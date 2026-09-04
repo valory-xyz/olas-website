@@ -9,7 +9,7 @@ import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
-import { NetPositiveRateCard } from './NetPositiveRateCard';
+import { NetPositiveRateCard, NetPositiveRateSummary } from './NetPositiveRateCard';
 import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
@@ -218,7 +218,14 @@ export const Activity = ({
                   netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
                   asOf={roiSnapshots?.polystrat?.timestamp ?? null}
                 />
-              ) : null
+              ) : (
+                // The card is Polystrat-only, and Omenstrat is the default, so without
+                // this the comparison never reaches the served HTML at all.
+                <NetPositiveRateSummary
+                  netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
+                  asOf={roiSnapshots?.polystrat?.timestamp ?? null}
+                />
+              )
             }
           />
 

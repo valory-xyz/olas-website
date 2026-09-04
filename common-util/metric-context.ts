@@ -72,6 +72,15 @@ export type MetricContextProps = {
    * APR and the chain list all drifted that way while this work was in review.
    */
   label?: string;
+  /**
+   * An extra sentence, appended after the main one.
+   *
+   * For explanation that does not fit as a noun phrase. Putting it in `noun` instead
+   * strands the scope and date clauses behind a full stop — "…may differ, across all
+   * supported chains, all time, as of 4 September 2026." — which is exactly the kind of
+   * mangled prose a retrieved passage gets quoted as.
+   */
+  note?: string;
   /** Coverage, e.g. "across all supported chains". Lift the wording from /data. */
   scope?: string;
   /** Time window, e.g. "all time", "7-day average", "over the last 7 days". */
@@ -96,6 +105,7 @@ export const buildMetricContext = ({
   value,
   noun,
   label,
+  note,
   scope,
   window,
   status,
@@ -123,7 +133,7 @@ export const buildMetricContext = ({
   if (window) parts.push(window);
   if (asOf) parts.push(`as of ${asOf}`);
 
-  const sentence = `${parts.join(', ')}.`;
+  const sentence = `${parts.join(', ')}.${note ? ` ${note}` : ''}`;
 
   return `${sentence}${statusCaveat(status, 'value', Boolean(asOf))}`;
 };

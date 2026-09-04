@@ -71,6 +71,15 @@ type MetricDef = {
   /** Optional hover tooltip for the tile (e.g. the date the headline value is for). */
   tooltip?: (series: DaaSeriesPoint[]) => string | undefined;
   /**
+   * The headline as a raw number, for the machine-readable sentence.
+   *
+   * `headline` may abbreviate for the tile ("$13.8K"); `formatFullNumber` cannot parse a
+   * K/M suffix, so the compact form would be served verbatim and contradict the
+   * unabbreviated numbers in the sentences beside it. Return the plain value here and let
+   * `buildMetricContext` format it.
+   */
+  rawHeadline?: (series: DaaSeriesPoint[]) => number | null;
+  /**
    * How the figure is computed, appended to the machine-readable sentence.
    *
    * For rules a reader cannot infer from the number and that live only in the (portaled)
@@ -145,6 +154,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     scale: 'sequential',
     // Latest day's total funded AUM (USD).
     headline: (s) => (s.length ? formatUsd(s[s.length - 1].count) : '--'),
+    rawHeadline: (s) => (s.length ? s[s.length - 1].count : null),
     selectable: (s) => s.length > 0,
   },
 };
@@ -373,7 +383,8 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
             sum: metricSeries.length > 1 ? `summed over ${first} to ${last}` : undefined,
           };
           return buildMetricContext({
-            value: config.headline(metricSeries),
+            value: config.rawHeadline?.(metricSeries) ?? config.headline(metricSeries),
+            isMoney: config.kind === 'usd',
             status: agentStatus,
             label: config.tileLabel ?? config.label,
             noun:

@@ -7,6 +7,7 @@ import {
   RoiDistribution,
 } from 'common-util/api/predict/roi-distribution';
 import type { WindowKey } from 'common-util/api/predict';
+import type { RoiSnapshotIssue } from 'common-util/api/predict/windowed-roi';
 import { Tabs } from 'components/ui/tabs';
 import { PREDICT_WINDOWS, windowDataKey, windowPhrase } from './constants';
 import { formatUtcAsOf } from 'common-util/time';
@@ -89,8 +90,27 @@ type RoiDistributionChartProps = {
   snapshots?: Partial<Record<'polystrat' | 'omenstrat', RoiSnapshot>>;
 };
 
-/** As-of for one platform's daily ROI blob, and whether it is stale or still backfilling. */
-type RoiSnapshot = { timestamp?: number | null; isIncomplete?: boolean };
+/** As-of for one platform's daily ROI blob, and what (if anything) is wrong with it. */
+type RoiSnapshot = { timestamp?: number | null; issue?: RoiSnapshotIssue | null };
+
+/**
+ * Each issue named for what it actually means to a reader.
+ *
+ * "may be incomplete" would be wrong for the last one: low mech-cost attribution means
+ * costs are missing from the denominator, so the returns are overstated rather than
+ * merely late.
+ */
+const ISSUE_CAVEAT: Record<RoiSnapshotIssue, string> = {
+  missing: ' The underlying daily snapshot is unavailable, so this distribution may be incomplete.',
+  stale:
+    ' The underlying daily snapshot has not refreshed in over 48 hours, so this distribution may be out of date.',
+  backfilling:
+    ' The underlying daily snapshot is still backfilling, so this distribution may be incomplete.',
+  errors:
+    ' Some sources failed during the run that produced this snapshot, so this distribution may be incomplete.',
+  'low-mech-cost':
+    ' Mech request costs are implausibly low in the most recent days, so the returns shown here are likely overstated.',
+};
 
 type DatasetMeta = {
   label: string;
@@ -120,7 +140,7 @@ type RangeTableProps = {
   platform: 'polystrat' | 'omenstrat';
   datasetMeta: DatasetMeta;
   asOf: string | null;
-  isIncomplete: boolean;
+  issue: RoiSnapshotIssue | null;
 };
 
 /**
@@ -136,14 +156,7 @@ type RangeTableProps = {
  * empty histogram is never described as a real one — an all-zero histogram is also what a
  * missing blob produces.
  */
-const RoiRangeTable = ({
-  range,
-  data,
-  platform,
-  datasetMeta,
-  asOf,
-  isIncomplete,
-}: RangeTableProps) => {
+const RoiRangeTable = ({ range, data, platform, datasetMeta, asOf, issue }: RangeTableProps) => {
   const dataKey = windowDataKey(range);
   const bins = data?.bins?.[dataKey] ?? null;
   const agentCount = data?.netPositive?.[dataKey]?.[platform]?.agents ?? 0;
@@ -159,9 +172,7 @@ const RoiRangeTable = ({
           `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
           `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets — the activity floor applies in every range, not only over all time, whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
           (asOf ? ` As of ${asOf}.` : '') +
-          (isIncomplete
-            ? ' The underlying daily snapshot is stale or still backfilling, so this distribution may be incomplete.'
-            : '')}
+          (issue ? ISSUE_CAVEAT[issue] : '')}
       </caption>
       <tbody>
         {bins.map((bin) => (
@@ -197,7 +208,7 @@ export const RoiDistributionChart = ({
 
   const asOfFor = (key: 'polystrat' | 'omenstrat') =>
     formatUtcAsOf(snapshots[key]?.timestamp ?? null);
-  const isIncompleteFor = (key: 'polystrat' | 'omenstrat') => snapshots[key]?.isIncomplete ?? false;
+  const issueFor = (key: 'polystrat' | 'omenstrat') => snapshots[key]?.issue ?? null;
 
   const chartData = bins
     ? {
@@ -253,7 +264,7 @@ export const RoiDistributionChart = ({
           platform={platform}
           datasetMeta={datasetMeta}
           asOf={asOfFor(platform)}
-          isIncomplete={isIncompleteFor(platform)}
+          issue={issueFor(platform)}
         />
       </section>
 
@@ -277,7 +288,7 @@ export const RoiDistributionChart = ({
                 platform={other}
                 datasetMeta={DATASET_META[other]}
                 asOf={asOfFor(other)}
-                isIncomplete={isIncompleteFor(other)}
+                issue={issueFor(other)}
               />
             )
           )

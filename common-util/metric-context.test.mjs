@@ -112,6 +112,20 @@ test('an already-suffixed value passes through unformatted', () => {
   );
 });
 
+test('a note is a separate sentence, not a clause inside the first', () => {
+  // Put in `noun`, the explanation strands the scope and date behind a full stop:
+  // "…may differ, across all supported chains, all time, as of …".
+  assert.equal(
+    buildMetricContext({
+      ...base,
+      scope: 'across all supported chains',
+      window: 'all time',
+      note: 'Each fee is valued when it is collected.',
+    }),
+    '1,000 agent transactions, across all supported chains, all time. Each fee is valued when it is collected.'
+  );
+});
+
 test('a date is never invented', () => {
   const sentence = buildMetricContext({ ...base, status: {}, asOfFallback: null });
   assert.ok(!sentence.includes('as of'), sentence);
