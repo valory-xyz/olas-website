@@ -1,7 +1,11 @@
 'use client';
 
 import { BarElement, Chart as ChartJS, ChartOptions, Legend, LinearScale, Tooltip } from 'chart.js';
-import { BinData, RoiDistribution } from 'common-util/api/predict/roi-distribution';
+import {
+  BinData,
+  MIN_TRADES_FOR_ROI_DISPLAY,
+  RoiDistribution,
+} from 'common-util/api/predict/roi-distribution';
 import type { WindowKey } from 'common-util/api/predict';
 import { Tabs } from 'components/ui/tabs';
 import { PREDICT_WINDOWS, windowDataKey, windowPhrase } from './constants';
@@ -153,7 +157,7 @@ const RoiRangeTable = ({
       <caption>
         {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${windowPhrase(range)}. ` +
           `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
-          `Qualifying agents are those with positive trading costs${range === 'max' ? ' and at least 10 lifetime bets' : ''}; percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
+          `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets — the activity floor applies in every range, not only over all time, whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
           (asOf ? ` As of ${asOf}.` : '') +
           (isIncomplete
             ? ' The underlying daily snapshot is stale or still backfilling, so this distribution may be incomplete.'

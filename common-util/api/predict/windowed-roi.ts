@@ -22,6 +22,32 @@ const DAY_SECONDS = 86400;
 // aging data with a fresh-looking status.
 const ROI_SNAPSHOT_MAX_AGE_MS = 48 * 60 * 60 * 1000;
 
+/**
+ * Whether a ROI-distribution blob is too old or too far behind to describe as current.
+ *
+ * The same two signals this module already flags as `:stale` and `:backfilling`,
+ * exported so the Predict page's caveat is driven by them rather than by whether the
+ * blob loaded at all — when it doesn't load, the histogram isn't computed and the table
+ * is omitted, so a "blob missing" caveat could never render.
+ */
+export const isRoiSnapshotIncomplete = (snapshot?: {
+  // `unknown`, because callers hold a generic `MetricsSnapshot` off the blob store and
+  // narrow it at the point of use, as the Predict page already does for the histograms.
+  data?: unknown;
+  timestamp?: number | null;
+}): boolean => {
+  const { timestamp } = snapshot ?? {};
+  const data = snapshot?.data as AgentBlueprintRoiData | null | undefined;
+  if (!data) return true;
+  if (typeof timestamp === 'number' && Date.now() - timestamp > ROI_SNAPSHOT_MAX_AGE_MS)
+    return true;
+  if ((data.fetchErrors ?? []).length > 0) return true;
+  // A byDay cursor >=2 days behind means the windowed values are computed from
+  // incomplete data. 1 day of tolerance covers the gap between UTC midnight and
+  // the daily cron run.
+  return (data.lastDayTimestamp ?? 0) < getMidnightUtcTimestampDaysAgo(1) - DAY_SECONDS;
+};
+
 const WINDOWS: { key: WindowKey; days: number | null }[] = [
   { key: '7d', days: 7 },
   { key: '30d', days: 30 },
