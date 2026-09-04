@@ -13,21 +13,9 @@ type PopoverProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
-/*
- * On why there is no screen-reader copy of the tooltip here.
- *
- * Radix portals the content and mounts it only while open, so `children` never reach a
- * crawler. Cloning them into an `sr-only` sibling was tried and reverted: it put
- * focusable links inside an invisible box, pulled whole tooltips into the accessible
- * name of any button ancestor, and re-rendered stateful children (a healthy metric
- * served "sources are behind the chain", with a locale-dependent timestamp).
- *
- * The facts those tooltips carry are published instead as one sentence in the page's
- * summary — `ActivitySummary`, the Explorer summary, the metric mirrors — where each is
- * stated once, in context, rather than duplicated everywhere the tooltip is rendered.
- * If a tooltip fact is missing from the text layer, add it to the relevant summary; do
- * not reintroduce a per-tooltip copy.
- */
+// No screen-reader copy of the tooltip is emitted here, on purpose: cloning the children
+// into an `sr-only` sibling was tried and reverted. The facts belong in the page summary
+// instead — see docs/metric-text-layer.md, "Why tooltips have no screen-reader copy".
 
 export const Popover = ({
   children,
