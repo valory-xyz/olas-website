@@ -118,6 +118,10 @@ video {
   background-position: center;
   background-size: 45px 45px;
   position: absolute;
+  /* Decorative only. As a positioned sibling it covers the section's static
+     content (the Get OLAS / Tokenomics buttons), so without this it swallows
+     their clicks. Same reason as .circles-bg above. */
+  pointer-events: none;
 }
 
 .agents-bg {
