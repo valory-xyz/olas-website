@@ -49,7 +49,7 @@ export const TokenDetails = () => (
                   <TableRow key={index}>
                     <TableCell className="border">{token.name}</TableCell>
                     <TableCell className="border">
-                      {token.exchanges ? (
+                      {token.exchanges?.length ? (
                         <div className="flex flex-col gap-2">
                           {token.exchanges.map((exchange) => (
                             <a
@@ -63,7 +63,7 @@ export const TokenDetails = () => (
                           ))}
                         </div>
                       ) : (
-                        'Coming soon'
+                        'n/a'
                       )}
                     </TableCell>
                     <TableCell className="border break-all">
@@ -99,7 +99,7 @@ export const TokenDetails = () => (
                 <h3 className="font-bold mb-2">{token.name}</h3>
                 <div>
                   <strong>Get OLAS:</strong>{' '}
-                  {token.exchanges ? (
+                  {token.exchanges?.length ? (
                     <div className="flex gap-x-2 flex-wrap">
                       {token.exchanges.map((exchange) => (
                         <a
@@ -113,7 +113,7 @@ export const TokenDetails = () => (
                       ))}
                     </div>
                   ) : (
-                    'TBD'
+                    'n/a'
                   )}
                 </div>
                 <div>
