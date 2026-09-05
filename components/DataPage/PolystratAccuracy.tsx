@@ -33,19 +33,19 @@ export const PolystratAccuracyInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Success rate shows how often your agent&apos;s predictions were correct in resolved
-          markets. Bets on unresolved markets or with invalid outcomes are excluded. The rate is
-          shown per <b>time range</b> (7D / 30D / 90D / Max): each resolved bet is counted on the
-          day it was <b>placed</b>, and a bet is correct when its outcome index matches the
+          markets. Trades on unresolved markets or with invalid outcomes are excluded. The rate is
+          shown per <b>time range</b> (7D / 30D / 90D / Max): each resolved trade is counted on the
+          day it was <b>placed</b>, and a trade is correct when its outcome index matches the
           question&apos;s winning index.
         </p>
 
         <p>The following query is used (example shows the 7-day window):</p>
 
-        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Windowed Bets query</h3>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Windowed trades query</h3>
 
         <p className="max-w-[800px]">
-          Used to fetch bets within a time range, along with their outcome index and the resolution
-          of the associated market question
+          Used to fetch trades within a time range, along with their outcome index and the
+          resolution of the associated market question
         </p>
         <p className="text-purple-600 flex items-center gap-2 flex-wrap">
           <span>API endpoint:</span>

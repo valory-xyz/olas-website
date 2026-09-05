@@ -61,7 +61,7 @@ const PredictionAgentsTable = () => (
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>3. Agent bets on prediction market</TableCell>
+          <TableCell>3. Agent trades on prediction market</TableCell>
           <TableCell className="text-center">
             <span className="text-6xl">🤖</span>
             <br />

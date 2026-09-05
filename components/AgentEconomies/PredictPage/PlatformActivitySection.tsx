@@ -268,7 +268,7 @@ export const PlatformActivitySection = ({
           <div className="flex flex-col max-w-[320px] gap-2 text-base text-gray-500">
             <p>
               Share of the agent&apos;s settled predictions that were correct, over the selected
-              time range. Each bet is counted on the day it was placed, once its market has
+              time range. Each trade is counted on the day it was placed, once its market has
               resolved.
             </p>
           </div>

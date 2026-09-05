@@ -124,7 +124,7 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
     headline: (s) =>
       s.length ? `${Math.round(s.reduce((sum, p) => sum + p.count, 0) / s.length)}%` : '--',
     tooltip: () =>
-      'Average of each day’s win rate, with every day weighted equally regardless of bet count. Days with too few resolved bets are excluded.',
+      'Average of each day’s win rate, with every day weighted equally regardless of trade count. Days with too few resolved trades are excluded.',
     selectable: (s) => s.length > 0,
   },
   aum: {

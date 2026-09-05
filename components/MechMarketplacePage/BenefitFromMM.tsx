@@ -28,7 +28,7 @@ const list = [
         </h4>
 
         <p className="mb-6">
-          Your agent wants to bet on a prediction market but doesn&apos;t have forecasting skills.
+          Your agent wants to trade on a prediction market but doesn&apos;t have forecasting skills.
           Instead of coding them in, it hires a prediction{' '}
           <Link href="/agents/ai-mechs" className="text-purple-600">
             Mech
