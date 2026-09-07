@@ -99,7 +99,7 @@ type MetricItemProps = {
    * expressed only as a highlighted tab, so a bare "69%" carries no window at all in
    * the text layer, and the tab labels serialise as the single token "7D30D90DMax".
    */
-  context?: { noun: string; scope?: string; window?: string };
+  context?: { noun: string; note?: string; scope?: string; window?: string };
   asOfFallback?: number | null;
 };
 
@@ -116,6 +116,14 @@ type PerformanceMetric = {
   readStatus: (m: PlatformMetrics) => MetricStatus;
   format: (value: number) => string;
   noun: (platformPhrase: string) => string;
+  /**
+   * An extra sentence, appended after the main one.
+   *
+   * A `noun` with a full stop in it strands the label, window and date clauses behind
+   * that stop — "…once its market has resolved (shown as \"Prediction Accuracy\"), over
+   * the last 30 days, as of…". `buildMetricContext` appends a note as its own sentence.
+   */
+  note?: string;
   anchor: string;
   /** Restricts a metric to the platforms whose source actually indexes it. */
   platforms?: Platform[];
@@ -169,7 +177,8 @@ const PERFORMANCE_METRICS: Record<PerformanceKey, PerformanceMetric> = {
     readStatus: (m) => m.successRateStatus,
     format: (value) => `${value.toFixed(0)}%`,
     noun: (platformPhrase) =>
-      `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}. Each bet is counted on the day it was placed, once its market has resolved, so the window selects when bets were placed rather than when markets settled`,
+      `prediction accuracy — the share of settled predictions that were correct — for ${platformPhrase}`,
+    note: 'Each trade is counted on the day it was placed, once its market has resolved, so the window selects when trades were placed rather than when markets settled.',
     anchor: 'predict-accuracy',
   },
   brier: {
@@ -335,6 +344,7 @@ const AllStatesTables = ({
             const sentence = buildMetricContext({
               value: isNil(value) ? null : metric.format(value),
               noun: metric.noun(platformPhrase),
+              note: metric.note,
               label: metric.hidden ? undefined : metric.labelText,
               window: windowPhrase(window),
               status: metric.readStatus(m),
@@ -497,6 +507,7 @@ export const PlatformActivitySection = ({
     href: `/data#${platform}-${accuracyMeta.anchor}`,
     context: {
       noun: accuracyMeta.noun(platformPhrase),
+      note: accuracyMeta.note,
       window: activeWindowPhrase,
     },
     asOfFallback: snapshotTimestamp,

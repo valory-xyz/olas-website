@@ -170,7 +170,7 @@ const RoiRangeTable = ({ range, data, platform, datasetMeta, asOf, issue }: Rang
       <caption>
         {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${windowPhrase(range)}. ` +
           `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
-          `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime bets — the activity floor applies in every range, not only over all time, whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
+          `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime trades — the activity floor applies in every range, not only over all time, whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
           (asOf ? ` As of ${asOf}.` : '') +
           (issue ? ISSUE_CAVEAT[issue] : '')}
       </caption>

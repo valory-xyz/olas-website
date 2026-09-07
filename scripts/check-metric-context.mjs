@@ -22,6 +22,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const PAGES_DIR = path.join(process.cwd(), '.next', 'server', 'pages');
 
@@ -83,16 +84,16 @@ const VOID_ELEMENTS = new Set([
 ]);
 
 /**
- * Removes every element whose opening tag matches `isTarget`, along with its contents.
+ * The `[start, end)` range of every element whose opening tag matches `isTarget`.
  *
  * A plain non-greedy `</span>` match stops at the first nested close tag, which silently
  * under-reports — it is how an earlier review nearly shipped "0 focusable links" when
  * there were five. So walk the tags and count depth.
  */
-const stripElements = (html, isTarget) => {
-  const out = [];
+const elementRanges = (html, isTarget) => {
+  const ranges = [];
   const tag = /<(\/?)([a-zA-Z][\w-]*)[^>]*?>/g;
-  let cursor = 0;
+  let start = -1;
   let depth = 0;
   let match;
 
@@ -102,23 +103,34 @@ const stripElements = (html, isTarget) => {
 
     if (depth === 0) {
       if (!closing && isTarget(raw)) {
-        out.push(html.slice(cursor, match.index));
-        if (!isVoid) depth = 1;
-        cursor = tag.lastIndex;
+        start = match.index;
+        if (isVoid) ranges.push([start, tag.lastIndex]);
+        else depth = 1;
       }
       continue;
     }
 
     if (closing) {
       depth -= 1;
-      if (depth === 0) cursor = tag.lastIndex;
+      if (depth === 0) ranges.push([start, tag.lastIndex]);
     } else if (!isVoid) {
       depth += 1;
     }
   }
 
-  out.push(html.slice(cursor));
-  return out.join(' ');
+  return ranges;
+};
+
+/** Removes every element whose opening tag matches `isTarget`, along with its contents. */
+const stripElements = (html, isTarget) => {
+  const kept = [];
+  let cursor = 0;
+  for (const [start, end] of elementRanges(html, isTarget)) {
+    kept.push(html.slice(cursor, start));
+    cursor = end;
+  }
+  kept.push(html.slice(cursor));
+  return kept.join(' ');
 };
 
 /** The class list of an opening tag, so `sr-only` is matched as a whole token. */
@@ -168,11 +180,67 @@ const visibleText = (body) => normalise(stripSrOnly(body).replace(/<[^>]+>/g, ' 
  */
 const LABEL_PROXIMITY_CHARS = 1500;
 
-/** The visible text within `LABEL_PROXIMITY_CHARS` either side of a position in the markup. */
-const visibleTextAround = (body, index) =>
-  `${visibleText(body.slice(0, index)).slice(-LABEL_PROXIMITY_CHARS)} ${visibleText(
-    body.slice(index)
+/** Above this share of a page's markup, the hidden layer is a broken walk, not a mirror. */
+const MAX_HIDDEN_MARKUP_SHARE = 0.8;
+
+/**
+ * The visible text either side of the hidden element containing `index`.
+ *
+ * Cutting at the echo itself is what made an earlier version of this check useless:
+ * the opening `sr-only` tag lands in the prefix, so the suffix is no longer recognisable
+ * as hidden, and it *begins* with the hidden copy of the label — every label then matched
+ * itself and a deliberately drifted one passed. Skip the whole enclosing element instead.
+ */
+const visibleTextAround = (body, index) => {
+  const hidden = elementRanges(body, (raw) => classesOf(raw).includes('sr-only')).find(
+    ([start, end]) => index >= start && index < end
+  );
+  // An echo always sits inside an `sr-only` element; if that stops being true, fail the
+  // page rather than silently searching text that includes the sentence itself.
+  if (!hidden) return null;
+
+  const [start, end] = hidden;
+  return `${visibleText(body.slice(0, start)).slice(-LABEL_PROXIMITY_CHARS)} ${visibleText(
+    body.slice(end)
   ).slice(0, LABEL_PROXIMITY_CHARS)}`;
+};
+
+/**
+ * Checks one page's markup. Exported so the fixtures in `check-metric-context.test.mjs`
+ * can exercise it directly — every bug this script has had was in here, and each looked
+ * exactly like a clean run.
+ */
+export const checkPage = (html) => {
+  const body = stripScripts(html);
+  // Only the sentences describing what is currently on screen are checkable.
+  const onScreen = stripOffScreenStates(body);
+  const found = [...onScreen.matchAll(ECHO)];
+  const skipped = [...body.matchAll(ECHO)].length - found.length;
+
+  // Guard against the failure that already fooled this script once: the depth counter got
+  // stuck inside an element and ate the rest of the document, so the only text left was
+  // the hidden sentences themselves — every label then "matched" itself and a deliberately
+  // drifted one passed.
+  //
+  // The threshold is deliberately loose. The runaway case removed 95% of the page; the
+  // largest legitimate hidden layer (Predict, with all eight selector states) is under
+  // 40%, and this runs in `postbuild`, so a tight bound would eventually block a deploy
+  // for adding states rather than for a bug. Compare markup, not extracted text: the
+  // Explorer heatmap is legitimately ~350KB of tags carrying under 1KB of words.
+  const keptMarkup = stripSrOnly(body).length;
+  const brokenWalk =
+    found.length > 0 && keptMarkup < body.length * (1 - MAX_HIDDEN_MARKUP_SHARE)
+      ? `Stripping sr-only elements removed ${body.length - keptMarkup} of ${body.length} chars`
+      : null;
+
+  const echoes = found.map((match) => {
+    const label = match[1];
+    const nearby = visibleTextAround(onScreen, match.index);
+    return { label, matched: nearby !== null && nearby.includes(normalise(label)) };
+  });
+
+  return { echoes, skipped, brokenWalk };
+};
 
 const main = async () => {
   const files = await collectHtmlFiles(PAGES_DIR);
@@ -188,44 +256,27 @@ const main = async () => {
   let pagesWithContext = 0;
 
   for (const file of files) {
-    const body = stripScripts(await readFile(file, 'utf8'));
-    // Only the sentences describing what is currently on screen are checkable.
-    const onScreen = stripOffScreenStates(body);
-    const found = [...onScreen.matchAll(ECHO)];
-    skipped += [...body.matchAll(ECHO)].length - found.length;
-    if (found.length === 0) continue;
-
-    pagesWithContext += 1;
+    const html = await readFile(file, 'utf8');
     const page = path.relative(PAGES_DIR, file).replace(/\\/g, '/');
+    const result = checkPage(html);
 
-    // Guard against the failure that already fooled this script once: the depth counter
-    // got stuck inside an element and ate the rest of the document, so the only text left
-    // was the hidden sentences themselves — every label then "matched" itself and a
-    // deliberately drifted one passed. The hidden layer is a small fraction of any page,
-    // so a strip that removes most of the markup is a broken walk, not a real result.
-    // (Compare markup, not extracted text: the Explorer heatmap is legitimately ~350KB of
-    // tags carrying under 1KB of words.)
-    const keptMarkup = stripSrOnly(body).length;
-    if (keptMarkup < body.length / 2) {
-      console.error(
-        `\nStripping sr-only elements removed ${body.length - keptMarkup} of ${body.length} chars of ${page}.` +
-          '\nThe HTML walk is broken — fix it rather than trusting this run.'
-      );
+    skipped += result.skipped;
+    if (result.echoes.length === 0) continue;
+    pagesWithContext += 1;
+
+    if (result.brokenWalk) {
+      console.error(`
+${result.brokenWalk} on ${page}.`);
+      console.error('The HTML walk is broken — fix it rather than trusting this run.');
       process.exit(1);
     }
 
-    if (verbose) {
-      console.log(`  ${page}: ${found.length} echo(es)`);
-    }
+    if (verbose) console.log(`  ${page}: ${result.echoes.length} echo(es)`);
 
-    for (const match of found) {
-      const label = match[1];
+    for (const { label, matched } of result.echoes) {
       echoes += 1;
-      const matched = visibleTextAround(onScreen, match.index).includes(normalise(label));
       if (verbose) console.log(`    ${matched ? 'ok  ' : 'MISS'} "${label}"`);
-      if (!matched) {
-        failures.push({ page, label });
-      }
+      if (!matched) failures.push({ page, label });
     }
   }
 
@@ -262,7 +313,11 @@ const main = async () => {
   console.log('All hidden metric context matches a visible label.');
 };
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+// Only when invoked directly, so the test module can import `checkPage` without the
+// script scanning `.next` and calling `process.exit`.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
