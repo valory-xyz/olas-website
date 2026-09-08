@@ -614,6 +614,28 @@ export const agentTxCountsQuery = gql`
   }
 `;
 
+// Services minted for the given agent ids, paged by id cursor (the subgraph caps
+// \`first\` at 1000). \`agentIds_contains\` matches services listing *every* id passed, so
+// callers with several ids query one id at a time. Backs the Predict "Total Agents" count.
+export const agentServicesQuery = gql`
+  query AgentServices($agentIds: [Int!]!, $id_gt: ID!) {
+    services(
+      where: { agentIds_contains: $agentIds, id_gt: $id_gt }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const dailyAgentPerformancesQuery = gql`
   query DailyActiveMultisigs($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyActiveMultisigs_collection(
