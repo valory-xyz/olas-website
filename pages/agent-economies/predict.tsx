@@ -3,6 +3,7 @@ import {
   computeAllRangeHistograms,
   AgentBlueprintRoiData,
 } from 'common-util/api/predict/roi-distribution';
+import { roiSnapshotIssue } from 'common-util/api/predict/windowed-roi';
 import { REVALIDATE_DURATION } from 'common-util/constants';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { Activity } from 'components/AgentEconomies/PredictPage/Activity';
@@ -12,13 +13,7 @@ import { WhatIsOlasPredict } from 'components/AgentEconomies/PredictPage/WhatIsO
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
-const Predict = ({
-  metrics,
-  roiDistribution,
-  toolAccuracy,
-  snapshotTimestamp,
-  polystratRoiTimestamp,
-}) => (
+const Predict = ({ metrics, roiDistribution, toolAccuracy, snapshotTimestamp, roiSnapshots }) => (
   <PageWrapper>
     <Meta
       pageTitle="Predict"
@@ -30,9 +25,9 @@ const Predict = ({
     <Activity
       metrics={metrics}
       roiDistribution={roiDistribution}
+      roiSnapshots={roiSnapshots}
       toolAccuracy={toolAccuracy}
       snapshotTimestamp={snapshotTimestamp}
-      polystratRoiTimestamp={polystratRoiTimestamp}
     />
     <WhatIsOlasPredict />
     <GetInvolved />
@@ -67,8 +62,21 @@ export const getStaticProps = async () => {
       metrics,
       roiDistribution,
       toolAccuracy,
+      // Per-platform snapshot freshness: the two ROI accumulators run as separate daily
+      // jobs, so one can be stale or backfilling while the other is current. The reason
+      // rather than a boolean, so a caption can name the actual problem — implausibly low
+      // mech costs overstate returns, which is a different warning from a late refresh.
+      roiSnapshots: {
+        omenstrat: {
+          timestamp: omenRoiSnapshot?.timestamp ?? null,
+          issue: roiSnapshotIssue(omenRoiSnapshot, 'omenstrat'),
+        },
+        polystrat: {
+          timestamp: polyRoiSnapshot?.timestamp ?? null,
+          issue: roiSnapshotIssue(polyRoiSnapshot, 'polystrat'),
+        },
+      },
       snapshotTimestamp: snapshot?.timestamp ?? null,
-      polystratRoiTimestamp: polyRoiSnapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

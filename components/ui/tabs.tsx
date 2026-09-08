@@ -15,11 +15,15 @@ type TabsProps = {
   onChange: (key: string) => void;
   // When set, the bar stretches to fill its container and tabs share the width equally.
   fullWidth?: boolean;
+  /** Names the toggle group; without it the buttons read as unlabelled 7D/30D/90D/Max. */
+  ariaLabel?: string;
 };
 
-export const Tabs = ({ items, activeKey, onChange, fullWidth = false }: TabsProps) => (
+export const Tabs = ({ items, activeKey, onChange, fullWidth = false, ariaLabel }: TabsProps) => (
   <Tooltip.Provider delayDuration={150}>
     <div
+      role="group"
+      aria-label={ariaLabel}
       className={`flex items-center gap-1 bg-white border border-slate-100 rounded-lg p-1 ${fullWidth ? 'w-full' : ''}`}
     >
       {items.map(({ key, label, icon, disabled, tooltip }) => {
@@ -36,6 +40,11 @@ export const Tabs = ({ items, activeKey, onChange, fullWidth = false }: TabsProp
           <button
             key={key}
             type="button"
+            // Toggle-button semantics rather than role="tab": only some consumers swap a
+            // panel, so tab semantics would need an aria-controls/tabpanel pair they
+            // cannot honestly provide. Without this the selected tab is expressed only
+            // as a background colour, which no crawler or screen reader can read.
+            aria-pressed={isActive}
             aria-disabled={disabled || undefined}
             onClick={() => {
               if (!disabled) onChange(key);

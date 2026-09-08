@@ -5,14 +5,14 @@ import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import OlasToken from 'components/OlasTokenPage';
 
-const OlasTokenPage = ({ metrics }) => (
+const OlasTokenPage = ({ metrics, snapshotTimestamp }) => (
   <PageWrapper>
     <Meta
       pageTitle="OLAS Token"
       description="View live data on token supply, emissions schedules, and other key metrics on Olas. Visual charts and statistics to help you track and analyze important trends."
       ogPath="olas-token"
     />
-    <OlasToken metrics={metrics} />
+    <OlasToken metrics={metrics} snapshotTimestamp={snapshotTimestamp} />
   </PageWrapper>
 );
 
@@ -21,6 +21,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       metrics: (snapshot?.data as OtherMetricsData) || null,
+      snapshotTimestamp: snapshot?.timestamp ?? null,
     },
     revalidate: REVALIDATE_DURATION,
   };

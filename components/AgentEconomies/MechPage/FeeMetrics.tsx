@@ -2,7 +2,7 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { isNil } from 'lodash';
 import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
-import { formatFullNumber } from 'components/ui/MetricContext';
+import { formatFullNumber, statusCaveat } from 'components/ui/MetricContext';
 import { formatUtcAsOf, formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricStatus } from 'common-util/graphql/types';
@@ -165,27 +165,6 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
   // Date the 15% marketplace fee was switched on, from the same constant the fee scan
   // uses, so the prose cannot drift from the data behind it.
   const feeLiveSince = formatUtcDate(FEE_LIVE_SINCE_SEC * 1000) ?? '';
-  // Each statement is built from its own metric, not from `formerData` (which coerces a
-  // missing child to 0) and not dated from `totalFees` alone. A child that is missing is
-  // omitted rather than published as $0, and one that is frozen says so — the same
-  // contract `buildMetricContext` enforces for single values.
-  const feeSentence = (
-    metric: { value?: number | null; status?: MetricStatus } | undefined,
-    describe: (amount: string) => string
-  ): string | null => {
-    if (isNil(metric?.value)) return null;
-    const amount = formatFullNumber(metric.value, { isMoney: true });
-    if (!amount) return null;
-    const asOf = formatUtcAsOf(metric.status?.lastValidAt ?? snapshotTimestamp);
-    const caveat = isFrozen(metric.status)
-      ? ' This is the last confirmed value; the live source is currently unavailable.'
-      : '';
-    // Date each sentence only when the figures were not all captured together; otherwise
-    // one trailing stamp reads better than repeating the same date four times.
-    const stamp = asOf && asOf !== sharedAsOf ? ` As of ${asOf}.` : '';
-    return `${describe(amount)}${stamp}${caveat}`;
-  };
-
   // If every child carries the same as-of, state it once at the end.
   const childMetrics = [
     metrics?.totalFees,
@@ -204,6 +183,25 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
   );
   const sharedAsOf = stamps.length === 1 ? stamps[0] : null;
 
+  // Each statement is built from its own metric, not from `formerData` (which coerces a
+  // missing child to 0) and not dated from `totalFees` alone. A child that is missing is
+  // omitted rather than published as $0, and one that is frozen says so — the same
+  // contract `buildMetricContext` enforces for single values.
+  const feeSentence = (
+    metric: { value?: number | null; status?: MetricStatus } | undefined,
+    describe: (amount: string) => string
+  ): string | null => {
+    if (isNil(metric?.value)) return null;
+    const amount = formatFullNumber(metric.value, { isMoney: true });
+    if (!amount) return null;
+    const asOf = formatUtcAsOf(metric.status?.lastValidAt ?? snapshotTimestamp);
+    const caveat = statusCaveat(metric.status);
+    // Date each sentence only when the figures were not all captured together; otherwise
+    // one trailing stamp reads better than repeating the same date four times.
+    const stamp = asOf && asOf !== sharedAsOf ? ` As of ${asOf}.` : '';
+    return `${describe(amount)}${stamp}${caveat}`;
+  };
+
   const claimed = metrics?.claimedFees;
   const received = metrics?.recievedFees;
 
@@ -221,11 +219,12 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
           )
         : [
             feeSentence(claimed, (a) => `Claimed payments is ${a}.`),
-            feeSentence(
-              received,
-              (a) =>
-                `Realised mech earnings is ${a}, the portion mechs keep after the marketplace fee, so the two are not additive.`
-            ),
+            feeSentence(received, (a) => {
+              // "so the two are not additive" only means something when the claimed
+              // sentence rendered alongside it; on its own it dangles.
+              const contrast = isNil(claimed?.value) ? '' : ', so the two are not additive';
+              return `Realised mech earnings is ${a}, the portion mechs keep after the marketplace fee${contrast}.`;
+            }),
           ]
             .filter(Boolean)
             .join(' ') || null,
@@ -234,7 +233,7 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
         // Deliberately not called "still owed to mechs": it is in − out, so it also
         // contains protocol fees that have left the mechs' entitlement.
         (a) =>
-          `Unclaimed payments ${a} is the residual of task payments minus withdrawals, which also contains protocol fees not yet attributed, so it is not purely what is still owed to mechs.`
+          `Unclaimed payments ${a} is the residual of task payments minus withdrawals, which still includes the marketplace fees taken from those payments, so it overstates what is actually still owed to mechs.`
       ),
       feeSentence(
         metrics?.protocolFees,

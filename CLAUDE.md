@@ -120,6 +120,7 @@ Index of design documents. Read the matching spec BEFORE you change the listed a
 
 - `docs/mech-analytics-migration.md` — off-chain mech-request migration (subgraph → mech-analytics API, `USE_MECH_ANALYTICS` flag). Read before changing `common-util/api/predict/*` (`roi-distribution.ts`, `tool-accuracy.ts`, `mech-analytics.ts`) or any marketplace per-request query.
 - `docs/predict-roi-accounting.md` — the Predict ROI accounting rules (accrual payout at resolution, single mech-request count, QMR lifecycle, observability). Read before changing `common-util/api/predict/{roi-math,roi-distribution,windowed-roi}.ts` or the Explorer ROI series.
+- `docs/metric-text-layer.md` — the screen-reader-only sentences that give every published number its scope, window and as-of date, and the rules they follow (full numbers, no invented dates, three health states, label echo, every selector state). Read before touching `common-util/metric-context.ts`, `components/ui/MetricContext.tsx`, any `sr-only` metric mirror, or `components/ui/popover.tsx`.
 - `docs/pol-live-reserves.md` — why POL valuation reads pool reserves on-chain instead of from the liquidity subgraphs (Balancer vault swaps are invisible to pool-contract subgraphs). Read before changing `common-util/api/other-metrics/protocol.ts` or `live-reserves.ts`.
 
 ## Important Implementation Details

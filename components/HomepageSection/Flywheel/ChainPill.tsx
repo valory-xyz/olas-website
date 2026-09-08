@@ -9,6 +9,7 @@ import { cn } from 'lib/utils';
 import Image from 'next/image';
 import { Fragment } from 'react';
 import type { CSSProperties } from 'react';
+import { formatTokenAmount } from 'common-util/numberFormatter';
 
 import { TOKEN_ICONS } from './constants';
 
@@ -21,12 +22,6 @@ type ChainPillProps = {
   raised?: boolean;
   onTooltipOpenChange?: (open: boolean) => void;
 };
-
-export const formatTokenAmount = (amount: number, fractionDigits?: number) =>
-  amount.toLocaleString('en-US', {
-    maximumFractionDigits: fractionDigits ?? (amount < 10 ? 2 : amount < 1000 ? 1 : 0),
-    ...(fractionDigits != null ? { minimumFractionDigits: fractionDigits } : {}),
-  });
 
 // The pill card itself, shared by the desktop panel and the mobile grid.
 export const ChainPillCard = ({
