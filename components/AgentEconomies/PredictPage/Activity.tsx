@@ -22,10 +22,14 @@ const processPredictMetrics = (
   omenstrat: PlatformMetrics & {
     dailyActiveAgents: number | null;
     dailyActiveAgentsStatus: any;
+    totalAgents: number | null;
+    totalAgentsStatus: any;
   };
   polystrat: PlatformMetrics & {
     dailyActiveAgents: number | null;
     dailyActiveAgentsStatus: any;
+    totalAgents: number | null;
+    totalAgentsStatus: any;
   };
 } => {
   if (!metrics) {
@@ -33,6 +37,8 @@ const processPredictMetrics = (
       omenstrat: {
         dailyActiveAgents: null,
         dailyActiveAgentsStatus: undefined,
+        totalAgents: null,
+        totalAgentsStatus: undefined,
         apr: null,
         aprStatus: undefined,
         traderTxs: null,
@@ -51,6 +57,8 @@ const processPredictMetrics = (
       polystrat: {
         dailyActiveAgents: null,
         dailyActiveAgentsStatus: undefined,
+        totalAgents: null,
+        totalAgentsStatus: undefined,
         apr: null,
         aprStatus: undefined,
         traderTxs: null,
@@ -73,6 +81,8 @@ const processPredictMetrics = (
     omenstrat: {
       dailyActiveAgents: metrics.omenstrat?.dailyActiveAgents?.value ?? null,
       dailyActiveAgentsStatus: metrics.omenstrat?.dailyActiveAgents?.status,
+      totalAgents: metrics.omenstrat?.totalAgents?.value ?? null,
+      totalAgentsStatus: metrics.omenstrat?.totalAgents?.status,
       apr: metrics.omenstrat?.apr?.value ?? null,
       aprStatus: metrics.omenstrat?.apr?.status,
       traderTxs: omenstratTxs
@@ -93,6 +103,8 @@ const processPredictMetrics = (
     polystrat: {
       dailyActiveAgents: metrics.polystrat?.dailyActiveAgents?.value ?? null,
       dailyActiveAgentsStatus: metrics.polystrat?.dailyActiveAgents?.status,
+      totalAgents: metrics.polystrat?.totalAgents?.value ?? null,
+      totalAgentsStatus: metrics.polystrat?.totalAgents?.status,
       apr: metrics.polystrat?.apr?.value ?? null,
       aprStatus: metrics.polystrat?.apr?.status,
       traderTxs: polystratTxs ? polystratTxs.valory_trader || 0 : null,
@@ -108,6 +120,34 @@ const processPredictMetrics = (
   };
 };
 
+// Lifetime agent count, shown under the DAA so the daily figure has its denominator
+// beside it. Same card because both are per-platform and sit outside the switcher.
+const TotalAgentsRow = ({ value, status, href, popoverText, context, snapshotTimestamp }) => (
+  <div className="w-full pt-4 border-t border-purple-200 flex items-center justify-center gap-2">
+    {isNil(value) ? (
+      <span className="text-purple-600 text-2xl font-bold">--</span>
+    ) : (
+      <Link className="font-bold text-2xl" href={href}>
+        <span className={`${isFrozen(status) ? 'text-gray-400' : ''}`}>
+          {value.toLocaleString()}
+        </span>
+      </Link>
+    )}
+    <StaleIndicator status={status} />
+    <span className="flex gap-2">
+      Total Agents <Popover>{popoverText}</Popover>
+    </span>
+    <MetricContext
+      label="Total Agents"
+      value={value}
+      status={status}
+      asOfFallback={snapshotTimestamp}
+      window="all time"
+      {...context}
+    />
+  </div>
+);
+
 const DaaCard = ({
   title,
   imgSrc,
@@ -118,6 +158,7 @@ const DaaCard = ({
   id,
   context = null,
   snapshotTimestamp = null,
+  totalAgents,
 }) => {
   return (
     <Card
@@ -150,6 +191,7 @@ const DaaCard = ({
           {...context}
         />
       )}
+      <TotalAgentsRow {...totalAgents} snapshotTimestamp={snapshotTimestamp} />
     </Card>
   );
 };
@@ -184,6 +226,15 @@ export const Activity = ({
               noun: 'daily active Omenstrat agents trading Omen prediction markets on Gnosis, measured as unique multisigs active each day',
               window: '7-day average',
             }}
+            totalAgents={{
+              value: metrics.omenstrat.totalAgents,
+              status: metrics.omenstrat.totalAgentsStatus,
+              href: '/data#omenstrat-total-agents',
+              popoverText: 'All Omenstrat agents ever registered on Gnosis',
+              context: {
+                noun: 'Omenstrat agents ever registered on Gnosis, counted as services minted for the Omenstrat trader agent ids',
+              },
+            }}
           />
 
           {/* Polystrat DAA Card */}
@@ -199,6 +250,15 @@ export const Activity = ({
             context={{
               noun: 'daily active Polystrat agents trading Polymarket prediction markets on Polygon, measured as unique multisigs active each day',
               window: '7-day average',
+            }}
+            totalAgents={{
+              value: metrics.polystrat.totalAgents,
+              status: metrics.polystrat.totalAgentsStatus,
+              href: '/data#polystrat-total-agents',
+              popoverText: 'All Polystrat agents ever registered on Polygon',
+              context: {
+                noun: 'Polystrat agents ever registered on Polygon, counted as services minted for the Polystrat trader agent ids',
+              },
             }}
           />
 

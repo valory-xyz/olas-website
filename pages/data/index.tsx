@@ -21,6 +21,7 @@ import { OmenstratRoiInfo } from 'components/DataPage/OmenstratRoiInfo';
 import { PolystratAccuracyInfo } from 'components/DataPage/PolystratAccuracy';
 import { PolystratAprInfo } from 'components/DataPage/PolystratAprInfo';
 import { PolystratRoiInfo } from 'components/DataPage/PolystratRoiInfo';
+import { PredictTotalAgentsInfo } from 'components/DataPage/PredictTotalAgents';
 import { TokenHolders } from 'components/DataPage/TokenHolders';
 import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
@@ -37,6 +38,7 @@ const DataVerifyPage = () => (
     </div>
     <div className={`${SCREEN_WIDTH_XL} divide-y divide-dashed divide-gray-200`}>
       <DailyActiveAgentsInfo />
+      <PredictTotalAgentsInfo />
       <BabydegenMetricsInfo />
       <MechGlobalsInfo />
       <MechCategorizedRequestsInfo />

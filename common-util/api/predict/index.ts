@@ -9,11 +9,14 @@ import {
 } from 'common-util/constants';
 import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
+  checkSubgraphLag,
   createStaleStatus,
   executeGraphQLQuery,
+  getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
 import {
+  agentServicesQuery,
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
@@ -43,6 +46,10 @@ type AgentTxCountsResponse = WithMeta<{
     id: string;
     txCount: string;
   }[];
+}>;
+
+type AgentServicesResponse = WithMeta<{
+  services: { id: string }[];
 }>;
 
 // Helper function to transform DAA data
@@ -122,6 +129,67 @@ const fetchPredictDaa7dAvg = async (): Promise<{
     polystrat: polystratDaa,
   };
 };
+
+const SERVICES_PAGE_SIZE = 1000;
+// ~1.1k services for the busiest trader id today; 20 pages is ample headroom.
+const SERVICES_MAX_PAGES = 20;
+
+// Lifetime count of services minted for the platform's trader agent ids — one service is
+// one agent instance, so this is the total-agents figure the DAA is a daily slice of.
+// Paged per agent id with an id cursor and deduped, since a service can list several ids.
+// A truncated page walk throws rather than publishing an undercount, so the merge holds
+// the last valid value instead.
+const fetchTotalAgents = async (
+  chain: 'gnosis' | 'polygon',
+  agentIds: number[]
+): Promise<MetricWithStatus<number | null>> => {
+  const source = `registry:${chain}`;
+  const client = REGISTRY_GRAPH_CLIENTS[chain];
+
+  try {
+    const chainBlockPromise = getChainBlockNumber(chain);
+    const serviceIds = new Set<string>();
+    let meta: AgentServicesResponse['_meta'];
+
+    for (const agentId of agentIds) {
+      let cursor = '';
+      let page = 0;
+      for (;;) {
+        const data = (await client.request(agentServicesQuery, {
+          agentIds: [agentId],
+          id_gt: cursor,
+        })) as AgentServicesResponse;
+        meta = data._meta;
+        const rows = data.services || [];
+        rows.forEach((row) => serviceIds.add(row.id));
+        if (rows.length < SERVICES_PAGE_SIZE) break;
+        page += 1;
+        if (page >= SERVICES_MAX_PAGES) {
+          throw new Error(`services for agent ${agentId} exceed ${SERVICES_MAX_PAGES} pages`);
+        }
+        cursor = rows[rows.length - 1].id;
+      }
+    }
+
+    const chainBlock = await chainBlockPromise;
+    return {
+      value: serviceIds.size,
+      status: createStaleStatus({
+        indexingErrors: meta?.hasIndexingErrors ? [source] : [],
+        fetchErrors: [],
+        laggingSubgraphs: checkSubgraphLag(chainBlock, meta?.block?.number, chain) ? [source] : [],
+      }),
+    };
+  } catch (error) {
+    console.error(`Error fetching total agents from ${source}:`, error);
+    return { value: null, status: getFetchErrorAndCreateStaleStatus(source) };
+  }
+};
+
+const fetchOmenstratTotalAgents = () =>
+  fetchTotalAgents('gnosis', OMENSTRAT_AGENT_CLASSIFICATION.valory_trader);
+const fetchPolystratTotalAgents = () =>
+  fetchTotalAgents('polygon', POLYSTRAT_AGENT_CLASSIFICATION.valory_trader);
 
 const fetchPredictTxsByAgentType = async (): Promise<
   MetricWithStatus<Record<string, number> | null>
@@ -216,6 +284,8 @@ export type PredictMetricsData = {
   // Omenstrat metrics
   omenstrat: {
     dailyActiveAgents: MetricWithStatus<number | null>;
+    // Lifetime count of services minted for the trader agent ids.
+    totalAgents: MetricWithStatus<number | null>;
     // Max APR across contracts nominated at any point within each time range.
     apr: MetricWithStatus<WindowedMetric<number | null>>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
@@ -232,6 +302,7 @@ export type PredictMetricsData = {
   // Polystrat metrics
   polystrat: {
     dailyActiveAgents: MetricWithStatus<number | null>;
+    totalAgents: MetricWithStatus<number | null>;
     apr: MetricWithStatus<WindowedMetric<number | null>>;
     predictTxsByType: MetricWithStatus<Record<string, number> | null>;
     partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
@@ -249,11 +320,13 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
   try {
     const [
       daaResult,
+      omenstratTotalAgentsResult,
       omenstratAprResult,
       omenstratTxsResult,
       omenstratRoiResult,
       omenstratSuccessRateResult,
       omenstratBrierResult,
+      polystratTotalAgentsResult,
       polystratAprResult,
       polystratTxsResult,
       polystratRoiResult,
@@ -262,12 +335,14 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       // DAA
       fetchPredictDaa7dAvg(),
       // Omenstrat
+      fetchOmenstratTotalAgents(),
       fetchOmenstratOlasApr(),
       fetchPredictTxsByAgentType(),
       fetchOmenstratWindowedRoi(),
       fetchOmenstratAccuracy(),
       fetchOmenstratBrier(),
       // Polystrat
+      fetchPolystratTotalAgents(),
       fetchPolystratOlasApr(),
       fetchPolystratTxsByAgentType(),
       fetchPolystratWindowedRoi(),
@@ -292,6 +367,10 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
     const data: PredictMetricsData = {
       omenstrat: {
         dailyActiveAgents: daa.omenstrat,
+        totalAgents:
+          omenstratTotalAgentsResult.status === 'fulfilled'
+            ? omenstratTotalAgentsResult.value
+            : { value: null, status: getFetchErrorAndCreateStaleStatus('registry:gnosis') },
         apr:
           omenstratAprResult.status === 'fulfilled'
             ? omenstratAprResult.value
@@ -326,6 +405,10 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
 
       polystrat: {
         dailyActiveAgents: daa.polystrat,
+        totalAgents:
+          polystratTotalAgentsResult.status === 'fulfilled'
+            ? polystratTotalAgentsResult.value
+            : { value: null, status: getFetchErrorAndCreateStaleStatus('registry:polygon') },
         apr:
           polystratAprResult.status === 'fulfilled'
             ? polystratAprResult.value
