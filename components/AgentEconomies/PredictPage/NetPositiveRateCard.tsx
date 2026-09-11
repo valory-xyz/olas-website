@@ -1,13 +1,17 @@
 'use client';
 
+import type { WindowKey } from 'common-util/api/predict';
 import {
   MIN_TRADES_FOR_ROI_DISPLAY,
   type NetPositive,
+  type RoiDistribution,
 } from 'common-util/api/predict/roi-distribution';
 import { Card } from 'components/ui/card';
 import { buildMetricContext } from 'components/ui/MetricContext';
 import { ExternalLink } from 'components/ui/typography';
 import { isNil } from 'lodash';
+
+import { windowDataKey, windowPhrase } from './constants';
 
 /**
  * Share of Polymarket trader wallets that are net-positive, published by Andrey
@@ -29,8 +33,13 @@ const BASELINE = {
 };
 
 /** The card reports one fixed window; the Performance tabs above it do not apply. */
-const AGENT_WINDOW_LABEL = 'last 30d';
-const AGENT_WINDOW_PHRASE = 'over the last 30 days';
+const AGENT_WINDOW: WindowKey = '90d';
+const AGENT_WINDOW_LABEL = `last ${AGENT_WINDOW}`;
+const AGENT_WINDOW_PHRASE = windowPhrase(AGENT_WINDOW);
+
+/** The card picks its own window out of the snapshot, so callers pass the whole thing. */
+const pickNetPositive = (data: RoiDistribution | null) =>
+  data?.netPositive?.[windowDataKey(AGENT_WINDOW)]?.polystrat ?? null;
 
 const AXIS_STEP = 10;
 
@@ -38,8 +47,7 @@ const AGENT_COLOR = '#4D74FF';
 const BASELINE_COLOR = '#A3AEBB';
 
 type NetPositiveRateCardProps = {
-  /** Net-positive share for the selected 30-day window. */
-  netPositive: NetPositive | null;
+  roiDistribution: RoiDistribution | null;
   className?: string;
   id?: string;
   /** As-of date for the ROI distribution blob this is derived from. */
@@ -95,13 +103,13 @@ export const netPositiveSentence = (netPositive: NetPositive | null, asOf?: numb
  * `PlatformActivitySection` for why.
  */
 export const NetPositiveRateSummary = ({
-  netPositive,
+  roiDistribution,
   asOf = null,
 }: {
-  netPositive: NetPositive | null;
+  roiDistribution: RoiDistribution | null;
   asOf?: number | null;
 }) => {
-  const sentence = netPositiveSentence(netPositive, asOf);
+  const sentence = netPositiveSentence(pickNetPositive(roiDistribution), asOf);
   if (!sentence) return null;
   return (
     <div className="sr-only" data-selector-states="off-screen">
@@ -111,11 +119,12 @@ export const NetPositiveRateSummary = ({
 };
 
 export const NetPositiveRateCard = ({
-  netPositive,
+  roiDistribution,
   className,
   id,
   asOf = null,
 }: NetPositiveRateCardProps) => {
+  const netPositive = pickNetPositive(roiDistribution);
   if (!netPositive || isNil(netPositive.rate)) return null;
 
   const { rate, agents } = netPositive;

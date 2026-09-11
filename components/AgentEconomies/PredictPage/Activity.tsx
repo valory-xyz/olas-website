@@ -275,14 +275,14 @@ export const Activity = ({
               platform === 'polystrat' ? (
                 <NetPositiveRateCard
                   id="net-positive-rate"
-                  netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
+                  roiDistribution={roiDistribution}
                   asOf={roiSnapshots?.polystrat?.timestamp ?? null}
                 />
               ) : (
                 // The card is Polystrat-only, and Omenstrat is the default, so without
                 // this the comparison never reaches the served HTML at all.
                 <NetPositiveRateSummary
-                  netPositive={roiDistribution?.netPositive?.d30?.polystrat ?? null}
+                  roiDistribution={roiDistribution}
                   asOf={roiSnapshots?.polystrat?.timestamp ?? null}
                 />
               )
