@@ -71,8 +71,12 @@ export const OG_PAGE_REGISTRY: Record<string, OgPageDefinition> = {
       predict
         ? [
             {
-              label: 'Predict DAAs',
+              label: 'Omenstrat DAAs',
               value: formatOgIntegerCount(predict.omenstrat?.dailyActiveAgents?.value),
+            },
+            {
+              label: 'Polystrat DAAs',
+              value: formatOgIntegerCount(predict.polystrat?.dailyActiveAgents?.value),
             },
           ]
         : [],
