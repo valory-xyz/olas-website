@@ -19,17 +19,21 @@ export const ProtocolOwnedLiquidityInfo = () => {
 
         <p>
           Total POL is computed by summing the Treasury&apos;s proportional share of each
-          pool&apos;s value across 8 chains: Ethereum (OLAS-WETH, Uniswap V2), Gnosis (OLAS-WXDAI,
+          pool&apos;s value across 9 chains: Ethereum (OLAS-WETH, Uniswap V2), Gnosis (OLAS-WXDAI,
           Balancer), Polygon (OLAS-WMATIC, Balancer), Arbitrum (OLAS-WETH, Balancer), Optimism
-          (WETH-OLAS, Balancer), Base (OLAS-USDC, Balancer), Celo (CELO-OLAS, Ubeswap), and Solana
-          (WSOL-OLAS, Orca). All USD prices come from Chainlink oracles.
+          (WETH-OLAS, Balancer), Base (OLAS-USDC, Balancer), Celo (CELO-OLAS, Ubeswap), Solana
+          (WSOL-OLAS, Orca), and Robinhood Chain (OLAS-WETH, Uniswap V2). All USD prices come from
+          Chainlink oracles.
         </p>
 
         <p>
           For each pool: <code>Pool TVL = 2 &times; paired_token_reserves &times; price</code>, then{' '}
           <code>Treasury POL = Pool TVL &times; (bridged_LP_balance / total_supply)</code>. The
           Ethereum subgraph pre-computes <code>protocolOwnedLiquidityUsd</code> directly and also
-          provides Chainlink prices (ETH/USD, MATIC/USD, SOL/USD) used for other chains.
+          provides Chainlink prices (ETH/USD, MATIC/USD, SOL/USD) used for other chains. On
+          Robinhood Chain the LP token cannot be bridged to Ethereum, so reserves, LP supply and the
+          Treasury&apos;s LP balance (held by its L2 governance address) are read on-chain instead
+          of from a subgraph.
         </p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Ethereum Liquidity query</h3>
