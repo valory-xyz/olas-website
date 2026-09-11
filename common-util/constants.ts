@@ -154,6 +154,8 @@ const CHAIN_LAG_CONFIG: Record<
   celo: { rpc: process.env.CELO_RPC, blockTimeSec: 1, lagToleranceHours: 48 },
   polygon: { rpc: process.env.POLYGON_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
   mode: { rpc: process.env.MODE_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
+  // Arbitrum Orbit rollup. Only the RPC is used today (on-chain PoL reads); no subgraph yet.
+  robinhood: { rpc: process.env.ROBINHOOD_RPC, blockTimeSec: 0.25, lagToleranceHours: 48 },
 };
 
 export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; lagLimit: number }> =

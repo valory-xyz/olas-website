@@ -77,9 +77,9 @@ export const CHAIN_PILLS: ChainPillConfig[] = [
     style: { top: 151, left: 8 },
   },
   {
-    key: 'polygon',
-    label: 'Polygon',
-    icon: `${chainIconPath}polygon-color.svg`,
+    key: 'solana',
+    label: 'Solana',
+    icon: `${chainIconPath}solana-color.svg`,
     style: { top: 224, left: 46 },
   },
   {
@@ -101,10 +101,16 @@ export const CHAIN_PILLS: ChainPillConfig[] = [
     style: { top: 224, right: 46 },
   },
   {
-    key: 'solana',
-    label: 'Solana',
-    icon: `${chainIconPath}solana-color.svg`,
-    style: { bottom: 10, left: '50%', transform: 'translateX(-50%)' },
+    key: 'robinhood',
+    label: 'Robinhood',
+    icon: `${chainIconPath}robinhood-color.png`,
+    style: { bottom: 10, left: 116 },
+  },
+  {
+    key: 'polygon',
+    label: 'Polygon',
+    icon: `${chainIconPath}polygon-color.svg`,
+    style: { bottom: 10, right: 116 },
   },
 ];
 

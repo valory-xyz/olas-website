@@ -1,6 +1,8 @@
 import {
   fetchBalancerPoolReserves,
+  fetchLpHolding,
   fetchUniswapV2PairReserves,
+  LiveReserves,
 } from 'common-util/api/other-metrics/live-reserves';
 import { OLAS_TOKEN_ADDRESS_BY_CHAIN } from 'common-util/constants';
 import { LIQUIDITY_GRAPH_CLIENTS } from 'common-util/graphql/client';
@@ -333,6 +335,26 @@ async function fetchSolanaVaultBalance(account: string): Promise<number | null> 
   }
 }
 
+// ─── Robinhood Chain ────────────────────────────────────────────────────────
+
+// OLAS/WETH Uniswap V2 pair (autonolas-tokenomics PR #361). No liquidity
+// subgraph, so reserves and the LP split are read on-chain. The LP token is
+// L2-native and cannot be bridged to Ethereum, so the treasury's holding is the
+// balance of its L2 control point (the aliased Timelock) — not a bridged balance.
+const ROBINHOOD_POL_PAIR = '0xc2eA98b5A75Fd85f7ce57Af856baaFfECD445659';
+const ROBINHOOD_TREASURY_L2 = '0x4d30F68F5AA342d296d4deE4bB1Cacca912dA70F';
+
+type RobinhoodPool = { live: LiveReserves; totalSupply: bigint; treasuryBalance: bigint };
+
+async function fetchRobinhoodPool(): Promise<RobinhoodPool | null> {
+  const [live, holding] = await Promise.all([
+    fetchUniswapV2PairReserves('robinhood', ROBINHOOD_POL_PAIR),
+    fetchLpHolding('robinhood', ROBINHOOD_POL_PAIR, ROBINHOOD_TREASURY_L2),
+  ]);
+  if (!live || !holding) return null;
+  return { live, totalSupply: holding.totalSupply, treasuryBalance: holding.holderBalance };
+}
+
 // ─── POL + fees fetcher (from subgraphs) ────────────────────────────────────
 
 const L2_CHAINS = ['gnosis', 'polygon', 'arbitrum', 'optimism', 'base', 'celo'] as const;
@@ -349,6 +371,7 @@ export const POL_CHAIN_KEYS = [
   'base',
   'celo',
   'solana',
+  'robinhood',
 ] as const;
 export type PolChainKey = (typeof POL_CHAIN_KEYS)[number];
 
@@ -415,21 +438,28 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   // Kick off subgraph fetches AND chain-block lookups in parallel. Previously
   // getChainBlockNumber() was serialized inside the L2 loop, costing ~6 RPC
   // round-trips on the critical path.
-  const [ethResult, ethBlockResult, solBalanceResult, solOlasBalanceResult, ...l2Results] =
-    await Promise.allSettled([
-      ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
-      getChainBlockNumber('ethereum'),
-      fetchSolanaVaultBalance(SOL_VAULT_ACCOUNT),
-      fetchSolanaVaultBalance(SOL_OLAS_VAULT_ACCOUNT),
-      ...L2_CHAINS.flatMap((chain) => [
-        (async () => {
-          const client = LIQUIDITY_GRAPH_CLIENTS[chain];
-          const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
-          return { chain, data };
-        })(),
-        getChainBlockNumber(chain) as Promise<number | null>,
-      ]),
-    ]);
+  const [
+    ethResult,
+    ethBlockResult,
+    solBalanceResult,
+    solOlasBalanceResult,
+    robinhoodResult,
+    ...l2Results
+  ] = await Promise.allSettled([
+    ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
+    getChainBlockNumber('ethereum'),
+    fetchSolanaVaultBalance(SOL_VAULT_ACCOUNT),
+    fetchSolanaVaultBalance(SOL_OLAS_VAULT_ACCOUNT),
+    fetchRobinhoodPool(),
+    ...L2_CHAINS.flatMap((chain) => [
+      (async () => {
+        const client = LIQUIDITY_GRAPH_CLIENTS[chain];
+        const data = (await client.request(liquidityL2Query)) as L2SubgraphResponse;
+        return { chain, data };
+      })(),
+      getChainBlockNumber(chain) as Promise<number | null>,
+    ]),
+  ]);
 
   // Ethereum subgraph is required for prices, bridged balances, and ETH POL/fees.
   if (ethResult.status !== 'fulfilled') {
@@ -715,6 +745,46 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     fetchErrors.push('liquidity:solana');
     chainErrors.solana.fetchErrors.push('liquidity:solana');
     polChainFailed.solana = true;
+    polPartial = true;
+  }
+
+  // Robinhood: same math as the L2 pools (2 × WETH reserve × ETH/USD × share) but
+  // fully on-chain, with the share taken from the aliased Timelock's LP balance.
+  // Fees are not tracked (no subgraph), as on Solana.
+  const robinhood = robinhoodResult.status === 'fulfilled' ? robinhoodResult.value : null;
+  const robinhoodOlas = OLAS_TOKEN_ADDRESS_BY_CHAIN.robinhood;
+  let robinhoodError: string | null = null;
+  if (robinhood === null || prices.eth <= 0) {
+    robinhoodError = 'liquidity:robinhood';
+  } else if (
+    robinhoodOlas &&
+    robinhood.live.tokens[0].toLowerCase() !== robinhoodOlas.toLowerCase()
+  ) {
+    console.error(
+      `[protocol-metrics] liquidity:robinhood token order mismatch: expected OLAS (${robinhoodOlas}) at token0, got ${robinhood.live.tokens[0]}`
+    );
+    robinhoodError = 'liquidity:robinhood:token-order';
+  }
+  if (robinhoodError === null) {
+    const tvl = pairedFromReserve(robinhood.live.reserve1, 18) * 2 * prices.eth;
+    if (!isSaneUsd(tvl, MAX_POOL_TVL_USD)) {
+      console.error(`[protocol-metrics] liquidity:robinhood TVL out of bounds: $${tvl} — skipping`);
+      robinhoodError = 'liquidity:robinhood:tvl-out-of-bounds';
+    } else {
+      const share = computeShare(robinhood.treasuryBalance, robinhood.totalSupply);
+      totalPolUsd += tvl * share;
+      polUsdByChain.robinhood = tvl * share;
+      // A zero share publishes $0 with no composition rather than "0 OLAS : 0 WETH".
+      if (share > 0) {
+        addChainToken('robinhood', 'OLAS', pairedFromReserve(robinhood.live.reserve0, 18) * share);
+        addChainToken('robinhood', 'WETH', pairedFromReserve(robinhood.live.reserve1, 18) * share);
+      }
+    }
+  }
+  if (robinhoodError !== null) {
+    fetchErrors.push(robinhoodError);
+    chainErrors.robinhood.fetchErrors.push(robinhoodError);
+    polChainFailed.robinhood = true;
     polPartial = true;
   }
 

@@ -61,6 +61,23 @@ const UNISWAP_V2_PAIR_ABI = [
   },
 ] as const;
 
+const ERC20_SUPPLY_ABI = [
+  {
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
+
 // Raw reserves in token-address order (reserve0 = lower address), matching the
 // subgraph's reserve0/reserve1 convention. `tokens` carries the source-reported
 // token addresses (Vault getPoolTokens / pair token0+token1) so callers can
@@ -104,6 +121,35 @@ export const fetchBalancerPoolReserves = async (
     };
   } catch (error) {
     console.error(`[live-reserves] Balancer read failed (${chain} ${poolAddress}):`, error);
+    return null;
+  }
+};
+
+// LP split for a pair whose LP token is held on its own chain — used where the
+// LP cannot be bridged to Ethereum, so there is no bridged balance to read.
+export const fetchLpHolding = async (
+  chain: string,
+  pairAddress: string,
+  holder: string
+): Promise<{ totalSupply: bigint; holderBalance: bigint } | null> => {
+  try {
+    const read = getChainReader(chain);
+    if (!read) return null;
+
+    const lpContract = {
+      address: pairAddress as `0x${string}`,
+      abi: ERC20_SUPPLY_ABI as unknown as Abi,
+    };
+    const [totalSupply, holderBalance] = (await Promise.all([
+      read({ ...lpContract, functionName: 'totalSupply' }),
+      read({ ...lpContract, functionName: 'balanceOf', args: [holder] }),
+    ])) as [bigint, bigint];
+
+    if (typeof totalSupply !== 'bigint' || typeof holderBalance !== 'bigint') return null;
+
+    return { totalSupply, holderBalance };
+  } catch (error) {
+    console.error(`[live-reserves] LP holding read failed (${chain} ${pairAddress}):`, error);
     return null;
   }
 };
