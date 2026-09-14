@@ -106,6 +106,12 @@ jobs:
       # against built HTML; it needs a build, so it runs on previews, not here.
       - name: Run metric-context unit tests
         run: yarn metric-context:test
+      # structured-data builds every JSON-LD block from the same data the page renders; the
+      # check reads them back out of the built HTML in `postbuild`. Both fail silently in
+      # production — a malformed block is ignored, a dangling Dataset anchor cites nothing —
+      # so the builders and the check are pinned here.
+      - name: Run structured-data unit tests
+        run: yarn structured-data:test && yarn structured-data:check:test
       # The post-build label check has only ever failed by passing — a drifted label
       # matched itself, or matched unrelated body copy — which reads exactly like a clean
       # run. These fixtures pin the cases where it wrongly reported ok.

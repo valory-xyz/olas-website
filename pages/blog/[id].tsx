@@ -2,7 +2,10 @@ import { getBlog } from 'common-util/api';
 import { formatDate } from 'common-util/formatDate';
 import { getApiUrl } from 'common-util/getApiUrl';
 import { getLimitedText } from 'common-util/getLimitedText';
+import { getSiteUrl } from 'common-util/getSiteUrl';
 import Markdown from 'common-util/Markdown';
+import { buildArticle } from 'common-util/structured-data';
+import { JsonLd } from 'components/JsonLd';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 import { Spinner } from 'components/Spinner';
@@ -15,7 +18,7 @@ const DESC_CHAR_LIMIT = 160;
 const BlogItem = ({ blog }) => {
   if (!blog) return <Spinner />;
 
-  const { title, datePublished, body: content, headerImage } = blog;
+  const { title, datePublished, updatedAt, slug, author, body: content, headerImage } = blog;
   const formattedDate = formatDate(datePublished);
   // blogs use multiple-media headerImage (array); tolerate single-media (object) too.
   const headerImageData = isArray(headerImage) ? headerImage?.[0] : headerImage;
@@ -29,8 +32,22 @@ const BlogItem = ({ blog }) => {
   );
   const description = getLimitedText(formattedContent.props.children, DESC_CHAR_LIMIT);
 
+  // Built from the same record the page renders. `author` is read defensively: the CMS
+  // does not expose one on every post, and a post without one is credited to Olas.
+  const article = buildArticle({
+    siteUrl: getSiteUrl(),
+    path: `/blog/${slug ?? blog.id}`,
+    title,
+    description,
+    datePublished,
+    dateModified: updatedAt,
+    imageUrl: imageUrl || undefined,
+    author: typeof author === 'string' ? author : author?.name,
+  });
+
   return (
     <PageWrapper>
+      <JsonLd data={article} />
       <Meta pageTitle={title} description={description} siteImageUrl={imageUrl} />
       <div className="max-w-3xl mx-auto px-4 py-8 md:py-10">
         {imagePath && (

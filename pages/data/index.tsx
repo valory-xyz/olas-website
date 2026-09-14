@@ -1,4 +1,8 @@
 import { SCREEN_WIDTH_XL, TITLE_CLASS } from 'common-util/classes';
+import { getSiteUrl } from 'common-util/getSiteUrl';
+import { buildDataCatalog } from 'common-util/structured-data';
+import { DATASETS } from 'components/DataPage/datasets';
+import { JsonLd } from 'components/JsonLd';
 import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
 import { BabydegenMetricsInfo } from 'components/DataPage/BabydegenMetrics';
 import { BuildersInfo } from 'components/DataPage/BuildersInfo';
@@ -27,8 +31,14 @@ import { TransactionsInfo } from 'components/DataPage/Transactions';
 import PageWrapper from 'components/Layout/PageWrapper';
 import Meta from 'components/Meta';
 
+// Every section below, as a Dataset record whose `@id` is the section's anchor — the
+// same `/data#…` link each metric tile carries. Cited statistics are the strongest
+// measured lever for being quoted by generative engines; this is the citation target.
+const DATA_CATALOG = buildDataCatalog({ siteUrl: getSiteUrl(), datasets: DATASETS });
+
 const DataVerifyPage = () => (
   <PageWrapper>
+    <JsonLd data={DATA_CATALOG} />
     <Meta
       pageTitle="Data Verification"
       description="Verify Olas protocol metrics and data. Access detailed information about agents, operators, staking, transactions, and on-chain activity across the Olas ecosystem."
