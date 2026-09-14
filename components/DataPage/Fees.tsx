@@ -1,6 +1,9 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
+import { mechFeesDrainTotalsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Verify from 'components/Verify';
+import { CodeSnippet } from './CodeSnippet';
+import { MechFeesSubgraphLinks } from './MechTurnover';
 
 export const FeesInfo = () => {
   return (
@@ -10,14 +13,18 @@ export const FeesInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Tracks the amount of protocol fees collected by the Mech Marketplace. A 15% fee is taken
-          on agent-to-agent payments and accrues in each chain&apos;s balance tracker contract. The
-          &quot;fees collected&quot; figure is read on-chain from the balance trackers&apos;{' '}
-          <code>collectedFees</code> (currently counting tokens that are ~= 1 USD — USDC and Gnosis
-          xDAI). When the fees are distributed, non-OLAS fees are sent to the Olas Treasury and OLAS
-          fees are burned.
+          on agent-to-agent payments and accrues in each chain&apos;s balance tracker contract until
+          the DAO drains it. The &quot;fees collected&quot; figure is the sum of two parts: the
+          not-yet-drained balance, read on-chain from each tracker&apos;s <code>collectedFees</code>
+          , plus everything already drained, read from the <code>DrainTotals</code> entity of the
+          mech fees subgraphs (one row per payment model, priced in USD at drain time). Counted
+          trackers: USDC on every chain, Gnosis xDAI, ETH on Base and Optimism, and POL on Polygon —
+          ETH and POL are valued with the same Chainlink feeds the subgraphs use. OLAS-denominated
+          fees are not counted here: when fees are distributed, non-OLAS fees are sent to the Olas
+          Treasury and OLAS fees are burned.
         </p>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
-          Verify collected fees (balance tracker <code>collectedFees</code> on each counted chain):
+          Verify un-drained fees (balance tracker <code>collectedFees</code> on each counted chain):
         </h3>
         <div className="flex flex-wrap gap-3">
           <Verify
@@ -48,7 +55,24 @@ export const FeesInfo = () => {
             url="https://basescan.org/address/0x0443C55e151dBA13fae079518F9dd01ff9c21CB2#readContract"
             text="Base (USDC)"
           />
+          <Verify
+            url="https://basescan.org/address/0xB3921F8D8215603f0Bd521341Ac45eA8f2d274c1#readContract"
+            text="Base (ETH)"
+          />
+          <Verify
+            url="https://optimistic.etherscan.io/address/0x4Cd816ce806FF1003ee459158A093F02AbF042a8#readContract"
+            text="Optimism (ETH)"
+          />
+          <Verify
+            url="https://polygonscan.com/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readContract"
+            text="Polygon (POL)"
+          />
         </div>
+        <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Drained fees query</h3>
+        <p className="text-purple-600">
+          Subgraph links: <MechFeesSubgraphLinks />
+        </p>
+        <CodeSnippet>{mechFeesDrainTotalsQuery}</CodeSnippet>
       </div>
     </SectionWrapper>
   );

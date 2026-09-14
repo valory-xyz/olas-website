@@ -123,8 +123,7 @@ export const fetchMechFeeMetrics = async () => {
     const status = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });
     const createMetric = (value: number) => ({ value, status });
 
-    // Protocol fees collected on-chain, in USD (USDC + xDAI ~= 1 USD trackers — see
-    // fetchMechMarketplaceFeesCollected). Carries its own fetch status.
+    // Protocol fees collected in USD (see fetchMechMarketplaceFees). Carries its own status.
     const collectedFeesUsd = feesCollected.value !== null ? Number(feesCollected.value) : 0;
     const collectedFeesMetric = { value: collectedFeesUsd, status: feesCollected.status };
 

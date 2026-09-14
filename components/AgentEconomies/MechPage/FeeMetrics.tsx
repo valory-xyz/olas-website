@@ -2,6 +2,7 @@ import { SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { isNil } from 'lodash';
 import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
+import { MARKETPLACE_FEE_TOKEN_SCOPE } from 'components/HomepageSection/Flywheel/constants';
 import { formatFullNumber, statusCaveat } from 'components/ui/MetricContext';
 import { formatUtcAsOf, formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
@@ -238,7 +239,7 @@ export const FeeMetrics = ({ metrics, snapshotTimestamp = null }) => {
       feeSentence(
         metrics?.protocolFees,
         (a) =>
-          `Fees collected ${a} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the USD-pegged fee trackers and only since the fee went live on ${feeLiveSince}.`
+          `Fees collected ${a} is the marketplace fee taken out of task payments, not revenue additional to them. It covers only the ${MARKETPLACE_FEE_TOKEN_SCOPE} fee trackers, not fees paid in OLAS, and only since the fee went live on ${feeLiveSince}.`
       ),
     ]
       .filter(Boolean)

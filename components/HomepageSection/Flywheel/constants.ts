@@ -21,25 +21,36 @@ export type ProtocolActivityMetrics = {
 export const TOKEN_ICONS: Record<string, string> = {
   OLAS: '/images/olas-token-logo.svg',
   WETH: '/images/homepage/addresses/eth-color.svg',
+  ETH: '/images/homepage/addresses/eth-color.svg',
   WXDAI: '/images/homepage/addresses/gnosis-color.svg',
   xDAI: '/images/homepage/addresses/gnosis-color.svg',
   WMATIC: '/images/homepage/addresses/polygon-color.svg',
+  POL: '/images/homepage/addresses/polygon-color.svg',
   CELO: '/images/homepage/addresses/celo-color.svg',
   WSOL: '/images/homepage/addresses/solana-color.svg',
   USDC: '/images/accelerator/usdc-icon.png',
 };
 
-// Marketplace fee trackers by token, for the "fees collected" tooltip rows.
-// Chains mirror USD_PEGGED_FEE_TRACKERS in common-util/api/mech-marketplace-fees.ts.
+// Marketplace fee trackers by token, for the "fees collected" tooltip rows and scope
+// sentence. Must match MARKETPLACE_FEE_TRACKERS in common-util/api/mech-marketplace-fees.ts.
+const chainIcons = (chains: string[]) =>
+  chains.map((chain) => `/images/homepage/addresses/${chain}-color.svg`);
+
 export const MARKETPLACE_FEE_TOKENS: Array<{ symbol: string; chainIcons: string[] }> = [
   {
     symbol: 'USDC',
-    chainIcons: ['eth', 'arbitrum', 'optimism', 'polygon', 'celo', 'base'].map(
-      (chain) => `/images/homepage/addresses/${chain}-color.svg`
-    ),
+    chainIcons: chainIcons(['eth', 'arbitrum', 'optimism', 'polygon', 'celo', 'base']),
   },
-  { symbol: 'xDAI', chainIcons: ['/images/homepage/addresses/gnosis-color.svg'] },
+  { symbol: 'xDAI', chainIcons: chainIcons(['gnosis']) },
+  { symbol: 'ETH', chainIcons: chainIcons(['base', 'optimism']) },
+  { symbol: 'POL', chainIcons: chainIcons(['polygon']) },
 ];
+
+// "USDC, xDAI, ETH and POL" — for prose that states what the fee total is made of.
+export const MARKETPLACE_FEE_TOKEN_SCOPE = (() => {
+  const symbols = MARKETPLACE_FEE_TOKENS.map((t) => t.symbol);
+  return `${symbols.slice(0, -1).join(', ')} and ${symbols[symbols.length - 1]}`;
+})();
 
 // Static by design — the on-chain fee switches have no data source yet.
 export const FEE_SWITCHES: Record<'pol' | 'marketplace', 'ON' | 'OFF'> = {

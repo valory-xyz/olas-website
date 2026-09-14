@@ -9,7 +9,7 @@ import { ExternalLink, Link } from 'components/ui/typography';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
 
-import { formatTokenAmount } from 'common-util/numberFormatter';
+import { formatFeeTokenAmount } from 'common-util/numberFormatter';
 import { MARKETPLACE_FEE_TOKENS, TOKEN_ICONS } from './Flywheel/constants';
 
 const imgPath = '/images/homepage/activity/';
@@ -300,7 +300,7 @@ export const DailyActiveAgentsCard = ({
           <Popover>
             7-day average Daily Active Agents
             {dailyActiveAgentsStatus?.stale && (
-              <div className="mt-4">
+              <div className="mt-3 pt-3 border-t border-dashed">
                 <StaleMetricContent status={dailyActiveAgentsStatus} />
               </div>
             )}
@@ -356,21 +356,20 @@ export const AgentToAgentCard = ({
       text: (
         <>
           fees collected
-          <StaleIndicator status={feesCollectedStatus} />
+          {/* The stale notice lives inside the popover so the tile shows one (i) icon. */}
           <Popover contentClassName="max-w-[400px] text-left font-normal">
             A 15% fee is taken on payments between AI agents on the Olas Marketplace.
-            {MARKETPLACE_FEE_TOKENS.some(
-              ({ symbol }) => feesCollectedByToken?.[symbol] != null
-            ) && (
+            {/* Tokens with no fees yet are left out. */}
+            {MARKETPLACE_FEE_TOKENS.some(({ symbol }) => feesCollectedByToken?.[symbol] > 0) && (
               <div className="mt-3 flex flex-col divide-y">
                 {MARKETPLACE_FEE_TOKENS.map(({ symbol, chainIcons }) =>
-                  feesCollectedByToken?.[symbol] == null ? null : (
+                  !(feesCollectedByToken?.[symbol] > 0) ? null : (
                     <div key={symbol} className="flex flex-row items-center gap-2 py-2">
                       {TOKEN_ICONS[symbol] && (
                         <Image src={TOKEN_ICONS[symbol]} alt={symbol} width={18} height={18} />
                       )}
                       <span className="whitespace-nowrap">
-                        {formatTokenAmount(feesCollectedByToken[symbol], 2)} {symbol}
+                        {formatFeeTokenAmount(feesCollectedByToken[symbol])} {symbol}
                       </span>
                       <span className="ml-auto flex flex-row gap-1.5">
                         {chainIcons.map((chainIcon) => (
@@ -380,6 +379,11 @@ export const AgentToAgentCard = ({
                     </div>
                   )
                 )}
+              </div>
+            )}
+            {feesCollectedStatus?.stale && (
+              <div className="mt-3 pt-3 border-t border-dashed">
+                <StaleMetricContent status={feesCollectedStatus} />
               </div>
             )}
           </Popover>

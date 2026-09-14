@@ -45,7 +45,7 @@ export const FeesFromPolCard = ({ protocolMetrics, className }: FeesFromPolCardP
               might now be higher or lower than when collected.
             </p>
             {revenue?.status?.stale && (
-              <div className="mt-4">
+              <div className="mt-3 pt-3 border-t border-dashed">
                 <StaleMetricContent status={revenue.status} />
               </div>
             )}

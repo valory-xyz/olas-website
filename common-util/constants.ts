@@ -191,10 +191,15 @@ export const GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID =
 export const POLYGON_BALANCER_OLAS_WMATIC_POOL_ID =
   '0x62309056c759c36879cde93693e7903bf415e4bc000200000000000000000d5f';
 
-// Polygon POL/USD Chainlink feed (used to convert WMATIC -> USD).
+// Chainlink <asset>/USD feeds (the same ones the new-mech-fees subgraph uses).
 export const CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD =
   '0xAB594600376Ec9fD91F8e885dADF0CE036862dE0';
-export const CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD = 8;
+export const CHAINLINK_PRICE_FEED_ADDRESS_BASE_ETH_USD =
+  '0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70';
+export const CHAINLINK_PRICE_FEED_ADDRESS_OPTIMISM_ETH_USD =
+  '0x13e3Ee699D1909E989722E753853AE30b17e08c5';
+// All Chainlink USD feeds answer with 8 decimals.
+export const CHAINLINK_USD_FEED_DECIMALS = 8;
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 
@@ -278,11 +283,8 @@ export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09
  */
 const MARKETPLACE_EXCLUDED_CHAINS = ['celo', 'mode'] as const;
 
-/**
- * When the Mech Marketplace 15% fee was switched on (2026-06-15 ~06:30 UTC; proposal
- * executed on Ethereum, bridged to the L2s minutes later). Lives here so components can
- * state it without importing the RPC-scanning fee module and its viem client.
- */
+// When the Mech Marketplace 15% fee was switched on. Components read it from here so they
+// don't import the fee module and its viem client.
 export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
 
 export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
