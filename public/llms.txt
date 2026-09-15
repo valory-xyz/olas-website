@@ -3,6 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
+last-updated: 2026-09-16
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
