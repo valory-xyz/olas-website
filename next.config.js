@@ -19,6 +19,13 @@ module.exports = withPlausibleProxy()({
   },
   async redirects() {
     return [
+      // `/index` answers 200 with the homepage's exact head, so crawlers
+      // report the pair as duplicate title and description.
+      {
+        source: '/index',
+        destination: '/',
+        permanent: false,
+      },
       {
         source: '/articles',
         destination: '/blog',

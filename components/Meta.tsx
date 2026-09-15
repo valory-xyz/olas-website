@@ -1,3 +1,4 @@
+import { VALORY_GIT_URL, X_OLAS_URL, YOUTUBE_OLAS_URL } from 'common-util/constants';
 import { getLimitedText } from 'common-util/getLimitedText';
 import { getSiteUrl } from 'common-util/getSiteUrl';
 import Head from 'next/head';
@@ -33,11 +34,16 @@ type MetaProps = {
 /** Strips the query string and trailing slash so canonicals stay stable. */
 const toCanonicalUrl = (siteUrl: string, path: string): string => {
   const cleanPath = (path || '/').split('?')[0].split('#')[0].replace(/\/$/, '');
-  return cleanPath === '' ? siteUrl : `${siteUrl}${cleanPath}`;
+  // ISR renders `/` with `asPath = "/index"`, which would canonicalise the
+  // homepage to a URL that isn't the homepage.
+  return cleanPath === '' || cleanPath === '/index' ? siteUrl : `${siteUrl}${cleanPath}`;
 };
 
-// Same entity `@id` the app-suite properties point at.
-const ORGANIZATION_ID = 'https://olas.network/#organization';
+// The Organization is always the production entity, whatever host renders
+// it, so its `@id` is stable. The app-suite `SeoHead` will point at the same
+// `@id` once valory-xyz/autonolas-frontend-mono#465 lands.
+const ORGANIZATION_URL = 'https://olas.network';
+const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
 
 const SITE_JSON_LD = {
   '@context': 'https://schema.org',
@@ -46,14 +52,10 @@ const SITE_JSON_LD = {
       '@type': 'Organization',
       '@id': ORGANIZATION_ID,
       name: SITE_NAME,
-      url: 'https://olas.network',
-      logo: 'https://olas.network/images/olas-logo.svg',
+      url: ORGANIZATION_URL,
+      logo: `${ORGANIZATION_URL}/images/olas-logo.svg`,
       description: SITE_DESCRIPTION,
-      sameAs: [
-        'https://x.com/autonolas',
-        'https://github.com/valory-xyz',
-        'https://www.youtube.com/@autonolas',
-      ],
+      sameAs: [X_OLAS_URL, VALORY_GIT_URL, YOUTUBE_OLAS_URL],
     },
     {
       '@type': 'WebSite',
@@ -65,8 +67,8 @@ const SITE_JSON_LD = {
   ],
 };
 
-// `<` escaped so CMS-sourced text can never close the script tag.
-const serializeJsonLd = (data: unknown): string => JSON.stringify(data).replace(/</g, '\\u003c');
+// `<` escaped so the payload can never close the script tag.
+const SITE_JSON_LD_HTML = JSON.stringify(SITE_JSON_LD).replace(/</g, '\\u003c');
 
 const resolveShareImage = (
   siteImageUrl: string | undefined,
@@ -101,7 +103,8 @@ const Meta = ({
   }
 
   const shareImage = resolveShareImage(siteImageUrl, ogPath);
-  const isHomepage = canonicalUrl === SITE_URL;
+  // `pathname` is the route; `asPath` is "/index" under ISR regeneration.
+  const isHomepage = router?.pathname === '/';
 
   return (
     <Head>
@@ -129,7 +132,7 @@ const Meta = ({
       {isHomepage && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(SITE_JSON_LD) }}
+          dangerouslySetInnerHTML={{ __html: SITE_JSON_LD_HTML }}
         />
       )}
     </Head>
