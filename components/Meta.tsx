@@ -5,10 +5,21 @@ import { useRouter } from 'next/router';
 
 const TITLE_CHAR_MAX = 55;
 
+// Explicit site name so search engines show "Olas" instead of deriving
+// "OLAS network" from the domain.
+const SITE_NAME = 'Olas';
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION = 'Olas enables everyone to own and monetize their AI agents.';
 const SITE_URL = getSiteUrl();
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.webp`;
+
+const WEBSITE_JSON_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE_NAME,
+  alternateName: ['Olas Network', 'OLAS'],
+  url: SITE_URL,
+});
 
 type MetaProps = {
   pageTitle?: string;
@@ -79,6 +90,9 @@ const Meta = ({
       <link rel="canonical" href={canonicalUrl} />
       {noindex && <meta name="robots" content="noindex, follow" />}
 
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }} />
+
+      <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={title} />
