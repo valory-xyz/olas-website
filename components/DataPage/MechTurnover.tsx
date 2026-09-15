@@ -15,7 +15,7 @@ import { CodeSnippet } from './CodeSnippet';
  * One link per mech-fee subgraph, derived from the chain list the paragraph above names.
  * Listing two of the seven by hand is how the prose and the sources came to disagree.
  */
-const MechFeesSubgraphLinks = () => (
+export const MechFeesSubgraphLinks = () => (
   <>
     {MECH_FEES_CHAIN_KEYS.map((chain) => (
       <SubgraphLink key={chain} apiUrl={MECH_FEES_SUBGRAPH_URLS[chain]} className="mr-2">

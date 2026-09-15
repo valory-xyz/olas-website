@@ -1,14 +1,13 @@
+import { readChainlinkUsdAnswer } from 'common-util/chainlink';
 import {
-  CHAIN_CONFIG,
   CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD,
-  CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD,
+  CHAINLINK_USD_FEED_DECIMALS,
   GNOSIS_BALANCER_OLAS_WXDAI_POOL_ID,
   OLAS_TOKEN_ADDRESS_BY_CHAIN,
   POLYGON_BALANCER_OLAS_WMATIC_POOL_ID,
 } from 'common-util/constants';
 import { BALANCER_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { balancerGetPoolQuery } from 'common-util/graphql/queries';
-import { Abi, createPublicClient, http } from 'viem';
 
 type BalancerPoolToken = {
   address: string;
@@ -30,49 +29,14 @@ const parseBalanceAsBigInt = (balance: string): bigint => {
   return BigInt(intPart + padded);
 };
 
-const CHAINLINK_AGGREGATOR_V3_ABI = [
-  {
-    inputs: [],
-    name: 'latestRoundData',
-    outputs: [
-      { internalType: 'uint80', name: 'roundId', type: 'uint80' },
-      { internalType: 'int256', name: 'answer', type: 'int256' },
-      { internalType: 'uint256', name: 'startedAt', type: 'uint256' },
-      { internalType: 'uint256', name: 'updatedAt', type: 'uint256' },
-      { internalType: 'uint80', name: 'answeredInRound', type: 'uint80' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-] as const;
-
-const pow10 = (exp: number) => 10n ** BigInt(exp);
-
+// POL/USD scaled by 1e18, or null when the feed can't be read.
 const getPolygonPolUsdPriceScaled = async (): Promise<bigint | null> => {
-  const rpcUrl = CHAIN_CONFIG.polygon?.rpc;
-  if (!rpcUrl) return null;
-
   try {
-    const client = createPublicClient({ transport: http(rpcUrl) });
-    // viem's overloaded `readContract` generic mis-resolves under this repo's
-    // tsconfig; call through a narrowed signature (see common-util/web3.ts).
-    const readContract = client.readContract as unknown as (params: {
-      address: `0x${string}`;
-      abi: Abi;
-      functionName: string;
-    }) => Promise<unknown>;
-    const latest: any = await readContract({
-      address: CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD as `0x${string}`,
-      abi: CHAINLINK_AGGREGATOR_V3_ABI as unknown as Abi,
-      functionName: 'latestRoundData',
-    });
-    const answerRaw = Array.isArray(latest) ? latest[1] : latest?.answer;
-    if (answerRaw === null || answerRaw === undefined) return null;
-
-    const answer = BigInt(answerRaw);
-    if (answer <= 0n) return null;
-
-    return (answer * PRICE_SCALE) / pow10(CHAINLINK_PRICE_FEED_DECIMALS_POLYGON_POL_USD);
+    const answer = await readChainlinkUsdAnswer(
+      'polygon',
+      CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD
+    );
+    return (answer * PRICE_SCALE) / 10n ** BigInt(CHAINLINK_USD_FEED_DECIMALS);
   } catch (error) {
     console.error('Error fetching Polygon POL/USD from Chainlink:', error);
     return null;

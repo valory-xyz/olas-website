@@ -3,8 +3,14 @@ import { formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
 import { buildMetricContext } from 'components/ui/MetricContext';
-import { FEE_SWITCHES, CHAIN_PILLS, type ProtocolActivityMetrics } from './Flywheel/constants';
-import { formatTokenAmount } from 'common-util/numberFormatter';
+import {
+  FEE_SWITCHES,
+  CHAIN_PILLS,
+  MARKETPLACE_FEE_EXCLUDED_SCOPE,
+  MARKETPLACE_FEE_TOKEN_SCOPE,
+  type ProtocolActivityMetrics,
+} from './Flywheel/constants';
+import { formatFeeTokenAmount, formatTokenAmount } from 'common-util/numberFormatter';
 
 type Metric = Partial<MetricWithStatus<number | string>>;
 
@@ -45,14 +51,15 @@ type ActivitySummaryProps = {
  */
 const tokenComposition = (
   tokens: Record<string, number> | Array<{ symbol: string; amount: number }> | null | undefined,
-  lead: string
+  lead: string,
+  format: (amount: number) => string = formatTokenAmount
 ): string => {
   const entries = Array.isArray(tokens)
     ? tokens.map((t) => [t.symbol, t.amount] as const)
     : Object.entries(tokens ?? {});
   const parts = entries
-    .filter(([, amount]) => typeof amount === 'number')
-    .map(([symbol, amount]) => `${formatTokenAmount(amount)} ${symbol}`);
+    .filter(([, amount]) => typeof amount === 'number' && amount > 0)
+    .map(([symbol, amount]) => `${format(amount)} ${symbol}`);
   if (!parts.length) return '';
   const list =
     parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
@@ -86,7 +93,11 @@ export const ActivitySummary = ({
   // Which tokens the fee total is made of. Like the PoL composition above, this lives
   // only in a pill tooltip that Radix never mounts into the served HTML, so the aggregate
   // reaches a reader with no indication of what it is denominated in.
-  const feeTokens = tokenComposition(metrics?.feesCollectedByToken?.value, 'collected as');
+  const feeTokens = tokenComposition(
+    metrics?.feesCollectedByToken?.value,
+    'collected as',
+    formatFeeTokenAmount
+  );
 
   const activityLines = metrics
     ? [
@@ -130,7 +141,7 @@ export const ActivitySummary = ({
           status: metrics.feesCollected?.status,
           isMoney: true,
           noun: `in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it${feeTokens}`,
-          note: `Covers only the USD-pegged fee trackers, and only since the fee went live on ${feeLiveSince}.`,
+          note: `Covers ${MARKETPLACE_FEE_TOKEN_SCOPE}; it excludes ${MARKETPLACE_FEE_EXCLUDED_SCOPE}, and counts only since the fee went live on ${feeLiveSince}.`,
           window: 'all time',
           asOfFallback,
         }),

@@ -1,15 +1,14 @@
 import type { PolChainValue } from 'common-util/api/other-metrics/protocol';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
-import { formatUsd } from 'common-util/numberFormatter';
+import { formatTokenAmount, formatUsd } from 'common-util/numberFormatter';
 import { Card } from 'components/ui/card';
 import { Popover } from 'components/ui/popover';
 import { StaleMetricContent } from 'components/ui/StaleIndicator';
 import { cn } from 'lib/utils';
 import Image from 'next/image';
-import { Fragment } from 'react';
 import type { CSSProperties } from 'react';
-import { formatTokenAmount } from 'common-util/numberFormatter';
+import { Fragment } from 'react';
 
 import { TOKEN_ICONS } from './constants';
 
@@ -51,6 +50,7 @@ export const ChainPillCard = ({
         {formatUsd(value?.usd)}
       </span>
       <Popover
+        stale={metric?.status?.stale}
         contentClassName="max-w-[360px] text-left font-normal"
         onOpenChange={onTooltipOpenChange}
       >
@@ -60,10 +60,11 @@ export const ChainPillCard = ({
             {tokens.map(({ symbol, amount }, i) => (
               <Fragment key={symbol}>
                 {i > 0 && <span className="text-slate-400">:</span>}
-                {TOKEN_ICONS[symbol] && (
-                  <Image src={TOKEN_ICONS[symbol]} alt={symbol} width={18} height={18} />
-                )}
-                <span className="whitespace-nowrap">
+                {/* Icon and text share one flex item so they wrap to the next row together. */}
+                <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                  {TOKEN_ICONS[symbol] && (
+                    <Image src={TOKEN_ICONS[symbol]} alt={symbol} width={18} height={18} />
+                  )}
                   {formatTokenAmount(amount)} {symbol}
                 </span>
               </Fragment>
@@ -71,7 +72,7 @@ export const ChainPillCard = ({
           </div>
         )}
         {metric?.status?.stale && (
-          <div className="mt-4">
+          <div className="mt-3 pt-3 border-t border-dashed">
             <StaleMetricContent status={metric.status} />
           </div>
         )}

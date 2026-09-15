@@ -91,3 +91,7 @@ export const formatTokenAmount = (amount: number, fractionDigits?: number) =>
     maximumFractionDigits: fractionDigits ?? (amount < 10 ? 2 : amount < 1000 ? 1 : 0),
     ...(fractionDigits != null ? { minimumFractionDigits: fractionDigits } : {}),
   });
+
+// Fee amounts in ETH/POL are fractions of a token, so sub-1 values keep six decimals.
+export const formatFeeTokenAmount = (amount: number) =>
+  formatTokenAmount(amount, amount > 0 && amount < 1 ? 6 : 2);

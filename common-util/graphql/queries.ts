@@ -939,6 +939,25 @@ export const newMechFeesTotalsQuery = gql`
   }
 `;
 
+// Cumulative drained protocol fees per payment model (`native`, `token-usdc`,
+// `token-olas`, `nvm`), USD-priced at drain time. Entity `DrainTotals` → list query
+// `drainTotals_collection`.
+export const mechFeesDrainTotalsQuery = gql`
+  query MechFeesDrainTotals {
+    drainTotals_collection {
+      id
+      totalDrainedRaw
+      totalDrainedUSD
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
 export const legacyMechFeesTotalsQuery = gql`
   query LegacyMechFeesTotals {
     global(id: "") {

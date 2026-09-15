@@ -1,5 +1,6 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { InfoIcon } from 'components/ui/info-icon';
+import { cn } from 'lib/utils';
 import { useState } from 'react';
 
 type PopoverProps = {
@@ -11,6 +12,8 @@ type PopoverProps = {
   contentClassName?: string;
   iconSize?: number;
   onOpenChange?: (open: boolean) => void;
+  // Amber trigger, matching <StaleIndicator /> on tiles that have no popover.
+  stale?: boolean;
 };
 
 // No screen-reader copy of the tooltip is emitted here, on purpose: cloning the children
@@ -26,6 +29,7 @@ export const Popover = ({
   contentClassName,
   iconSize,
   onOpenChange,
+  stale = false,
 }: PopoverProps) => {
   const [open, setOpen] = useState(false);
 
@@ -44,7 +48,7 @@ export const Popover = ({
       <Tooltip.Root delayDuration={0} open={open} onOpenChange={handleOpenChange}>
         <Tooltip.Trigger
           onClick={handleOpen}
-          className={`text-gray-500 ${className}`}
+          className={cn('text-gray-500', stale && 'text-amber-500', className)}
           aria-label="Open information tooltip"
         >
           {text}
