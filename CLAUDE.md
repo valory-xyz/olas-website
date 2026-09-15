@@ -163,6 +163,7 @@ ISR pages expect the blob shape they were built against — schema drift will su
 
 - **Strapi CMS**: blog posts (`pages/blog/[id].tsx`) and education articles (`pages/learn/education-articles/[educationArticleId].tsx`) are fetched via `getServerSideProps` using helpers in `common-util/api/index.ts`.
 - **Static data**: agents, chains, kits, resources, etc. live in `data/*.json`.
+- **`public/llms.txt`**: hand-written prose for AI assistants. Bump its `last-updated:` line whenever you change it, and keep every own-site link real — `yarn llms:check` (in `postbuild`) fails on a link to a missing page or a `#fragment` the page does not carry. Add a line for any new product or route in the same PR that ships it.
 - **Dynamic agent pages**: `pages/agents/[slug].tsx` uses slugs from `data/agents.json`; `next-sitemap.config.js` adds these to the sitemap. The `/agents` index lives in `pages/agents/index.tsx`, and several agents have dedicated routes (e.g. `babydegen.tsx`, `omenstrat.tsx`, `ai-mechs.tsx`, `agentsfun.tsx`, `contribute.tsx`, `shorts.tsx`) — `next.config.js` redirects legacy slugs (e.g. `/agents/optimus` → `/agents/babydegen`).
 - **Kits**: `pages/kits/[id].tsx` (client-side, sourced from `data/kits.json`).
 - **Agent economies**: `pages/agent-economies/{index,babydegen,mech,predict,agentsfun}.tsx`.

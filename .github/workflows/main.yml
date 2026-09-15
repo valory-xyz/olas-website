@@ -106,6 +106,10 @@ jobs:
       # against built HTML; it needs a build, so it runs on previews, not here.
       - name: Run metric-context unit tests
         run: yarn metric-context:test
+      # llms.txt is hand-written prose; its links are the only checkable part. The
+      # post-build check fails on a dead own-site link or anchor; these are its fixtures.
+      - name: Run llms.txt check unit tests
+        run: yarn llms:check:test
       # The post-build label check has only ever failed by passing — a drifted label
       # matched itself, or matched unrelated body copy — which reads exactly like a clean
       # run. These fixtures pin the cases where it wrongly reported ok.
