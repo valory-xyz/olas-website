@@ -36,14 +36,7 @@ const toCanonicalUrl = (siteUrl: string, path: string): string => {
   return cleanPath === '' ? siteUrl : `${siteUrl}${cleanPath}`;
 };
 
-/**
- * Tells Google what to call the site in search results. Without an explicit
- * name it infers one from headings and third-party mentions, which is how the
- * homepage started showing as "OLAS Network" instead of "Olas". The
- * `WebSite` block is only read from the homepage, so it is emitted there alone.
- * The Organization is pinned to the production origin so it stays the one
- * entity every app-suite property points at, even when rendered on a preview.
- */
+// Same entity `@id` the app-suite properties point at.
 const ORGANIZATION_ID = 'https://olas.network/#organization';
 
 const SITE_JSON_LD = {
