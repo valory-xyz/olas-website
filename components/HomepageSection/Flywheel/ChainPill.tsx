@@ -50,6 +50,7 @@ export const ChainPillCard = ({
         {formatUsd(value?.usd)}
       </span>
       <Popover
+        stale={metric?.status?.stale}
         contentClassName="max-w-[360px] text-left font-normal"
         onOpenChange={onTooltipOpenChange}
       >

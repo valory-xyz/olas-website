@@ -297,7 +297,7 @@ export const DailyActiveAgentsCard = ({
       text: (
         <>
           Daily Active Agents{' '}
-          <Popover>
+          <Popover stale={dailyActiveAgentsStatus?.stale}>
             7-day average Daily Active Agents
             {dailyActiveAgentsStatus?.stale && (
               <div className="mt-3 pt-3 border-t border-dashed">
@@ -357,7 +357,7 @@ export const AgentToAgentCard = ({
         <>
           fees collected
           <Popover
-            className={feesCollectedStatus?.stale ? 'text-amber-500' : ''}
+            stale={feesCollectedStatus?.stale}
             contentClassName="max-w-[400px] text-left font-normal"
           >
             A 15% fee is taken on payments between AI agents on the Olas Marketplace.

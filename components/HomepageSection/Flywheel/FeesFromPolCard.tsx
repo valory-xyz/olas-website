@@ -35,7 +35,10 @@ export const FeesFromPolCard = ({ protocolMetrics, className }: FeesFromPolCardP
         status={revenue?.status}
         textSize="2xl"
         text={
-          <Popover contentClassName="max-w-[400px] text-left font-normal">
+          <Popover
+            stale={revenue?.status?.stale}
+            contentClassName="max-w-[400px] text-left font-normal"
+          >
             <strong>Fees collected from PoL across all chains</strong>
             <p className="mt-2">
               This total adds up what each fee was worth when the protocol collected it.
