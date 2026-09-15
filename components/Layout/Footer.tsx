@@ -5,6 +5,7 @@ import {
   PEARL_YOU_URL_WITH_UTM_SOURCE,
   WHITEPAPER,
   X_OLAS_URL,
+  YOUTUBE_OLAS_URL,
 } from 'common-util/constants';
 import { InfoNotice } from 'components/InfoNotice';
 import { cn } from 'lib/utils';
@@ -36,7 +37,7 @@ const SOCIAL_LINKS = [
   {
     title: 'YouTube',
     icon: '/images/footer/youtube.svg',
-    link: 'https://www.youtube.com/@autonolas',
+    link: YOUTUBE_OLAS_URL,
   },
 ];
 

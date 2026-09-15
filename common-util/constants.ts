@@ -26,6 +26,7 @@ export const CORE_TECHNICAL_DOCUMENT =
   '/documents/whitepaper/Autonolas_Tokenomics_Core_Technical_Document.pdf';
 
 export const X_OLAS_URL = 'https://x.com/autonolas';
+export const YOUTUBE_OLAS_URL = 'https://www.youtube.com/@autonolas';
 export const X_VALORY_AG_URL = 'https://x.com/valoryag';
 export const VALORY_URL = 'https://www.valory.xyz';
 export const SHORTS_URL = 'https://shorts.wtf';
