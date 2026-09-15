@@ -36,6 +36,14 @@ module.exports = withPlausibleProxy()({
         destination: '/blog',
         permanent: true,
       },
+      // The four CMS education articles were orphaned: `/learn` already
+      // redirects and nothing links to them, so they only reached crawlers,
+      // where they shared one meta description.
+      {
+        source: '/learn/education-articles/:path*',
+        destination: '/blog',
+        permanent: true,
+      },
       {
         source: '/poaa-whitepaper.pdf',
         destination: '/whitepaper',
