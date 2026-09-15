@@ -70,7 +70,7 @@ Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus dail
 
 **Strapi CMS data flow**:
 - `common-util/api/index.ts` and `common-util/useFetchApi.ts` call `${NEXT_PUBLIC_API_URL}/api/<resource>` with `qs`-stringified params.
-- `pages/blog/[id].tsx` and `pages/learn/education-articles/[educationArticleId].tsx` use `getServerSideProps` (blog ID can be numeric or slug — see `isIdUsedToFetchBlog`).
+- `pages/blog/[id].tsx` uses `getServerSideProps` (blog ID can be numeric or slug — see `isIdUsedToFetchBlog`).
 - Videos / podcasts use `useFetchVideos` (SWR-backed).
 
 **Regional restrictions** (`middleware.ts`):
@@ -161,7 +161,7 @@ ISR pages expect the blob shape they were built against — schema drift will su
 
 ### Content Management
 
-- **Strapi CMS**: blog posts (`pages/blog/[id].tsx`) and education articles (`pages/learn/education-articles/[educationArticleId].tsx`) are fetched via `getServerSideProps` using helpers in `common-util/api/index.ts`.
+- **Strapi CMS**: blog posts (`pages/blog/[id].tsx`) are fetched via `getServerSideProps` using helpers in `common-util/api/index.ts`.
 - **Static data**: agents, chains, kits, resources, etc. live in `data/*.json`.
 - **Dynamic agent pages**: `pages/agents/[slug].tsx` uses slugs from `data/agents.json`; `next-sitemap.config.js` adds these to the sitemap. The `/agents` index lives in `pages/agents/index.tsx`, and several agents have dedicated routes (e.g. `babydegen.tsx`, `omenstrat.tsx`, `ai-mechs.tsx`, `agentsfun.tsx`, `contribute.tsx`, `shorts.tsx`) — `next.config.js` redirects legacy slugs (e.g. `/agents/optimus` → `/agents/babydegen`).
 - **Kits**: `pages/kits/[id].tsx` (client-side, sourced from `data/kits.json`).

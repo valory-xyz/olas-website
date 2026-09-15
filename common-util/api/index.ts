@@ -20,27 +20,6 @@ const apiCall = async (subURL, params) => {
   return null;
 };
 
-// ----------- EDUCATION ARTICLES -----------
-export const getEducationArticles = async () => {
-  const params = {
-    populate: '*',
-  };
-  const json = await apiCall('education-articles', params);
-  const data = get(json, 'data') || [];
-  return data;
-};
-
-export const getEducationArticle = async (id) => {
-  // Strapi 5's single-entity route keys on `documentId`, not the numeric `id`,
-  // so fetch by an `id` filter and return the first match.
-  const params = {
-    populate: '*',
-    'filters[id][$eq]': id,
-  };
-  const json = await apiCall('education-articles', params);
-  return get(json, 'data[0]') || null;
-};
-
 // ----------- BLOGS -----------
 /**
  * Strapi clamps a page to 100 entries however large `pagination[limit]` is, so

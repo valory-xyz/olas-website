@@ -19,6 +19,13 @@ module.exports = withPlausibleProxy()({
   },
   async redirects() {
     return [
+      // `/index` answers 200 with the homepage's exact head, so crawlers
+      // report the pair as duplicate title and description.
+      {
+        source: '/index',
+        destination: '/',
+        permanent: false,
+      },
       {
         source: '/articles',
         destination: '/blog',
@@ -26,6 +33,14 @@ module.exports = withPlausibleProxy()({
       },
       {
         source: '/education-articles',
+        destination: '/blog',
+        permanent: true,
+      },
+      // The four CMS education articles were orphaned: `/learn` already
+      // redirects and nothing links to them, so they only reached crawlers,
+      // where they shared one meta description.
+      {
+        source: '/learn/education-articles/:path*',
         destination: '/blog',
         permanent: true,
       },

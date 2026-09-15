@@ -1,3 +1,4 @@
+import { VALORY_GIT_URL, X_OLAS_URL, YOUTUBE_OLAS_URL } from 'common-util/constants';
 import { getLimitedText } from 'common-util/getLimitedText';
 import { getSiteUrl } from 'common-util/getSiteUrl';
 import Head from 'next/head';
@@ -5,20 +6,11 @@ import { useRouter } from 'next/router';
 
 const TITLE_CHAR_MAX = 55;
 
-// Explicit site name so search engines show "Olas" instead of deriving
-// "OLAS network" from the domain.
 const SITE_NAME = 'Olas';
 const SITE_TITLE = 'Olas | Co-own AI';
 const SITE_DESCRIPTION = 'Olas enables everyone to own and monetize their AI agents.';
 const SITE_URL = getSiteUrl();
 const SITE_DEFAULT_IMAGE_URL = `${SITE_URL}/images/meta-tag.webp`;
-
-const WEBSITE_JSON_LD = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE_NAME,
-  url: SITE_URL,
-});
 
 type MetaProps = {
   pageTitle?: string;
@@ -42,8 +34,41 @@ type MetaProps = {
 /** Strips the query string and trailing slash so canonicals stay stable. */
 const toCanonicalUrl = (siteUrl: string, path: string): string => {
   const cleanPath = (path || '/').split('?')[0].split('#')[0].replace(/\/$/, '');
-  return cleanPath === '' ? siteUrl : `${siteUrl}${cleanPath}`;
+  // ISR renders `/` with `asPath = "/index"`, which would canonicalise the
+  // homepage to a URL that isn't the homepage.
+  return cleanPath === '' || cleanPath === '/index' ? siteUrl : `${siteUrl}${cleanPath}`;
 };
+
+// The Organization is always the production entity, whatever host renders
+// it, so its `@id` is stable. The app-suite `SeoHead` will point at the same
+// `@id` once valory-xyz/autonolas-frontend-mono#465 lands.
+const ORGANIZATION_URL = 'https://olas.network';
+const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
+
+const SITE_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': ORGANIZATION_ID,
+      name: SITE_NAME,
+      url: ORGANIZATION_URL,
+      logo: `${ORGANIZATION_URL}/images/olas-logo.svg`,
+      description: SITE_DESCRIPTION,
+      sameAs: [X_OLAS_URL, VALORY_GIT_URL, YOUTUBE_OLAS_URL],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      publisher: { '@id': ORGANIZATION_ID },
+    },
+  ],
+};
+
+// `<` escaped so the payload can never close the script tag.
+const SITE_JSON_LD_HTML = JSON.stringify(SITE_JSON_LD).replace(/</g, '\\u003c');
 
 const resolveShareImage = (
   siteImageUrl: string | undefined,
@@ -78,6 +103,8 @@ const Meta = ({
   }
 
   const shareImage = resolveShareImage(siteImageUrl, ogPath);
+  // `pathname` is the route; `asPath` is "/index" under ISR regeneration.
+  const isHomepage = router?.pathname === '/';
 
   return (
     <Head>
@@ -89,10 +116,8 @@ const Meta = ({
       <link rel="canonical" href={canonicalUrl} />
       {noindex && <meta name="robots" content="noindex, follow" />}
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }} />
-
-      <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:type" content="website" />
+      <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description || SITE_DESCRIPTION} />
@@ -103,6 +128,13 @@ const Meta = ({
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description || SITE_DESCRIPTION} />
       <meta property="twitter:image" content={shareImage} />
+
+      {isHomepage && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: SITE_JSON_LD_HTML }}
+        />
+      )}
     </Head>
   );
 };
