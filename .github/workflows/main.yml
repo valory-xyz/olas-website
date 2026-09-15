@@ -115,6 +115,10 @@ jobs:
       # shipped wrong at least once (docs/predict-roi-accounting.md, History).
       - name: Run roi-math unit tests
         run: yarn roi-math:test
+      # mech-fees math turns subgraph drain rows and on-chain balances into the published
+      # protocol-fee number and decides when a lower reading is refused.
+      - name: Run mech-fees math unit tests
+        run: yarn mech-fees-math:test
 
   install-hooks:
     name: Install-hook diff

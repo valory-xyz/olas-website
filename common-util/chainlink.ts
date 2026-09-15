@@ -1,4 +1,4 @@
-import { CHAINLINK_USD_FEED_DECIMALS } from 'common-util/constants';
+import { CHAINLINK_MAX_ANSWER_AGE_SEC, CHAINLINK_USD_FEED_DECIMALS } from 'common-util/constants';
 import { getChainReader } from 'common-util/web3';
 import { Abi, formatUnits } from 'viem';
 
@@ -20,7 +20,9 @@ const AGGREGATOR_V3_ABI = [
 
 /**
  * Latest answer of a Chainlink <asset>/USD feed in raw feed units
- * (`CHAINLINK_USD_FEED_DECIMALS`). Throws when the read fails or the answer is not positive.
+ * (`CHAINLINK_USD_FEED_DECIMALS`). Throws when the read fails, the answer is not positive,
+ * or the round is older than `CHAINLINK_MAX_ANSWER_AGE_SEC` — a stalled feed keeps
+ * returning its last price without reverting.
  */
 export const readChainlinkUsdAnswer = async (
   chain: string,
@@ -34,9 +36,15 @@ export const readChainlinkUsdAnswer = async (
     abi: AGGREGATOR_V3_ABI as unknown as Abi,
     functionName: 'latestRoundData',
   });
-  const raw = Array.isArray(round) ? round[1] : (round as { answer?: unknown })?.answer;
-  const answer = raw == null ? 0n : BigInt(raw as bigint);
+  const fields = round as { answer?: unknown; updatedAt?: unknown };
+  const rawAnswer = Array.isArray(round) ? round[1] : fields?.answer;
+  const rawUpdatedAt = Array.isArray(round) ? round[3] : fields?.updatedAt;
+  const answer = rawAnswer == null ? 0n : BigInt(rawAnswer as bigint);
   if (answer <= 0n) throw new Error(`Chainlink feed ${feed} on ${chain} answered ${answer}`);
+  const ageSec = Math.floor(Date.now() / 1000) - Number(rawUpdatedAt ?? 0);
+  if (ageSec > CHAINLINK_MAX_ANSWER_AGE_SEC) {
+    throw new Error(`Chainlink feed ${feed} on ${chain} is ${ageSec}s old`);
+  }
   return answer;
 };
 

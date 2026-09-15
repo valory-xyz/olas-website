@@ -1,5 +1,6 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { InfoIcon } from 'components/ui/info-icon';
+import { cn } from 'lib/utils';
 import { useState } from 'react';
 
 type PopoverProps = {
@@ -44,7 +45,7 @@ export const Popover = ({
       <Tooltip.Root delayDuration={0} open={open} onOpenChange={handleOpenChange}>
         <Tooltip.Trigger
           onClick={handleOpen}
-          className={`text-gray-500 ${className}`}
+          className={cn('text-gray-500', className)}
           aria-label="Open information tooltip"
         >
           {text}

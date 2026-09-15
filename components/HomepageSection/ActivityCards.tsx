@@ -356,10 +356,11 @@ export const AgentToAgentCard = ({
       text: (
         <>
           fees collected
-          {/* The stale notice lives inside the popover so the tile shows one (i) icon. */}
-          <Popover contentClassName="max-w-[400px] text-left font-normal">
+          <Popover
+            className={feesCollectedStatus?.stale ? 'text-amber-500' : ''}
+            contentClassName="max-w-[400px] text-left font-normal"
+          >
             A 15% fee is taken on payments between AI agents on the Olas Marketplace.
-            {/* Tokens with no fees yet are left out. */}
             {MARKETPLACE_FEE_TOKENS.some(({ symbol }) => feesCollectedByToken?.[symbol] > 0) && (
               <div className="mt-3 flex flex-col divide-y">
                 {MARKETPLACE_FEE_TOKENS.map(({ symbol, chainIcons }) =>

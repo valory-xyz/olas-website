@@ -13,8 +13,18 @@ import {
 } from 'common-util/graphql/metric-utils';
 import { mechFeesDrainTotalsQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
+import { getSnapshot } from 'common-util/snapshot-storage';
 import { getChainReader } from 'common-util/web3';
-import { Abi, formatUnits } from 'viem';
+import { Abi } from 'viem';
+import type { MainMetricsData } from 'common-util/api/main-metrics';
+import {
+  DrainTotalsRow,
+  DrainedTotals,
+  findDecreasedToken,
+  isSaneFeesUsd,
+  toDrainedByModel,
+  trackerFees,
+} from './math';
 
 /**
  * Mech Marketplace "fees collected".
@@ -32,6 +42,12 @@ import { Abi, formatUnits } from 'viem';
  * Polygon priced via Chainlink. Not counted: ETH on Ethereum/Arbitrum, CELO, NVM credits
  * and all OLAS trackers (OLAS fees are burned — see `olasBurned` in
  * agent-economies/mech-fees.ts).
+ *
+ * Guards before publishing: the USD total must pass `isSaneFeesUsd`, and no token's
+ * lifetime amount may be below the previous `main` snapshot (`findDecreasedToken`). A
+ * subgraph that answers with no `DrainTotals` rows mid-reindex, or a drain the subgraph
+ * has not indexed yet, would otherwise publish a lower number as healthy. On either breach
+ * the value is null with a fetch error, so `mergeWithFallback` keeps the last good value.
  */
 
 type FeeTrackerChain = keyof typeof MECH_FEES_GRAPH_CLIENTS;
@@ -118,6 +134,8 @@ export const MARKETPLACE_FEE_TRACKERS: FeeTracker[] = [
   },
   {
     chain: 'polygon',
+    // Same address as the Olas Tokenomics proxy on Ethereum (same deployer nonce on both
+    // chains); on Polygon it is the native BalanceTracker.
     address: '0xc096362fa6f4A4B1a9ea68b1043416f3381ce300',
     decimals: 18,
     token: 'POL',
@@ -136,18 +154,14 @@ const COLLECTED_FEES_ABI = [
   },
 ] as const satisfies Abi;
 
-type UndrainedFees = {
-  // `collectedFees()` in whole tokens and in USD at the current price.
-  amount: number;
-  usd: number;
-};
+type UndrainedRead = { collected: bigint; priceUsd: number };
 
 // Throws on any failure so the caller records a fetch error for this tracker.
-const readUndrainedFees = async (tracker: FeeTracker): Promise<UndrainedFees> => {
+const readUndrained = async (tracker: FeeTracker): Promise<UndrainedRead> => {
   const read = getChainReader(tracker.chain);
   if (!read) throw new Error(`Missing RPC for ${tracker.chain}`);
 
-  const [collected, price] = await Promise.all([
+  const [collected, priceUsd] = await Promise.all([
     read({
       address: tracker.address,
       abi: COLLECTED_FEES_ABI as unknown as Abi,
@@ -155,23 +169,22 @@ const readUndrainedFees = async (tracker: FeeTracker): Promise<UndrainedFees> =>
     }) as Promise<bigint>,
     tracker.priceFeed ? readChainlinkUsdPrice(tracker.chain, tracker.priceFeed) : 1,
   ]);
-
-  const amount = Number(formatUnits(collected, tracker.decimals));
-  return { amount, usd: amount * price };
+  return { collected, priceUsd };
 };
 
-type DrainTotalsResult = WithMeta<{
-  drainTotals_collection: { id: string; totalDrainedRaw: string; totalDrainedUSD: string }[];
-}>;
+type DrainTotalsResult = WithMeta<{ drainTotals_collection: DrainTotalsRow[] }>;
 
-type DrainedByModel = Partial<Record<DrainModel, { raw: number; usd: number }>>;
-
-// Token symbol → amount in that token (un-drained + drained).
+// Token symbol → lifetime amount in that token (un-drained + drained).
 export type MechFeesByToken = Record<string, number>;
 
 export type MechMarketplaceFees = {
   feesCollected: MetricWithStatus<string | null>;
   feesCollectedByToken: MetricWithStatus<MechFeesByToken | null>;
+};
+
+const previousFeesByToken = async (): Promise<MechFeesByToken | null> => {
+  const snapshot = await getSnapshot({ category: 'main' });
+  return (snapshot?.data as MainMetricsData | undefined)?.feesCollectedByToken?.value ?? null;
 };
 
 /**
@@ -186,19 +199,20 @@ export const fetchMechMarketplaceFees = async (): Promise<MechMarketplaceFees> =
 
   const chains = Array.from(new Set(MARKETPLACE_FEE_TRACKERS.map((t) => t.chain)));
 
-  const [undrainedResults, drainResults, blockResults] = await Promise.all([
-    Promise.allSettled(MARKETPLACE_FEE_TRACKERS.map(readUndrainedFees)),
+  const [undrainedResults, drainResults, blockResults, previous] = await Promise.all([
+    Promise.allSettled(MARKETPLACE_FEE_TRACKERS.map(readUndrained)),
     Promise.allSettled(
       chains.map((chain) =>
         MECH_FEES_GRAPH_CLIENTS[chain].request<DrainTotalsResult>(mechFeesDrainTotalsQuery)
       )
     ),
     Promise.allSettled(chains.map((chain) => getChainBlockNumber(chain))),
+    previousFeesByToken().catch(() => null),
   ]);
 
   // A failed subgraph query is a fetch error: its chain's drained share would otherwise
   // silently count as 0.
-  const drainedByChain: Partial<Record<FeeTrackerChain, DrainedByModel>> = {};
+  const drainedByChain: Partial<Record<FeeTrackerChain, Record<string, DrainedTotals>>> = {};
   chains.forEach((chain, i) => {
     const res = drainResults[i];
     if (res.status === 'rejected') {
@@ -211,14 +225,7 @@ export const fetchMechMarketplaceFees = async (): Promise<MechMarketplaceFees> =
     if (checkSubgraphLag(latestBlock, res.value?._meta?.block?.number, chain)) {
       laggingSubgraphs.push(`drainTotals:${chain}`);
     }
-    const byModel: DrainedByModel = {};
-    (res.value?.drainTotals_collection ?? []).forEach((row) => {
-      byModel[row.id as DrainModel] = {
-        raw: Number(row.totalDrainedRaw),
-        usd: Number(row.totalDrainedUSD),
-      };
-    });
-    drainedByChain[chain] = byModel;
+    drainedByChain[chain] = toDrainedByModel(res.value?.drainTotals_collection);
   });
 
   let totalUsd = 0;
@@ -233,18 +240,32 @@ export const fetchMechMarketplaceFees = async (): Promise<MechMarketplaceFees> =
       undrainedFailures += 1;
       return;
     }
-    const drained = drainedByChain[chain]?.[model] ?? { raw: 0, usd: 0 };
-    totalUsd += undrained.value.usd + drained.usd;
-    byToken[token] = (byToken[token] ?? 0) + undrained.value.amount + drained.raw / 10 ** decimals;
+    const { collected, priceUsd } = undrained.value;
+    const fees = trackerFees(collected, decimals, priceUsd, drainedByChain[chain]?.[model]);
+    totalUsd += fees.usd;
+    byToken[token] = (byToken[token] ?? 0) + fees.amount;
   });
 
-  // Every on-chain read failed: return null so mergeWithFallback keeps the last valid value.
-  if (undrainedFailures === MARKETPLACE_FEE_TRACKERS.length) {
-    const status = getFetchErrorAndCreateStaleStatus('collectedFees:all');
+  const holdLastValue = (source: string): MechMarketplaceFees => {
+    const status = getFetchErrorAndCreateStaleStatus(source);
     return {
       feesCollected: { value: null, status },
       feesCollectedByToken: { value: null, status },
     };
+  };
+
+  if (undrainedFailures === MARKETPLACE_FEE_TRACKERS.length)
+    return holdLastValue('collectedFees:all');
+  if (!isSaneFeesUsd(totalUsd)) {
+    console.error(`feesCollected: implausible total ${totalUsd}`);
+    return holdLastValue('feesCollected:insane');
+  }
+  const decreased = fetchErrors.length === 0 ? findDecreasedToken(previous, byToken) : null;
+  if (decreased) {
+    console.error(
+      `feesCollected: ${decreased} fell from ${previous?.[decreased]} to ${byToken[decreased]}`
+    );
+    return holdLastValue(`feesCollected:decreased:${decreased}`);
   }
 
   const status = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });

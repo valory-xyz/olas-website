@@ -21,7 +21,8 @@
     "metric-context:test": "node --test common-util/metric-context.test.mjs",
     "metric-context:check": "node scripts/check-metric-context.mjs",
     "metric-context:check:test": "node --test scripts/check-metric-context.test.mjs",
-    "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs"
+    "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs",
+    "mech-fees-math:test": "node --test common-util/api/mech-marketplace-fees/math.test.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "5.2.6",

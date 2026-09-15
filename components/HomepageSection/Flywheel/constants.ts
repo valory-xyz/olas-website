@@ -31,26 +31,44 @@ export const TOKEN_ICONS: Record<string, string> = {
   USDC: '/images/accelerator/usdc-icon.png',
 };
 
-// Marketplace fee trackers by token, for the "fees collected" tooltip rows and scope
-// sentence. Must match MARKETPLACE_FEE_TRACKERS in common-util/api/mech-marketplace-fees.ts.
-const chainIcons = (chains: string[]) =>
-  chains.map((chain) => `/images/homepage/addresses/${chain}-color.svg`);
+// "A, B and C"
+const joinAnd = (parts: string[]) =>
+  parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`;
 
-export const MARKETPLACE_FEE_TOKENS: Array<{ symbol: string; chainIcons: string[] }> = [
-  {
-    symbol: 'USDC',
-    chainIcons: chainIcons(['eth', 'arbitrum', 'optimism', 'polygon', 'celo', 'base']),
-  },
-  { symbol: 'xDAI', chainIcons: chainIcons(['gnosis']) },
-  { symbol: 'ETH', chainIcons: chainIcons(['base', 'optimism']) },
-  { symbol: 'POL', chainIcons: chainIcons(['polygon']) },
+const FEE_CHAIN_LABELS: Record<string, string> = {
+  eth: 'Ethereum',
+  arbitrum: 'Arbitrum',
+  optimism: 'Optimism',
+  polygon: 'Polygon',
+  celo: 'Celo',
+  base: 'Base',
+  gnosis: 'Gnosis',
+};
+
+// Marketplace fee trackers by token, for the "fees collected" tooltip rows and scope
+// sentence. Must match MARKETPLACE_FEE_TRACKERS in common-util/api/mech-marketplace-fees.
+const MARKETPLACE_FEE_TOKEN_CHAINS: Array<{ symbol: string; chains: string[] }> = [
+  { symbol: 'USDC', chains: ['eth', 'arbitrum', 'optimism', 'polygon', 'celo', 'base'] },
+  { symbol: 'xDAI', chains: ['gnosis'] },
+  { symbol: 'ETH', chains: ['base', 'optimism'] },
+  { symbol: 'POL', chains: ['polygon'] },
 ];
 
-// "USDC, xDAI, ETH and POL" — for prose that states what the fee total is made of.
-export const MARKETPLACE_FEE_TOKEN_SCOPE = (() => {
-  const symbols = MARKETPLACE_FEE_TOKENS.map((t) => t.symbol);
-  return `${symbols.slice(0, -1).join(', ')} and ${symbols[symbols.length - 1]}`;
-})();
+export const MARKETPLACE_FEE_TOKENS = MARKETPLACE_FEE_TOKEN_CHAINS.map(({ symbol, chains }) => ({
+  symbol,
+  chainIcons: chains.map((chain) => `/images/homepage/addresses/${chain}-color.svg`),
+}));
+
+// "USDC on Ethereum, Arbitrum, …, xDAI on Gnosis, ETH on Base and Optimism and POL on Polygon"
+export const MARKETPLACE_FEE_TOKEN_SCOPE = joinAnd(
+  MARKETPLACE_FEE_TOKEN_CHAINS.map(
+    ({ symbol, chains }) => `${symbol} on ${joinAnd(chains.map((c) => FEE_CHAIN_LABELS[c]))}`
+  )
+);
+
+// Trackers that exist on-chain but are not counted, for the same prose.
+export const MARKETPLACE_FEE_EXCLUDED_SCOPE =
+  'fees paid in OLAS, in ETH on Ethereum and Arbitrum, or in CELO';
 
 // Static by design — the on-chain fee switches have no data source yet.
 export const FEE_SWITCHES: Record<'pol' | 'marketplace', 'ON' | 'OFF'> = {

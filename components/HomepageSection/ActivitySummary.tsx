@@ -6,6 +6,7 @@ import { buildMetricContext } from 'components/ui/MetricContext';
 import {
   FEE_SWITCHES,
   CHAIN_PILLS,
+  MARKETPLACE_FEE_EXCLUDED_SCOPE,
   MARKETPLACE_FEE_TOKEN_SCOPE,
   type ProtocolActivityMetrics,
 } from './Flywheel/constants';
@@ -140,7 +141,7 @@ export const ActivitySummary = ({
           status: metrics.feesCollected?.status,
           isMoney: true,
           noun: `in protocol fees collected by the Mech Marketplace, taken as a percentage of marketplace turnover rather than being additional to it${feeTokens}`,
-          note: `Covers only the ${MARKETPLACE_FEE_TOKEN_SCOPE} fee trackers, not fees paid in OLAS, and only since the fee went live on ${feeLiveSince}.`,
+          note: `Covers ${MARKETPLACE_FEE_TOKEN_SCOPE}; it excludes ${MARKETPLACE_FEE_EXCLUDED_SCOPE}, and counts only since the fee went live on ${feeLiveSince}.`,
           window: 'all time',
           asOfFallback,
         }),

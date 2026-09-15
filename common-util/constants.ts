@@ -200,6 +200,9 @@ export const CHAINLINK_PRICE_FEED_ADDRESS_OPTIMISM_ETH_USD =
   '0x13e3Ee699D1909E989722E753853AE30b17e08c5';
 // All Chainlink USD feeds answer with 8 decimals.
 export const CHAINLINK_USD_FEED_DECIMALS = 8;
+// Reject a round older than this: 3x the longest heartbeat among the feeds above (20 min
+// for the ETH feeds, 27 s for POL).
+export const CHAINLINK_MAX_ANSWER_AGE_SEC = 3600;
 export const SNAPSHOT_URL = 'https://snapshot.org/#/autonolas.eth';
 export const ON_CHAIN_PROPOSALS_URL = 'https://govern.olas.network/proposals';
 

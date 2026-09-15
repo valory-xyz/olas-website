@@ -18,10 +18,12 @@ export const FeesInfo = () => {
           not-yet-drained balance, read on-chain from each tracker&apos;s <code>collectedFees</code>
           , plus everything already drained, read from the <code>DrainTotals</code> entity of the
           mech fees subgraphs (one row per payment model, priced in USD at drain time). Counted
-          trackers: USDC on every chain, Gnosis xDAI, ETH on Base and Optimism, and POL on Polygon —
-          ETH and POL are valued with the same Chainlink feeds the subgraphs use. OLAS-denominated
-          fees are not counted here: when fees are distributed, non-OLAS fees are sent to the Olas
-          Treasury and OLAS fees are burned.
+          trackers: USDC on Ethereum, Arbitrum, Celo, Optimism, Polygon and Base; xDAI on Gnosis;
+          ETH on Base and Optimism; POL on Polygon. ETH and POL are valued with the same Chainlink
+          feeds the subgraphs use. Not counted: the ETH trackers on Ethereum and Arbitrum, the CELO
+          tracker, and OLAS-denominated fees — when fees are distributed, non-OLAS fees are sent to
+          the Olas Treasury and OLAS fees are burned. A reading is held back if any token&apos;s
+          lifetime amount would fall below the previous snapshot.
         </p>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
           Verify un-drained fees (balance tracker <code>collectedFees</code> on each counted chain):
@@ -63,6 +65,7 @@ export const FeesInfo = () => {
             url="https://optimistic.etherscan.io/address/0x4Cd816ce806FF1003ee459158A093F02AbF042a8#readContract"
             text="Optimism (ETH)"
           />
+          {/* Same address as the Olas Tokenomics proxy on Ethereum; a different contract here. */}
           <Verify
             url="https://polygonscan.com/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readContract"
             text="Polygon (POL)"
