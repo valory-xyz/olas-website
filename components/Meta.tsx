@@ -17,7 +17,6 @@ const WEBSITE_JSON_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: SITE_NAME,
-  alternateName: ['Olas Network', 'OLAS'],
   url: SITE_URL,
 });
 
