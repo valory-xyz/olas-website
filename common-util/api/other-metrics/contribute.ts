@@ -11,7 +11,12 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const AGENT_TYPE = 14;
 const ATTRIBUTE_TYPE_ID = 8;
-const LIMIT = 1000;
+/**
+ * Well above the ~6,200 rows the attribute holds, so the leaderboard comes back from one query.
+ * AFMDB's `values` endpoint has no ORDER BY, so `skip` pages are cut from an arbitrary order:
+ * walking it in pages of 1,000 counted a third of the contributors twice and missed as many.
+ */
+const LIMIT = 20000;
 const LEADERBOARD_BASE_URL = `${process.env.NEXT_PUBLIC_AFMDB_URL}/api/agent-types/${AGENT_TYPE}/attributes/${ATTRIBUTE_TYPE_ID}/values`;
 const LEADERBOARD_ERROR_MESSAGE = 'Failed to fetch leaderboard.';
 
@@ -37,6 +42,7 @@ const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null
 };
 
 type LeaderboardResult = {
+  attribute_id: number;
   json_value: { wallet_address: string; points: number };
 };
 
@@ -66,9 +72,17 @@ const fetchTotalOlasContributors = async (): Promise<MetricWithStatus<number | n
       if (!Array.isArray(pageData) || pageData.length === 0 || pageData.length < LIMIT) {
         break;
       }
+      // eslint-disable-next-line no-console
+      console.warn(`contribute:total: more than ${LIMIT} rows; paging is unordered, raise LIMIT`);
     }
 
-    const activeUsers = allResults.reduce((sum, user) => {
+    // Belt and braces: a row counted twice is a contributor counted twice.
+    const seen = new Set<number>();
+    const uniqueResults = allResults.filter(
+      (row) => !seen.has(row.attribute_id) && seen.add(row.attribute_id)
+    );
+
+    const activeUsers = uniqueResults.reduce((sum, user) => {
       if (!user.json_value.wallet_address) return sum;
       if (user.json_value.points === 0) return sum;
       return sum + 1;
