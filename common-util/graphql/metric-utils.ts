@@ -1,4 +1,5 @@
 import { CHAIN_CONFIG } from 'common-util/constants';
+import { retryOnRateLimit } from 'common-util/rpc-retry';
 import { GraphQLClient, RequestDocument, Variables } from 'graphql-request';
 import { createPublicClient, http } from 'viem';
 import { MetricStatus, MetricWithStatus, WithMeta } from './types';
@@ -72,7 +73,13 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
         return null;
       }
       const client = createPublicClient({ transport: http(chainConfig.rpc) });
-      const blockNumber = await client.getBlockNumber();
+      // Every category's cron asks each chain for a head block, so these are the
+      // highest-volume RPC calls the site makes — and the first to be rate-limited
+      // on a public endpoint. A dropped block number greys out a healthy metric.
+      const blockNumber = await retryOnRateLimit(
+        () => client.getBlockNumber(),
+        `${chain}:getBlockNumber`
+      );
       const block = Number(blockNumber);
       blockCache[chain] = { block, lastUpdated: currentTime };
       return block;

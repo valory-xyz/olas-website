@@ -41,31 +41,31 @@
     },
     {
       "path": "/api/refresh-metrics/predict",
-      "schedule": "0 * * * *"
+      "schedule": "20 * * * *"
     },
     {
       "path": "/api/refresh-metrics/agent-economies",
-      "schedule": "0 */2 * * *"
+      "schedule": "40 */2 * * *"
     },
     {
       "path": "/api/refresh-metrics/other",
-      "schedule": "0 */6 * * *"
+      "schedule": "10 */6 * * *"
     },
     {
       "path": "/api/refresh-metrics/predict-roi-distribution?agent=omenstrat",
-      "schedule": "0 3 * * *"
+      "schedule": "5 3 * * *"
     },
     {
       "path": "/api/refresh-metrics/predict-roi-distribution?agent=polystrat",
-      "schedule": "0 4 * * *"
+      "schedule": "5 4 * * *"
     },
     {
       "path": "/api/refresh-metrics/predict-tool-accuracy",
-      "schedule": "0 5 * * *"
+      "schedule": "5 5 * * *"
     },
     {
       "path": "/api/refresh-metrics/explorer",
-      "schedule": "0 6 * * *"
+      "schedule": "50 6 * * *"
     },
     {
       "path": "/api/refresh-metrics/staking-apr",

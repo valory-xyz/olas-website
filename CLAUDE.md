@@ -80,16 +80,16 @@ Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus dail
 ### Vercel Configuration (`vercel.json`)
 
 - **Function limits**: each `refresh-metrics/*.ts` handler is configured with `maxDuration: 300` and `memory: 512`.
-- **Crons**:
-  - `/api/refresh-metrics/main` — hourly
-  - `/api/refresh-metrics/predict` — hourly
-  - `/api/refresh-metrics/agent-economies` — every 2 hours
-  - `/api/refresh-metrics/other` — every 6 hours
-  - `/api/refresh-metrics/predict-roi-distribution?agent=omenstrat` — daily 03:00 UTC
-  - `/api/refresh-metrics/predict-roi-distribution?agent=polystrat` — daily 04:00 UTC
-  - `/api/refresh-metrics/predict-tool-accuracy` — daily 05:00 UTC
-  - `/api/refresh-metrics/explorer` — daily 06:00 UTC
-  - `/api/refresh-metrics/staking-apr` — daily 01:30 UTC (before the hourly `predict` run at 02:00 picks it up)
+- **Crons** — schedules are **deliberately staggered so that no two ever fire in the same minute**, and new ones must keep off the minutes already in use. Every category asks each chain for a head block (`getChainBlockNumber`), and each cron is its own lambda with a cold cache, so crons sharing a minute mean simultaneous bursts against the same RPC endpoints from the same egress IPs — enough to get rate-limited and freeze a metric.
+  - `/api/refresh-metrics/main` — hourly at :00
+  - `/api/refresh-metrics/predict` — hourly at :20
+  - `/api/refresh-metrics/agent-economies` — every 2 hours at :40
+  - `/api/refresh-metrics/other` — every 6 hours at :10
+  - `/api/refresh-metrics/predict-roi-distribution?agent=omenstrat` — daily 03:05 UTC
+  - `/api/refresh-metrics/predict-roi-distribution?agent=polystrat` — daily 04:05 UTC
+  - `/api/refresh-metrics/predict-tool-accuracy` — daily 05:05 UTC
+  - `/api/refresh-metrics/explorer` — daily 06:50 UTC
+  - `/api/refresh-metrics/staking-apr` — daily 01:30 UTC (before the hourly `predict` run at 02:20 picks it up)
 
 ### Environment Variables
 

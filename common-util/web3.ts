@@ -1,4 +1,5 @@
 import { CHAIN_CONFIG, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
+import { retryOnRateLimit } from 'common-util/rpc-retry';
 import { Abi, createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import olasAbi from '../data/ABIs/Olas.json';
@@ -50,7 +51,18 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
     console.error(`[web3] no RPC configured for chain: ${chain}`);
     return null;
   }
-  readersByChain[chain] = narrowReadContract(createPublicClient({ transport: http(rpcUrl) }));
+
+  // `batch: true` coalesces the reads issued in the same tick (POL fetches every
+  // pool in parallel) into one JSON-RPC batch request — fewer HTTP round-trips at
+  // the provider, which is what the per-IP limits on the public endpoints count.
+  // Verified supported on every configured RPC. Note it does not reduce the number
+  // of *calls*, so a provider metering per call still sees the same volume; the
+  // retry below is what covers that case.
+  const client = createPublicClient({ transport: http(rpcUrl, { batch: true }) });
+  const read = narrowReadContract(client);
+
+  readersByChain[chain] = (params) =>
+    retryOnRateLimit(() => read(params), `${chain}:${params.functionName}`);
   return readersByChain[chain];
 };
 
