@@ -1,6 +1,12 @@
-import { VALORY_GIT_URL, X_OLAS_URL, YOUTUBE_OLAS_URL } from 'common-util/constants';
 import { getLimitedText } from 'common-util/getLimitedText';
+import {
+  TELEGRAM_INVITE_URL,
+  VALORY_GIT_URL,
+  X_OLAS_URL,
+  YOUTUBE_OLAS_URL,
+} from 'common-util/constants';
 import { getSiteUrl } from 'common-util/getSiteUrl';
+import { ORGANIZATION_ID, serializeJsonLd } from 'common-util/structured-data';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -40,10 +46,9 @@ const toCanonicalUrl = (siteUrl: string, path: string): string => {
 };
 
 // The Organization is always the production entity, whatever host renders
-// it, so its `@id` is stable. The app-suite `SeoHead` will point at the same
-// `@id` once valory-xyz/autonolas-frontend-mono#465 lands.
+// it, so its `@id` is stable. The app-suite `SeoHead` points at the same
+// `@id`, as do the Article and Dataset blocks on this site.
 const ORGANIZATION_URL = 'https://olas.network';
-const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
 
 const SITE_JSON_LD = {
   '@context': 'https://schema.org',
@@ -55,7 +60,8 @@ const SITE_JSON_LD = {
       url: ORGANIZATION_URL,
       logo: `${ORGANIZATION_URL}/images/olas-logo.svg`,
       description: SITE_DESCRIPTION,
-      sameAs: [X_OLAS_URL, VALORY_GIT_URL, YOUTUBE_OLAS_URL],
+      // The footer's profiles plus the GitHub organisation, from the same constants.
+      sameAs: [X_OLAS_URL, TELEGRAM_INVITE_URL, YOUTUBE_OLAS_URL, VALORY_GIT_URL],
     },
     {
       '@type': 'WebSite',
@@ -67,8 +73,7 @@ const SITE_JSON_LD = {
   ],
 };
 
-// `<` escaped so the payload can never close the script tag.
-const SITE_JSON_LD_HTML = JSON.stringify(SITE_JSON_LD).replace(/</g, '\\u003c');
+const SITE_JSON_LD_HTML = serializeJsonLd(SITE_JSON_LD);
 
 const resolveShareImage = (
   siteImageUrl: string | undefined,
