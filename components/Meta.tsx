@@ -1,10 +1,10 @@
+import { getLimitedText } from 'common-util/getLimitedText';
 import {
   TELEGRAM_INVITE_URL,
   VALORY_GIT_URL,
   X_OLAS_URL,
   YOUTUBE_OLAS_URL,
 } from 'common-util/constants';
-import { getLimitedText } from 'common-util/getLimitedText';
 import { getSiteUrl } from 'common-util/getSiteUrl';
 import { ORGANIZATION_ID, serializeJsonLd } from 'common-util/structured-data';
 import Head from 'next/head';

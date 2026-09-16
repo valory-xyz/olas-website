@@ -30,20 +30,7 @@ export type FaqItem = { question: string; answer: string };
  * (and it would drag `react-dom/server` into the browser bundle). Links lose their href; the
  * question-and-answer pair is what the schema is for.
  */
-export const reactNodeToText = (node: unknown): string => {
-  if (node == null || typeof node === 'boolean') return '';
-  if (typeof node === 'string' || typeof node === 'number') return String(node);
-  if (Array.isArray(node)) return node.map(reactNodeToText).join('');
-  if (typeof node === 'object' && 'props' in node) {
-    const { type, props } = node as { type?: unknown; props?: { children?: unknown } };
-    const text = reactNodeToText(props?.children);
-    // A block element ends a sentence in the rendered page; without a boundary here two
-    // paragraphs run together as "…of AI.With Pearl…". Inline elements keep their spacing.
-    return typeof type === 'string' && BLOCK_ELEMENTS.has(type) ? `${text} ` : text;
-  }
-  return '';
-};
-
+/** Elements that end a run of text in the rendered page. */
 const BLOCK_ELEMENTS = new Set([
   'p',
   'div',
@@ -59,16 +46,34 @@ const BLOCK_ELEMENTS = new Set([
   'h6',
 ]);
 
+export const reactNodeToText = (node: unknown): string => {
+  if (node == null || typeof node === 'boolean') return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(reactNodeToText).join('');
+  if (typeof node === 'object' && 'props' in node) {
+    const { type, props } = node as { type?: unknown; props?: { children?: unknown } };
+    const text = reactNodeToText(props?.children);
+    // A block element ends a sentence in the rendered page; without a boundary here two
+    // paragraphs run together as "…of AI.With Pearl…". Inline elements keep their spacing.
+    return typeof type === 'string' && BLOCK_ELEMENTS.has(type) ? `${text} ` : text;
+  }
+  return '';
+};
+
 /** Collapses the whitespace that JSX line breaks leave behind. */
 const tidy = (text: string) => text.replace(/\s+/g, ' ').trim();
+
+const MIN_ANSWER_WORDS = 8;
 
 export const buildFaqPage = (items: FaqItem[]) => ({
   '@context': SCHEMA_CONTEXT,
   '@type': 'FAQPage' as const,
   mainEntity: items
     .map(({ question, answer }) => ({ question: tidy(question), answer: tidy(answer) }))
-    // An empty answer is a malformed entry, not a fact worth publishing.
-    .filter(({ question, answer }) => question && answer)
+    // An empty answer is a malformed entry, and one of a few words is a caption under a
+    // diagram ("For full technical detail, check the whitepaper.") — neither is an answer
+    // worth quoting as the site's own.
+    .filter(({ question, answer }) => question && answer.split(' ').length >= MIN_ANSWER_WORDS)
     .map(({ question, answer }) => ({
       '@type': 'Question' as const,
       name: question,
@@ -134,6 +139,9 @@ export type ArticleInput = {
   author?: string | null;
 };
 
+/** Names the CMS has used for posts published by Olas itself rather than a person. */
+const ORGANISATION_AUTHORS = new Set(['olas', 'autonolas', 'valory']);
+
 /** ISO 8601 or nothing — an unparseable date is worse than no date. */
 const isoDate = (value?: string | null) => {
   if (!value) return undefined;
@@ -154,6 +162,9 @@ export const buildArticle = ({
   const organization = { '@id': ORGANIZATION_ID };
   const published = isoDate(datePublished);
   const modified = isoDate(dateModified);
+  // The CMS author is free text and a couple of posts name the organisation in it; those
+  // must not ship as `Person: Autonolas`.
+  const isOrganisationAuthor = author && ORGANISATION_AUTHORS.has(tidy(author).toLowerCase());
   return {
     '@context': SCHEMA_CONTEXT,
     '@type': 'Article' as const,
@@ -164,7 +175,10 @@ export const buildArticle = ({
     ...(modified ? { dateModified: modified } : {}),
     ...(imageUrl ? { image: imageUrl } : {}),
     // The CMS carries a name for some posts; the rest are published under the organisation.
-    author: author ? { '@type': 'Person' as const, name: tidy(author) } : organization,
+    author:
+      author && !isOrganisationAuthor
+        ? { '@type': 'Person' as const, name: tidy(author) }
+        : organization,
     publisher: organization,
   };
 };

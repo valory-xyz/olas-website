@@ -67,8 +67,7 @@ export const DATASETS: DatasetEntry[] = [
   {
     id: 'babydegen-metrics',
     name: 'BabyDegen Metrics',
-    description:
-      'This API aggregates BabyDegen agent metrics from the BabyDegen and staking subgraphs.',
+    description: 'Aggregates BabyDegen agent metrics from the BabyDegen and staking subgraphs.',
   },
   {
     id: 'mech-globals',

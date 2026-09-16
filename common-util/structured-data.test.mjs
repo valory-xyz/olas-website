@@ -59,14 +59,22 @@ test('paragraphs do not run together, inline elements do not split', () => {
 
 test('FAQPage carries one Question per item, whitespace collapsed', () => {
   const faq = buildFaqPage([
-    { question: '  What is Olas? ', answer: reactNodeToText(el(['Olas is\n   a platform.'])) },
+    {
+      question: '  What is Olas? ',
+      answer: reactNodeToText(
+        el(['Olas is\n   the platform that enables true co-ownership of AI agents.'])
+      ),
+    },
   ]);
   assert.equal(faq['@type'], 'FAQPage');
   assert.deepEqual(faq.mainEntity, [
     {
       '@type': 'Question',
       name: 'What is Olas?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Olas is a platform.' },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Olas is the platform that enables true co-ownership of AI agents.',
+      },
     },
   ]);
 });
@@ -75,7 +83,7 @@ test('FAQPage drops an item whose answer has no text', () => {
   // An image-only answer is a malformed entry, not something to publish as an empty string.
   const faq = buildFaqPage([
     { question: 'How do the pieces fit?', answer: reactNodeToText(el(null)) },
-    { question: 'Real one', answer: 'Real answer' },
+    { question: 'Real one', answer: 'A real answer with enough words in it to be worth quoting.' },
   ]);
   assert.equal(faq.mainEntity.length, 1);
   assert.equal(faq.mainEntity[0].name, 'Real one');
@@ -122,6 +130,34 @@ test('Article credits a named author when the CMS has one, else the organisation
   assert.deepEqual(named.author, { '@type': 'Person', name: 'Jane Doe' });
   assert.deepEqual(anon.author, { '@id': 'https://olas.network/#organization' });
   assert.deepEqual(anon.publisher, { '@id': 'https://olas.network/#organization' });
+});
+
+test('a post whose CMS author is the organisation is not published as a Person', () => {
+  // Two of 131 posts carry an author; one of them is "Autonolas". That shipped as
+  // `Person: Autonolas` on the preview.
+  for (const author of ['Autonolas', 'olas', ' Valory ']) {
+    const article = buildArticle({ siteUrl: SITE, path: '/blog/c', title: 'C', author });
+    assert.deepEqual(article.author, { '@id': `${SITE}/#organization` }, author);
+  }
+});
+
+test('an answer of a few words is a caption, not an answer to quote', () => {
+  // The staking FAQ's first answer is a diagram plus "For full technical detail, check
+  // the whitepaper." — quoted alone that is not what the site says about the question.
+  const faq = buildFaqPage([
+    {
+      question: 'How do the pieces fit together?',
+      answer: 'For full technical detail, check the whitepaper.',
+    },
+    {
+      question: 'Real one',
+      answer: 'Staking rewards depend on agent activity and are not guaranteed by anyone.',
+    },
+  ]);
+  assert.deepEqual(
+    faq.mainEntity.map((q) => q.name),
+    ['Real one']
+  );
 });
 
 test('serialised JSON-LD cannot close its own script tag', () => {

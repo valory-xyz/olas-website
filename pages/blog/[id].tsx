@@ -32,23 +32,31 @@ const BlogItem = ({ blog }) => {
   );
   const description = getLimitedText(formattedContent.props.children, DESC_CHAR_LIMIT);
 
-  // Built from the same record the page renders. `author` is read defensively: the CMS
-  // does not expose one on every post, and a post without one is credited to Olas.
+  // Built from the same record the page renders. `author` is a plain string in the CMS
+  // schema and absent on most posts; a post without one is credited to Olas.
+  const postPath = `/blog/${slug ?? blog.id}`;
   const article = buildArticle({
     siteUrl: getSiteUrl(),
-    path: `/blog/${slug ?? blog.id}`,
+    path: postPath,
     title,
     description,
     datePublished,
     dateModified: updatedAt,
     imageUrl: imageUrl || undefined,
-    author: typeof author === 'string' ? author : author?.name,
+    author,
   });
 
   return (
     <PageWrapper>
       <JsonLd data={article} />
-      <Meta pageTitle={title} description={description} siteImageUrl={imageUrl} />
+      {/* A post opened by numeric id would otherwise canonicalise to `/blog/123` while
+          the Article's mainEntityOfPage says `/blog/<slug>`; one URL for both. */}
+      <Meta
+        pageTitle={title}
+        description={description}
+        siteImageUrl={imageUrl}
+        canonicalPath={postPath}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 md:py-10">
         {imagePath && (
           <Image
