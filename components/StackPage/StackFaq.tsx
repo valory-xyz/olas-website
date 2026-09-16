@@ -1,6 +1,8 @@
 import { Accordion } from 'common-util/Accordion';
 import { SCREEN_WIDTH_LG, SUB_HEADER_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
+import { buildFaqPage, reactNodeToText } from 'common-util/structured-data';
+import { JsonLd } from 'components/JsonLd';
 
 const faqList = [
   {
@@ -36,6 +38,13 @@ export const StackFaq = () => (
         <h2 className={`${SUB_HEADER_CLASS} text-left mb-6 lg:mb-8`}>Frequently asked questions</h2>
       </div>
 
+      <JsonLd
+        data={buildFaqPage(
+          faqList.flatMap((set) =>
+            set.list.map((faq) => ({ question: faq.title, answer: reactNodeToText(faq.desc) }))
+          )
+        )}
+      />
       {faqList.map((faq, faqIndex) => (
         <div key={faqIndex} className={faqIndex === faqList.length - 1 ? '' : 'mb-8'}>
           {'name' in faq && faq.name && (

@@ -3,6 +3,8 @@ import { SECTION_BOX_CLASS, SUB_HEADER_CLASS } from 'common-util/classes';
 import { PEARL_YOU_URL_WITH_UTM_SOURCE } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubsiteLink } from 'components/ui/typography';
+import { buildFaqPage, reactNodeToText } from 'common-util/structured-data';
+import { JsonLd } from 'components/JsonLd';
 
 const faq = [
   {
@@ -47,6 +49,11 @@ const faq = [
 export const FAQ = () => (
   <SectionWrapper id="faq" customClasses={`${SECTION_BOX_CLASS} max-w-2xl mx-auto`}>
     <h2 className={`${SUB_HEADER_CLASS} mb-14`}>Frequently Asked Questions</h2>
+    <JsonLd
+      data={buildFaqPage(
+        faq.map((eachFaq) => ({ question: eachFaq.title, answer: reactNodeToText(eachFaq.desc) }))
+      )}
+    />
     {faq.map((eachFaq, index) => (
       <div className="py-2" key={index}>
         <Accordion label={eachFaq.title} defaultOpen={false}>

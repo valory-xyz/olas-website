@@ -16,6 +16,8 @@ import { ExternalLink, SubsiteLink } from 'components/ui/typography';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { buildFaqPage, reactNodeToText } from 'common-util/structured-data';
+import { JsonLd } from 'components/JsonLd';
 
 const faqList = [
   {
@@ -595,6 +597,15 @@ const FAQPage = () => (
       .
     </div>
 
+    {/* The same array the questions below render from, so the machine-readable copy
+        cannot list a question the page does not, or answer it differently. */}
+    <JsonLd
+      data={buildFaqPage(
+        faqList.flatMap((set) =>
+          set.list.map((faq) => ({ question: faq.title, answer: reactNodeToText(faq.desc) }))
+        )
+      )}
+    />
     {faqList.map((eachSet, setIndex) => (
       <div key={eachSet.category} className={setIndex === faqList.length - 1 ? '' : 'mb-8'}>
         <h2 className="text-2xl font-semibold mt-2 mb-4 pb-4 border-b-1.5 text-gray-600">

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next-sitemap && node scripts/check-metric-context.mjs",
+    "postbuild": "next-sitemap && node scripts/check-metric-context.mjs && node scripts/check-structured-data.mjs",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"./**/*.{js,jsx,ts,tsx}\"",
@@ -21,6 +21,9 @@
     "metric-context:test": "node --test common-util/metric-context.test.mjs",
     "metric-context:check": "node scripts/check-metric-context.mjs",
     "metric-context:check:test": "node --test scripts/check-metric-context.test.mjs",
+    "structured-data:test": "node --test common-util/structured-data.test.mjs",
+    "structured-data:check": "node scripts/check-structured-data.mjs",
+    "structured-data:check:test": "node --test scripts/check-structured-data.test.mjs",
     "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs",
     "mech-fees-math:test": "node --test common-util/api/mech-marketplace-fees/math.test.mjs"
   },
