@@ -49,9 +49,13 @@ export const ProtocolOwnedLiquidityInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>L2 Pool Metrics query</h3>
         <p>
-          Queried on each L2 chain (Gnosis, Polygon, Arbitrum, Optimism, Base, Celo) to get pool
-          reserves and BPT total supply. Combined with bridged LP balances from the Ethereum
-          subgraph to compute Treasury&apos;s share.
+          Queried on each L2 chain (Gnosis, Polygon, Arbitrum, Optimism, Base, Celo) to identify
+          each pool and read its cumulative swap fees. Pool reserves and LP total supply are{' '}
+          <strong>not</strong> taken from these subgraphs: they are read directly from the pool
+          contracts at snapshot time, because a subgraph that indexes only the pool contract cannot
+          see Balancer swaps (those execute on the Vault) and can drift from the chain. Those live
+          figures are combined with bridged LP balances from the Ethereum subgraph to compute the
+          Treasury&apos;s share.
         </p>
         <CodeSnippet>{liquidityL2Query}</CodeSnippet>
       </div>
