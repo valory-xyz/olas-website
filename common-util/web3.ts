@@ -57,7 +57,9 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
   // the provider, which is what the per-IP limits on the public endpoints count.
   // Verified supported on every configured RPC. Note it does not reduce the number
   // of *calls*, so a provider metering per call still sees the same volume; the
-  // retry below is what covers that case.
+  // retry below is what covers that case — it only fires on the rate limits viem's
+  // own transport retry (left at its default) does not recognise, so the two layers
+  // never stack on the same error.
   const client = createPublicClient({ transport: http(rpcUrl, { batch: true }) });
   const read = narrowReadContract(client);
 

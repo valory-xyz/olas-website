@@ -83,7 +83,10 @@ const ERC20_SUPPLY_ABI = [
 // token addresses (Vault getPoolTokens / pair token0+token1) so callers can
 // verify ordering. `totalSupply` is the LP/BPT supply the treasury's share is
 // measured against; it is read live alongside the reserves so that both halves of
-// the pool's state come from the same chain at the same block.
+// the pool's state come from the chain rather than from two sources that can
+// disagree. The reads are not pinned to a block number, so they can land either
+// side of a block boundary — a pool's supply and reserves move together, so the
+// worst case is one block of drift in the share, far below the error this replaced.
 export type LiveReserves = {
   reserve0: string;
   reserve1: string;

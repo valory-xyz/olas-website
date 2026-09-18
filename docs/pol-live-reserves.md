@@ -51,8 +51,9 @@ convention the subgraph uses — so `protocol.ts` swaps them into the pool objec
 tooltip amounts, fee conversion) is unchanged.
 
 The rule is that **the pool's own state — reserves and LP supply — always comes from the
-chain**, both halves read at the same block, so the share cannot be built from two sources
-that disagree. The subgraphs supply what the chain cannot give cheaply: cumulative fees,
+chain**, so the share cannot be built from two sources that disagree. The reads are not
+pinned to a block number — they are ordinary latest-block calls, so supply and reserves may
+land one block apart; that drift is immaterial next to a subgraph reporting a supply 13x off. The subgraphs supply what the chain cannot give cheaply: cumulative fees,
 bridged LP balances, and Chainlink prices.
 
 Failure semantics: a failed live read (or a token-order mismatch against
