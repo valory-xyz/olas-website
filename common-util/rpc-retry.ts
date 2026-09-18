@@ -12,7 +12,11 @@
  * retries them 3 times by default, and both transports keep that default), so anything
  * it already retried is rethrown here rather than retried again — otherwise one throttled
  * request would cost up to 3 x 4 = 12 requests against an endpoint that is asking us to
- * slow down.
+ * slow down. That includes errors with no numeric code at all: viem retries those.
+ *
+ * It also depends on the transport NOT batching. A batched rate limit reaches us as
+ * `UnknownRpcError` with the provider's code stripped, so `getChainReader` sends one
+ * request per read — see the comment there and the tests in `rpc-retry.test.mjs`.
  *
  * The cheap structural fixes are elsewhere — a dedicated RPC endpoint, and cron
  * schedules that don't all fire on the same minute (`vercel.json`). This is the
@@ -56,18 +60,27 @@ const walkCauses = (error: unknown): Record<string, unknown>[] => {
  * read off the whole chain, not just the level that carries the rate-limit wording: a
  * 429's body ("Too Many Requests") is copied into the outer error's `details`, so
  * matching text first would retry something viem has already retried four times.
+ *
+ * An error carrying no numeric code and no HTTP status counts too — viem's `shouldRetry`
+ * falls through to `true` for those, so a provider answering `{"error":"rate limit
+ * exceeded"}` with no code has already had its four requests.
  */
-const wasRetriedByViem = (error: unknown): boolean =>
-  walkCauses(error).some(
+const wasRetriedByViem = (levels: Record<string, unknown>[]): boolean =>
+  levels.every((level) => typeof level.code !== 'number' && typeof level.status !== 'number') ||
+  levels.some(
     (level) =>
       (typeof level.code === 'number' && VIEM_RETRIED_RPC_CODES.has(level.code)) ||
       (typeof level.status === 'number' && VIEM_RETRIED_HTTP_STATUSES.has(level.status))
   );
 
 export const isRateLimitError = (error: unknown): boolean => {
-  if (wasRetriedByViem(error)) return false;
+  const levels = walkCauses(error);
+  if (levels.length === 0 || wasRetriedByViem(levels)) return false;
 
-  return walkCauses(error).some((level) => {
+  // Reached only for an error viem gave up on: a numeric code (or an HTTP status) it
+  // does not retry. The wording is the fallback for providers whose rate-limit code
+  // isn't one of the two below.
+  return levels.some((level) => {
     if (typeof level.code === 'number' && RATE_LIMIT_RPC_CODES.has(level.code)) return true;
 
     const text = [level.details, level.shortMessage, level.message]
@@ -82,7 +95,9 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 const DEFAULT_ATTEMPTS = 3;
 const BASE_DELAY_MS = 400;
 // Pools are read in parallel, so without jitter every retry from one run would
-// land on the provider in the same millisecond and trip the limit again.
+// land on the provider in the same millisecond and trip the limit again. With the
+// transport unbatched, a retry re-sends exactly the one read that was limited, so a
+// run never costs the endpoint more requests on retry than it did on the first try.
 const JITTER_MS = 250;
 
 type RetryOptions = {

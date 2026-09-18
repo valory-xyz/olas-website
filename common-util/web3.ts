@@ -52,15 +52,19 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
     return null;
   }
 
-  // `batch: true` coalesces the reads issued in the same tick (POL fetches every
-  // pool in parallel) into one JSON-RPC batch request — fewer HTTP round-trips at
-  // the provider, which is what the per-IP limits on the public endpoints count.
-  // Verified supported on every configured RPC. Note it does not reduce the number
-  // of *calls*, so a provider metering per call still sees the same volume; the
-  // retry below is what covers that case — it only fires on the rate limits viem's
-  // own transport retry (left at its default) does not recognise, so the two layers
-  // never stack on the same error.
-  const client = createPublicClient({ transport: http(rpcUrl, { batch: true }) });
+  // Deliberately NOT `batch: true`. Batching would save HTTP round-trips, but Base's
+  // proxyd answers a rate-limited batch with a single JSON-RPC error object instead of
+  // an array: viem's batch scheduler hands every item `undefined`, the destructure
+  // throws a code-less error, and what reaches the retry below is `UnknownRpcError`
+  // (-1) — the `-32016` is gone, so the read fails and POL freezes. That is the exact
+  // failure this file is meant to survive. Measured on viem 2.52.2 with a mock fetch:
+  // batched = 4 requests and unrecognised, unbatched = recognised on the first
+  // response (see `common-util/rpc-retry.test.mjs`).
+  //
+  // The retry below only fires on rate limits viem's own transport retry (left at its
+  // default) does not recognise, so the two layers never stack on the same error, and
+  // one unbatched read retries as one request rather than re-sending a whole batch.
+  const client = createPublicClient({ transport: http(rpcUrl) });
   const read = narrowReadContract(client);
 
   readersByChain[chain] = (params) =>

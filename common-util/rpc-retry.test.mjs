@@ -16,6 +16,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createPublicClient, http } from 'viem';
 
 import { isRateLimitError, retryOnRateLimit } from './rpc-retry.ts';
 
@@ -46,9 +47,17 @@ test('isRateLimitError: finds Arbitrum Nitro’s rate-limit code', () => {
   assert.equal(isRateLimitError({ code: -32029, message: 'too many requests' }), true);
 });
 
-test('isRateLimitError: matches on wording when the code is absent', () => {
-  const error = nest(2, { message: 'your app has exceeded its compute units rate limit' });
+test('isRateLimitError: matches on wording when the code is one viem does not retry', () => {
+  // The wording is the fallback for a provider whose rate-limit code we don't list.
+  const error = nest(2, { code: -32097, message: 'your app has exceeded its rate limit' });
   assert.equal(isRateLimitError(error), true);
+});
+
+test('isRateLimitError: declines rate-limit wording with no code at all', () => {
+  // viem's `shouldRetry` falls through to `true` for a code-less error, so a
+  // `{"error":"rate limit exceeded"}` body has already cost the endpoint four requests.
+  const error = nest(2, { message: 'rate limit exceeded' });
+  assert.equal(isRateLimitError(error), false);
 });
 
 test('isRateLimitError: stops walking past the depth cutoff', () => {
@@ -86,6 +95,61 @@ test('isRateLimitError: declines an HTTP 429 even though its body says "Too Many
     details: 'Too Many Requests',
     message: 'HTTP request failed.',
   });
+  assert.equal(isRateLimitError(error), false);
+});
+
+// proxyd (Base) answers a rate-limited request with HTTP 200 and a single JSON-RPC error
+// OBJECT — even when the request was a batch array.
+const proxydRateLimitFetch = (counter) => async (_url, init) => {
+  counter.requests += 1;
+  counter.batched.push(Array.isArray(JSON.parse(init.body)));
+  return new Response(
+    JSON.stringify({ jsonrpc: '2.0', id: 1, error: { code: -32016, message: 'over rate limit' } }),
+    { status: 200, headers: { 'content-type': 'application/json' } }
+  );
+};
+
+const callThroughViem = async (batch) => {
+  const counter = { requests: 0, batched: [] };
+  const client = createPublicClient({
+    // retryDelay 0 keeps viem's own retries in the test instantly; retryCount stays at
+    // its default, which is what the request counts below measure.
+    transport: http('https://rpc.invalid', {
+      batch,
+      retryDelay: 0,
+      fetchFn: proxydRateLimitFetch(counter),
+    }),
+  });
+
+  try {
+    // Two reads in the same tick: what POL does when it reads every pool in parallel.
+    await Promise.all([client.getBlockNumber({ cacheTime: 0 }), client.getChainId()]);
+    assert.fail('expected the rate limit to reject');
+  } catch (error) {
+    return { counter, error };
+  }
+};
+
+test('isRateLimitError: recognises a proxyd rate limit through viem, unbatched', async () => {
+  const { counter, error } = await callThroughViem(false);
+
+  assert.deepEqual(counter.batched, [false, false]);
+  // viem does not retry -32016, so each read costs exactly one request before we see it.
+  assert.equal(counter.requests, 2);
+  assert.equal(isRateLimitError(error), true);
+});
+
+test('isRateLimitError: a BATCHED proxyd rate limit is unrecognisable — why the reader does not batch', async () => {
+  // proxyd answers the batch array with one error object; viem's batch scheduler hands
+  // every item `undefined`, the destructure throws code-less, viem retries it 3x, and
+  // what surfaces is UnknownRpcError (-1) with the -32016 gone. `getChainReader` must
+  // therefore stay unbatched. If this ever starts passing as `true`, viem has fixed the
+  // batch path and batching can come back.
+  const { counter, error } = await callThroughViem(true);
+
+  assert.deepEqual(counter.batched, [true, true, true, true]);
+  assert.equal(counter.requests, 4);
+  assert.equal(error.code, -1);
   assert.equal(isRateLimitError(error), false);
 });
 
