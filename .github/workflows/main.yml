@@ -130,6 +130,11 @@ jobs:
       # protocol-fee number and decides when a lower reading is refused.
       - name: Run mech-fees math unit tests
         run: yarn mech-fees-math:test
+      # rpc-retry decides which RPC failures are worth another request. Retrying what
+      # viem already retried multiplies load on an endpoint that is throttling us;
+      # retrying a revert sleeps through three attempts before failing anyway.
+      - name: Run rpc-retry unit tests
+        run: yarn rpc-retry:test
 
   install-hooks:
     name: Install-hook diff
