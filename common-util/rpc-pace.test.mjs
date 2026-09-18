@@ -9,7 +9,9 @@
  *   - chains do not wait on each other — the budget being protected is per endpoint;
  *   - the gap is the *only* thing a read waits on: a slow, hung or failed read must not
  *     hold up the queue behind it, or one dead endpoint serialises into an overrun of
- *     the cron's `maxDuration` and no snapshot is written at all.
+ *     the cron's `maxDuration` and no snapshot is written at all;
+ *   - `pacedRead` composes pacing and the rate-limit retry in the order that keeps
+ *     retried attempts inside the queue.
  *
  * A virtual clock stands in for real time: the tests assert the *schedule*, so they must
  * not spend it.
@@ -20,7 +22,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { minIntervalMs, paceRpc, resetRpcPacing } from './rpc-pace.ts';
+import { minIntervalMs, paceRpc, pacedRead, resetRpcPacing } from './rpc-pace.ts';
 
 // Virtual clock: `sleepFn` advances it instead of waiting, so a 500ms gap costs nothing.
 const clock = () => {
@@ -201,4 +203,53 @@ test('paceRpc: a read arriving after a quiet period does not wait', async () => 
   // The gap is measured from the last request, not from when this one was queued —
   // an idle endpoint owes us nothing.
   assert.equal(startedAt, idleStart + 5_000);
+});
+
+test('pacedRead: a retried attempt goes back through the queue', async () => {
+  resetRpcPacing();
+  const { now, sleepFn } = clock();
+  const sends = [];
+  let attempts = 0;
+
+  // The backoff is given a sleep that costs no virtual time, so the only thing that can
+  // separate the two attempts on the clock is the pacing gap. Invert the composition —
+  // `paceRpc(chain, () => retryOnRateLimit(fn))` — and the slot is already released by
+  // the time the retry fires, so attempt 2 leaves in the same instant as attempt 1 and
+  // this reads 0.
+  const result = await pacedRead(
+    'base',
+    async () => {
+      sends.push(now());
+      attempts += 1;
+      if (attempts === 1) throw Object.assign(new Error('over rate limit'), { code: -32016 });
+      return 'ok';
+    },
+    'base:flaky',
+    { now, sleepFn, retry: { sleepFn: async () => {} } }
+  );
+
+  assert.equal(result, 'ok');
+  assert.equal(attempts, 2);
+  assert.equal(sends[1] - sends[0], minIntervalMs('base'));
+});
+
+test('pacedRead: a read that is not rate limited is sent once', async () => {
+  resetRpcPacing();
+  const { now, sleepFn } = clock();
+  let attempts = 0;
+
+  await assert.rejects(
+    pacedRead(
+      'base',
+      async () => {
+        attempts += 1;
+        throw new Error('execution reverted');
+      },
+      'base:revert',
+      { now, sleepFn, retry: { sleepFn: async () => {} } }
+    ),
+    /execution reverted/
+  );
+
+  assert.equal(attempts, 1);
 });

@@ -1,6 +1,5 @@
 import { CHAIN_CONFIG, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
-import { minIntervalMs, paceRpc } from 'common-util/rpc-pace';
-import { retryOnRateLimit } from 'common-util/rpc-retry';
+import { minIntervalMs, pacedRead } from 'common-util/rpc-pace';
 import { Abi, createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import olasAbi from '../data/ABIs/Olas.json';
@@ -43,10 +42,7 @@ const narrowReadContract = (client: { readContract: unknown }): ReadContractFn =
 // the same bursts Base does.
 const rawEthereumRead = narrowReadContract(ethereumClient);
 const readContract: ReadContractFn = (params) =>
-  retryOnRateLimit(
-    () => paceRpc('ethereum', () => rawEthereumRead(params)),
-    `ethereum:${params.functionName}`
-  );
+  pacedRead('ethereum', () => rawEthereumRead(params), `ethereum:${params.functionName}`);
 
 // Per-chain read-contract functions built from CHAIN_CONFIG RPCs (server-only).
 // Note: unlike the Ethereum reader above, there is no public-RPC fallback — a
@@ -70,7 +66,7 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
   // batched = 4 requests and unrecognised, unbatched = recognised on the first
   // response (see `common-util/rpc-retry.test.mjs`).
   //
-  // The retry below only fires on rate limits viem's own transport retry does not
+  // `pacedRead`'s retry only fires on rate limits viem's own transport retry does not
   // recognise, so the two layers never stack on the same error, and one unbatched read
   // retries as one request rather than re-sending a whole batch.
   //
@@ -85,10 +81,8 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
   });
   const read = narrowReadContract(client);
 
-  // Pacing is inside the retry so a backed-off attempt re-enters the chain's queue
-  // instead of jumping the gap — see `rpc-pace.ts`.
   readersByChain[chain] = (params) =>
-    retryOnRateLimit(() => paceRpc(chain, () => read(params)), `${chain}:${params.functionName}`);
+    pacedRead(chain, () => read(params), `${chain}:${params.functionName}`);
   return readersByChain[chain];
 };
 

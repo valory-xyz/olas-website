@@ -111,7 +111,7 @@ const MAX_DELAY_MS = 5_000;
 // did on the first try.
 const JITTER_MS = 250;
 
-type RetryOptions = {
+export type RetryOptions = {
   attempts?: number;
   /** Injected by the tests so they don't spend the backoff. */
   sleepFn?: (ms: number) => Promise<void>;

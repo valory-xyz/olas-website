@@ -20,6 +20,9 @@
  * would stop refreshing. Requests for different chains run concurrently throughout —
  * the budget being protected is per endpoint, not global.
  *
+ * Callers should reach for `pacedRead` rather than `paceRpc` directly: it fixes the
+ * order this has to compose in with the rate-limit retry, which is easy to invert.
+ *
  * Rate is the thing endpoints count, so rate is the thing this bounds. In-flight
  * requests are left unbounded on purpose: any cap would re-introduce the stall above.
  * The natural ceiling is read latency divided by the gap, which is ~1 in practice.
@@ -30,6 +33,11 @@
  * alone. They are set below the burst that was observed to fail, and the cost of being
  * conservative is a few seconds inside a 300s cron — not a stale metric.
  */
+
+// Relative and extension-bearing so Node's type-stripping test runner can load this
+// module directly — ESM resolution knows nothing of the tsconfig aliases and will not
+// resolve an extensionless specifier. Same reason as `metric-context.ts`.
+import { type RetryOptions, retryOnRateLimit } from './rpc-retry.ts';
 
 // Requests per second we allow ourselves per chain.
 const DEFAULT_RPS = 5;
@@ -99,6 +107,29 @@ export const paceRpc = <T>(
 
   return result;
 };
+
+type PacedReadOptions = PaceOptions & {
+  /** Forwarded to `retryOnRateLimit` — attempts, and the injected sleep in tests. */
+  retry?: RetryOptions;
+};
+
+/**
+ * The one way to issue an RPC read: paced, and retried on the rate limits viem misses.
+ *
+ * The composition order is the point of this helper. Retry has to sit *outside* pacing,
+ * so that a backed-off attempt re-enters the chain's queue like any other request.
+ * Inverted — `paceRpc(chain, () => retryOnRateLimit(fn))` — the slot is released as soon
+ * as the first attempt is away, and every retry after it bypasses the queue entirely:
+ * a throttled endpoint would get its extra requests unpaced, which is the burst this
+ * module exists to remove. Written out at each call site that inversion looks harmless,
+ * so it is written out once here instead and pinned by a test.
+ */
+export const pacedRead = <T>(
+  chain: string,
+  fn: () => Promise<T>,
+  label: string,
+  { retry, ...pacing }: PacedReadOptions = {}
+): Promise<T> => retryOnRateLimit(() => paceRpc(chain, fn, pacing), label, retry);
 
 /** Test-only: drops the queues so one test's spacing can't leak into the next. */
 export const resetRpcPacing = (): void => {
