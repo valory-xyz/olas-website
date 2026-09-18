@@ -135,6 +135,11 @@ jobs:
       # retrying a revert sleeps through three attempts before failing anyway.
       - name: Run rpc-retry unit tests
         run: yarn rpc-retry:test
+      # rpc-pace keeps a snapshot run from bursting at one endpoint in the first place.
+      # Losing the per-chain gap is invisible locally and only shows up in production as
+      # a rate-limited chain dropping out of a published total.
+      - name: Run rpc-pace unit tests
+        run: yarn rpc-pace:test
 
   install-hooks:
     name: Install-hook diff

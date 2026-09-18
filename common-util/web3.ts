@@ -1,4 +1,5 @@
 import { CHAIN_CONFIG, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
+import { paceRpc } from 'common-util/rpc-pace';
 import { retryOnRateLimit } from 'common-util/rpc-retry';
 import { Abi, createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -37,7 +38,15 @@ export type ReadContractFn = (params: ReadContractParams) => Promise<unknown>;
 const narrowReadContract = (client: { readContract: unknown }): ReadContractFn =>
   client.readContract as ReadContractFn;
 
-const readContract = narrowReadContract(ethereumClient);
+// Mainnet reads are paced and retried like every other chain's: the tokenomics,
+// supply and govern builders all fan out with `Promise.all`, so this endpoint sees
+// the same bursts Base does.
+const rawEthereumRead = narrowReadContract(ethereumClient);
+const readContract: ReadContractFn = (params) =>
+  retryOnRateLimit(
+    () => paceRpc('ethereum', () => rawEthereumRead(params)),
+    `ethereum:${params.functionName}`
+  );
 
 // Per-chain read-contract functions built from CHAIN_CONFIG RPCs (server-only).
 // Note: unlike the Ethereum reader above, there is no public-RPC fallback — a
@@ -67,8 +76,10 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
   const client = createPublicClient({ transport: http(rpcUrl) });
   const read = narrowReadContract(client);
 
+  // Pacing is inside the retry so a backed-off attempt re-enters the chain's queue
+  // instead of jumping the gap — see `rpc-pace.ts`.
   readersByChain[chain] = (params) =>
-    retryOnRateLimit(() => read(params), `${chain}:${params.functionName}`);
+    retryOnRateLimit(() => paceRpc(chain, () => read(params)), `${chain}:${params.functionName}`);
   return readersByChain[chain];
 };
 

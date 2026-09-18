@@ -1,4 +1,5 @@
 import { CHAIN_CONFIG } from 'common-util/constants';
+import { paceRpc } from 'common-util/rpc-pace';
 import { retryOnRateLimit } from 'common-util/rpc-retry';
 import { GraphQLClient, RequestDocument, Variables } from 'graphql-request';
 import { createPublicClient, http } from 'viem';
@@ -77,7 +78,7 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
       // highest-volume RPC calls the site makes — and the first to be rate-limited
       // on a public endpoint. A dropped block number greys out a healthy metric.
       const blockNumber = await retryOnRateLimit(
-        () => client.getBlockNumber(),
+        () => paceRpc(chain, () => client.getBlockNumber()),
         `${chain}:getBlockNumber`
       );
       const block = Number(blockNumber);
