@@ -18,9 +18,10 @@
  * `UnknownRpcError` with the provider's code stripped, so `getChainReader` sends one
  * request per read — see the comment there and the tests in `rpc-retry.test.mjs`.
  *
- * The cheap structural fixes are elsewhere — a dedicated RPC endpoint, and cron
- * schedules that don't all fire on the same minute (`vercel.json`). This is the
- * last line: a transient limit should cost a few hundred ms, not a stale metric.
+ * The cheap structural fixes are elsewhere — per-chain pacing so a run never bursts in
+ * the first place (`rpc-pace.ts`), a dedicated RPC endpoint, and cron schedules that
+ * don't all fire on the same minute (`vercel.json`). This is the last line: a transient
+ * limit should cost a few seconds, not a stale metric.
  */
 
 // Rate limits viem's `shouldRetry` does not recognise: -32016 = Base "over rate limit",
@@ -92,15 +93,25 @@ export const isRateLimitError = (error: unknown): boolean => {
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-const DEFAULT_ATTEMPTS = 3;
-const BASE_DELAY_MS = 400;
-// Pools are read in parallel, so without jitter every retry from one run would
-// land on the provider in the same millisecond and trip the limit again. With the
-// transport unbatched, a retry re-sends exactly the one read that was limited, so a
-// run never costs the endpoint more requests on retry than it did on the first try.
+// A throttled window outlives a short backoff: on 2026-09-18 Base was still limiting
+// after 400ms and 800ms, so the read gave up ~1.5s in and POL froze for the run. The
+// budget below spans ~8s before giving up, which a per-second or few-second window
+// clears. It is affordable because the caller is a cron with `maxDuration: 300`, and
+// because pacing (`rpc-pace.ts`) keeps even the retried attempts under the chain's
+// request rate — a longer budget here does not mean a heavier burst there.
+const DEFAULT_ATTEMPTS = 5;
+const BASE_DELAY_MS = 500;
+// Doubling is capped so the last attempts stay within a cron's patience: 500, 1000,
+// 2000, 4000.
+const MAX_DELAY_MS = 5_000;
+// Reads are paced per chain, but retries are scheduled off each read's own failure, so
+// without jitter the reads that were limited together would come back together and trip
+// the limit again. With the transport unbatched, a retry re-sends exactly the one read
+// that was limited, so a run never costs the endpoint more requests on retry than it
+// did on the first try.
 const JITTER_MS = 250;
 
-type RetryOptions = {
+export type RetryOptions = {
   attempts?: number;
   /** Injected by the tests so they don't spend the backoff. */
   sleepFn?: (ms: number) => Promise<void>;
@@ -122,7 +133,9 @@ export const retryOnRateLimit = async <T>(
     } catch (error) {
       if (attempt >= attempts || !isRateLimitError(error)) throw error;
 
-      const delay = BASE_DELAY_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * JITTER_MS);
+      const delay =
+        Math.min(BASE_DELAY_MS * 2 ** (attempt - 1), MAX_DELAY_MS) +
+        Math.floor(Math.random() * JITTER_MS);
       console.warn(
         `[rpc-retry] ${label}: rate limited (attempt ${attempt}/${attempts}) — retrying in ${delay}ms`
       );

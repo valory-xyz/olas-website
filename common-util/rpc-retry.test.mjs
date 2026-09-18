@@ -206,9 +206,9 @@ test('retryOnRateLimit: succeeds after two rate limits, backing off between atte
   assert.equal(result, 'ok');
   assert.equal(calls, 3);
   assert.equal(slept.length, 2);
-  // 400ms then 800ms, each plus up to 250ms of jitter.
-  assert.ok(slept[0] >= 400 && slept[0] < 650, `first delay ${slept[0]}`);
-  assert.ok(slept[1] >= 800 && slept[1] < 1050, `second delay ${slept[1]}`);
+  // 500ms then 1000ms, each plus up to 250ms of jitter.
+  assert.ok(slept[0] >= 500 && slept[0] < 750, `first delay ${slept[0]}`);
+  assert.ok(slept[1] >= 1000 && slept[1] < 1250, `second delay ${slept[1]}`);
 });
 
 test('retryOnRateLimit: gives up at the attempt cap and rethrows the last error', async () => {
@@ -227,9 +227,15 @@ test('retryOnRateLimit: gives up at the attempt cap and rethrows the last error'
     /over rate limit/
   );
 
-  // Three attempts, so two sleeps — never a fourth request at a throttled endpoint.
-  assert.equal(calls, 3);
-  assert.equal(slept.length, 2);
+  // Five attempts, so four sleeps — never a sixth request at a throttled endpoint.
+  assert.equal(calls, 5);
+  assert.equal(slept.length, 4);
+  // Capped doubling. Jitter is under 250ms, so rounding down to the nearest 500
+  // recovers the base delay exactly.
+  assert.deepEqual(
+    slept.map((ms) => ms - (ms % 500)),
+    [500, 1000, 2000, 4000]
+  );
 });
 
 test('retryOnRateLimit: honours a custom attempt count', async () => {

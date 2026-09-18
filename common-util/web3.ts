@@ -1,5 +1,5 @@
 import { CHAIN_CONFIG, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
-import { retryOnRateLimit } from 'common-util/rpc-retry';
+import { minIntervalMs, pacedRead } from 'common-util/rpc-pace';
 import { Abi, createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import olasAbi from '../data/ABIs/Olas.json';
@@ -16,7 +16,7 @@ export const voteWeightingAddress = VOTE_WEIGHTING_ADDRESS as `0x${string}`;
 
 const ethereumClient = createPublicClient({
   chain: mainnet,
-  transport: http(ETHEREUM_RPC),
+  transport: http(ETHEREUM_RPC, { retryDelay: minIntervalMs('ethereum') }),
 });
 
 /**
@@ -37,7 +37,12 @@ export type ReadContractFn = (params: ReadContractParams) => Promise<unknown>;
 const narrowReadContract = (client: { readContract: unknown }): ReadContractFn =>
   client.readContract as ReadContractFn;
 
-const readContract = narrowReadContract(ethereumClient);
+// Mainnet reads are paced and retried like every other chain's: the tokenomics,
+// supply and govern builders all fan out with `Promise.all`, so this endpoint sees
+// the same bursts Base does.
+const rawEthereumRead = narrowReadContract(ethereumClient);
+const readContract: ReadContractFn = (params) =>
+  pacedRead('ethereum', () => rawEthereumRead(params), `ethereum:${params.functionName}`);
 
 // Per-chain read-contract functions built from CHAIN_CONFIG RPCs (server-only).
 // Note: unlike the Ethereum reader above, there is no public-RPC fallback — a
@@ -61,14 +66,23 @@ export const getChainReader = (chain: string): ReadContractFn | null => {
   // batched = 4 requests and unrecognised, unbatched = recognised on the first
   // response (see `common-util/rpc-retry.test.mjs`).
   //
-  // The retry below only fires on rate limits viem's own transport retry (left at its
-  // default) does not recognise, so the two layers never stack on the same error, and
-  // one unbatched read retries as one request rather than re-sending a whole batch.
-  const client = createPublicClient({ transport: http(rpcUrl) });
+  // `pacedRead`'s retry only fires on rate limits viem's own transport retry does not
+  // recognise, so the two layers never stack on the same error, and one unbatched read
+  // retries as one request rather than re-sending a whole batch.
+  //
+  // viem's `retryCount` stays at its default of 3, because `rpc-retry` deliberately
+  // declines the classes viem owns (429, -32005, -32603, code-less bodies) — zeroing it
+  // would leave those retried by nobody. Its `retryDelay` is raised from 150ms to the
+  // chain's gap: those retries happen inside a single paced call, so at the default a
+  // throttled read could still put four requests on the wire inside a second, which is
+  // the burst shape `paceRpc` exists to remove.
+  const client = createPublicClient({
+    transport: http(rpcUrl, { retryDelay: minIntervalMs(chain) }),
+  });
   const read = narrowReadContract(client);
 
   readersByChain[chain] = (params) =>
-    retryOnRateLimit(() => read(params), `${chain}:${params.functionName}`);
+    pacedRead(chain, () => read(params), `${chain}:${params.functionName}`);
   return readersByChain[chain];
 };
 
