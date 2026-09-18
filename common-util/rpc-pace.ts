@@ -10,9 +10,19 @@
  * Backing off after the fact cannot fix it, because the burst has already been spent
  * by the time the first error arrives.
  *
- * So reads go through a per-chain queue: one request in flight at a time, and a
- * minimum gap between starts. Requests for *different* chains still run concurrently —
+ * So reads go through a per-chain queue that issues them a minimum gap apart. What is
+ * serialised is the *sending*, not the waiting: a request's slot is released the moment
+ * it is in flight, so a chain's wall time is its issue schedule plus one read, never the
+ * sum of its reads. Holding the slot until each read answered would turn one hung
+ * endpoint into a queue of timeouts — `other` issues 21 Ethereum reads, and at viem's
+ * defaults (10s timeout, 3 retries ≈ 41s each) that is ~860s against a `maxDuration` of
+ * 300, so the run would be killed before `saveSnapshot` and *every* chain's metrics
+ * would stop refreshing. Requests for different chains run concurrently throughout —
  * the budget being protected is per endpoint, not global.
+ *
+ * Rate is the thing endpoints count, so rate is the thing this bounds. In-flight
+ * requests are left unbounded on purpose: any cap would re-introduce the stall above.
+ * The natural ceiling is read latency divided by the gap, which is ~1 in practice.
  *
  * The rates below are a self-imposed budget, not a published provider limit. Public
  * endpoints do not commit to a number we could encode, and on Vercel the egress IP is
@@ -37,7 +47,7 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 type ChainQueue = {
   /** Start time of the most recent request, so the gap is measured start-to-start. */
   lastStartedAt: number;
-  /** Resolves when the queued work ahead of a newcomer has finished. */
+  /** Resolves once the request ahead of a newcomer has been *sent* (not answered). */
   tail: Promise<void>;
 };
 
@@ -50,7 +60,8 @@ type PaceOptions = {
 };
 
 /**
- * Runs `fn` once the chain's queue reaches it and the minimum gap has elapsed.
+ * Sends `fn` once the chain's queue reaches it and the minimum gap has elapsed, and
+ * resolves with whatever `fn` resolves with.
  *
  * Retries belong *outside* this call (`retryOnRateLimit(() => paceRpc(...))`), so the
  * backoff does not hold the queue slot against reads that could be making progress,
@@ -64,20 +75,27 @@ export const paceRpc = <T>(
   const queue = queues[chain] ?? { lastStartedAt: 0, tail: Promise.resolve() };
   queues[chain] = queue;
 
+  // Resolved by the turn below once its request is away, which is what lets the next
+  // one start timing its gap. Nothing here ever waits on a response.
+  let sent: () => void;
+  const nextCanStart = new Promise<void>((resolve) => {
+    sent = resolve;
+  });
+
   const result = queue.tail.then(async () => {
     const wait = queue.lastStartedAt + minIntervalMs(chain) - now();
     if (wait > 0) await sleepFn(wait);
     queue.lastStartedAt = now();
-    return fn();
+    try {
+      return fn();
+    } finally {
+      // `finally` runs when `fn()` returns its promise, not when that promise settles —
+      // so a read that hangs, or throws synchronously, still frees the queue.
+      sent();
+    }
   });
 
-  // The tail only sequences the queue; the error travels on `result`, which the caller
-  // owns. Swallowing it here keeps one failed read from rejecting every read behind it
-  // — and from surfacing as an unhandled rejection.
-  queue.tail = result.then(
-    () => undefined,
-    () => undefined
-  );
+  queue.tail = nextCanStart;
 
   return result;
 };

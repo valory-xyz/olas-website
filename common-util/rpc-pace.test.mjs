@@ -5,10 +5,11 @@
  * Run with `yarn rpc-pace:test`.
  *
  * The behaviour that decides whether a cron run trips a burst limit:
- *   - one request in flight per chain, spaced by the chain's minimum gap, no matter how
- *     many reads the caller fans out at once;
+ *   - requests leave one gap apart, no matter how many reads the caller fans out at once;
  *   - chains do not wait on each other — the budget being protected is per endpoint;
- *   - a failed read neither stalls the queue behind it nor rejects its neighbours.
+ *   - the gap is the *only* thing a read waits on: a slow, hung or failed read must not
+ *     hold up the queue behind it, or one dead endpoint serialises into an overrun of
+ *     the cron's `maxDuration` and no snapshot is written at all.
  *
  * A virtual clock stands in for real time: the tests assert the *schedule*, so they must
  * not spend it.
@@ -66,39 +67,61 @@ test('paceRpc: reads fanned out at once start one gap apart', async () => {
   assert.deepEqual(gaps, [500, 500, 500], `starts ${starts.join(',')}`);
 });
 
-test('paceRpc: only one request per chain is in flight at a time', async () => {
+test('paceRpc: a hung read does not stall the queue behind it', async () => {
   resetRpcPacing();
-  const { now, sleepFn, advance } = clock();
-  let inFlight = 0;
-  let peak = 0;
+  const { now, sleepFn } = clock();
+  const starts = [];
 
-  await Promise.all(
-    Array.from({ length: 5 }, () =>
-      paceRpc(
-        'base',
-        async () => {
-          inFlight += 1;
-          peak = Math.max(peak, inFlight);
-          // The read itself takes time; the next one must not overlap it.
-          await new Promise((resolve) => setImmediate(resolve));
-          advance(120);
-          inFlight -= 1;
-        },
-        { now, sleepFn }
-      )
-    )
+  // The failure this guards: holding the slot until a read *answers* would queue 21
+  // Ethereum reads behind one 41s timeout and overrun the cron's 300s budget, so no
+  // snapshot is written for any chain. This read never answers at all.
+  const hung = paceRpc(
+    'ethereum',
+    () => {
+      starts.push(now());
+      return new Promise(() => {});
+    },
+    { now, sleepFn }
   );
 
-  assert.equal(peak, 1);
+  const after = await paceRpc(
+    'ethereum',
+    async () => {
+      starts.push(now());
+      return 'ok';
+    },
+    { now, sleepFn }
+  );
+
+  assert.equal(after, 'ok');
+  assert.equal(starts[1] - starts[0], 200);
+  // The hung read is still hung — it was never what the queue was waiting on.
+  assert.equal(await Promise.race([hung, Promise.resolve('still-pending')]), 'still-pending');
 });
 
-test('paceRpc: a slow read pushes the gap out rather than shrinking it', async () => {
+test('paceRpc: a read that throws synchronously still frees the queue', async () => {
+  resetRpcPacing();
+  const { now, sleepFn } = clock();
+
+  const thrown = paceRpc(
+    'base',
+    () => {
+      throw new Error('bad ABI');
+    },
+    { now, sleepFn }
+  );
+
+  await assert.rejects(thrown, /bad ABI/);
+  assert.equal(await paceRpc('base', async () => 'ok', { now, sleepFn }), 'ok');
+});
+
+test('paceRpc: a slow read does not widen the gap for the reads behind it', async () => {
   resetRpcPacing();
   const { now, sleepFn, advance } = clock();
   const starts = [];
 
-  // First read takes longer than the gap: the second cannot start until it returns,
-  // so the spacing that reaches the endpoint is the read duration, not 500ms.
+  // Spacing is a property of when requests are *sent*, so it stays at the configured
+  // gap whatever the endpoint's latency is doing.
   await Promise.all([
     paceRpc(
       'base',
@@ -118,7 +141,7 @@ test('paceRpc: a slow read pushes the gap out rather than shrinking it', async (
     ),
   ]);
 
-  assert.equal(starts[1] - starts[0], 900);
+  assert.equal(starts[1] - starts[0], 500);
 });
 
 test('paceRpc: different chains do not wait on each other', async () => {
