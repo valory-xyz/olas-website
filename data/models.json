@@ -1,0 +1,9 @@
+[
+  {
+    "title": "Olas-Predict-R1-14B",
+    "description": "A model fine-tuned for forecasting.",
+    "image": "/images/agents/predict.png",
+    "link": "/models/olas-predict-r1-14b",
+    "gradientColor": "rgba(126, 34, 237, 0.15)"
+  }
+]

@@ -179,6 +179,17 @@ video {
   box-shadow: 0px 8px 24px 0px rgba(24, 39, 75, 0.12);
 }
 
+/* The gradient above fades to 50% alpha at the bottom, which is fine for cards
+   laid out in a grid but not for ones stacked on top of each other: in the
+   models carousel the dimmed neighbours read straight through the centred
+   card. This paints an opaque base under the same gradient rather than
+   changing it, so the card looks as designed and stops being see-through.
+   #F2F4F9 is the gradient's own mid stop, so nothing shifts against the
+   section's slate-100 background. Opt-in, so the grid cards are untouched. */
+.agent-economy-card-opaque {
+  background-color: #F2F4F9;
+}
+
 .operate-card {
   box-shadow: 0px 0px 0px 4px #FFF inset;
 }
