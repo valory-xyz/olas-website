@@ -1,4 +1,5 @@
 import { CHAIN_CONFIG } from 'common-util/constants';
+import { minIntervalMs, pacedRead } from 'common-util/rpc-pace';
 import { GraphQLClient, RequestDocument, Variables } from 'graphql-request';
 import { createPublicClient, http } from 'viem';
 import { MetricStatus, MetricWithStatus, WithMeta } from './types';
@@ -71,8 +72,19 @@ export const getChainBlockNumber = async (chain: string): Promise<number | null>
         console.error(`No RPC URL configured for chain: ${chain}`);
         return null;
       }
-      const client = createPublicClient({ transport: http(chainConfig.rpc) });
-      const blockNumber = await client.getBlockNumber();
+      // `retryDelay` matches the chain's pacing gap — viem's retries run inside one
+      // paced call, so at the 150ms default they would burst where `paceRpc` cannot see.
+      const client = createPublicClient({
+        transport: http(chainConfig.rpc, { retryDelay: minIntervalMs(chain) }),
+      });
+      // Every category's cron asks each chain for a head block, so these are the
+      // highest-volume RPC calls the site makes — and the first to be rate-limited
+      // on a public endpoint. A dropped block number greys out a healthy metric.
+      const blockNumber = await pacedRead(
+        chain,
+        () => client.getBlockNumber(),
+        `${chain}:getBlockNumber`
+      );
       const block = Number(blockNumber);
       blockCache[chain] = { block, lastUpdated: currentTime };
       return block;

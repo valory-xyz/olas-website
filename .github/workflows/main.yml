@@ -112,6 +112,11 @@ jobs:
       # so the builders and the check are pinned here.
       - name: Run structured-data unit tests
         run: yarn structured-data:test && yarn structured-data:check:test
+      # llms.txt is hand-written prose; its edges are the only checkable part. The
+      # post-build check fails on a dead own-site link or anchor, a served page the file
+      # does not mention, or a stale stamp; these are its fixtures.
+      - name: Run llms.txt check unit tests
+        run: yarn llms:test
       # The post-build label check has only ever failed by passing — a drifted label
       # matched itself, or matched unrelated body copy — which reads exactly like a clean
       # run. These fixtures pin the cases where it wrongly reported ok.
@@ -125,6 +130,16 @@ jobs:
       # protocol-fee number and decides when a lower reading is refused.
       - name: Run mech-fees math unit tests
         run: yarn mech-fees-math:test
+      # rpc-retry decides which RPC failures are worth another request. Retrying what
+      # viem already retried multiplies load on an endpoint that is throttling us;
+      # retrying a revert sleeps through three attempts before failing anyway.
+      - name: Run rpc-retry unit tests
+        run: yarn rpc-retry:test
+      # rpc-pace keeps a snapshot run from bursting at one endpoint in the first place.
+      # Losing the per-chain gap is invisible locally and only shows up in production as
+      # a rate-limited chain dropping out of a published total.
+      - name: Run rpc-pace unit tests
+        run: yarn rpc-pace:test
 
   install-hooks:
     name: Install-hook diff

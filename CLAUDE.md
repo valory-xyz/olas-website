@@ -80,16 +80,16 @@ Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus dail
 ### Vercel Configuration (`vercel.json`)
 
 - **Function limits**: each `refresh-metrics/*.ts` handler is configured with `maxDuration: 300` and `memory: 512`.
-- **Crons**:
-  - `/api/refresh-metrics/main` — hourly
-  - `/api/refresh-metrics/predict` — hourly
-  - `/api/refresh-metrics/agent-economies` — every 2 hours
-  - `/api/refresh-metrics/other` — every 6 hours
-  - `/api/refresh-metrics/predict-roi-distribution?agent=omenstrat` — daily 03:00 UTC
-  - `/api/refresh-metrics/predict-roi-distribution?agent=polystrat` — daily 04:00 UTC
-  - `/api/refresh-metrics/predict-tool-accuracy` — daily 05:00 UTC
-  - `/api/refresh-metrics/explorer` — daily 06:00 UTC
-  - `/api/refresh-metrics/staking-apr` — daily 01:30 UTC (before the hourly `predict` run at 02:00 picks it up)
+- **Crons** — schedules are **deliberately staggered so that no two ever fire in the same minute**, and new ones must keep off the minutes already in use. Every category asks each chain for a head block (`getChainBlockNumber`), and each cron is its own lambda with a cold cache, so crons sharing a minute mean simultaneous bursts against the same RPC endpoints from the same egress IPs — enough to get rate-limited and freeze a metric.
+  - `/api/refresh-metrics/main` — hourly at :00
+  - `/api/refresh-metrics/predict` — hourly at :20
+  - `/api/refresh-metrics/agent-economies` — every 2 hours at :40
+  - `/api/refresh-metrics/other` — every 6 hours at :10
+  - `/api/refresh-metrics/predict-roi-distribution?agent=omenstrat` — daily 03:05 UTC
+  - `/api/refresh-metrics/predict-roi-distribution?agent=polystrat` — daily 04:05 UTC
+  - `/api/refresh-metrics/predict-tool-accuracy` — daily 05:05 UTC
+  - `/api/refresh-metrics/explorer` — daily 06:50 UTC
+  - `/api/refresh-metrics/staking-apr` — daily 01:30 UTC (before the hourly `predict` run at 02:20 picks it up)
 
 ### Environment Variables
 
@@ -164,6 +164,7 @@ ISR pages expect the blob shape they were built against — schema drift will su
 
 - **Strapi CMS**: blog posts (`pages/blog/[id].tsx`) are fetched via `getServerSideProps` using helpers in `common-util/api/index.ts`.
 - **Static data**: agents, chains, kits, resources, etc. live in `data/*.json`.
+- **`public/llms.txt`**: hand-written prose for AI assistants. `yarn llms:check` (in `postbuild`) fails on a link to a missing page or a `#fragment` the page does not carry, on a served page the file does not mention (the ignore list for legal and utility pages is in the `llms:check` script line), and on a `last-updated:` older than the file's last commit — bump the line whenever you change it, and add a line for any new route in the same PR that ships it. `scripts/check-llms.mjs` and its tests are the same files in every Olas repo; change them together.
 - **Dynamic agent pages**: `pages/agents/[slug].tsx` uses slugs from `data/agents.json`; `next-sitemap.config.js` adds these to the sitemap. The `/agents` index lives in `pages/agents/index.tsx`, and several agents have dedicated routes (e.g. `babydegen.tsx`, `omenstrat.tsx`, `ai-mechs.tsx`, `agentsfun.tsx`, `contribute.tsx`, `shorts.tsx`) — `next.config.js` redirects legacy slugs (e.g. `/agents/optimus` → `/agents/babydegen`).
 - **Kits**: `pages/kits/[id].tsx` (client-side, sourced from `data/kits.json`).
 - **Agent economies**: `pages/agent-economies/{index,babydegen,mech,predict,agentsfun}.tsx`.

@@ -1,6 +1,6 @@
 import {
   fetchBalancerPoolReserves,
-  fetchLpHolding,
+  fetchLpBalance,
   fetchUniswapV2PairReserves,
   LiveReserves,
 } from 'common-util/api/other-metrics/live-reserves';
@@ -44,9 +44,9 @@ type EthSubgraphResponse = {
 
 type L2Pool = {
   id: string;
-  // Subgraph reserves drift between joins/exits (Balancer swaps bypass the
-  // pool contract), so valuation replaces them with live on-chain reads —
-  // see docs/pol-live-reserves.md.
+  // Pool state is NOT taken from these fields. Valuation replaces all three with
+  // live on-chain reads, so POL does not depend on how well any one subgraph
+  // tracks the pool — see docs/pol-live-reserves.md.
   reserve0: string;
   reserve1: string;
   totalSupply: string;
@@ -344,15 +344,16 @@ async function fetchSolanaVaultBalance(account: string): Promise<number | null> 
 const ROBINHOOD_POL_PAIR = '0xc2eA98b5A75Fd85f7ce57Af856baaFfECD445659';
 const ROBINHOOD_TREASURY_L2 = '0x4d30F68F5AA342d296d4deE4bB1Cacca912dA70F';
 
-type RobinhoodPool = { live: LiveReserves; totalSupply: bigint; treasuryBalance: bigint };
+type RobinhoodPool = { live: LiveReserves; treasuryBalance: bigint };
 
 async function fetchRobinhoodPool(): Promise<RobinhoodPool | null> {
-  const [live, holding] = await Promise.all([
+  // Supply comes from `live.totalSupply` — the pair read already fetches it.
+  const [live, treasuryBalance] = await Promise.all([
     fetchUniswapV2PairReserves('robinhood', ROBINHOOD_POL_PAIR),
-    fetchLpHolding('robinhood', ROBINHOOD_POL_PAIR, ROBINHOOD_TREASURY_L2),
+    fetchLpBalance('robinhood', ROBINHOOD_POL_PAIR, ROBINHOOD_TREASURY_L2),
   ]);
-  if (!live || !holding) return null;
-  return { live, totalSupply: holding.totalSupply, treasuryBalance: holding.holderBalance };
+  if (!live || treasuryBalance === null) return null;
+  return { live, treasuryBalance };
 }
 
 // ─── POL + fees fetcher (from subgraphs) ────────────────────────────────────
@@ -650,7 +651,12 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
           continue;
         }
 
-        const pool: L2Pool = { ...subgraphPool, reserve0: live.reserve0, reserve1: live.reserve1 };
+        const pool: L2Pool = {
+          ...subgraphPool,
+          reserve0: live.reserve0,
+          reserve1: live.reserve1,
+          totalSupply: live.totalSupply,
+        };
 
         if (bridgedBalances[config.originChain] === undefined) {
           console.warn(
@@ -692,7 +698,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
 
         const share = computeShare(
           bridgedBalances[config.originChain] || 0n,
-          BigInt(pool.totalSupply)
+          BigInt(live.totalSupply)
         );
         totalPolUsd += tvl * share;
         polUsdByChain[chain] = (polUsdByChain[chain] ?? 0) + tvl * share;
@@ -771,7 +777,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
       console.error(`[protocol-metrics] liquidity:robinhood TVL out of bounds: $${tvl} — skipping`);
       robinhoodError = 'liquidity:robinhood:tvl-out-of-bounds';
     } else {
-      const share = computeShare(robinhood.treasuryBalance, robinhood.totalSupply);
+      const share = computeShare(robinhood.treasuryBalance, BigInt(robinhood.live.totalSupply));
       totalPolUsd += tvl * share;
       polUsdByChain.robinhood = tvl * share;
       // A zero share publishes $0 with no composition rather than "0 OLAS : 0 WETH".
