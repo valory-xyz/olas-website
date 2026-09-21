@@ -167,6 +167,15 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; l
     ])
   );
 
+// Staking subgraphs redeployed with `CumulativeDailyStakingGlobal.totalRewardsClaimed`.
+// Anything not listed pages every "Claimed" RewardUpdate instead — correct, but slow.
+// Add a chain here once its subgraph is republished. Mode is deliberately not a valid
+// value: it cannot be reindexed, so it must never be listed.
+export const STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS: Exclude<
+  'gnosis' | 'base' | 'optimism' | 'polygon' | 'mode',
+  'mode'
+>[] = ['gnosis', 'base', 'optimism', 'polygon'];
+
 // VoteWeighting on Ethereum — its nominees define the officially maintained staking programs.
 export const VOTE_WEIGHTING_ADDRESS = '0x95418b46d5566D3d1ea62C12Aea91227E566c5c1';
 

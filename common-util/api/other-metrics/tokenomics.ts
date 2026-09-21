@@ -1,14 +1,15 @@
 import { OLAS_API_URL, OLAS_SUPPLY_DISTRIBUTION_ADDRESSES } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
+import { emissionsQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { readOlasContract, readTokenomicsContract } from 'common-util/web3';
+import { fetchStakingEmissionsSeries } from './staking-emissions';
 import { isNil } from 'lodash';
 import { formatEther } from 'viem';
 
@@ -54,11 +55,11 @@ type SubgraphEpoch = {
 export type EmissionEpoch = SubgraphEpoch & {
   totalClaimableStakingRewards: string;
   totalClaimedStakingRewards: string;
+  totalMintedForStaking: string;
+  totalDispensedToStakingContracts: string;
 };
 
 type EmissionsResult = WithMeta<{ epoches?: SubgraphEpoch[] }>;
-type RewardUpdate = { id: string; amount: string; type: string };
-type RewardUpdatesResult = WithMeta<Record<string, RewardUpdate[]>>;
 
 const fetchSupplyDistribution = async (): Promise<MetricWithStatus<SupplyDistribution | null>> => {
   try {
@@ -191,52 +192,19 @@ const fetchEmissions = async (): Promise<MetricWithStatus<EmissionEpoch[] | null
     }
 
     const epoches = emissionsData.epoches || [];
-    const query = rewardUpdates(epoches);
-
-    const stakingResults = await Promise.all(
-      Object.entries(STAKING_GRAPH_CLIENTS).map(async ([chain, client]) => {
-        try {
-          const [rewards, chainBlock] = await Promise.all([
-            client.request(query) as Promise<RewardUpdatesResult>,
-            getChainBlockNumber(chain),
-          ]);
-          if (rewards._meta?.hasIndexingErrors) {
-            indexingErrors.push(`emissions:staking:${chain}`);
-          }
-          if (checkSubgraphLag(chainBlock, rewards._meta?.block?.number, chain)) {
-            laggingSubgraphs.push(`emissions:staking:${chain}`);
-          }
-          return rewards;
-        } catch (error) {
-          console.error(`Error fetching reward updates from ${chain}:`, error);
-          fetchErrors.push(`emissions:staking:${chain}`);
-          return null;
-        }
-      })
-    );
-
-    const value = epoches.map((epoch) => {
-      let totalClaimableStakingRewards = 0n;
-      let totalClaimedStakingRewards = 0n;
-
-      stakingResults.forEach((rewards) => {
-        if (!rewards) return;
-        const epochRewards = rewards[`_${epoch.counter}`] || [];
-        epochRewards.forEach((item) => {
-          if (item.type === 'Claimable') {
-            totalClaimableStakingRewards += BigInt(item.amount);
-          } else if (item.type === 'Claimed') {
-            totalClaimedStakingRewards += BigInt(item.amount);
-          }
-        });
-      });
-
-      return {
-        ...epoch,
-        totalClaimableStakingRewards: String(totalClaimableStakingRewards),
-        totalClaimedStakingRewards: String(totalClaimedStakingRewards),
-      };
+    const series = await fetchStakingEmissionsSeries(epoches, {
+      indexingErrors,
+      fetchErrors,
+      laggingSubgraphs,
     });
+
+    const value = epoches.map((epoch, index) => ({
+      ...epoch,
+      totalClaimableStakingRewards: series.claimable[index] ?? '0',
+      totalClaimedStakingRewards: series.claimed[index] ?? '0',
+      totalMintedForStaking: series.minted[index] ?? '0',
+      totalDispensedToStakingContracts: series.dispensed[index] ?? '0',
+    }));
 
     return {
       value,

@@ -20,10 +20,25 @@ type EmissionData = { counter?: number; [key: string]: unknown };
  * series built from the same `emissions` array, so one table covers all of them —
  * claimed against claimable for each recipient group, plus the combined totals the
  * "Actual Emissions" chart shows.
+ *
+ * The staking chart carries two extra stages ahead of claimable: what was minted for
+ * staking and what reached the staking contracts. Their gap is the withheld OLAS, so
+ * each row says what its own number means rather than leaving a reader to infer it
+ * from a total that is deliberately lower than the one above.
  */
 const ROWS: Array<{ label: string; fields: string[] }> = [
   { label: 'Dev rewards claimed (builders)', fields: ['devIncentivesTotalTopUp'] },
   { label: 'Dev rewards available for claiming (builders)', fields: ['availableDevIncentives'] },
+  {
+    label:
+      'OLAS minted for staking rewards — what left the OLAS minter, net of amounts withheld on the destination chain',
+    fields: ['totalMintedForStaking'],
+  },
+  {
+    label:
+      'OLAS dispensed to staking contracts — what arrived in them, which trails the minted total because the depositories withhold OLAS a staking contract cannot yet take',
+    fields: ['totalDispensedToStakingContracts'],
+  },
   {
     // The activity-requirement rule explains only this pair's gap, not the dev or bond ones.
     label:

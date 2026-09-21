@@ -21,6 +21,22 @@ export const EMISSIONS_CHART_COLORS = {
     legend: 'bg-amber-400',
     line: '#FFB347',
   },
+  // Only the two stages without an existing colour. Claimable reuses `available` and
+  // claimed reuses `operators`, the same tokens the other emissions charts use, so a
+  // change to either moves every chart together.
+  //
+  // Validated as a set: the grays sit between the warm tones deliberately. Yellow,
+  // orange and brown differ almost only in lightness under red-green colour blindness,
+  // so four warm lines could not stay distinguishable. See
+  // docs/staking-emissions-chart.md before changing any of this.
+  stakingMinted: {
+    legend: 'bg-slate-600',
+    line: '#475569',
+  },
+  stakingDispensed: {
+    legend: 'bg-orange-600',
+    line: '#EA580C',
+  },
   actual: {
     legend: 'bg-green-400',
     line: '#3FE681',

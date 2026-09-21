@@ -22,6 +22,50 @@ export const emissionsQuery = gql`
   }
 `;
 
+// Field builders for the staking emissions chart. Each is one cursor-paged set, so
+// several can be asked for in a single request and paged independently — see
+// `pageSets` in common-util/api/other-metrics/staking-emissions.ts.
+//
+// Every set is paged. A bare `first: 1000` silently truncates once a set outgrows it,
+// which is exactly how the previous version of this chart came to publish a third of
+// the real figure.
+const pagedSet = (entity: string, idGt: string, fields: string, where = '') =>
+  `${entity}(
+      first: 1000
+      orderBy: id
+      orderDirection: asc
+      where: { id_gt: "${idGt}"${where} }
+    ) { id ${fields} }`;
+
+export const META_FIELDS = `_meta { hasIndexingErrors block { number } }`;
+
+// Dispenser claims on Ethereum. `transferAmount` is what actually left the treasury
+// after any withheld amount was netted off, which is the OLAS minted for staking;
+// `stakingIncentive` is the allocation before that netting.
+export const mintedForStakingSets = (cursors: Record<string, string>) => [
+  pagedSet('stakingIncentivesClaimeds', cursors.stakingIncentivesClaimeds, 'transferAmount blockTimestamp'),
+  pagedSet(
+    'stakingIncentivesBatchClaimeds',
+    cursors.stakingIncentivesBatchClaimeds,
+    'totalTransferAmount blockTimestamp'
+  ),
+];
+
+// Everything the chart needs from one staking subgraph, in one request.
+// `totalRewardsClaimed` only exists on subgraphs redeployed with it, so chains without
+// it ask for the individual payouts instead.
+export const stakingChainSets = (cursors: Record<string, string>, hasClaimedTotals: boolean) => [
+  pagedSet('deposits', cursors.deposits, 'amount blockTimestamp'),
+  pagedSet(
+    'cumulativeDailyStakingGlobals',
+    cursors.cumulativeDailyStakingGlobals,
+    `timestamp totalRewards ${hasClaimedTotals ? 'totalRewardsClaimed' : ''}`
+  ),
+  ...(hasClaimedTotals
+    ? []
+    : [pagedSet('rewardUpdates', cursors.rewardUpdates, 'amount blockTimestamp', ', type: "Claimed"')]),
+];
+
 export const balancerGetPoolQuery = (poolId: string) => gql`
   query GetPool {
     pool(id: "${poolId}") {
