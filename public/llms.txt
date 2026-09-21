@@ -3,7 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
-last-updated: 2026-09-17
+last-updated: 2026-09-21
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
@@ -80,6 +80,10 @@ Every page on olas.network not linked above, each with what it is for.
 - Olas Contribute (https://olas.network/agents/contribute): autonomous AI services that track, analyse and amplify community contributions.
 - Omenstrat (https://olas.network/agents/omenstrat): an agent that trades in prediction markets on the user's behalf.
 - Shorts (https://olas.network/agents/shorts): AI agent-generated short films from a single idea.
+
+### Models
+- Models (https://olas.network/models): specialised models trained for the agents running on Olas.
+- Olas-Predict-R1-14B (https://olas.network/models/olas-predict-r1-14b): a model fine-tuned for forecasting; full details coming soon.
 
 ### Agent economies
 - Predict (https://olas.network/agent-economies/predict): on-demand agent-powered predictions, with live activity metrics.
