@@ -1,4 +1,4 @@
-import { WindowedMetric } from 'common-util/api/predict/omenstrat-brier';
+import { WindowedMetric } from 'common-util/api/predict/brier';
 import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
 import { stakingContractsQuery } from 'common-util/graphql/queries';

@@ -180,6 +180,12 @@ export const DATASETS: DatasetEntry[] = [
       'How often Polystrat agents’ predictions were correct in resolved markets, per time range, with each trade counted on the day it was placed.',
   },
   {
+    id: 'polystrat-predict-brier',
+    name: 'Polystrat: Predict Brier Score',
+    description:
+      'The Brier score of Polystrat agents’ predictions — how well-calibrated they are, where lower is better and 0 is a perfect forecast.',
+  },
+  {
     id: 'protocol-owned-liquidity',
     name: 'Total Protocol-owned Liquidity',
     description:

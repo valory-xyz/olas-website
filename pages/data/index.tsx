@@ -23,6 +23,7 @@ import { OmenstratAprInfo } from 'components/DataPage/OmenstratAprInfo';
 import { OmenstratBrierInfo } from 'components/DataPage/OmenstratBrierInfo';
 import { OmenstratRoiInfo } from 'components/DataPage/OmenstratRoiInfo';
 import { PolystratAccuracyInfo } from 'components/DataPage/PolystratAccuracy';
+import { PolystratBrierInfo } from 'components/DataPage/PolystratBrierInfo';
 import { PolystratAprInfo } from 'components/DataPage/PolystratAprInfo';
 import { PolystratRoiInfo } from 'components/DataPage/PolystratRoiInfo';
 import { PredictTotalAgentsInfo } from 'components/DataPage/PredictTotalAgents';
@@ -67,6 +68,7 @@ const DataVerifyPage = () => (
       <PolystratRoiInfo />
       <PolystratAprInfo />
       <PolystratAccuracyInfo />
+      <PolystratBrierInfo />
       <ProtocolOwnedLiquidityInfo />
       <ProtocolFeesInfo />
       <FeesInfo />

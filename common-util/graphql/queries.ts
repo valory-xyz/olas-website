@@ -818,6 +818,27 @@ export const getOmenDailyBrierStatsQuery = ({ date_gte, date_lte, first, skip })
   }
 `;
 
+// Polymarket counterpart of getOmenDailyBrierStatsQuery (same brierSum/brierCount
+// semantics, credited on the resolution day) in the squid's OpenReader dialect.
+// squidStatus.height is the freshness signal — the squid has no `_meta`.
+export const getPolymarketDailyBrierStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`
+  query PolymarketDailyBrierStats {
+    dailyProfitStatistics(
+      limit: ${first}
+      offset: ${skip}
+      where: { date_gte: "${date_gte}", date_lte: "${date_lte}" }
+      orderBy: [date_ASC, id_ASC]
+    ) {
+      date
+      brierSum
+      brierCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 // `profitParticipants` is a list of conditionId strings — resolve titles with
 // getPolymarketQuestionTitlesQuery.
 export const getPolymarketDailyProfitStatsQuery = ({ date_gte, date_lte, first, skip }) => gql`

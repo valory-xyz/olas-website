@@ -12,7 +12,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { emptyWindows, WindowedMetric } from './omenstrat-brier';
+import { emptyWindows, WindowedMetric } from './brier';
 
 const LIMIT = 1000;
 const DAY = 86400;
@@ -21,7 +21,7 @@ const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffff
 // Days reprocessed at the head of the window every run. A bet only enters the
 // query once its market settles (~4 days after placement), so re-fetching the
 // trailing window picks up late settlements and overwrites those day buckets.
-// Mirrors omenstrat-brier.ts. Bets settling later than TRAIL_DAYS aren't
+// Mirrors brier.ts. Bets settling later than TRAIL_DAYS aren't
 // back-counted into their (already-backfilled) placement day — same tradeoff Brier
 // accepts for late re-answers.
 const TRAIL_DAYS = 10;
@@ -29,7 +29,7 @@ const TRAIL_DAYS = 10;
 const BACKFILL_CHUNK_DAYS = 30;
 
 // UTC-midnight genesis days, mirroring OMEN_GENESIS_TS / POLYMARKET_GENESIS_TS in
-// roi-distribution.ts (and OMEN_GENESIS_DAY in omenstrat-brier.ts). Backfill walks
+// roi-distribution.ts (and OMEN_GENESIS_DAY in brier.ts). Backfill walks
 // down to here, no further.
 const OMEN_GENESIS_DAY = 1763769600;
 // 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
@@ -181,7 +181,7 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
 
 // Self-contained incremental accumulator persisted in its own blob, advanced a
 // little each hourly predict refresh instead of rescanning all bet history.
-// Structurally identical to fetchOmenstratBrier (see omenstrat-brier.ts) — only the
+// Structurally identical to buildWindowedBrier (see brier.ts) — only the
 // per-day math (won/total instead of brierSum/brierCount) differs.
 const buildWindowedAccuracy = async (
   category: string,

@@ -3,7 +3,7 @@ import { createStaleStatus } from 'common-util/graphql/metric-utils';
 import { MetricWithStatus } from 'common-util/graphql/types';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { emptyWindows, WindowedMetric, WindowKey } from './omenstrat-brier';
+import { emptyWindows, WindowedMetric, WindowKey } from './brier';
 import { fetchOlasPriceInUsd } from './olas-price';
 import { isLowMechAttribution } from './roi-math';
 import { AgentBlueprintRoiData, computeWindowedNetGainAndCosts } from './roi-distribution';

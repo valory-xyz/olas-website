@@ -12,14 +12,14 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { loadSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { WindowedMetric, WindowKey } from './omenstrat-brier';
+import { WindowedMetric, WindowKey } from './brier';
 
 const LIMIT = 1000;
 const DAY = 86400;
 const TRAIL_DAYS = 10;
 const BACKFILL_CHUNK_DAYS = 30;
 
-// UTC-midnight genesis days, mirroring roi-distribution.ts / omenstrat-brier.ts.
+// UTC-midnight genesis days, mirroring roi-distribution.ts / brier.ts.
 const OMEN_GENESIS_DAY = 1763769600;
 // 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
 const POLYMARKET_GENESIS_DAY = 1768521600;
@@ -133,7 +133,7 @@ const fetchDayBuckets = async (
 };
 
 // Self-contained incremental accumulator persisted in its own blob (advanced each
-// hourly predict refresh). Structurally identical to fetchOmenstratBrier — only the
+// hourly predict refresh). Structurally identical to buildWindowedBrier — only the
 // per-day math (summed rewardAmount instead of brierSum/brierCount) differs. Returns
 // the summed OLAS rewards (1e18, decimal string) per window; null windows are not yet
 // covered (still backfilling) so the windowed-ROI combiner can omit the staking term.
