@@ -24,6 +24,9 @@ const CHAIN_ID_TO_STAKING_CHAIN: Record<string, StakingChain> = {
 
 const ZERO_ADDRESS = `0x${'0'.repeat(40)}`;
 const RETAINER_ADDRESS = `0x${'0'.repeat(36)}dead`;
+// Nominated, but run by the LST product rather than as an Olas staking program: its
+// reward rate is set there, and publishing it would make it the headline max APR.
+const LST_STAKING_CONTRACTS = ['0x22fa631064a99c43196ec5f8324b73211ced98f9'];
 
 type StakingContractsResponse = WithMeta<{
   stakingContracts: {
@@ -121,7 +124,12 @@ export const fetchAllStakingAprs = async (): Promise<StakingAprSnapshot | null> 
   const addressesByChain = {} as Record<StakingChain, string[]>;
   nominees.forEach((nominee) => {
     const address = `0x${nominee.account.slice(-40)}`.toLowerCase();
-    if (address === ZERO_ADDRESS || address === RETAINER_ADDRESS) return;
+    if (
+      address === ZERO_ADDRESS ||
+      address === RETAINER_ADDRESS ||
+      LST_STAKING_CONTRACTS.includes(address)
+    )
+      return;
     const chain = CHAIN_ID_TO_STAKING_CHAIN[String(nominee.chainId)];
     if (!chain) return;
     (addressesByChain[chain] ??= []).push(address);
@@ -168,7 +176,8 @@ export const fetchAllStakingAprs = async (): Promise<StakingAprSnapshot | null> 
         transform: (data) => {
           const aprByContract: Record<string, number> = {};
           (data?.stakingContracts || []).forEach((contract) => {
-            aprByContract[contract.id.toLowerCase()] = getContractApr(contract);
+            const apr = getContractApr(contract);
+            if (apr !== null) aprByContract[contract.id.toLowerCase()] = apr;
           });
           return aprByContract;
         },
@@ -176,8 +185,8 @@ export const fetchAllStakingAprs = async (): Promise<StakingAprSnapshot | null> 
 
       // The active list comes from the RPC, so append today's entry even when the
       // subgraph failed — known contracts keep their stored APRs. A nominee absent
-      // from the subgraph (e.g. LST programs, filtered by its implementation
-      // allow-list) simply never gets an APR and is ignored by computeAprWindows.
+      // from the query result simply never gets an APR and is ignored by
+      // computeAprWindows.
       const contracts = { ...prev?.contracts, ...fresh.value };
       const activeByDay = { ...prev?.activeByDay, [String(today)]: addresses };
 

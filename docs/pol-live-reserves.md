@@ -39,17 +39,22 @@ V2 pairs emit `Sync` on every swap and their subgraphs track it.
 `live-reserves.ts` reads current reserves via RPC at snapshot-build time (RPC URLs come
 from `CHAIN_CONFIG`):
 
-- **Balancer pools**: pool `getPoolId()` → Vault `getPoolTokens(poolId)`. The poolId is
-  derived on-chain rather than hardcoded so a future pool only needs a `PoolConfig` entry.
-- **Uniswap V2 pairs** (Celo): pair `getReserves()` + `token0()`/`token1()` so the
-  token-order guard applies here too.
+- **Balancer pools**: pool `getPoolId()` + `totalSupply()` → Vault `getPoolTokens(poolId)`.
+  The poolId is derived on-chain rather than hardcoded so a future pool only needs a
+  `PoolConfig` entry.
+- **Uniswap V2 pairs** (Celo): pair `getReserves()` + `token0()`/`token1()` +
+  `totalSupply()` so the token-order guard applies here too.
 
 Both return reserves in token-address order (reserve0 = lower address) — the same
 convention the subgraph uses — so `protocol.ts` swaps them into the pool object
-(`{ ...subgraphPool, reserve0, reserve1 }`) and all downstream math (TVL, tooltip
-amounts, fee conversion) is unchanged. Everything else still comes from the subgraphs:
-BPT `totalSupply` (joins/exits are indexed, so it's fresh), cumulative fees, bridged LP
-balances, and Chainlink prices.
+(`{ ...subgraphPool, reserve0, reserve1, totalSupply }`) and all downstream math (TVL,
+tooltip amounts, fee conversion) is unchanged.
+
+The rule is that **the pool's own state — reserves and LP supply — always comes from the
+chain**, so the share cannot be built from two sources that disagree. The reads are not
+pinned to a block number — they are ordinary latest-block calls, so supply and reserves may
+land one block apart; that drift is immaterial next to a subgraph reporting a supply 13x off. The subgraphs supply what the chain cannot give cheaply: cumulative fees,
+bridged LP balances, and Chainlink prices.
 
 Failure semantics: a failed live read (or a token-order mismatch against
 `OLAS_TOKEN_ADDRESS_BY_CHAIN`) fails that chain's POL for the run — never a silent
@@ -60,8 +65,8 @@ value, exactly like a subgraph fetch failure.
 
 Robinhood Chain (4663) has no liquidity subgraph. Its OLAS/WETH Uniswap V2 pair
 (`0xc2eA98b5…5659`, autonolas-tokenomics PR #361) is read entirely via `ROBINHOOD_RPC`:
-`getReserves`/`token0`/`token1` for the valuation, plus LP `totalSupply` and `balanceOf`
-for the treasury share (`fetchLpHolding`).
+`getReserves`/`token0`/`token1`/`totalSupply` for the valuation, plus `balanceOf` for the
+treasury share (`fetchLpBalance`).
 
 The share is taken from the LP balance of the treasury's **L2 control point** — the aliased
 L1 Timelock (`0x4d30F68F…A70F`, the owner of the handed-over 4663 contracts) — rather than
