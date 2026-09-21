@@ -549,17 +549,11 @@ export const PlatformActivitySection = ({
     asOfFallback: snapshotTimestamp,
   };
 
-  // All performance metrics respond to the time-range tabs. The Brier tile only renders
-  // once the platform's source has published at least one window: the Polymarket squid
-  // gained brierSum/brierCount upstream but the live deployment has not been re-indexed
-  // with them yet, so until then Polystrat's Brier is a fetch error, and a permanently
-  // "--" tile would read as an outage. (Hidden-table rows already drop null values.)
-  const performanceItems: MetricItemProps[] = [
-    roiItem,
-    aprItem,
-    accuracyItem,
-    ...(hasWindowData(m.brierScore) ? [brierItem] : []),
-  ];
+  // All performance metrics respond to the time-range tabs. Polystrat's Brier shows "--"
+  // with a stale indicator until the live Polymarket squid is re-indexed with
+  // brierSum/brierCount (merged upstream, not yet deployed) and the hourly predict cron
+  // has backfilled the accumulator; it fills in on its own once that lands.
+  const performanceItems: MetricItemProps[] = [roiItem, aprItem, accuracyItem, brierItem];
 
   // These are lifetime counts and do not follow the time-range tabs, so each says
   // "all time" explicitly rather than inheriting the selected window by proximity.
