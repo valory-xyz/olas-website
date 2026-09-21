@@ -21,14 +21,8 @@ export const EMISSIONS_CHART_COLORS = {
     legend: 'bg-amber-400',
     line: '#FFB347',
   },
-  // Only the two stages without an existing colour. Claimable reuses `available` and
-  // claimed reuses `operators`, the same tokens the other emissions charts use, so a
-  // change to either moves every chart together.
-  //
-  // Validated as a set: the grays sit between the warm tones deliberately. Yellow,
-  // orange and brown differ almost only in lightness under red-green colour blindness,
-  // so four warm lines could not stay distinguishable. See
-  // docs/staking-emissions-chart.md before changing any of this.
+  // The staking stages without an existing colour; claimable and claimed reuse
+  // `available` and `operators`. Validated as a set — see docs/staking-emissions-chart.md.
   stakingMinted: {
     legend: 'bg-slate-600',
     line: '#475569',
@@ -78,6 +72,11 @@ export const getEmissionsChartOptions = (points) => ({
     axis: 'x' as const,
   },
   plugins: {
+    // Each of these charts renders its own LegendItem row. Chart.js only draws its
+    // built-in legend when the Legend plugin happens to be registered, which another
+    // chart elsewhere in the app does globally — so it has to be turned off explicitly
+    // or it appears on whichever pages loaded that bundle first.
+    legend: { display: false },
     tooltip: {
       enabled: true,
       callbacks: {

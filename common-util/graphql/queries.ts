@@ -1,6 +1,8 @@
 import { gql } from 'graphql-request';
 
-export const emissionsQuery = gql`
+// Cursor-paged by counter, which is the epoch id. A capped query would drop the oldest
+// epochs from every emissions chart without erroring.
+export const emissionsPageQuery = (counterGt: number) => gql`
   {
     _meta {
       hasIndexingErrors
@@ -8,27 +10,26 @@ export const emissionsQuery = gql`
         number
       }
     }
-    epoches(orderBy: startBlock) {
+    epoches(
+      first: 1000
+      orderBy: counter
+      orderDirection: asc
+      where: { counter_gt: ${counterGt} }
+    ) {
       id
       counter
       blockTimestamp
       availableDevIncentives
       devIncentivesTotalTopUp
-      availableStakingIncentives
-      totalStakingIncentives
       totalBondsClaimable
       totalBondsClaimed
     }
   }
 `;
 
-// Field builders for the staking emissions chart. Each is one cursor-paged set, so
-// several can be asked for in a single request and paged independently — see
-// `pageSets` in common-util/api/other-metrics/staking-emissions.ts.
-//
-// Every set is paged. A bare `first: 1000` silently truncates once a set outgrows it,
-// which is exactly how the previous version of this chart came to publish a third of
-// the real figure.
+// Cursor-paged sets for the staking emissions chart, several per request via `pageSets`.
+// A bare `first: 1000` truncates silently once a set outgrows it — see
+// docs/chart-data-integrity.md.
 const pagedSet = (entity: string, idGt: string, fields: string, where = '') =>
   `${entity}(
       first: 1000
@@ -39,9 +40,8 @@ const pagedSet = (entity: string, idGt: string, fields: string, where = '') =>
 
 export const META_FIELDS = `_meta { hasIndexingErrors block { number } }`;
 
-// Dispenser claims on Ethereum. `transferAmount` is what actually left the treasury
-// after any withheld amount was netted off, which is the OLAS minted for staking;
-// `stakingIncentive` is the allocation before that netting.
+// Dispenser claims. `transferAmount` is what left the treasury after withheld amounts
+// were netted off; `stakingIncentive` is the allocation before that.
 export const mintedForStakingSets = (cursors: Record<string, string>) => [
   pagedSet('stakingIncentivesClaimeds', cursors.stakingIncentivesClaimeds, 'transferAmount blockTimestamp'),
   pagedSet(
@@ -51,9 +51,8 @@ export const mintedForStakingSets = (cursors: Record<string, string>) => [
   ),
 ];
 
-// Everything the chart needs from one staking subgraph, in one request.
-// `totalRewardsClaimed` only exists on subgraphs redeployed with it, so chains without
-// it ask for the individual payouts instead.
+// `totalRewardsClaimed` only exists on redeployed subgraphs; chains without it ask for
+// the individual payouts instead.
 export const stakingChainSets = (cursors: Record<string, string>, hasClaimedTotals: boolean) => [
   pagedSet('deposits', cursors.deposits, 'amount blockTimestamp'),
   pagedSet(
@@ -74,32 +73,6 @@ export const balancerGetPoolQuery = (poolId: string) => gql`
         balance
       }
     }
-  }
-`;
-
-export const rewardUpdates = (epochs) => gql`
-  query RewardUpdates {
-    _meta {
-      hasIndexingErrors
-      block {
-        number
-      }
-    }
-    ${epochs.map(
-      (epoch, index) => `
-        _${epoch.counter}: rewardUpdates(
-          where: {
-            blockTimestamp_gt: ${index > 0 ? epochs[index - 1].blockTimestamp : 0}
-            ${index < epochs.length - 1 ? `blockTimestamp_lte: ${epoch.blockTimestamp}` : ''}
-          }
-            first: 1000
-        ) {
-          id
-          amount
-          type
-        }
-      `
-    )}
   }
 `;
 
@@ -576,63 +549,6 @@ export const explorerOmenstratSeriesQuery = gql`
       dayTimestamp
       activeMultisigCount
       txCount
-    }
-    _meta {
-      hasIndexingErrors
-      block {
-        number
-      }
-    }
-  }
-`;
-
-export const dailyPredictAgentPerformancesWithMultisigsQuery = gql`
-  query DailyPredictAgentPerformancesWithMultisigs(
-    $agentId_in: [Int!]!
-    $dayTimestamp_gt: Int!
-    $dayTimestamp_lt: Int!
-  ) {
-    dailyAgentPerformances(
-      where: {
-        and: [
-          { agentId_in: $agentId_in }
-          { dayTimestamp_gt: $dayTimestamp_gt }
-          { dayTimestamp_lt: $dayTimestamp_lt }
-        ]
-      }
-      orderBy: dayTimestamp
-      orderDirection: asc
-      first: 1000
-    ) {
-      dayTimestamp
-      activeMultisigCount
-      multisigs(first: 1000) {
-        multisig {
-          id
-          serviceId
-        }
-      }
-    }
-    _meta {
-      hasIndexingErrors
-      block {
-        number
-      }
-    }
-  }
-`;
-
-export const checkpointsQuery = gql`
-  query Checkpoints($contractAddress_in: [String!]!, $blockTimestamp_lte: Int!) {
-    checkpoints(
-      where: { contractAddress_in: $contractAddress_in, blockTimestamp_lte: $blockTimestamp_lte }
-      orderBy: blockTimestamp
-      orderDirection: desc
-      first: 1000
-    ) {
-      contractAddress
-      serviceIds
-      blockTimestamp
     }
     _meta {
       hasIndexingErrors

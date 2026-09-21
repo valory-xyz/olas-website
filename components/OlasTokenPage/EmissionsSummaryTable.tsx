@@ -1,4 +1,3 @@
-import { getCumulativeEmissions } from 'common-util/charts';
 import { formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUtcAsOf } from 'common-util/time';
 import { statusCaveat } from 'components/ui/MetricContext';
@@ -97,11 +96,23 @@ export const EmissionsSummaryTable = ({
   const isContiguous =
     firstEpoch !== null && lastEpoch !== null && epochs.length === lastEpoch - firstEpoch + 1;
 
-  const rows = ROWS.map(({ label, fields }) => {
-    const series = getCumulativeEmissions(settled, fields);
-    const total = series.length ? series[series.length - 1] : null;
-    return { label, total };
-  }).filter((row) => typeof row.total === 'number' && Number.isFinite(row.total));
+  // BigInt, not the charts' Number-based helper: these rows publish full numbers, and a
+  // cumulative wei total is ~1e24.
+  // Same rule as the chart: a field the snapshot does not carry yet is absent, not zero,
+  // and this table states figures as fact. Omit the row until the field arrives.
+  const rows = ROWS.filter(({ fields }) =>
+    fields.every((field) => settled.some((epoch) => field in epoch))
+  ).map(({ label, fields }) => ({
+    label,
+    total: settled.reduce(
+      (runningTotal, epoch) =>
+        fields.reduce((epochTotal, field) => {
+          const raw = epoch[field];
+          return epochTotal + (raw == null ? BigInt(0) : BigInt(String(raw)));
+        }, runningTotal),
+      BigInt(0)
+    ),
+  }));
 
   const asOf = formatUtcAsOf(status?.lastValidAt ?? snapshotTimestamp);
   const caveat = statusCaveat(status, 'data');
@@ -126,7 +137,7 @@ export const EmissionsSummaryTable = ({
           {rows.map(({ label, total }) => (
             <tr key={label}>
               <th scope="row">{label}</th>
-              <td>{`${formatWeiNumber(String(total), FULL_NUMBER)} OLAS`}</td>
+              <td>{`${formatWeiNumber(total, FULL_NUMBER)} OLAS`}</td>
             </tr>
           ))}
         </tbody>

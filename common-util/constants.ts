@@ -167,10 +167,7 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; l
     ])
   );
 
-// Staking subgraphs redeployed with `CumulativeDailyStakingGlobal.totalRewardsClaimed`.
-// Anything not listed pages every "Claimed" RewardUpdate instead — correct, but slow.
-// Add a chain here once its subgraph is republished. Mode is deliberately not a valid
-// value: it cannot be reindexed, so it must never be listed.
+// Mode is excluded as it can't be reindexed
 export const STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS: Exclude<
   'gnosis' | 'base' | 'optimism' | 'polygon' | 'mode',
   'mode'

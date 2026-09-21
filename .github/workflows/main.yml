@@ -122,6 +122,12 @@ jobs:
       # run. These fixtures pin the cases where it wrongly reported ok.
       - name: Run metric-context check tests
         run: yarn metric-context:check:test
+      # staking-emissions math decides how reward rows land in epochs and when a paged
+      # set is complete. Two truncation bugs have shipped from this path, both silent —
+      # a smaller number, no error — and the end-to-end check needs live subgraphs, so
+      # the boundaries and the paging termination are pinned here.
+      - name: Run staking-emissions math unit tests
+        run: yarn staking-emissions-math:test
       # roi-math holds the published Predict ROI arithmetic; every rule it encodes
       # shipped wrong at least once (docs/predict-roi-accounting.md, History).
       - name: Run roi-math unit tests

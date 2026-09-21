@@ -51,11 +51,9 @@ pages every `"Claimed"` `RewardUpdate` instead — correct, but far slower.
 Gnosis, Base, Optimism and Polygon are listed: all four have been redeployed with the
 field. Mode is the only chain left on the fallback, and always will be.
 
-**Mode can never be listed.** It runs on a non-archive RPC and cannot be reindexed, so
-it will never carry the field, and asking a subgraph for a field it does not have fails
-the *whole request* rather than just that field. The constant's type excludes `'mode'`,
-so adding it is a compile error rather than a broken refresh, and `usesClaimedTotals`
-refuses it at runtime as well.
+**Mode cannot be listed.** It runs on a non-archive RPC and cannot be reindexed, so it
+will never carry the field — and asking a subgraph for a field it does not have fails the
+*whole request*, not just that field.
 
 Measured on the current data: with every redeployed chain listed, the whole tokenomics
 fetch costs **41 requests and 5.0s**, against **191 requests and 33.1s** when all five
@@ -89,6 +87,17 @@ Three known deviations, all accepted:
 - `#FFB347` sits above the lightness band and at 1.73:1 against the chart surface, well
   under the 3:1 mark target, so it is a faint line. It is the colour this chart already
   used for claimed, kept for continuity rather than introduced here.
+
+## Daily snapshots against epoch boundaries
+
+Claimable and claimed come from daily snapshots, which are keyed to 00:00 but hold that
+day's closing total. Deposits and Dispenser claims carry exact timestamps. So on a day
+that contains an epoch boundary, rewards earned after the boundary are attributed to the
+epoch that closed earlier that day — at most one day's rewards per boundary.
+
+It is visible as a boundary epoch briefly showing claimable above dispensed, and as the
+summary table's "settled epochs only" total including a sliver of the open epoch. Fixing
+it needs intra-day reward data, which the subgraph does not keep.
 
 ## Known gaps
 

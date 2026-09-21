@@ -21,13 +21,8 @@ type EmissionsToOperatorsProps = {
 };
 
 /**
- * The four stages OLAS passes through on its way to a staker, in order. Each pair of
- * neighbours differs for its own reason, which is the point of showing them together:
- * minted over dispensed is what the depositories withheld, dispensed over claimable is
- * reward budget sitting in staking contracts waiting to be earned, and claimable over
- * claimed is earned rewards nobody has withdrawn yet.
- *
- * See docs/staking-emissions-chart.md.
+ * The four stages OLAS passes through on its way to a staker, in order. The gap between
+ * each pair means something — see docs/staking-emissions-chart.md.
  */
 const SERIES = [
   {
@@ -53,7 +48,11 @@ const SERIES = [
 ] as const;
 
 export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOperatorsProps) => {
-  const cumulative = SERIES.map((series) => getCumulativeEmissions(emissions, series.field));
+  // A snapshot written before these fields existed has no key for them, and a missing
+  // key reads as 0 — a flat line at zero against a real ~12.3M. Absent and zero are
+  // different claims, so a series is drawn only once its field is present.
+  const present = SERIES.filter((series) => emissions.some((epoch) => series.field in epoch));
+  const cumulative = present.map((series) => getCumulativeEmissions(emissions, series.field));
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -61,7 +60,7 @@ export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOpe
         Emissions per epoch
       </h2>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
-        {SERIES.map((series) => (
+        {present.map((series) => (
           <LegendItem key={series.field} color={series.color.legend} label={series.label} />
         ))}
       </div>
@@ -73,7 +72,7 @@ export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOpe
             <Line
               data={{
                 labels: emissions.map((item) => item.counter ?? 0),
-                datasets: SERIES.map((series, index) => ({
+                datasets: present.map((series, index) => ({
                   label: series.label,
                   data: cumulative[index],
                   order: index + 1,

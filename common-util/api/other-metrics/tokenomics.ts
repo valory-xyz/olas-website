@@ -6,7 +6,7 @@ import {
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { emissionsQuery } from 'common-util/graphql/queries';
+import { emissionsPageQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { readOlasContract, readTokenomicsContract } from 'common-util/web3';
 import { fetchStakingEmissionsSeries } from './staking-emissions';
@@ -16,6 +16,8 @@ import { formatEther } from 'viem';
 // Years 0-12 of the max emission schedule shown on the /olas-token bar chart
 // (10y capped schedule + the first years of the 2%/yr tail).
 const INFLATION_YEARS = 13;
+
+const EPOCHS_PAGE_SIZE = 1000;
 
 type SupplyDistribution = {
   totalSupplyWei: string;
@@ -46,8 +48,6 @@ type SubgraphEpoch = {
   blockTimestamp: string;
   availableDevIncentives: string;
   devIncentivesTotalTopUp: string;
-  availableStakingIncentives: string;
-  totalStakingIncentives: string;
   totalBondsClaimable: string;
   totalBondsClaimed: string;
 };
@@ -82,7 +82,14 @@ const fetchSupplyDistribution = async (): Promise<MetricWithStatus<SupplyDistrib
     }
 
     const totalSupply = BigInt(raw);
-    const circulatingSupply = totalSupply > 0n ? totalSupply - (veOlas + dao + valory) : 0n;
+    // The pie renders these as slices, so the remainder must not go negative
+    const nonCirculating = veOlas + dao + valory;
+    if (totalSupply <= 0n || nonCirculating > totalSupply) {
+      throw new Error(
+        `OLAS supply distribution implausible: non-circulating ${nonCirculating} of total ${totalSupply}`
+      );
+    }
+    const circulatingSupply = totalSupply - nonCirculating;
 
     return {
       value: {
@@ -179,19 +186,30 @@ const fetchEmissions = async (): Promise<MetricWithStatus<EmissionEpoch[] | null
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [emissionsData, ethereumBlock] = await Promise.all([
-      TOKENOMICS_GRAPH_CLIENTS.ethereum.request(emissionsQuery) as Promise<EmissionsResult>,
-      getChainBlockNumber('ethereum'),
-    ]);
+    // Paged: a short page here would drop the oldest epochs from all four charts
+    const epoches: SubgraphEpoch[] = [];
+    let meta: EmissionsResult['_meta'];
+    let cursor = 0;
+    for (;;) {
+      const page = (await TOKENOMICS_GRAPH_CLIENTS.ethereum.request(
+        emissionsPageQuery(cursor)
+      )) as EmissionsResult;
+      meta = page._meta;
+      const rows = page.epoches || [];
+      if (rows.length === 0) break;
+      epoches.push(...rows);
+      cursor = rows[rows.length - 1].counter;
+      if (rows.length < EPOCHS_PAGE_SIZE) break;
+    }
 
-    if (emissionsData._meta?.hasIndexingErrors) {
+    const ethereumBlock = await getChainBlockNumber('ethereum');
+
+    if (meta?.hasIndexingErrors) {
       indexingErrors.push('emissions:tokenomics:ethereum');
     }
-    if (checkSubgraphLag(ethereumBlock, emissionsData._meta?.block?.number, 'ethereum')) {
+    if (checkSubgraphLag(ethereumBlock, meta?.block?.number, 'ethereum')) {
       laggingSubgraphs.push('emissions:tokenomics:ethereum');
     }
-
-    const epoches = emissionsData.epoches || [];
     const series = await fetchStakingEmissionsSeries(epoches, {
       indexingErrors,
       fetchErrors,
