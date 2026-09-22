@@ -16,7 +16,6 @@ import { cn } from 'lib/utils';
 
 type Metric = 'accuracy' | 'brier';
 type ModelId = 'base' | 'research' | 'olas' | 'gpt';
-type Model = (typeof results.models)[number];
 /** `[ISO date, value, lower CI, upper CI]`. */
 type Point = [string, number, number, number];
 
@@ -175,13 +174,10 @@ const TOP = 10;
 const PLOT_HEIGHT = 202;
 const LINE_HEIGHT = 242;
 
-type Hover = { x: number; date: string; values: { model: Model; value: number }[] };
-
 /** Every model's metric as markets resolved, with a shaded 95% confidence band. */
 const TimeChart = ({ metric, width }: { metric: Metric; width: number }) => {
-  const { domain, lineTicks, format, title, hint } = METRIC[metric];
+  const { domain, lineTicks, title, hint } = METRIC[metric];
   const series = results.series[metric] as { modelId: ModelId; points: Point[] }[];
-  const [hover, setHover] = useState<Hover | null>(null);
 
   const { tMin, tMax } = useMemo(() => {
     const times = series.flatMap((s) => s.points.map((p) => Date.parse(p[0])));
@@ -192,125 +188,66 @@ const TimeChart = ({ metric, width }: { metric: Metric; width: number }) => {
     LEFT + ((Date.parse(date) - tMin) / (tMax - tMin)) * (width - LEFT - RIGHT);
   const y = (v: number) => TOP + ((domain[1] - v) / (domain[1] - domain[0])) * PLOT_HEIGHT;
 
-  const onPointerMove = (event: React.PointerEvent<SVGSVGElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const px = ((event.clientX - rect.left) / rect.width) * width;
-    const t = tMin + ((px - LEFT) / (width - LEFT - RIGHT)) * (tMax - tMin);
-    if (t < tMin || t > tMax) {
-      setHover(null);
-      return;
-    }
-    // Nearest sample per series — the digitised series don't share an exact date grid.
-    const values = series.map(({ modelId, points }) => {
-      const nearest = points.reduce((best, p) =>
-        Math.abs(Date.parse(p[0]) - t) < Math.abs(Date.parse(best[0]) - t) ? p : best
-      );
-      return { model: modelOf(modelId), value: nearest[1], date: nearest[0] };
-    });
-    const anchor = values.find((v) => v.model.id === 'olas') ?? values[0];
-    setHover({ x: x(anchor.date), date: anchor.date, values });
-  };
-
   return (
-    <div className="relative">
-      <svg
-        viewBox={`0 0 ${width} ${LINE_HEIGHT}`}
-        className="block h-auto w-full overflow-visible"
-        role="img"
-        aria-label={`${title} over time. ${hint}.`}
-        style={{ fontVariantNumeric: 'tabular-nums' }}
-        onPointerMove={onPointerMove}
-        onPointerLeave={() => setHover(null)}
-      >
-        <desc>
-          Markets scored as they resolve, from the 200th market. Shaded: 95% confidence interval.
-        </desc>
-        {lineTicks.map((tick) => (
-          <g key={tick}>
-            <line x1={LEFT} y1={y(tick)} x2={width - RIGHT} y2={y(tick)} stroke={GRID} />
-            <text x={LEFT - 9} y={y(tick) + 4} fill={SECONDARY} fontSize={12} textAnchor="end">
-              {formatTick(metric, tick)}
-            </text>
-          </g>
-        ))}
-        {DATE_TICKS.map((date) => (
-          <text
-            key={date}
-            x={x(date)}
-            y={235}
-            fill={SECONDARY}
-            fontSize={width < 320 ? 11 : 12}
-            textAnchor="middle"
-          >
-            {dayjs(date).format('MMM D')}
+    <svg
+      viewBox={`0 0 ${width} ${LINE_HEIGHT}`}
+      className="block h-auto w-full overflow-visible"
+      role="img"
+      aria-label={`${title} over time. ${hint}.`}
+      style={{ fontVariantNumeric: 'tabular-nums' }}
+    >
+      <desc>
+        Markets scored as they resolve, from the 200th market. Shaded: 95% confidence interval.
+      </desc>
+      {lineTicks.map((tick) => (
+        <g key={tick}>
+          <line x1={LEFT} y1={y(tick)} x2={width - RIGHT} y2={y(tick)} stroke={GRID} />
+          <text x={LEFT - 9} y={y(tick) + 4} fill={SECONDARY} fontSize={12} textAnchor="end">
+            {formatTick(metric, tick)}
           </text>
-        ))}
-        {series.map(({ modelId, points }) => {
-          const upper = points.map((p) => `${x(p[0]).toFixed(3)},${y(p[3]).toFixed(3)}`);
-          const lower = [...points]
-            .reverse()
-            .map((p) => `${x(p[0]).toFixed(3)},${y(p[2]).toFixed(3)}`);
-          return (
-            <path
-              key={modelId}
-              d={`M${upper.join('L')}L${lower.join('L')}Z`}
-              fill={SERIES_COLOR[modelId]}
-              opacity={0.1}
-            />
-          );
-        })}
-        {series.map(({ modelId, points }) => (
+        </g>
+      ))}
+      {DATE_TICKS.map((date) => (
+        <text
+          key={date}
+          x={x(date)}
+          y={235}
+          fill={SECONDARY}
+          fontSize={width < 320 ? 11 : 12}
+          textAnchor="middle"
+        >
+          {dayjs(date).format('MMM D')}
+        </text>
+      ))}
+      {series.map(({ modelId, points }) => {
+        const upper = points.map((p) => `${x(p[0]).toFixed(3)},${y(p[3]).toFixed(3)}`);
+        const lower = [...points]
+          .reverse()
+          .map((p) => `${x(p[0]).toFixed(3)},${y(p[2]).toFixed(3)}`);
+        return (
           <path
             key={modelId}
-            d={points
-              .map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p[0]).toFixed(3)},${y(p[1]).toFixed(3)}`)
-              .join('')}
-            fill="none"
-            stroke={SERIES_COLOR[modelId]}
-            strokeWidth={modelId === 'olas' ? 3 : 2}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            strokeDasharray={DASHED.has(modelId) ? '7 5' : undefined}
+            d={`M${upper.join('L')}L${lower.join('L')}Z`}
+            fill={SERIES_COLOR[modelId]}
+            opacity={0.1}
           />
-        ))}
-        {hover && (
-          <line
-            x1={hover.x}
-            y1={TOP}
-            x2={hover.x}
-            y2={TOP + PLOT_HEIGHT}
-            stroke={INK}
-            strokeOpacity={0.35}
-          />
-        )}
-      </svg>
-      {hover && (
-        <div
-          role="status"
-          className="pointer-events-none absolute top-0 z-10 rounded-md border border-[#dfe5ee] bg-white px-3 py-2 text-xs shadow-md"
-          style={{
-            left: `${(hover.x / width) * 100}%`,
-            // Flip to the left of the crosshair in the right half so it stays in the card.
-            transform: hover.x > width / 2 ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
-          }}
-        >
-          <p className="mb-1 font-medium text-[#101114]">
-            {dayjs(hover.date).format('MMM D, YYYY')}
-          </p>
-          {hover.values.map(({ model, value }) => (
-            <p key={model.id} className="flex items-center gap-2 text-[#4d596a]">
-              <span
-                aria-hidden
-                className="inline-block h-[3px] w-4 rounded-sm"
-                style={{ background: SERIES_COLOR[model.id as ModelId] }}
-              />
-              <span>{model.name}</span>
-              <strong className="ml-auto pl-3 font-semibold text-[#101114]">{format(value)}</strong>
-            </p>
-          ))}
-        </div>
-      )}
-    </div>
+        );
+      })}
+      {series.map(({ modelId, points }) => (
+        <path
+          key={modelId}
+          d={points
+            .map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p[0]).toFixed(3)},${y(p[1]).toFixed(3)}`)
+            .join('')}
+          fill="none"
+          stroke={SERIES_COLOR[modelId]}
+          strokeWidth={modelId === 'olas' ? 3 : 2}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          strokeDasharray={DASHED.has(modelId) ? '7 5' : undefined}
+        />
+      ))}
+    </svg>
   );
 };
 
