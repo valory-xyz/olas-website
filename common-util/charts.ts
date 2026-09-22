@@ -21,6 +21,16 @@ export const EMISSIONS_CHART_COLORS = {
     legend: 'bg-amber-400',
     line: '#FFB347',
   },
+  // The staking stages without an existing colour; claimable and claimed reuse
+  // `available` and `operators`. Validated as a set — see docs/staking-emissions-chart.md.
+  stakingMinted: {
+    legend: 'bg-slate-600',
+    line: '#475569',
+  },
+  stakingDispensed: {
+    legend: 'bg-orange-600',
+    line: '#EA580C',
+  },
   actual: {
     legend: 'bg-green-400',
     line: '#3FE681',
@@ -62,6 +72,11 @@ export const getEmissionsChartOptions = (points) => ({
     axis: 'x' as const,
   },
   plugins: {
+    // Each of these charts renders its own LegendItem row. Chart.js only draws its
+    // built-in legend when the Legend plugin happens to be registered, which another
+    // chart elsewhere in the app does globally — so it has to be turned off explicitly
+    // or it appears on whichever pages loaded that bundle first.
+    legend: { display: false },
     tooltip: {
       enabled: true,
       callbacks: {

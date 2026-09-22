@@ -20,15 +20,39 @@ type EmissionsToOperatorsProps = {
   loading: boolean;
 };
 
+/**
+ * The four stages OLAS passes through on its way to a staker, in order. The gap between
+ * each pair means something — see docs/staking-emissions-chart.md.
+ */
+const SERIES = [
+  {
+    field: 'totalMintedForStaking',
+    label: 'OLAS minted for staking rewards',
+    color: EMISSIONS_CHART_COLORS.stakingMinted,
+  },
+  {
+    field: 'totalDispensedToStakingContracts',
+    label: 'OLAS dispensed to staking contracts',
+    color: EMISSIONS_CHART_COLORS.stakingDispensed,
+  },
+  {
+    field: 'totalClaimableStakingRewards',
+    label: 'Staking rewards claimable',
+    color: EMISSIONS_CHART_COLORS.available,
+  },
+  {
+    field: 'totalClaimedStakingRewards',
+    label: 'Staking rewards claimed',
+    color: EMISSIONS_CHART_COLORS.operators,
+  },
+] as const;
+
 export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOperatorsProps) => {
-  const totalClaimableStakingRewards = getCumulativeEmissions(
-    emissions,
-    'totalClaimableStakingRewards'
-  );
-  const totalClaimedStakingRewards = getCumulativeEmissions(
-    emissions,
-    'totalClaimedStakingRewards'
-  );
+  // A snapshot written before these fields existed has no key for them, and a missing
+  // key reads as 0 — a flat line at zero against a real ~12.3M. Absent and zero are
+  // different claims, so a series is drawn only once its field is present.
+  const present = SERIES.filter((series) => emissions.some((epoch) => series.field in epoch));
+  const cumulative = present.map((series) => getCumulativeEmissions(emissions, series.field));
 
   return (
     <div className="flex flex-col flex-auto p-4">
@@ -36,14 +60,9 @@ export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOpe
         Emissions per epoch
       </h2>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
-        <LegendItem
-          color={EMISSIONS_CHART_COLORS.available.legend}
-          label="Staking rewards claimable"
-        />
-        <LegendItem
-          color={EMISSIONS_CHART_COLORS.operators.legend}
-          label="Staking rewards claimed"
-        />
+        {present.map((series) => (
+          <LegendItem key={series.field} color={series.color.legend} label={series.label} />
+        ))}
       </div>
       <div className="flex flex-col flex-auto gap-8">
         <div className="flex-auto h-72">
@@ -53,28 +72,15 @@ export const EmissionsToOperators = memo(({ emissions, loading }: EmissionsToOpe
             <Line
               data={{
                 labels: emissions.map((item) => item.counter ?? 0),
-                datasets: [
-                  {
-                    label: 'Staking rewards claimable',
-                    data: totalClaimableStakingRewards,
-                    order: 1,
-                    pointBackgroundColor: EMISSIONS_CHART_COLORS.available.line,
-                    borderColor: EMISSIONS_CHART_COLORS.available.line,
-                  },
-                  {
-                    label: 'Staking rewards claimed',
-                    data: totalClaimedStakingRewards,
-                    order: 2,
-                    pointBackgroundColor: EMISSIONS_CHART_COLORS.operators.line,
-                    borderColor: EMISSIONS_CHART_COLORS.operators.line,
-                  },
-                ],
+                datasets: present.map((series, index) => ({
+                  label: series.label,
+                  data: cumulative[index],
+                  order: index + 1,
+                  pointBackgroundColor: series.color.line,
+                  borderColor: series.color.line,
+                })),
               }}
-              options={getEmissionsChartOptions([
-                ...totalClaimableStakingRewards,
-                ...totalClaimableStakingRewards,
-                10 ** 18, // Add this temporarily while we don't have data on staking
-              ])}
+              options={getEmissionsChartOptions(cumulative.flat())}
             />
           )}
         </div>

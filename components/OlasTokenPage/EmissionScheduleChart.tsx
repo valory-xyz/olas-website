@@ -101,6 +101,7 @@ export const EmissionScheduleChart = ({
               ],
             }}
             options={{
+              plugins: { legend: { display: false } },
               scales: {
                 x: {
                   title: {
