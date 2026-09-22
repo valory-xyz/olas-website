@@ -282,10 +282,11 @@ const PlatformSwitcher = ({
       return (
         <button
           key={key}
+          id={key}
           type="button"
           aria-pressed={isActive}
           onClick={() => onChange(key)}
-          className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors scroll-mt-[100px] ${
             isActive ? 'bg-slate-200 text-gray-900' : 'text-slate-500 hover:text-slate-700'
           }`}
         >

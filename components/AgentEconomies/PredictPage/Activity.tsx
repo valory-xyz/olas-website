@@ -1,20 +1,24 @@
+import { isFrozen } from 'common-util/graphql/metric-utils';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
+import { MetricContext } from 'components/ui/MetricContext';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
-import { MetricContext } from 'components/ui/MetricContext';
+import { useHash } from 'hooks/useHash';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { NetPositiveRateCard, NetPositiveRateSummary } from './NetPositiveRateCard';
-import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
+import { PlatformActivitySection } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
 import { ToolAccuracyTable } from './ToolAccuracyTable';
-import { isFrozen } from 'common-util/graphql/metric-utils';
+
+const isPlatform = (value: string): value is Platform =>
+  value === 'omenstrat' || value === 'polystrat';
 
 const processPredictMetrics = (
   metrics: any
@@ -207,6 +211,13 @@ export const Activity = ({
     return processPredictMetrics(initialMetrics);
   }, [initialMetrics]);
   const [platform, setPlatform] = useState<Platform>('omenstrat');
+
+  // #omenstrat / #polystrat to pre-select needed activity tab
+  const hash = useHash();
+  useEffect(() => {
+    const key = hash.slice(1);
+    if (isPlatform(key)) setPlatform(key);
+  }, [hash]);
 
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
