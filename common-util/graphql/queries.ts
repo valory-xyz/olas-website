@@ -150,10 +150,11 @@ export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gq
     }
   }`;
 
-export const getMarketsAndBetsQuery = (timestamp_gt) => gql`
+export const getMarketsAndBetsQuery = ({ timestamp_gt, first }) => gql`
   query MarketsAndBets {
     fixedProductMarketMakerCreations(
       where: { blockTimestamp_gt: ${timestamp_gt} }
+      first: ${first}
     ) {
       id
       question
