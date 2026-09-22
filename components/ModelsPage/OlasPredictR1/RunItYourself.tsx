@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 
-import { SECTION_BOX_CLASS, TEXT_SMALL_CLASS } from 'common-util/classes';
+import { TEXT_SMALL_CLASS } from 'common-util/classes';
 import { VALORY_GIT_URL } from 'common-util/constants';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
@@ -15,12 +15,14 @@ export const RunItYourself = () => (
   <SectionWrapper
     id="run-it-yourself"
     backgroundType="NONE"
-    customClasses={`${SECTION_BOX_CLASS} border-t border-slate-200`}
+    // Tighter than SECTION_BOX_CLASS's 96px: the design sets the steps column close to
+    // the section rules, so the standard page padding leaves it floating.
+    customClasses="border-t border-slate-200 px-6 py-12 lg:px-0 lg:py-16"
     customStyle={{
       background: 'linear-gradient(160deg, #ead5fb 0%, #f7eefc 30%, #ffffff 60%)',
     }}
   >
-    <div className="mx-auto grid max-w-[872px] items-center gap-12 lg:grid-cols-2">
+    <div className="mx-auto grid max-w-[872px] items-center gap-10 lg:grid-cols-2">
       <div className="max-w-md">
         <h2 className="mb-4 text-[32px] font-semibold text-black">Run it yourself</h2>
         <p className={`${TEXT_SMALL_CLASS} mb-3`}>
@@ -41,9 +43,9 @@ export const RunItYourself = () => (
       <Image
         src="/images/models-page/run-it-yourself.png"
         alt="Three steps: install the mech client, fund your wallet, request a prediction"
-        width={560}
-        height={480}
-        className="mx-auto h-auto w-full max-w-[280px]"
+        width={652}
+        height={812}
+        className="mx-auto h-auto w-full max-w-[260px]"
       />
     </div>
   </SectionWrapper>
