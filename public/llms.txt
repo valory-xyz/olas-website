@@ -83,7 +83,7 @@ Every page on olas.network not linked above, each with what it is for.
 
 ### Models
 - Models (https://olas.network/models): specialised models trained for the agents running on Olas.
-- Olas-Predict-R1-14B (https://olas.network/models/olas-predict-r1-14b): a model fine-tuned for forecasting; full details coming soon.
+- Olas-Predict-R1-14B (https://olas.network/models/olas-predict-r1-14b): a specialised, open-weight 14B-parameter model that estimates the probability of future events; shows example forecasts against their outcomes and how to run it through the Olas Marketplace with mech-client.
 
 ### Agent economies
 - Predict (https://olas.network/agent-economies/predict): on-demand agent-powered predictions, with live activity metrics.

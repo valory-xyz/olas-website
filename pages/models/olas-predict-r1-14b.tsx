@@ -1,32 +1,23 @@
-import { SECTION_BOX_CLASS } from 'common-util/classes';
 import PageWrapper from 'components/Layout/PageWrapper';
-import SectionWrapper from 'components/Layout/SectionWrapper';
 import Meta from 'components/Meta';
-import SectionHeading from 'components/SectionHeading';
-import { Button } from 'components/ui/button';
-import Link from 'next/link';
+import { ExampleForecasts } from 'components/ModelsPage/OlasPredictR1/ExampleForecasts';
+import { ForecastingResults } from 'components/ModelsPage/OlasPredictR1/ForecastingResults';
+import { MODEL_NAME } from 'components/ModelsPage/OlasPredictR1/constants';
+import { Hero } from 'components/ModelsPage/OlasPredictR1/Hero';
+import { RunItYourself } from 'components/ModelsPage/OlasPredictR1/RunItYourself';
+import { StatsStrip } from 'components/ModelsPage/OlasPredictR1/StatsStrip';
 
 const OlasPredictR1Page = () => (
   <PageWrapper>
-    {/* Placeholder until the designed page lands — keep it out of search until then. */}
     <Meta
-      pageTitle="Olas-Predict-R1-14B"
-      description="A model fine-tuned for forecasting."
-      noindex
+      pageTitle={MODEL_NAME}
+      description="A specialized, open-weight AI model designed to estimate the probability of future events. Explore its past forecasts alongside their outcomes."
     />
-    <SectionWrapper backgroundType="NONE" customClasses={`${SECTION_BOX_CLASS} bg-slate-100`}>
-      <div className="max-w-4xl mx-auto flex flex-col text-center">
-        <SectionHeading spacing="mb-6" color="text-slate-800">
-          Olas-Predict-R1-14B
-        </SectionHeading>
-        <p className="text-lg text-slate-600 mb-10">
-          A model fine-tuned for forecasting. More details coming soon.
-        </p>
-        <Button variant="outline" size="lg" className="w-fit mx-auto" asChild>
-          <Link href="/models">Back to Models</Link>
-        </Button>
-      </div>
-    </SectionWrapper>
+    <Hero />
+    <StatsStrip />
+    <ForecastingResults />
+    <ExampleForecasts />
+    <RunItYourself />
   </PageWrapper>
 );
 
