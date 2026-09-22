@@ -28,8 +28,8 @@ const scoreForecast = (forecast: Forecast) => {
 };
 
 const VERDICT = {
-  correct: { label: 'Correct', className: 'bg-lime-50 text-[#135200] border-lime-200' },
-  wrong: { label: 'Wrong', className: 'bg-rose-50 text-red-800 border-red-300' },
+  correct: { label: 'Correct', className: 'border-[#b7eb8f] bg-[#f6ffed] text-[#135200]' },
+  wrong: { label: 'Wrong', className: 'border-[#ffa39e] bg-[#fff1f0] text-[#a8071a]' },
 } as const;
 
 const CopyButton = ({ text, label }: { text: string; label: string }) => {
@@ -64,7 +64,7 @@ const TranscriptPane = ({ label, text }: { label: string; text: string }) => (
       <div className="absolute right-1 top-1">
         <CopyButton text={text} label={label.toLowerCase()} />
       </div>
-      <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap break-words p-3 pr-8 font-mono text-[11px] leading-4 text-slate-700">
+      <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap break-words p-3 pr-8 font-mono text-[11px] leading-4 text-slate-700 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {text}
       </pre>
     </div>
@@ -86,7 +86,7 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
       </span>
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-8">
         <div className="flex flex-1 flex-col gap-2">
-          <p className="text-sm leading-[22px] text-slate-800">{forecast.question}</p>
+          <p className="text-base leading-6 text-slate-800">{forecast.question}</p>
           {hasTranscript && (
             <button
               type="button"
@@ -103,15 +103,15 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
 
         <dl className="flex shrink-0 gap-8 sm:ml-4">
           <div className="flex flex-col gap-1">
-            <dt className="text-xs text-slate-500">Probability of Yes</dt>
+            <dt className="text-sm font-normal leading-5 text-slate-500">Probability of Yes</dt>
             <dd className="flex flex-col items-start gap-1">
-              <span className="text-lg font-semibold leading-6 text-purple-600">
+              <span className="text-xl font-semibold leading-7 tracking-[-0.2px] text-purple-700">
                 {formatProbability(forecast.prediction)}
               </span>
               {verdict && (
                 <span
                   className={cn(
-                    'rounded px-1.5 py-0.5 text-[11px] font-medium leading-4 border',
+                    'rounded border px-1.5 py-0.5 text-sm font-normal leading-5',
                     VERDICT[verdict].className
                   )}
                 >
@@ -121,8 +121,10 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
             </dd>
           </div>
           <div className="flex flex-col gap-1">
-            <dt className="text-xs text-slate-500">Outcome</dt>
-            <dd className="text-lg font-semibold leading-6 text-black">{forecast.outcome}</dd>
+            <dt className="text-sm font-normal leading-5 text-slate-500">Outcome</dt>
+            <dd className="text-xl font-semibold leading-7 tracking-[-0.2px] text-black">
+              {forecast.outcome}
+            </dd>
           </div>
         </dl>
       </div>

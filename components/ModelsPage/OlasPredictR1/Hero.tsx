@@ -6,7 +6,7 @@ import { Button } from 'components/ui/button';
 
 export const Hero = () => (
   <section
-    className="border-b border-slate-200 px-6 py-16 lg:px-12 lg:py-24"
+    className="border-b border-slate-200 px-6 py-10 lg:px-12"
     style={{
       // Purple wash top-left; a soft pink glow bottom-right behind the forecast card.
       background: [

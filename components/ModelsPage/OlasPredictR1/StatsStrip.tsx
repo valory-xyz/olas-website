@@ -24,14 +24,16 @@ export const StatsStrip = () => (
             i < STATS.length - 1 && 'border-b border-[#e8eaee] md:border-b-0 md:border-r'
           )}
         >
-          <dt className="order-2 text-[14px] leading-5 tracking-[0.14px] text-slate-500">
+          <dt className="order-2 text-[14px] leading-5 tracking-[0.14px] text-[#7d8a9e]">
             {stat.label}
           </dt>
           <dd className="order-1 flex flex-wrap items-baseline gap-x-1.5 text-[32px] font-semibold leading-10 text-black">
             {stat.value}
             {stat.qualifier && (
               // Wraps as a unit under the value on narrow tiles, never mid-phrase.
-              <span className="whitespace-nowrap text-xs font-medium">{stat.qualifier}</span>
+              <span className="whitespace-nowrap text-base font-medium leading-6">
+                {stat.qualifier}
+              </span>
             )}
           </dd>
         </div>
