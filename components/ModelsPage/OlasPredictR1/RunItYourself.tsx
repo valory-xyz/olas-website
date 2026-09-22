@@ -17,12 +17,13 @@ export const RunItYourself = () => (
     backgroundType="NONE"
     // Tighter than SECTION_BOX_CLASS's 96px: the design sets the steps column close to
     // the section rules, so the standard page padding leaves it floating.
-    customClasses="border-t border-slate-200 px-6 py-12 lg:px-0 lg:py-16"
+    customClasses="border-t border-slate-200 px-6 py-10 lg:px-0"
     customStyle={{
       background: 'linear-gradient(160deg, #ead5fb 0%, #f7eefc 30%, #ffffff 60%)',
     }}
   >
-    <div className="mx-auto grid max-w-[872px] items-center gap-10 lg:grid-cols-2">
+    {/* Copy left, steps right, pushed to opposite ends of the column. */}
+    <div className="mx-auto flex max-w-[872px] flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
       <div className="max-w-md">
         <h2 className="mb-4 text-[32px] font-semibold text-black">Run it yourself</h2>
         <p className={`${TEXT_SMALL_CLASS} mb-3`}>
@@ -45,7 +46,7 @@ export const RunItYourself = () => (
         alt="Three steps: install the mech client, fund your wallet, request a prediction"
         width={652}
         height={812}
-        className="mx-auto h-auto w-full max-w-[260px]"
+        className="mx-auto h-auto w-full max-w-[260px] shrink-0 lg:mx-0"
       />
     </div>
   </SectionWrapper>
