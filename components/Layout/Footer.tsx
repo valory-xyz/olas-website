@@ -115,6 +115,10 @@ const RESOURCES_LINKS = [
     title: 'Agent Economy Explorer',
     link: '/agent-economies/explorer',
   },
+  {
+    title: 'Models',
+    link: '/models',
+  },
 ];
 
 const MORE_LINKS = [
