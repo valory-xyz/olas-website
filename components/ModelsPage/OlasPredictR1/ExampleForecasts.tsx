@@ -81,7 +81,7 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
     <li className="relative rounded-xl border border-slate-100 bg-[#f7f8fb] p-6">
       {/* Index badge hugs the card's top-left corner: its 12px outer radius matches the
           card's, and the opposite corner is rounded so it reads as a tab, not a square. */}
-      <span className="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-br-xl rounded-tl-xl bg-[#dfe5ee] text-[10px] font-medium leading-none text-slate-600">
+      <span className="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-br-xl rounded-tl-xl bg-[#dfe5ee] text-sm font-medium leading-none text-slate-600">
         {index + 1}
       </span>
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:gap-8">
@@ -105,7 +105,7 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
           <div className="flex flex-col gap-1">
             <dt className="text-sm font-normal leading-5 text-slate-500">Probability of Yes</dt>
             <dd className="flex flex-col items-start gap-1">
-              <span className="text-xl font-semibold leading-7 tracking-[-0.2px] text-purple-700">
+              <span className="text-2xl font-semibold leading-8 tracking-[-0.24px] text-purple-700">
                 {formatProbability(forecast.prediction)}
               </span>
               {verdict && (
@@ -122,7 +122,7 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
           </div>
           <div className="flex flex-col gap-1">
             <dt className="text-sm font-normal leading-5 text-slate-500">Outcome</dt>
-            <dd className="text-xl font-semibold leading-7 tracking-[-0.2px] text-black">
+            <dd className="text-2xl font-semibold leading-8 tracking-[-0.24px] text-black">
               {forecast.outcome}
             </dd>
           </div>

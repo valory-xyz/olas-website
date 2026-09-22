@@ -25,9 +25,12 @@ export const Hero = () => (
           Olas-Predict-R1-14B is a specialized, open-weight AI model designed to estimate the
           probability of future events. Explore its past forecasts alongside their outcomes.
         </p>
-        <Button variant="default" size="lg" asChild>
-          <Link href="#run-it-yourself">Try Model Yourself</Link>
-        </Button>
+        {/* Centred while the columns are stacked, left-aligned once they sit side by side. */}
+        <div className="flex justify-center lg:justify-start">
+          <Button variant="default" size="lg" asChild>
+            <Link href="#run-it-yourself">Try Model Yourself</Link>
+          </Button>
+        </div>
       </div>
       <ModelIllustration />
     </div>
