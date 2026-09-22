@@ -24,10 +24,8 @@ const REDIRECTED_AGENT_SLUGS = new Set([
  *  - `/academy`  -> `/404` (retired)
  *  - `/protocol` -> `/stack` (301)
  *  - `/restricted`: the geo-block interstitial; also carries a noindex tag.
- *  - `/models/olas-predict-r1-14b`: placeholder page, noindexed until the real
- *    page ships. Drop this entry then.
  */
-const EXCLUDED_PATHS = ['/academy', '/protocol', '/restricted', '/models/olas-predict-r1-14b'];
+const EXCLUDED_PATHS = ['/academy', '/protocol', '/restricted'];
 
 /**
  * Blog posts live in the CMS and are rendered by `pages/blog/[id].tsx`, so

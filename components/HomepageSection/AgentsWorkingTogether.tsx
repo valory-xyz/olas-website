@@ -53,9 +53,14 @@ export const AgentsWorkingTogether = () => (
       className="mx-auto py-4"
     />
 
-    <div className="w-fit mt-14 mx-auto">
+    {/* #mech-marketplace is the link we share for all things Mech; the economy
+        page links on to the Mech agent page. */}
+    <div className="mt-14 mx-auto flex flex-wrap justify-center gap-4 max-md:flex-col max-md:items-stretch">
       <Button variant="default" size="lg" asChild>
         <Link href="/mech-marketplace">Monetize Your Agent</Link>
+      </Button>
+      <Button variant="ghostPrimary" size="lg" asChild>
+        <Link href="/agent-economies/mech">Explore the Mech Economy</Link>
       </Button>
     </div>
   </SectionWrapper>

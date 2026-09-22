@@ -34,7 +34,7 @@
   {
     "id": "f1b19e50-8a2b-4a1b-bf75-4b6b5d3e1e7b",
     "title": "Agents Unleashed",
-    "description": "View upcoming and past events",  
+    "description": "View upcoming and past events",
     "url": "/agents-unleashed",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
@@ -100,6 +100,14 @@
     "title": "Agent Economy Explorer",
     "description": "Visual, time-aware view of Olas agent-economy activity.",
     "url": "/agent-economies/explorer",
+    "imageFilename": "awesome-autonolas.svg",
+    "tags": []
+  },
+  {
+    "id": "6d2f1c4e-9b3a-4e7d-8c15-2a0b7e5f9d31",
+    "title": "Models",
+    "description": "Discover Olas AI models for autonomous agents",
+    "url": "/models",
     "imageFilename": "awesome-autonolas.svg",
     "tags": []
   }

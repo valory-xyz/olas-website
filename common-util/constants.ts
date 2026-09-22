@@ -336,17 +336,16 @@ export const MECH_FEES_CHAIN_SCOPE = chainScope(
   'the mech-fee subgraphs cover'
 );
 
-// Hero press feature — temporary. Remove after the run; greppable by HERO_FEATURE.
+// Hero feature card — temporary. Remove after the run; greppable by HERO_FEATURE.
 export const HERO_FEATURE = {
-  headline: 'Agentic Commerce Is Here As Mastercard Cloudflare And Olas Build Rails',
-  outlet: 'Forbes',
-  // Cropped to the ink; the reel's forbes.svg has ~29px of padding at this size.
-  logoSrc: '/images/homepage/forbes-wordmark.svg',
-  url: 'https://www.forbes.com/sites/sandycarter/2026/09/02/agentic-commerce-is-here-as-mastercard-cloudflare-and-olas-build-rails/',
+  headline: 'Valory turns Olas agent data into a stronger AI forecaster',
+  model: 'Olas-Predict-R1-14B',
+  imageSrc: '/images/homepage/olas-predict-r1-blob-solo.png',
+  url: '/models/olas-predict-r1-14b',
 } as const;
 
-// A month after the article ran (2026-09-02). Keep the explicit Z.
-export const HERO_FEATURE_END = '2026-10-02T23:59:59Z';
+// A month after launch (2026-09-22). Keep the explicit Z.
+export const HERO_FEATURE_END = '2026-10-22T23:59:59Z';
 
 export const isHeroFeatureActive = (now: number = Date.now()): boolean => {
   const endsAt = Date.parse(HERO_FEATURE_END);

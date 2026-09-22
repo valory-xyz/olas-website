@@ -1,0 +1,335 @@
+/*
+ * Olas-Predict-R1-14B hero illustration (design handoff 2026-09-22, "corners" layout).
+ * Scoped under `.oi-root`; the animation in `common-util/model-illustration.ts` drives the
+ * `oi-*` hooks, so keep class names in sync with `components/ModelsPage/OlasPredictR1/
+ * ModelIllustration.tsx`.
+ */
+.oi-root {
+  box-sizing: border-box;
+  width: 100%;
+  /* As a grid/flex item, don't let the 480px question card widen the column past the viewport. */
+  min-width: 0;
+  max-width: 640px;
+  margin: auto;
+  padding: 28px 24px 20px;
+  color: #000;
+  color-scheme: light;
+  /* The handoff's bottom-right pink glow is painted by the hero section instead, so it
+     bleeds into the page corner rather than stopping at this box's edge. */
+}
+.oi-root * {
+  box-sizing: border-box;
+}
+.oi-root .oi-scene {
+  position: relative;
+  width: 100%;
+  max-width: 528px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+}
+.oi-root .oi-card {
+  position: relative;
+  flex: none;
+  width: 380px;
+  max-width: 100%;
+  padding: 17px 25px;
+  z-index: 3;
+}
+.oi-root[data-running='true'] .oi-card {
+  will-change: transform;
+}
+.oi-root .oi-word {
+  display: inline-block;
+}
+.oi-root .oi-card-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: -1;
+}
+.oi-root .oi-label {
+  margin: 0;
+  color: #7e22ce;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+.oi-root .oi-question {
+  align-self: flex-start;
+  width: 480px;
+}
+.oi-root .oi-question p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.oi-root .oi-model-space {
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: auto;
+  margin: 60px 0 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.oi-root .oi-tool-head {
+  position: relative;
+  margin-inline: auto;
+  width: min(318px, calc(100% - 16px));
+  padding: 12px 16px;
+  text-align: center;
+  z-index: 3;
+  border: 1px solid #d7ddea;
+  background: #fff;
+}
+.oi-root .oi-tool-id {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: #606f85;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+.oi-root .oi-tool-id span {
+  display: inline-block;
+}
+.oi-root .oi-model {
+  position: relative;
+  align-self: center;
+  width: 230px;
+  height: 210px;
+  flex: none;
+  z-index: 2;
+  pointer-events: none;
+}
+/* Static blob shown until the canvas takes over (SSR, no JS, no 2D context). */
+.oi-root .oi-model::before {
+  content: '';
+  position: absolute;
+  width: 158px;
+  height: 148px;
+  left: 36px;
+  top: 31px;
+  border-radius: 48% 52% 45% 55%;
+  background: radial-gradient(at 25% 25%, #f1c5f4, #c58be2 20%, #aa78ce);
+}
+.oi-root .oi-model[data-ready='true']::before {
+  display: none;
+}
+.oi-root .oi-model-name {
+  position: absolute;
+  top: 187px;
+  left: 0;
+  width: 100%;
+  color: #606f85;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+}
+.oi-root canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.oi-root .oi-forecast {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.oi-root .oi-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.oi-root .oi-values {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.oi-root .oi-values strong {
+  color: #000;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.64px;
+}
+.oi-root .oi-values span {
+  color: #606f85;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.oi-root .oi-bar {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  flex: none;
+  border-radius: 3px;
+  background: #dfe5ee;
+}
+.oi-root .oi-bar span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: var(--oi-fill, 20%);
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #701eb8, #8b2ddc);
+  transform-origin: left center;
+}
+.oi-root .oi-bar-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--oi-fill, 20%);
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    #9333ea00 0%,
+    #9333ea08 22%,
+    #a13df14a 52%,
+    #a243edc4 84%,
+    #a34cf4ed 100%
+  );
+  filter: blur(6px);
+  transform-origin: left center;
+}
+.oi-root .oi-bar-glow::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 0;
+  height: 100%;
+  width: 13px;
+  border-radius: 4px;
+  background: #a855f799;
+}
+.oi-root .oi-routes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+.oi-root .oi-route {
+  fill: none;
+  stroke: #bca8d0;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+.oi-root .oi-signal {
+  opacity: 0;
+}
+.oi-root .oi-signal path {
+  fill: none;
+  stroke-linecap: round;
+}
+.oi-root .oi-signal-glow {
+  stroke-width: 6;
+  opacity: 0.65;
+  filter: url(#oi-signal-blur);
+}
+.oi-root .oi-signal-core {
+  stroke-width: 2.4;
+}
+.oi-root .oi-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Bracket corners on the tool card: a grey SVG at rest, a purple masked copy that the
+   animation fades in and nudges outward once the signal connects. */
+.oi-root .oi-corner {
+  position: absolute;
+  width: 10.75px;
+  height: 10.75px;
+  pointer-events: none;
+}
+.oi-root .oi-corner img {
+  display: block;
+  width: 10.75px;
+  height: 10.75px;
+}
+.oi-root .oi-corner-tr {
+  top: -7px;
+  right: -7px;
+  --corner-asset: url('/images/models-page/corner-right.svg');
+}
+.oi-root .oi-corner-br {
+  bottom: -7px;
+  right: -7px;
+  transform: scaleY(-1);
+  --corner-asset: url('/images/models-page/corner-right.svg');
+}
+.oi-root .oi-corner-tl {
+  top: -7px;
+  left: -7px;
+  transform: scaleX(-1);
+  --corner-asset: url('/images/models-page/corner-left.svg');
+}
+.oi-root .oi-corner-bl {
+  bottom: -7px;
+  left: -7px;
+  transform: rotate(180deg);
+  --corner-asset: url('/images/models-page/corner-left.svg');
+}
+.oi-root .oi-corner-active {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.oi-root .oi-corner-active::before,
+.oi-root .oi-corner-active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #7e22ce;
+  mask: var(--corner-asset) center / 10.75px 10.75px no-repeat;
+}
+.oi-root .oi-corner-active::before {
+  filter: drop-shadow(0.3px 0 #7e22ce) drop-shadow(-0.3px 0 #7e22ce) drop-shadow(0 0.3px #7e22ce)
+    drop-shadow(0 -0.3px #7e22ce);
+}
+.oi-root .oi-corner-active::after {
+  filter: blur(3px);
+  opacity: 0.25;
+}
+
+@media (max-width: 460px) {
+  .oi-root {
+    padding: 24px 20px 20px;
+  }
+  .oi-root .oi-tool-id {
+    max-width: 265px;
+    margin: 4px auto 0;
+  }
+}
