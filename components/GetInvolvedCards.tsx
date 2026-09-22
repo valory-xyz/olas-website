@@ -3,7 +3,12 @@ import Link from 'next/link';
 import SectionWrapper from './Layout/SectionWrapper';
 import { ExternalLink, SubsiteLink } from './ui/typography';
 
-export const GetInvolvedCards = ({ id = 'get-involved', title = 'Get Involved', list }) => {
+export const GetInvolvedCards = ({
+  id = 'get-involved',
+  title = 'Get Involved',
+  list,
+  cta = null,
+}) => {
   const listLength = list.length;
   const sectionWidth = listLength === 2 ? 'max-w-screen-xl' : '';
 
@@ -42,6 +47,8 @@ export const GetInvolvedCards = ({ id = 'get-involved', title = 'Get Involved', 
           </div>
         ))}
       </div>
+
+      {cta && <div className="mt-8 lg:mt-12 flex justify-center">{cta}</div>}
     </SectionWrapper>
   );
 };
