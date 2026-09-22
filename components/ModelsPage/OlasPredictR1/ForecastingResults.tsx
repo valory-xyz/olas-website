@@ -376,7 +376,6 @@ const ChartCard = ({ metric, kind }: { metric: Metric; kind: 'bar' | 'time' }) =
 
 export const ForecastingResults = () => {
   const olas = modelOf('olas');
-  const period = `${dayjs(results.period.from).format('MMM D')} – ${dayjs(results.period.to).format('MMM D, YYYY')}`;
   return (
     <SectionWrapper backgroundType="NONE" customClasses={`${SECTION_BOX_CLASS} bg-white`}>
       <div className="mx-auto max-w-[1248px]">
@@ -396,11 +395,6 @@ export const ForecastingResults = () => {
           <ChartCard metric="brier" kind="bar" />
           <ChartCard metric="brier" kind="time" />
         </div>
-        <p className="mt-4 text-sm leading-[22px] text-[#4d596a] md:text-center">
-          Markets closing {period}, scored as they resolve (from the 200th market).
-          <br />
-          Shaded: 95% confidence interval.
-        </p>
       </div>
     </SectionWrapper>
   );
