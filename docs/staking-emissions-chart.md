@@ -52,13 +52,18 @@ Gnosis, Base, Optimism and Polygon are listed: all four have been redeployed wit
 field. Mode is the only chain left on the fallback, and always will be.
 
 **Mode cannot be listed.** It runs on a non-archive RPC and cannot be reindexed, so it
-will never carry the field — and asking a subgraph for a field it does not have fails the
-*whole request*, not just that field.
+will never carry the field. The constant's type omits it, so listing it is a compile
+error.
 
-Measured on the current data: with every redeployed chain listed, the whole tokenomics
-fetch costs **41 requests and 5.0s**, against **191 requests and 33.1s** when all five
-chains take the fallback. Gnosis alone accounts for almost all of that difference — it
-has ~137k payout rows. Where both paths are available they agree to the wei.
+Asking a subgraph for a field it does not have fails the *whole request*, not just that
+field — so a chain that is listed but served by an un-redeployed subgraph, after a
+rollback or a premature entry, would take every chart down rather than losing one chain.
+`fetchChain` retries once on the payout path, which any version of the subgraph can
+answer, so the cost of that mistake is one chain's speed rather than a frozen metric.
+
+The accumulator is roughly an order of magnitude cheaper in requests and wall time than
+the fallback, almost entirely because of Gnosis — it has ~137k payout rows against ~800
+daily snapshots. Where both paths are available they agree to the wei.
 
 **Do not sum `RewardUpdate` rows with a single `first: 1000`.** That is what this chart
 did before: Gnosis alone has ~137k of them, 33 of 48 epochs hit the cap, and the chart
@@ -98,6 +103,18 @@ epoch that closed earlier that day — at most one day's rewards per boundary.
 It is visible as a boundary epoch briefly showing claimable above dispensed, and as the
 summary table's "settled epochs only" total including a sliver of the open epoch. Fixing
 it needs intra-day reward data, which the subgraph does not keep.
+
+## Absent is not zero
+
+A snapshot written before these fields existed has no key for them, and a missing key
+reads as `0` — a flat line and a published "0 OLAS" against a real ~12.3M for however
+long it takes the next refresh to run.
+
+`EmissionsToOperators` and `EmissionsSummaryTable` therefore test for the field's
+presence, not its value, and omit a series or row until it arrives. Do not replace that
+with a check on the number: `0` is a legitimate value and is indistinguishable from
+absent once the field has been read. The same rule is why the text layer emits no
+sentence for a value the page is not showing.
 
 ## Known gaps
 
