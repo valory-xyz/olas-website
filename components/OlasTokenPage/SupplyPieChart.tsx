@@ -220,6 +220,7 @@ export const SupplyPieChart = ({ supplyDistribution }: SupplyPieChartProps) => {
                     },
                   ],
                 }}
+                options={{ plugins: { legend: { display: false } } }}
               />
             )}
           </div>

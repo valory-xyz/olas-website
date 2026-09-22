@@ -167,6 +167,12 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; l
     ])
   );
 
+// Mode is excluded as it can't be reindexed
+export const STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS: Exclude<
+  'gnosis' | 'base' | 'optimism' | 'polygon' | 'mode',
+  'mode'
+>[] = ['gnosis', 'base', 'optimism', 'polygon'];
+
 // VoteWeighting on Ethereum — its nominees define the officially maintained staking programs.
 export const VOTE_WEIGHTING_ADDRESS = '0x95418b46d5566D3d1ea62C12Aea91227E566c5c1';
 

@@ -1,20 +1,23 @@
 import { OLAS_API_URL, OLAS_SUPPLY_DISTRIBUTION_ADDRESSES } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { emissionsQuery, rewardUpdates } from 'common-util/graphql/queries';
+import { emissionsPageQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { readOlasContract, readTokenomicsContract } from 'common-util/web3';
+import { fetchStakingEmissionsSeries } from './staking-emissions';
 import { isNil } from 'lodash';
 import { formatEther } from 'viem';
 
 // Years 0-12 of the max emission schedule shown on the /olas-token bar chart
 // (10y capped schedule + the first years of the 2%/yr tail).
 const INFLATION_YEARS = 13;
+
+const EPOCHS_PAGE_SIZE = 1000;
 
 type SupplyDistribution = {
   totalSupplyWei: string;
@@ -45,8 +48,6 @@ type SubgraphEpoch = {
   blockTimestamp: string;
   availableDevIncentives: string;
   devIncentivesTotalTopUp: string;
-  availableStakingIncentives: string;
-  totalStakingIncentives: string;
   totalBondsClaimable: string;
   totalBondsClaimed: string;
 };
@@ -54,11 +55,11 @@ type SubgraphEpoch = {
 export type EmissionEpoch = SubgraphEpoch & {
   totalClaimableStakingRewards: string;
   totalClaimedStakingRewards: string;
+  totalMintedForStaking: string;
+  totalDispensedToStakingContracts: string;
 };
 
 type EmissionsResult = WithMeta<{ epoches?: SubgraphEpoch[] }>;
-type RewardUpdate = { id: string; amount: string; type: string };
-type RewardUpdatesResult = WithMeta<Record<string, RewardUpdate[]>>;
 
 const fetchSupplyDistribution = async (): Promise<MetricWithStatus<SupplyDistribution | null>> => {
   try {
@@ -81,7 +82,14 @@ const fetchSupplyDistribution = async (): Promise<MetricWithStatus<SupplyDistrib
     }
 
     const totalSupply = BigInt(raw);
-    const circulatingSupply = totalSupply > 0n ? totalSupply - (veOlas + dao + valory) : 0n;
+    // The pie renders these as slices, so the remainder must not go negative
+    const nonCirculating = veOlas + dao + valory;
+    if (totalSupply <= 0n || nonCirculating > totalSupply) {
+      throw new Error(
+        `OLAS supply distribution implausible: non-circulating ${nonCirculating} of total ${totalSupply}`
+      );
+    }
+    const circulatingSupply = totalSupply - nonCirculating;
 
     return {
       value: {
@@ -178,65 +186,43 @@ const fetchEmissions = async (): Promise<MetricWithStatus<EmissionEpoch[] | null
   const laggingSubgraphs: string[] = [];
 
   try {
-    const [emissionsData, ethereumBlock] = await Promise.all([
-      TOKENOMICS_GRAPH_CLIENTS.ethereum.request(emissionsQuery) as Promise<EmissionsResult>,
-      getChainBlockNumber('ethereum'),
-    ]);
+    // Paged: a short page here would drop the oldest epochs from all four charts
+    const epoches: SubgraphEpoch[] = [];
+    let meta: EmissionsResult['_meta'];
+    let cursor = 0;
+    for (;;) {
+      const page = (await TOKENOMICS_GRAPH_CLIENTS.ethereum.request(
+        emissionsPageQuery(cursor)
+      )) as EmissionsResult;
+      meta = page._meta;
+      const rows = page.epoches || [];
+      if (rows.length === 0) break;
+      epoches.push(...rows);
+      cursor = rows[rows.length - 1].counter;
+      if (rows.length < EPOCHS_PAGE_SIZE) break;
+    }
 
-    if (emissionsData._meta?.hasIndexingErrors) {
+    const ethereumBlock = await getChainBlockNumber('ethereum');
+
+    if (meta?.hasIndexingErrors) {
       indexingErrors.push('emissions:tokenomics:ethereum');
     }
-    if (checkSubgraphLag(ethereumBlock, emissionsData._meta?.block?.number, 'ethereum')) {
+    if (checkSubgraphLag(ethereumBlock, meta?.block?.number, 'ethereum')) {
       laggingSubgraphs.push('emissions:tokenomics:ethereum');
     }
-
-    const epoches = emissionsData.epoches || [];
-    const query = rewardUpdates(epoches);
-
-    const stakingResults = await Promise.all(
-      Object.entries(STAKING_GRAPH_CLIENTS).map(async ([chain, client]) => {
-        try {
-          const [rewards, chainBlock] = await Promise.all([
-            client.request(query) as Promise<RewardUpdatesResult>,
-            getChainBlockNumber(chain),
-          ]);
-          if (rewards._meta?.hasIndexingErrors) {
-            indexingErrors.push(`emissions:staking:${chain}`);
-          }
-          if (checkSubgraphLag(chainBlock, rewards._meta?.block?.number, chain)) {
-            laggingSubgraphs.push(`emissions:staking:${chain}`);
-          }
-          return rewards;
-        } catch (error) {
-          console.error(`Error fetching reward updates from ${chain}:`, error);
-          fetchErrors.push(`emissions:staking:${chain}`);
-          return null;
-        }
-      })
-    );
-
-    const value = epoches.map((epoch) => {
-      let totalClaimableStakingRewards = 0n;
-      let totalClaimedStakingRewards = 0n;
-
-      stakingResults.forEach((rewards) => {
-        if (!rewards) return;
-        const epochRewards = rewards[`_${epoch.counter}`] || [];
-        epochRewards.forEach((item) => {
-          if (item.type === 'Claimable') {
-            totalClaimableStakingRewards += BigInt(item.amount);
-          } else if (item.type === 'Claimed') {
-            totalClaimedStakingRewards += BigInt(item.amount);
-          }
-        });
-      });
-
-      return {
-        ...epoch,
-        totalClaimableStakingRewards: String(totalClaimableStakingRewards),
-        totalClaimedStakingRewards: String(totalClaimedStakingRewards),
-      };
+    const series = await fetchStakingEmissionsSeries(epoches, {
+      indexingErrors,
+      fetchErrors,
+      laggingSubgraphs,
     });
+
+    const value = epoches.map((epoch, index) => ({
+      ...epoch,
+      totalClaimableStakingRewards: series.claimable[index] ?? '0',
+      totalClaimedStakingRewards: series.claimed[index] ?? '0',
+      totalMintedForStaking: series.minted[index] ?? '0',
+      totalDispensedToStakingContracts: series.dispensed[index] ?? '0',
+    }));
 
     return {
       value,

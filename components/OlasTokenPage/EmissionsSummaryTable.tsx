@@ -1,4 +1,3 @@
-import { getCumulativeEmissions } from 'common-util/charts';
 import { formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUtcAsOf } from 'common-util/time';
 import { statusCaveat } from 'components/ui/MetricContext';
@@ -20,10 +19,25 @@ type EmissionData = { counter?: number; [key: string]: unknown };
  * series built from the same `emissions` array, so one table covers all of them —
  * claimed against claimable for each recipient group, plus the combined totals the
  * "Actual Emissions" chart shows.
+ *
+ * The staking chart carries two extra stages ahead of claimable: what was minted for
+ * staking and what reached the staking contracts. Their gap is the withheld OLAS, so
+ * each row says what its own number means rather than leaving a reader to infer it
+ * from a total that is deliberately lower than the one above.
  */
 const ROWS: Array<{ label: string; fields: string[] }> = [
   { label: 'Dev rewards claimed (builders)', fields: ['devIncentivesTotalTopUp'] },
   { label: 'Dev rewards available for claiming (builders)', fields: ['availableDevIncentives'] },
+  {
+    label:
+      'OLAS minted for staking rewards — what left the OLAS minter, net of amounts withheld on the destination chain',
+    fields: ['totalMintedForStaking'],
+  },
+  {
+    label:
+      'OLAS dispensed to staking contracts — what arrived in them, which trails the minted total because the depositories withhold OLAS a staking contract cannot yet take',
+    fields: ['totalDispensedToStakingContracts'],
+  },
   {
     // The activity-requirement rule explains only this pair's gap, not the dev or bond ones.
     label:
@@ -82,11 +96,23 @@ export const EmissionsSummaryTable = ({
   const isContiguous =
     firstEpoch !== null && lastEpoch !== null && epochs.length === lastEpoch - firstEpoch + 1;
 
-  const rows = ROWS.map(({ label, fields }) => {
-    const series = getCumulativeEmissions(settled, fields);
-    const total = series.length ? series[series.length - 1] : null;
-    return { label, total };
-  }).filter((row) => typeof row.total === 'number' && Number.isFinite(row.total));
+  // BigInt, not the charts' Number-based helper: these rows publish full numbers, and a
+  // cumulative wei total is ~1e24.
+  // Same rule as the chart: a field the snapshot does not carry yet is absent, not zero,
+  // and this table states figures as fact. Omit the row until the field arrives.
+  const rows = ROWS.filter(({ fields }) =>
+    fields.every((field) => settled.some((epoch) => field in epoch))
+  ).map(({ label, fields }) => ({
+    label,
+    total: settled.reduce(
+      (runningTotal, epoch) =>
+        fields.reduce((epochTotal, field) => {
+          const raw = epoch[field];
+          return epochTotal + (raw == null ? BigInt(0) : BigInt(String(raw)));
+        }, runningTotal),
+      BigInt(0)
+    ),
+  }));
 
   const asOf = formatUtcAsOf(status?.lastValidAt ?? snapshotTimestamp);
   const caveat = statusCaveat(status, 'data');
@@ -111,7 +137,7 @@ export const EmissionsSummaryTable = ({
           {rows.map(({ label, total }) => (
             <tr key={label}>
               <th scope="row">{label}</th>
-              <td>{`${formatWeiNumber(String(total), FULL_NUMBER)} OLAS`}</td>
+              <td>{`${formatWeiNumber(total, FULL_NUMBER)} OLAS`}</td>
             </tr>
           ))}
         </tbody>

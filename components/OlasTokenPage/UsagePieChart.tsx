@@ -85,6 +85,7 @@ export const UsagePieChart = ({ epoch = null, split, loading }: UsagePieChartPro
             options={{
               responsive: true,
               maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
             }}
           />
         )}
