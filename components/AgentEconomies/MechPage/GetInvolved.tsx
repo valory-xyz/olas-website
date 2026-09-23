@@ -1,5 +1,7 @@
 import { BUILD_URL } from 'common-util/constants';
 import { GetInvolvedCards } from 'components/GetInvolvedCards';
+import { Button } from 'components/ui/button';
+import Link from 'next/link';
 
 const list = [
   {
@@ -26,4 +28,10 @@ const list = [
   },
 ];
 
-export const GetInvolved = () => <GetInvolvedCards list={list} />;
+const MechAgentsCta = () => (
+  <Button variant="default" size="xl" asChild className="max-md:w-full">
+    <Link href="/agents/ai-mechs">Learn about Mech agents</Link>
+  </Button>
+);
+
+export const GetInvolved = () => <GetInvolvedCards list={list} cta={<MechAgentsCta />} />;

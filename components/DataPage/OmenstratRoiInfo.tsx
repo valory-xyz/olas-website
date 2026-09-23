@@ -17,7 +17,10 @@ export const OmenstratRoiInfo = () => {
   const [copied, setCopied] = useState(false);
   const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
   const totalMechRequests = totalMechRequestsQuery;
-  const marketsAndBets = getMarketsAndBetsQuery(marketOpenTimestamp);
+  const marketsAndBets = getMarketsAndBetsQuery({
+    timestamp_gt: marketOpenTimestamp,
+    first: 1000,
+  });
   const stakingRewards = getStakingRewardsByTimeRangeQuery({
     first: 1000,
     contractAddresses: ['<predict staking contracts on Gnosis>'],

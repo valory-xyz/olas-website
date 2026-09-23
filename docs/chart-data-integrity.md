@@ -92,13 +92,27 @@ are ever revived.
 read by nothing. Dropped from the query and from `SubgraphEpoch`. `OlasTokenPage/types.ts`
 held only a `PropTypes` shape nothing imported, and is gone.
 
-### Bounded, but shown to readers: `getMarketsAndBetsQuery`
+### Fixed: a published query that truncated
 
-`fixedProductMarketMakerCreations` in `getMarketsAndBetsQuery` has no `first:`, so it
-takes the default 100. Nothing on the site consumes those rows — the query is rendered
-on `/data` as a copy-paste verification `curl`. A reader who runs it gets 100 markets and
-no indication there are more, which undercuts the point of publishing it. Give it an
-explicit `first:` when that page is next touched.
+`fixedProductMarketMakerCreations` in `getMarketsAndBetsQuery` had no `first:`, so it
+took the default 100 — against 180 markets in the window the page actually uses. Nothing
+on the site consumes those rows; the query is rendered on `/data` as a copy-paste
+verification `curl`, so the only person affected was a reader checking our numbers, who
+got 100 markets and no sign there were more.
+
+It now takes an explicit `first`, like the other published queries on that page. The
+audit rule applies to queries we publish for other people to run, not only to the ones
+that feed a chart.
+
+### Absent is not zero
+
+Adding a field to a snapshot is a schema change with a window: the code ships before the
+next refresh writes it. Reading a missing key as `0` publishes a confident wrong number
+for that window, which is the same failure this page exists to prevent — a smaller
+figure, no error.
+
+Test for presence (`field in epoch`), not for a falsy value. A `0` that has been read is
+a fact; a `0` that came from an absent key is not.
 
 ## Checking a chart
 
