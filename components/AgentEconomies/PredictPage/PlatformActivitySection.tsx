@@ -51,6 +51,8 @@ type PlatformActivitySectionProps = {
   metrics: { polystrat: PlatformMetrics; omenstrat: PlatformMetrics };
   platform: Platform;
   onPlatformChange: (next: Platform) => void;
+  /** Anchor id per tab, so the page can deep-link the switcher. */
+  tabId?: (key: Platform) => string;
   className?: string;
   /** Fallback as-of timestamp for metrics whose source is lagging. */
   snapshotTimestamp?: number | null;
@@ -70,6 +72,9 @@ const PLATFORM_TABS: Array<{ key: Platform; label: string; icon: string }> = [
     icon: '/images/predict-page/polystrat-icon.png',
   },
 ];
+
+export const isPlatform = (value: string): value is Platform =>
+  PLATFORM_TABS.some((tab) => tab.key === value);
 
 // A windowed metric only carries data once at least one of its windows is non-null.
 // On a fresh predict blob mid-backfill every window is null, so this stays false and
@@ -272,9 +277,11 @@ const MetricItem = ({
 const PlatformSwitcher = ({
   platform,
   onChange,
+  tabId,
 }: {
   platform: Platform;
   onChange: (next: Platform) => void;
+  tabId?: (key: Platform) => string;
 }) => (
   <div className="flex items-stretch gap-1 bg-white border border-slate-200 rounded-xl p-1">
     {PLATFORM_TABS.map(({ key, label, icon }) => {
@@ -282,10 +289,11 @@ const PlatformSwitcher = ({
       return (
         <button
           key={key}
+          id={tabId?.(key)}
           type="button"
           aria-pressed={isActive}
           onClick={() => onChange(key)}
-          className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-3 px-10 py-1.5 rounded-lg text-base font-normal transition-colors scroll-mt-[100px] ${
             isActive ? 'bg-slate-200 text-gray-900' : 'text-slate-500 hover:text-slate-700'
           }`}
         >
@@ -419,6 +427,7 @@ export const PlatformActivitySection = ({
   metrics,
   platform,
   onPlatformChange,
+  tabId,
   className,
   snapshotTimestamp = null,
   beforeMetrics = null,
@@ -585,7 +594,7 @@ export const PlatformActivitySection = ({
 
   return (
     <div className={`flex flex-col gap-6 ${className ?? ''}`}>
-      <PlatformSwitcher platform={platform} onChange={onPlatformChange} />
+      <PlatformSwitcher platform={platform} onChange={onPlatformChange} tabId={tabId} />
 
       {/* Announces the switch. Both selectors change values in place rather than
           swapping a panel, so without this a screen-reader user hears nothing when
