@@ -1,20 +1,25 @@
+import { isFrozen } from 'common-util/graphql/metric-utils';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { Button } from 'components/ui/button';
 import { Card } from 'components/ui/card';
+import { MetricContext } from 'components/ui/MetricContext';
 import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
-import { MetricContext } from 'components/ui/MetricContext';
+import { useHash } from 'hooks/useHash';
 import { isNil } from 'lodash';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { NetPositiveRateCard, NetPositiveRateSummary } from './NetPositiveRateCard';
-import { PlatformActivitySection } from './PlatformActivitySection';
 import type { Platform, PlatformMetrics } from './PlatformActivitySection';
+import { isPlatform, PlatformActivitySection } from './PlatformActivitySection';
 import { RoiDistributionChart } from './RoiDistributionChart';
 import { ToolAccuracyTable } from './ToolAccuracyTable';
-import { isFrozen } from 'common-util/graphql/metric-utils';
+
+// #omenstrat / #polystrat deep-link the platform switcher (the public anchor names).
+const tabId = (key: Platform) => key;
 
 const processPredictMetrics = (
   metrics: any
@@ -212,6 +217,23 @@ export const Activity = ({
   }, [initialMetrics]);
   const [platform, setPlatform] = useState<Platform>('omenstrat');
 
+  // Hash -> tab on load and on anchor clicks; tab -> hash on switcher clicks, so the URL
+  // stays shareable. Going through the router keeps `useHash` in sync (it emits
+  // hashChangeComplete), which a bare history.replaceState would not.
+  const router = useRouter();
+  const hash = useHash();
+  useEffect(() => {
+    const key = hash.slice(1);
+    if (isPlatform(key)) setPlatform(key);
+  }, [hash]);
+  const onPlatformChange = useCallback(
+    (next: Platform) => {
+      setPlatform(next);
+      router.replace(`#${tabId(next)}`, undefined, { shallow: true, scroll: false });
+    },
+    [router]
+  );
+
   return (
     <SectionWrapper customClasses="py-16 px-4 border-t" id="stats">
       <div className="max-w-[872px] mx-auto">
@@ -270,7 +292,8 @@ export const Activity = ({
           <PlatformActivitySection
             metrics={{ omenstrat: metrics.omenstrat, polystrat: metrics.polystrat }}
             platform={platform}
-            onPlatformChange={setPlatform}
+            onPlatformChange={onPlatformChange}
+            tabId={tabId}
             snapshotTimestamp={snapshotTimestamp}
             className="md:col-span-2"
             // Net-positive rate — Polystrat only: the baseline is Polymarket-specific,
