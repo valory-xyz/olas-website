@@ -235,7 +235,7 @@ const MetricItem = ({
   asOfFallback,
 }: MetricItemProps) => {
   // Match the brand colour of the linked metrics (Link is text-purple-600) so an
-  // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
+  // unlinked value looks consistent with them.
   const valueClass = `text-2xl font-bold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-600'}`;
   return (
     <div className="flex flex-col gap-1">
@@ -558,10 +558,7 @@ export const PlatformActivitySection = ({
     asOfFallback: snapshotTimestamp,
   };
 
-  // All performance metrics respond to the time-range tabs. Polystrat's Brier shows "--"
-  // with a stale indicator until the live Polymarket squid is re-indexed with
-  // brierSum/brierCount (merged upstream, not yet deployed) and the hourly predict cron
-  // has backfilled the accumulator; it fills in on its own once that lands.
+  // All performance metrics respond to the time-range tabs.
   const performanceItems: MetricItemProps[] = [roiItem, aprItem, accuracyItem, brierItem];
 
   // These are lifetime counts and do not follow the time-range tabs, so each says

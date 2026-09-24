@@ -1,5 +1,6 @@
 import { polymarketAgentsGraphClient, predictAgentsGraphClient } from 'common-util/graphql/client';
 import {
+  checkSquidLag,
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
@@ -12,6 +13,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
 import { emptyWindows, WindowedMetric } from './brier';
 
 const LIMIT = 1000;
@@ -27,13 +29,6 @@ const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffff
 const TRAIL_DAYS = 10;
 // One-time historical backfill step per run, walking from the head toward genesis.
 const BACKFILL_CHUNK_DAYS = 30;
-
-// UTC-midnight genesis days, mirroring OMEN_GENESIS_TS / POLYMARKET_GENESIS_TS in
-// roi-distribution.ts (and OMEN_GENESIS_DAY in brier.ts). Backfill walks
-// down to here, no further.
-const OMEN_GENESIS_DAY = 1763769600;
-// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
-const POLYMARKET_GENESIS_DAY = 1768521600;
 
 // JSON-safe per-day bucket: settled bets and how many were correct.
 type AccuracyBucket = { won: number; total: number };
@@ -145,11 +140,13 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
     )) as PolymarketBetsResponse;
 
     if (!metaChecked) {
-      const height = response?.squidStatus?.height;
-      // A missing height means the squid can't prove freshness — treat as lagging.
-      if (height == null || (chainBlock && checkSubgraphLag(chainBlock, height, 'polygon'))) {
-        laggingSubgraphs.push('predict:polygon');
-      }
+      checkSquidLag(
+        chainBlock,
+        response?.squidStatus?.height,
+        'polygon',
+        laggingSubgraphs,
+        'predict:polygon'
+      );
       metaChecked = true;
     }
 
@@ -304,7 +301,7 @@ export const fetchOmenstratAccuracy = (): Promise<
   buildWindowedAccuracy(
     'predict-accuracy/omenstrat',
     'gnosis',
-    OMEN_GENESIS_DAY,
+    OMEN_GENESIS_TS,
     'omenstrat',
     fetchOmenDayBuckets
   );
@@ -315,7 +312,7 @@ export const fetchPolystratAccuracy = (): Promise<
   buildWindowedAccuracy(
     'predict-accuracy/polystrat',
     'polygon',
-    POLYMARKET_GENESIS_DAY,
+    POLYMARKET_GENESIS_TS,
     'polystrat',
     fetchPolyDayBuckets
   );

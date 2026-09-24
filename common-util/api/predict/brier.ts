@@ -1,5 +1,6 @@
 import { polymarketAgentsGraphClient, predictAgentsGraphClient } from 'common-util/graphql/client';
 import {
+  checkSquidLag,
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
@@ -11,6 +12,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
 
 export type WindowKey = '7d' | '30d' | '90d' | 'max';
 export type WindowedMetric<T> = Record<WindowKey, T>;
@@ -18,12 +20,6 @@ export type WindowedMetric<T> = Record<WindowKey, T>;
 const LIMIT = 1000;
 const DAY = 86400;
 const BRIER_SCALE = 10n ** 18n; // brierSum is 1e18-scaled (see predict-omen / squid schema)
-
-// UTC-midnight genesis days, mirroring OMEN_GENESIS_TS / POLYMARKET_GENESIS_TS in
-// roi-distribution.ts. Backfill walks down to here, no further.
-const OMEN_GENESIS_DAY = 1763769600;
-// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
-const POLYMARKET_GENESIS_DAY = 1768521600;
 
 // Days reprocessed at the head of the window every run. Captures newly-completed
 // days plus late re-answers (the Omen subgraph moves Brier onto the new settlement
@@ -153,11 +149,13 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
     )) as PolymarketDailyBrierStatsResponse;
 
     if (!metaChecked) {
-      const height = response?.squidStatus?.height;
-      // A missing height means the squid can't prove freshness — treat as lagging.
-      if (height == null || (chainBlock && checkSubgraphLag(chainBlock, height, 'polygon'))) {
-        laggingSubgraphs.push('predict:polygon');
-      }
+      checkSquidLag(
+        chainBlock,
+        response?.squidStatus?.height,
+        'polygon',
+        laggingSubgraphs,
+        'predict:polygon'
+      );
       metaChecked = true;
     }
 
@@ -171,9 +169,9 @@ const fetchPolyDayBuckets: FetchDayBuckets = async (
 };
 
 // Self-contained incremental accumulator persisted in its own blob. The hourly
-// predict refresh advances it a little each run instead of rescanning all of
-// history (60k+ daily rows and growing) on every call. Structurally identical to
-// buildWindowedAccuracy (see accuracy.ts) — only the per-day math differs.
+// predict refresh advances it a little each run instead of rescanning the whole
+// daily-stats history on every call. Structurally identical to buildWindowedAccuracy
+// (see accuracy.ts) — only the per-day math differs.
 const buildWindowedBrier = async (
   category: string,
   chain: 'gnosis' | 'polygon',
@@ -303,7 +301,7 @@ export const fetchOmenstratBrier = (): Promise<MetricWithStatus<WindowedMetric<n
   buildWindowedBrier(
     'predict-brier/omenstrat',
     'gnosis',
-    OMEN_GENESIS_DAY,
+    OMEN_GENESIS_TS,
     'omenstrat',
     fetchOmenDayBuckets
   );
@@ -312,7 +310,7 @@ export const fetchPolystratBrier = (): Promise<MetricWithStatus<WindowedMetric<n
   buildWindowedBrier(
     'predict-brier/polystrat',
     'polygon',
-    POLYMARKET_GENESIS_DAY,
+    POLYMARKET_GENESIS_TS,
     'polystrat',
     fetchPolyDayBuckets
   );
