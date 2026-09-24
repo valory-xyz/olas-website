@@ -15,6 +15,12 @@ import {
 } from 'common-util/graphql/queries';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
+import {
+  GNOSIS_MECH_REQUESTS_GENESIS_TS,
+  OMEN_GENESIS_TS,
+  POLYGON_MECH_REQUESTS_GENESIS_TS,
+  POLYMARKET_GENESIS_TS,
+} from './genesis';
 import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
 import {
   allTimeNetGainAndCosts,
@@ -40,14 +46,6 @@ const BYDAY_RETENTION_DAYS = 90;
 // Mirrors trader's MIN_TRADES_FOR_ROI_DISPLAY — low-activity agents (1-2 bets)
 // produce statistically meaningless ROIs that distort the tails.
 export const MIN_TRADES_FOR_ROI_DISPLAY = 10;
-
-// Genesis timestamps (UTC midnight) for each agent type
-const OMEN_GENESIS_TS = 1763769600;
-// 2026-01-16 — first (internal-testing) on-chain activity; public launch was 2026-02-10.
-const POLYMARKET_GENESIS_TS = 1768521600;
-// Earliest block timestamp to consider when fetching mech requests
-const GNOSIS_MECH_REQUESTS_GENESIS_TS = 1763078400;
-const POLYGON_MECH_REQUESTS_GENESIS_TS = 1763078400;
 
 const dayKeyOf = (ts: number): string => String(Math.floor(ts / DAY_SECONDS) * DAY_SECONDS);
 

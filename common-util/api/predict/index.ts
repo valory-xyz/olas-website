@@ -24,7 +24,7 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { fetchOmenstratAccuracy, fetchPolystratAccuracy } from './accuracy';
-import { emptyWindows, fetchOmenstratBrier, WindowedMetric } from './omenstrat-brier';
+import { emptyWindows, fetchOmenstratBrier, fetchPolystratBrier, WindowedMetric } from './brier';
 import { fetchOmenstratWindowedRoi, fetchPolystratWindowedRoi } from './windowed-roi';
 
 const OMENSTRAT_AGENT_IDS_FLAT = Object.values(OMENSTRAT_AGENT_CLASSIFICATION)
@@ -274,7 +274,7 @@ const fetchOlasAprFromSnapshot = async (
 const fetchOmenstratOlasApr = () => fetchOlasAprFromSnapshot('gnosis');
 const fetchPolystratOlasApr = () => fetchOlasAprFromSnapshot('polygon');
 
-export type { WindowKey, WindowedMetric } from './omenstrat-brier';
+export type { WindowKey, WindowedMetric } from './brier';
 
 // Reader and writer must use this; breaking shape changes are versioned via
 // SCHEMA_VERSIONS in snapshot-storage.ts.
@@ -295,7 +295,7 @@ export type PredictMetricsData = {
     finalRoi: MetricWithStatus<WindowedMetric<number | null>>;
     // Windowed prediction accuracy (% of settled bets correct, by placement day).
     successRate: MetricWithStatus<WindowedMetric<number | null>>;
-    // Windowed mean Brier score (predict-omen only). Lower is better; ~0.25 = a 50/50 guess.
+    // Windowed mean Brier score. Lower is better; ~0.25 = a 50/50 guess.
     brierScore: MetricWithStatus<WindowedMetric<number | null>>;
   };
 
@@ -308,6 +308,7 @@ export type PredictMetricsData = {
     partialRoi: MetricWithStatus<WindowedMetric<number | null>>;
     finalRoi: MetricWithStatus<WindowedMetric<number | null>>;
     successRate: MetricWithStatus<WindowedMetric<number | null>>;
+    brierScore: MetricWithStatus<WindowedMetric<number | null>>;
   };
 };
 
@@ -331,6 +332,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       polystratTxsResult,
       polystratRoiResult,
       polystratSuccessRateResult,
+      polystratBrierResult,
     ] = await Promise.allSettled([
       // DAA
       fetchPredictDaa7dAvg(),
@@ -347,6 +349,7 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
       fetchPolystratTxsByAgentType(),
       fetchPolystratWindowedRoi(),
       fetchPolystratAccuracy(),
+      fetchPolystratBrier(),
     ]);
 
     // Extract separate DAA values
@@ -431,6 +434,13 @@ export const fetchAllPredictMetrics = async (): Promise<PredictMetricsSnapshot |
             : {
                 value: emptyWindows(),
                 status: getFetchErrorAndCreateStaleStatus('polystrat:successRate'),
+              },
+        brierScore:
+          polystratBrierResult.status === 'fulfilled'
+            ? polystratBrierResult.value
+            : {
+                value: emptyWindows(),
+                status: getFetchErrorAndCreateStaleStatus('polystrat:brier'),
               },
       },
     };

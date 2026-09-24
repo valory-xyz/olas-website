@@ -1,39 +1,44 @@
-import { predictAgentsGraphClient } from 'common-util/graphql/client';
+import { polymarketAgentsGraphClient, predictAgentsGraphClient } from 'common-util/graphql/client';
 import {
+  checkSquidLag,
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
 } from 'common-util/graphql/metric-utils';
-import { getOmenDailyBrierStatsQuery } from 'common-util/graphql/queries';
+import {
+  getOmenDailyBrierStatsQuery,
+  getPolymarketDailyBrierStatsQuery,
+} from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
 
 export type WindowKey = '7d' | '30d' | '90d' | 'max';
 export type WindowedMetric<T> = Record<WindowKey, T>;
 
 const LIMIT = 1000;
 const DAY = 86400;
-const BRIER_SCALE = 10n ** 18n; // brierSum is 1e18-scaled (see predict-omen schema)
-
-// UTC-midnight genesis day of the predict-omen subgraph (mirrors OMEN_GENESIS_TS
-// in roi-distribution.ts). Backfill walks down to here, no further.
-const OMEN_GENESIS_DAY = 1763769600;
+const BRIER_SCALE = 10n ** 18n; // brierSum is 1e18-scaled (see predict-omen / squid schema)
 
 // Days reprocessed at the head of the window every run. Captures newly-completed
-// days plus late re-answers (the subgraph moves Brier onto the new settlement day
-// on a re-answer; overwriting these buckets keeps the all-time sum correct).
+// days plus late re-answers (the Omen subgraph moves Brier onto the new settlement
+// day on a re-answer; overwriting these buckets keeps the all-time sum correct.
+// Polymarket resolution is write-once, so there the trail only catches new days).
 const TRAIL_DAYS = 10;
 // One-time historical backfill step per run, walking from the head toward genesis.
 const BACKFILL_CHUNK_DAYS = 30;
 
-// Self-contained incremental accumulator persisted in its own blob. The hourly
-// predict refresh advances it a little each run instead of rescanning all of
-// history (60k+ daily rows and growing) on every call.
-const ACCUMULATOR_CATEGORY = 'predict-brier/omenstrat';
-
 type DailyBrierStat = { date: string; brierSum: string; brierCount: number };
-type DailyBrierStatsResponse = WithMeta<{ dailyProfitStatistics: DailyBrierStat[] }>;
+type OmenDailyBrierStatsResponse = WithMeta<{ dailyProfitStatistics: DailyBrierStat[] }>;
+// The squid handles errors differently from a subgraph (it stops advancing instead of
+// erroring), so freshness comes from squidStatus.height via a lag check.
+type PolymarketDailyBrierStatsResponse = {
+  dailyProfitStatistics: DailyBrierStat[];
+  squidStatus?: { height: number };
+};
+
+type DayBucket = { sum: bigint; count: number };
 
 // JSON-safe bucket: BigInt sum stored as a decimal string.
 type BrierBucket = { sum: string; count: number };
@@ -42,7 +47,7 @@ type BrierAccumulator = {
   // summed across all trader agents. Contiguous over [backfilledTo, coveredTo].
   buckets: Record<string, BrierBucket>;
   // Oldest day processed so far. Window N is "covered" once backfilledTo <= its
-  // cutoff; Max is covered once backfilledTo <= OMEN_GENESIS_DAY.
+  // cutoff; Max is covered once backfilledTo <= the platform's genesis day.
   backfilledTo: number;
   // Newest day processed so far. Lets the head refresh bridge any gap (e.g. a
   // cron outage longer than the trailing window) instead of silently skipping days.
@@ -61,17 +66,38 @@ export const emptyWindows = (): WindowedMetric<number | null> => ({
 const meanBrier = (sum: bigint, count: number): number | null =>
   count === 0 ? null : Number((sum * 10000n) / BigInt(count) / BRIER_SCALE) / 10000;
 
-// Fetch and group dailyProfitStatistics in [startDay, endDay] by settlement day,
+// Sum the rows of one page into perDay, keyed by settlement day.
+const accumulateRows = (perDay: Map<number, DayBucket>, rows: DailyBrierStat[]) => {
+  for (const row of rows) {
+    const count = Number(row.brierCount || 0);
+    if (count === 0) continue;
+    const day = Number(row.date);
+    const cur = perDay.get(day) || { sum: 0n, count: 0 };
+    cur.sum += BigInt(row.brierSum || 0);
+    cur.count += count;
+    perDay.set(day, cur);
+  }
+};
+
+// Fetches and groups dailyProfitStatistics in [startDay, endDay] by settlement day,
 // summing brierSum/brierCount across all agents. Bounded by the day range, so it
 // never grows unboundedly. Mutates indexingErrors/laggingSubgraphs as a side effect.
-const fetchDayBuckets = async (
+type FetchDayBuckets = (
   startDay: number,
   endDay: number,
-  gnosisBlock: number | null,
+  chainBlock: number | null,
   indexingErrors: string[],
   laggingSubgraphs: string[]
-): Promise<Map<number, { sum: bigint; count: number }>> => {
-  const perDay = new Map<number, { sum: bigint; count: number }>();
+) => Promise<Map<number, DayBucket>>;
+
+const fetchOmenDayBuckets: FetchDayBuckets = async (
+  startDay,
+  endDay,
+  chainBlock,
+  indexingErrors,
+  laggingSubgraphs
+) => {
+  const perDay = new Map<number, DayBucket>();
   if (startDay > endDay) return perDay;
 
   let skip = 0;
@@ -80,26 +106,18 @@ const fetchDayBuckets = async (
   while (true) {
     const response = (await predictAgentsGraphClient.request(
       getOmenDailyBrierStatsQuery({ date_gte: startDay, date_lte: endDay, first: LIMIT, skip })
-    )) as DailyBrierStatsResponse;
+    )) as OmenDailyBrierStatsResponse;
 
     if (!metaChecked) {
       if (response?._meta?.hasIndexingErrors) indexingErrors.push('predict:gnosis');
-      if (gnosisBlock && checkSubgraphLag(gnosisBlock, response?._meta?.block?.number, 'gnosis')) {
+      if (chainBlock && checkSubgraphLag(chainBlock, response?._meta?.block?.number, 'gnosis')) {
         laggingSubgraphs.push('predict:gnosis');
       }
       metaChecked = true;
     }
 
     const rows = response?.dailyProfitStatistics || [];
-    for (const row of rows) {
-      const count = Number(row.brierCount || 0);
-      if (count === 0) continue;
-      const day = Number(row.date);
-      const cur = perDay.get(day) || { sum: 0n, count: 0 };
-      cur.sum += BigInt(row.brierSum || 0);
-      cur.count += count;
-      perDay.set(day, cur);
-    }
+    accumulateRows(perDay, rows);
 
     if (rows.length < LIMIT) break;
     skip += LIMIT;
@@ -107,9 +125,60 @@ const fetchDayBuckets = async (
   return perDay;
 };
 
-export const fetchOmenstratBrier = async (): Promise<
-  MetricWithStatus<WindowedMetric<number | null>>
-> => {
+const fetchPolyDayBuckets: FetchDayBuckets = async (
+  startDay,
+  endDay,
+  chainBlock,
+  indexingErrors,
+  laggingSubgraphs
+) => {
+  const perDay = new Map<number, DayBucket>();
+  if (startDay > endDay) return perDay;
+
+  let skip = 0;
+  let metaChecked = false;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const response = (await polymarketAgentsGraphClient.request(
+      getPolymarketDailyBrierStatsQuery({
+        date_gte: startDay,
+        date_lte: endDay,
+        first: LIMIT,
+        skip,
+      })
+    )) as PolymarketDailyBrierStatsResponse;
+
+    if (!metaChecked) {
+      checkSquidLag(
+        chainBlock,
+        response?.squidStatus?.height,
+        'polygon',
+        laggingSubgraphs,
+        'predict:polygon'
+      );
+      metaChecked = true;
+    }
+
+    const rows = response?.dailyProfitStatistics || [];
+    accumulateRows(perDay, rows);
+
+    if (rows.length < LIMIT) break;
+    skip += LIMIT;
+  }
+  return perDay;
+};
+
+// Self-contained incremental accumulator persisted in its own blob. The hourly
+// predict refresh advances it a little each run instead of rescanning the whole
+// daily-stats history on every call. Structurally identical to buildWindowedAccuracy
+// (see accuracy.ts) — only the per-day math differs.
+const buildWindowedBrier = async (
+  category: string,
+  chain: 'gnosis' | 'polygon',
+  genesisDay: number,
+  source: string,
+  fetchDayBuckets: FetchDayBuckets
+): Promise<MetricWithStatus<WindowedMetric<number | null>>> => {
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
@@ -120,14 +189,14 @@ export const fetchOmenstratBrier = async (): Promise<
 
   let existing: BrierAccumulator | null = null;
   try {
-    const snapshot = await getSnapshot({ category: ACCUMULATOR_CATEGORY });
+    const snapshot = await getSnapshot({ category });
     existing = (snapshot?.data as unknown as BrierAccumulator) ?? null;
   } catch (e) {
-    console.warn('Could not load Brier accumulator; rebuilding from scratch', e);
+    console.warn(`Could not load Brier accumulator (${category}); rebuilding from scratch`, e);
   }
 
   try {
-    const gnosisBlock = await getChainBlockNumber('gnosis');
+    const chainBlock = await getChainBlockNumber(chain);
 
     const buckets: Record<string, BrierBucket> = { ...(existing?.buckets ?? {}) };
     // Sentinel for a fresh accumulator: nothing processed yet (just above the head).
@@ -136,7 +205,7 @@ export const fetchOmenstratBrier = async (): Promise<
     // just the trailing window and history is filled by the backward backfill.
     const prevCoveredTo = existing?.coveredTo ?? yesterday;
 
-    const applyBuckets = (perDay: Map<number, { sum: bigint; count: number }>) => {
+    const applyBuckets = (perDay: Map<number, DayBucket>) => {
       for (const [day, { sum, count }] of perDay.entries()) {
         buckets[String(day)] = { sum: sum.toString(), count };
       }
@@ -147,19 +216,19 @@ export const fetchOmenstratBrier = async (): Promise<
     //    well below yesterday, headStart drops to bridge the gap — no missed days.
     const trailStart = yesterday - (TRAIL_DAYS - 1) * DAY;
     const headStart = Math.max(
-      OMEN_GENESIS_DAY,
+      genesisDay,
       Math.min(trailStart, prevCoveredTo - (TRAIL_DAYS - 1) * DAY)
     );
     applyBuckets(
-      await fetchDayBuckets(headStart, yesterday, gnosisBlock, indexingErrors, laggingSubgraphs)
+      await fetchDayBuckets(headStart, yesterday, chainBlock, indexingErrors, laggingSubgraphs)
     );
     backfilledTo = Math.min(backfilledTo, headStart);
 
     // 2. Historical backfill: extend the covered range one chunk toward genesis.
-    if (backfilledTo > OMEN_GENESIS_DAY) {
+    if (backfilledTo > genesisDay) {
       const hi = backfilledTo - DAY;
-      const lo = Math.max(OMEN_GENESIS_DAY, backfilledTo - BACKFILL_CHUNK_DAYS * DAY);
-      applyBuckets(await fetchDayBuckets(lo, hi, gnosisBlock, indexingErrors, laggingSubgraphs));
+      const lo = Math.max(genesisDay, backfilledTo - BACKFILL_CHUNK_DAYS * DAY);
+      applyBuckets(await fetchDayBuckets(lo, hi, chainBlock, indexingErrors, laggingSubgraphs));
       backfilledTo = lo;
     }
 
@@ -186,7 +255,7 @@ export const fetchOmenstratBrier = async (): Promise<
       return meanBrier(sum, count);
     };
 
-    const fullyBackfilled = backfilledTo <= OMEN_GENESIS_DAY;
+    const fullyBackfilled = backfilledTo <= genesisDay;
     const maxValue = (() => {
       if (!fullyBackfilled) return null;
       const { sum, count } = rangeSum(0, yesterday);
@@ -196,7 +265,7 @@ export const fetchOmenstratBrier = async (): Promise<
     // Persist the advanced accumulator (overwrite — this is authoritative state,
     // not a metric that benefits from mergeWithFallback).
     await saveSnapshot({
-      category: ACCUMULATOR_CATEGORY,
+      category,
       data: {
         data: { buckets, backfilledTo, coveredTo: yesterday } as BrierAccumulator,
         timestamp: Date.now(),
@@ -206,7 +275,7 @@ export const fetchOmenstratBrier = async (): Promise<
 
     // While still backfilling, flag stale so the parent snapshot's mergeWithFallback
     // serves the last fully-computed value during the one-time catch-up after deploy.
-    if (!fullyBackfilled) fetchErrors.push('omenstrat:brier:backfilling');
+    if (!fullyBackfilled) fetchErrors.push(`${source}:brier:backfilling`);
 
     return {
       value: {
@@ -218,12 +287,30 @@ export const fetchOmenstratBrier = async (): Promise<
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
-    console.error('Error fetching Omenstrat Brier score:', error);
+    console.error(`Error fetching Brier score (${category}):`, error);
     // Don't persist a partial advance; return stale so the previous value is kept.
-    fetchErrors.push('predict:gnosis:brier');
+    fetchErrors.push(`${source}:brier`);
     return {
       value: emptyWindows(),
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   }
 };
+
+export const fetchOmenstratBrier = (): Promise<MetricWithStatus<WindowedMetric<number | null>>> =>
+  buildWindowedBrier(
+    'predict-brier/omenstrat',
+    'gnosis',
+    OMEN_GENESIS_TS,
+    'omenstrat',
+    fetchOmenDayBuckets
+  );
+
+export const fetchPolystratBrier = (): Promise<MetricWithStatus<WindowedMetric<number | null>>> =>
+  buildWindowedBrier(
+    'predict-brier/polystrat',
+    'polygon',
+    POLYMARKET_GENESIS_TS,
+    'polystrat',
+    fetchPolyDayBuckets
+  );
