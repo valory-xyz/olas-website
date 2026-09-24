@@ -5,13 +5,15 @@ import {
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
-  MARKETPLACE_CHAINS,
-  MECH_FEES_CHAINS,
+  MARKETPLACE_CHAIN_KEYS,
+  MECH_FEES_CHAIN_KEYS,
+  REGISTRY_CHAIN_KEYS,
+} from 'common-util/indexers';
+import {
   requestMarketplace,
-  REGISTRY_CHAINS,
   requestMechFees,
   requestRegistry,
-} from 'common-util/graphql/indexers';
+} from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -199,17 +201,17 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
   const laggingSubgraphs: string[] = [];
 
   try {
-    const queryPromises = REGISTRY_CHAINS.map((chain) =>
+    const queryPromises = REGISTRY_CHAIN_KEYS.map((chain) =>
       requestRegistry(chain, { subgraph: registryGlobalsQuery, squid: registryGlobalsSquidQuery })
     );
-    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const blockPromises = REGISTRY_CHAIN_KEYS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const txCountByChains: string[] = [];
 
-    REGISTRY_CHAINS.forEach((chain, index) => {
+    REGISTRY_CHAIN_KEYS.forEach((chain, index) => {
       const queryResult = results[index];
-      const blockResult = results[index + REGISTRY_CHAINS.length];
+      const blockResult = results[index + REGISTRY_CHAIN_KEYS.length];
 
       if (queryResult.status === 'rejected') {
         console.error(`registry:${chain}`, queryResult.reason);
@@ -265,17 +267,17 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
   const laggingSubgraphs: string[] = [];
 
   try {
-    const queryPromises = REGISTRY_CHAINS.map((chain) =>
+    const queryPromises = REGISTRY_CHAIN_KEYS.map((chain) =>
       requestRegistry(chain, { subgraph: operatorGlobalsQuery, squid: operatorGlobalsSquidQuery })
     );
-    const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
+    const blockPromises = REGISTRY_CHAIN_KEYS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
     const operatorsByChains: number[] = [];
 
-    REGISTRY_CHAINS.forEach((chain, index) => {
+    REGISTRY_CHAIN_KEYS.forEach((chain, index) => {
       const queryResult = results[index];
-      const blockResult = results[index + REGISTRY_CHAINS.length];
+      const blockResult = results[index + REGISTRY_CHAIN_KEYS.length];
 
       if (queryResult.status === 'rejected') {
         console.error(`registry:${chain}`, queryResult.reason);
@@ -328,7 +330,7 @@ type AtaTransactionsResult = WithMeta<{
 }>;
 
 export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
-  const chains = MARKETPLACE_CHAINS;
+  const chains = MARKETPLACE_CHAIN_KEYS;
 
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
@@ -418,7 +420,7 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
     // gnosis + base only, so the homepage turnover and the mech page's Total Task Payments
     // were different aggregations that happened to agree while the other chains held no
     // fees — see PR #569 review.
-    const chainKeys = MECH_FEES_CHAINS;
+    const chainKeys = MECH_FEES_CHAIN_KEYS;
 
     const settled = await Promise.allSettled([
       ...chainKeys.map((chain) =>

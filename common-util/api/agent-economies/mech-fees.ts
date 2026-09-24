@@ -1,5 +1,6 @@
 import { legacyMechFeesGraphClient } from 'common-util/graphql/client';
-import { MECH_FEES_CHAINS, requestMechFees } from 'common-util/graphql/indexers';
+import { MECH_FEES_CHAIN_KEYS } from 'common-util/indexers';
+import { requestMechFees } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -35,7 +36,7 @@ export const fetchMechFeeMetrics = async () => {
   const laggingSubgraphs: string[] = [];
 
   try {
-    const chainKeys = MECH_FEES_CHAINS;
+    const chainKeys = MECH_FEES_CHAIN_KEYS;
 
     const [allResults, feesCollected] = await Promise.all([
       Promise.allSettled([

@@ -33,7 +33,7 @@ const toClients = <K extends string>(urls: Record<K, string | undefined>) =>
   ) as Record<K, GraphQLClient>;
 
 // *_GRAPH_CLIENTS are The Graph subgraphs; *_SQUID_CLIENTS are SQD squids (OpenReader
-// dialect). Where a source has both, read it through `common-util/graphql/indexers.ts`.
+// dialect). Where a source has both, read it through `common-util/graphql/indexer-requests.ts`.
 
 export const TOKENOMICS_GRAPH_CLIENTS = toClients(TOKENOMICS_SUBGRAPH_URLS);
 

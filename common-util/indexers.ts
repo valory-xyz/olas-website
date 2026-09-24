@@ -1,7 +1,7 @@
 /**
  * Every per-chain indexer endpoint, in one place and one shape: `{ chain: url }`, split into
  * The Graph subgraphs and SQD squids (OpenReader dialect). The split decides the query
- * dialect — see `common-util/graphql/indexers.ts`.
+ * dialect — see `common-util/graphql/indexer-requests.ts`.
  *
  * Single source for three consumers: `graphql/client.ts` builds its clients from these maps,
  * the chain keys and scope sentences are read off them, and the `/data` page links them
@@ -106,14 +106,17 @@ export const BALANCER_SUBGRAPH_URLS = {
 
 // Chains each source covers — the published scope of its metrics. Subgraph chains first.
 // Read off the URL maps, never derived from `CHAIN_LAG_CONFIG` (that is the RPC table).
-export const MARKETPLACE_CHAIN_KEYS = [
-  ...Object.keys(MARKETPLACE_SUBGRAPH_URLS),
-  ...Object.keys(MARKETPLACE_SQUID_URLS),
-];
-export const MECH_FEES_CHAIN_KEYS = [
-  ...Object.keys(MECH_FEES_SUBGRAPH_URLS),
-  ...Object.keys(MECH_FEES_SQUID_URLS),
-];
+const chainKeys = <S extends IndexerUrls, Q extends IndexerUrls>(subgraphs: S, squids: Q) =>
+  [...Object.keys(subgraphs), ...Object.keys(squids)] as Array<Extract<keyof S | keyof Q, string>>;
+
+export const REGISTRY_CHAIN_KEYS = chainKeys(REGISTRY_SUBGRAPH_URLS, REGISTRY_SQUID_URLS);
+export type RegistryChain = (typeof REGISTRY_CHAIN_KEYS)[number];
+
+export const MARKETPLACE_CHAIN_KEYS = chainKeys(MARKETPLACE_SUBGRAPH_URLS, MARKETPLACE_SQUID_URLS);
+export type MarketplaceChain = (typeof MARKETPLACE_CHAIN_KEYS)[number];
+
+export const MECH_FEES_CHAIN_KEYS = chainKeys(MECH_FEES_SUBGRAPH_URLS, MECH_FEES_SQUID_URLS);
+export type MechFeesChain = (typeof MECH_FEES_CHAIN_KEYS)[number];
 
 /**
  * "all N chains … (A, B and C)" for a set of chain keys.

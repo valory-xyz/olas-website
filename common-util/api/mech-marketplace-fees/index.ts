@@ -4,7 +4,8 @@ import {
   CHAINLINK_PRICE_FEED_ADDRESS_OPTIMISM_ETH_USD,
   CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD,
 } from 'common-util/constants';
-import { MechFeesChain, requestMechFees } from 'common-util/graphql/indexers';
+import { MechFeesChain } from 'common-util/indexers';
+import { requestMechFees } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,

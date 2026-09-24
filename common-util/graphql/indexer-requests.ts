@@ -29,7 +29,6 @@ const createRequester = <
   squidClients: Q
 ) => {
   type Chain = Extract<keyof S | keyof Q, string>;
-  const chains = [...Object.keys(subgraphClients), ...Object.keys(squidClients)] as Chain[];
 
   const request = async <T extends object>(
     chain: Chain,
@@ -53,18 +52,13 @@ const createRequester = <
     };
   };
 
-  return { chains, request };
+  return request;
 };
 
-const mechFees = createRequester(MECH_FEES_GRAPH_CLIENTS, MECH_FEES_SQUID_CLIENTS);
-export type MechFeesChain = (typeof mechFees.chains)[number];
-export const MECH_FEES_CHAINS = mechFees.chains;
-export const requestMechFees = mechFees.request;
-
-const marketplace = createRequester(MARKETPLACE_GRAPH_CLIENTS, MARKETPLACE_SQUID_CLIENTS);
-export const MARKETPLACE_CHAINS = marketplace.chains;
-export const requestMarketplace = marketplace.request;
-
-const registry = createRequester(REGISTRY_GRAPH_CLIENTS, REGISTRY_SQUID_CLIENTS);
-export const REGISTRY_CHAINS = registry.chains;
-export const requestRegistry = registry.request;
+// Iterate the matching `*_CHAIN_KEYS` from `common-util/indexers.ts` to cover every chain.
+export const requestRegistry = createRequester(REGISTRY_GRAPH_CLIENTS, REGISTRY_SQUID_CLIENTS);
+export const requestMarketplace = createRequester(
+  MARKETPLACE_GRAPH_CLIENTS,
+  MARKETPLACE_SQUID_CLIENTS
+);
+export const requestMechFees = createRequester(MECH_FEES_GRAPH_CLIENTS, MECH_FEES_SQUID_CLIENTS);

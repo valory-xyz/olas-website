@@ -1,7 +1,8 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { MARKETPLACE_CHAINS, requestMarketplace } from 'common-util/graphql/indexers';
+import { MARKETPLACE_CHAIN_KEYS } from 'common-util/indexers';
+import { requestMarketplace } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -98,7 +99,7 @@ type MechGlobalsResult = WithMeta<{
 const fetchMechGlobals = async (): Promise<
   MetricWithStatus<{ requests: number; deliveries: number } | null>
 > => {
-  const chains = MARKETPLACE_CHAINS;
+  const chains = MARKETPLACE_CHAIN_KEYS;
 
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
