@@ -1,4 +1,4 @@
-import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/indexers';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { MetricsCard } from 'components/MetricsCard';
 import { ChevronRight } from 'lucide-react';

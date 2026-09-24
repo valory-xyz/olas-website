@@ -1,8 +1,9 @@
+import { STAKING_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { STAKING_SUBGRAPH_URLS } from 'common-util/constants';
+
 import { stakingGlobalsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
 
 export const OlasStakedInfo = () => {
@@ -22,12 +23,7 @@ export const OlasStakedInfo = () => {
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Staking Globals query</h3>
 
         <p className="text-purple-600">
-          Subgraph links:{' '}
-          {STAKING_SUBGRAPH_URLS.map(({ key, url }) => (
-            <SubgraphLink key={key} apiUrl={url} className="mr-2">
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </SubgraphLink>
-          ))}
+          Subgraph links: <IndexerLinks urls={STAKING_SUBGRAPH_URLS} />
         </p>
         <CodeSnippet>{stakingGlobalsQuery}</CodeSnippet>
       </div>

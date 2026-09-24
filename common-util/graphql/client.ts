@@ -1,6 +1,19 @@
 import { GraphQLClient } from 'graphql-request';
 
-import { MARKETPLACE_CHAIN_KEYS, MECH_FEES_CHAIN_KEYS } from 'common-util/constants';
+import {
+  BABYDEGEN_SUBGRAPH_URLS,
+  BALANCER_SUBGRAPH_URLS,
+  LIQUIDITY_SQUID_URLS,
+  LIQUIDITY_SUBGRAPH_URLS,
+  MARKETPLACE_SQUID_URLS,
+  MARKETPLACE_SUBGRAPH_URLS,
+  MECH_FEES_SQUID_URLS,
+  MECH_FEES_SUBGRAPH_URLS,
+  REGISTRY_SQUID_URLS,
+  REGISTRY_SUBGRAPH_URLS,
+  STAKING_SUBGRAPH_URLS,
+  TOKENOMICS_SUBGRAPH_URLS,
+} from 'common-util/indexers';
 
 const requestConfig = {
   jsonSerializer: {
@@ -9,59 +22,39 @@ const requestConfig = {
   },
 };
 
-export const TOKENOMICS_GRAPH_CLIENTS = {
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL, requestConfig),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL, requestConfig),
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL, requestConfig),
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  polygon: new GraphQLClient(
-    process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
-    requestConfig
-  ),
-  mode: new GraphQLClient(process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL, requestConfig),
-};
+// One client per chain of a `common-util/indexers` map, so clients, chain keys and
+// /data links can't disagree about which chains a source covers.
+const toClients = <K extends string>(urls: Record<K, string | undefined>) =>
+  Object.fromEntries(
+    Object.entries(urls).map(([chain, url]) => [
+      chain,
+      new GraphQLClient(url as string, requestConfig),
+    ])
+  ) as Record<K, GraphQLClient>;
 
-export const STAKING_GRAPH_CLIENTS = {
-  // ethereum: new GraphQLClient(process.env.NEXT_PUBLIC_ETHEREUM_STAKING_SUBGRAPH_URL, requestConfig),
-  mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL, requestConfig),
-  optimism: new GraphQLClient(process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL, requestConfig),
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL, requestConfig),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL, requestConfig),
-  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL, requestConfig),
-  // arbitrum: new GraphQLClient(process.env.NEXT_PUBLIC_ARBITRUM_STAKING_SUBGRAPH_URL, requestConfig),
-  // celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_STAKING_SUBGRAPH_URL, requestConfig),
-};
+// *_GRAPH_CLIENTS are The Graph subgraphs; *_SQUID_CLIENTS are SQD squids (OpenReader
+// dialect). Where a source has both, read it through `common-util/graphql/indexers.ts`.
 
-export const REGISTRY_GRAPH_CLIENTS = {
-  mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL, requestConfig),
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
-    requestConfig
-  ),
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL, requestConfig),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL, requestConfig),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL, requestConfig),
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL,
-    requestConfig
-  ),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL,
-    requestConfig
-  ),
-  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL, requestConfig),
-};
+export const TOKENOMICS_GRAPH_CLIENTS = toClients(TOKENOMICS_SUBGRAPH_URLS);
+
+export const STAKING_GRAPH_CLIENTS = toClients(STAKING_SUBGRAPH_URLS);
+
+export const REGISTRY_GRAPH_CLIENTS = toClients(REGISTRY_SUBGRAPH_URLS);
+export const REGISTRY_SQUID_CLIENTS = toClients(REGISTRY_SQUID_URLS);
+
+export const MARKETPLACE_GRAPH_CLIENTS = toClients(MARKETPLACE_SUBGRAPH_URLS);
+export const MARKETPLACE_SQUID_CLIENTS = toClients(MARKETPLACE_SQUID_URLS);
+
+export const MECH_FEES_GRAPH_CLIENTS = toClients(MECH_FEES_SUBGRAPH_URLS);
+export const MECH_FEES_SQUID_CLIENTS = toClients(MECH_FEES_SQUID_URLS);
+
+export const LIQUIDITY_GRAPH_CLIENTS = toClients(LIQUIDITY_SUBGRAPH_URLS);
+// Swap fees only — POL valuation stays on-chain (docs/pol-live-reserves.md).
+export const LIQUIDITY_SQUID_CLIENTS = toClients(LIQUIDITY_SQUID_URLS);
+
+export const BABYDEGEN_GRAPH_CLIENTS = toClients(BABYDEGEN_SUBGRAPH_URLS);
+
+export const BALANCER_GRAPH_CLIENTS = toClients(BALANCER_SUBGRAPH_URLS);
 
 export const predictAgentsGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL,
@@ -74,96 +67,6 @@ export const polymarketAgentsGraphClient = new GraphQLClient(
   requestConfig
 );
 
-export const MARKETPLACE_GRAPH_CLIENTS = {
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL, requestConfig),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL, requestConfig),
-  polygon: new GraphQLClient(
-    process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL,
-    requestConfig
-  ),
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL,
-    requestConfig
-  ),
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ETHEREUM_MARKETPLACE_SUBGRAPH_URL,
-    requestConfig
-  ),
-  // celo: new GraphQLClient(process.env.NEXT_PUBLIC_CELO_MARKETPLACE_SUBGRAPH_URL, requestConfig),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_ARBITRUM_MARKETPLACE_SUBGRAPH_URL,
-    requestConfig
-  ),
-};
-
-export const BABYDEGEN_GRAPH_CLIENTS = {
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_OPTIMISM_BABYDEGEN_SUBGRAPH_URL,
-    requestConfig
-  ),
-  mode: new GraphQLClient(process.env.NEXT_PUBLIC_MODE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_BASE_BABYDEGEN_SUBGRAPH_URL, requestConfig),
-};
-
-// The published scope of every marketplace and mech-fee metric is derived from these key
-// lists, so a chain added to a client map without updating its list would silently make
-// those sentences wrong. Fail loudly in development rather than shipping a false claim.
-const assertChainsMatch = (
-  clientsName: string,
-  clients: Record<string, unknown>,
-  keysName: string,
-  keys: string[]
-) => {
-  const declared = Object.keys(clients).sort().join(',');
-  const documented = [...keys].sort().join(',');
-  if (declared !== documented) {
-    console.error(
-      `[client] ${clientsName} (${declared}) and ${keysName} (${documented}) have diverged — ` +
-        `update ${keysName} in common-util/constants.ts.`
-    );
-  }
-};
-
-if (process.env.NODE_ENV !== 'production') {
-  assertChainsMatch(
-    'MARKETPLACE_GRAPH_CLIENTS',
-    MARKETPLACE_GRAPH_CLIENTS,
-    'MARKETPLACE_CHAIN_KEYS',
-    MARKETPLACE_CHAIN_KEYS
-  );
-}
-
-export const MECH_FEES_GRAPH_CLIENTS = {
-  gnosis: new GraphQLClient(
-    process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
-    requestConfig
-  ),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL, requestConfig),
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_ETHEREUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_CELO_SUBGRAPH_URL, requestConfig),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL, requestConfig),
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH_URL,
-    requestConfig
-  ),
-};
-
-if (process.env.NODE_ENV !== 'production') {
-  assertChainsMatch(
-    'MECH_FEES_GRAPH_CLIENTS',
-    MECH_FEES_GRAPH_CLIENTS,
-    'MECH_FEES_CHAIN_KEYS',
-    MECH_FEES_CHAIN_KEYS
-  );
-}
-
 export const legacyMechFeesGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL,
   requestConfig
@@ -173,27 +76,3 @@ export const autonolasGraphClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL,
   requestConfig
 );
-
-export const LIQUIDITY_GRAPH_CLIENTS = {
-  ethereum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_LIQUIDITY_ETHEREUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_GNOSIS_SUBGRAPH_URL, requestConfig),
-  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_POLYGON_SUBGRAPH_URL, requestConfig),
-  arbitrum: new GraphQLClient(
-    process.env.NEXT_PUBLIC_LIQUIDITY_ARBITRUM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  optimism: new GraphQLClient(
-    process.env.NEXT_PUBLIC_LIQUIDITY_OPTIMISM_SUBGRAPH_URL,
-    requestConfig
-  ),
-  base: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_BASE_SUBGRAPH_URL, requestConfig),
-  celo: new GraphQLClient(process.env.NEXT_PUBLIC_LIQUIDITY_CELO_SUBGRAPH_URL, requestConfig),
-};
-
-export const BALANCER_GRAPH_CLIENTS = {
-  gnosis: new GraphQLClient(process.env.NEXT_PUBLIC_GNOSIS_BALANCER_URL, requestConfig),
-  polygon: new GraphQLClient(process.env.NEXT_PUBLIC_POLYGON_BALANCER_URL, requestConfig),
-};

@@ -43,7 +43,11 @@ export const META_FIELDS = `_meta { hasIndexingErrors block { number } }`;
 // Dispenser claims. `transferAmount` is what left the treasury after withheld amounts
 // were netted off; `stakingIncentive` is the allocation before that.
 export const mintedForStakingSets = (cursors: Record<string, string>) => [
-  pagedSet('stakingIncentivesClaimeds', cursors.stakingIncentivesClaimeds, 'transferAmount blockTimestamp'),
+  pagedSet(
+    'stakingIncentivesClaimeds',
+    cursors.stakingIncentivesClaimeds,
+    'transferAmount blockTimestamp'
+  ),
   pagedSet(
     'stakingIncentivesBatchClaimeds',
     cursors.stakingIncentivesBatchClaimeds,
@@ -62,7 +66,14 @@ export const stakingChainSets = (cursors: Record<string, string>, hasClaimedTota
   ),
   ...(hasClaimedTotals
     ? []
-    : [pagedSet('rewardUpdates', cursors.rewardUpdates, 'amount blockTimestamp', ', type: "Claimed"')]),
+    : [
+        pagedSet(
+          'rewardUpdates',
+          cursors.rewardUpdates,
+          'amount blockTimestamp',
+          ', type: "Claimed"'
+        ),
+      ]),
 ];
 
 export const balancerGetPoolQuery = (poolId: string) => gql`
@@ -118,6 +129,20 @@ export const mechMarketplaceTotalRequestsQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `mechMarketplaceTotalRequestsQuery` for the marketplace squids.
+// Aliased to the subgraph shape; `requestMarketplace` turns `squidStatus` into `_meta`.
+export const mechMarketplaceTotalRequestsSquidQuery = gql`
+  query MechMarketplaceTotalRequestsSquid {
+    global: globalById(id: "") {
+      totalRequests
+      totalDeliveries
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -631,6 +656,20 @@ export const registryGlobalsQuery = gql`
   }
 `;
 
+// OpenReader twin of `registryGlobalsQuery` for the registry squids. Aliased to the
+// subgraph shape; `requestRegistry` (indexers.ts) turns `squidStatus` into `_meta`.
+export const registryGlobalsSquidQuery = gql`
+  query RegistryGlobalsSquid {
+    global: globalById(id: "") {
+      id
+      txCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const operatorGlobalsQuery = gql`
   query OperatorGlobals {
     global(id: "") {
@@ -646,6 +685,19 @@ export const operatorGlobalsQuery = gql`
   }
 `;
 
+// OpenReader twin of `operatorGlobalsQuery` (see `registryGlobalsSquidQuery`).
+export const operatorGlobalsSquidQuery = gql`
+  query OperatorGlobalsSquid {
+    global: globalById(id: "") {
+      id
+      totalOperators
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const ataTransactionsQuery = gql`
   query AtaTransactions {
     global(id: "") {
@@ -657,6 +709,19 @@ export const ataTransactionsQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `ataTransactionsQuery` (see `mechMarketplaceTotalRequestsSquidQuery`).
+export const ataTransactionsSquidQuery = gql`
+  query AtaTransactionsSquid {
+    global: globalById(id: "") {
+      id
+      totalAtaTransactions
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -689,6 +754,20 @@ export const newMechFeesQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `newMechFeesQuery` for the mech-fee squids. Aliased to the subgraph
+// shape; `requestMechFees` (indexers.ts) turns `squidStatus` into `_meta`.
+export const newMechFeesSquidQuery = gql`
+  query NewMechFeesSquid {
+    global: globalById(id: "") {
+      id
+      totalFeesInUSD
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -900,6 +979,19 @@ export const newMechFeesTotalsQuery = gql`
   }
 `;
 
+// OpenReader twin of `newMechFeesTotalsQuery` (see `newMechFeesSquidQuery`).
+export const newMechFeesTotalsSquidQuery = gql`
+  query NewMechFeesTotalsSquid {
+    global: globalById(id: "") {
+      totalFeesInUSD
+      totalFeesOutUSD
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 // Cumulative drained protocol fees per payment model (`native`, `token-usdc`,
 // `token-olas`, `nvm`), USD-priced at drain time. Entity `DrainTotals` → list query
 // `drainTotals_collection`.
@@ -915,6 +1007,20 @@ export const mechFeesDrainTotalsQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `mechFeesDrainTotalsQuery` (see `newMechFeesSquidQuery`).
+export const mechFeesDrainTotalsSquidQuery = gql`
+  query MechFeesDrainTotalsSquid {
+    drainTotals_collection: drainTotals {
+      id
+      totalDrainedRaw
+      totalDrainedUSD
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -1205,6 +1311,20 @@ export const liquidityL2Query = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// Robinhood Chain liquidity squid (OpenReader dialect): cumulative swap fees of the
+// OLAS/WETH pair. Reserves and LP balances are read on-chain — see docs/pol-live-reserves.md.
+export const liquidityRobinhoodSquidQuery = (pairId: string) => gql`
+  query LiquidityRobinhoodSquid {
+    poolMetricsById(id: "${pairId.toLowerCase()}") {
+      cumulativeFeesToken0
+      cumulativeFeesToken1
+    }
+    squidStatus {
+      height
     }
   }
 `;

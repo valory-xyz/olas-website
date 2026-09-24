@@ -1,11 +1,17 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import {
   legacyMechFeesGraphClient,
-  MARKETPLACE_GRAPH_CLIENTS,
-  MECH_FEES_GRAPH_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import {
+  MARKETPLACE_CHAINS,
+  MECH_FEES_CHAINS,
+  requestMarketplace,
+  REGISTRY_CHAINS,
+  requestMechFees,
+  requestRegistry,
+} from 'common-util/graphql/indexers';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -15,11 +21,15 @@ import {
 } from 'common-util/graphql/metric-utils';
 import {
   ataTransactionsQuery,
+  ataTransactionsSquidQuery,
   dailyAgentPerformancesQuery,
   legacyMechFeesQuery,
   newMechFeesQuery,
+  newMechFeesSquidQuery,
   operatorGlobalsQuery,
+  operatorGlobalsSquidQuery,
   registryGlobalsQuery,
+  registryGlobalsSquidQuery,
   stakingGlobalsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -29,7 +39,6 @@ import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
-const REGISTRY_CHAINS = Object.keys(REGISTRY_GRAPH_CLIENTS);
 
 type DailyAgentPerformancesResult = WithMeta<{
   dailyActiveMultisigs_collection: {
@@ -191,7 +200,7 @@ const fetchTransactions = async (): Promise<MetricWithStatus<string | null>> => 
 
   try {
     const queryPromises = REGISTRY_CHAINS.map((chain) =>
-      REGISTRY_GRAPH_CLIENTS[chain].request(registryGlobalsQuery)
+      requestRegistry(chain, { subgraph: registryGlobalsQuery, squid: registryGlobalsSquidQuery })
     );
     const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -257,7 +266,7 @@ const fetchTotalOperators = async (): Promise<MetricWithStatus<number | null>> =
 
   try {
     const queryPromises = REGISTRY_CHAINS.map((chain) =>
-      REGISTRY_GRAPH_CLIENTS[chain].request(operatorGlobalsQuery)
+      requestRegistry(chain, { subgraph: operatorGlobalsQuery, squid: operatorGlobalsSquidQuery })
     );
     const blockPromises = REGISTRY_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -319,7 +328,7 @@ type AtaTransactionsResult = WithMeta<{
 }>;
 
 export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | null>> => {
-  const chains = Object.keys(MARKETPLACE_GRAPH_CLIENTS);
+  const chains = MARKETPLACE_CHAINS;
 
   const indexingErrors: string[] = [];
   const fetchErrors: string[] = [];
@@ -327,7 +336,10 @@ export const fetchAtaTransactions = async (): Promise<MetricWithStatus<string | 
 
   try {
     const queryPromises = chains.map((chain) =>
-      MARKETPLACE_GRAPH_CLIENTS[chain].request(ataTransactionsQuery)
+      requestMarketplace(chain, {
+        subgraph: ataTransactionsQuery,
+        squid: ataTransactionsSquidQuery,
+      })
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -406,12 +418,12 @@ export const fetchMechFees = async (): Promise<MetricWithStatus<string | null>> 
     // gnosis + base only, so the homepage turnover and the mech page's Total Task Payments
     // were different aggregations that happened to agree while the other chains held no
     // fees — see PR #569 review.
-    const chainKeys = Object.keys(MECH_FEES_GRAPH_CLIENTS) as Array<
-      keyof typeof MECH_FEES_GRAPH_CLIENTS
-    >;
+    const chainKeys = MECH_FEES_CHAINS;
 
     const settled = await Promise.allSettled([
-      ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesQuery)),
+      ...chainKeys.map((chain) =>
+        requestMechFees(chain, { subgraph: newMechFeesQuery, squid: newMechFeesSquidQuery })
+      ),
       legacyMechFeesGraphClient.request(legacyMechFeesQuery),
       ...chainKeys.map((chain) => getChainBlockNumber(chain)),
     ]);

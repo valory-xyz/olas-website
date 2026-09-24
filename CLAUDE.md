@@ -39,7 +39,7 @@ yarn lint:lockfile  # Validate yarn.lock integrity (lockfile-lint)
   - `common-util/api/` — Subgraph aggregation logic per category (`main-metrics.ts`, `predict/`, `agent-economies/`, `other-metrics/`) plus `index.ts` for Strapi calls (blogs, education articles)
   - `common-util/graphql/` — `client.ts` (GraphQL clients per chain), `queries.ts`, `types.ts` (`MetricWithStatus`, `WithMeta`, `SubgraphMeta`), `metric-utils.ts` (lag detection / stale status helpers)
   - `common-util/snapshot-storage.ts` — Vercel Blob save/get with `mergeWithFallback` semantics
-  - Other helpers: `numberFormatter.ts`, `time.ts`, `web3.ts`, `charts.ts`, `og/`, `useFetchApi.ts`, `olasApr.ts`, `calculate7DayAverage.ts`, `subgraph.ts`
+  - Other helpers: `numberFormatter.ts`, `time.ts`, `web3.ts`, `charts.ts`, `og/`, `useFetchApi.ts`, `olasApr.ts`, `calculate7DayAverage.ts`, `indexers.ts` (every subgraph/squid URL map, chain scope sentences, `getSubgraphExplorerUrl`)
 - `data/` — Static JSON: `agents.json`, `chains.json`, `tokens.json`, `kits.json`, `useCases.json`, `resources.json`, ABIs in `data/ABIs/`, etc.
 - `hooks/` — `usePersistentSWR`, `useWindowWidth`, `useHash`
 - `lib/` — `utils.ts` (only the `cn()` helper today)
@@ -51,9 +51,10 @@ yarn lint:lockfile  # Validate yarn.lock integrity (lockfile-lint)
 
 ### Key Technical Patterns
 
-**Multi-chain GraphQL clients** (`common-util/graphql/client.ts`):
-The site queries multiple chains — Ethereum, Gnosis, Base, Optimism, Mode, Celo, Arbitrum, Polygon — through these client groups:
+**Multi-chain GraphQL clients** (`common-util/graphql/client.ts`, built from the URL maps in `common-util/indexers.ts`):
+The site queries multiple chains — Ethereum, Gnosis, Base, Optimism, Mode, Celo, Arbitrum, Polygon, and Robinhood Chain via SQD squids — through these client groups:
 - `TOKENOMICS_GRAPH_CLIENTS`, `STAKING_GRAPH_CLIENTS`, `REGISTRY_GRAPH_CLIENTS`, `MARKETPLACE_GRAPH_CLIENTS`, `BABYDEGEN_GRAPH_CLIENTS`, `MECH_FEES_GRAPH_CLIENTS`, `LIQUIDITY_GRAPH_CLIENTS`, `BALANCER_GRAPH_CLIENTS`
+- Squid groups (OpenReader dialect): `REGISTRY_SQUID_CLIENTS`, `MARKETPLACE_SQUID_CLIENTS`, `MECH_FEES_SQUID_CLIENTS`, `LIQUIDITY_SQUID_CLIENTS`
 - Standalone clients: `predictAgentsGraphClient`, `polymarketAgentsGraphClient`, `legacyMechFeesGraphClient`, `autonolasGraphClient`
 
 Coverage varies by category (e.g. `BABYDEGEN_GRAPH_CLIENTS` only has Optimism + Mode; `BALANCER_GRAPH_CLIENTS` only Gnosis + Polygon). Always check the client map before assuming a chain is queryable.
@@ -96,7 +97,7 @@ Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus dail
 All env vars use `NEXT_PUBLIC_` prefix when needed client-side. Categories (see `.env.example`):
 - **CMS**: `NEXT_PUBLIC_API_URL` (Strapi)
 - **Vercel Blob**: `BLOB_READ_WRITE_TOKEN`
-- **Subgraphs** (per chain): `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`, `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`, `NEXT_PUBLIC_TOKENOMICS_*_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MARKETPLACE_SUBGRAPH_URL`, `NEXT_PUBLIC_*_BABYDEGEN_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MECH_FEES_*_SUBGRAPH_URL`, `NEXT_PUBLIC_LIQUIDITY_*_SUBGRAPH_URL`, plus `NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL`, `NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL`, `NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL`; the polymarket data source is an SQD squid (OpenReader dialect): `NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL`
+- **Subgraphs** (per chain): `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`, `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`, `NEXT_PUBLIC_TOKENOMICS_*_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MARKETPLACE_SUBGRAPH_URL`, `NEXT_PUBLIC_*_BABYDEGEN_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MECH_FEES_*_SUBGRAPH_URL`, `NEXT_PUBLIC_LIQUIDITY_*_SUBGRAPH_URL`, plus `NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL`, `NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL`, `NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL`; the polymarket data source is an SQD squid (OpenReader dialect): `NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL`; Robinhood Chain has squids instead of subgraphs: `NEXT_PUBLIC_REGISTRY_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MARKETPLACE_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MECH_FEES_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_LIQUIDITY_ROBINHOOD_SQUID_URL` (swap fees only)
 - **Balancer**: `NEXT_PUBLIC_GNOSIS_BALANCER_URL`, `NEXT_PUBLIC_POLYGON_BALANCER_URL`
 - **RPCs** (server-only, no `NEXT_PUBLIC_`): `ETHEREUM_RPC`, `GNOSIS_RPC`, `ARBITRUM_RPC`, `OPTIMISM_RPC`, `BASE_RPC`, `CELO_RPC`, `POLYGON_RPC`, `MODE_RPC`, `SOLANA_RPC`
 - **Other**: `NEXT_PUBLIC_AFMDB_URL`, `NEXT_PUBLIC_QUOTE_TWEET_URL`, irrelevant-tools allow-lists for Omenstrat/Polystrat
@@ -132,7 +133,7 @@ Index of design documents. Read the matching spec BEFORE you change the listed a
 
 Queries live in `common-util/graphql/queries.ts`. When adding a new query:
 1. Define the query in `queries.ts`. Always include `_meta { hasIndexingErrors block { number } }` if the metric will be promoted to a snapshot — `mergeWithFallback`/lag detection rely on it.
-2. Add or extend a client group in `common-util/graphql/client.ts` if the chain isn't covered.
+2. If the chain isn't covered, add its URL to the matching map in `common-util/indexers.ts` (and `.env.example`); the client follows.
 3. Implement aggregation in `common-util/api/<category>/...` returning `MetricWithStatus<T>` and using `createStaleStatus` / `checkSubgraphLag` / `getFetchErrorAndCreateStaleStatus` helpers.
 4. Wire the new metric into the corresponding `fetchAll*` snapshot builder and bump the data type used by `MetricsSnapshot`.
 
@@ -201,6 +202,7 @@ Applied to all paths: `Content-Security-Policy: frame-ancestors 'none'`, `X-Cont
 7. **Middleware runs on the Edge runtime**: keep it lightweight; no Node.js APIs.
 8. **TypeScript strictness**: `strict: false` in `tsconfig.json`, `allowJs: true`. New code in `common-util/` should still be typed (per CONTRIBUTING.md).
 9. **Off-chain mech requests**: the marketplace subgraph does not create `Request` / `ParsedRequest` entities for off-chain requests — per-request reads return nothing, while aggregate counters keep growing. Per-request data comes from the mech-analytics API instead. See `docs/mech-analytics-migration.md`.
+10. **Indexer URLs live in one place**: every per-chain subgraph and squid endpoint is a `{ chain: url }` map in `common-util/indexers.ts`, split into `*_SUBGRAPH_URLS` (The Graph) and `*_SQUID_URLS` (SQD, OpenReader dialect). `graphql/client.ts` builds each client map from its URL map (`toClients`), the scope keys (`MARKETPLACE_CHAIN_KEYS`, `MECH_FEES_CHAIN_KEYS`) are read off the maps, and `/data` links render them with `components/DataPage/IndexerLinks`. For a source with both kinds, go through `requestRegistry` / `requestMarketplace` / `requestMechFees` in `common-util/graphql/indexers.ts` with both a subgraph and an OpenReader query. Never derive a source's chains from `CHAIN_LAG_CONFIG` — that is the RPC/lag table, and adding a chain there must not widen any source's scope.
 
 ## Testing Considerations
 

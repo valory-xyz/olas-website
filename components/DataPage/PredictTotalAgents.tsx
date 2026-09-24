@@ -1,13 +1,13 @@
+import { REGISTRY_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
-  REGISTRY_SUBGRAPH_URLS,
 } from 'common-util/constants';
 import { agentServicesQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { CodeSnippet } from './CodeSnippet';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 
 const PLATFORMS = [
   {
@@ -46,12 +46,7 @@ export const PredictTotalAgentsInfo = () => (
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Services query</h3>
 
           <p className="text-purple-600">
-            Subgraph link:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === chainKey).map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph link: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={[chainKey]} />
           </p>
           <p>
             Note: <code>agentIds_contains</code> matches services listing every id passed, so the
