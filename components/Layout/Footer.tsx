@@ -43,14 +43,6 @@ const SOCIAL_LINKS = [
 
 const FOR_USERS_LINKS = [
   {
-    title: 'Agents',
-    link: '/agents',
-  },
-  {
-    title: 'Agent Economies',
-    link: '/agent-economies',
-  },
-  {
     title: 'Pearl: The “AI Agent App Store”',
     link: `${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=footer&utm_content=pearl-link`,
   },
@@ -118,6 +110,14 @@ const RESOURCES_LINKS = [
   {
     title: 'Stack',
     link: '/stack',
+  },
+  {
+    title: 'Agents',
+    link: '/agents',
+  },
+  {
+    title: 'Agent Economies',
+    link: '/agent-economies',
   },
   {
     title: 'Agent Economy Explorer',
