@@ -29,6 +29,7 @@ export const TOKEN_ICONS: Record<string, string> = {
   CELO: '/images/homepage/addresses/celo-color.svg',
   WSOL: '/images/homepage/addresses/solana-color.svg',
   USDC: '/images/accelerator/usdc-icon.png',
+  USDG: '/images/tokens/usdg-icon.png',
 };
 
 // "A, B and C"
@@ -43,6 +44,7 @@ const FEE_CHAIN_LABELS: Record<string, string> = {
   celo: 'Celo',
   base: 'Base',
   gnosis: 'Gnosis',
+  robinhood: 'Robinhood Chain',
 };
 
 // Marketplace fee trackers by token, for the "fees collected" tooltip rows and scope
@@ -52,14 +54,20 @@ const MARKETPLACE_FEE_TOKEN_CHAINS: Array<{ symbol: string; chains: string[] }> 
   { symbol: 'xDAI', chains: ['gnosis'] },
   { symbol: 'ETH', chains: ['base', 'optimism'] },
   { symbol: 'POL', chains: ['polygon'] },
+  { symbol: 'USDG', chains: ['robinhood'] },
 ];
+
+// Only the Robinhood icon is a PNG.
+const feeChainIcon = (chain: string) =>
+  `/images/homepage/addresses/${chain}-color.${chain === 'robinhood' ? 'png' : 'svg'}`;
 
 export const MARKETPLACE_FEE_TOKENS = MARKETPLACE_FEE_TOKEN_CHAINS.map(({ symbol, chains }) => ({
   symbol,
-  chainIcons: chains.map((chain) => `/images/homepage/addresses/${chain}-color.svg`),
+  chainIcons: chains.map(feeChainIcon),
 }));
 
-// "USDC on Ethereum, Arbitrum, …, xDAI on Gnosis, ETH on Base and Optimism and POL on Polygon"
+// "USDC on Ethereum, …, xDAI on Gnosis, ETH on Base and Optimism, POL on Polygon and USDG on
+// Robinhood Chain"
 export const MARKETPLACE_FEE_TOKEN_SCOPE = joinAnd(
   MARKETPLACE_FEE_TOKEN_CHAINS.map(
     ({ symbol, chains }) => `${symbol} on ${joinAnd(chains.map((c) => FEE_CHAIN_LABELS[c]))}`
@@ -68,7 +76,7 @@ export const MARKETPLACE_FEE_TOKEN_SCOPE = joinAnd(
 
 // Trackers that exist on-chain but are not counted, for the same prose.
 export const MARKETPLACE_FEE_EXCLUDED_SCOPE =
-  'fees paid in OLAS, in ETH on Ethereum and Arbitrum, or in CELO';
+  'fees paid in OLAS, in ETH on Ethereum, Arbitrum and Robinhood Chain, or in CELO';
 
 // Static by design — the on-chain fee switches have no data source yet.
 export const FEE_SWITCHES: Record<'pol' | 'marketplace', 'ON' | 'OFF'> = {
