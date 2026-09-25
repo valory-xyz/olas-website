@@ -102,7 +102,7 @@ type MetricItemProps = {
   /**
    * Machine-readable context. Essential here: the selected time range is React state
    * expressed only as a highlighted tab, so a bare "69%" carries no window at all in
-   * the text layer, and the tab labels serialise as the single token "7D30D90DMax".
+   * the text layer, and the tab labels serialise as the single token "7D30D90DYear".
    */
   context?: { noun: string; note?: string; scope?: string; window?: string };
   asOfFallback?: number | null;
@@ -305,7 +305,7 @@ const PlatformSwitcher = ({
  * Every platform x window combination, as tables.
  *
  * The switcher and the time-range tabs are React state expressed only as a highlighted
- * button, and the tab strip itself serialises as the single token "7D30D90DMax". A crawler
+ * button, and the tab strip itself serialises as the single token "7D30D90DYear". A crawler
  * fetching this page once therefore sees one of eight states and no sign that the other
  * seven exist — so all eight are written out here.
  *

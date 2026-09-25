@@ -21,7 +21,7 @@ export const PREDICT_WINDOWS: Array<{
   { key: '7d', label: '7D', phrase: 'over the last 7 days', dataKey: 'd7' },
   { key: '30d', label: '30D', phrase: 'over the last 30 days', dataKey: 'd30' },
   { key: '90d', label: '90D', phrase: 'over the last 90 days', dataKey: 'd90' },
-  { key: 'max', label: 'Max', phrase: 'over all time', dataKey: 'all' },
+  { key: 'max', label: 'Year', phrase: 'over all time', dataKey: 'all' },
 ];
 
 /** The window as prose, e.g. `'over the last 7 days'`. */
