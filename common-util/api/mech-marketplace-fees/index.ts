@@ -4,15 +4,19 @@ import {
   CHAINLINK_PRICE_FEED_ADDRESS_OPTIMISM_ETH_USD,
   CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD,
 } from 'common-util/constants';
-import { MECH_FEES_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { MechFeesChain } from 'common-util/indexers';
+import { requestMechFees } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { mechFeesDrainTotalsQuery } from 'common-util/graphql/queries';
-import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
+import {
+  mechFeesDrainTotalsQuery,
+  mechFeesDrainTotalsSquidQuery,
+} from 'common-util/graphql/queries';
+import { MetricWithStatus } from 'common-util/graphql/types';
 import { getSnapshot } from 'common-util/snapshot-storage';
 import { getChainReader } from 'common-util/web3';
 import { Abi } from 'viem';
@@ -35,13 +39,15 @@ import {
  * it to 0.
  *
  * Lifetime fees = live `collectedFees()` per tracker (on-chain, not yet drained) + the
- * tracker's cumulative drained amount (new-mech-fees subgraph `DrainTotals`, USD-priced
- * at drain time).
+ * tracker's cumulative drained amount (new-mech-fees subgraph `DrainTotals`, or the
+ * mech-fees squid on Robinhood; USD-priced at drain time).
  *
- * Counted: USDC trackers and Gnosis xDAI (1 USD), plus ETH on Base/Optimism and POL on
- * Polygon priced via Chainlink. Not counted: ETH on Ethereum/Arbitrum, CELO, NVM credits
- * and all OLAS trackers (OLAS fees are burned — see `olasBurned` in
- * agent-economies/mech-fees.ts).
+ * Counted: USDC trackers, Robinhood USDG and Gnosis xDAI (1 USD), plus ETH on
+ * Base/Optimism and POL on Polygon priced via Chainlink. Not counted: ETH on
+ * Ethereum/Arbitrum/Robinhood, CELO, NVM credits and all OLAS trackers (OLAS fees are
+ * burned — see `olasBurned` in agent-economies/mech-fees.ts). Robinhood ETH is out because
+ * its ETH/USD feed routinely goes over an hour between rounds, past
+ * `CHAINLINK_MAX_ANSWER_AGE_SEC`.
  *
  * Guards before publishing: the USD total must pass `isSaneFeesUsd`, and no token's
  * lifetime amount may be below the previous `main` snapshot (`findDecreasedToken`). A
@@ -50,7 +56,7 @@ import {
  * the value is null with a fetch error, so `mergeWithFallback` keeps the last good value.
  */
 
-type FeeTrackerChain = keyof typeof MECH_FEES_GRAPH_CLIENTS;
+type FeeTrackerChain = MechFeesChain;
 
 // `DrainTotals` id in the subgraph.
 type DrainModel = 'native' | 'token-usdc' | 'token-olas' | 'nvm';
@@ -59,13 +65,14 @@ type FeeTracker = {
   chain: FeeTrackerChain;
   address: `0x${string}`;
   decimals: number;
-  token: 'xDAI' | 'USDC' | 'ETH' | 'POL';
+  token: 'xDAI' | 'USDC' | 'USDG' | 'ETH' | 'POL';
   model: DrainModel;
   // Chainlink <token>/USD feed; absent means 1 token = 1 USD.
   priceFeed?: `0x${string}`;
 };
 
-// Addresses from the new-mech-fees subgraph manifests (subgraph.<chain>.yaml).
+// Addresses from the new-mech-fees subgraph manifests (subgraph.<chain>.yaml) and the
+// mech-fees squid's `CHAINS` table (Robinhood).
 export const MARKETPLACE_FEE_TRACKERS: FeeTracker[] = [
   {
     chain: 'gnosis',
@@ -142,6 +149,14 @@ export const MARKETPLACE_FEE_TRACKERS: FeeTracker[] = [
     model: 'native',
     priceFeed: CHAINLINK_PRICE_FEED_ADDRESS_POLYGON_POL_USD,
   },
+  {
+    chain: 'robinhood',
+    // The `token-usdc` model on Robinhood holds USDG, the chain's 6-decimal stablecoin.
+    address: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
+    decimals: 6,
+    token: 'USDG',
+    model: 'token-usdc',
+  },
 ];
 
 const COLLECTED_FEES_ABI = [
@@ -172,7 +187,7 @@ const readUndrained = async (tracker: FeeTracker): Promise<UndrainedRead> => {
   return { collected, priceUsd };
 };
 
-type DrainTotalsResult = WithMeta<{ drainTotals_collection: DrainTotalsRow[] }>;
+type DrainTotalsResult = { drainTotals_collection: DrainTotalsRow[] };
 
 // Token symbol → lifetime amount in that token (un-drained + drained).
 export type MechFeesByToken = Record<string, number>;
@@ -203,7 +218,10 @@ export const fetchMechMarketplaceFees = async (): Promise<MechMarketplaceFees> =
     Promise.allSettled(MARKETPLACE_FEE_TRACKERS.map(readUndrained)),
     Promise.allSettled(
       chains.map((chain) =>
-        MECH_FEES_GRAPH_CLIENTS[chain].request<DrainTotalsResult>(mechFeesDrainTotalsQuery)
+        requestMechFees<DrainTotalsResult>(chain, {
+          subgraph: mechFeesDrainTotalsQuery,
+          squid: mechFeesDrainTotalsSquidQuery,
+        })
       )
     ),
     Promise.allSettled(chains.map((chain) => getChainBlockNumber(chain))),

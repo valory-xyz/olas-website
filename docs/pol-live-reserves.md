@@ -61,10 +61,10 @@ Failure semantics: a failed live read (or a token-order mismatch against
 fallback to stale subgraph reserves — so `mergeWithFallback` freezes the last valid
 value, exactly like a subgraph fetch failure.
 
-## Robinhood Chain: fully on-chain
+## Robinhood Chain: on-chain valuation, squid fees
 
 Robinhood Chain (4663) has no liquidity subgraph. Its OLAS/WETH Uniswap V2 pair
-(`0xc2eA98b5…5659`, autonolas-tokenomics PR #361) is read entirely via `ROBINHOOD_RPC`:
+(`0xc2eA98b5…5659`, autonolas-tokenomics PR #361) is valued entirely via `ROBINHOOD_RPC`:
 `getReserves`/`token0`/`token1`/`totalSupply` for the valuation, plus `balanceOf` for the
 treasury share (`fetchLpBalance`).
 
@@ -74,8 +74,13 @@ from `bridgedPOLHoldings` on Ethereum. The LP token is L2-native and Arbitrum's 
 gateway cannot carry it to L1, so no bridged balance can ever exist for this chain. Until
 the DAO takes the LP, the share is 0 and the chain publishes `$0` (healthy, not frozen) with
 no token composition. Prices still come from the Ethereum subgraph; a missing ETH price or
-a failed RPC read fails the chain like any other, and marks the total partial. Fees are not
-tracked, as on Solana.
+a failed RPC read fails the chain like any other, and marks the total partial.
+
+Cumulative swap fees come from the liquidity squid (`NEXT_PUBLIC_LIQUIDITY_ROBINHOOD_SQUID_URL`,
+OpenReader dialect, `liquidityRobinhoodSquidQuery`) and are valued like the other L2 pools:
+WETH fees plus OLAS fees through the live reserve ratio, × ETH/USD × the treasury share. The
+squid only feeds protocol revenue, so a failed squid query marks fees partial and squid lag
+(`squidStatus.height` against the chain head) marks fees stale — neither touches POL.
 
 ## Longer term
 

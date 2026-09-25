@@ -1,4 +1,5 @@
-import { FEE_LIVE_SINCE_SEC, MARKETPLACE_CHAIN_SCOPE } from 'common-util/constants';
+import { MARKETPLACE_CHAIN_SCOPE } from 'common-util/indexers';
+import { FEE_LIVE_SINCE_SEC } from 'common-util/constants';
 import { formatUtcDate } from 'common-util/time';
 import { isFrozen } from 'common-util/graphql/metric-utils';
 import type { MetricWithStatus } from 'common-util/graphql/types';
