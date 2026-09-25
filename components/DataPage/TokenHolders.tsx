@@ -1,8 +1,9 @@
+import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/constants';
+
 import { holderCountsQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 import tokens from 'data/tokens.json';
 import { useMemo } from 'react';
 import { CodeSnippet } from './CodeSnippet';
@@ -48,12 +49,7 @@ export const TokenHolders = () => {
         </p>
 
         <p className="text-purple-600">
-          Subgraph links:{' '}
-          {TOKENOMICS_SUBGRAPH_URLS.map(({ key, url }) => (
-            <SubgraphLink key={key} apiUrl={url} className="mr-2">
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </SubgraphLink>
-          ))}
+          Subgraph links: <IndexerLinks urls={TOKENOMICS_SUBGRAPH_URLS} />
         </p>
 
         <div>
