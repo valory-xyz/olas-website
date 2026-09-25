@@ -15,8 +15,6 @@ export const DOCS_BASE_URL = 'https://docs.olas.network';
 export const LAUNCH_CONTACT_URL = 'https://t.me/pahlmeyer';
 
 export const MENU_DATA = [
-  { link: '/agents', text: 'Agents' },
-  { link: '/agent-economies', text: 'Agent Economies' },
   { link: '/about', text: 'About' },
   { link: '/blog', text: 'Blog' },
   { text: 'More resources', submenu: resources },
