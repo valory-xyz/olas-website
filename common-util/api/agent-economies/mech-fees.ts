@@ -1,11 +1,17 @@
-import { MECH_FEES_GRAPH_CLIENTS, legacyMechFeesGraphClient } from 'common-util/graphql/client';
+import { legacyMechFeesGraphClient } from 'common-util/graphql/client';
+import { MECH_FEES_CHAIN_KEYS } from 'common-util/indexers';
+import { requestMechFees } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   readGlobalField,
 } from 'common-util/graphql/metric-utils';
-import { legacyMechFeesTotalsQuery, newMechFeesTotalsQuery } from 'common-util/graphql/queries';
+import {
+  legacyMechFeesTotalsQuery,
+  newMechFeesTotalsQuery,
+  newMechFeesTotalsSquidQuery,
+} from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
 import { fetchMechMarketplaceFeesCollected } from 'common-util/api/mech-marketplace-fees';
 import { formatUnits } from 'viem';
@@ -30,13 +36,16 @@ export const fetchMechFeeMetrics = async () => {
   const laggingSubgraphs: string[] = [];
 
   try {
-    const chainKeys = Object.keys(MECH_FEES_GRAPH_CLIENTS) as Array<
-      keyof typeof MECH_FEES_GRAPH_CLIENTS
-    >;
+    const chainKeys = MECH_FEES_CHAIN_KEYS;
 
     const [allResults, feesCollected] = await Promise.all([
       Promise.allSettled([
-        ...chainKeys.map((chain) => MECH_FEES_GRAPH_CLIENTS[chain].request(newMechFeesTotalsQuery)),
+        ...chainKeys.map((chain) =>
+          requestMechFees(chain, {
+            subgraph: newMechFeesTotalsQuery,
+            squid: newMechFeesTotalsSquidQuery,
+          })
+        ),
         legacyMechFeesGraphClient.request(legacyMechFeesTotalsQuery),
         ...chainKeys.map((chain) => getChainBlockNumber(chain)),
       ]),

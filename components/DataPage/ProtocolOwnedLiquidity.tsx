@@ -1,8 +1,9 @@
+import { LIQUIDITY_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { LIQUIDITY_SUBGRAPH_URLS } from 'common-util/constants';
+
 import { liquidityEthQuery, liquidityL2Query } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
 
 export const ProtocolOwnedLiquidityInfo = () => {
@@ -38,12 +39,7 @@ export const ProtocolOwnedLiquidityInfo = () => {
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Ethereum Liquidity query</h3>
         <p className="text-purple-600">
-          Subgraph links:{' '}
-          {LIQUIDITY_SUBGRAPH_URLS.map(({ key, url }) => (
-            <SubgraphLink key={key} apiUrl={url} className="mr-2">
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </SubgraphLink>
-          ))}
+          Subgraph links: <IndexerLinks urls={LIQUIDITY_SUBGRAPH_URLS} />
         </p>
         <CodeSnippet>{liquidityEthQuery}</CodeSnippet>
 

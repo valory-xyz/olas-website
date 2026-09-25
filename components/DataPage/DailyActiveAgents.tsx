@@ -1,8 +1,8 @@
+import { REGISTRY_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
-  REGISTRY_SUBGRAPH_URLS,
 } from 'common-util/constants';
 import {
   dailyAgentPerformancesQuery,
@@ -14,7 +14,7 @@ import {
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
 
 export const DailyActiveAgentsInfo = () => {
@@ -37,12 +37,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Active Multisigs query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} />
           </p>
           <CodeSnippet>{dailyAgentPerformancesQuery}</CodeSnippet>
         </div>
@@ -68,25 +63,14 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => ['mode', 'optimism'].includes(key)).map(
-              ({ key, url }) => (
-                <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </SubgraphLink>
-              )
-            )}
+            <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['mode', 'optimism']} />
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
 
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Basius Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
           </p>
           <CodeSnippet>{dailyBasiusPerformancesQuery}</CodeSnippet>
         </div>
@@ -107,12 +91,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
           </p>
           <CodeSnippet>{dailyAgentsFunPerformancesQuery}</CodeSnippet>
         </div>
@@ -135,13 +114,10 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) =>
-              ['gnosis', 'base', 'polygon', 'optimism'].includes(key)
-            ).map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            <IndexerLinks
+              urls={REGISTRY_SUBGRAPH_URLS}
+              chains={['gnosis', 'base', 'polygon', 'optimism']}
+            />
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
         </div>
@@ -160,12 +136,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph link:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph link: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['gnosis']} />
           </p>
           <p>
             Note: this query uses the following agentId_in parameter:{' '}
@@ -190,12 +161,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph link:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'polygon').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph link: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['polygon']} />
           </p>
 
           <p>
@@ -224,24 +190,14 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Pearl Prediction Agents Query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'gnosis').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['gnosis']} />
           </p>
           <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
 
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Optimus Babydegen Query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'optimism').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['optimism']} />
           </p>
           <CodeSnippet>{dailyBabydegenPerformancesQuery}</CodeSnippet>
         </div>
@@ -262,12 +218,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links:{' '}
-            {REGISTRY_SUBGRAPH_URLS.filter(({ key }) => key === 'base').map(({ key, url }) => (
-              <SubgraphLink key={key} apiUrl={url} className="mr-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </SubgraphLink>
-            ))}
+            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
           </p>
           <CodeSnippet>{dailyContributePerformancesQuery}</CodeSnippet>
         </div>

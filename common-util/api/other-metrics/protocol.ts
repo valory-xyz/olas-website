@@ -5,14 +5,18 @@ import {
   LiveReserves,
 } from 'common-util/api/other-metrics/live-reserves';
 import { OLAS_TOKEN_ADDRESS_BY_CHAIN } from 'common-util/constants';
-import { LIQUIDITY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { LIQUIDITY_GRAPH_CLIENTS, LIQUIDITY_SQUID_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { liquidityEthQuery, liquidityL2Query } from 'common-util/graphql/queries';
+import {
+  liquidityEthQuery,
+  liquidityL2Query,
+  liquidityRobinhoodSquidQuery,
+} from 'common-util/graphql/queries';
 import { MetricStatus, MetricWithStatus, SubgraphMeta } from 'common-util/graphql/types';
 
 // ─── Subgraph response types ─────────────────────────────────────────────────
@@ -58,6 +62,11 @@ type L2Pool = {
 type L2SubgraphResponse = {
   poolMetrics_collection: L2Pool[];
   _meta?: SubgraphMeta;
+};
+
+type RobinhoodSquidResponse = {
+  poolMetricsById: { cumulativeFeesToken0: string; cumulativeFeesToken1: string } | null;
+  squidStatus?: { height?: number | string | null } | null;
 };
 
 type Prices = { eth: number; matic: number; sol: number };
@@ -337,10 +346,11 @@ async function fetchSolanaVaultBalance(account: string): Promise<number | null> 
 
 // ─── Robinhood Chain ────────────────────────────────────────────────────────
 
-// OLAS/WETH Uniswap V2 pair (autonolas-tokenomics PR #361). No liquidity
-// subgraph, so reserves and the LP split are read on-chain. The LP token is
-// L2-native and cannot be bridged to Ethereum, so the treasury's holding is the
-// balance of its L2 control point (the aliased Timelock) — not a bridged balance.
+// OLAS/WETH Uniswap V2 pair (autonolas-tokenomics PR #361). Reserves and the LP
+// split are read on-chain; the liquidity squid supplies only cumulative swap fees.
+// The LP token is L2-native and cannot be bridged to Ethereum, so the treasury's
+// holding is the balance of its L2 control point (the aliased Timelock) — not a
+// bridged balance.
 const ROBINHOOD_POL_PAIR = '0xc2eA98b5A75Fd85f7ce57Af856baaFfECD445659';
 const ROBINHOOD_TREASURY_L2 = '0x4d30F68F5AA342d296d4deE4bB1Cacca912dA70F';
 
@@ -445,6 +455,8 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     solBalanceResult,
     solOlasBalanceResult,
     robinhoodResult,
+    robinhoodFeesResult,
+    robinhoodBlockResult,
     ...l2Results
   ] = await Promise.allSettled([
     ethClient.request(liquidityEthQuery) as Promise<EthSubgraphResponse>,
@@ -452,6 +464,10 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     fetchSolanaVaultBalance(SOL_VAULT_ACCOUNT),
     fetchSolanaVaultBalance(SOL_OLAS_VAULT_ACCOUNT),
     fetchRobinhoodPool(),
+    LIQUIDITY_SQUID_CLIENTS.robinhood.request<RobinhoodSquidResponse>(
+      liquidityRobinhoodSquidQuery(ROBINHOOD_POL_PAIR)
+    ),
+    getChainBlockNumber('robinhood'),
     ...L2_CHAINS.flatMap((chain) => [
       (async () => {
         const client = LIQUIDITY_GRAPH_CLIENTS[chain];
@@ -735,7 +751,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     }
   }
 
-  // Solana: 2 × SOL_vault × SOL/USD × treasury_share (~99.995%). No fees (no subgraph).
+  // Solana: 2 × SOL_vault × SOL/USD × treasury_share (~99.995%). No fees (no indexer).
   const solBalance = solBalanceResult.status === 'fulfilled' ? solBalanceResult.value : null;
   const solOlasBalance =
     solOlasBalanceResult.status === 'fulfilled' ? solOlasBalanceResult.value : null;
@@ -754,12 +770,12 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     polPartial = true;
   }
 
-  // Robinhood: same math as the L2 pools (2 × WETH reserve × ETH/USD × share) but
-  // fully on-chain, with the share taken from the aliased Timelock's LP balance.
-  // Fees are not tracked (no subgraph), as on Solana.
+  // Robinhood: same math as the L2 pools (2 × WETH reserve × ETH/USD × share), with
+  // reserves and the share (the aliased Timelock's LP balance) read on-chain.
   const robinhood = robinhoodResult.status === 'fulfilled' ? robinhoodResult.value : null;
   const robinhoodOlas = OLAS_TOKEN_ADDRESS_BY_CHAIN.robinhood;
   let robinhoodError: string | null = null;
+  let robinhoodShare: number | null = null;
   if (robinhood === null || prices.eth <= 0) {
     robinhoodError = 'liquidity:robinhood';
   } else if (
@@ -778,6 +794,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
       robinhoodError = 'liquidity:robinhood:tvl-out-of-bounds';
     } else {
       const share = computeShare(robinhood.treasuryBalance, BigInt(robinhood.live.totalSupply));
+      robinhoodShare = share;
       totalPolUsd += tvl * share;
       polUsdByChain.robinhood = tvl * share;
       // A zero share publishes $0 with no composition rather than "0 OLAS : 0 WETH".
@@ -794,6 +811,46 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     polPartial = true;
   }
 
+  // Robinhood fees: cumulative swap fees from the liquidity squid, valued like the L2
+  // pools. The squid only feeds fees, so its failures and lag stay off the POL status.
+  const feesOnlyFetchErrors: string[] = [];
+  const feesOnlyLaggingSubgraphs: string[] = [];
+  const robinhoodPoolFees =
+    robinhoodFeesResult.status === 'fulfilled' ? robinhoodFeesResult.value?.poolMetricsById : null;
+  if (!robinhoodPoolFees) {
+    if (robinhoodFeesResult.status === 'rejected') {
+      console.error('Error fetching Robinhood liquidity squid:', robinhoodFeesResult.reason);
+    }
+    feesOnlyFetchErrors.push('liquidity:robinhood:fees');
+    feesPartial = true;
+  } else {
+    const height = (robinhoodFeesResult as PromiseFulfilledResult<RobinhoodSquidResponse>).value
+      .squidStatus?.height;
+    const head = robinhoodBlockResult.status === 'fulfilled' ? robinhoodBlockResult.value : null;
+    if (checkSubgraphLag(head, height == null ? undefined : Number(height), 'robinhood')) {
+      feesOnlyLaggingSubgraphs.push('liquidity:robinhood');
+    }
+    if (robinhoodShare === null) {
+      // No live reserves / share to value the fees with — already a POL fetch error.
+      feesPartial = true;
+    } else {
+      // token0 = OLAS, token1 = WETH (token order checked above).
+      const fees = l2FeesToUsd(
+        BigInt(robinhoodPoolFees.cumulativeFeesToken1),
+        BigInt(robinhoodPoolFees.cumulativeFeesToken0),
+        BigInt(robinhood.live.reserve1),
+        BigInt(robinhood.live.reserve0),
+        prices.eth
+      );
+      if (!isSaneUsd(fees, MAX_POOL_FEES_USD)) {
+        console.error(`[protocol-metrics] liquidity:robinhood fees out of bounds: $${fees}`);
+        feesPartial = true;
+      } else {
+        totalProtocolFeesUsd += fees * robinhoodShare;
+      }
+    }
+  }
+
   // ─── POL: sanity-clamp totals before publishing ──────────────────────────
   // polFetchErrors is the base set + partial/out-of-bounds tags specific to POL.
   const polFetchErrors = [...fetchErrors, ...(polPartial ? ['liquidity:pol-partial'] : [])];
@@ -807,7 +864,11 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   // ─── Fees: null-out explicitly on any partiality ─────────────────────────
   // Previously we relied on mergeWithFallback's stale→old-value path. Explicit
   // null is locally obvious and removes the indirection.
-  const feesFetchErrors = [...fetchErrors, ...(feesPartial ? ['liquidity:fees-partial'] : [])];
+  const feesFetchErrors = [
+    ...fetchErrors,
+    ...feesOnlyFetchErrors,
+    ...(feesPartial ? ['liquidity:fees-partial'] : []),
+  ];
   let feesValue: number | null = feesPartial ? null : Math.round(totalProtocolFeesUsd);
   if (feesValue !== null && !isSaneUsd(totalProtocolFeesUsd, MAX_TOTAL_FEES_USD)) {
     console.error(
@@ -849,7 +910,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
       status: createStaleStatus({
         indexingErrors,
         fetchErrors: feesFetchErrors,
-        laggingSubgraphs,
+        laggingSubgraphs: [...laggingSubgraphs, ...feesOnlyLaggingSubgraphs],
       }),
     },
     polByChain,
