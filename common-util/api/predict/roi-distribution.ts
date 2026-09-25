@@ -7,6 +7,7 @@ import {
 import {
   getMarketplaceSendersQuery,
   getMechRequestsIncrementalQuery,
+  getMechRequestsInRangeQuery,
   getOmenDailyProfitStatsQuery,
   getOmenTraderAgentsQuery,
   getPolymarketDailyProfitStatsQuery,
@@ -22,13 +23,7 @@ import {
   POLYMARKET_GENESIS_TS,
 } from './genesis';
 import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
-import {
-  allTimeNetGainAndCosts,
-  mergeQmr,
-  roiPercent,
-  senderLifetimeRequests,
-  windowedNetGainAndCosts,
-} from './roi-math';
+import { mergeQmr, roiPercent, senderLifetimeRequests, windowedNetGainAndCosts } from './roi-math';
 
 const LIMIT = 1000;
 // conditionIds per getPolymarketQuestionTitlesQuery batch (keeps the inlined
@@ -37,8 +32,9 @@ const TITLE_BATCH_SIZE = 500;
 // Process at most this many days per cron run to stay within timeout
 const MAX_DAYS_PER_RUN = 30;
 const DAY_SECONDS = 86400;
-// Keep only this many days in byDay (covers the longest non-global tab: 90D)
-const BYDAY_RETENTION_DAYS = 90;
+// Keep only this many days in byDay (covers the longest tab: 365D, plus one day of
+// slack between UTC midnight and the daily cron run)
+const BYDAY_RETENTION_DAYS = 366;
 // QMR_MAX_AGE_DAYS (common-util/constants.ts): age-out TTL for pending QMR
 // entries (markets resolve in ~4 days); shared with the mech-analytics client.
 
@@ -48,6 +44,13 @@ const BYDAY_RETENTION_DAYS = 90;
 export const MIN_TRADES_FOR_ROI_DISPLAY = 10;
 
 const dayKeyOf = (ts: number): string => String(Math.floor(ts / DAY_SECONDS) * DAY_SECONDS);
+
+// Blobs written before `historyFrom` existed were pruned to this many days, counted
+// back from the run after `lastDayTimestamp`.
+const LEGACY_RETENTION_DAYS = 90;
+
+const legacyHistoryFrom = (data: AgentBlueprintRoiData): number =>
+  data.lastDayTimestamp + DAY_SECONDS - LEGACY_RETENTION_DAYS * DAY_SECONDS;
 
 // ─── Blob related query types ────────────────────────────────────────────────────
 
@@ -80,7 +83,7 @@ export type QmrData = {
   };
 };
 
-/** Per-agent daily aggregates, used for 'd7' | 'd30' | 'd90' distributions */
+/** Per-agent daily aggregates, used for every range ('d7' … 'd365') */
 export type DailyAgentEntry = {
   profit: string;
   payout: string;
@@ -101,7 +104,10 @@ export type DailyAgentEntry = {
   feesSettled?: string;
 };
 
-/** Per-agent all-time aggregates — used for 'max' distribution. */
+/**
+ * Per-agent all-time aggregates. Only `totalBets` is read today — the lifetime activity
+ * floor (MIN_TRADES_FOR_ROI_DISPLAY). Every published range is summed from `byDay`.
+ */
 export type AllTimeAgentEntry = {
   // Expected payout projected at market resolution (accrual basis), 1e18-scaled.
   // See docs/predict-roi-accounting.md.
@@ -118,6 +124,19 @@ export type AgentBlueprintRoiData = {
     { agents: Record<string, DailyAgentEntry> }
   >;
   lastDayTimestamp: number;
+  /**
+   * Oldest day `byDay` holds complete data for. A range is only published once it
+   * reaches back this far (see `isRoiWindowCovered`); before that it would be summed
+   * over fewer days than its label says. Missing on blobs written before the 365D
+   * range — derived from the oldest `byDay` key on the next run.
+   */
+  historyFrom?: number;
+  /**
+   * Days before this were backfilled by `backfillRoiHistory` rather than processed
+   * live, so their `mechRequests` come from a replay (polystrat) or an estimate of one
+   * request per bet (omenstrat). See docs/predict-roi-accounting.md.
+   */
+  backfilledBefore?: number;
   allTimeAgents: Record<string, AllTimeAgentEntry>; // agentId → all-time totals
   /**
    * Subgraph fetches that failed during the run that wrote this blob
@@ -502,6 +521,43 @@ const normalizeQmrShape = (
   return out;
 };
 
+/**
+ * Consumes the open QMR entries for every market this agent's stat settled, and returns
+ * how many requests that booked onto the settlement day (product intent: all market
+ * costs are grouped on the day the market settles, not on the day the request was
+ * made). Shared by the daily run and the history backfill so both match titles the
+ * same way.
+ */
+const consumeSettledRequests = (
+  qmr: Record<string, Record<string, number[]>>,
+  normalizedQmrMap: Map<string, string>,
+  stat: DailyStatEntry,
+  agentId: string,
+  keysUsed: Set<string>
+): number => {
+  // Unique titles from the predict subgraph
+  const uniqueTitles = new Set<string>();
+  for (const p of stat.profitParticipants ?? []) {
+    const title = p.question ?? p.metadata?.title;
+    if (title) uniqueTitles.add(title);
+  }
+
+  let mechRequests = 0;
+  for (const title of uniqueTitles) {
+    let matchedKey = qmr[title] ? title : null;
+    if (!matchedKey) {
+      matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
+    }
+    const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
+    if (matchedKey && tsList && tsList.length > 0) {
+      mechRequests += tsList.length;
+      qmr[matchedKey][agentId] = [];
+      keysUsed.add(matchedKey);
+    }
+  }
+  return mechRequests;
+};
+
 const updateAgentBlueprintData = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
   existing: AgentBlueprintRoiData | null,
@@ -632,30 +688,14 @@ const updateAgentBlueprintData = async (
         for (const stat of dayStats) {
           const agentId = stat.traderAgent.id.toLowerCase();
 
-          // Unique titles from the predict subgraph
-          const uniqueTitles = new Set<string>();
-          for (const p of stat.profitParticipants ?? []) {
-            const title = p.question ?? p.metadata?.title;
-            if (title) uniqueTitles.add(title);
-          }
-
-          // Consume QMR entries onto the settlement day (product intent: all
-          // market costs are grouped on the day the market settles, not on the
-          // day the request was made).
-          let mechRequests = 0;
-          for (const title of uniqueTitles) {
-            let matchedKey = qmr[title] ? title : null;
-            if (!matchedKey) {
-              matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
-            }
-            const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
-            if (matchedKey && tsList && tsList.length > 0) {
-              mechRequests += tsList.length;
-              matchedCount += tsList.length;
-              qmr[matchedKey][agentId] = [];
-              qmrKeysUsedThisDay.add(matchedKey);
-            }
-          }
+          const mechRequests = consumeSettledRequests(
+            qmr,
+            normalizedQmrMap,
+            stat,
+            agentId,
+            qmrKeysUsedThisDay
+          );
+          matchedCount += mechRequests;
 
           agents[agentId] = {
             profit: stat.dailyProfit,
@@ -727,6 +767,12 @@ const updateAgentBlueprintData = async (
   for (const dayKey of Object.keys(byDay)) {
     if (Number(dayKey) < retentionCutoff) delete byDay[dayKey];
   }
+  // A fresh blob is complete from genesis; an older one from where the 90-day
+  // pruning left it (legacyHistoryFrom).
+  const historyFrom = Math.max(
+    retentionCutoff,
+    existing ? (existing.historyFrom ?? legacyHistoryFrom(existing)) : genesisTs
+  );
 
   // 4: Recompute all-time agents (fresh each run). On fetch failure keep the
   // previous run's totals — overwriting them with a truncated (often empty) map
@@ -759,6 +805,8 @@ const updateAgentBlueprintData = async (
     mainData: {
       byDay,
       lastDayTimestamp,
+      historyFrom,
+      backfilledBefore: existing?.backfilledBefore,
       allTimeAgents,
       fetchErrors: runFetchErrors,
       mechAttribution,
@@ -768,6 +816,280 @@ const updateAgentBlueprintData = async (
       lastMechRequestTimestamp: newMechTs,
       mechAnalytics: newMechAnalytics,
     },
+  };
+};
+
+// ─── One-off 365D history backfill ───────────────────────────────────────────
+
+// Days per Omenstrat backfill chunk. Small, so the time budget packs chunks tightly:
+// the request scan reads every Gnosis mech request (~15k a day), not only Omenstrat's.
+const HISTORY_CHUNK_DAYS = 5;
+// Stop starting new chunks after this long, leaving headroom in the 300s function.
+const HISTORY_TIME_BUDGET_MS = 180_000;
+
+type MechRequestInRange = MechRequestEntry & { id: string };
+
+// Walks every mech request in [fromTs, toTs) once, oldest first. `false` on any failed
+// page — a partial scan would undercount, so callers write nothing for the range.
+const scanMechRequests = async (
+  chain: 'gnosis' | 'polygon',
+  fromTs: number,
+  toTs: number,
+  onRequest: (agentId: string, questionTitle: string | null, ts: number) => void
+): Promise<boolean> => {
+  const seen = new Set<string>();
+  const client = MARKETPLACE_GRAPH_CLIENTS[chain];
+  let cursor = fromTs;
+
+  while (true) {
+    let page: MechRequestInRange[] | null = null;
+    // One retry: a scan is thousands of pages, and a single gateway blip would
+    // otherwise throw away the whole chunk.
+    for (let attempt = 1; page === null; attempt++) {
+      try {
+        const response = (await client.request(
+          getMechRequestsInRangeQuery({ timestamp_gte: cursor, timestamp_lt: toTs, first: LIMIT })
+        )) as { requests: MechRequestInRange[] };
+        page = response?.requests ?? [];
+      } catch (e) {
+        console.error(`Error fetching mech requests in range for ${chain} (try ${attempt})`, e);
+        if (attempt >= 2) return false;
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
+
+    for (const req of page) {
+      if (seen.has(req.id)) continue;
+      seen.add(req.id);
+      const agentId = req.sender?.id?.toLowerCase();
+      const ts = Number(req.blockTimestamp ?? 0);
+      if (!agentId || ts <= 0) continue;
+      onRequest(agentId, req.parsedRequest?.questionTitle ?? null, ts);
+    }
+
+    if (page.length < LIMIT) return true;
+    const lastTs = Number(page[page.length - 1].blockTimestamp);
+    if (lastTs <= cursor) {
+      // A full page on a single second: the cursor can't advance past it.
+      console.error(`mech request cursor stuck at ${cursor} on ${chain}`);
+      return false;
+    }
+    // `gte` re-reads the last second, so siblings split across the boundary are kept;
+    // the id set drops the rows read twice.
+    cursor = lastTs;
+  }
+};
+
+const statsByDayKey = (stats: DailyStatEntry[]) => {
+  const out = new Map<string, DailyStatEntry[]>();
+  for (const stat of stats) {
+    const list = out.get(String(stat.date)) ?? [];
+    list.push(stat);
+    out.set(String(stat.date), list);
+  }
+  return out;
+};
+
+const toDailyEntry = (
+  stat: DailyStatEntry,
+  mechRequests: number,
+  isPolystrat: boolean
+): DailyAgentEntry => ({
+  profit: stat.dailyProfit,
+  payout: stat.totalPayout,
+  mechRequests,
+  tradedSettled: stat.dailyTradedSettled ?? '0',
+  ...(isPolystrat ? {} : { feesSettled: stat.dailyFeesSettled ?? '0' }),
+});
+
+/**
+ * Omenstrat: walks back from `historyFrom` in chunks until the 365D range start or the
+ * time budget. Each day's mech requests are the trader agents' requests the marketplace
+ * subgraph recorded that day — booked on the request day rather than matched to the
+ * settlement day as the live run does. Matching needs a forward pass over the open
+ * requests, which Omen's volume (~2.5M Gnosis requests over the gap) can't fit in one
+ * call; markets settle within ~4 days, so a 365-day total barely moves.
+ */
+const backfillOmenstratHistory = async (
+  byDay: AgentBlueprintRoiData['byDay'],
+  historyFrom: number,
+  floor: number,
+  traders: Set<string>
+): Promise<{ historyFrom: number; ok: boolean }> => {
+  const startedAt = Date.now();
+  let from = historyFrom;
+  while (from > floor && Date.now() - startedAt < HISTORY_TIME_BUDGET_MS) {
+    const hi = from - DAY_SECONDS;
+    const lo = Math.max(floor, from - HISTORY_CHUNK_DAYS * DAY_SECONDS);
+
+    // dayKey → agentId → requests made that day
+    const requestsByDay = new Map<string, Map<string, number>>();
+    const [{ stats, ok: statsOk }, requestsOk] = await Promise.all([
+      fetchOmenstratDailyStats(lo, hi),
+      scanMechRequests('gnosis', lo, hi + DAY_SECONDS, (agentId, _title, ts) => {
+        if (!traders.has(agentId)) return;
+        const dayMap = requestsByDay.get(dayKeyOf(ts)) ?? new Map<string, number>();
+        dayMap.set(agentId, (dayMap.get(agentId) ?? 0) + 1);
+        requestsByDay.set(dayKeyOf(ts), dayMap);
+      }),
+    ]);
+    // Incomplete: write nothing for this chunk and leave historyFrom where it is.
+    if (!statsOk || !requestsOk) return { historyFrom: from, ok: false };
+
+    const byKey = statsByDayKey(stats);
+    for (let dayTs = lo; dayTs <= hi; dayTs += DAY_SECONDS) {
+      const dayRequests = requestsByDay.get(String(dayTs)) ?? new Map<string, number>();
+      const agents: Record<string, DailyAgentEntry> = {};
+      for (const stat of byKey.get(String(dayTs)) ?? []) {
+        const agentId = stat.traderAgent.id.toLowerCase();
+        agents[agentId] = toDailyEntry(stat, dayRequests.get(agentId) ?? 0, false);
+      }
+      // Requests on a day the agent settled nothing still cost (the live run's TTL
+      // flush books these the same way).
+      for (const [agentId, count] of dayRequests) {
+        if (!agents[agentId]) agents[agentId] = { profit: '0', payout: '0', mechRequests: count };
+      }
+      if (Object.keys(agents).length > 0) byDay[String(dayTs)] = { agents };
+      else delete byDay[String(dayTs)];
+    }
+    from = lo;
+  }
+  return { historyFrom: from, ok: true };
+};
+
+/**
+ * Polystrat: replays the daily run's request matching over the whole gap in one pass —
+ * the same ingest, settlement-day match and TTL flush, fed from the marketplace
+ * subgraph's per-request records instead of the live feed. Off-chain requests have no
+ * such record, so days that had any are undercounted by those.
+ *
+ * Requests still open at `historyFrom` are dropped: the live run already booked them
+ * onto a day at or after it, or flushed them onto a day it has since pruned.
+ */
+const backfillPolystratHistory = async (
+  byDay: AgentBlueprintRoiData['byDay'],
+  historyFrom: number,
+  floor: number
+): Promise<{ historyFrom: number; ok: boolean }> => {
+  const hi = historyFrom - DAY_SECONDS;
+  const ttl = QMR_MAX_AGE_DAYS * DAY_SECONDS;
+  // Ingested in request order, day by day, as the live run would have seen them.
+  // Untitled requests are skipped, as the live ingest skips them.
+  const pending: Array<{ title: string; agentId: string; ts: number }> = [];
+  const [statsResult, requestsOk] = await Promise.all([
+    fetchPolystratDailyStats(floor, hi),
+    // Requests made up to a TTL before the range can still settle inside it.
+    scanMechRequests('polygon', floor - ttl, historyFrom, (agentId, title, ts) => {
+      if (title) pending.push({ title, agentId, ts });
+    }),
+  ]);
+  if (!statsResult.ok || !requestsOk) return { historyFrom, ok: false };
+  pending.sort((a, b) => a.ts - b.ts);
+
+  const qmr: Record<string, Record<string, number[]>> = {};
+  const normalizedQmrMap = new Map<string, string>();
+  const days: Record<string, Record<string, DailyAgentEntry>> = {};
+  const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
+    if (!days[dKey]) days[dKey] = {};
+    if (!days[dKey][aid]) days[dKey][aid] = { profit: '0', payout: '0', mechRequests: 0 };
+    return days[dKey][aid];
+  };
+  // TTL flush onto the request day, as the live run does. Requests made before the
+  // range are dropped — their day is outside it.
+  const flushOlderThan = (cutoff: number) => {
+    for (const [title, agentMap] of Object.entries(qmr)) {
+      for (const [agentId, tsList] of Object.entries(agentMap)) {
+        const kept = tsList.filter((ts) => ts >= cutoff);
+        for (const ts of tsList) {
+          if (ts < cutoff && ts >= floor) ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+        }
+        if (kept.length === 0) delete agentMap[agentId];
+        else agentMap[agentId] = kept;
+      }
+      if (Object.keys(agentMap).length === 0) {
+        delete qmr[title];
+        normalizedQmrMap.delete(normalizeTitle(title));
+      }
+    }
+  };
+
+  const byKey = statsByDayKey(statsResult.stats);
+  let next = 0;
+  for (let dayTs = floor; dayTs <= hi; dayTs += DAY_SECONDS) {
+    // Requests made by the end of this day are known when its settlements are matched.
+    while (next < pending.length && pending[next].ts < dayTs + DAY_SECONDS) {
+      const { title, agentId, ts } = pending[next++];
+      if (!qmr[title]) qmr[title] = {};
+      if (!qmr[title][agentId]) qmr[title][agentId] = [];
+      qmr[title][agentId].push(ts);
+      normalizedQmrMap.set(normalizeTitle(title), title);
+    }
+
+    const keysUsed = new Set<string>();
+    for (const stat of byKey.get(String(dayTs)) ?? []) {
+      const agentId = stat.traderAgent.id.toLowerCase();
+      const matched = consumeSettledRequests(qmr, normalizedQmrMap, stat, agentId, keysUsed);
+      // A TTL flush may already have booked requests on this day for this agent.
+      const flushed = days[String(dayTs)]?.[agentId]?.mechRequests ?? 0;
+      ensureEntry(String(dayTs), agentId); // creates the day's map
+      days[String(dayTs)][agentId] = toDailyEntry(stat, matched + flushed, true);
+    }
+    flushOlderThan(dayTs + DAY_SECONDS - ttl);
+  }
+
+  for (let dayTs = floor; dayTs <= hi; dayTs += DAY_SECONDS) {
+    const agents = days[String(dayTs)];
+    if (agents && Object.keys(agents).length > 0) byDay[String(dayTs)] = { agents };
+    else delete byDay[String(dayTs)];
+  }
+  return { historyFrom: floor, ok: true };
+};
+
+/**
+ * Fills `byDay` back to the start of the 365D range, which the live run never kept
+ * (it pruned at 90 days until the 365D tab). One-off: run it by hand after deploy via
+ * `/api/refresh-metrics/predict-roi-distribution?agent=<agent>&backfillHistory=1`,
+ * repeating while `remainingDays > 0`. Touches only days before `historyFrom`, never
+ * the day cursor or the open-request set. See docs/predict-roi-accounting.md.
+ */
+export const backfillRoiHistory = async (
+  agentBlueprint: 'omenstrat' | 'polystrat',
+  existing: AgentBlueprintRoiData
+): Promise<{ mainData: AgentBlueprintRoiData; ok: boolean; remainingDays: number }> => {
+  const isPolystrat = agentBlueprint === 'polystrat';
+  const floor = windowStart(365, isPolystrat);
+  const historyFrom = existing.historyFrom ?? legacyHistoryFrom(existing);
+  const byDay = { ...existing.byDay };
+
+  let result = { historyFrom, ok: true };
+  if (historyFrom > floor) {
+    result = isPolystrat
+      ? await backfillPolystratHistory(byDay, historyFrom, floor)
+      : await backfillOmenstratHistory(
+          byDay,
+          historyFrom,
+          floor,
+          // Mech senders are the trader agents' own addresses.
+          new Set(Object.keys(existing.allTimeAgents ?? {}).map((id) => id.toLowerCase()))
+        );
+  }
+
+  console.log(
+    `[roi-dist:${agentBlueprint}] history backfill ok=${result.ok} ` +
+      `historyFrom=${result.historyFrom} floor=${floor}`
+  );
+
+  return {
+    mainData: {
+      ...existing,
+      byDay,
+      historyFrom: result.historyFrom,
+      // The first backfill marks where live data starts; later runs keep it.
+      backfilledBefore:
+        existing.backfilledBefore ?? (historyFrom > floor ? historyFrom : undefined),
+    },
+    ok: result.ok,
+    remainingDays: Math.max(0, (result.historyFrom - floor) / DAY_SECONDS),
   };
 };
 
@@ -812,7 +1134,7 @@ export type BinData = {
   polystrat: number;
 };
 
-export type RangeKey = 'd7' | 'd30' | 'd90' | 'all';
+export type RangeKey = 'd7' | 'd30' | 'd90' | 'd365';
 
 /** What the Predict page reads: the per-range histograms plus their net-positive shares. */
 export type RoiDistribution = {
@@ -838,127 +1160,130 @@ const emptyHistogram = (): HistogramResult => ({
 const assignBin = (roi: number): number =>
   ROI_BINS.findIndex((bin) => roi >= bin.min && roi < bin.max);
 
+type WindowTotals = {
+  profit: bigint;
+  payout: bigint;
+  mechRequests: number;
+  tradedSettled: bigint;
+  feesSettled: bigint; // omenstrat only — 0n for polystrat
+};
+
+const genesisOf = (isPolystrat: boolean) => (isPolystrat ? POLYMARKET_GENESIS_TS : OMEN_GENESIS_TS);
+
+/**
+ * First day of a `daysBack`-day range ending yesterday. Clamped to genesis: a platform
+ * younger than the range has no earlier days, so its whole history is the range.
+ */
+const windowStart = (daysBack: number, isPolystrat: boolean): number =>
+  Math.max(
+    genesisOf(isPolystrat),
+    getMidnightUtcTimestampDaysAgo(1) - (daysBack - 1) * DAY_SECONDS
+  );
+
+/**
+ * True once `byDay` reaches back to the start of the range. An uncovered range is not
+ * published — summed over fewer days than its label, it would be a different number
+ * under the same name. Until the one-off history backfill runs, this is what keeps
+ * 365D at `--`.
+ */
+export const isRoiWindowCovered = (
+  data: AgentBlueprintRoiData,
+  daysBack: number,
+  isPolystrat: boolean
+): boolean => {
+  const from = data.historyFrom ?? legacyHistoryFrom(data);
+  return from <= windowStart(daysBack, isPolystrat);
+};
+
+// Per-agent totals of the `byDay` buckets in [windowStart, yesterday].
+const sumWindowByAgent = (
+  data: AgentBlueprintRoiData,
+  daysBack: number,
+  isPolystrat: boolean
+): Map<string, WindowTotals> => {
+  const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
+  const cutoffTs = windowStart(daysBack, isPolystrat);
+  const agentTotals = new Map<string, WindowTotals>();
+
+  for (const [dayKeyStr, dayData] of Object.entries(data.byDay)) {
+    const dayTs = Number(dayKeyStr);
+    // Counts [daysBack] full days excluding today
+    if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
+
+    for (const [agentId, entry] of Object.entries(dayData.agents)) {
+      const prev: WindowTotals = agentTotals.get(agentId) ?? {
+        profit: 0n,
+        payout: 0n,
+        mechRequests: 0,
+        tradedSettled: 0n,
+        feesSettled: 0n,
+      };
+      prev.profit += BigInt(entry.profit);
+      prev.payout += BigInt(entry.payout);
+      prev.mechRequests += entry.mechRequests;
+      if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
+      if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
+      agentTotals.set(agentId, prev);
+    }
+  }
+  return agentTotals;
+};
+
 const computeAgentBlueprintHistogram = (
   agentBlueprintData: AgentBlueprintRoiData,
-  daysBack: number | null,
+  daysBack: number,
   isPolystrat: boolean
 ): HistogramResult => {
+  if (!isRoiWindowCovered(agentBlueprintData, daysBack, isPolystrat)) return emptyHistogram();
+
   const binCounts = new Array<number>(ROI_BINS.length).fill(0);
   let activeAgents = 0;
   let netPositiveAgents = 0;
   let excludedLowActivity = 0;
 
-  if (daysBack === null) {
-    // "All" range: already scaled in fetchAllTimeAgents
-    for (const entry of Object.values(agentBlueprintData.allTimeAgents ?? {})) {
-      const payout = BigInt(entry.payout);
-      const tradingCosts = BigInt(entry.tradingCosts);
+  const scale = isPolystrat ? BigInt('1000000000000') : 1n; // Scale USDC (6) to WEI (18)
+  const agentTotals = sumWindowByAgent(agentBlueprintData, daysBack, isPolystrat);
 
-      // Skip zero trading costs considering it as "not enough data"
-      if (tradingCosts <= 0n) continue;
-
-      // Skip agents below the activity threshold — consistent with the
-      // trader skill's "need more data" rule (MIN_TRADES_FOR_ROI_DISPLAY).
-      if ((entry.totalBets ?? 0) < MIN_TRADES_FOR_ROI_DISPLAY) {
-        excludedLowActivity++;
-        continue;
-      }
-
-      // ROI = (Payout - TotalCosts) / TotalCosts; mech fees are already 18 decimals.
-      const { netGain, totalCosts } = allTimeNetGainAndCosts({
-        payout,
-        tradingCosts,
-        mechRequests: entry.mechRequests,
-        mechFeeWei: DEFAULT_MECH_FEE,
-      });
-      const roi = roiPercent(netGain, totalCosts);
-
-      const binIdx = assignBin(roi);
-      if (binIdx !== -1) {
-        binCounts[binIdx]++;
-        activeAgents++;
-        if (roi > 0) netPositiveAgents++;
-      }
-    }
-  } else {
-    // 7D / 30D / 90D
-    const scale = isPolystrat ? BigInt('1000000000000') : 1n; // Scale USDC (6) to WEI (18)
-    const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
-    const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
-
-    type Totals = {
-      profit: bigint;
-      payout: bigint;
-      mechRequests: number;
-      tradedSettled: bigint;
-      feesSettled: bigint; // omenstrat only — 0n for polystrat
-    };
-    const agentTotals = new Map<string, Totals>();
-
-    for (const [dayKeyStr, dayData] of Object.entries(agentBlueprintData.byDay)) {
-      const dayTs = Number(dayKeyStr);
-      // Counts [daysBack] full days excluding today
-      if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
-
-      for (const [agentId, entry] of Object.entries(dayData.agents)) {
-        const prev: Totals = agentTotals.get(agentId) ?? {
-          profit: 0n,
-          payout: 0n,
-          mechRequests: 0,
-          tradedSettled: 0n,
-          feesSettled: 0n,
-        };
-        prev.profit += BigInt(entry.profit);
-        prev.payout += BigInt(entry.payout);
-        prev.mechRequests += entry.mechRequests;
-        if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
-        if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
-        agentTotals.set(agentId, prev);
-      }
+  for (const [agentId, totals] of agentTotals.entries()) {
+    // Activity threshold uses lifetime bets from traderAgents, not bets in
+    // the window — the floor means "agent has enough history to be
+    // statistically meaningful," which is a property of the agent, not the
+    // window. Only apply the threshold when a lifetime total is present;
+    // a missing entry (partial allTimeAgents snapshot) shouldn't silently
+    // drop the agent and risk emptying the histogram.
+    const lifetimeEntry = agentBlueprintData.allTimeAgents?.[agentId];
+    if (lifetimeEntry !== undefined && lifetimeEntry.totalBets < MIN_TRADES_FOR_ROI_DISPLAY) {
+      excludedLowActivity++;
+      continue;
     }
 
-    for (const [agentId, totals] of agentTotals.entries()) {
-      // Activity threshold uses lifetime bets from traderAgents, not bets in
-      // the window — the floor means "agent has enough history to be
-      // statistically meaningful," which is a property of the agent, not the
-      // window. Only apply the threshold when a lifetime total is present;
-      // a missing entry (partial allTimeAgents snapshot) shouldn't silently
-      // drop the agent and risk emptying the histogram.
-      const lifetimeEntry = agentBlueprintData.allTimeAgents?.[agentId];
-      if (lifetimeEntry !== undefined && lifetimeEntry.totalBets < MIN_TRADES_FOR_ROI_DISPLAY) {
-        excludedLowActivity++;
-        continue;
-      }
+    // Settlement-day cost basis, scaled to 18 decimals (polystrat entries are
+    // USDC 1e6, scale = 1e12; feesSettled is 0 there — no per-trade fees).
+    const tradingCosts = (totals.tradedSettled + totals.feesSettled) * scale;
 
-      // Settlement-day cost basis, scaled to 18 decimals (polystrat entries are
-      // USDC 1e6, scale = 1e12; feesSettled is 0 there — no per-trade fees).
-      const tradingCosts = (totals.tradedSettled + totals.feesSettled) * scale;
+    // Skip zero trading costs considering it as "not enough data"
+    if (tradingCosts <= 0n) continue;
 
-      // Skip zero trading costs considering it as "not enough data"
-      if (tradingCosts <= 0n) continue;
+    const { netGain, totalCosts } = windowedNetGainAndCosts({
+      profit: totals.profit,
+      tradedSettled: totals.tradedSettled,
+      feesSettled: totals.feesSettled,
+      mechRequests: totals.mechRequests,
+      scale,
+      mechFeeWei: DEFAULT_MECH_FEE,
+    });
+    const roi = roiPercent(netGain, totalCosts);
 
-      const { netGain, totalCosts } = windowedNetGainAndCosts({
-        profit: totals.profit,
-        tradedSettled: totals.tradedSettled,
-        feesSettled: totals.feesSettled,
-        mechRequests: totals.mechRequests,
-        scale,
-        mechFeeWei: DEFAULT_MECH_FEE,
-      });
-      const roi = roiPercent(netGain, totalCosts);
-
-      const binIdx = assignBin(roi);
-      if (binIdx !== -1) {
-        binCounts[binIdx]++;
-        activeAgents++;
-        if (roi > 0) netPositiveAgents++;
-      }
+    const binIdx = assignBin(roi);
+    if (binIdx !== -1) {
+      binCounts[binIdx]++;
+      activeAgents++;
+      if (roi > 0) netPositiveAgents++;
     }
   }
 
-  const tabLabel = daysBack === null ? 'all' : `${daysBack}d`;
   console.log(
-    `[roi-dist:${isPolystrat ? 'polystrat' : 'omenstrat'}:${tabLabel}] ` +
+    `[roi-dist:${isPolystrat ? 'polystrat' : 'omenstrat'}:${daysBack}d] ` +
       `included=${activeAgents}, excluded_low_activity=${excludedLowActivity} ` +
       `(< ${MIN_TRADES_FOR_ROI_DISPLAY} bets)`
   );
@@ -985,73 +1310,26 @@ const computeAgentBlueprintHistogram = (
  * tiny agents, and the Performance headline is a whole-economy figure, not a per-agent
  * distribution. Keep the formulas in sync with the histogram.
  *
- * `daysBack` 7|30|90 → sum `byDay` buckets in the window; `null` → sum `allTimeAgents`.
- * Results are 1e18-scaled (USDC 1e6 × 1e12 for polystrat). partialRoi% =
- * netGain / totalCosts × 100; finalRoi adds staking rewards (USD) to the numerator.
+ * Sums the `byDay` buckets in the window; an uncovered window returns zero costs, which
+ * callers publish as `null`. Results are 1e18-scaled (USDC 1e6 × 1e12 for polystrat).
+ * partialRoi% = netGain / totalCosts × 100; finalRoi adds staking rewards (USD) to the
+ * numerator.
  */
 export const computeWindowedNetGainAndCosts = (
   data: AgentBlueprintRoiData,
-  daysBack: number | null,
+  daysBack: number,
   isPolystrat: boolean
 ): { netGain: bigint; totalCosts: bigint } => {
   let netGain = 0n;
   let totalCosts = 0n;
-
-  if (daysBack === null) {
-    for (const entry of Object.values(data.allTimeAgents ?? {})) {
-      const tradingCosts = BigInt(entry.tradingCosts); // already scaled
-      if (tradingCosts <= 0n) continue;
-      const agent = allTimeNetGainAndCosts({
-        payout: BigInt(entry.payout),
-        tradingCosts,
-        mechRequests: entry.mechRequests,
-        mechFeeWei: DEFAULT_MECH_FEE,
-      });
-      netGain += agent.netGain;
-      totalCosts += agent.totalCosts;
-    }
-    return { netGain, totalCosts };
-  }
+  // INVARIANT: the largest tab (365D) must fit inside byDay's retention, i.e.
+  // daysBack <= BYDAY_RETENTION_DAYS. Lower it below 365 and historyFrom moves up
+  // with the pruning, so 365D silently stops being published.
+  if (!isRoiWindowCovered(data, daysBack, isPolystrat)) return { netGain, totalCosts };
 
   const scale = isPolystrat ? BigInt('1000000000000') : 1n; // USDC 1e6 → 1e18
-  const yesterdayTs = getMidnightUtcTimestampDaysAgo(1);
-  // INVARIANT: the largest windowed tab (90D) must fit inside byDay's retention, i.e.
-  // daysBack <= BYDAY_RETENTION_DAYS. byDay is pruned to BYDAY_RETENTION_DAYS (strict
-  // `<` cutoff), so 90D's oldest day currently sits exactly on the boundary and is
-  // kept. If BYDAY_RETENTION_DAYS is ever lowered below 90, the 90D window would
-  // silently lose its oldest days — keep BYDAY_RETENTION_DAYS >= the largest window.
-  const cutoffTs = yesterdayTs - (daysBack - 1) * DAY_SECONDS;
 
-  type Totals = {
-    profit: bigint;
-    payout: bigint;
-    mechRequests: number;
-    tradedSettled: bigint;
-    feesSettled: bigint;
-  };
-  const agentTotals = new Map<string, Totals>();
-
-  for (const [dayKeyStr, dayData] of Object.entries(data.byDay)) {
-    const dayTs = Number(dayKeyStr);
-    if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
-    for (const [agentId, entry] of Object.entries(dayData.agents)) {
-      const prev: Totals = agentTotals.get(agentId) ?? {
-        profit: 0n,
-        payout: 0n,
-        mechRequests: 0,
-        tradedSettled: 0n,
-        feesSettled: 0n,
-      };
-      prev.profit += BigInt(entry.profit);
-      prev.payout += BigInt(entry.payout);
-      prev.mechRequests += entry.mechRequests;
-      if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
-      if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
-      agentTotals.set(agentId, prev);
-    }
-  }
-
-  for (const totals of agentTotals.values()) {
+  for (const totals of sumWindowByAgent(data, daysBack, isPolystrat).values()) {
     // Same cost basis as the histogram: settled fields summed over the window
     // (polystrat's are USDC 1e6 → scaled; feesSettled is 0 there).
     const tradingCosts = (totals.tradedSettled + totals.feesSettled) * scale;
@@ -1074,11 +1352,11 @@ export const computeAllRangeHistograms = (
   omenData: AgentBlueprintRoiData | null,
   polyData: AgentBlueprintRoiData | null
 ): RoiDistribution => {
-  const ranges: Array<{ key: RangeKey; days: number | null }> = [
+  const ranges: Array<{ key: RangeKey; days: number }> = [
     { key: 'd7', days: 7 },
     { key: 'd30', days: 30 },
     { key: 'd90', days: 90 },
-    { key: 'all', days: null },
+    { key: 'd365', days: 365 },
   ];
 
   const bins = {} as Record<RangeKey, BinData[]>;

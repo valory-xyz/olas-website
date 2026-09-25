@@ -14,7 +14,7 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
-import { emptyWindows, WindowedMetric } from './brier';
+import { emptyWindows, WindowedMetric, windowCutoff } from './brier';
 
 const LIMIT = 1000;
 const DAY = 86400;
@@ -248,18 +248,13 @@ const buildWindowedAccuracy = async (
     // A window is only published once its full range is covered; otherwise null
     // (so mergeWithFallback keeps the previous value rather than an understated one).
     const windowValue = (days: number): number | null => {
-      const cutoff = yesterday - (days - 1) * DAY;
+      const cutoff = windowCutoff(yesterday, days, genesisDay);
       if (backfilledTo > cutoff) return null;
       const { won, total } = rangeSum(cutoff, yesterday);
       return rate(won, total);
     };
 
     const fullyBackfilled = backfilledTo <= genesisDay;
-    const maxValue = (() => {
-      if (!fullyBackfilled) return null;
-      const { won, total } = rangeSum(0, yesterday);
-      return rate(won, total);
-    })();
 
     // Persist the advanced accumulator (overwrite — authoritative state).
     await saveSnapshot({
@@ -280,7 +275,7 @@ const buildWindowedAccuracy = async (
         '7d': windowValue(7),
         '30d': windowValue(30),
         '90d': windowValue(90),
-        max: maxValue,
+        '365d': windowValue(365),
       },
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };

@@ -78,15 +78,15 @@ export const isPlatform = (value: string): value is Platform =>
 
 // A windowed metric only carries data once at least one of its windows is non-null.
 // On a fresh predict blob mid-backfill every window is null, so this stays false and
-// the non-max tabs remain disabled (matching getTimeRangeTabs below).
+// the shorter tabs remain disabled (matching getTimeRangeTabs below).
 const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
   !isNil(w) && Object.values(w).some((v) => !isNil(v));
 
 // ROI, APR, Accuracy and Brier are windowed for both platforms. When no windowed data
-// is available yet, the non-max tabs stay disabled.
+// is available yet, only the 1Y tab is enabled.
 const getTimeRangeTabs = (windowed: boolean) =>
   PREDICT_WINDOWS.map(({ key, label }) =>
-    windowed || key === 'max'
+    windowed || key === '365d'
       ? { key, label }
       : { key, label, disabled: true, tooltip: 'Coming soon' }
   );
@@ -102,7 +102,7 @@ type MetricItemProps = {
   /**
    * Machine-readable context. Essential here: the selected time range is React state
    * expressed only as a highlighted tab, so a bare "69%" carries no window at all in
-   * the text layer, and the tab labels serialise as the single token "7D30D90DMax".
+   * the text layer, and the tab labels serialise as the single token "7D30D90D1Y".
    */
   context?: { noun: string; note?: string; scope?: string; window?: string };
   asOfFallback?: number | null;
@@ -305,7 +305,7 @@ const PlatformSwitcher = ({
  * Every platform x window combination, as tables.
  *
  * The switcher and the time-range tabs are React state expressed only as a highlighted
- * button, and the tab strip itself serialises as the single token "7D30D90DMax". A crawler
+ * button, and the tab strip itself serialises as the single token "7D30D90D1Y". A crawler
  * fetching this page once therefore sees one of eight states and no sign that the other
  * seven exist — so all eight are written out here.
  *
@@ -439,7 +439,7 @@ export const PlatformActivitySection = ({
 
   // The tab strip is forced to `max` when no windowed data exists, so the effective
   // window — not `activeWindow` — is what the values actually represent.
-  const effectiveWindow: WindowKey = isWindowed ? activeWindow : 'max';
+  const effectiveWindow: WindowKey = isWindowed ? activeWindow : '365d';
   const activeWindowPhrase = windowPhrase(effectiveWindow);
   const platformPhrase = PLATFORM_PHRASE[platform];
   const platformName = PLATFORM_NAME[platform];
@@ -606,7 +606,7 @@ export const PlatformActivitySection = ({
             <Tabs
               ariaLabel="Performance time range"
               items={getTimeRangeTabs(isWindowed)}
-              activeKey={isWindowed ? activeWindow : 'max'}
+              activeKey={isWindowed ? activeWindow : '365d'}
               onChange={(key) => setActiveWindow(key as WindowKey)}
             />
           </div>

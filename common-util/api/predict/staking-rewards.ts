@@ -12,7 +12,7 @@ import {
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { loadSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
-import { WindowedMetric, WindowKey } from './brier';
+import { WindowedMetric, windowCutoff, WindowKey } from './brier';
 import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
 
 const LIMIT = 1000;
@@ -33,7 +33,7 @@ const emptyRewardWindows = (): WindowedMetric<string | null> => ({
   '7d': null,
   '30d': null,
   '90d': null,
-  max: null,
+  '365d': null,
 });
 
 type RewardRow = { rewardAmount: string; blockTimestamp: string };
@@ -222,13 +222,12 @@ const buildWindowedStakingRewards = async (
 
     // A window is only published once its full range is covered; otherwise null.
     const windowValue = (days: number): string | null => {
-      const cutoff = yesterday - (days - 1) * DAY;
+      const cutoff = windowCutoff(yesterday, days, genesisDay);
       if (backfilledTo > cutoff) return null;
       return rangeSum(cutoff, yesterday).toString();
     };
 
     const fullyBackfilled = backfilledTo <= genesisDay;
-    const maxValue = fullyBackfilled ? rangeSum(0, yesterday).toString() : null;
 
     await saveSnapshot({
       category,
@@ -246,7 +245,7 @@ const buildWindowedStakingRewards = async (
         '7d': windowValue(7),
         '30d': windowValue(30),
         '90d': windowValue(90),
-        max: maxValue,
+        '365d': windowValue(365),
       },
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };

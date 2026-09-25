@@ -942,7 +942,38 @@ export const getMechRequestsIncrementalQuery = ({
   }
 `;
 
-// Lifetime totals for the Max-window ROI. `totalExpectedPayout` is the payout
+// Mech requests in [blockTimestamp_gte, blockTimestamp_lt), for the one-off 365D ROI
+// history replay. Cursor-paged on blockTimestamp (not skip, which the Graph caps at
+// 5000); the caller dedupes by id the rows a page boundary returns twice.
+export const getMechRequestsInRangeQuery = ({
+  timestamp_gte,
+  timestamp_lt,
+  first,
+}: {
+  timestamp_gte: number;
+  timestamp_lt: number;
+  first: number;
+}) => gql`
+  query MechRequestsInRange {
+    requests(
+      first: ${first}
+      where: { blockTimestamp_gte: "${timestamp_gte}", blockTimestamp_lt: "${timestamp_lt}" }
+      orderBy: blockTimestamp
+      orderDirection: asc
+    ) {
+      id
+      sender {
+        id
+      }
+      blockTimestamp
+      parsedRequest {
+        questionTitle
+      }
+    }
+  }
+`;
+
+// Lifetime totals for the predict agents (the ROI histogram's activity floor). `totalExpectedPayout` is the payout
 // projected at market resolution (accrual basis — docs/predict-roi-accounting.md).
 export const getOmenTraderAgentsQuery = ({ first, skip }: { first: number; skip: number }) => gql`
   query OmenTraderAgents {

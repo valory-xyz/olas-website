@@ -56,10 +56,18 @@ export const PolystratRoiInfo = () => {
           Total ROI shows your agent&apos;s overall earnings, including profits from predictions and
           staking rewards, minus all related costs such as trade amounts, gas fees, and Mech request
           fees. Requests made for unresolved (open) markets are excluded to ensure accuracy. ROI is
-          shown per <b>time range</b> (7D / 30D / 90D / Max): prediction profit and costs are
+          shown per <b>time range</b> (7D / 30D / 90D / 1Y): prediction profit and costs are
           aggregated per window from per-agent daily statistics, and staking rewards are summed over
           the same window (the Polygon staking subgraph indexes predict programs only) and valued at
           the current OLAS/USD price.
+        </p>
+
+        <p>
+          1Y is the last 365 days, or everything since the platform&apos;s first day while it is
+          younger than that. Per-day mech request counts are only stored from late June 2026. For
+          older days in the 1Y range they were rebuilt by replaying the same request matching over
+          the marketplace subgraph&apos;s per-request records, which do not include off-chain
+          requests. Those days leave the 1Y range by June 2027.
         </p>
 
         <ul className="list-disc list-inside space-y-1">
@@ -106,8 +114,8 @@ export const PolystratRoiInfo = () => {
               and the settled cost basis that windowed ROI divides by
             </li>
             <li>
-              Lifetime per-agent totals for the Max window: settled volume and expected payouts
-              (booked when a market resolves — redemption is never waited for)
+              Lifetime per-agent bet counts, for the ROI distribution&apos;s activity floor (agents
+              with fewer than 10 lifetime trades are left out)
             </li>
           </ul>
         </div>
