@@ -42,9 +42,9 @@ export type PlatformMetrics = {
   mechTxs: number | null;
   marketCreatorTxs?: number | null;
   txsStatus: MetricStatus;
-  // Windowed mean Brier score (Omenstrat only today). Lower is better.
-  brierScore?: WindowedMetric<number | null> | null;
-  brierStatus?: MetricStatus;
+  // Windowed mean Brier score. Lower is better.
+  brierScore: WindowedMetric<number | null> | null;
+  brierStatus: MetricStatus;
 };
 
 type PlatformActivitySectionProps = {
@@ -82,8 +82,8 @@ export const isPlatform = (value: string): value is Platform =>
 const hasWindowData = (w?: WindowedMetric<number | null> | null): boolean =>
   !isNil(w) && Object.values(w).some((v) => !isNil(v));
 
-// ROI and Accuracy are windowed for both platforms; Brier adds a 4th windowed metric
-// on Omenstrat. When no windowed data is available yet, the non-max tabs stay disabled.
+// ROI, APR, Accuracy and Brier are windowed for both platforms. When no windowed data
+// is available yet, the non-max tabs stay disabled.
 const getTimeRangeTabs = (windowed: boolean) =>
   PREDICT_WINDOWS.map(({ key, label }) =>
     windowed || key === 'max'
@@ -130,8 +130,6 @@ type PerformanceMetric = {
    */
   note?: string;
   anchor: string;
-  /** Restricts a metric to the platforms whose source actually indexes it. */
-  platforms?: Platform[];
   /**
    * True for metrics with no visible tile. They are still published in the tables, but
    * the label echo is dropped — there is no on-screen label for it to agree with.
@@ -194,8 +192,6 @@ const PERFORMANCE_METRICS: Record<PerformanceKey, PerformanceMetric> = {
     noun: (platformPhrase) =>
       `mean Brier score for ${platformPhrase}, measuring forecast calibration where lower is better — 0 is a perfect forecast, about 0.25 is no better than a coin flip, and 1 is maximally wrong`,
     anchor: 'predict-brier',
-    // predict-polymarket doesn't index Brier yet.
-    platforms: ['omenstrat'],
   },
 };
 
@@ -228,9 +224,6 @@ const LIFETIME_METRICS: Array<{
   },
 ];
 
-const appliesTo = (metric: PerformanceMetric, platform: Platform) =>
-  !metric.platforms || metric.platforms.includes(platform);
-
 const MetricItem = ({
   label,
   labelText,
@@ -242,7 +235,7 @@ const MetricItem = ({
   asOfFallback,
 }: MetricItemProps) => {
   // Match the brand colour of the linked metrics (Link is text-purple-600) so an
-  // unlinked value (e.g. Brier, which has no /data anchor yet) looks consistent.
+  // unlinked value looks consistent with them.
   const valueClass = `text-2xl font-bold ${isFrozen(status) ? 'text-gray-400' : 'text-purple-600'}`;
   return (
     <div className="flex flex-col gap-1">
@@ -346,7 +339,7 @@ const AllStatesTables = ({
         const isOnScreen = platform === activePlatform && window === activeWindow;
 
         const rows = PERFORMANCE_ORDER.map((key) => PERFORMANCE_METRICS[key])
-          .filter((metric) => appliesTo(metric, platform) && (!isOnScreen || metric.hidden))
+          .filter((metric) => !isOnScreen || metric.hidden)
           .map((metric) => {
             const value = metric.read(m, window);
             const sentence = buildMetricContext({
@@ -565,14 +558,8 @@ export const PlatformActivitySection = ({
     asOfFallback: snapshotTimestamp,
   };
 
-  // All performance metrics respond to the time-range tabs. Brier is a 4th metric on
-  // Omenstrat only (predict-polymarket doesn't index Brier yet).
-  const performanceItems: MetricItemProps[] = [
-    roiItem,
-    aprItem,
-    accuracyItem,
-    ...(appliesTo(brierMeta, platform) ? [brierItem] : []),
-  ];
+  // All performance metrics respond to the time-range tabs.
+  const performanceItems: MetricItemProps[] = [roiItem, aprItem, accuracyItem, brierItem];
 
   // These are lifetime counts and do not follow the time-range tabs, so each says
   // "all time" explicitly rather than inheriting the selected window by proximity.

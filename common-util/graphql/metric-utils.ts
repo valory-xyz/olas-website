@@ -119,6 +119,24 @@ export const checkSubgraphLag = (
   }
 };
 
+/**
+ * Freshness check for an SQD squid. A squid has no `_meta`: it reports its indexed
+ * height through `squidStatus`, and on an error it stops advancing rather than
+ * failing the query — so a missing height means it can't prove freshness and is
+ * treated as lagging. Pushes onto `laggingSubgraphs` and returns whether it lagged.
+ */
+export const checkSquidLag = (
+  chainBlock: number | null,
+  squidHeight: number | undefined,
+  chain: string,
+  laggingSubgraphs: string[],
+  source: string
+): boolean => {
+  const lagging = squidHeight == null || checkSubgraphLag(chainBlock, squidHeight, chain);
+  if (lagging) laggingSubgraphs.push(source);
+  return lagging;
+};
+
 type GraphQLQueryOptions<TData, TResult> = {
   client: GraphQLClient;
   query: RequestDocument;

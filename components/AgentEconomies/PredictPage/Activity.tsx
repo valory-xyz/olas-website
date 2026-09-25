@@ -75,6 +75,8 @@ const processPredictMetrics = (
         partialRoiStatus: undefined,
         successRate: null,
         successRateStatus: undefined,
+        brierScore: null,
+        brierStatus: undefined,
       },
     };
   }
@@ -121,6 +123,8 @@ const processPredictMetrics = (
       partialRoiStatus: metrics.polystrat?.partialRoi?.status,
       successRate: metrics.polystrat?.successRate?.value ?? null,
       successRateStatus: metrics.polystrat?.successRate?.status,
+      brierScore: metrics.polystrat?.brierScore?.value ?? null,
+      brierStatus: metrics.polystrat?.brierScore?.status,
     },
   };
 };
