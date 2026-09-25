@@ -1,4 +1,4 @@
-import { getSubgraphExplorerUrl } from 'common-util/subgraph';
+import { getSubgraphExplorerUrl } from 'common-util/indexers';
 import { ExternalLink } from 'components/ui/typography';
 
 type SubgraphLinkProps = {

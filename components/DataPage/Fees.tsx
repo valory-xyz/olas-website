@@ -1,9 +1,13 @@
+import { MECH_FEES_SQUID_URLS, MECH_FEES_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { mechFeesDrainTotalsQuery } from 'common-util/graphql/queries';
+import {
+  mechFeesDrainTotalsQuery,
+  mechFeesDrainTotalsSquidQuery,
+} from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import Verify from 'components/Verify';
 import { CodeSnippet } from './CodeSnippet';
-import { MechFeesSubgraphLinks } from './MechTurnover';
+import { IndexerLinks } from './IndexerLinks';
 
 export const FeesInfo = () => {
   return (
@@ -17,10 +21,11 @@ export const FeesInfo = () => {
           the DAO drains it. The &quot;fees collected&quot; figure is the sum of two parts: the
           not-yet-drained balance, read on-chain from each tracker&apos;s <code>collectedFees</code>
           , plus everything already drained, read from the <code>DrainTotals</code> entity of the
-          mech fees subgraphs (one row per payment model, priced in USD at drain time). Counted
-          trackers: USDC on Ethereum, Arbitrum, Celo, Optimism, Polygon and Base; xDAI on Gnosis;
-          ETH on Base and Optimism; POL on Polygon. ETH and POL are valued with the same Chainlink
-          feeds the subgraphs use. Not counted: the ETH trackers on Ethereum and Arbitrum, the CELO
+          mech fees subgraphs, or the mech fees squid on Robinhood Chain (one row per payment model,
+          priced in USD at drain time). Counted trackers: USDC on Ethereum, Arbitrum, Celo,
+          Optimism, Polygon and Base; xDAI on Gnosis; ETH on Base and Optimism; POL on Polygon; USDG
+          on Robinhood Chain. ETH and POL are valued with the same Chainlink feeds the subgraphs
+          use. Not counted: the ETH trackers on Ethereum, Arbitrum and Robinhood Chain, the CELO
           tracker, and OLAS-denominated fees — when fees are distributed, non-OLAS fees are sent to
           the Olas Treasury and OLAS fees are burned. A reading is held back if any token&apos;s
           lifetime amount would fall below the previous snapshot.
@@ -70,12 +75,20 @@ export const FeesInfo = () => {
             url="https://polygonscan.com/address/0xc096362fa6f4A4B1a9ea68b1043416f3381ce300#readContract"
             text="Polygon (POL)"
           />
+          <Verify
+            url="https://robinhoodchain.blockscout.com/address/0xEB5638eefE289691EcE01943f768EDBF96258a80?tab=read_contract"
+            text="Robinhood Chain (USDG)"
+          />
         </div>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Drained fees query</h3>
         <p className="text-purple-600">
-          Subgraph links: <MechFeesSubgraphLinks />
+          Subgraph links: <IndexerLinks urls={MECH_FEES_SUBGRAPH_URLS} />
         </p>
         <CodeSnippet>{mechFeesDrainTotalsQuery}</CodeSnippet>
+        <p className="text-purple-600">
+          Squid links (OpenReader dialect): <IndexerLinks urls={MECH_FEES_SQUID_URLS} />
+        </p>
+        <CodeSnippet>{mechFeesDrainTotalsSquidQuery}</CodeSnippet>
       </div>
     </SectionWrapper>
   );

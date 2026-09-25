@@ -59,67 +59,6 @@ export const VALORY_GIT_URL = 'https://github.com/valory-xyz';
 
 export const AUTONOLAS_SUBGRAPH_URL = process.env.NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL;
 
-export const TOKENOMICS_SUBGRAPH_URLS = [
-  {
-    key: 'ethereum',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
-  },
-  {
-    key: 'arbitrum',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
-  },
-  {
-    key: 'base',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
-  },
-  {
-    key: 'celo',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
-  },
-  {
-    key: 'gnosis',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
-  },
-  {
-    key: 'optimism',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
-  },
-  {
-    key: 'polygon',
-    url: process.env.NEXT_PUBLIC_TOKENOMICS_POLYGON_SUBGRAPH_URL,
-  },
-  { key: 'mode', url: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL },
-];
-
-export const STAKING_SUBGRAPH_URLS = [
-  { key: 'gnosis', url: process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL },
-  { key: 'optimism', url: process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL },
-  { key: 'base', url: process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL },
-  { key: 'mode', url: process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL },
-  { key: 'polygon', url: process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL },
-];
-
-export const REGISTRY_SUBGRAPH_URLS = [
-  { key: 'ethereum', url: process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL },
-  { key: 'gnosis', url: process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL },
-  { key: 'base', url: process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL },
-  { key: 'mode', url: process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL },
-  { key: 'optimism', url: process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL },
-  { key: 'celo', url: process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL },
-  { key: 'arbitrum', url: process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL },
-  { key: 'polygon', url: process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL },
-];
-
-export const LIQUIDITY_SUBGRAPH_URLS = [
-  { key: 'ethereum', url: process.env.NEXT_PUBLIC_LIQUIDITY_ETHEREUM_SUBGRAPH_URL },
-  { key: 'gnosis', url: process.env.NEXT_PUBLIC_LIQUIDITY_GNOSIS_SUBGRAPH_URL },
-  { key: 'polygon', url: process.env.NEXT_PUBLIC_LIQUIDITY_POLYGON_SUBGRAPH_URL },
-  { key: 'arbitrum', url: process.env.NEXT_PUBLIC_LIQUIDITY_ARBITRUM_SUBGRAPH_URL },
-  { key: 'optimism', url: process.env.NEXT_PUBLIC_LIQUIDITY_OPTIMISM_SUBGRAPH_URL },
-  { key: 'base', url: process.env.NEXT_PUBLIC_LIQUIDITY_BASE_SUBGRAPH_URL },
-  { key: 'celo', url: process.env.NEXT_PUBLIC_LIQUIDITY_CELO_SUBGRAPH_URL },
-];
-
 /**
  * Per-chain subgraph lag tolerance.
  *
@@ -155,7 +94,7 @@ const CHAIN_LAG_CONFIG: Record<
   celo: { rpc: process.env.CELO_RPC, blockTimeSec: 1, lagToleranceHours: 48 },
   polygon: { rpc: process.env.POLYGON_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
   mode: { rpc: process.env.MODE_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
-  // Arbitrum Orbit rollup. Only the RPC is used today (on-chain PoL reads); no subgraph yet.
+  // Arbitrum Orbit rollup. Indexed by SQD squids, not subgraphs.
   robinhood: { rpc: process.env.ROBINHOOD_RPC, blockTimeSec: 0.25, lagToleranceHours: 48 },
 };
 
@@ -279,62 +218,9 @@ export const BASIUS_STAKING_CONTRACTS = [
 // Hardcoded values for Modius, suggested by Babydegen team
 export const MODIUS_FIXED_END_DATE_UTC = '2025-09-18T00:00:00Z';
 export const MODIUS_FIXED_OLAS_PRICE_USD = 0.23; // olas price in USD on 2025-09-18
-/**
- * Chains the Mech Marketplace is deployed on, derived from the chain roster above by
- * subtraction so there is one list to maintain rather than two that can drift.
- *
- * Excluded:
- *   celo — marketplace subgraph exists but is commented out in `MARKETPLACE_GRAPH_CLIENTS`
- *   mode — no marketplace subgraph
- *
- * Lives here rather than in `graphql/client.ts` so components can state a metric's scope
- * without pulling GraphQL clients into the browser bundle; `client.ts` asserts the two
- * stay in step.
- */
-const MARKETPLACE_EXCLUDED_CHAINS = ['celo', 'mode'] as const;
-
 // When the Mech Marketplace 15% fee was switched on. Components read it from here so they
 // don't import the fee module and its viem client.
 export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
-
-export const MARKETPLACE_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
-  (chain) =>
-    !MARKETPLACE_EXCLUDED_CHAINS.includes(chain as (typeof MARKETPLACE_EXCLUDED_CHAINS)[number])
-);
-
-/**
- * Chains the mech-fee subgraphs cover. Only Mode is missing from the roster, so this is
- * derived by subtraction too; `client.ts` asserts it matches `MECH_FEES_GRAPH_CLIENTS`.
- */
-const MECH_FEES_EXCLUDED_CHAINS = ['mode'] as const;
-
-export const MECH_FEES_CHAIN_KEYS = Object.keys(CHAIN_LAG_CONFIG).filter(
-  (chain) =>
-    !MECH_FEES_EXCLUDED_CHAINS.includes(chain as (typeof MECH_FEES_EXCLUDED_CHAINS)[number])
-);
-
-/**
- * "all N chains … (A, B and C)" for a set of chain keys.
- *
- * Count first so it reads as a complete set, then the names so a reader can verify it.
- * Both derived, so neither can drift from the aggregation being described — the same
- * sentence was hand-written in four places before this.
- */
-const chainScope = (keys: string[], what: string) => {
-  const names = keys.map((k) => k.charAt(0).toUpperCase() + k.slice(1));
-  const list = `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-  return `all ${names.length} chains ${what} (${list})`;
-};
-
-export const MARKETPLACE_CHAIN_SCOPE = chainScope(
-  MARKETPLACE_CHAIN_KEYS,
-  'the Mech Marketplace is deployed on'
-);
-
-export const MECH_FEES_CHAIN_SCOPE = chainScope(
-  MECH_FEES_CHAIN_KEYS,
-  'the mech-fee subgraphs cover'
-);
 
 // Hero feature card — temporary. Remove after the run; greppable by HERO_FEATURE.
 export const HERO_FEATURE = {
