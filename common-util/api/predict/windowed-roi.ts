@@ -22,11 +22,11 @@ const DAY_SECONDS = 86400;
 // aging data with a fresh-looking status.
 const ROI_SNAPSHOT_MAX_AGE_MS = 48 * 60 * 60 * 1000;
 
-const WINDOWS: { key: WindowKey; days: number | null }[] = [
+const WINDOWS: { key: WindowKey; days: number }[] = [
   { key: '7d', days: 7 },
   { key: '30d', days: 30 },
   { key: '90d', days: 90 },
-  { key: 'max', days: null },
+  { key: '365d', days: 365 },
 ];
 
 // True when the last 7 full days settled trading volume with implausibly low
@@ -110,10 +110,9 @@ export type WindowedRoi = {
 };
 
 // Combines the windowed prediction net gain / costs (from the roi-distribution
-// snapshot's byDay/allTimeAgents data) with windowed staking rewards (from the
+// snapshot's byDay data) with windowed staking rewards (from the
 // staking-rewards accumulator) and the current OLAS price into windowed partial and
-// final ROI. Staking rewards are valued at the current OLAS price — the same
-// approximation the legacy all-time ROI used.
+// final ROI. Staking rewards are valued at the current OLAS price.
 //
 // Bucketing basis (intentional): ROI inherits roi-distribution's *settlement-day*
 // bucketing, whereas the accuracy metric buckets by *placement day*. So the same "7D"
@@ -148,7 +147,7 @@ const computePlatformWindowedRoi = async (
   } else {
     if (isSnapshotStale(roiSnapshotTs)) roiFetchErrors.push(`roi-distribution:${source}:stale`);
     // Subgraph failures recorded by the daily refresh run that wrote the blob
-    // (e.g. the all-time agents fetch failed and the previous totals were kept).
+    // (e.g. the lifetime agents fetch failed and the previous totals were kept).
     for (const err of roiData.fetchErrors ?? []) {
       roiFetchErrors.push(`roi-distribution:${source}:${err}`);
     }

@@ -3,7 +3,7 @@
 > **Status:** in force since 2026-08. Written after the 2026-08-26 external
 > trader-analysis report showed the published Polystrat all-time ROI at −13.56%
 > where the correct figure was −7.47% (two defects fixed below).
-> **Last verified against code:** 2026-08-31.
+> **Last verified against code:** 2026-09-25.
 
 The rules behind every published Predict ROI number (agent-economies predict
 pages, `/data` methodology, Explorer ROI series). The pure formulas live in
@@ -28,8 +28,10 @@ books those wins as trading losses — that was the Max-window defect. The
 windowed tabs always used `dailyProfit` and were correct.
 
 Consumers:
-- Max window: `fetchAllTimeAgents` → `totalExpectedPayout` (`roi-distribution.ts`).
-- 7/30/90D: `byDay` sums of `dailyProfit` over `dailyTradedSettled + dailyFeesSettled`.
+- 7/30/90/365D: `byDay` sums of `dailyProfit` over `dailyTradedSettled + dailyFeesSettled`.
+  (The old Max window, on `fetchAllTimeAgents` lifetime totals, was replaced by 365D
+  in 2026-09; `fetchAllTimeAgents` now only supplies `totalBets` for the histogram's
+  activity floor.)
 - Explorer daily ROI (`common-util/api/explorer.ts`): `dailyProfit / (dailyTradedSettled + dailyFeesSettled)`.
   Never derive cost as `totalPayout − dailyProfit`: those fields land on
   different days (redemption vs resolution).
@@ -84,6 +86,37 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   re-ingested and later TTL-flushed onto its request day, counting twice;
   a rebuild also refetches the full 14-day window in one run against the
   function's 300s budget.
+
+## 365D history (Year tab)
+
+`byDay` keeps 366 days (`BYDAY_RETENTION_DAYS`); it kept 90 until 2026-09. A range is
+published only once `byDay` reaches its start (`isRoiWindowCovered` against
+`historyFrom`, clamped to the platform genesis), so a short history shows `--`, never a
+365D label on fewer days.
+
+The days the 90-day pruning had already dropped were refilled once by
+`backfillRoiHistory` (`?backfillHistory=1` on `/api/refresh-metrics/predict-roi-distribution`,
+repeated while `remainingDays > 0`). It writes only days before `historyFrom`, never the
+day cursor or the QMR blob, and records the boundary as `backfilledBefore`. Profit and
+settled costs come from the same daily stats as the live run. Mech requests do not —
+the live feed only ever held ~14 days — so they come from the marketplace subgraph's
+per-request records, which miss off-chain requests (~7% of Omenstrat's in 2026-07..09):
+
+- **Polystrat:** a replay of the QMR lifecycle above (ingest, settlement-day match,
+  TTL flush) over the whole gap in one pass. Requests still open at `historyFrom` are
+  dropped — the live run booked or flushed them.
+- **Omenstrat:** ~2.5M Gnosis requests over the gap is too many for one forward pass,
+  so each trader agent's requests are booked on the day they were made instead of
+  matched to a settlement day. Markets settle in ~4 days, so a 365-day sum barely
+  moves. Takes ~4 calls of ~3 minutes.
+
+Measured while building it (2026-09-25): on-chain requests per bet for Omenstrat
+agents ran 1.9–3.5 by month, so a fixed requests-per-bet estimate was rejected. Over
+2026-06-27..09-24 the subgraph held 10,132 requests from Polystrat agents against
+~6,100 the live run booked (4,043 settled + 2,044 open) — the live feed may undercount
+Polystrat mech cost; unresolved, and it does not affect the replayed days.
+
+These days leave the 365D range by 2027-06.
 
 ## Observability
 
