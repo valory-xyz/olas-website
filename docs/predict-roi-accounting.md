@@ -87,7 +87,7 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   a rebuild also refetches the full 14-day window in one run against the
   function's 300s budget.
 
-## 365D history (Year tab)
+## 365D history (1Y tab)
 
 `byDay` keeps 366 days (`BYDAY_RETENTION_DAYS`); it kept 90 until 2026-09. A range is
 published only once `byDay` reaches its start (`isRoiWindowCovered` against

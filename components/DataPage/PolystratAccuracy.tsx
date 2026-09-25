@@ -10,7 +10,7 @@ export const PolystratAccuracyInfo = () => {
   const [copied, setCopied] = useState(false);
   // Example: the 7D window. The accuracy accumulator runs this query across history one
   // day-range at a time, buckets each resolved bet on the day it was placed, then sums
-  // won/total per window (7D / 30D / 90D / Year).
+  // won/total per window (7D / 30D / 90D / 1Y).
   const windowedBets = getPolymarketBetsByTimeRangeQuery({
     first: 1000,
     blockTimestamp_gte: getMidnightUtcTimestampDaysAgo(7),
@@ -34,7 +34,7 @@ export const PolystratAccuracyInfo = () => {
         <p>
           Success rate shows how often your agent&apos;s predictions were correct in resolved
           markets. Trades on unresolved markets or with invalid outcomes are excluded. The rate is
-          shown per <b>time range</b> (7D / 30D / 90D / Year): each resolved trade is counted on the
+          shown per <b>time range</b> (7D / 30D / 90D / 1Y): each resolved trade is counted on the
           day it was <b>placed</b>, and a trade is correct when its outcome index matches the
           question&apos;s winning index.
         </p>

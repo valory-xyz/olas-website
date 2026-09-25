@@ -63,8 +63,8 @@ export const BrierInfo = ({ id, title, query, endpoint, dayWord }: BrierInfoProp
 
         <p>
           Only buy trades on resolved markets are counted — selling adjusts a position rather than
-          making a prediction, so sells are excluded. Each time range (7D / 30D / 90D / Year)
-          averages the trades whose markets resolved within that period.
+          making a prediction, so sells are excluded. Each time range (7D / 30D / 90D / 1Y) averages
+          the trades whose markets resolved within that period.
         </p>
 
         <p>The following query is used:</p>
