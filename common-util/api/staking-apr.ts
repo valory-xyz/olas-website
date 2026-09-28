@@ -67,7 +67,7 @@ const emptyAprWindows = (): WindowedMetric<number | null> => ({
   '7d': null,
   '30d': null,
   '90d': null,
-  max: null,
+  '365d': null,
 });
 
 // Max APR across contracts that were nominated at any point within each time range.
@@ -79,8 +79,8 @@ export const computeAprWindows = (
   if (!history) return emptyAprWindows();
   const seed = SEED_APR_HISTORY[chain];
 
-  const windowMax = (days: number | null): number | null => {
-    const cutoff = days === null ? 0 : nowSec - days * DAY;
+  const windowMax = (days: number): number | null => {
+    const cutoff = nowSec - days * DAY;
     let max: number | null = null;
     let anyActive = false;
     Object.entries(history.activeByDay).forEach(([day, addresses]) => {
@@ -100,7 +100,12 @@ export const computeAprWindows = (
     return max;
   };
 
-  return { '7d': windowMax(7), '30d': windowMax(30), '90d': windowMax(90), max: windowMax(null) };
+  return {
+    '7d': windowMax(7),
+    '30d': windowMax(30),
+    '90d': windowMax(90),
+    '365d': windowMax(365),
+  };
 };
 
 /**

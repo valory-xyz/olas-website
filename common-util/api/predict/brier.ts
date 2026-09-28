@@ -14,7 +14,7 @@ import { getSnapshot, saveSnapshot } from 'common-util/snapshot-storage';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from './genesis';
 
-export type WindowKey = '7d' | '30d' | '90d' | 'max';
+export type WindowKey = '7d' | '30d' | '90d' | '365d';
 export type WindowedMetric<T> = Record<WindowKey, T>;
 
 const LIMIT = 1000;
@@ -47,7 +47,7 @@ type BrierAccumulator = {
   // summed across all trader agents. Contiguous over [backfilledTo, coveredTo].
   buckets: Record<string, BrierBucket>;
   // Oldest day processed so far. Window N is "covered" once backfilledTo <= its
-  // cutoff; Max is covered once backfilledTo <= the platform's genesis day.
+  // cutoff, clamped to the platform's genesis day (see windowCutoff).
   backfilledTo: number;
   // Newest day processed so far. Lets the head refresh bridge any gap (e.g. a
   // cron outage longer than the trailing window) instead of silently skipping days.
@@ -58,8 +58,13 @@ export const emptyWindows = (): WindowedMetric<number | null> => ({
   '7d': null,
   '30d': null,
   '90d': null,
-  max: null,
+  '365d': null,
 });
+
+// First day of an N-day window ending yesterday, clamped to genesis: a platform younger
+// than the window has no earlier days, so its whole history is the window.
+export const windowCutoff = (yesterday: number, days: number, genesisDay: number): number =>
+  Math.max(genesisDay, yesterday - (days - 1) * DAY);
 
 // meanBrier = sum(brierSum) / sum(brierCount), 1e18-scaled -> [0, 1]. Keep 4
 // decimals of precision before downcasting to a JS number.
@@ -249,18 +254,13 @@ const buildWindowedBrier = async (
     // A window is only published once its full range is covered; otherwise null
     // (so mergeWithFallback keeps the previous value rather than an understated one).
     const windowValue = (days: number): number | null => {
-      const cutoff = yesterday - (days - 1) * DAY;
+      const cutoff = windowCutoff(yesterday, days, genesisDay);
       if (backfilledTo > cutoff) return null;
       const { sum, count } = rangeSum(cutoff, yesterday);
       return meanBrier(sum, count);
     };
 
     const fullyBackfilled = backfilledTo <= genesisDay;
-    const maxValue = (() => {
-      if (!fullyBackfilled) return null;
-      const { sum, count } = rangeSum(0, yesterday);
-      return meanBrier(sum, count);
-    })();
 
     // Persist the advanced accumulator (overwrite — this is authoritative state,
     // not a metric that benefits from mergeWithFallback).
@@ -282,7 +282,7 @@ const buildWindowedBrier = async (
         '7d': windowValue(7),
         '30d': windowValue(30),
         '90d': windowValue(90),
-        max: maxValue,
+        '365d': windowValue(365),
       },
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };

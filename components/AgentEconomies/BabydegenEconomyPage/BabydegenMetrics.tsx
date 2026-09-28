@@ -250,7 +250,7 @@ const TAB_ITEMS = ECONOMIES.map(({ key, tabLabel, image }) => ({
 }));
 
 export const BabydegenMetrics = ({ metrics, snapshotTimestamp = null }) => {
-  const [activeTab, setActiveTab] = useState('optimus');
+  const [activeTab, setActiveTab] = useState('basius');
 
   return (
     <SectionWrapper id="stats">
