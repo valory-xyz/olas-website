@@ -944,7 +944,7 @@ export const getMechRequestsIncrementalQuery = ({
 
 // Mech requests in [blockTimestamp_gte, blockTimestamp_lt), for the one-off 365D ROI
 // history replay. Cursor-paged on blockTimestamp (not skip, which the Graph caps at
-// 5000); the caller dedupes by id the rows a page boundary returns twice.
+// 5000); a page ending inside one second is finished by getMechRequestsAtTimestampQuery.
 export const getMechRequestsInRangeQuery = ({
   timestamp_gte,
   timestamp_lt,
@@ -959,6 +959,36 @@ export const getMechRequestsInRangeQuery = ({
       first: ${first}
       where: { blockTimestamp_gte: "${timestamp_gte}", blockTimestamp_lt: "${timestamp_lt}" }
       orderBy: blockTimestamp
+      orderDirection: asc
+    ) {
+      id
+      sender {
+        id
+      }
+      blockTimestamp
+      parsedRequest {
+        questionTitle
+      }
+    }
+  }
+`;
+
+// Every mech request in one second, by id — drains a timestamp group that a
+// getMechRequestsInRangeQuery page ended inside, so the range cursor can step past it.
+export const getMechRequestsAtTimestampQuery = ({
+  timestamp,
+  id_gt,
+  first,
+}: {
+  timestamp: number;
+  id_gt: string;
+  first: number;
+}) => gql`
+  query MechRequestsAtTimestamp {
+    requests(
+      first: ${first}
+      where: { blockTimestamp: "${timestamp}", id_gt: "${id_gt}" }
+      orderBy: id
       orderDirection: asc
     ) {
       id

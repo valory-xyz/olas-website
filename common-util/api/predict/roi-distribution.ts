@@ -7,6 +7,7 @@ import {
 import {
   getMarketplaceSendersQuery,
   getMechRequestsIncrementalQuery,
+  getMechRequestsAtTimestampQuery,
   getMechRequestsInRangeQuery,
   getOmenDailyProfitStatsQuery,
   getOmenTraderAgentsQuery,
@@ -840,27 +841,24 @@ const scanMechRequests = async (
   toTs: number,
   onRequest: (agentId: string, questionTitle: string | null, ts: number) => void
 ): Promise<boolean> => {
-  const seen = new Set<string>();
   const client = MARKETPLACE_GRAPH_CLIENTS[chain];
-  let cursor = fromTs;
-
-  while (true) {
-    let page: MechRequestInRange[] | null = null;
-    // One retry: a scan is thousands of pages, and a single gateway blip would
-    // otherwise throw away the whole chunk.
-    for (let attempt = 1; page === null; attempt++) {
+  // One retry: a scan is thousands of pages, and a single gateway blip would
+  // otherwise throw away the whole chunk.
+  const fetchPage = async (query: string): Promise<MechRequestInRange[] | null> => {
+    for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const response = (await client.request(
-          getMechRequestsInRangeQuery({ timestamp_gte: cursor, timestamp_lt: toTs, first: LIMIT })
-        )) as { requests: MechRequestInRange[] };
-        page = response?.requests ?? [];
+        const response = (await client.request(query)) as { requests: MechRequestInRange[] };
+        return response?.requests ?? [];
       } catch (e) {
-        console.error(`Error fetching mech requests in range for ${chain} (try ${attempt})`, e);
-        if (attempt >= 2) return false;
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        console.error(`Error fetching mech requests for ${chain} (try ${attempt})`, e);
+        if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
+    return null;
+  };
 
+  const seen = new Set<string>();
+  const emit = (page: MechRequestInRange[]) => {
     for (const req of page) {
       if (seen.has(req.id)) continue;
       seen.add(req.id);
@@ -869,17 +867,32 @@ const scanMechRequests = async (
       if (!agentId || ts <= 0) continue;
       onRequest(agentId, req.parsedRequest?.questionTitle ?? null, ts);
     }
+  };
 
+  let cursor = fromTs;
+  while (true) {
+    const page = await fetchPage(
+      getMechRequestsInRangeQuery({ timestamp_gte: cursor, timestamp_lt: toTs, first: LIMIT })
+    );
+    if (page === null) return false;
+    emit(page);
     if (page.length < LIMIT) return true;
+
+    // The page may have ended inside one second. Drain that second by id — a unique
+    // cursor, so even a second with more than a page of requests is read to the end —
+    // then step past it. The id set drops the rows read twice.
     const lastTs = Number(page[page.length - 1].blockTimestamp);
-    if (lastTs <= cursor) {
-      // A full page on a single second: the cursor can't advance past it.
-      console.error(`mech request cursor stuck at ${cursor} on ${chain}`);
-      return false;
+    let idCursor = '';
+    while (true) {
+      const tie = await fetchPage(
+        getMechRequestsAtTimestampQuery({ timestamp: lastTs, id_gt: idCursor, first: LIMIT })
+      );
+      if (tie === null) return false;
+      emit(tie);
+      if (tie.length < LIMIT) break;
+      idCursor = tie[tie.length - 1].id;
     }
-    // `gte` re-reads the last second, so siblings split across the boundary are kept;
-    // the id set drops the rows read twice.
-    cursor = lastTs;
+    cursor = lastTs + 1;
   }
 };
 
