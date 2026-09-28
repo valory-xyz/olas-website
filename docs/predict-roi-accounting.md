@@ -3,7 +3,7 @@
 > **Status:** in force since 2026-08. Written after the 2026-08-26 external
 > trader-analysis report showed the published Polystrat all-time ROI at −13.56%
 > where the correct figure was −7.47% (two defects fixed below).
-> **Last verified against code:** 2026-08-31.
+> **Last verified against code:** 2026-09-25.
 
 The rules behind every published Predict ROI number (agent-economies predict
 pages, `/data` methodology, Explorer ROI series). The pure formulas live in
@@ -28,8 +28,10 @@ books those wins as trading losses — that was the Max-window defect. The
 windowed tabs always used `dailyProfit` and were correct.
 
 Consumers:
-- Max window: `fetchAllTimeAgents` → `totalExpectedPayout` (`roi-distribution.ts`).
-- 7/30/90D: `byDay` sums of `dailyProfit` over `dailyTradedSettled + dailyFeesSettled`.
+- 7/30/90/365D: `byDay` sums of `dailyProfit` over `dailyTradedSettled + dailyFeesSettled`.
+  (The old Max window, on `fetchAllTimeAgents` lifetime totals, was replaced by 365D
+  in 2026-09; `fetchAllTimeAgents` now only supplies `totalBets` for the histogram's
+  activity floor.)
 - Explorer daily ROI (`common-util/api/explorer.ts`): `dailyProfit / (dailyTradedSettled + dailyFeesSettled)`.
   Never derive cost as `totalPayout − dailyProfit`: those fields land on
   different days (redemption vs resolution).
@@ -84,6 +86,48 @@ forced `?rebuildMech=1` on `/api/refresh-metrics/predict-roi-distribution`):
   re-ingested and later TTL-flushed onto its request day, counting twice;
   a rebuild also refetches the full 14-day window in one run against the
   function's 300s budget.
+
+## 365D history (1Y tab)
+
+`byDay` keeps 366 days (`BYDAY_RETENTION_DAYS`); it kept 90 until 2026-09. A range is
+published only once `byDay` reaches its start (`isRoiWindowCovered` against
+`historyFrom`, clamped to the platform genesis), so a short history shows `--`, never a
+365D label on fewer days.
+
+The genesis clamp is deliberate for Omenstrat: predict-omen daily stats go back to
+2023-07, but the accuracy, Brier and staking-rewards accumulators start at
+`OMEN_GENESIS_TS` (2025-11-22), so ROI starts there too and every 1Y tile covers the
+same days. The text layer says "since <genesis date>" while the clamp applies.
+
+The days the 90-day pruning had already dropped were refilled once by
+`backfillRoiHistory` (`?backfillHistory=1` on `/api/refresh-metrics/predict-roi-distribution`,
+repeated while `remainingDays > 0`: Polystrat 1 call, Omenstrat ~10 of ~2 min). Profit and settled
+costs come from the same daily stats as the live run. Mech requests are a replay of the
+QMR lifecycle above — ingest, settlement-day match (the same `consumeSettledRequests`),
+TTL flush — walking forward from the range start, so every range books mech cost on the
+settlement day. The live feed only ever held ~14 days, so the replay reads the
+marketplace subgraph's per-request records instead: they hold legacy (`mechRequest`) and
+marketplace requests, but not off-chain ones (~7% of Omenstrat's in 2026-07..09).
+
+- Progress (cursor, open requests, processed days) is kept between calls in
+  `roi-distribution/<agent>-history-replay`; `byDay` is written once, at the end, and
+  only for days before `historyFrom` — never the day cursor or the live QMR blob. The
+  boundary is recorded as `backfilledBefore`.
+- Requests still open at `historyFrom` are dropped — the live run booked or flushed them.
+- The call fails (writes nothing) when `allTimeAgents` is empty: the trader set filters
+  the scan, and an empty one would write zero mech cost.
+- The scan reads every request on the chain and filters senders in code; server-side
+  `sender_in` measured ~5x slower per row.
+
+Measured while building it (2026-09-25): on-chain requests per bet for Omenstrat agents
+ran 1.9–3.5 by month, so a fixed requests-per-bet estimate was rejected. Over
+2026-06-27..09-24 the subgraph held 10,132 requests from Polystrat agents — all with a
+question title — against ~6,100 the live run booked (4,043 settled + 2,044 open): the live
+feed may undercount Polystrat mech cost, so the 1Y window mixes two counts. Tracked in #602.
+separately.
+
+These days leave the 365D range by 2027-06; the `/data` paragraph and `backfilledBefore`
+can go then (#603).
 
 ## Observability
 

@@ -19,8 +19,8 @@ const DEFAULT_SCHEMA_VERSION = '20260708';
 // → 'roi-distribution'), so blob families written by the same code version
 // together. Categories not listed here use DEFAULT_SCHEMA_VERSION.
 const SCHEMA_VERSIONS: Record<string, string> = {
-  // 20260901: apr became windowed (was a scalar string).
-  predict: '20260901',
+  // 20260925: the Max window became 365D (window key 'max' → '365d').
+  predict: '20260925',
   // 20260901: rebuild from genesis under the agent-id based predict contract filter.
   'predict-staking-rewards': '20260901',
 };

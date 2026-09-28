@@ -168,9 +168,9 @@ const RoiRangeTable = ({ range, data, platform, datasetMeta, asOf, issue }: Rang
       {/* The caption names its own range: these tables are retrieved one at a time and
           out of order, so a caption that says only "the selected range" is useless. */}
       <caption>
-        {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${windowPhrase(range)}. ` +
+        {`Trading ROI distribution for the ${agentCount} ${datasetMeta.label} agents that qualify, ${windowPhrase(range, platform)}. ` +
           `Trading ROI reflects prediction performance only, excluding staking rewards, and each range sums profit and loss realised on markets that settled within it. ` +
-          `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime trades — the activity floor applies in every range, not only over all time, whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
+          `Qualifying agents are those with positive trading costs and at least ${MIN_TRADES_FOR_ROI_DISPLAY} lifetime trades — the activity floor applies in every range whenever the agent has a lifetime total. Percentages are shares of that population, not of all ${datasetMeta.label} agents.` +
           (asOf ? ` As of ${asOf}.` : '') +
           (issue ? ISSUE_CAVEAT[issue] : '')}
       </caption>
@@ -202,7 +202,7 @@ export const RoiDistributionChart = ({
   const [activeRange, setActiveRange] = useState<WindowKey>('7d');
 
   const activeDataKey = windowDataKey(activeRange);
-  const activeRangeLabel = windowPhrase(activeRange);
+  const activeRangeLabel = windowPhrase(activeRange, platform);
   const bins = data?.bins?.[activeDataKey] ?? null;
   const datasetMeta = DATASET_META[platform];
 
