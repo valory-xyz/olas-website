@@ -112,6 +112,14 @@ const RESOURCES_LINKS = [
     link: '/stack',
   },
   {
+    title: 'Agents',
+    link: '/agents',
+  },
+  {
+    title: 'Agent Economies',
+    link: '/agent-economies',
+  },
+  {
     title: 'Agent Economy Explorer',
     link: '/agent-economies/explorer',
   },
