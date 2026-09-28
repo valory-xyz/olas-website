@@ -29,27 +29,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // matched requests). Read docs/predict-roi-accounting.md before using.
   const rebuildMech = req.query.rebuildMech === '1';
 
-  // ?backfillHistory=1 is the one-off 365D history fill: it writes only byDay days
-  // older than the live data and leaves the requests blob alone. Repeat while
-  // remainingDays > 0. Keep it off the daily cron's minute — both overwrite the blob.
+  // ?backfillHistory=1 is the one-off 365D history replay. Progress is kept in its own
+  // blob between calls; byDay is written once, when the replay finishes, and only for
+  // days older than the live data. Repeat while remainingDays > 0. Keep it off the
+  // daily cron's minute — both overwrite the main blob.
   if (req.query.backfillHistory === '1') {
+    const stateCategory = `roi-distribution/${agent}-history-replay`;
     try {
-      const existing = await getSnapshot({ category: mainCategory });
+      const [existing, existingState] = await Promise.all([
+        getSnapshot({ category: mainCategory }),
+        getSnapshot({ category: stateCategory }),
+      ]);
       if (!existing?.data) {
         return res.status(409).json({ success: false, message: `No ${mainCategory} blob yet` });
       }
-      const { mainData, ok, remainingDays } = await backfillRoiHistory(agent, existing.data as any);
-      const url = await saveSnapshot({
-        category: mainCategory,
-        // Keep the live run's timestamp: the blob's age is what the staleness check reads.
-        data: { data: mainData, timestamp: existing.timestamp },
+      const { mainData, state, ok, remainingDays } = await backfillRoiHistory(
+        agent,
+        existing.data as any,
+        (existingState?.data as any) ?? null
+      );
+      await saveSnapshot({
+        category: stateCategory,
+        data: { data: state, timestamp: Date.now() },
         overwrite: true,
       });
+      if (mainData) {
+        await saveSnapshot({
+          category: mainCategory,
+          // Keep the live run's timestamp: the blob's age is what the staleness check reads.
+          data: { data: mainData, timestamp: existing.timestamp },
+          overwrite: true,
+        });
+      }
       return res.status(ok ? 200 : 500).json({
         success: ok,
-        url,
-        historyFrom: new Date(mainData.historyFrom * 1000).toISOString().slice(0, 10),
         remainingDays,
+        replayedTo: state ? new Date(state.cursor * 1000).toISOString().slice(0, 10) : null,
+        historyFrom: mainData?.historyFrom
+          ? new Date(mainData.historyFrom * 1000).toISOString().slice(0, 10)
+          : null,
       });
     } catch (error) {
       console.error(`Error backfilling ${agent} ROI history:`, error);

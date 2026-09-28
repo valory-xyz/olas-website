@@ -94,29 +94,40 @@ published only once `byDay` reaches its start (`isRoiWindowCovered` against
 `historyFrom`, clamped to the platform genesis), so a short history shows `--`, never a
 365D label on fewer days.
 
+The genesis clamp is deliberate for Omenstrat: predict-omen daily stats go back to
+2023-07, but the accuracy, Brier and staking-rewards accumulators start at
+`OMEN_GENESIS_TS` (2025-11-22), so ROI starts there too and every 1Y tile covers the
+same days. The text layer says "since <genesis date>" while the clamp applies.
+
 The days the 90-day pruning had already dropped were refilled once by
 `backfillRoiHistory` (`?backfillHistory=1` on `/api/refresh-metrics/predict-roi-distribution`,
-repeated while `remainingDays > 0`). It writes only days before `historyFrom`, never the
-day cursor or the QMR blob, and records the boundary as `backfilledBefore`. Profit and
-settled costs come from the same daily stats as the live run. Mech requests do not —
-the live feed only ever held ~14 days — so they come from the marketplace subgraph's
-per-request records, which miss off-chain requests (~7% of Omenstrat's in 2026-07..09):
+repeated while `remainingDays > 0`: Polystrat 1 call, Omenstrat ~10 of ~2 min). Profit and settled
+costs come from the same daily stats as the live run. Mech requests are a replay of the
+QMR lifecycle above — ingest, settlement-day match (the same `consumeSettledRequests`),
+TTL flush — walking forward from the range start, so every range books mech cost on the
+settlement day. The live feed only ever held ~14 days, so the replay reads the
+marketplace subgraph's per-request records instead: they hold legacy (`mechRequest`) and
+marketplace requests, but not off-chain ones (~7% of Omenstrat's in 2026-07..09).
 
-- **Polystrat:** a replay of the QMR lifecycle above (ingest, settlement-day match,
-  TTL flush) over the whole gap in one pass. Requests still open at `historyFrom` are
-  dropped — the live run booked or flushed them.
-- **Omenstrat:** ~2.5M Gnosis requests over the gap is too many for one forward pass,
-  so each trader agent's requests are booked on the day they were made instead of
-  matched to a settlement day. Markets settle in ~4 days, so a 365-day sum barely
-  moves. Takes ~4 calls of ~3 minutes.
+- Progress (cursor, open requests, processed days) is kept between calls in
+  `roi-distribution/<agent>-history-replay`; `byDay` is written once, at the end, and
+  only for days before `historyFrom` — never the day cursor or the live QMR blob. The
+  boundary is recorded as `backfilledBefore`.
+- Requests still open at `historyFrom` are dropped — the live run booked or flushed them.
+- The call fails (writes nothing) when `allTimeAgents` is empty: the trader set filters
+  the scan, and an empty one would write zero mech cost.
+- The scan reads every request on the chain and filters senders in code; server-side
+  `sender_in` measured ~5x slower per row.
 
-Measured while building it (2026-09-25): on-chain requests per bet for Omenstrat
-agents ran 1.9–3.5 by month, so a fixed requests-per-bet estimate was rejected. Over
-2026-06-27..09-24 the subgraph held 10,132 requests from Polystrat agents against
-~6,100 the live run booked (4,043 settled + 2,044 open) — the live feed may undercount
-Polystrat mech cost; unresolved, and it does not affect the replayed days.
+Measured while building it (2026-09-25): on-chain requests per bet for Omenstrat agents
+ran 1.9–3.5 by month, so a fixed requests-per-bet estimate was rejected. Over
+2026-06-27..09-24 the subgraph held 10,132 requests from Polystrat agents — all with a
+question title — against ~6,100 the live run booked (4,043 settled + 2,044 open): the live
+feed may undercount Polystrat mech cost, so the 1Y window mixes two counts. Tracked in #602.
+separately.
 
-These days leave the 365D range by 2027-06.
+These days leave the 365D range by 2027-06; the `/data` paragraph and `backfilledBefore`
+can go then (#603).
 
 ## Observability
 

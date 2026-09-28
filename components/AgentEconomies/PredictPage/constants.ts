@@ -1,3 +1,4 @@
+import { OMEN_GENESIS_TS, POLYMARKET_GENESIS_TS } from 'common-util/api/predict/genesis';
 import type { RangeKey } from 'common-util/api/predict/roi-distribution';
 import type { WindowKey } from 'common-util/api/predict';
 
@@ -24,9 +25,30 @@ export const PREDICT_WINDOWS: Array<{
   { key: '365d', label: '1Y', phrase: 'over the last 365 days', dataKey: 'd365' },
 ];
 
-/** The window as prose, e.g. `'over the last 7 days'`. */
-export const windowPhrase = (key: WindowKey) =>
-  PREDICT_WINDOWS.find((window) => window.key === key)?.phrase ?? '';
+const GENESIS_TS = { omenstrat: OMEN_GENESIS_TS, polystrat: POLYMARKET_GENESIS_TS } as const;
+
+/**
+ * The window as prose, e.g. `'over the last 7 days'`.
+ *
+ * With a platform, 1Y follows the genesis clamp the data applies: while the platform is
+ * younger than a year the range starts at its first day, so it reads `'since 22 November
+ * 2025'` rather than claiming 365 days.
+ */
+export const windowPhrase = (key: WindowKey, platform?: keyof typeof GENESIS_TS) => {
+  if (key === '365d' && platform) {
+    const genesis = GENESIS_TS[platform];
+    if (genesis > Date.now() / 1000 - 365 * 86400) {
+      const date = new Date(genesis * 1000).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      return `since ${date}`;
+    }
+  }
+  return PREDICT_WINDOWS.find((window) => window.key === key)?.phrase ?? '';
+};
 
 /** The snapshot key for a window, e.g. `'d7'`. */
 export const windowDataKey = (key: WindowKey): RangeKey =>

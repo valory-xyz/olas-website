@@ -133,8 +133,8 @@ export type AgentBlueprintRoiData = {
   historyFrom?: number;
   /**
    * Days before this were backfilled by `backfillRoiHistory` rather than processed
-   * live, so their `mechRequests` come from a replay (polystrat) or an estimate of one
-   * request per bet (omenstrat). See docs/predict-roi-accounting.md.
+   * live: their `mechRequests` come from a replay over the marketplace subgraph. See
+   * docs/predict-roi-accounting.md.
    */
   backfilledBefore?: number;
   allTimeAgents: Record<string, AllTimeAgentEntry>; // agentId → all-time totals
@@ -821,11 +821,14 @@ const updateAgentBlueprintData = async (
 
 // ─── One-off 365D history backfill ───────────────────────────────────────────
 
-// Days per Omenstrat backfill chunk. Small, so the time budget packs chunks tightly:
-// the request scan reads every Gnosis mech request (~15k a day), not only Omenstrat's.
-const HISTORY_CHUNK_DAYS = 5;
-// Stop starting new chunks after this long, leaving headroom in the 300s function.
-const HISTORY_TIME_BUDGET_MS = 180_000;
+// Days per history-replay chunk. Small, so the time budget packs chunks tightly: the
+// request scan reads every mech request on the chain (~15k a day on Gnosis), not only
+// the traders'. Filtering server-side (`sender_in`) measured ~5x slower per row.
+const HISTORY_CHUNK_DAYS = 3;
+// Stop starting new chunks after this long. A heavy Gnosis chunk (Dec 2025, ~40k
+// requests a day) took ~40s a day to scan, so this leaves the last chunk room inside
+// the 300s function.
+const HISTORY_TIME_BUDGET_MS = 120_000;
 
 type MechRequestInRange = MechRequestEntry & { id: string };
 
@@ -903,92 +906,76 @@ const toDailyEntry = (
 });
 
 /**
- * Omenstrat: walks back from `historyFrom` in chunks until the 365D range start or the
- * time budget. Each day's mech requests are the trader agents' requests the marketplace
- * subgraph recorded that day — booked on the request day rather than matched to the
- * settlement day as the live run does. Matching needs a forward pass over the open
- * requests, which Omen's volume (~2.5M Gnosis requests over the gap) can't fit in one
- * call; markets settle within ~4 days, so a 365-day total barely moves.
+ * Progress of a history replay, carried between calls in its own blob so a replay
+ * longer than one function run resumes where it stopped.
  */
-const backfillOmenstratHistory = async (
-  byDay: AgentBlueprintRoiData['byDay'],
-  historyFrom: number,
-  floor: number,
-  traders: Set<string>
-): Promise<{ historyFrom: number; ok: boolean }> => {
-  const startedAt = Date.now();
-  let from = historyFrom;
-  while (from > floor && Date.now() - startedAt < HISTORY_TIME_BUDGET_MS) {
-    const hi = from - DAY_SECONDS;
-    const lo = Math.max(floor, from - HISTORY_CHUNK_DAYS * DAY_SECONDS);
-
-    // dayKey → agentId → requests made that day
-    const requestsByDay = new Map<string, Map<string, number>>();
-    const [{ stats, ok: statsOk }, requestsOk] = await Promise.all([
-      fetchOmenstratDailyStats(lo, hi),
-      scanMechRequests('gnosis', lo, hi + DAY_SECONDS, (agentId, _title, ts) => {
-        if (!traders.has(agentId)) return;
-        const dayMap = requestsByDay.get(dayKeyOf(ts)) ?? new Map<string, number>();
-        dayMap.set(agentId, (dayMap.get(agentId) ?? 0) + 1);
-        requestsByDay.set(dayKeyOf(ts), dayMap);
-      }),
-    ]);
-    // Incomplete: write nothing for this chunk and leave historyFrom where it is.
-    if (!statsOk || !requestsOk) return { historyFrom: from, ok: false };
-
-    const byKey = statsByDayKey(stats);
-    for (let dayTs = lo; dayTs <= hi; dayTs += DAY_SECONDS) {
-      const dayRequests = requestsByDay.get(String(dayTs)) ?? new Map<string, number>();
-      const agents: Record<string, DailyAgentEntry> = {};
-      for (const stat of byKey.get(String(dayTs)) ?? []) {
-        const agentId = stat.traderAgent.id.toLowerCase();
-        agents[agentId] = toDailyEntry(stat, dayRequests.get(agentId) ?? 0, false);
-      }
-      // Requests on a day the agent settled nothing still cost (the live run's TTL
-      // flush books these the same way).
-      for (const [agentId, count] of dayRequests) {
-        if (!agents[agentId]) agents[agentId] = { profit: '0', payout: '0', mechRequests: count };
-      }
-      if (Object.keys(agents).length > 0) byDay[String(dayTs)] = { agents };
-      else delete byDay[String(dayTs)];
-    }
-    from = lo;
-  }
-  return { historyFrom: from, ok: true };
+export type RoiHistoryReplayState = {
+  /** The replay covers [floor, until): the 365D range start up to the live data. */
+  floor: number;
+  until: number;
+  /** Next day to process. */
+  cursor: number;
+  /** Requests made before this have been ingested. */
+  scannedTo: number;
+  /** Open requests, title → agentId → timestamps — the QMR shape. */
+  qmr: Record<string, Record<string, number[]>>;
+  /** Processed days, dayKey → agentId → entry; written to `byDay` only when done. */
+  days: Record<string, Record<string, DailyAgentEntry>>;
 };
 
 /**
- * Polystrat: replays the daily run's request matching over the whole gap in one pass —
- * the same ingest, settlement-day match and TTL flush, fed from the marketplace
- * subgraph's per-request records instead of the live feed. Off-chain requests have no
- * such record, so days that had any are undercounted by those.
+ * Refills `byDay` back to the start of the 365D range, which the live run never kept (it
+ * pruned at 90 days until the 365D tab). A replay of the live run's own mech attribution
+ * — ingest, settlement-day match (`consumeSettledRequests`) and TTL flush — walking
+ * forward from the range start, fed from the marketplace subgraph's per-request records
+ * instead of the live feed. So every range books mech cost the same way. The subgraph
+ * has legacy and marketplace requests but not off-chain ones.
  *
- * Requests still open at `historyFrom` are dropped: the live run already booked them
- * onto a day at or after it, or flushed them onto a day it has since pruned.
+ * One-off: run it by hand after deploy via
+ * `/api/refresh-metrics/predict-roi-distribution?agent=<agent>&backfillHistory=1`,
+ * repeating while `remainingDays > 0` (Polystrat fits in one call, Omenstrat takes ~10).
+ * Progress lives in `state`; `byDay` is only written once the whole range is done, and
+ * only for days before `historyFrom` — never the day cursor or the live open-request set.
+ * Requests still open at `historyFrom` are dropped: the live run booked those. See
+ * docs/predict-roi-accounting.md.
  */
-const backfillPolystratHistory = async (
-  byDay: AgentBlueprintRoiData['byDay'],
-  historyFrom: number,
-  floor: number
-): Promise<{ historyFrom: number; ok: boolean }> => {
-  const hi = historyFrom - DAY_SECONDS;
+export const backfillRoiHistory = async (
+  agentBlueprint: 'omenstrat' | 'polystrat',
+  existing: AgentBlueprintRoiData,
+  previousState: RoiHistoryReplayState | null
+): Promise<{
+  mainData: AgentBlueprintRoiData | null;
+  state: RoiHistoryReplayState | null;
+  ok: boolean;
+  remainingDays: number;
+}> => {
+  const isPolystrat = agentBlueprint === 'polystrat';
+  const chain: 'gnosis' | 'polygon' = isPolystrat ? 'polygon' : 'gnosis';
+  const fetchStats = isPolystrat ? fetchPolystratDailyStats : fetchOmenstratDailyStats;
   const ttl = QMR_MAX_AGE_DAYS * DAY_SECONDS;
-  // Ingested in request order, day by day, as the live run would have seen them.
-  // Untitled requests are skipped, as the live ingest skips them.
-  const pending: Array<{ title: string; agentId: string; ts: number }> = [];
-  const [statsResult, requestsOk] = await Promise.all([
-    fetchPolystratDailyStats(floor, hi),
-    // Requests made up to a TTL before the range can still settle inside it.
-    scanMechRequests('polygon', floor - ttl, historyFrom, (agentId, title, ts) => {
-      if (title) pending.push({ title, agentId, ts });
-    }),
-  ]);
-  if (!statsResult.ok || !requestsOk) return { historyFrom, ok: false };
-  pending.sort((a, b) => a.ts - b.ts);
+  const until = existing.historyFrom ?? legacyHistoryFrom(existing);
 
-  const qmr: Record<string, Record<string, number[]>> = {};
+  // Mech senders are the trader agents' own addresses. Without them every request would
+  // be filtered out and the days written with zero mech cost, so refuse instead.
+  const traders = new Set(Object.keys(existing.allTimeAgents ?? {}).map((id) => id.toLowerCase()));
+  if (traders.size === 0) {
+    console.error(`[roi-dist:${agentBlueprint}] history backfill: no trader agents in the blob`);
+    return { mainData: null, state: previousState, ok: false, remainingDays: -1 };
+  }
+
+  const floor = previousState?.floor ?? windowStart(365, isPolystrat);
+  if (until <= floor) return { mainData: null, state: null, ok: true, remainingDays: 0 };
+
+  // A state for a different boundary (the live data moved under it) is restarted.
+  const state: RoiHistoryReplayState =
+    previousState && previousState.until === until
+      ? previousState
+      : { floor, until, cursor: floor, scannedTo: floor - ttl, qmr: {}, days: {} };
+
+  const { qmr, days } = state;
   const normalizedQmrMap = new Map<string, string>();
-  const days: Record<string, Record<string, DailyAgentEntry>> = {};
+  for (const title of Object.keys(qmr)) normalizedQmrMap.set(normalizeTitle(title), title);
+
   const ensureEntry = (dKey: string, aid: string): DailyAgentEntry => {
     if (!days[dKey]) days[dKey] = {};
     if (!days[dKey][aid]) days[dKey][aid] = { profit: '0', payout: '0', mechRequests: 0 };
@@ -999,10 +986,10 @@ const backfillPolystratHistory = async (
   const flushOlderThan = (cutoff: number) => {
     for (const [title, agentMap] of Object.entries(qmr)) {
       for (const [agentId, tsList] of Object.entries(agentMap)) {
-        const kept = tsList.filter((ts) => ts >= cutoff);
         for (const ts of tsList) {
-          if (ts < cutoff && ts >= floor) ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+          if (ts < cutoff && ts >= state.floor) ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
         }
+        const kept = tsList.filter((ts) => ts >= cutoff);
         if (kept.length === 0) delete agentMap[agentId];
         else agentMap[agentId] = kept;
       }
@@ -1013,83 +1000,80 @@ const backfillPolystratHistory = async (
     }
   };
 
-  const byKey = statsByDayKey(statsResult.stats);
-  let next = 0;
-  for (let dayTs = floor; dayTs <= hi; dayTs += DAY_SECONDS) {
-    // Requests made by the end of this day are known when its settlements are matched.
-    while (next < pending.length && pending[next].ts < dayTs + DAY_SECONDS) {
-      const { title, agentId, ts } = pending[next++];
-      if (!qmr[title]) qmr[title] = {};
-      if (!qmr[title][agentId]) qmr[title][agentId] = [];
-      qmr[title][agentId].push(ts);
-      normalizedQmrMap.set(normalizeTitle(title), title);
-    }
+  const startedAt = Date.now();
+  let ok = true;
+  while (state.cursor < until && Date.now() - startedAt < HISTORY_TIME_BUDGET_MS) {
+    const lo = state.cursor;
+    const hi = Math.min(until - DAY_SECONDS, lo + (HISTORY_CHUNK_DAYS - 1) * DAY_SECONDS);
 
-    const keysUsed = new Set<string>();
-    for (const stat of byKey.get(String(dayTs)) ?? []) {
-      const agentId = stat.traderAgent.id.toLowerCase();
-      const matched = consumeSettledRequests(qmr, normalizedQmrMap, stat, agentId, keysUsed);
-      // A TTL flush may already have booked requests on this day for this agent.
-      const flushed = days[String(dayTs)]?.[agentId]?.mechRequests ?? 0;
-      ensureEntry(String(dayTs), agentId); // creates the day's map
-      days[String(dayTs)][agentId] = toDailyEntry(stat, matched + flushed, true);
+    // Untitled requests are skipped, as the live ingest skips them.
+    const pending: Array<{ title: string; agentId: string; ts: number }> = [];
+    const [{ stats, ok: statsOk }, requestsOk] = await Promise.all([
+      fetchStats(lo, hi),
+      scanMechRequests(chain, state.scannedTo, hi + DAY_SECONDS, (agentId, title, ts) => {
+        if (title && traders.has(agentId)) pending.push({ title, agentId, ts });
+      }),
+    ]);
+    // Incomplete: apply nothing from this chunk, and stop.
+    if (!statsOk || !requestsOk) {
+      ok = false;
+      break;
     }
-    flushOlderThan(dayTs + DAY_SECONDS - ttl);
+    pending.sort((a, b) => a.ts - b.ts);
+
+    const byKey = statsByDayKey(stats);
+    let next = 0;
+    for (let dayTs = lo; dayTs <= hi; dayTs += DAY_SECONDS) {
+      // Requests made by the end of this day are known when its settlements are matched.
+      while (next < pending.length && pending[next].ts < dayTs + DAY_SECONDS) {
+        const { title, agentId, ts } = pending[next++];
+        if (!qmr[title]) qmr[title] = {};
+        if (!qmr[title][agentId]) qmr[title][agentId] = [];
+        qmr[title][agentId].push(ts);
+        normalizedQmrMap.set(normalizeTitle(title), title);
+      }
+
+      const keysUsed = new Set<string>();
+      for (const stat of byKey.get(String(dayTs)) ?? []) {
+        const agentId = stat.traderAgent.id.toLowerCase();
+        const matched = consumeSettledRequests(qmr, normalizedQmrMap, stat, agentId, keysUsed);
+        // Nothing is flushed onto this day yet — a flush lands at least a TTL back.
+        if (!days[String(dayTs)]) days[String(dayTs)] = {};
+        days[String(dayTs)][agentId] = toDailyEntry(stat, matched, isPolystrat);
+      }
+      flushOlderThan(dayTs + DAY_SECONDS - ttl);
+    }
+    state.cursor = hi + DAY_SECONDS;
+    state.scannedTo = hi + DAY_SECONDS;
   }
 
-  for (let dayTs = floor; dayTs <= hi; dayTs += DAY_SECONDS) {
+  const remainingDays = Math.max(0, (until - state.cursor) / DAY_SECONDS);
+  console.log(
+    `[roi-dist:${agentBlueprint}] history backfill ok=${ok} cursor=${state.cursor} ` +
+      `floor=${state.floor} until=${until} remainingDays=${remainingDays}`
+  );
+  // A chunk only touches the state once both its fetches succeeded, so after a failure
+  // the state is exactly where the last complete chunk left it.
+  if (!ok || remainingDays > 0) return { mainData: null, state, ok, remainingDays };
+
+  // Done: requests still open at `until` are dropped (the live run booked them).
+  const byDay = { ...existing.byDay };
+  for (let dayTs = state.floor; dayTs < until; dayTs += DAY_SECONDS) {
     const agents = days[String(dayTs)];
     if (agents && Object.keys(agents).length > 0) byDay[String(dayTs)] = { agents };
     else delete byDay[String(dayTs)];
   }
-  return { historyFrom: floor, ok: true };
-};
-
-/**
- * Fills `byDay` back to the start of the 365D range, which the live run never kept
- * (it pruned at 90 days until the 365D tab). One-off: run it by hand after deploy via
- * `/api/refresh-metrics/predict-roi-distribution?agent=<agent>&backfillHistory=1`,
- * repeating while `remainingDays > 0`. Touches only days before `historyFrom`, never
- * the day cursor or the open-request set. See docs/predict-roi-accounting.md.
- */
-export const backfillRoiHistory = async (
-  agentBlueprint: 'omenstrat' | 'polystrat',
-  existing: AgentBlueprintRoiData
-): Promise<{ mainData: AgentBlueprintRoiData; ok: boolean; remainingDays: number }> => {
-  const isPolystrat = agentBlueprint === 'polystrat';
-  const floor = windowStart(365, isPolystrat);
-  const historyFrom = existing.historyFrom ?? legacyHistoryFrom(existing);
-  const byDay = { ...existing.byDay };
-
-  let result = { historyFrom, ok: true };
-  if (historyFrom > floor) {
-    result = isPolystrat
-      ? await backfillPolystratHistory(byDay, historyFrom, floor)
-      : await backfillOmenstratHistory(
-          byDay,
-          historyFrom,
-          floor,
-          // Mech senders are the trader agents' own addresses.
-          new Set(Object.keys(existing.allTimeAgents ?? {}).map((id) => id.toLowerCase()))
-        );
-  }
-
-  console.log(
-    `[roi-dist:${agentBlueprint}] history backfill ok=${result.ok} ` +
-      `historyFrom=${result.historyFrom} floor=${floor}`
-  );
-
   return {
     mainData: {
       ...existing,
       byDay,
-      historyFrom: result.historyFrom,
-      // The first backfill marks where live data starts; later runs keep it.
-      backfilledBefore:
-        existing.backfilledBefore ?? (historyFrom > floor ? historyFrom : undefined),
+      historyFrom: state.floor,
+      // Where live data starts; later backfills keep the first boundary.
+      backfilledBefore: existing.backfilledBefore ?? until,
     },
-    ok: result.ok,
-    remainingDays: Math.max(0, (result.historyFrom - floor) / DAY_SECONDS),
+    state: null,
+    ok,
+    remainingDays: 0,
   };
 };
 

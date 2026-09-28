@@ -347,7 +347,7 @@ const AllStatesTables = ({
               noun: metric.noun(platformPhrase),
               note: metric.note,
               label: metric.hidden ? undefined : metric.labelText,
-              window: windowPhrase(window),
+              window: windowPhrase(window, platform),
               status: metric.readStatus(m),
               asOfFallback: snapshotTimestamp,
             });
@@ -362,12 +362,12 @@ const AllStatesTables = ({
             {/* The caption names its own platform and window: these tables are retrieved
                 one at a time, so "the selected range" would say nothing. */}
             <caption>
-              {`${platformName} prediction agent performance ${windowPhrase(window)}.`}
+              {`${platformName} prediction agent performance ${windowPhrase(window, platform)}.`}
             </caption>
             <tbody>
               {rows.map((row) => (
                 <tr key={row.labelText}>
-                  <th scope="row">{`${row.labelText} (${platformName}, ${windowPhrase(window)})`}</th>
+                  <th scope="row">{`${row.labelText} (${platformName}, ${windowPhrase(window, platform)})`}</th>
                   <td>{row.sentence}</td>
                 </tr>
               ))}
@@ -437,10 +437,10 @@ export const PlatformActivitySection = ({
     hasWindowData(m.brierScore);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('7d');
 
-  // The tab strip is forced to `max` when no windowed data exists, so the effective
+  // The tab strip is forced to `365d` when no windowed data exists, so the effective
   // window — not `activeWindow` — is what the values actually represent.
   const effectiveWindow: WindowKey = isWindowed ? activeWindow : '365d';
-  const activeWindowPhrase = windowPhrase(effectiveWindow);
+  const activeWindowPhrase = windowPhrase(effectiveWindow, platform);
   const platformPhrase = PLATFORM_PHRASE[platform];
   const platformName = PLATFORM_NAME[platform];
 

@@ -60,8 +60,8 @@ export const OmenstratRoiInfo = () => {
         <p>
           1Y is the last 365 days, or everything since the platform&apos;s first day while it is
           younger than that. Per-day mech request counts are only stored from late June 2026. For
-          older days in the 1Y range they come from the marketplace subgraph&apos;s per-request
-          records, counted on the day each request was made, which do not include off-chain
+          older days in the 1Y range they were rebuilt by replaying the same request matching over
+          the marketplace subgraph&apos;s per-request records, which do not include off-chain
           requests. Those days leave the 1Y range by June 2027.
         </p>
 
