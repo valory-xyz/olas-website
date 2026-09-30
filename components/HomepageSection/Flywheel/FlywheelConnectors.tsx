@@ -70,6 +70,8 @@ const ECONOMY_GRADIENTS: Array<{
 // Coordinates live in the same 1214x952 space as the cards in FlywheelDesktop,
 // so connectors line up by construction — tune both together.
 const PATHS: Array<{
+  // Motion hook (`data-fw-path`) used by common-util/flywheel-motion.ts.
+  hook: string;
   d: string;
   color: keyof typeof COLORS;
   dashed?: boolean;
@@ -78,18 +80,25 @@ const PATHS: Array<{
   width?: number;
 }> = [
   // Users → Daily Active Agents ("Stake OLAS to use Pearl agents")
-  { d: 'M 840 100 H 1105 Q 1129 100 1129 124 V 326', color: 'slate', arrow: true },
+  { hook: 'stake', d: 'M 840 100 H 1105 Q 1129 100 1129 124 V 326', color: 'slate', arrow: true },
   // Daily Active Agents → txns ("Agents are active")
-  { d: 'M 1129 461 V 806 Q 1129 830 1105 830 H 1055', color: 'slate', arrow: true },
+  { hook: 'active', d: 'M 1129 461 V 806 Q 1129 830 1105 830 H 1055', color: 'slate', arrow: true },
   // txns → A2A ("AI Agent Bazaar is used")
-  { d: 'M 741 830 H 595', color: 'slate', arrow: true },
+  { hook: 'bazaar', d: 'M 741 830 H 595', color: 'slate', arrow: true },
   // A2A → OLAS burned ("OLAS is burned", ON switch sits on the vertical)
-  { d: 'M 284 830 H 176 Q 152 830 152 806 V 458', color: 'slate', arrow: true },
+  { hook: 'burn', d: 'M 284 830 H 176 Q 152 830 152 806 V 458', color: 'slate', arrow: true },
   // OLAS burned → Users ("Attracts more builders and users")
-  { d: 'M 152 330 V 124 Q 152 100 176 100 H 474', color: 'slate', dashed: true, arrow: true },
+  {
+    hook: 'attract',
+    d: 'M 152 330 V 124 Q 152 100 176 100 H 474',
+    color: 'slate',
+    dashed: true,
+    arrow: true,
+  },
   // → Predict economy: emerges from under the PoL panel's left edge, dips left,
   // then rises straight up into the pill
   {
+    hook: 'predict',
     d: 'M 453 290 C 220 315, 78 240, 78 95',
     color: 'purple',
     dashed: true,
@@ -100,6 +109,7 @@ const PATHS: Array<{
   // → BabyDegen economy: horizontal mirror of the Predict arc — sweeps right,
   // then rises straight up into the pill's bottom edge
   {
+    hook: 'babydegen',
     d: 'M 867 290 C 1100 315, 1242 240, 1242 95',
     color: 'purple',
     dashed: true,
@@ -110,6 +120,7 @@ const PATHS: Array<{
   // → Mech economy: double mirror of the Predict arc (both axes), scaled to
   // 0.65 height x 0.9 width like the Agents.fun arc
   {
+    hook: 'mech',
     d: 'M 904 752 C 1114 736, 1242 785, 1242 879',
     color: 'teal',
     dashed: true,
@@ -120,6 +131,7 @@ const PATHS: Array<{
   // → Agents.fun economy: vertical mirror of the Predict arc, scaled to 0.65
   // height x 0.9 width (anchored at the tip) so it clears the ON toggle
   {
+    hook: 'agentsfun',
     d: 'M 416 752 C 206 736, 78 785, 78 879',
     color: 'sky',
     dashed: true,
@@ -128,34 +140,56 @@ const PATHS: Array<{
     width: 2,
   },
   // PoL panel → fees collected from PoL (plain line, no arrowhead)
-  { d: 'M 660 566 V 588', color: 'slate' },
+  { hook: 'pol', d: 'M 660 566 V 588', color: 'slate' },
   // Fees from PoL → burn loop: solid up to the OFF switch, then dashed and
   // curving up to merge into the burn vertical
-  { d: 'M 516 637 H 334', color: 'slate' },
-  { d: 'M 334 637 H 176 Q 152 637 152 613', color: 'slate', dashed: true },
+  { hook: 'pol-fees', d: 'M 516 637 H 334', color: 'slate' },
+  { hook: 'pol-off', d: 'M 334 637 H 176 Q 152 637 152 613', color: 'slate', dashed: true },
 ];
 
-const FLOW_LABELS: Array<{ text: string; className: string }> = [
+const FLOW_LABELS: Array<{ text: string; hook: string; className: string }> = [
   // The two top labels are centered on their line segment (corner to card).
   {
     text: 'Attracts more builders and users',
+    hook: 'attract',
     className: 'left-[152px] top-[112px] w-[328px] text-center',
   },
   {
     text: 'Stake OLAS to use Pearl agents',
+    hook: 'stake',
     className: 'left-[840px] top-[112px] w-[289px] text-center whitespace-nowrap',
   },
-  { text: 'Agents are active', className: 'left-[974px] top-[586px] w-[140px] text-right' },
-  { text: 'OLAS is burned', className: 'left-[165px] top-[532px] w-[130px] text-left' },
+  {
+    text: 'Agents are active',
+    hook: 'active',
+    className: 'left-[974px] top-[586px] w-[140px] text-right',
+  },
+  {
+    text: 'OLAS is burned',
+    hook: 'burn',
+    className: 'left-[165px] top-[532px] w-[130px] text-left',
+  },
   {
     text: 'AI Agent Bazaar is used',
+    hook: 'bazaar',
     className: 'left-[608px] top-[839px] w-[120px] text-center',
   },
 ];
 
 // Both valve images are 22x45 with the knob center 34px from the image top —
 // that point goes on (cx, cy) so the knob sits on the connector line, tail up.
-const SwitchToggle = ({ cx, cy, on }: { cx: number; cy: number; on: boolean }) => (
+// The motion script repeats this transform (plus a scale or shake) on `hook` — keep in sync.
+const SwitchToggle = ({
+  cx,
+  cy,
+  on,
+  hook,
+}: {
+  cx: number;
+  cy: number;
+  on: boolean;
+  hook: string;
+}) => (
   <Image
     src={`/images/homepage/activity/fee-switch-${on ? 'on' : 'off'}.png`}
     alt={on ? 'Fee switch on' : 'Fee switch off'}
@@ -163,6 +197,7 @@ const SwitchToggle = ({ cx, cy, on }: { cx: number; cy: number; on: boolean }) =
     height={45}
     className="absolute pointer-events-none"
     style={{ left: cx, top: cy, transform: 'translate(-50%, -34px)' }}
+    data-fw={hook}
   />
 );
 
@@ -172,6 +207,7 @@ export const FlywheelConnectors = () => (
       viewBox={`0 0 ${DIAGRAM.width} ${DIAGRAM.height}`}
       className="absolute inset-0 w-full h-full pointer-events-none"
       aria-hidden
+      data-fw="connectors"
     >
       <defs>
         {/* Arrowhead shape from the design file (17x19, pointing right, tip at
@@ -211,9 +247,10 @@ export const FlywheelConnectors = () => (
           </linearGradient>
         ))}
       </defs>
-      {PATHS.map(({ d, color, dashed, arrow, gradient, width }) => (
+      {PATHS.map(({ hook, d, color, dashed, arrow, gradient, width }) => (
         <path
           key={d}
+          data-fw-path={hook}
           d={d}
           fill="none"
           stroke={gradient ? `url(#${gradient})` : COLORS[color]}
@@ -224,17 +261,24 @@ export const FlywheelConnectors = () => (
       ))}
     </svg>
 
-    <SwitchToggle cx={334} cy={637} on={FEE_SWITCHES.pol === 'ON'} />
-    <SwitchToggle cx={152} cy={728} on={FEE_SWITCHES.marketplace === 'ON'} />
+    <SwitchToggle cx={334} cy={637} on={FEE_SWITCHES.pol === 'ON'} hook="switch-pol" />
+    <SwitchToggle cx={152} cy={728} on={FEE_SWITCHES.marketplace === 'ON'} hook="switch-market" />
 
-    {FLOW_LABELS.map(({ text, className }) => (
-      <p key={text} className={`absolute text-sm font-medium text-[#606F85] ${className}`}>
+    {FLOW_LABELS.map(({ text, hook, className }) => (
+      <p
+        key={text}
+        data-fw-label={hook}
+        className={`absolute text-sm font-medium text-[#606F85] ${className}`}
+      >
         {text}
       </p>
     ))}
 
     {/* PoL fee switch — static copy until the on-chain switch has a data source. */}
-    <div className="absolute left-[334px] top-[661px] -translate-x-1/2 flex flex-row gap-[2px] text-xs font-bold leading-5 text-black">
+    <div
+      data-fw="switch-pol-label"
+      className="absolute left-[334px] top-[661px] -translate-x-1/2 flex flex-row gap-[2px] text-xs font-bold leading-5 text-black"
+    >
       <p>{FEE_SWITCHES.pol}</p>
       <Popover
         align="center"
@@ -247,7 +291,10 @@ export const FlywheelConnectors = () => (
     </div>
 
     {/* Marketplace fee switch on the burn path. */}
-    <div className="absolute left-[168px] top-[720px] flex flex-row gap-[2px] text-xs font-bold leading-5 text-black">
+    <div
+      data-fw="switch-market-label"
+      className="absolute left-[168px] top-[720px] flex flex-row gap-[2px] text-xs font-bold leading-5 text-black"
+    >
       <p>{FEE_SWITCHES.marketplace}</p>
       <Popover
         align="center"

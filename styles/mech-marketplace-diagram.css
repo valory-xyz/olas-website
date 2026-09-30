@@ -1,0 +1,8 @@
+/*
+ * Mech Marketplace diagram on the homepage (design handoff 2026-09-28).
+ * Scoped under `.mm-root`; `common-util/mech-marketplace-diagram.ts` drives the `mm-*` hooks
+ * in `components/HomepageSection/mechMarketplaceSvg.ts`.
+ */
+.mm-root { max-width: 872px; margin: 0 auto; padding: 16px 0; }
+.mm-root .mm-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mm-root .mm-label { fill: #606f85; font: 500 16px Inter, system-ui, sans-serif; }
