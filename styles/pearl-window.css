@@ -125,7 +125,16 @@
 .pw-token { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; border: 1px solid #dfe6ec; border-radius: 8px; background: #fff; font-size: 16px; line-height: 24px; }
 .pw-token img { width: 20px; height: 20px; border-radius: 50%; }
 
-@media (prefers-reduced-motion: reduce) {
+/* The CSS loops follow the motion clock: paused while it is stopped (off screen, hidden tab,
+   page cache), and off with reduced motion or on slow-updating displays, as in the script. */
+.pw-root[data-running='false'] .pw-dot::before,
+.pw-root[data-running='false'] .pw-dot::after,
+.pw-root[data-running='false'] .pw-action span,
+.pw-root[data-running='false'] .pw-spin {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce), (update: slow) {
   .pw-dot.is-running::before, .pw-dot.is-running::after, .pw-action span, .pw-spin { animation: none; }
 }
 
