@@ -3,6 +3,168 @@
         "year": "2026",
         "quarters": [
             {
+                "quarter": "Quarter 3",
+                "date": "Jul - Sep",
+                "topics": [
+                    {
+                        "topic": "Olas Live on X: Agent Payments, Agent Marketplaces, and an Open Forecasting Model",
+                        "content": "- X spaces went live discussing Olas-Predict-R1-14B, a real-world event forecaster model, powered by agent data: [https://x.com/autonolas/status/2104557138614026321](https://x.com/autonolas/status/2104557138614026321)\n- \"AI Agents, Wallets and the New Rules of Money\": @david_enim, @WillPapper, @_nityas, and @sandy_carter on what it means for AI agents to pay each other: [https://x.com/autonolas/status/2092336956139016503](https://x.com/autonolas/status/2092336956139016503)\n- At the @arkivnetwork Ideathon Space, @OjuswiRastogi explored what a marketplace looks like when both sides are AI agents, with examples from Olas: [https://x.com/autonolas/status/2087183690464194769](https://x.com/autonolas/status/2087183690464194769)",
+                        "category": [
+                            "Other events",
+                            "Media appearances"
+                        ]
+                    },
+                    {
+                        "topic": "Polystrat Updates Through Q3",
+                        "content": "- Polystrat moved off its custom wallet component to the standard Safe smart account. Bugs that made some agents keep restarting or run without transacting on-chain were also fixed.\n- Polystrat metrics are back in the Agent Profile.\n- Polystrat agents and Olas activity on Robinhood Chain are now indexed with [SQD](https://x.com/helloSQD), which indexed the full Polystrat history in one week.",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "The Pearl Success Agent Loop Now Runs Overnight",
+                        "content": "- The Pearl Success Agent is designed to send the first reply to a new issue without waiting for a person, and to plan and write fixes while engineers are offline.\n- Engineers review the code before each release.\n- The loop resolved issues for 47 Pearl users between May 1 and September 21.\n- Read more: [https://olas.network/blog/pearl-success-overnight](https://olas.network/blog/pearl-success-overnight)",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas in the Media: FINTECH.TV, Unchained, and Benzinga",
+                        "content": "- Founding member David Minarsch discussed who owns your AI agent in a live TV interview on FINTECH.TV: [https://terminal.fintech.tv/fintechtv-library?episode=who-actually-owns-your-ai-agent-and-why-the-answer-matters-more-than-you-think](https://terminal.fintech.tv/fintechtv-library?episode=who-actually-owns-your-ai-agent-and-why-the-answer-matters-more-than-you-think)\n- On Unchained, David explained how Olas is designed to make self-custodial agents simpler for newcomers: [https://unchainedcrypto.com/how-olas-is-equipping-newbies-with-self-custodial-prediction-market-trading-agents/](https://unchainedcrypto.com/how-olas-is-equipping-newbies-with-self-custodial-prediction-market-trading-agents/)\n- Benzinga featured Olas-Predict-R1-14B: [https://www.benzinga.com/markets/prediction-markets/26/09/61927022/small-ai-model-gpt-4-1-forecasting-olas](https://www.benzinga.com/markets/prediction-markets/26/09/61927022/small-ai-model-gpt-4-1-forecasting-olas)",
+                        "category": [
+                            "Media appearances",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas-Predict-R1-14B: A Forecasting Model Trained on Olas Agent Data",
+                        "content": "- Valory, a core contributor to Olas, fine-tuned an open-weight 14B reasoning model on forecast records from Olas Predict agent economy.\n- Across 2,628 Omen and Polymarket markets, accuracy was 75.8%, on par with GPT-4.1 (75.4%) and above its base model (71.4%), under the study's conditions.\n- Olas Mechs now use the model in their forecasting tools, and its adapter weights are available for everyone on Hugging Face.\n- Read more: [https://olas.network/blog/meet-olas-predict-r1-14b](https://olas.network/blog/meet-olas-predict-r1-14b)",
+                        "category": [
+                            "Marketplace",
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Connect Comes to Robinhood Chain and Adds Codex Support",
+                        "content": "- Pearl Connect agent can now run on Robinhood Chain, with skills for trading Stock Tokens through [Uniswap](https://x.com/Uniswap) and memecoins through [Pons](https://x.com/ponsdotfamily).\n- A new market sentiment specialized agent on the Olas Marketplace is designed to answer questions about how much a token is discussed on social media. It is paid per call and needs no API key.\n- Codex joined Claude Code as a supported coding agent, across Robinhood Chain, Gnosis, and Polygon.\n- Read more: [https://olas.network/blog/connect-robin-hood](https://olas.network/blog/connect-robin-hood)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Launch",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl: Smaller Improvements Through Q3",
+                        "content": "- Transaction history for Base, then Polygon, now shows up inside the Pearl Wallet and the Agent Wallet for Basius and Polystrat agents.\n- Auto-run, which runs multiple agents in turn, is designed to move on to the next agent when an agent's staking contract runs out of rewards.\n- A new questionnaire asks users how onboarding went.",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Goes Live on Robinhood Chain",
+                        "content": "- OLAS became available on Robinhood Chain, and the Olas core contracts were deployed there.\n- The Olas DAO voted to adopt the Robinhood Chain deployment, so builders can register agent services there and use the Olas Marketplace.\n- Read more: [https://olas.network/blog/robin-hood-proposal](https://olas.network/blog/robin-hood-proposal)",
+                        "category": [
+                            "Tokenomics",
+                            "Govern",
+                            "Build",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "About 1 in 3 Polystrat Agents Finished 30 Days Net-Positive",
+                        "content": "- Over 30 days, about 33% of Polystrat agents with 10+ lifetime trades finished net-positive, compared with about 16% of Polymarket wallets in a separate on-chain study.\n- Past performance does not predict future results. These technologies are AI-mediated and may result in the loss of any and all funds associated.\n- Read more: [https://olas.network/blog/polystrat-3-10](https://olas.network/blog/polystrat-3-10)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Activity Metrics",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Olas DAO Raises Its Proposal and Quorum Thresholds",
+                        "content": "- The DAO raised the voting power needed to create a proposal from 5,000 to 250,000 veOLAS, and lifted quorum from 3% to 10%, so every proposal now needs wider support to pass.\n- veOLAS holders extended their locks, and total voting power more than doubled.\n- Read more: [https://github.com/valory-xyz/autonolas-governance/tree/main/scripts/proposals/proposal_15](https://github.com/valory-xyz/autonolas-governance/tree/main/scripts/proposals/proposal_15)",
+                        "category": [
+                            "Govern",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "DAO Maintenance: Seven Chains Report Unspent Staking OLAS to Ethereum",
+                        "content": "- The DAO voted to have staking contracts on seven chains report back to Ethereum that about 5.03M OLAS was unspent, so less new OLAS is sent from Ethereum to chains that already hold an unspent balance.\n- A second proposal fixed a cross-chain route to Mode and removed outdated permissions on Mode and Polygon.",
+                        "category": [
+                            "Govern",
+                            "Tokenomics"
+                        ]
+                    },
+                    {
+                        "topic": "Cheaper, Faster Agent-to-Agent Requests with Off-Chain Mechs",
+                        "content": "- Agents can now send requests through the Olas Marketplace off-chain, and about a quarter of those requests already go this way.\n- The median wait fell from about 66 seconds to about 17, with roughly 90% less gas per request. Payments are still settled on-chain.\n- Read more: [https://olas.network/blog/cheaper-faster-off-chain-requests-mech-marketplace](https://olas.network/blog/cheaper-faster-off-chain-requests-mech-marketplace)",
+                        "category": [
+                            "Marketplace",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Protocol-Owned Liquidity is Now Visualized on the Olas Homepage",
+                        "content": "- The olas.network homepage now shows the Treasury's protocol-owned liquidity across 8 chains: about $2.06M of OLAS liquidity, which has collected $2.68M in trading fees to date.\n- The Olas Marketplace already charges a protocol fee. A second fee switch, on the trading fees from protocol-owned liquidity, is still off. Autonolas Improvement Proposal 7 (AIP-7), \"Ultrasound PoL\", proposes turning it on.\n- See it: [https://olas.network/#agent-economies](https://olas.network/#agent-economies)",
+                        "category": [
+                            "Tokenomics",
+                            "Bond"
+                        ]
+                    },
+                    {
+                        "topic": "Olas Agents Cross 20M On-Chain Transactions",
+                        "content": "- Olas agents passed 20 million on-chain transactions on August 16, two years after reaching 1 million.\n- A published methodology traces each one to an identifiable action by an agent registered on Olas. At the time, 14.2M+ of them were agent-to-agent.\n- Read more: [https://olas.network/blog/20-million-olas-agent-transactions](https://olas.network/blog/20-million-olas-agent-transactions)",
+                        "category": [
+                            "Pearl",
+                            "Marketplace",
+                            "Activity Metrics",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Connect Launches: A Crypto Wallet for Your Coding Agent",
+                        "content": "- Connect is designed to give a wallet to the coding agent you already use, such as Claude Code, so it can trade on Polymarket or Omen and buy forecasts from specialized agents from the Olas Marketplace.\n- Keys are designed to stay on your machine, with the agent preparing each transaction and Pearl signing it. Connect launched in Beta on Polygon and Gnosis.\n- Read more: [https://olas.network/blog/pearl-connect](https://olas.network/blog/pearl-connect)",
+                        "category": [
+                            "Pearl",
+                            "Operate",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Basius: The First Four Weeks",
+                        "content": "- Basius agents ran without interruption on Base and made 671 on-chain transactions in their first four weeks.\n- Read more: [https://olas.network/blog/basius-week-4](https://olas.network/blog/basius-week-4)",
+                        "category": [
+                            "Pearl",
+                            "Operate"
+                        ]
+                    },
+                    {
+                        "topic": "The Toolsmith Agent Starts Improving Olas Predict's Forecasting Tools",
+                        "content": "- The Toolsmith agent is designed to investigate and improve Olas Predict's forecasting tools automatically. In June it traced a drop in forecast quality to a reasoning failure and wrote the fix, which was merged six days after the drop was first detected.\n- Read more: [https://olas.network/blog/self-improving-ai-agents-on-prediction-markets](https://olas.network/blog/self-improving-ai-agents-on-prediction-markets)",
+                        "category": [
+                            "Marketplace",
+                            "Key milestones"
+                        ]
+                    },
+                    {
+                        "topic": "Pearl Mini Is Discontinued",
+                        "content": "- New Chrome Web Store rules ban prediction market extensions, so Pearl Mini was discontinued. It was designed so users keep control of their funds and keys, and the blog post explains how to withdraw.\n- Read more: [https://olas.network/blog/pearl-mini-sunset](https://olas.network/blog/pearl-mini-sunset)",
+                        "category": [
+                            "Pearl",
+                            "Key milestones"
+                        ]
+                    }
+                ]
+            },
+            {
                 "quarter": "Quarter 2",
                 "date": "Apr - Jun",
                 "topics": [
