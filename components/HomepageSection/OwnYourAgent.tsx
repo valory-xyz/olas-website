@@ -7,6 +7,8 @@ import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { PearlWindow } from './PearlWindow';
+
 const list = [
   {
     name: 'forbes',
@@ -68,15 +70,7 @@ export const OwnYourAgent = () => (
         </div>
       </div>
 
-      <div className="mx-auto w-fit">
-        <Image
-          src="/images/homepage/pearl-screenshot.png"
-          alt="Pearl"
-          width={864}
-          height={474}
-          className="mx-auto"
-        />
-      </div>
+      <PearlWindow />
 
       <div className="w-fit mt-14 mx-auto gap-4 flex max-md:flex-col">
         <Button variant="default" size="lg" asChild>

@@ -5,6 +5,8 @@ import { ExternalLink } from 'components/ui/typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { MechMarketplaceDiagram } from './MechMarketplaceDiagram';
+
 const list = [
   {
     name: 'hackernoon',
@@ -45,13 +47,7 @@ export const AgentsWorkingTogether = () => (
       </div>
     </div>
 
-    <Image
-      src="/images/mech-marketplace.png"
-      alt="Mech Marketplace diagram"
-      width={872}
-      height={520}
-      className="mx-auto py-4"
-    />
+    <MechMarketplaceDiagram />
 
     {/* #mech-marketplace is the link we share for all things Mech; the economy
         page links on to the Mech agent page. */}
