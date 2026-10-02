@@ -120,6 +120,14 @@
         "link": "/agent-economies/agentsfun",
         "gradientColor": "rgba(35, 171, 205, 0.20)",
         "isExternal": false
+      },
+      {
+        "title": "Connect",
+        "description": "Coding agents with a crypto wallet accessing on-chain protocols and purchasing services from other AI agents.",
+        "image": "/images/connect-econ-page/connect-economy-logo-128.png",
+        "link": "/agent-economies/connect",
+        "gradientColor": "rgba(150, 190, 255, 0.25)",
+        "isExternal": false
       }
     ]
   }

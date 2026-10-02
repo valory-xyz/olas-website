@@ -17,6 +17,10 @@ export const SUB_HEADER_LG_CLASS = 'text-3xl font-semibold';
 
 export const SUB_HEADER_MEDIUM_CLASS = 'text-2xl font-semibold';
 
+// Figma "Website/Header/H2": 40/48, semibold, -0.8px tracking (scaled down on phones).
+export const SECTION_H2_CLASS =
+  'text-[28px] leading-9 tracking-[-0.56px] md:text-[40px] md:leading-[48px] md:tracking-[-0.8px] font-semibold text-black';
+
 // screen widths
 export const SCREEN_WIDTH_XL = 'max-w-[1200px] mx-auto flex flex-col';
 

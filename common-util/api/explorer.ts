@@ -1,6 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
 
 import {
+  CONNECT_AGENT_ID,
+  CONNECT_CHAINS,
   OMENSTRAT_AGENT_CLASSIFICATION,
   POLYSTRAT_AGENT_CLASSIFICATION,
 } from 'common-util/constants';
@@ -10,7 +12,6 @@ import {
   MARKETPLACE_GRAPH_CLIENTS,
   polymarketAgentsGraphClient,
   predictAgentsGraphClient,
-  REGISTRY_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
@@ -21,6 +22,11 @@ import {
 import {
   dailyBabydegenPopulationMetricsQuery,
   explorerOmenstratSeriesQuery,
+  explorerRegistrySeriesSquidQuery,
+  getAgentServicesPageQuery,
+  getAgentServicesPageSquidQuery,
+  getExplorerMarketplaceRequestEventsQuery,
+  getExplorerMarketplaceRequestEventsSquidQuery,
   getExplorerBetsQuery,
   getExplorerDailyProfitStatsQuery,
   getPolymarketBetsByTimeRangeQuery,
@@ -28,6 +34,8 @@ import {
   PolymarketBetRow,
   PolymarketBetsResponse,
 } from 'common-util/graphql/queries';
+import { requestMarketplace, requestRegistry } from 'common-util/graphql/indexer-requests';
+import type { RegistryChain } from 'common-util/indexers';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -161,7 +169,7 @@ const transformExplorerSeries = (
 // is parameterised by `agentIds`, so the same query serves every registry-backed fleet
 // across chains. Returns the last page's `_meta` for lag/error detection.
 const pageRegistryRows = async (
-  client: GraphQLClient,
+  chain: RegistryChain,
   agentIds: number[],
   timestampGt: number,
   timestampLt: number
@@ -174,12 +182,16 @@ const pageRegistryRows = async (
     let lastError: unknown;
     for (let attempt = 1; attempt <= REQUEST_ATTEMPTS; attempt += 1) {
       try {
-        data = (await client.request(explorerOmenstratSeriesQuery, {
-          agentIds,
-          timestamp_gt: timestampGt,
-          timestamp_lt: timestampLt,
-          skip: page * PAGE_SIZE,
-        })) as DailyOmenstratResponse;
+        data = await requestRegistry<DailyOmenstratResponse>(
+          chain,
+          { subgraph: explorerOmenstratSeriesQuery, squid: explorerRegistrySeriesSquidQuery },
+          {
+            agentIds,
+            timestamp_gt: timestampGt,
+            timestamp_lt: timestampLt,
+            skip: page * PAGE_SIZE,
+          }
+        );
         break;
       } catch (err) {
         lastError = err;
@@ -217,12 +229,7 @@ const fetchRegistrySeries = async (
 ): Promise<MetricWithStatus<RegistrySeries | null>> => {
   const source = `registry:${chain}:explorer`;
   try {
-    const { rows, meta } = await pageRegistryRows(
-      REGISTRY_GRAPH_CLIENTS[chain],
-      agentIds,
-      timestampGt,
-      timestampLt
-    );
+    const { rows, meta } = await pageRegistryRows(chain, agentIds, timestampGt, timestampLt);
 
     const chainBlock = await getChainBlockNumber(chain);
     const indexingErrors = meta?.hasIndexingErrors ? [source] : [];
@@ -404,6 +411,8 @@ const fetchOmenstratDailyRoi = async (windowDays: number): Promise<DaaSeriesPoin
 };
 
 export type ExplorerFetchOptions = {
+  /** Connect request history; daily cron refreshes its recent window. */
+  connectPrevious?: ConnectExplorerSeries | null;
   /** Prior stored Omenstrat series to merge fresh windows into — preserves a deep backfill. */
   previous?: ExplorerSeries | null;
   /** Prior stored Polystrat series to merge the fresh accuracy window into. */
@@ -698,12 +707,7 @@ export const fetchBabydegenAgentSeries = async (
 
   try {
     const [{ rows, meta }, aum] = await Promise.all([
-      pageRegistryRows(
-        REGISTRY_GRAPH_CLIENTS[chain],
-        babydegenAgentIdsForChain(chain),
-        timestampGt,
-        timestampLt
-      ),
+      pageRegistryRows(chain, babydegenAgentIdsForChain(chain), timestampGt, timestampLt),
       fetchBabydegenChainAum(chain),
     ]);
 
@@ -746,19 +750,19 @@ const ATA_MAX_PAGES_PER_RUN = 2000;
 // changing — finished days are immutable, counted once, then preserved by mergeSeries).
 const ATA_CRON_FROM_DAYS = 2;
 
-type AtaRow = { id: string; blockTimestamp: string };
+type EventRow = { id: string; blockTimestamp: string; count?: string };
 
 /**
- * Count `ataTransaction` events per UTC day for one chain in [startTs, endTs), paging by a
+ * Count events per UTC day (one per ATA event, batch size for marketplace requests), paging by a
  * blockTimestamp cursor (deep `skip` is rejected by The Graph). Events sharing the cursor
  * second across a page boundary are de-duplicated by id. Decrements the shared page budget
  * so a backfill stops before the function time limit. Returns counts by YYYY-MM-DD.
  */
-const fetchChainAtaCounts = async (
-  client: GraphQLClient,
+const fetchChainEventCounts = async (
+  readPage: (cursor: number) => Promise<EventRow[]>,
   startTs: number,
-  endTs: number,
-  budget: { left: number }
+  budget: { left: number },
+  requireComplete = false
 ): Promise<Map<string, number>> => {
   const byDay = new Map<string, number>();
   let cursor = startTs;
@@ -766,26 +770,24 @@ const fetchChainAtaCounts = async (
 
   while (budget.left > 0) {
     budget.left -= 1;
-    const data = (await requestWithRetry(() =>
-      client.request(mechAtaTransactionsQuery, { gte: String(cursor), lt: String(endTs) })
-    )) as { ataTransactions: AtaRow[] };
-    const rows = data?.ataTransactions ?? [];
-    if (rows.length === 0) break;
+    const rows = await requestWithRetry(() => readPage(cursor));
+    if (rows.length === 0) return byDay;
 
     let counted = 0;
     for (const row of rows) {
       const ts = Number(row.blockTimestamp);
       if (ts === cursor && seenAtCursor.has(row.id)) continue; // already counted last page
       const date = new Date(ts * 1000).toISOString().slice(0, 10);
-      byDay.set(date, (byDay.get(date) || 0) + 1);
+      byDay.set(date, (byDay.get(date) || 0) + Number(row.count ?? 1));
       counted += 1;
     }
 
-    if (rows.length < ATA_PAGE_SIZE) break; // last page
+    if (rows.length < ATA_PAGE_SIZE) return byDay; // last page
     const lastTs = Number(rows[rows.length - 1].blockTimestamp);
     // >1000 events share one second AND fill the page → cursor can't advance. Bail rather
     // than loop (a single second with 1000+ ATA never happens in practice).
     if (lastTs === cursor && counted === 0) {
+      if (requireComplete) throw new Error(`Explorer event cursor stuck at ${cursor}`);
       console.error(`mech ATA cursor stuck at ${cursor}`);
       break;
     }
@@ -796,6 +798,7 @@ const fetchChainAtaCounts = async (
     cursor = lastTs;
   }
 
+  if (requireComplete) throw new Error('Explorer event page budget exhausted');
   return byDay;
 };
 
@@ -819,10 +822,14 @@ const fetchMechAtaSeries = async (
   const byDay = new Map<string, number>();
   for (const chain of MECH_CHAINS) {
     try {
-      const counts = await fetchChainAtaCounts(
-        MARKETPLACE_GRAPH_CLIENTS[chain],
+      const counts = await fetchChainEventCounts(
+        async (cursor) => {
+          const data = await MARKETPLACE_GRAPH_CLIENTS[chain].request<{
+            ataTransactions: EventRow[];
+          }>(mechAtaTransactionsQuery, { gte: String(cursor), lt: String(endTs) });
+          return data.ataTransactions;
+        },
         startTs,
-        endTs,
         budget
       );
       counts.forEach((count, date) => byDay.set(date, (byDay.get(date) || 0) + count));
@@ -875,7 +882,7 @@ export const fetchMechExplorerSeries = async (
     MECH_CHAINS.map(async (chain) => {
       try {
         const { rows, meta } = await pageRegistryRows(
-          REGISTRY_GRAPH_CLIENTS[chain],
+          chain,
           MECH_AGENT_IDS,
           timestampGt,
           timestampLt
@@ -917,8 +924,158 @@ export const fetchMechExplorerSeries = async (
   };
 };
 
+// ── Connect economy (registry DAA/executions; marketplace request events) ──────
+export type ConnectExplorerSeries = {
+  daa: DaaSeriesPoint[];
+  marketplaceRequests: DaaSeriesPoint[];
+  onchainExecutions: DaaSeriesPoint[];
+};
+type ConnectChain = (typeof CONNECT_CHAINS)[number];
+type ConnectService = { id: string; latestMultisig: string | null; historicalMultisigs: string[] };
+
+/** Both event streams increment the economy page's RequestsPerAgent counter. */
+const fetchConnectRequestCounts = async (
+  chain: ConnectChain,
+  startTs: number,
+  endTs: number,
+  budget: { left: number },
+  onMeta: (meta: WithMeta<object>['_meta']) => void
+): Promise<Map<string, number>> => {
+  // Resolve requesting Safes from the same marketplace's agent classification.
+  const requesters = new Set<string>();
+  let cursor = '';
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    const query = { agentId: CONNECT_AGENT_ID, id_gt: cursor, includeMultisigs: true };
+    const data = await requestWithRetry(() =>
+      requestMarketplace<{ services: ConnectService[] }>(chain, {
+        subgraph: getAgentServicesPageQuery(query),
+        squid: getAgentServicesPageSquidQuery(query),
+      })
+    );
+    onMeta(data._meta);
+    data.services.forEach((service) => {
+      [...service.historicalMultisigs, service.latestMultisig].forEach((address) => {
+        if (address) requesters.add(address.toLowerCase());
+      });
+    });
+    if (data.services.length < PAGE_SIZE) break;
+    if (page === MAX_PAGES - 1) throw new Error('Connect service page limit reached');
+    cursor = data.services[data.services.length - 1].id;
+  }
+
+  const byDay = new Map<string, number>();
+  if (!requesters.size) return byDay;
+  for (const offchain of [false, true]) {
+    const counts = await fetchChainEventCounts(
+      async (timestamp) => {
+        const query = {
+          requesters: [...requesters],
+          timestamp_gte: timestamp,
+          timestamp_lt: endTs,
+          offchain,
+        };
+        const data = await requestMarketplace<{ events: EventRow[] }>(chain, {
+          subgraph: getExplorerMarketplaceRequestEventsQuery(query),
+          squid: getExplorerMarketplaceRequestEventsSquidQuery(query),
+        });
+        onMeta(data._meta);
+        return data.events;
+      },
+      startTs,
+      budget,
+      true
+    );
+    counts.forEach((count, date) => byDay.set(date, (byDay.get(date) ?? 0) + count));
+  }
+  return byDay;
+};
+
+/**
+ * Reuse the Explorer registry pager/transform and Mech's event counting + history merge.
+ * Registry metrics cover complete UTC days. Requests include today's partial day, as
+ * Mech ATA does; first refresh backfills, later refreshes recount a recent window.
+ */
+export const fetchConnectExplorerSeries = async (
+  previous?: ConnectExplorerSeries | null
+): Promise<MetricWithStatus<ConnectExplorerSeries | null>> => {
+  const timestampGt = getMidnightUtcTimestampDaysAgo(SERIES_WINDOW_DAYS);
+  const timestampLt = getMidnightUtcTimestampDaysAgo(0);
+  const requestEnd = Math.floor(Date.now() / 1000);
+  const lastRequestDate = previous?.marketplaceRequests.at(-1)?.date;
+  const requestStart = lastRequestDate
+    ? Math.min(
+        getMidnightUtcTimestampDaysAgo(ATA_CRON_FROM_DAYS),
+        Date.parse(`${lastRequestDate}T00:00:00Z`) / 1000
+      )
+    : timestampGt + ONE_DAY_SECONDS;
+  const indexingErrors: string[] = [];
+  const fetchErrors: string[] = [];
+  const laggingSubgraphs: string[] = [];
+  const allRows: DailyOmenstratRow[] = [];
+  const requestsByDay = new Map<string, number>();
+  const budget = { left: ATA_MAX_PAGES_PER_RUN };
+
+  await Promise.all(
+    CONNECT_CHAINS.map(async (chain) => {
+      try {
+        const [{ rows, meta }, chainBlock] = await Promise.all([
+          pageRegistryRows(chain, [CONNECT_AGENT_ID], timestampGt, timestampLt),
+          getChainBlockNumber(chain),
+        ]);
+        allRows.push(...rows);
+        const recordMeta = (source: string, sourceMeta: WithMeta<object>['_meta']) => {
+          if (sourceMeta?.hasIndexingErrors && !indexingErrors.includes(source))
+            indexingErrors.push(source);
+          if (
+            checkSubgraphLag(chainBlock, sourceMeta?.block?.number, chain) &&
+            !laggingSubgraphs.includes(source)
+          ) {
+            laggingSubgraphs.push(source);
+          }
+        };
+        recordMeta(`registry:${chain}:connect`, meta);
+        const counts = await fetchConnectRequestCounts(
+          chain,
+          requestStart,
+          requestEnd,
+          budget,
+          (requestMeta) => recordMeta(`marketplace:${chain}:connect`, requestMeta)
+        );
+        counts.forEach((count, date) =>
+          requestsByDay.set(date, (requestsByDay.get(date) ?? 0) + count)
+        );
+      } catch (error) {
+        console.error(`Error fetching Connect explorer (${chain}):`, error);
+        fetchErrors.push(`connect:${chain}:explorer`);
+      }
+    })
+  );
+
+  const status = createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs });
+  // A combined total must include every chain. Snapshot fallback holds the last good value.
+  if (fetchErrors.length) return { value: null, status };
+  const { daa, transactions } = transformExplorerSeries(allRows, timestampGt, timestampLt);
+  const firstDate = [daa[0]?.date, ...requestsByDay.keys()].filter(Boolean).sort()[0];
+  const firstTimestamp = firstDate ? Date.parse(`${firstDate}T00:00:00Z`) / 1000 : timestampLt;
+  const freshRequests: DaaSeriesPoint[] = [];
+  for (let ts = Math.max(firstTimestamp, requestStart); ts < requestEnd; ts += ONE_DAY_SECONDS) {
+    const date = new Date(ts * 1000).toISOString().slice(0, 10);
+    freshRequests.push({ date, count: requestsByDay.get(date) ?? 0 });
+  }
+  return {
+    value: {
+      daa,
+      onchainExecutions: transactions,
+      marketplaceRequests: mergeSeries(previous?.marketplaceRequests, freshRequests),
+    },
+    status,
+  };
+};
+
 /** Snapshot persisted to Vercel Blob under the `explorer` category. */
 export type ExplorerMetricsData = {
+  /** Connect daily DAA, marketplace requests and successful Safe executions. */
+  connect: MetricWithStatus<ConnectExplorerSeries | null>;
   omenstrat: MetricWithStatus<ExplorerSeries | null>;
   /** Polystrat (Polygon, agentId 86) — registry DAA/transactions + squid accuracy. */
   polystrat: MetricWithStatus<PolystratExplorerSeries | null>;
@@ -946,21 +1103,37 @@ export const fetchAllExplorerMetrics = async (
   options: ExplorerFetchOptions = {}
 ): Promise<ExplorerMetricsSnapshot | null> => {
   try {
-    const [omenstrat, polystrat, babydegenOptimus, babydegenModius, babydegenBasius, mech] =
-      await Promise.all([
-        fetchOmenstratExplorerSeries(options),
-        fetchPolystratExplorerSeries(options),
-        fetchBabydegenAgentSeries('optimism'),
-        fetchBabydegenAgentSeries('mode'),
-        fetchBabydegenAgentSeries('base'),
-        fetchMechExplorerSeries({
-          previous: options.mechPrevious,
-          ataFromDays: options.ataFromDays,
-          ataToDays: options.ataToDays,
-        }),
-      ]);
+    const [
+      omenstrat,
+      polystrat,
+      babydegenOptimus,
+      babydegenModius,
+      babydegenBasius,
+      connect,
+      mech,
+    ] = await Promise.all([
+      fetchOmenstratExplorerSeries(options),
+      fetchPolystratExplorerSeries(options),
+      fetchBabydegenAgentSeries('optimism'),
+      fetchBabydegenAgentSeries('mode'),
+      fetchBabydegenAgentSeries('base'),
+      fetchConnectExplorerSeries(options.connectPrevious),
+      fetchMechExplorerSeries({
+        previous: options.mechPrevious,
+        ataFromDays: options.ataFromDays,
+        ataToDays: options.ataToDays,
+      }),
+    ]);
     return {
-      data: { omenstrat, polystrat, babydegenOptimus, babydegenModius, babydegenBasius, mech },
+      data: {
+        omenstrat,
+        polystrat,
+        babydegenOptimus,
+        babydegenModius,
+        babydegenBasius,
+        mech,
+        connect,
+      },
       timestamp: Date.now(),
     };
   } catch (error) {

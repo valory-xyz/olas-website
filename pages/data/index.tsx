@@ -6,6 +6,7 @@ import { JsonLd } from 'components/JsonLd';
 import { AtaTransactionsInfo } from 'components/DataPage/AtaTransactions';
 import { BabydegenMetricsInfo } from 'components/DataPage/BabydegenMetrics';
 import { BuildersInfo } from 'components/DataPage/BuildersInfo';
+import { ConnectMetricsInfo } from 'components/DataPage/ConnectMetrics';
 import { DailyActiveAgentsInfo } from 'components/DataPage/DailyActiveAgents';
 import { FeesInfo } from 'components/DataPage/Fees';
 import { GovernVeOlasInfo } from 'components/DataPage/GovernVeOlasInfo';
@@ -51,6 +52,7 @@ const DataVerifyPage = () => (
       <DailyActiveAgentsInfo />
       <PredictTotalAgentsInfo />
       <BabydegenMetricsInfo />
+      <ConnectMetricsInfo />
       <MechGlobalsInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />

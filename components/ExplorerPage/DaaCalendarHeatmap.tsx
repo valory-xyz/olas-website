@@ -129,7 +129,7 @@ export const HEATMAP_LEVEL_COLORS_INDIGO = [
   '#14127a', // 8 — deepest (Polystrat icon navy)
 ];
 
-export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal' | 'blue' | 'indigo';
+export type HeatmapRamp = 'purple' | 'red' | 'lime' | 'teal' | 'blue' | 'indigo' | 'connect';
 export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
   purple: HEATMAP_LEVEL_COLORS,
   red: HEATMAP_LEVEL_COLORS_RED,
@@ -137,6 +137,17 @@ export const HEATMAP_RAMPS: Record<HeatmapRamp, string[]> = {
   teal: HEATMAP_LEVEL_COLORS_TEAL,
   blue: HEATMAP_LEVEL_COLORS_BLUE,
   indigo: HEATMAP_LEVEL_COLORS_INDIGO,
+  connect: [
+    '#DFE5EE',
+    '#D1F7FB',
+    '#A0E3ED',
+    '#69CFE0',
+    '#03B9D3',
+    '#00A4C8',
+    '#008BB1',
+    '#007298',
+    '#005A7F',
+  ],
 };
 
 // row (0=Sun … 6=Sat) → label. All seven.
@@ -388,6 +399,9 @@ type Hovered = {
   flip: boolean;
 };
 
+export type HeatmapMarker = { date: string; label: string };
+const EMPTY_MARKERS: HeatmapMarker[] = [];
+
 type DaaCalendarHeatmapProps = {
   series: DaaSeriesPoint[];
   /** Year to highlight + scroll-center; cells of other years become hollow outlines. */
@@ -406,6 +420,8 @@ type DaaCalendarHeatmapProps = {
   markerDate?: string | null;
   /** Tooltip text shown for the marker cell instead of its metric value. */
   markerLabel?: string;
+  /** Multiple launch or lifecycle dates drawn as ringed cells. */
+  markers?: HeatmapMarker[];
   className?: string;
   id?: string;
 };
@@ -420,6 +436,7 @@ export const DaaCalendarHeatmap = ({
   localMode = false,
   markerDate = null,
   markerLabel = '',
+  markers = EMPTY_MARKERS,
   className,
   id,
 }: DaaCalendarHeatmapProps) => {
@@ -427,6 +444,12 @@ export const DaaCalendarHeatmap = ({
     () => buildModel(series, colorScale, levelColors),
     [series, colorScale, levelColors]
   );
+
+  const markerLabels = useMemo(() => {
+    const labels = new Map(markers.map(({ date, label }) => [date, label]));
+    if (markerDate) labels.set(markerDate, markerLabel);
+    return labels;
+  }, [markers, markerDate, markerLabel]);
 
   // All cells, flat — each Cell already carries its own col/row.
   const flatCells = useMemo(() => columns.flat(), [columns]);
@@ -539,7 +562,7 @@ export const DaaCalendarHeatmap = ({
       // Marker cells are hoverable even with no value for the active metric, so the
       // marker label (e.g. a phase-out note) is always reachable — e.g. on the AUM
       // tile where that day may have no snapshot.
-      const isMarkerCell = markerDate != null && cell.date === markerDate;
+      const isMarkerCell = markerLabels.has(cell.date);
       if (dragRef.current || !cell.date || (!cell.hasData && !isMarkerCell)) return;
       const wrap = wrapperRef.current?.getBoundingClientRect();
       if (!wrap) return;
@@ -564,7 +587,7 @@ export const DaaCalendarHeatmap = ({
         }, TOOLTIP_DELAY);
       }
     },
-    [markerDate]
+    [markerLabels]
   );
 
   const clearHover = () => {
@@ -652,7 +675,7 @@ export const DaaCalendarHeatmap = ({
         // stands out as a notable day, with its own tooltip copy. It can sit anywhere in
         // the series (the phase-out date is mid-series when a wind-down tail follows).
         // Hoverable even with no value so its label is always reachable (see onCellEnter).
-        const isMarker = markerDate != null && cell.inRange && cell.date === markerDate;
+        const isMarker = cell.inRange && markerLabels.has(cell.date);
         const hoverable = cell.hasData || isMarker;
         return (
           <div
@@ -687,7 +710,7 @@ export const DaaCalendarHeatmap = ({
       lastRealCol,
       reduced,
       firstWave,
-      markerDate,
+      markerLabels,
       onCellEnter,
     ]
   );
@@ -885,8 +908,10 @@ export const DaaCalendarHeatmap = ({
                   : `${hovered.count.toLocaleString('en-US')} ${unitLabel}`}
             </span>
           )}
-          {markerDate && hovered.date === markerDate && markerLabel && (
-            <span className="text-[12px] font-medium leading-4 text-[#0f172a]">{markerLabel}</span>
+          {markerLabels.has(hovered.date) && (
+            <span className="text-[12px] font-medium leading-4 text-[#0f172a]">
+              {markerLabels.get(hovered.date)}
+            </span>
           )}
         </div>
       )}

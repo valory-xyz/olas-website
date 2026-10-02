@@ -8,7 +8,7 @@
 // OLAS flywheel motion. Content comes first: cards, numbers and economy pills are visible from
 // the first frame. Only one thing moves at a time, in reading order: the main loop clockwise
 // from Users (the order of the paragraph above the diagram), then the PoL branch up to its OFF
-// switch, then the four economy arcs together. The entrance draws the connectors in that
+// switch, then the five economy arcs together. The entrance draws the connectors in that
 // order, one at a time with a short pause between them. Then a lap repeats: the same order
 // lights up one connector at a time; it fills with purple, arrowhead included, and its card
 // and label light as the fill arrives; the PoL branch stops at OFF. Numbers (interactive, with
@@ -23,7 +23,7 @@ export function initFlywheelMotion(canvas: HTMLElement): { dispose: () => void }
 
   const LOOP = ['stake', 'active', 'bazaar', 'burn', 'attract'];
   const ARRIVES = { stake: 'daa', active: 'txns', bazaar: 'a2a', burn: 'burned', attract: 'users' };
-  const ECONOMIES = ['predict', 'babydegen', 'mech', 'agentsfun'];
+  const ECONOMIES = ['predict', 'babydegen', 'mech', 'agentsfun', 'connect'];
   const POL = ['pol', 'pol-fees', 'pol-off'];
   const MARKET_SWITCH = [152, 728]; // the ON switch sits on the burn connector here
 
@@ -42,6 +42,7 @@ export function initFlywheelMotion(canvas: HTMLElement): { dispose: () => void }
     babydegen: '#A78BFA',
     mech: '#2DD4BF',
     agentsfun: '#7DA7DB',
+    connect: '#8B5CF6',
   };
   const LAP_MIN = 0.4; // lap: even a short connector takes this long
 
@@ -409,7 +410,7 @@ export function initFlywheelMotion(canvas: HTMLElement): { dispose: () => void }
       'transform',
       `translate(calc(-50% + ${3 * Math.sin(shake * Math.PI * 4) * bump(shake)}px), -34px)`
     );
-    // Out to the economies, all four at once.
+    // Out to the economies, all five at once.
     for (const hook of ECONOMIES) {
       lightStep(paths[hook], u, economiesAt, 1.0, economiesAt + 1.9);
     }

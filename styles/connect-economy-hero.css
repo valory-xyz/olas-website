@@ -1,0 +1,55 @@
+/* Connect economy hero illustration — the "Shipped CSS" block from the design handoff
+   (connect-economy-hero-handoff-2026-09-30/scene.html). The script in
+   common-util/connect-economy-hero.ts builds everything inside .connect-hero. */
+.connect-hero {
+  position: relative;
+  width: 464px;
+  max-width: 100%;
+  aspect-ratio: 464 / 432;
+  flex: none;
+}
+.connect-hero > svg,
+.connect-hero > .ch-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.connect-hero > svg {
+  overflow: visible;
+  pointer-events: none;
+}
+/* The hexagon mask is set by the script, which knows the geometry. */
+.connect-hero .ch-art {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+.connect-hero.is-ready .ch-art {
+  opacity: 1;
+}
+.connect-hero .ch-art img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  will-change: transform;
+}
+.connect-hero .ch-border {
+  mix-blend-mode: overlay;
+}
+@media (max-width: 1023px) {
+  .connect-hero {
+    margin: 0 auto;
+  }
+}
+/* Site integration: on phones HeroSection puts the image inside the shrink-to-fit copy column,
+   where a fixed 464px width widens the column past the viewport. Size from the column instead. */
+@media (max-width: 767px) {
+  .connect-hero {
+    width: 100%;
+    max-width: 464px;
+  }
+}

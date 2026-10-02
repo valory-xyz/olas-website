@@ -12,6 +12,7 @@ const COLORS = {
   purple: '#95A7EF',
   teal: '#69D1CE',
   sky: '#9ACBCB',
+  violet: '#8FB5EF',
 };
 
 // Stroke gradients for the economy connectors (from the design): full color at
@@ -65,9 +66,20 @@ const ECONOMY_GRADIENTS: Array<{
       ['56%', '#82A8D6', 0],
     ],
   },
+  {
+    id: 'fw-grad-connect',
+    from: [771, 999],
+    to: [961, 880],
+    stops: [
+      // Shorter than the other arcs, so it fades later or the drop from the card vanishes.
+      ['0%', '#8FB5EF', 1],
+      ['50%', '#B28FEF', 1],
+      ['100%', '#B28FEF', 0.15],
+    ],
+  },
 ];
 
-// Coordinates live in the same 1214x952 space as the cards in FlywheelDesktop,
+// Coordinates live in the same DIAGRAM space as the cards in FlywheelDesktop,
 // so connectors line up by construction — tune both together.
 const PATHS: Array<{
   // Motion hook (`data-fw-path`) used by common-util/flywheel-motion.ts.
@@ -137,6 +149,17 @@ const PATHS: Array<{
     dashed: true,
     arrow: true,
     gradient: 'fw-grad-agentsfun',
+    width: 2,
+  },
+  // → Connect economy: drops from under the txns card, then turns left into the
+  // right edge of the pill centred below the bottom row
+  {
+    hook: 'connect',
+    d: 'M 961 880 C 961 990, 920 999, 771 999',
+    color: 'violet',
+    dashed: true,
+    arrow: true,
+    gradient: 'fw-grad-connect',
     width: 2,
   },
   // PoL panel → fees collected from PoL (plain line, no arrowhead)
