@@ -181,6 +181,11 @@ export const PREDICT_STAKING_AGENT_IDS: Record<'gnosis' | 'polygon', number[]> =
   polygon: [86],
 };
 
+// Pearl Connect: every instance is a service registered under this agent id, on whichever
+// of these chains the user picked (olas-operate-app `serviceTemplates/service/connect.ts`).
+export const CONNECT_AGENT_ID = 116;
+export const CONNECT_CHAINS = ['gnosis', 'polygon', 'robinhood'] as const;
+
 // Mech agent classification used for categorized request counts
 export const MECH_AGENT_CLASSIFICATION = {
   predict: [14, 25, 13, 86],

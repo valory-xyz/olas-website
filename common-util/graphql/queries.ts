@@ -1410,3 +1410,76 @@ export const liquidityRobinhoodSquidQuery = (pairId: string) => gql`
     }
   }
 `;
+
+// Connect (agent 116): the registry's daily performances inside the window, for DAAs, and
+// the all-time `AgentPerformance` row, whose txCount counts the Safes' successful
+// executions. One request per chain feeds both metrics.
+export const getConnectRegistryQuery = ({ agentId, timestamp_gt, timestamp_lt }) => gql`
+  query ConnectRegistry {
+    dailyAgentPerformances(
+      where: { agentId: ${agentId}, dayTimestamp_gt: ${timestamp_gt}, dayTimestamp_lt: ${timestamp_lt} }
+      orderBy: dayTimestamp
+      orderDirection: desc
+      first: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+    }
+    agentPerformances(where: { id: "${agentId}" }) {
+      txCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
+// OpenReader twin of `getConnectRegistryQuery` for the registry squids.
+export const getConnectRegistrySquidQuery = ({ agentId, timestamp_gt, timestamp_lt }) => gql`
+  query ConnectRegistrySquid {
+    dailyAgentPerformances(
+      where: { agentId_eq: ${agentId}, dayTimestamp_gt: ${timestamp_gt}, dayTimestamp_lt: ${timestamp_lt} }
+      orderBy: dayTimestamp_DESC
+      limit: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+    }
+    agentPerformances(where: { id_eq: "${agentId}" }) {
+      txCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+// All-time marketplace requests sent by services carrying the agent id.
+export const getAgentMarketplaceRequestsQuery = ({ agentId }) => gql`
+  query AgentMarketplaceRequests {
+    requestsPerAgents(where: { id: "${agentId}" }) {
+      requestsCount
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
+// OpenReader twin of `getAgentMarketplaceRequestsQuery` for the marketplace squids.
+export const getAgentMarketplaceRequestsSquidQuery = ({ agentId }) => gql`
+  query AgentMarketplaceRequestsSquid {
+    requestsPerAgents(where: { id_eq: "${agentId}" }) {
+      requestsCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
