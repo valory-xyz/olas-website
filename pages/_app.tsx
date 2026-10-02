@@ -3,7 +3,9 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import 'styles/globals.css';
 import 'styles/connect-economy-hero.css';
+import 'styles/mech-marketplace-diagram.css';
 import 'styles/model-illustration.css';
+import 'styles/pearl-window.css';
 
 function PlausibleTracker() {
   const router = useRouter();

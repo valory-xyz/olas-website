@@ -1,3 +1,4 @@
+import { initFlywheelMotion } from 'common-util/flywheel-motion';
 import { MetricStatus } from 'common-util/graphql/types';
 import { useEffect, useRef, useState } from 'react';
 
@@ -60,6 +61,13 @@ const useDiagramScale = () => {
 
 export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopProps) => {
   const { ref, scale } = useDiagramScale();
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return undefined;
+    const { dispose } = initFlywheelMotion(canvasRef.current);
+    return dispose;
+  }, []);
 
   return (
     <div
@@ -68,6 +76,8 @@ export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopPro
       style={{ height: DIAGRAM.height * scale }}
     >
       <div
+        ref={canvasRef}
+        data-fw="canvas"
         className="relative shrink-0 text-slate-500 text-left"
         style={{
           width: DIAGRAM.width,
@@ -82,7 +92,7 @@ export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopPro
           <EconomyPill key={pill.slug} {...pill} />
         ))}
 
-        <div className="absolute left-[480px] top-[30px] z-10">
+        <div data-fw="users" className="absolute left-[480px] top-[30px] z-10">
           <UsersCard
             olasStaked={metrics.olasStaked}
             totalOperators={metrics.totalOperators}
@@ -91,26 +101,26 @@ export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopPro
           />
         </div>
 
-        <div className="absolute left-[27px] top-[333px] z-10">
+        <div data-fw="burned" className="absolute left-[27px] top-[333px] z-10">
           <OlasBurnedCard />
         </div>
 
-        <div className="absolute left-[393px] top-[224px] w-[545px] h-[340px]">
+        <div data-fw="pol" className="absolute left-[393px] top-[224px] w-[545px] h-[340px]">
           <PolCenterPanel protocolMetrics={protocolMetrics} />
         </div>
 
-        <div className="absolute left-[1004px] top-[335px] z-10">
+        <div data-fw="daa" className="absolute left-[1004px] top-[335px] z-10">
           <DailyActiveAgentsCard
             dailyActiveAgents={metrics.dailyActiveAgents}
             dailyActiveAgentsStatus={metrics.dailyActiveAgentsStatus}
           />
         </div>
 
-        <div className="absolute left-[520px] top-[592px] z-10">
+        <div data-fw="pol-fees" className="absolute left-[520px] top-[592px] z-10">
           <FeesFromPolCard protocolMetrics={protocolMetrics} />
         </div>
 
-        <div className="absolute left-[288px] top-[738px] z-10">
+        <div data-fw="a2a" className="absolute left-[288px] top-[738px] z-10">
           <AgentToAgentCard
             ataTransactions={metrics.ataTransactions}
             mechFees={metrics.mechFees}
@@ -122,7 +132,7 @@ export const FlywheelDesktop = ({ metrics, protocolMetrics }: FlywheelDesktopPro
           />
         </div>
 
-        <div className="absolute left-[745px] top-[778px] z-10">
+        <div data-fw="txns" className="absolute left-[745px] top-[778px] z-10">
           <TransactionsCard
             transactions={metrics.transactions}
             transactionsStatus={metrics.transactionsStatus}

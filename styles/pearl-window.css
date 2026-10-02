@@ -1,0 +1,154 @@
+/*
+ * Pearl app window on the homepage (design handoff 2026-09-28).
+ * Scoped under `.pw-root`; `common-util/pearl-window.ts` builds and animates the window.
+ */
+/* ---- The window: everything under .pw-root ships. Native size 1124 × 796: the app's 1320px
+   window with the empty margins of its main area trimmed, so the UI reads larger. ---- */
+.pw-root { --pw-inset: inset 0 -1px 0 #dfe6ec, inset 0 0 0 1px #dfe6ec, inset 0 0 0 2px #fff, inset 0 4px 8px rgba(255, 255, 255, 0.5), inset 0 0 2px 2px #dfe6ec;
+  --pw-elevated: 0 3px 6px rgba(170, 193, 203, 0.1), 0 12px 12px rgba(170, 193, 203, 0.09), 0 26px 16px rgba(170, 193, 203, 0.05), 0 47px 19px rgba(170, 193, 203, 0.01);
+  max-width: 1024px; margin: 0 auto; text-align: left; }
+.pw-stage { position: relative; width: 100%; aspect-ratio: 1124 / 796; }
+.pw-window { position: absolute; left: 0; top: 0; display: flex; width: 1124px; height: 796px; overflow: hidden; transform-origin: 0 0; border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 24px 60px rgba(15, 23, 42, 0.12); color: #000; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+/* Image sizes hold with or without the site's base styles: the width comes from the markup or a
+   rule below, the height from the artwork's own proportions. */
+.pw-window img { display: block; max-width: none; height: auto; }
+.pw-window p { margin: 0; }
+
+/* Sidebar */
+.pw-sidebar { display: flex; flex: none; flex-direction: column; width: 300px; box-sizing: border-box; border-right: 1px solid #eaedf1; background: #fff; }
+.pw-side-head { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 16px; }
+.pw-lights { display: flex; gap: 8px; width: 100%; }
+.pw-lights i { width: 12px; height: 12px; border-radius: 50%; }
+.pw-logo { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
+.pw-side-body { display: flex; flex: 1; flex-direction: column; gap: 16px; padding: 8px 16px; }
+.pw-myagents { display: flex; align-items: center; gap: 16px; }
+.pw-myagents p { flex: 1; font-size: 16px; font-weight: 450; line-height: 24px; }
+.pw-autorun { display: flex; align-items: center; gap: 8px; width: 71px; box-sizing: border-box; padding: 4px 4px 4px 10px; border-radius: 10px; background: #eaedf1; }
+.pw-autorun span { flex: 1; color: #363f49; font-size: 14px; line-height: 20px; }
+.pw-mini-btn { display: flex; align-items: center; justify-content: center; padding: 6px; border-radius: 8px; background: #fff; box-shadow: var(--pw-inset); }
+.pw-list { display: flex; flex-direction: column; }
+.pw-group-row { display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 8px; border-radius: 8px; }
+.pw-chev { width: 16px; height: 16px; }
+.pw-thumb { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: 6px; }
+.pw-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pw-group-name { font-size: 14px; line-height: 20px; }
+.pw-tag { padding: 2px 4px; border-radius: 4px; background: #dfe6ec; color: #363f49; font-size: 12px; line-height: 16px; }
+.pw-instances { display: none; }
+.pw-group.is-open .pw-instances { display: block; }
+.pw-instances-inner { display: flex; gap: 10px; padding: 4px 0 4px 8px; }
+.pw-rail { position: relative; flex: none; width: 16px; }
+.pw-rail::before { position: absolute; top: 0; bottom: 0; left: 7.25px; width: 1.5px; background: #eaedf1; content: ''; }
+.pw-inst { display: flex; flex: 1; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 6px; }
+.pw-inst p { flex: 1; font-size: 14px; line-height: 20px; }
+.pw-dot-box { position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 20px; }
+.pw-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #dfe6ec; }
+.pw-dot.is-rewarded { background: #28b858; }
+.pw-dot.is-running { background: #7e22ce; }
+.pw-dot.is-running::before, .pw-dot.is-running::after { position: absolute; inset: 0; border-radius: 50%; background: #7e22ce; content: ''; animation: pw-pulse 1.25s cubic-bezier(0.1, 0, 0.2, 1) infinite; }
+.pw-dot.is-running::after { animation-delay: 0.6s; }
+@keyframes pw-pulse { from { opacity: 0.75; transform: scale(1); } to { opacity: 0; transform: scale(2.5); } }
+.pw-add { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 10px; background: #fff; box-shadow: var(--pw-inset); font-size: 14px; line-height: 20px; }
+.pw-side-foot { display: flex; flex-direction: column; padding: 16px; }
+.pw-nav { display: flex; align-items: center; gap: 12px; padding: 8px 16px 8px 12px; font-size: 14px; line-height: 20px; }
+
+/* Main area */
+.pw-main { position: relative; flex: 1; overflow: hidden; background: #f4f7fa; }
+.pw-tabs-wrap { position: absolute; z-index: 3; top: 40px; left: 0; right: 0; display: flex; justify-content: center; }
+.pw-tabs { position: relative; display: flex; padding: 2px; border: 2px solid #fff; border-radius: 12px; background: #edf2f7; filter: drop-shadow(0 1px 1.5px rgba(170, 193, 203, 0.1)) drop-shadow(0 6px 3px rgba(170, 193, 203, 0.09)) drop-shadow(0 13px 4px rgba(170, 193, 203, 0.05)); }
+.pw-tab-pill { position: absolute; top: 2px; left: 2px; width: 130px; height: 40px; border-radius: 10px; background: #fff; }
+.pw-tab { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; width: 130px; height: 40px; box-sizing: border-box; color: #617084; font-size: 16px; line-height: 24px; }
+.pw-tab.is-active { color: #000; }
+.pw-tab-icon { position: relative; width: 20px; height: 20px; }
+.pw-tab-icon img { position: absolute; inset: 0; width: 20px; height: 20px; }
+
+.pw-overview { position: absolute; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 128px; }
+.pw-ov-inner { display: flex; flex-direction: column; gap: 40px; width: 744px; }
+.pw-ov-inner > * { flex: none; } /* taller than the window: the rest sits below the fold, as in the app */
+
+.pw-agent-card { position: relative; overflow: hidden; border: 1px solid #fff; border-radius: 16px; box-shadow: var(--pw-elevated); }
+.pw-card-bg { position: absolute; inset: 0; }
+.pw-card-bg.idle { background: #eaedf1; }
+.pw-card-bg.loading { background: #ebedff; }
+.pw-card-bg.running { background: linear-gradient(180deg, #f5edfc 80%, #ecdcf9); }
+.pw-card-bg.rewards { background: #def8e7; }
+.pw-agent-main { position: relative; display: flex; gap: 24px; padding: 24px; border-radius: 16px; background: #f9fbfc; }
+.pw-avatar { flex: none; width: 88px; height: 88px; overflow: hidden; border-radius: 12px; }
+.pw-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pw-agent-info { display: flex; flex: 1; flex-direction: column; gap: 12px; }
+.pw-agent-head { display: flex; align-items: flex-start; gap: 12px; }
+.pw-agent-name { flex: 1; font-size: 18px; font-weight: 500; line-height: 28px; }
+.pw-ctas { display: flex; align-items: center; gap: 8px; }
+.pw-chain { display: flex; padding: 10px; border: 1px solid #dfe6ec; border-radius: 10px; background: #fff; }
+.pw-chain img { width: 16px; height: 16px; border-radius: 50%; }
+.pw-icon-btn { display: flex; padding: 8px; border-radius: 10px; background: #fff; box-shadow: var(--pw-inset); }
+.pw-run-slot { position: relative; height: 40px; }
+.pw-run { position: absolute; top: 0; left: 0; display: flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 8px 20px; border-radius: 12px; font-size: 16px; line-height: 24px; white-space: nowrap; transform-origin: 30% 50%; }
+.pw-run.is-start, .pw-run.is-starting { background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), #7e22ce; background-blend-mode: overlay; color: #fff; box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 -4px 16px rgba(255, 255, 255, 0.24), inset 0 4px 16px rgba(255, 255, 255, 0.24), inset 0 0 0 2px rgba(255, 255, 255, 0.12); }
+.pw-run.is-starting { opacity: 0.55; }
+.pw-run.is-pause { background: #fff; box-shadow: inset 0 -1px 0 #dfe6ec, inset 0 0 0 1px #dfe6ec, inset 0 0 0 2px #fff, inset 0 0 0 3px #f4f7fa, inset 0 4px 8px rgba(255, 255, 255, 0.5), inset 0 0 6px 2px #dfe6ec; }
+.pw-run.is-stopping { background: #fff; color: #617084; box-shadow: inset 0 0 0 1px #dfe6ec; }
+.pw-run.is-hover.is-start { background: linear-gradient(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.22)), #7e22ce; background-blend-mode: overlay; }
+.pw-run.is-hover.is-pause { background: #f9fbfc; }
+.pw-spin { display: none; width: 14px; height: 14px; box-sizing: border-box; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: pw-spin 0.8s linear infinite; }
+.pw-run.is-starting .pw-spin, .pw-run.is-stopping .pw-spin { display: block; }
+@keyframes pw-spin { to { transform: rotate(360deg); } }
+
+.pw-status { position: relative; height: 44px; font-size: 14px; line-height: 20px; }
+.pw-st { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; }
+.pw-st.idle { color: #606f85; }
+.pw-st.loading { color: #0016b2; }
+.pw-st.rewards { color: #176932; }
+.pw-st.running { justify-content: flex-start; }
+.pw-st-label { flex: none; color: #bd89eb; }
+.pw-actions { position: relative; flex: 1; height: 20px; overflow: hidden; }
+.pw-action { position: absolute; inset: 0; overflow: hidden; color: #7e22ce; text-overflow: ellipsis; white-space: nowrap; }
+.pw-action span { background: linear-gradient(90deg, #7e22ce 0%, #7e22ce 38%, #c99af0 50%, #7e22ce 62%, #7e22ce 100%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: pw-shimmer 2.6s linear infinite; }
+@keyframes pw-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+
+.pw-section { display: flex; flex-direction: column; gap: 12px; }
+.pw-sub { display: flex; align-items: flex-end; gap: 16px; }
+.pw-sub h3 { flex: 1; margin: 0; font-size: 18px; font-weight: 500; line-height: 28px; }
+.pw-btn-sm { padding: 4px 8px; border-radius: 8px; background: #fff; box-shadow: var(--pw-inset); font-size: 14px; line-height: 20px; white-space: nowrap; }
+.pw-btn-sm.is-disabled { background: transparent; box-shadow: none; color: #a3adbb; }
+.pw-card { padding: 24px; border: 1px solid #fff; border-radius: 16px; background: #fff; box-shadow: var(--pw-elevated); }
+.pw-metrics { display: flex; gap: 56px; }
+.pw-metric { display: flex; flex: 1; flex-direction: column; gap: 8px; }
+.pw-metric-label { display: flex; align-items: center; gap: 8px; color: #363f49; font-size: 16px; line-height: 24px; }
+.pw-metric-value { font-size: 20px; font-weight: 500; line-height: 28px; }
+.pw-metric-inline { display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; }
+.pw-flame { position: relative; width: 24px; height: 24px; }
+.pw-flame img { position: absolute; inset: 0; }
+.pw-behavior { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+.pw-behavior-box { display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 10px; background: #edf2f7; }
+.pw-behavior-text { flex: 1; overflow: hidden; font-size: 14px; line-height: 20px; text-overflow: ellipsis; white-space: nowrap; -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent 99%); mask-image: linear-gradient(90deg, #000 90%, transparent 99%); }
+.pw-tokens { display: flex; gap: 8px; }
+.pw-token { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; border: 1px solid #dfe6ec; border-radius: 8px; background: #fff; font-size: 16px; line-height: 24px; }
+.pw-token img { width: 20px; height: 20px; border-radius: 50%; }
+
+/* The CSS loops follow the motion clock: paused while it is stopped (off screen, hidden tab,
+   page cache), and off with reduced motion or on slow-updating displays, as in the script. */
+.pw-root[data-running='false'] .pw-dot::before,
+.pw-root[data-running='false'] .pw-dot::after,
+.pw-root[data-running='false'] .pw-action span,
+.pw-root[data-running='false'] .pw-spin {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce), (update: slow) {
+  .pw-dot.is-running::before, .pw-dot.is-running::after, .pw-action span, .pw-spin { animation: none; }
+}
+
+/* Profile: a picture of the agent's own web UI, which Pearl shows below the tabs (in the app,
+   an iframe; a picture scrolls smoothly and needs nothing from the site). */
+.pw-profile { position: absolute; z-index: 1; top: 108px; left: 24px; right: 24px; bottom: 0; overflow: hidden; border-radius: 8px 8px 0 0; }
+.pw-pp { position: absolute; inset: 0; display: none; }
+.pw-pp.is-shown { display: block; }
+
+.pw-pp-scroll { display: block; border: 0; pointer-events: none; }
+
+/* Cursor */
+.pw-cursor { position: absolute; z-index: 10; top: 0; left: 0; width: 0; height: 0; pointer-events: none; }
+.pw-cursor img { position: absolute; width: 32px; height: 32px; }
+.pw-cursor .arrow { top: -9.8px; left: -11px; }  /* arrow tip at (11, 9.8) in the 32px artwork */
+.pw-cursor .hand { top: -8.2px; left: -13.4px; } /* fingertip at (13.4, 8.2) */
+.pw-ripple { position: absolute; top: -18px; left: -18px; width: 36px; height: 36px; box-sizing: border-box; border: 2px solid rgba(126, 34, 206, 0.55); border-radius: 50%; opacity: 0; }

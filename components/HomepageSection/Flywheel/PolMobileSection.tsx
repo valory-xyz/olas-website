@@ -58,8 +58,8 @@ export const PolMobileSection = ({ protocolMetrics }: PolMobileSectionProps) => 
       }}
     >
       <Image
-        src="/images/homepage/olas-token.png"
-        alt="OLAS token"
+        src="/images/homepage/pol-hexagon.png"
+        alt="Protocol-owned liquidity"
         width={150}
         height={137}
         className="mx-auto"

@@ -34,7 +34,12 @@ export const PolCenterPanel = ({ protocolMetrics }: PolCenterPanelProps) => {
           raised && 'z-30'
         )}
       >
-        <Image src="/images/homepage/olas-token.png" alt="OLAS token" width={130} height={119} />
+        <Image
+          src="/images/homepage/pol-hexagon.png"
+          alt="Protocol-owned liquidity"
+          width={130}
+          height={119}
+        />
         <p className="text-sm text-slate-600 w-[130px] text-center">
           Protocol-owned Liquidity (PoL)
         </p>
