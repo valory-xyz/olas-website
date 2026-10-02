@@ -1483,3 +1483,41 @@ export const getAgentMarketplaceRequestsSquidQuery = ({ agentId }) => gql`
     }
   }
 `;
+
+// One page of the services carrying an agent id, by id cursor — the lifetime count of
+// services minted for it is its total agents.
+export const getAgentServicesPageQuery = ({ agentId, id_gt }) => gql`
+  query AgentServicesPage {
+    services(
+      where: { agentIds_contains: [${agentId}], id_gt: "${id_gt}" }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+    }
+    _meta {
+      hasIndexingErrors
+      block {
+        number
+      }
+    }
+  }
+`;
+
+// OpenReader twin of `getAgentServicesPageQuery`. Squid ids are strings, so the cursor
+// and the order are both lexicographic — consistent with each other, which is all paging needs.
+export const getAgentServicesPageSquidQuery = ({ agentId, id_gt }) => gql`
+  query AgentServicesPageSquid {
+    services(
+      where: { agentIds_containsAll: [${agentId}], id_gt: "${id_gt}" }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+    }
+    squidStatus {
+      height
+    }
+  }
+`;

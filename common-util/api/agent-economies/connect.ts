@@ -9,6 +9,8 @@ import {
 import {
   getAgentMarketplaceRequestsQuery,
   getAgentMarketplaceRequestsSquidQuery,
+  getAgentServicesPageQuery,
+  getAgentServicesPageSquidQuery,
   getConnectRegistryQuery,
   getConnectRegistrySquidQuery,
 } from 'common-util/graphql/queries';
@@ -26,7 +28,13 @@ type ConnectMarketplaceResult = WithMeta<{
   requestsPerAgents: { requestsCount: string }[];
 }>;
 
+type ServicesPage = WithMeta<{ services: { id: string }[] }>;
+
 type Status = { indexingErrors: string[]; fetchErrors: string[]; laggingSubgraphs: string[] };
+
+const SERVICES_PAGE_SIZE = 1000;
+// Tens of Connect services per chain today; 20 pages is ample headroom.
+const SERVICES_MAX_PAGES = 20;
 
 /**
  * Runs one query per Connect chain alongside its head block, and hands each healthy
@@ -138,14 +146,58 @@ const fetchConnectMarketplaceRequests = async (): Promise<MetricWithStatus<numbe
   }
 };
 
+/**
+ * Every Connect service ever minted, across chains — one service is one agent instance, so
+ * this is the total the DAAs are a daily slice of. A truncated page walk throws, so the
+ * chain lands in `fetchErrors` and the merge holds the last valid value.
+ */
+const fetchConnectTotalAgents = async (): Promise<MetricWithStatus<number | null>> => {
+  let services = 0;
+
+  try {
+    const status = await queryConnectChains<ServicesPage>(
+      'registry',
+      async (chain) => {
+        const ids = new Set<string>();
+        let cursor = '';
+        let page: ServicesPage;
+        for (let pages = 1; ; pages += 1) {
+          const query = { agentId: CONNECT_AGENT_ID, id_gt: cursor };
+          page = await requestRegistry<ServicesPage>(chain, {
+            subgraph: getAgentServicesPageQuery(query),
+            squid: getAgentServicesPageSquidQuery(query),
+          });
+          const rows = page.services ?? [];
+          rows.forEach((row) => ids.add(row.id));
+          if (rows.length < SERVICES_PAGE_SIZE) break;
+          if (pages >= SERVICES_MAX_PAGES) {
+            throw new Error(`Connect services on ${chain} exceed ${SERVICES_MAX_PAGES} pages`);
+          }
+          cursor = rows[rows.length - 1].id;
+        }
+        return { ...page, services: [...ids].map((id) => ({ id })) };
+      },
+      (data) => {
+        services += data.services.length;
+      }
+    );
+    return { value: services, status: createStaleStatus(status) };
+  } catch (error) {
+    console.error('Error fetching Connect total agents:', error);
+    return { value: null, status: getFetchErrorAndCreateStaleStatus('registry:connect') };
+  }
+};
+
 export const fetchConnectMetrics = async () => {
-  const [registry, marketplaceRequests] = await Promise.all([
+  const [registry, totalAgents, marketplaceRequests] = await Promise.all([
     fetchConnectRegistryMetrics(),
+    fetchConnectTotalAgents(),
     fetchConnectMarketplaceRequests(),
   ]);
 
   return {
     dailyActiveAgents: registry.dailyActiveAgents,
+    totalAgents,
     marketplaceRequests,
     onchainExecutions: registry.onchainExecutions,
   };

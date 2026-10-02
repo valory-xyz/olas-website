@@ -8,102 +8,98 @@ import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 
-import { EXPLORE_CONNECT_URL } from './constants';
+import { CONNECT_DATA_URL } from './constants';
 
-// TODO: wire `metrics` to a snapshot once the Connect data source exists; every value renders
-// "--" until then. Same layout as the BabyDegen economy: the DAA card, then a card of totals.
+const SCOPE = 'on Gnosis, Polygon and Robinhood Chain';
+
 const TOTALS = [
   {
     id: 'marketplaceRequests',
     label: 'Olas Marketplace requests',
-    noun: 'requests Connect agents made to AI agents on the Olas Marketplace',
+    noun: `requests Connect agents sent to AI agents on the Olas Marketplace ${SCOPE}`,
   },
   {
     id: 'onchainExecutions',
     label: 'Successful on-chain executions',
-    noun: 'successful on-chain transactions executed by Connect agents',
+    noun: `successful transactions executed by Connect agents' Safes ${SCOPE}`,
   },
 ];
 
-const ConnectTotal = ({ item, metric, snapshotTimestamp }) => (
-  <div className="flex flex-col gap-2 text-center">
-    <span className="text-sm text-slate-700">{item.label}</span>
-    <div className="flex items-center justify-center gap-2">
-      <span
-        className={`text-2xl font-semibold ${isFrozen(metric?.status) ? 'text-gray-400' : 'text-purple-600'}`}
-      >
-        {typeof metric?.value === 'number' ? (
-          <Link href={EXPLORE_CONNECT_URL}>
-            <span className={isFrozen(metric.status) ? 'text-gray-400' : ''}>
-              {metric.value.toLocaleString()}
-            </span>
-          </Link>
-        ) : (
-          '--'
-        )}
-      </span>
-      <StaleIndicator status={metric?.status} />
-    </div>
-    <MetricContext
-      label={item.label}
-      value={metric?.value ?? null}
-      status={metric?.status}
-      asOfFallback={snapshotTimestamp}
-      noun={item.noun}
-      window="all time"
-    />
-  </div>
-);
+/** A number linking to its methodology on /data, greyed when frozen; "--" when absent. */
+const MetricValue = ({ metric, className }) => {
+  const value = metric?.value;
+  if (typeof value !== 'number') return <span className={`text-purple-600 ${className}`}>--</span>;
+
+  return (
+    <span className="inline-flex items-center gap-2">
+      <Link className={className} href={CONNECT_DATA_URL}>
+        <span className={isFrozen(metric.status) ? 'text-gray-400' : ''}>
+          {Math.floor(value).toLocaleString()}
+        </span>
+      </Link>
+      <StaleIndicator status={metric.status} />
+    </span>
+  );
+};
+
+const flooredValue = (metric) =>
+  typeof metric?.value === 'number' ? Math.floor(metric.value) : null;
 
 export const ConnectMetrics = ({ metrics = null, snapshotTimestamp = null }) => (
-  <SectionWrapper customClasses="pt-[120px] pb-10" id="stats">
+  <SectionWrapper customClasses="px-4 pt-[120px] pb-10" id="stats">
     <div className="max-w-[646px] mx-auto flex flex-col gap-[40px]">
-      <Card className="flex flex-col gap-6 p-8 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] items-center text-xl max-w-[424px] mx-auto">
-        <div className="flex items-center">
+      <Card className="flex flex-col items-center gap-3 px-8 pt-6 pb-5 border border-purple-200 rounded-2xl bg-gradient-to-t from-[#F1DBFF] to-[#FDFAFF] w-full max-w-[424px] mx-auto text-center">
+        <div className="flex items-center gap-3 text-lg">
           <Image
             alt="Connect DAAs"
             src="/images/connect-econ-page/connect-economy-logo-128.png"
-            width="35"
-            height="35"
-            className="mr-4"
+            width="32"
+            height="32"
           />
           Connect Agent Economy
         </div>
-        {metrics?.dailyActiveAgents?.value ? (
-          <div className="flex items-center gap-2">
-            <Link className="font-extrabold text-6xl" href={EXPLORE_CONNECT_URL}>
-              <span className={isFrozen(metrics.dailyActiveAgents.status) ? 'text-gray-400' : ''}>
-                {Math.floor(metrics.dailyActiveAgents.value).toLocaleString()}
-              </span>
-            </Link>
-            <StaleIndicator status={metrics.dailyActiveAgents.status} />
-          </div>
-        ) : (
-          <span className="text-purple-600 text-6xl">--</span>
-        )}
-        <div className="flex gap-2">
+        <MetricValue metric={metrics?.dailyActiveAgents} className="font-bold text-5xl" />
+        <div className="flex items-center gap-2 text-base">
           Daily Active Agents (DAAs) <Popover>7-day average Daily Active Agents</Popover>
         </div>
         <MetricContext
           label="Daily Active Agents (DAAs)"
-          value={
-            metrics?.dailyActiveAgents?.value ? Math.floor(metrics.dailyActiveAgents.value) : null
-          }
+          value={flooredValue(metrics?.dailyActiveAgents)}
           status={metrics?.dailyActiveAgents?.status}
           asOfFallback={snapshotTimestamp}
-          noun="daily active Connect agents"
+          noun={`daily active Connect agents ${SCOPE}`}
           window="7-day average"
+        />
+
+        <div className="flex items-center justify-center gap-2 w-full border-t border-purple-200 pt-4 mt-1 text-base">
+          <MetricValue metric={metrics?.totalAgents} className="font-bold text-2xl" />
+          Total Agents
+          <Popover>Every Connect agent ever set up, whether or not still running</Popover>
+        </div>
+        <MetricContext
+          label="Total Agents"
+          value={flooredValue(metrics?.totalAgents)}
+          status={metrics?.totalAgents?.status}
+          asOfFallback={snapshotTimestamp}
+          noun={`Connect agents ever set up ${SCOPE}`}
+          window="all time"
         />
       </Card>
 
-      <Card className="p-8 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB] grid sm:grid-cols-2 gap-6">
+      <Card className="grid sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-slate-200 py-8 border border-slate-200 rounded-2xl bg-gradient-to-b from-[rgba(244,247,251,0.2)] to-[#F4F7FB]">
         {TOTALS.map((item) => (
-          <ConnectTotal
-            key={item.id}
-            item={item}
-            metric={metrics?.[item.id]}
-            snapshotTimestamp={snapshotTimestamp}
-          />
+          <div key={item.id} className="flex flex-col items-center gap-2 px-6 max-sm:py-4">
+            <span className="text-sm text-slate-700">{item.label}</span>
+            <MetricValue metric={metrics?.[item.id]} className="font-bold text-3xl" />
+            <MetricContext
+              label={item.label}
+              value={flooredValue(metrics?.[item.id])}
+              status={metrics?.[item.id]?.status}
+              asOfFallback={snapshotTimestamp}
+              noun={item.noun}
+              window="all time"
+            />
+          </div>
         ))}
       </Card>
     </div>

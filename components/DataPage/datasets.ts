@@ -70,6 +70,12 @@ export const DATASETS: DatasetEntry[] = [
     description: 'Aggregates BabyDegen agent metrics from the BabyDegen and staking subgraphs.',
   },
   {
+    id: 'connect-metrics',
+    name: 'Connect Metrics',
+    description:
+      'Daily active agents, total agents, Olas Marketplace requests and successful on-chain executions for Connect agents (agent ID 116) on Gnosis, Polygon and Robinhood Chain.',
+  },
+  {
     id: 'mech-globals',
     name: 'Mech Globals',
     description:
