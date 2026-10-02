@@ -8,7 +8,7 @@ import { Popover } from 'components/ui/popover';
 import { StaleIndicator } from 'components/ui/StaleIndicator';
 import { Link } from 'components/ui/typography';
 
-import { CONNECT_DATA_URL } from './constants';
+import { CONNECT_DATA_URL, EXPLORE_CONNECT_URL } from './constants';
 
 const SCOPE = 'on Gnosis, Polygon and Robinhood Chain';
 
@@ -25,14 +25,14 @@ const TOTALS = [
   },
 ];
 
-/** A number linking to its methodology on /data, greyed when frozen; "--" when absent. */
-const MetricValue = ({ metric, className }) => {
+/** A number linking to Explorer, greyed when frozen; "--" when absent. */
+const MetricValue = ({ metric, className, href = EXPLORE_CONNECT_URL }) => {
   const value = metric?.value;
   if (typeof value !== 'number') return <span className={`text-purple-600 ${className}`}>--</span>;
 
   return (
     <span className="inline-flex items-center gap-2">
-      <Link className={className} href={CONNECT_DATA_URL}>
+      <Link className={className} href={href}>
         <span className={isFrozen(metric.status) ? 'text-gray-400' : ''}>
           {Math.floor(value).toLocaleString()}
         </span>
@@ -72,7 +72,11 @@ export const ConnectMetrics = ({ metrics = null, snapshotTimestamp = null }) => 
         />
 
         <div className="flex items-center justify-center gap-2 w-full border-t border-purple-200 pt-4 mt-1 text-base">
-          <MetricValue metric={metrics?.totalAgents} className="font-bold text-2xl" />
+          <MetricValue
+            metric={metrics?.totalAgents}
+            className="font-bold text-2xl"
+            href={CONNECT_DATA_URL}
+          />
           Total Agents
           <Popover>Every Connect agent ever set up, whether or not still running</Popover>
         </div>

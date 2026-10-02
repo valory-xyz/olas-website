@@ -585,6 +585,34 @@ export const explorerOmenstratSeriesQuery = gql`
   }
 `;
 
+// The same daily registry series in OpenReader syntax (Robinhood Chain).
+export const explorerRegistrySeriesSquidQuery = gql`
+  query ExplorerRegistrySeriesSquid(
+    $agentIds: [Int!]!
+    $timestamp_gt: BigInt!
+    $timestamp_lt: BigInt!
+    $skip: Int!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        agentId_in: $agentIds
+        dayTimestamp_gt: $timestamp_gt
+        dayTimestamp_lt: $timestamp_lt
+      }
+      orderBy: dayTimestamp_ASC
+      limit: 1000
+      offset: $skip
+    ) {
+      dayTimestamp
+      activeMultisigCount
+      txCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const agentTxCountsQuery = gql`
   query AgentTxs($agentIds: [Int!]!) {
     agentPerformances(where: { id_in: $agentIds }, orderBy: id, orderDirection: asc) {
@@ -1486,7 +1514,7 @@ export const getAgentMarketplaceRequestsSquidQuery = ({ agentId }) => gql`
 
 // One page of the services carrying an agent id, by id cursor — the lifetime count of
 // services minted for it is its total agents.
-export const getAgentServicesPageQuery = ({ agentId, id_gt }) => gql`
+export const getAgentServicesPageQuery = ({ agentId, id_gt, includeMultisigs = false }) => gql`
   query AgentServicesPage {
     services(
       where: { agentIds_contains: [${agentId}], id_gt: "${id_gt}" }
@@ -1495,6 +1523,7 @@ export const getAgentServicesPageQuery = ({ agentId, id_gt }) => gql`
       first: 1000
     ) {
       id
+      ${includeMultisigs ? 'latestMultisig historicalMultisigs' : ''}
     }
     _meta {
       hasIndexingErrors
@@ -1507,7 +1536,7 @@ export const getAgentServicesPageQuery = ({ agentId, id_gt }) => gql`
 
 // OpenReader twin of `getAgentServicesPageQuery`. Squid ids are strings, so the cursor
 // and the order are both lexicographic — consistent with each other, which is all paging needs.
-export const getAgentServicesPageSquidQuery = ({ agentId, id_gt }) => gql`
+export const getAgentServicesPageSquidQuery = ({ agentId, id_gt, includeMultisigs = false }) => gql`
   query AgentServicesPageSquid {
     services(
       where: { agentIds_containsAll: [${agentId}], id_gt: "${id_gt}" }
@@ -1515,9 +1544,65 @@ export const getAgentServicesPageSquidQuery = ({ agentId, id_gt }) => gql`
       limit: 1000
     ) {
       id
+      ${includeMultisigs ? 'latestMultisig historicalMultisigs' : ''}
     }
     squidStatus {
       height
     }
+  }
+`;
+
+// Marketplace request counts come from two event streams: on-chain request batches,
+// and signed off-chain deliveries (each delivery represents an off-chain request).
+// These are the same increments used by RequestsPerAgent.requestsCount.
+export const getExplorerMarketplaceRequestEventsQuery = ({
+  requesters,
+  timestamp_gte,
+  timestamp_lt,
+  offchain,
+}) => gql`
+  query ExplorerMarketplaceRequestEvents {
+    events: ${offchain ? 'marketplaceDeliveryWithSignatures_collection' : 'marketplaceRequests'}(
+      where: {
+        requester_in: ${JSON.stringify(requesters)}
+        blockTimestamp_gte: ${timestamp_gte}
+        blockTimestamp_lt: ${timestamp_lt}
+      }
+      orderBy: blockTimestamp
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+      blockTimestamp
+      count: ${offchain ? 'numDeliveries' : 'numRequests'}
+    }
+    _meta {
+      hasIndexingErrors
+      block { number }
+    }
+  }
+`;
+
+export const getExplorerMarketplaceRequestEventsSquidQuery = ({
+  requesters,
+  timestamp_gte,
+  timestamp_lt,
+  offchain,
+}) => gql`
+  query ExplorerMarketplaceRequestEventsSquid {
+    events: ${offchain ? 'marketplaceDeliveryWithSignatures' : 'marketplaceRequests'}(
+      where: {
+        requester_in: ${JSON.stringify(requesters)}
+        blockTimestamp_gte: ${timestamp_gte}
+        blockTimestamp_lt: ${timestamp_lt}
+      }
+      orderBy: blockTimestamp_ASC
+      limit: 1000
+    ) {
+      id
+      blockTimestamp
+      count: ${offchain ? 'numDeliveries' : 'numRequests'}
+    }
+    squidStatus { height }
   }
 `;

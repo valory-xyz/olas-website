@@ -32,13 +32,15 @@ const createRequester = <
 
   const request = async <T extends object>(
     chain: Chain,
-    query: IndexerQuery
+    query: IndexerQuery,
+    variables?: Record<string, unknown>
   ): Promise<WithMeta<T>> => {
     if (chain in subgraphClients)
-      return subgraphClients[chain].request<WithMeta<T>>(query.subgraph);
+      return subgraphClients[chain].request<WithMeta<T>>(query.subgraph, variables);
 
     const { squidStatus, ...data } = await squidClients[chain].request<T & SquidStatus>(
-      query.squid
+      query.squid,
+      variables
     );
     // Squids have no indexing-error flag: a failed handler stops the processor, which
     // surfaces as lag instead.

@@ -13,6 +13,7 @@ import {
   HEATMAP_DIVERGING_COLORS,
   HEATMAP_RAMPS,
   type HeatmapRamp,
+  type HeatmapMarker,
 } from 'components/ExplorerPage/DaaCalendarHeatmap';
 import { EconomySelector } from 'components/ExplorerPage/EconomySelector';
 import { MetricSelector, type ExplorerMetric } from 'components/ExplorerPage/MetricSelector';
@@ -93,7 +94,10 @@ type MetricDef = {
 // colour scale, and how the headline tile value is computed from its daily series.
 // An empty series renders '--' + a dimmed tile, never a real-looking 0 (a new agent's
 // pre-first-cron state, or a failed fetch with nothing to fall back on).
-const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum', MetricDef> = {
+const METRIC_CONFIG: Record<
+  'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum' | 'marketplaceRequests' | 'onchainExecutions',
+  MetricDef
+> = {
   daa: {
     headlineKind: 'latest',
     label: 'Daily Active Agents',
@@ -110,6 +114,24 @@ const METRIC_CONFIG: Record<'daa' | 'transactions' | 'ata' | 'accuracy' | 'aum',
       s.length
         ? `Daily Active Agents as of ${dayjs(s[s.length - 1].date).format('MMMM D, YYYY')}`
         : undefined,
+    selectable: (s) => s.length > 0,
+  },
+  marketplaceRequests: {
+    headlineKind: 'sum',
+    label: 'Marketplace requests',
+    unit: 'requests',
+    kind: 'count',
+    scale: 'sequential',
+    headline: (s) => (s.length ? formatCount(s.reduce((sum, p) => sum + p.count, 0)) : '--'),
+    selectable: (s) => s.length > 0,
+  },
+  onchainExecutions: {
+    headlineKind: 'sum',
+    label: 'On-chain executions',
+    unit: 'successful on-chain executions',
+    kind: 'count',
+    scale: 'sequential',
+    headline: (s) => (s.length ? formatCount(s.reduce((sum, p) => sum + p.count, 0)) : '--'),
     selectable: (s) => s.length > 0,
   },
   transactions: {
@@ -165,7 +187,8 @@ type AgentMeta = {
   icon: string;
   ramp: HeatmapRamp;
   /** A notable day to ring + annotate on the heatmap (e.g. a retirement or launch date). */
-  marker?: { date: string; label: string };
+  marker?: HeatmapMarker;
+  markers?: HeatmapMarker[];
 };
 // Keys constrained to METRIC_CONFIG's — a typo'd metric would otherwise compile and
 // crash the page at config.tileLabel.
@@ -178,6 +201,22 @@ type EconomyMeta = { name: string; metrics: MetricKey[]; agents: AgentMeta[] };
 // Polystrat (indigo); Babydegen Optimus (red) / Basius (blue) / Modius (lime); Mech
 // (teal) is single-agent.
 const ECONOMY_META: Record<string, EconomyMeta> = {
+  connect: {
+    name: 'Connect',
+    metrics: ['daa', 'marketplaceRequests', 'onchainExecutions'],
+    agents: [
+      {
+        key: 'connect',
+        label: 'Connect',
+        icon: '/images/connect-econ-page/connect-economy-logo-128.png',
+        ramp: 'connect',
+        markers: [
+          { date: '2026-07-28', label: 'Connect launched publicly on Gnosis and Polygon' },
+          { date: '2026-09-17', label: 'Connect launched publicly on Robinhood Chain' },
+        ],
+      },
+    ],
+  },
   predict: {
     name: 'Predict',
     metrics: ['daa', 'transactions', 'accuracy'],
@@ -538,11 +577,21 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
         >
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-lg font-medium leading-7 text-black">{metricConfig.label}</span>
-            <span className="text-lg leading-7 text-black">·</span>
-            <span className="flex items-center gap-2">
-              <Image src={agentMeta.icon} width={24} height={24} alt="" className="rounded-md" />
-              <span className="text-sm text-black">{agentMeta.label}</span>
-            </span>
+            {activeEconomy !== 'connect' && (
+              <>
+                <span className="text-lg leading-7 text-black">·</span>
+                <span className="flex items-center gap-2">
+                  <Image
+                    src={agentMeta.icon}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="rounded-md"
+                  />
+                  <span className="text-sm text-black">{agentMeta.label}</span>
+                </span>
+              </>
+            )}
             {status?.stale && <span className="text-xs text-amber-600">· data may be delayed</span>}
           </div>
 
@@ -571,6 +620,7 @@ const Explorer = ({ economies, snapshotTimestamp = null }: ExplorerProps) => {
           levelColors={rampColors}
           markerDate={agentMeta.marker?.date ?? null}
           markerLabel={agentMeta.marker?.label}
+          markers={agentMeta.markers}
         />
       </div>
 
