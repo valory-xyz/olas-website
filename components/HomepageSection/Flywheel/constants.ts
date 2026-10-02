@@ -5,7 +5,7 @@ import type { MetricWithStatus } from 'common-util/graphql/types';
 
 // The design canvas — every coordinate below lives in this space; the whole
 // diagram is scaled uniformly to fit narrower viewports (see useDiagramScale).
-export const DIAGRAM = { width: 1320, height: 985 };
+export const DIAGRAM = { width: 1320, height: 1065 };
 
 // The `protocol` slice of the 'other' snapshot the homepage passes down.
 // Everything optional: snapshots written before polByChain existed lack it.
@@ -212,5 +212,17 @@ export const ECONOMY_PILLS: EconomyPillConfig[] = [
       'linear-gradient(119.14deg, #CEDCED 28.87%, #68CFB5 100.04%)'
     ),
     style: { top: 896, right: 26 },
+  },
+  {
+    slug: 'connect',
+    label: 'Connect economy',
+    icon: '/images/connect-econ-page/connect-economy-logo-128.png',
+    pillStyle: pillGradients(
+      'linear-gradient(119.14deg, #DDF0FB 0%, #ECE4FB 100.04%)',
+      'linear-gradient(119.14deg, rgba(255, 255, 255, 0) 29.34%, #B28FEF 100.04%)',
+      'linear-gradient(119.14deg, #8FC9EF 0%, #CEDCED 71.17%)'
+    ),
+    // Centred under the bottom row, fed by the arc from the txns card.
+    style: { top: 975, left: 554 },
   },
 ];
