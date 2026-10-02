@@ -34,6 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const metrics = await fetchAllExplorerMetrics({
       previous,
       polystratPrevious,
+      // Cold snapshots backfill automatically; this flag also rebuilds existing Connect history.
+      connectPrevious:
+        req.query.connectBackfill === '1' ? null : (previousData?.connect?.value ?? null),
       accuracyPages: toInt(req.query.accuracyPages),
       roiDays: toInt(req.query.roiDays),
       mechPrevious,
@@ -53,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const modius = metrics.data.babydegenModius.value;
     const basius = metrics.data.babydegenBasius.value;
     const mech = metrics.data.mech.value;
+    const connect = metrics.data.connect.value;
     const seriesCounts = (s: { daa: unknown[]; transactions: unknown[]; aum?: unknown[] } | null) =>
       s && {
         daa: s.daa.length,
@@ -78,6 +82,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         optimus: seriesCounts(optimus),
         modius: seriesCounts(modius),
         basius: seriesCounts(basius),
+      },
+      connectCounts: connect && {
+        daa: connect.daa.length,
+        marketplaceRequests: connect.marketplaceRequests.length,
+        onchainExecutions: connect.onchainExecutions.length,
+        marketplaceRequestsTotal: connect.marketplaceRequests.reduce((sum, p) => sum + p.count, 0),
+        onchainExecutionsTotal: connect.onchainExecutions.reduce((sum, p) => sum + p.count, 0),
       },
       mechCounts: mech && {
         daa: mech.daa.length,

@@ -26,6 +26,12 @@ export const getStaticProps = async () => {
   const data = snapshot?.data as ExplorerMetricsData | undefined;
 
   const economies: ExplorerEconomies = {
+    connect: {
+      connect: {
+        series: data?.connect?.value ?? { daa: [], marketplaceRequests: [], onchainExecutions: [] },
+        status: data?.connect?.status ?? null,
+      },
+    },
     predict: {
       omenstrat: {
         series: data?.omenstrat?.value ?? { daa: [], transactions: [], accuracy: [], roi: [] },
