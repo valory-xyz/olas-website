@@ -26,6 +26,11 @@ export const TOKENOMICS_SUBGRAPH_URLS = {
   mode: process.env.NEXT_PUBLIC_TOKENOMICS_MODE_SUBGRAPH_URL,
 } satisfies IndexerUrls;
 
+// Token holder counts only — see `common-util/api/other-metrics/token-holders.ts`.
+export const TOKENOMICS_SQUID_URLS = {
+  robinhood: process.env.NEXT_PUBLIC_TOKENOMICS_ROBINHOOD_SQUID_URL,
+} satisfies IndexerUrls;
+
 // Ethereum, Arbitrum and Celo staking subgraphs exist but are not queried.
 export const STAKING_SUBGRAPH_URLS = {
   gnosis: process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL,

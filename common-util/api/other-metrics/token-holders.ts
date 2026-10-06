@@ -1,31 +1,66 @@
-import { TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { TOKENOMICS_GRAPH_CLIENTS, TOKENOMICS_SQUID_CLIENTS } from 'common-util/graphql/client';
 import {
   checkSubgraphLag,
   createStaleStatus,
   getChainBlockNumber,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { holderCountsQuery } from 'common-util/graphql/queries';
+import { holderCountsQuery, holderCountsSquidQuery } from 'common-util/graphql/queries';
 import { WithMeta } from 'common-util/graphql/types';
 import tokens from 'data/tokens.json';
 
 type HolderCountsResult = WithMeta<{
   token: {
-    holderCount: string;
-  };
+    holderCount: string | number;
+  } | null;
 }>;
 
-const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddress: string }) => {
-  const client = TOKENOMICS_GRAPH_CLIENTS[key];
+type HolderCountsSquidResult = {
+  token: { holderCount: string | number } | null;
+  squidStatus?: { height?: number | string | null } | null;
+};
 
-  if (!client) {
+/**
+ * Subgraph chains answer `holderCountsQuery` directly; squid chains (OpenReader dialect)
+ * answer `holderCountsSquidQuery`, whose `squidStatus` is mapped to `_meta` so the caller
+ * stays dialect-blind — same shape as `common-util/graphql/indexer-requests.ts`.
+ * Returns `undefined` when the chain has no tokenomics indexer.
+ */
+const requestHolderCount = async (
+  key: string,
+  tokenAddress: string
+): Promise<HolderCountsResult | undefined> => {
+  const graphClient = TOKENOMICS_GRAPH_CLIENTS[key];
+  if (graphClient) {
+    return graphClient.request<HolderCountsResult>(holderCountsQuery, { tokenId: tokenAddress });
+  }
+
+  const squidClient = TOKENOMICS_SQUID_CLIENTS[key];
+  if (!squidClient) return undefined;
+
+  // Squid string IDs are case-sensitive and stored lowercased; a checksummed address
+  // returns `token: null`.
+  const { squidStatus, token } = await squidClient.request<HolderCountsSquidResult>(
+    holderCountsSquidQuery,
+    { tokenId: tokenAddress.toLowerCase() }
+  );
+  // Squids have no indexing-error flag: a failed handler stops the processor, which
+  // surfaces as lag instead.
+  const height = squidStatus?.height;
+  return {
+    token,
+    _meta:
+      height == null ? undefined : { hasIndexingErrors: false, block: { number: Number(height) } },
+  };
+};
+
+const fetchHolderCount = async ({ key, tokenAddress }: { key: string; tokenAddress: string }) => {
+  if (!TOKENOMICS_GRAPH_CLIENTS[key] && !TOKENOMICS_SQUID_CLIENTS[key]) {
     return { count: 0, error: null, hasIndexingErrors: false, hasLaggingSubgraphs: false };
   }
 
   try {
-    const response: HolderCountsResult = await client.request(holderCountsQuery, {
-      tokenId: tokenAddress,
-    });
+    const response = await requestHolderCount(key, tokenAddress);
     const chainBlock = await getChainBlockNumber(key);
     const hasLaggingSubgraphs = checkSubgraphLag(chainBlock, response?._meta?.block?.number, key);
 
