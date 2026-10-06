@@ -812,10 +812,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     polPartial = true;
   }
 
-  // Mode: no Treasury-held LP to value. The only OLAS pool there is a dormant Balancer
-  // 50OLAS-50USDC pool (0xd1dbea51…faafc, ~$19 TVL) whose BPT the Treasury does not hold
-  // and has not bridged, so the chain publishes a healthy $0 with no composition. Value
-  // it like Robinhood once the DAO seeds a pool and takes the LP.
+  // Mode: the Treasury holds no LP there yet, so it publishes a fixed $0.
   polUsdByChain.mode = 0;
 
   // Robinhood fees: cumulative swap fees from the liquidity squid, valued like the L2
