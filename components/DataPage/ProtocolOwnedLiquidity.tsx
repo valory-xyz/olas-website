@@ -24,7 +24,7 @@ export const ProtocolOwnedLiquidityInfo = () => {
           Balancer), Polygon (OLAS-WMATIC, Balancer), Arbitrum (OLAS-WETH, Balancer), Optimism
           (WETH-OLAS, Balancer), Base (OLAS-USDC, Balancer), Celo (CELO-OLAS, Ubeswap), Solana
           (WSOL-OLAS, Orca), and Robinhood Chain (OLAS-WETH, Uniswap V2). All USD prices come from
-          Chainlink oracles.
+          Chainlink oracles. Mode is listed at $0: the Treasury holds no LP tokens there.
         </p>
 
         <p>

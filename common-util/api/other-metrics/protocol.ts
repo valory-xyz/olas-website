@@ -383,6 +383,7 @@ export const POL_CHAIN_KEYS = [
   'celo',
   'solana',
   'robinhood',
+  'mode',
 ] as const;
 export type PolChainKey = (typeof POL_CHAIN_KEYS)[number];
 
@@ -810,6 +811,12 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     polChainFailed.robinhood = true;
     polPartial = true;
   }
+
+  // Mode: no Treasury-held LP to value. The only OLAS pool there is a dormant Balancer
+  // 50OLAS-50USDC pool (0xd1dbea51…faafc, ~$19 TVL) whose BPT the Treasury does not hold
+  // and has not bridged, so the chain publishes a healthy $0 with no composition. Value
+  // it like Robinhood once the DAO seeds a pool and takes the LP.
+  polUsdByChain.mode = 0;
 
   // Robinhood fees: cumulative swap fees from the liquidity squid, valued like the L2
   // pools. The squid only feeds fees, so its failures and lag stay off the POL status.

@@ -17,6 +17,7 @@ const MOBILE_CHAIN_ORDER = [
   'optimism',
   'celo',
   'robinhood',
+  'mode',
 ] as const;
 
 // Small self-contained down arrow reusing the design arrowhead. The desktop
