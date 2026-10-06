@@ -10,5 +10,15 @@
     "added": "YYYY-MM-DD when added — REQUIRED",
     "review": "YYYY-MM-DD by which the entry must be re-evaluated — REQUIRED"
   },
-  "entries": []
+  "entries": [
+    {
+      "id": 1240992,
+      "ghsa": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "severity": "high",
+      "reason": "No patched release exists (3.0.3 is the latest and the advisory covers <=3.0.3). Reached only via tailwindcss>micromatch at build time, expanding the glob patterns in our own tailwind.config.js content list, never user input, so the stack-exhaustion DoS is not reachable from the deployed site.",
+      "added": "2026-10-06",
+      "review": "2026-11-06"
+    }
+  ]
 }
