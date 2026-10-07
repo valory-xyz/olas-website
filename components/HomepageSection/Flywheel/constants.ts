@@ -94,12 +94,20 @@ type ChainPillConfig = {
 
 const chainIconPath = '/images/homepage/addresses/';
 
+const CENTRE_GAP = 'calc(50% + 6px)';
+
 export const CHAIN_PILLS: ChainPillConfig[] = [
   {
     key: 'ethereum',
     label: 'Ethereum',
     icon: `${chainIconPath}eth-color.svg`,
-    style: { top: 14, left: '50%', transform: 'translateX(-50%)' },
+    style: { top: 14, right: CENTRE_GAP },
+  },
+  {
+    key: 'gnosis',
+    label: 'Gnosis',
+    icon: `${chainIconPath}gnosis-color.svg`,
+    style: { top: 14, left: CENTRE_GAP },
   },
   {
     key: 'celo',
@@ -120,34 +128,34 @@ export const CHAIN_PILLS: ChainPillConfig[] = [
     style: { top: 224, left: 46 },
   },
   {
-    key: 'gnosis',
-    label: 'Gnosis',
-    icon: `${chainIconPath}gnosis-color.svg`,
-    style: { top: 78, right: 46 },
-  },
-  {
     key: 'base',
     label: 'Base',
     icon: `${chainIconPath}base-color.svg`,
-    style: { top: 151, right: 8 },
+    style: { top: 78, right: 46 },
   },
   {
     key: 'arbitrum',
     label: 'Arbitrum',
     icon: `${chainIconPath}arbitrum-color.svg`,
-    style: { top: 224, right: 46 },
-  },
-  {
-    key: 'robinhood',
-    label: 'Robinhood',
-    icon: `${chainIconPath}robinhood-color.png`,
-    style: { bottom: 10, left: 116 },
+    style: { top: 151, right: 8 },
   },
   {
     key: 'polygon',
     label: 'Polygon',
     icon: `${chainIconPath}polygon-color.svg`,
-    style: { bottom: 10, right: 116 },
+    style: { top: 224, right: 46 },
+  },
+  {
+    key: 'mode',
+    label: 'Mode',
+    icon: `${chainIconPath}mode-color.svg`,
+    style: { bottom: 10, right: CENTRE_GAP },
+  },
+  {
+    key: 'robinhood',
+    label: 'Robinhood',
+    icon: `${chainIconPath}robinhood-color.png`,
+    style: { bottom: 10, left: CENTRE_GAP },
   },
 ];
 

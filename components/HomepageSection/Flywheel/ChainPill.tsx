@@ -32,6 +32,8 @@ export const ChainPillCard = ({
 }: Omit<ChainPillProps, 'style' | 'raised'> & { className?: string }) => {
   const value = metric?.value;
   const tokens = value?.tokens ?? [];
+  // A healthy zero with no composition means the Treasury holds no LP on this chain yet.
+  const holdsNoLp = value?.usd === 0 && tokens.length === 0 && !metric?.status?.stale;
 
   return (
     <Card
@@ -55,6 +57,9 @@ export const ChainPillCard = ({
         onOpenChange={onTooltipOpenChange}
       >
         <strong>Protocol-owned liquidity on {label}</strong>
+        {holdsNoLp && (
+          <p className="mt-2">The Treasury doesn&apos;t hold any LP tokens on {label} yet.</p>
+        )}
         {tokens.length > 0 && (
           <div className="mt-2 flex flex-row flex-wrap items-center gap-2">
             {tokens.map(({ symbol, amount }, i) => (
