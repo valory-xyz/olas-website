@@ -16,7 +16,7 @@
       "ghsa": "GHSA-vfj7-8cjw-p6xm",
       "package": "braces",
       "severity": "high",
-      "reason": "No patched release exists (3.0.3 is the latest and the advisory covers <=3.0.3). Reached only via tailwindcss>micromatch at build time, expanding the glob patterns in our own tailwind.config.js content list, never user input, so the stack-exhaustion DoS is not reachable from the deployed site.",
+      "reason": "No patched release exists (3.0.3 is the latest and the advisory covers <=3.0.3). Four paths, all build-time tooling and none imported by app code: tailwindcss>micromatch>braces and tailwindcss>fast-glob>micromatch>braces expand the globs in our own tailwind.config.js content list, never user input; tailwindcss>chokidar>braces loads only in Tailwind CLI watch mode; next-sitemap>fast-glob>micromatch>braces runs only for output: 'export', which is not set. So the stack-exhaustion DoS is not reachable from the deployed site. At review: chokidar 3.6.0 pins braces ~3.0.2, so a fix released as 3.1.0+ also needs a resolution.",
       "added": "2026-10-06",
       "review": "2026-11-06"
     }

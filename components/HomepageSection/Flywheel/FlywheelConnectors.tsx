@@ -162,8 +162,9 @@ const PATHS: Array<{
     gradient: 'fw-grad-connect',
     width: 2,
   },
-  // PoL panel → fees collected from PoL (plain line, no arrowhead)
-  { hook: 'pol', d: 'M 660 566 V 588', color: 'slate' },
+  // PoL panel → fees collected from PoL (plain line, no arrowhead), centred in the
+  // gap between the Mode and Robinhood pills
+  { hook: 'pol', d: 'M 665.5 566 V 588', color: 'slate' },
   // Fees from PoL → burn loop: solid up to the OFF switch, then dashed and
   // curving up to merge into the burn vertical
   { hook: 'pol-fees', d: 'M 516 637 H 334', color: 'slate' },

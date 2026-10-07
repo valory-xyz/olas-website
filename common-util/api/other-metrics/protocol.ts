@@ -387,6 +387,15 @@ export const POL_CHAIN_KEYS = [
 ] as const;
 export type PolChainKey = (typeof POL_CHAIN_KEYS)[number];
 
+// Chains shown on the panel where the Treasury holds no LP yet. They publish a fixed,
+// healthy $0 that reads nothing from Ethereum, so they stay out of its error spread and
+// early returns. A chain that gains a pool config publishes its own value instead.
+const ZERO_POL_CHAINS: readonly PolChainKey[] = ['mode'];
+const zeroPolLeaf = (): MetricWithStatus<PolChainValue> => ({
+  value: { usd: 0, tokens: [] },
+  status: createStaleStatus({ indexingErrors: [], fetchErrors: [] }),
+});
+
 export type PolChainTokenAmount = { symbol: string; amount: number };
 
 // Protocol-owned USD value plus the underlying token amounts (OLAS first),
@@ -404,7 +413,12 @@ type ChainErrorBags = {
 // Plain record (not a single metric wrapping a record) so mergeSnapshotTree
 // recurses to each chain leaf and applies keep-last-valid per chain.
 const nullPolByChain = (status: MetricStatus): PolByChain =>
-  Object.fromEntries(POL_CHAIN_KEYS.map((key) => [key, { value: null, status }])) as PolByChain;
+  Object.fromEntries(
+    POL_CHAIN_KEYS.map((key) => [
+      key,
+      ZERO_POL_CHAINS.includes(key) ? zeroPolLeaf() : { value: null, status },
+    ])
+  ) as PolByChain;
 
 type ProtocolMetricsResult = {
   totalProtocolOwnedLiquidity: MetricWithStatus<number | null>;
@@ -440,9 +454,11 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     ])
   ) as Record<PolChainKey, ChainErrorBags>;
   // Ethereum supplies prices + bridged balances for every chain, so its
-  // indexing errors / lag affect all 8 spreads.
+  // indexing errors / lag affect every spread except the fixed-zero chains.
   const pushToAllChains = (bag: keyof ChainErrorBags, source: string) => {
-    POL_CHAIN_KEYS.forEach((key) => chainErrors[key][bag].push(source));
+    POL_CHAIN_KEYS.filter((key) => !ZERO_POL_CHAINS.includes(key)).forEach((key) =>
+      chainErrors[key][bag].push(source)
+    );
   };
 
   const ethClient = LIQUIDITY_GRAPH_CLIENTS.ethereum;
@@ -812,9 +828,6 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
     polPartial = true;
   }
 
-  // Mode: the Treasury holds no LP there yet, so it publishes a fixed $0.
-  polUsdByChain.mode = 0;
-
   // Robinhood fees: cumulative swap fees from the liquidity squid, valued like the L2
   // pools. The squid only feeds fees, so its failures and lag stay off the POL status.
   const feesOnlyFetchErrors: string[] = [];
@@ -885,6 +898,7 @@ async function fetchProtocolMetricsInternal(): Promise<ProtocolMetricsResult> {
   const polByChain = Object.fromEntries(
     POL_CHAIN_KEYS.map((key) => {
       const usd = polUsdByChain[key];
+      if (ZERO_POL_CHAINS.includes(key) && usd === undefined) return [key, zeroPolLeaf()];
       let value: PolChainValue | null = null;
       if (!polChainFailed[key] && usd !== undefined) {
         const tokens = Object.entries(polTokensByChain[key] ?? {})

@@ -94,8 +94,6 @@ type ChainPillConfig = {
 
 const chainIconPath = '/images/homepage/addresses/';
 
-// Two pills above and two below the hexagon, each pair hugging the centre line;
-// three down each side in a shallow arc.
 const CENTRE_GAP = 'calc(50% + 6px)';
 
 export const CHAIN_PILLS: ChainPillConfig[] = [
