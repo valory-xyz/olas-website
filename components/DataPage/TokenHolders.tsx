@@ -1,21 +1,17 @@
-import { TOKENOMICS_SUBGRAPH_URLS } from 'common-util/indexers';
+import { TOKENOMICS_SQUID_URLS, TOKENOMICS_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 
-import { holderCountsQuery } from 'common-util/graphql/queries';
+import { holderCountsQuery, holderCountsSquidQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { IndexerLinks } from './IndexerLinks';
 import tokens from 'data/tokens.json';
 import { useMemo } from 'react';
 import { CodeSnippet } from './CodeSnippet';
 
-const TokenHoldersQuerySnippet = () => (
-  <CodeSnippet>
-    {typeof holderCountsQuery === 'string'
-      ? holderCountsQuery
-      : (holderCountsQuery as { loc?: { source?: { body?: string } } }).loc?.source?.body ||
-        String(holderCountsQuery)}
-  </CodeSnippet>
-);
+const querySource = (query: unknown) =>
+  typeof query === 'string'
+    ? query
+    : (query as { loc?: { source?: { body?: string } } }).loc?.source?.body || String(query);
 
 type TokenEntry = {
   key?: string;
@@ -44,12 +40,9 @@ export const TokenHolders = () => {
       <div className="space-y-6 mt-4">
         <p>
           Aggregates the number of unique OLAS token holders across supported networks. Each
-          network&apos;s tokenomics subgraph is queried for the token holder count, and results are
-          summed to obtain the total holders metric shown on the OLAS Token page.
-        </p>
-
-        <p className="text-purple-600">
-          Subgraph links: <IndexerLinks urls={TOKENOMICS_SUBGRAPH_URLS} />
+          network&apos;s tokenomics subgraph (or squid, on Robinhood) is queried for the token
+          holder count, and results are summed to obtain the total holders metric shown on the OLAS
+          Token page.
         </p>
 
         <div>
@@ -67,9 +60,17 @@ export const TokenHolders = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Holder count query (per network)</h3>
           <p className="text-sm text-slate-500">
             The same query is executed against each tokenomics subgraph with the network&apos;s
-            token address to retrieve the holder count.
+            token address to retrieve the holder count. Squids use the OpenReader dialect and take
+            the token address lowercased.
           </p>
-          <TokenHoldersQuerySnippet />
+          <p className="text-purple-600">
+            Subgraph links: <IndexerLinks urls={TOKENOMICS_SUBGRAPH_URLS} />
+          </p>
+          <CodeSnippet>{querySource(holderCountsQuery)}</CodeSnippet>
+          <p className="text-purple-600">
+            Squid links (OpenReader dialect): <IndexerLinks urls={TOKENOMICS_SQUID_URLS} />
+          </p>
+          <CodeSnippet>{querySource(holderCountsSquidQuery)}</CodeSnippet>
         </div>
       </div>
     </SectionWrapper>

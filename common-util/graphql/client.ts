@@ -12,6 +12,7 @@ import {
   REGISTRY_SQUID_URLS,
   REGISTRY_SUBGRAPH_URLS,
   STAKING_SUBGRAPH_URLS,
+  TOKENOMICS_SQUID_URLS,
   TOKENOMICS_SUBGRAPH_URLS,
 } from 'common-util/indexers';
 
@@ -36,6 +37,8 @@ const toClients = <K extends string>(urls: Record<K, string | undefined>) =>
 // dialect). Where a source has both, read it through `common-util/graphql/indexer-requests.ts`.
 
 export const TOKENOMICS_GRAPH_CLIENTS = toClients(TOKENOMICS_SUBGRAPH_URLS);
+// Token holder counts only (`common-util/api/other-metrics/token-holders.ts`).
+export const TOKENOMICS_SQUID_CLIENTS = toClients(TOKENOMICS_SQUID_URLS);
 
 export const STAKING_GRAPH_CLIENTS = toClients(STAKING_SUBGRAPH_URLS);
 

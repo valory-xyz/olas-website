@@ -1184,6 +1184,20 @@ export const holderCountsQuery = gql`
   }
 `;
 
+// OpenReader twin of `holderCountsQuery` for the tokenomics squids. Aliased to the subgraph
+// shape; `token-holders.ts` turns `squidStatus` into `_meta`. Squid IDs are case-sensitive:
+// pass the token address lowercased, or `token` comes back null.
+export const holderCountsSquidQuery = gql`
+  query HolderCountsSquid($tokenId: String!) {
+    token: tokenById(id: $tokenId) {
+      holderCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const getActiveVeOlasDepositorsQuery = ({ first, skip, pages, unlockAfter }) => gql`
   query ActiveVeOlasDepositors {
     ${Array.from({ length: pages })
