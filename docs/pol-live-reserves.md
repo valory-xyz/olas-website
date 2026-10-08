@@ -82,6 +82,16 @@ WETH fees plus OLAS fees through the live reserve ratio, × ETH/USD × the treas
 squid only feeds protocol revenue, so a failed squid query marks fees partial and squid lag
 (`squidStatus.height` against the chain head) marks fees stale — neither touches POL.
 
+## Mode: listed at a fixed $0
+
+Mode's only OLAS pool is a dormant Balancer 50OLAS-50USDC pool (`0xd1dbea51…faafc`,
+~$19 TVL in Oct 2026). The Treasury and Timelock hold none of its BPT and none is
+bridged, so there is nothing to value. `protocol.ts` lists Mode in `ZERO_POL_CHAINS`,
+which publishes a healthy `$0` with no composition. It reads nothing from Ethereum, so
+it stays out of the Ethereum error spread and early returns. When the DAO seeds a pool
+and takes the LP, value Mode like Robinhood (or give it a `PoolConfig` if a liquidity
+subgraph exists); its own value then takes over from the fixed leaf.
+
 ## Longer term
 
 The proper fix is in the subgraphs themselves: index the Vault's `Swap` event filtered by
