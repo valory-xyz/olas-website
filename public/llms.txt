@@ -3,7 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
-last-updated: 2026-10-02
+last-updated: 2026-10-09
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
@@ -28,6 +28,8 @@ Olas enables everyone to own and monetize their AI agents. Olas is the platform 
 - Standard: ERC-20
 - Total supply cap: "1,000,000,000 OLAS" (first 10 years maximum issuance) (https://olas.network/olas-token)
 - Inflation after 10 years: 2% annual inflation cap (governance-adjustable towards lower values only!) (https://olas.network/olas-token)
+- Contract deployed: 30 June 2022 (https://olas.network/olas-token)
+- Public launch: LBP on Fjord Foundry, 5–12 July 2023 (https://olas.network/faq, https://olas.network/blog/lbp-stats)
 
 ## Tokenomics
 

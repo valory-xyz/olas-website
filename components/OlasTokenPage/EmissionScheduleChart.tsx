@@ -57,7 +57,9 @@ export const EmissionScheduleChart = ({
   <>
     <div className="flex p-4 border-b">
       <div className="mr-8">
-        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">Launch Date</h2>
+        <h2 className="text-sm text-slate-500 font-bold tracking-widest uppercase">
+          Token Contract Deployed
+        </h2>
         <div className="text-4xl font-extrabold">
           <span className="text-gradient">
             {loading ? '--' : dayjs.unix(Number(timeLaunch)).format("DD MMM 'YY")}
