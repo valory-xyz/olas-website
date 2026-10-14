@@ -477,42 +477,28 @@ const PearlTerms = () => {
                 Integrations. For more information see:
               </p>
               <div className="space-y-4 mt-4 ml-8">
-                <div id="transak-terms">
+                <div id="bridging-terms">
                   <AnchorHeading as="h5" id="section-7-1">
-                    <LinkIcon size={18} className="inline-block mb-1" /> 7.1 Transak
+                    <LinkIcon size={18} className="inline-block mb-1" /> 7.1 Bridging and Swap
+                    Providers
                   </AnchorHeading>
                   <p className="mt-2">
-                    Transak is a regulated Virtual Asset Service Provider (VASP) that enables
-                    fiat-to-crypto purchases (available at{' '}
-                    <ExternalLink href="https://transak.com/">https://transak.com/</ExternalLink>,
-                    hereafter: “the Transak Service”). Although the Transak Service is technically
-                    accessed via a non-transactional proxy (for software compatibility only)
-                    operated by Valory, your transaction remains exclusively with the Transak
-                    Service Provider. This integration is offered for your convenience, and all
-                    onramp services are clearly branded and operated by the Transak Service
-                    provider. When accessing the Transak Service through Pearl Application, users
-                    are redirected to the Transak Service&apos;s interface and contract directly
-                    with the Transak Service provider under its own{' '}
-                    <ExternalLink href="https://transak.com/terms-of-service">
-                      Terms of Service
-                    </ExternalLink>{' '}
-                    and{' '}
-                    <ExternalLink href="https://transak.com/privacy-policy">
-                      Privacy Policy
-                    </ExternalLink>
-                    .
+                    Pearl Application is funded with crypto deposits only and does not offer
+                    fiat-to-crypto purchases. To move your deposit between blockchains or swap it
+                    into another token, Pearl Application, running on your device, may route the
+                    transaction through third-party bridging, swap, or transaction-relay providers
+                    that it selects on your device (hereafter: “Bridging Providers”). Bridging
+                    Providers act independently of Valory, and your use of their services is subject
+                    to their own terms and privacy policies.
                   </p>
                   <p className="mt-2">
-                    For the avoidance of doubt, Valory does not process or store user payment or any
-                    data, perform KYC/AML checks, or hold, custody or transfer of fiat or crypto
-                    funds: any processing or storage of user payments or user data, KYC/AML checks,
-                    or holding, custody or transfer of funds taking place in the process of
-                    fiat-to-crypto onboarding within Pearl Application is performed solely by the
-                    Transak Service provider. Valory is not an intermediary, counterparty, or
-                    payment processor in any onramp transaction. Valory assumes no responsibility or
-                    liability for the performance, security, or data handling of the Transak Service
-                    provider nor its integration, except to the extent such liability cannot
-                    lawfully be excluded.
+                    For the avoidance of doubt, Valory does not operate or control any Bridging
+                    Provider and does not hold, custody, or transfer your funds. Transactions are
+                    signed on your device. Valory is not an intermediary, counterparty, or payment
+                    processor in any bridging or swap transaction. Valory assumes no responsibility
+                    or liability for the performance, availability, security, or data handling of
+                    any Bridging Provider nor its integration, except to the extent such liability
+                    cannot lawfully be excluded.
                   </p>
                 </div>
                 <div id="web3auth-terms">
