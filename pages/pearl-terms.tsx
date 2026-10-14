@@ -486,10 +486,10 @@ const PearlTerms = () => {
                     Pearl Application is funded with crypto deposits only and does not offer
                     fiat-to-crypto purchases. To move your deposit between blockchains or swap it
                     into another token, Pearl Application, running on your device, may route the
-                    transaction through third-party bridging, swap, or transaction-relay providers
-                    that it selects on your device (hereafter: “Bridging Providers”). Bridging
-                    Providers act independently of Valory, and your use of their services is subject
-                    to their own terms and privacy policies.
+                    transaction through third-party bridging, swap, transaction-relay, or
+                    gas-sponsorship (paymaster) providers that it selects on your device (hereafter:
+                    “Bridging Providers”). Bridging Providers act independently of Valory, and your
+                    use of their services is subject to their own terms and privacy policies.
                   </p>
                   <p className="mt-2">
                     For the avoidance of doubt, Valory does not operate or control any Bridging
