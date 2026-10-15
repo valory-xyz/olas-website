@@ -151,6 +151,10 @@ const MORE_LINKS = [
     link: 'https://github.com/contentwillvary/brand-and-press-kit-olas/blob/main/README.md',
     isExternal: true,
   },
+  {
+    title: 'Press Enquiries',
+    link: 'mailto:press@valory.xyz',
+  },
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();

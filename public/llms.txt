@@ -3,7 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
-last-updated: 2026-10-09
+last-updated: 2026-10-16
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
@@ -116,6 +116,11 @@ Every page on olas.network not linked above, each with what it is for.
 ### Legal
 - Disclaimer (https://olas.network/disclaimer): the olas.network disclaimer.
 - Pearl Terms (https://olas.network/pearl-terms): terms governing the Pearl application.
+
+## Press
+
+- Press enquiries: press@valory.xyz
+- Brand and press kit: https://olas.network/brand-and-press-kit
 
 ## Which app to use
 
