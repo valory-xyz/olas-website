@@ -147,6 +147,79 @@ export const mechMarketplaceTotalRequestsSquidQuery = gql`
   }
 `;
 
+// Settled off-chain requests: each signed-delivery event row stores `numDeliveries` once,
+// so the sum over these rows is the off-chain request count. Pinned to the block the
+// globals were read at, so both sides of the on-chain/off-chain split share one state.
+export const mechOffChainDeliveriesPageQuery = gql`
+  query MechOffChainDeliveriesPage($block: Int!, $lastId: Bytes!) {
+    marketplaceDeliveryWithSignatures_collection(
+      block: { number: $block }
+      where: { id_gt: $lastId }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+      numDeliveries
+    }
+    _meta {
+      hasIndexingErrors
+    }
+  }
+`;
+
+export const mechOffChainDeliveriesPageSquidQuery = gql`
+  query MechOffChainDeliveriesPageSquid($lastId: String!) {
+    marketplaceDeliveryWithSignatures_collection: marketplaceDeliveryWithSignatures(
+      where: { id_gt: $lastId }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+      numDeliveries
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+// The off-chain amount the signed-delivery handler added to `global.totalRequests` and
+// `global.totalDeliveries`, kept per requester by the same handler run.
+export const mechOffChainSendersPageQuery = gql`
+  query MechOffChainSendersPage($block: Int!, $lastId: Bytes!) {
+    senders(
+      block: { number: $block }
+      where: { totalOffChainRequests_gt: 0, id_gt: $lastId }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+      totalOffChainRequests
+    }
+    _meta {
+      hasIndexingErrors
+    }
+  }
+`;
+
+export const mechOffChainSendersPageSquidQuery = gql`
+  query MechOffChainSendersPageSquid($lastId: String!) {
+    senders(
+      where: { totalOffChainRequests_gt: "0", id_gt: $lastId }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+      totalOffChainRequests
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gql`
   query MechRequests {
     ${Array.from({ length: pages })

@@ -79,7 +79,13 @@ export const DATASETS: DatasetEntry[] = [
     id: 'mech-globals',
     name: 'Mech Globals',
     description:
-      'Total requests and deliveries are aggregated from Mech Marketplace subgraphs on Gnosis, Base, Polygon and Optimism.',
+      'Total Mech requests and deliveries across every Mech Marketplace chain, rebuilt per chain as on-chain plus settled off-chain requests.',
+  },
+  {
+    id: 'mech-offchain-share',
+    name: 'Mech Off-chain Share',
+    description:
+      'Share of all-time Mech requests sent off-chain through the Mech API and settled on-chain in signed batch deliveries, against requests made on-chain.',
   },
   {
     id: 'mech-requests-categorized',

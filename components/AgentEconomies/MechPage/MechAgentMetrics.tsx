@@ -8,6 +8,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import { offChainSharePercent } from 'common-util/api/agent-economies/mech-requests-math';
 import { buildMetricContext } from 'components/ui/MetricContext';
 
 export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
@@ -88,6 +89,13 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
     [metrics]
   );
 
+  const offChainShare = offChainSharePercent(
+    metrics?.offChainRequests?.value,
+    metrics?.onChainRequests?.value
+  );
+  const offChainShareLabel = offChainShare === null ? null : `${offChainShare.toFixed(2)}%`;
+  const onChainShareLabel = offChainShare === null ? null : `${(100 - offChainShare).toFixed(2)}%`;
+
   const summaryLines = [
     buildMetricContext({
       // Floored to match the number the card renders; the raw 7-day mean is fractional.
@@ -108,6 +116,14 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
       value: metrics?.totalDeliveries?.value,
       status: metrics?.totalDeliveries?.status,
       noun: 'task deliveries completed by Olas Mech agents',
+      window: 'all time',
+      asOfFallback: snapshotTimestamp,
+    }),
+    buildMetricContext({
+      value: offChainShareLabel,
+      status: metrics?.offChainRequests?.status,
+      noun: 'of Olas Mech task requests were sent off-chain through the Mech API and settled on-chain in batches, with the rest requested on-chain',
+      label: 'settled off-chain (API)',
       window: 'all time',
       asOfFallback: snapshotTimestamp,
     }),
@@ -188,6 +204,38 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
           )}{' '}
           deliveries from other AI agent economies.
         </p>
+        <div className="text-base text-slate-700 max-w-[560px] mx-auto mb-8">
+          <div className="flex justify-between gap-4 mb-2">
+            <span className="inline-flex items-center gap-1">
+              {offChainShareLabel ? (
+                <Link className="font-bold" href="/data#mech-offchain-share">
+                  <span
+                    className={isFrozen(metrics.offChainRequests.status) ? 'text-gray-400' : ''}
+                  >
+                    {offChainShareLabel}
+                  </span>
+                </Link>
+              ) : (
+                <span className="font-bold">--</span>
+              )}{' '}
+              settled off-chain (API)
+              {offChainShareLabel && <StaleIndicator status={metrics.offChainRequests.status} />}
+            </span>
+            <span>
+              <span className="font-bold">{onChainShareLabel ?? '--'}</span> on-chain
+            </span>
+          </div>
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-purple-100" aria-hidden>
+            {offChainShare !== null && (
+              <div
+                className={
+                  isFrozen(metrics.offChainRequests.status) ? 'bg-gray-400' : 'bg-purple-600'
+                }
+                style={{ width: `${offChainShare}%`, minWidth: offChainShare > 0 ? 2 : 0 }}
+              />
+            )}
+          </div>
+        </div>
         <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">Requests are broken up as:</p>
       </div>
       <div className="w-full border-y mb-8">
