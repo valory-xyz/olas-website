@@ -19,7 +19,14 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-import { checkLlms, extractUrls, parseArgs, readBuild, readLastUpdated } from './check-llms.mjs';
+import {
+  checkLlms,
+  extractUrls,
+  isNotFoundDestination,
+  parseArgs,
+  readBuild,
+  readLastUpdated,
+} from './check-llms.mjs';
 
 const HOSTS = new Set(['www.example.com', 'example.com']);
 const TODAY = '2026-09-17';
@@ -27,7 +34,8 @@ const HEADER = 'last-updated: 2026-09-15\n';
 
 /**
  * A fake build: `pages` maps route → HTML (prerendered), `routes` are served without
- * HTML, `dynamic` are `[param]` routes, `redirects` are source paths. `locale` puts the
+ * HTML, `dynamic` are `[param]` routes, `redirects` are source paths (to `/`) or
+ * `{ source, destination }`. `locale` puts the
  * HTML under a default-locale folder, as an i18n site's build does.
  */
 const fakeBuild = ({ pages = {}, routes = [], dynamic = [], redirects = [], locale } = {}) => {
@@ -53,7 +61,9 @@ const fakeBuild = ({ pages = {}, routes = [], dynamic = [], redirects = [], loca
         internal: true,
         regex: '^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$',
       },
-      ...redirects.map((source) => ({ source, destination: '/', regex: toRegex(source) })),
+      ...redirects
+        .map((r) => (typeof r === 'string' ? { source: r, destination: '/' } : r))
+        .map((r) => ({ ...r, regex: toRegex(r.source) })),
     ],
     staticRoutes: [...Object.keys(pages), ...routes].map((page) => ({
       page,
@@ -141,6 +151,28 @@ test('a missing, future or stale last-updated line is reported', () => {
     /committed on 2026-09-16 but says last-updated: 2026-09-15/
   );
   assert.deepEqual(check(`${HEADER}${links}`, SITE, { committed: '2026-09-15' }).errors, []);
+});
+
+test('a redirect to the 404 page is a dead link, even with the old page still on disk', () => {
+  // olas.network's /academy: the page was retired with a redirect to /404, left in
+  // llms.txt, and passed because "a redirect" counted as resolving.
+  const build = fakeBuild({
+    pages: { '/': '<main></main>', '/academy': '<main></main>' },
+    redirects: [{ source: '/academy', destination: '/404' }],
+  });
+  const { errors } = check(`${HEADER}https://example.com/ https://example.com/academy`, build);
+  assert.match(errors.join('\n'), /\/academy — redirects to \/404, the not-found page/);
+  // Dropping the line is the fix, and the page behind the redirect is not demanded.
+  assert.deepEqual(check(`${HEADER}https://example.com/`, build).errors, []);
+});
+
+test('only a destination that is the 404 page counts as not found', () => {
+  for (const dest of ['/404', '/404/', '/en/404', 'https://example.com/404']) {
+    assert.equal(isNotFoundDestination(dest), true, dest);
+  }
+  for (const dest of ['/', '/stack', '/404-faq', '/docs/errors/404', 'https://pearl.you/']) {
+    assert.equal(isNotFoundDestination(dest), false, dest);
+  }
 });
 
 test('an i18n build keeps its HTML and its root redirect under the locale', () => {

@@ -9,7 +9,8 @@
  *
  *   - every URL in the file that points at this site must resolve to a built page, a
  *     static file, a redirect or a served route, and every `#fragment` to an id on that
- *     page (a dead link);
+ *     page (a dead link). A redirect whose destination is the 404 page is a dead link
+ *     too — it is how a retired page is usually taken down (olas.network's /academy);
  *   - every route the site serves must be linked from the file, unless listed in
  *     `--ignore` (a page nobody told the file about — the pearl case);
  *   - the file must carry a `last-updated:` line no older than its last commit, so the
@@ -70,6 +71,20 @@ const hasAnchor = (html, id) =>
 const normalise = (pathname) => decodeURIComponent(pathname.replace(/\/$/, '') || '/');
 
 /**
+ * Whether a redirect lands on the not-found page: `/404`, a locale's `/en/404`, or the
+ * same on an absolute URL. Such a redirect is a retired page, not a moved one.
+ */
+export const isNotFoundDestination = (destination) => {
+  let pathname;
+  try {
+    pathname = new URL(destination, 'http://localhost').pathname;
+  } catch {
+    return false;
+  }
+  return /^(?:\/[^/]+)?\/404$/.test(normalise(pathname));
+};
+
+/**
  * Routes no llms.txt should have to mention: API routes, Next's own error and metadata
  * routes, and anything that is a file rather than a page.
  */
@@ -93,15 +108,34 @@ export const readBuild = ({ nextDir, publicDir }) => {
   const htmlRoots = ['pages', 'app']
     .map((router) => path.join(nextDir, 'server', router))
     .flatMap((root) => (locale ? [path.join(root, locale), root] : [root]));
-  // Next's own trailing-slash redirect is not a page the site offers.
-  const redirects = manifest.redirects.filter((r) => !r.internal).map((r) => new RegExp(r.regex));
+  // Next's own trailing-slash redirect is not a page the site offers. One that applies
+  // only to some requests (`has`/`missing`) does not shadow the page behind it.
+  const redirects = manifest.redirects
+    .filter((r) => !r.internal && !r.has?.length && !r.missing?.length)
+    .map((r) => ({ regex: new RegExp(r.regex), destination: r.destination }));
   // Routes rendered per request have no HTML in the output; the manifest still lists them.
   const servedRoutes = [...manifest.staticRoutes, ...manifest.dynamicRoutes].map(
     (r) => new RegExp(r.regex)
   );
 
+  // With i18n the manifest carries redirect sources with the locale prefixed (`/en` for `/`).
+  // One that leads back to the same path (`/en` → `/`) only drops the locale; the page
+  // behind it is still what is served.
+  const redirectFor = (clean, { includeSelf = false } = {}) => {
+    const forms = locale ? [clean, `/${locale}${clean === '/' ? '' : clean}`] : [clean];
+    return redirects.find(
+      (r) =>
+        forms.some((form) => r.regex.test(form)) &&
+        (includeSelf || normalise(r.destination) !== clean)
+    );
+  };
+
   const resolve = (pathname) => {
     const clean = normalise(pathname);
+    // Next applies redirects before it looks at the filesystem, so a redirect wins over a
+    // page still on disk — `/academy` is both, and serves the redirect.
+    const redirect = redirectFor(clean);
+    if (redirect) return { kind: 'redirect', destination: redirect.destination };
     for (const root of htmlRoots) {
       const candidates =
         clean === '/'
@@ -112,17 +146,19 @@ export const readBuild = ({ nextDir, publicDir }) => {
       }
     }
     if (clean !== '/' && existsSync(path.join(publicDir, clean))) return { kind: 'file' };
-    // With i18n the manifest carries redirect sources with the locale prefixed (`/en` for `/`).
-    const forms = locale ? [clean, `/${locale}${clean === '/' ? '' : clean}`] : [clean];
-    if (forms.some((form) => redirects.some((re) => re.test(form)))) return { kind: 'redirect' };
+    const localeRedirect = redirectFor(clean, { includeSelf: true });
+    if (localeRedirect) return { kind: 'redirect', destination: localeRedirect.destination };
     // Only that the route exists can be checked; a `#fragment` on it cannot.
     if (servedRoutes.some((re) => re.test(clean))) return { kind: 'route' };
     return null;
   };
 
   // Dynamic routes (`/blog/[id]`) have no fixed URL to demand; their index page, if any,
-  // is a static route and is demanded like the rest.
-  const publicRoutes = manifest.staticRoutes.map((r) => r.page).filter((p) => !isInternalRoute(p));
+  // is a static route and is demanded like the rest. A page hidden behind a redirect is
+  // not served, so the file need not mention it.
+  const publicRoutes = manifest.staticRoutes
+    .map((r) => r.page)
+    .filter((p) => !isInternalRoute(p) && !redirectFor(normalise(p)));
 
   return { resolve, publicRoutes };
 };
@@ -191,6 +227,10 @@ export const checkLlms = (
     const target = build.resolve(parsed.pathname);
     if (!target) {
       errors.push(`${url} — no page, file, redirect or route at ${parsed.pathname}`);
+      continue;
+    }
+    if (target.kind === 'redirect' && isNotFoundDestination(target.destination)) {
+      errors.push(`${url} — redirects to ${target.destination}, the not-found page`);
       continue;
     }
     const fragment = parsed.hash.slice(1);
