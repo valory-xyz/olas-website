@@ -9,7 +9,7 @@ const subURL = 'blog-posts';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const QUARTERLY_UPDATES_FUNNEL_ID = 8;
+export const QUARTERLY_UPDATES_FUNNEL_ID = 8;
 
 type UpdatesProps = {
   limit?: number;
