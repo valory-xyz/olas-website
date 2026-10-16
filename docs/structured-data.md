@@ -2,10 +2,12 @@
 
 The homepage carries `Organization` and `WebSite` in one `@graph`; the FAQ pages carry
 `FAQPage`; blog posts carry `Article`; `/data` carries a `DataCatalog` with one `Dataset`
-per section. All of it is invisible — **nothing users read changes.**
+per section; the index pages carry a list of what they link to — `Blog` on `/blog`,
+`VideoGallery` on `/videos`, `ItemList` on `/case-studies`, `/quarterly-updates` and
+`/whitepaper`. All of it is invisible — **nothing users read changes.**
 
 Why it exists: generative engines and search features read schema.org markup as the
-authoritative statement of what a page *is*. Cited statistics are the strongest measured
+authoritative statement of what a page _is_. Cited statistics are the strongest measured
 lever for being quoted by generative engines (Aggarwal et al., KDD 2024, arXiv 2311.09735),
 and `/data` is where every number on the site sends its reader — so each of its sections
 is a citable `Dataset` whose `@id` is the same `/data#…` anchor the metric tiles link to.
@@ -36,6 +38,17 @@ engines read the site name and logo from (#585). Its `@id` is always the product
 `SeoHead` and the Article and Dataset blocks here all point at that one `@id`, so every
 property resolves to one entity and a preview never mints its own. The check requires
 exactly one Organization and one WebSite on the homepage and none anywhere else.
+
+**Index pages list what their cards link to, from the server.** `/blog`, `/videos`,
+`/case-studies` and `/quarterly-updates` fetch their cards in the browser, so without
+JavaScript they are a heading over nothing. Each has a `getStaticProps` (ISR,
+`REVALIDATE_DURATION`) that fetches the same CMS query the cards use — same collection,
+funnel, sort and, for videos, the same link choice (`videoHref`) — and renders the list
+in the served HTML. `/whitepaper` is static: its cards and its `ItemList` read one
+`DOCUMENTS` array. A list with no entries publishes no block, so a CMS outage at build
+time ships the page without one rather than with an empty one. `/card` (promo images) is
+deliberately not listed. This is a machine-visibility fix; the cards themselves still
+render client-side.
 
 **Serialise with `serializeJsonLd`.** It escapes `<` so a `</script>` inside a string
 cannot close the tag early.

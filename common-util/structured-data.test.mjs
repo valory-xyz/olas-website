@@ -16,8 +16,11 @@ import assert from 'node:assert/strict';
 
 import {
   buildArticle,
+  buildBlog,
   buildDataCatalog,
   buildFaqPage,
+  buildItemList,
+  buildVideoGallery,
   reactNodeToText,
   serializeJsonLd,
 } from './structured-data.ts';
@@ -165,4 +168,70 @@ test('serialised JSON-LD cannot close its own script tag', () => {
   assert.ok(!out.includes('</script>'), out);
   // …and still round-trips to the original value.
   assert.equal(JSON.parse(out).text, 'x</script><script>alert(1)</script>');
+});
+
+const ENTRIES = [
+  { name: '  Olas Q3  update ', url: '/blog/q3-update', date: '2026-10-01' },
+  { name: 'No link', url: '' },
+  { name: '', url: '/blog/untitled' },
+  { name: 'Whitepaper', url: '/documents/whitepaper/PoAA Whitepaper.pdf', date: 'not a date' },
+  { name: 'On YouTube', url: 'https://www.youtube.com/watch?v=abc' },
+];
+
+test('an index list keeps page order, numbers from 1, and drops cards with no name or link', () => {
+  const list = buildItemList({
+    siteUrl: SITE,
+    path: '/case-studies',
+    name: 'Case Studies',
+    entries: ENTRIES,
+  });
+  assert.equal(list['@type'], 'ItemList');
+  assert.equal(list.url, `${SITE}/case-studies`);
+  assert.equal(list.numberOfItems, 3);
+  assert.deepEqual(list.itemListElement, [
+    { '@type': 'ListItem', position: 1, name: 'Olas Q3 update', url: `${SITE}/blog/q3-update` },
+    // A path with spaces is percent-encoded into a URL; an absolute link is kept as is.
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Whitepaper',
+      url: `${SITE}/documents/whitepaper/PoAA%20Whitepaper.pdf`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'On YouTube',
+      url: 'https://www.youtube.com/watch?v=abc',
+    },
+  ]);
+});
+
+test('Blog posts carry their date only when it parses, and the publisher is the Organization', () => {
+  const blog = buildBlog({ siteUrl: SITE, path: '/blog', name: 'Blog', entries: ENTRIES });
+  assert.deepEqual(blog.publisher, { '@id': `${SITE}/#organization` });
+  assert.equal(blog.blogPost[0].datePublished, '2026-10-01T00:00:00.000Z');
+  assert.equal('datePublished' in blog.blogPost[1], false);
+  assert.equal(blog.blogPost.length, 3);
+});
+
+test('a VideoGallery lists its cards as plain ListItems, claiming nothing about the media', () => {
+  const gallery = buildVideoGallery({
+    siteUrl: SITE,
+    path: '/videos',
+    name: 'Videos',
+    entries: ENTRIES,
+  });
+  assert.equal(gallery.mainEntity['@type'], 'ItemList');
+  assert.ok(gallery.mainEntity.itemListElement.every((item) => item['@type'] === 'ListItem'));
+});
+
+test('a list with nothing to name publishes no block', () => {
+  // A CMS outage at build time must not ship an empty list as the page's contents.
+  for (const build of [buildItemList, buildBlog, buildVideoGallery]) {
+    assert.equal(build({ siteUrl: SITE, path: '/x', name: 'X', entries: [] }), null);
+    assert.equal(
+      build({ siteUrl: SITE, path: '/x', name: 'X', entries: [{ name: '', url: '' }] }),
+      null
+    );
+  }
 });

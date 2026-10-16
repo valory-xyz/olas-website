@@ -9,7 +9,7 @@ const subURL = 'blog-posts';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const CASE_STUDIES_FUNNEL_ID = 9;
+export const CASE_STUDIES_FUNNEL_ID = 9;
 
 type CaseStudiesProps = {
   limit?: number;
