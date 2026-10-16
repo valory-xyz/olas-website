@@ -8,10 +8,16 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
+import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
 import { offChainSharePercent } from 'common-util/api/agent-economies/mech-requests-math';
-import { buildMetricContext } from 'components/ui/MetricContext';
+import { buildMetricContext, type MetricContextProps } from 'components/ui/MetricContext';
 
-export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
+type MechAgentMetricsProps = {
+  metrics: AgentEconomiesMetricsData['mech'] | null;
+  snapshotTimestamp?: MetricContextProps['asOfFallback'];
+};
+
+export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }: MechAgentMetricsProps) => {
   const data = useMemo(
     () => [
       {
@@ -91,8 +97,9 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
 
   const offChainShare = offChainSharePercent(
     metrics?.offChainRequests?.value,
-    metrics?.onChainRequests?.value
+    metrics?.totalRequests?.value
   );
+  const offChainShareFrozen = isFrozen(metrics?.offChainRequests?.status);
   const offChainShareLabel = offChainShare === null ? null : `${offChainShare.toFixed(2)}%`;
   const onChainShareLabel = offChainShare === null ? null : `${(100 - offChainShare).toFixed(2)}%`;
 
@@ -209,9 +216,7 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
             <span className="inline-flex items-center gap-1">
               {offChainShareLabel ? (
                 <Link className="font-bold" href="/data#mech-offchain-share">
-                  <span
-                    className={isFrozen(metrics.offChainRequests.status) ? 'text-gray-400' : ''}
-                  >
+                  <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
                     {offChainShareLabel}
                   </span>
                 </Link>
@@ -228,9 +233,7 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
           <div className="flex h-2 w-full overflow-hidden rounded-full bg-purple-100" aria-hidden>
             {offChainShare !== null && (
               <div
-                className={
-                  isFrozen(metrics.offChainRequests.status) ? 'bg-gray-400' : 'bg-purple-600'
-                }
+                className={offChainShareFrozen ? 'bg-gray-400' : 'bg-purple-600'}
                 style={{ width: `${offChainShare}%`, minWidth: offChainShare > 0 ? 2 : 0 }}
               />
             )}

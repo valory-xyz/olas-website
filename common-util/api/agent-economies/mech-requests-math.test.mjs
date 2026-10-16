@@ -4,8 +4,8 @@
  * type-stripping to load the .ts module directly. Run with `yarn mech-requests-math:test`.
  *
  * These decide the published request and delivery totals and the off-chain share: how a
- * chain's globals split into on-chain and settled off-chain counts, and when a reading is
- * refused instead of published.
+ * chain's globals split into on-chain and settled off-chain counts, how the off-chain
+ * page walks sum, and when a reading is refused instead of published.
  */
 
 /* eslint-disable no-undef -- standalone test module: uses JS built-in globals */
@@ -13,27 +13,64 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { offChainSharePercent, parseCount, splitChainRequests } from './mech-requests-math.ts';
+import {
+  offChainSharePercent,
+  parseCount,
+  splitChainRequests,
+  sumChainSplits,
+  sumPages,
+} from './mech-requests-math.ts';
 
-// Optimism marketplace subgraph, 2026-10-14: the signed-delivery handler runs twice per
-// event there, so the sender counters and the globals carry the off-chain part twice.
-const OPTIMISM = {
+// Counters carry the off-chain part twice, as on the Optimism marketplace subgraph.
+const DOUBLED_CHAIN = {
   totalRequests: 9531,
   totalDeliveries: 9529,
   senderOffChain: 9154,
   offChain: 4577,
 };
 
-// Gnosis marketplace subgraph, same day: one data source, so sender sum equals event sum.
-const GNOSIS = {
+// One data source: the sender sum equals the event-row sum.
+const SINGLE_CHAIN = {
   totalRequests: 11932946,
   totalDeliveries: 10097014,
   senderOffChain: 24466,
   offChain: 24466,
 };
 
+const ROWS_KEY = 'senders';
+const FIELD = 'totalOffChainRequests';
+const PIN_BLOCK = 158200000;
+
+const row = (id, count) => ({ id, [FIELD]: String(count) });
+
+/**
+ * A page fetcher that serves `pages` in order and records the variables of each call.
+ * Asking past the last page fails the test, so a walk that does not stop is caught.
+ */
+const pagedFetcher = (pages) => {
+  const queue = [...pages];
+  const calls = [];
+  const fetchPage = async (variables) => {
+    calls.push(variables);
+    assert.ok(queue.length > 0, 'walk asked for a page past the last one');
+    return queue.shift();
+  };
+  return { fetchPage, calls };
+};
+
+const walk = (fetchPage, overrides = {}) =>
+  sumPages({
+    fetchPage,
+    rowsKey: ROWS_KEY,
+    field: FIELD,
+    isSubgraph: true,
+    block: PIN_BLOCK,
+    maxPages: 10,
+    ...overrides,
+  });
+
 test('splitChainRequests removes the whole off-chain part when the handler double-counts', () => {
-  assert.deepEqual(splitChainRequests(OPTIMISM), {
+  assert.deepEqual(splitChainRequests(DOUBLED_CHAIN), {
     onChainRequests: 377,
     onChainDeliveries: 375,
     offChain: 4577,
@@ -41,13 +78,13 @@ test('splitChainRequests removes the whole off-chain part when the handler doubl
 });
 
 test('splitChainRequests leaves totals unchanged when counters match the event rows', () => {
-  const split = splitChainRequests(GNOSIS);
+  const split = splitChainRequests(SINGLE_CHAIN);
   assert.deepEqual(split, {
     onChainRequests: 11908480,
     onChainDeliveries: 10072548,
     offChain: 24466,
   });
-  assert.equal(split.onChainRequests + split.offChain, GNOSIS.totalRequests);
+  assert.equal(split.onChainRequests + split.offChain, SINGLE_CHAIN.totalRequests);
 });
 
 test('splitChainRequests reads a chain with no activity as zeros', () => {
@@ -57,15 +94,99 @@ test('splitChainRequests reads a chain with no activity as zeros', () => {
   );
 });
 
-test('splitChainRequests refuses a sender total larger than either global', () => {
+test('splitChainRequests refuses a chain whose sender off-chain sum exceeds its globals', () => {
   assert.throws(
-    () => splitChainRequests({ ...GNOSIS, totalDeliveries: GNOSIS.senderOffChain - 1 }),
+    () => splitChainRequests({ ...SINGLE_CHAIN, totalDeliveries: SINGLE_CHAIN.senderOffChain - 1 }),
     /exceeds the globals/
   );
   assert.throws(
-    () => splitChainRequests({ ...GNOSIS, totalRequests: GNOSIS.senderOffChain - 1 }),
+    () => splitChainRequests({ ...SINGLE_CHAIN, totalRequests: SINGLE_CHAIN.senderOffChain - 1 }),
     /exceeds the globals/
   );
+});
+
+test('sumChainSplits rebuilds requests and deliveries as on-chain plus off-chain', () => {
+  const totals = sumChainSplits([
+    splitChainRequests(DOUBLED_CHAIN),
+    splitChainRequests(SINGLE_CHAIN),
+  ]);
+  assert.deepEqual(totals, {
+    requests: 377 + 4577 + 11908480 + 24466,
+    deliveries: 375 + 4577 + 10072548 + 24466,
+    offChainRequests: 4577 + 24466,
+  });
+});
+
+test('sumChainSplits of no chains is zero', () => {
+  assert.deepEqual(sumChainSplits([]), { requests: 0, deliveries: 0, offChainRequests: 0 });
+});
+
+test('sumPages sums every page and stops at the first empty one', async () => {
+  const { fetchPage, calls } = pagedFetcher([
+    { [ROWS_KEY]: [row('0x01', 3), row('0x02', 4)] },
+    { [ROWS_KEY]: [row('0x03', 5)] },
+    { [ROWS_KEY]: [] },
+  ]);
+  assert.equal(await walk(fetchPage), 12);
+  assert.equal(calls.length, 3);
+});
+
+test('sumPages carries the last id of each page into the next request', async () => {
+  const { fetchPage, calls } = pagedFetcher([
+    { [ROWS_KEY]: [row('0x01', 1), row('0x0a', 1)] },
+    { [ROWS_KEY]: [row('0x0b', 1)] },
+    { [ROWS_KEY]: [] },
+  ]);
+  await walk(fetchPage);
+  assert.deepEqual(
+    calls.map((c) => c.lastId),
+    ['0x', '0x0a', '0x0b']
+  );
+});
+
+test('sumPages pins every subgraph page to the block and pages by a Bytes id', async () => {
+  const { fetchPage, calls } = pagedFetcher([{ [ROWS_KEY]: [row('0x01', 1)] }, { [ROWS_KEY]: [] }]);
+  await walk(fetchPage);
+  assert.deepEqual(calls, [
+    { block: PIN_BLOCK, lastId: '0x' },
+    { block: PIN_BLOCK, lastId: '0x01' },
+  ]);
+});
+
+test('sumPages sends squids no block and pages by a String id', async () => {
+  const { fetchPage, calls } = pagedFetcher([{ [ROWS_KEY]: [row('a', 2)] }, { [ROWS_KEY]: [] }]);
+  assert.equal(await walk(fetchPage, { isSubgraph: false, block: undefined }), 2);
+  assert.deepEqual(calls, [{ lastId: '' }, { lastId: 'a' }]);
+});
+
+test('sumPages refuses a subgraph walk with no block to pin to', async () => {
+  const { fetchPage, calls } = pagedFetcher([]);
+  await assert.rejects(walk(fetchPage, { block: undefined }), /no block/);
+  assert.equal(calls.length, 0);
+});
+
+test('sumPages throws once a walk needs more than maxPages pages', async () => {
+  const full = (id) => ({ [ROWS_KEY]: [row(id, 1)] });
+  const { fetchPage } = pagedFetcher([full('0x01'), full('0x02'), full('0x03')]);
+  await assert.rejects(walk(fetchPage, { maxPages: 2 }), /exceeds 2 pages/);
+});
+
+test('sumPages accepts exactly maxPages pages', async () => {
+  const full = (id) => ({ [ROWS_KEY]: [row(id, 1)] });
+  const { fetchPage } = pagedFetcher([full('0x01'), full('0x02'), { [ROWS_KEY]: [] }]);
+  assert.equal(await walk(fetchPage, { maxPages: 2 }), 2);
+});
+
+test('sumPages refuses a response without the rows array', async () => {
+  for (const page of [{}, { other: [] }, { [ROWS_KEY]: null }, null]) {
+    const { fetchPage } = pagedFetcher([page]);
+    await assert.rejects(walk(fetchPage), /no senders array/);
+  }
+});
+
+test('sumPages refuses a row whose count is not a count', async () => {
+  const { fetchPage } = pagedFetcher([{ [ROWS_KEY]: [{ id: '0x01', [FIELD]: '1.5' }] }]);
+  await assert.rejects(walk(fetchPage), /not a count/);
 });
 
 test('parseCount accepts subgraph BigInt strings and integers', () => {
@@ -80,10 +201,10 @@ test('parseCount rejects anything that is not a non-negative safe integer', () =
   }
 });
 
-test('offChainSharePercent divides by the on-chain plus off-chain total', () => {
-  assert.equal(offChainSharePercent(4577, 377), (4577 / 4954) * 100);
+test('offChainSharePercent divides off-chain requests by the total', () => {
+  assert.equal(offChainSharePercent(4577, 4954), (4577 / 4954) * 100);
   assert.equal(offChainSharePercent(0, 10), 0);
-  assert.equal(offChainSharePercent(10, 0), 100);
+  assert.equal(offChainSharePercent(10, 10), 100);
 });
 
 test('offChainSharePercent is null when an input is missing or the total is zero', () => {

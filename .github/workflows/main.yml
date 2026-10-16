@@ -137,7 +137,7 @@ jobs:
       - name: Run mech-fees math unit tests
         run: yarn mech-fees-math:test
       # mech-requests-math splits the published request totals into on-chain and settled
-      # off-chain counts, and refuses a reading whose off-chain part exceeds the totals.
+      # off-chain counts, and refuses a chain whose sender off-chain sum exceeds its globals.
       - name: Run mech-requests math unit tests
         run: yarn mech-requests-math:test
       # rpc-retry decides which RPC failures are worth another request. Retrying what

@@ -15,6 +15,12 @@ export type ChainRequestSplit = {
   offChain: number;
 };
 
+export type MechRequestTotals = {
+  requests: number;
+  deliveries: number;
+  offChainRequests: number;
+};
+
 /**
  * Splits one chain's globals into on-chain counts and settled off-chain requests.
  *
@@ -41,6 +47,17 @@ export const splitChainRequests = ({
   return { onChainRequests, onChainDeliveries, offChain };
 };
 
+// Totals across chains, each rebuilt as on-chain plus off-chain.
+export const sumChainSplits = (splits: ChainRequestSplit[]): MechRequestTotals =>
+  splits.reduce(
+    (totals, split) => ({
+      requests: totals.requests + split.onChainRequests + split.offChain,
+      deliveries: totals.deliveries + split.onChainDeliveries + split.offChain,
+      offChainRequests: totals.offChainRequests + split.offChain,
+    }),
+    { requests: 0, deliveries: 0, offChainRequests: 0 }
+  );
+
 // Subgraph BigInt fields arrive as strings; anything that is not a non-negative safe
 // integer is a schema or transport fault, not a count.
 export const parseCount = (raw: string | number): number => {
@@ -51,13 +68,56 @@ export const parseCount = (raw: string | number): number => {
   return value;
 };
 
+export type PageVariables = { block?: number; lastId: string };
+
+export type SumPagesOptions = {
+  fetchPage: (variables: PageVariables) => Promise<Record<string, unknown>>;
+  rowsKey: string;
+  field: string;
+  // Subgraph pages are pinned to `block` and paged by a `Bytes` id; squids cannot
+  // time-travel, so theirs read the latest state and page by a `String` id.
+  isSubgraph: boolean;
+  block: number | undefined;
+  maxPages: number;
+};
+
+/**
+ * Walks an id-ordered page query until an empty page and sums one count field. A response
+ * without a `rowsKey` array, or a walk needing more than `maxPages` pages, throws so the
+ * chain is refused instead of publishing a partial sum.
+ */
+export const sumPages = async ({
+  fetchPage,
+  rowsKey,
+  field,
+  isSubgraph,
+  block,
+  maxPages,
+}: SumPagesOptions): Promise<number> => {
+  if (isSubgraph && block === undefined) {
+    throw new Error('no block to pin subgraph pages to');
+  }
+  let sum = 0;
+  let lastId = isSubgraph ? '0x' : '';
+  for (let pages = 1; ; pages += 1) {
+    const page = await fetchPage(isSubgraph ? { block, lastId } : { lastId });
+    const rows = page?.[rowsKey];
+    if (!Array.isArray(rows)) throw new Error(`response has no ${rowsKey} array`);
+    if (rows.length === 0) return sum;
+    if (pages > maxPages) throw new Error(`${rowsKey} exceeds ${maxPages} pages`);
+    rows.forEach((row) => {
+      sum += parseCount(row[field]);
+    });
+    lastId = rows[rows.length - 1].id;
+  }
+};
+
 // Percentage of requests settled off-chain, or null when there is nothing to divide.
 export const offChainSharePercent = (
-  offChain: number | null | undefined,
-  onChain: number | null | undefined
+  offChainRequests: number | null | undefined,
+  totalRequests: number | null | undefined
 ): number | null => {
-  if (typeof offChain !== 'number' || typeof onChain !== 'number') return null;
-  const total = offChain + onChain;
-  if (total <= 0) return null;
-  return (offChain / total) * 100;
+  if (typeof offChainRequests !== 'number' || typeof totalRequests !== 'number') return null;
+  if (totalRequests <= 0) return null;
+  return (offChainRequests / totalRequests) * 100;
 };

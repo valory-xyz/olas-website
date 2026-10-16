@@ -147,9 +147,7 @@ export const mechMarketplaceTotalRequestsSquidQuery = gql`
   }
 `;
 
-// Settled off-chain requests: each signed-delivery event row stores `numDeliveries` once,
-// so the sum over these rows is the off-chain request count. Pinned to the block the
-// globals were read at, so both sides of the on-chain/off-chain split share one state.
+// Off-chain page walks behind `splitChainRequests`, pinned to the globals' block.
 export const mechOffChainDeliveriesPageQuery = gql`
   query MechOffChainDeliveriesPage($block: Int!, $lastId: Bytes!) {
     marketplaceDeliveryWithSignatures_collection(
@@ -184,8 +182,6 @@ export const mechOffChainDeliveriesPageSquidQuery = gql`
   }
 `;
 
-// The off-chain amount the signed-delivery handler added to `global.totalRequests` and
-// `global.totalDeliveries`, kept per requester by the same handler run.
 export const mechOffChainSendersPageQuery = gql`
   query MechOffChainSendersPage($block: Int!, $lastId: Bytes!) {
     senders(
