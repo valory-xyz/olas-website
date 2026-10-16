@@ -183,6 +183,103 @@ export const buildArticle = ({
   };
 };
 
+/** One entry on an index page: what its card shows and where it links. */
+export type ListEntry = {
+  name: string;
+  /** Where the card links: absolute, or a path on this site. */
+  url: string;
+  /** The publication date the card shows, when it has one. */
+  date?: string | null;
+};
+
+export type ListPageInput = {
+  siteUrl: string;
+  /** The index page's own path, e.g. `/blog`. */
+  path: string;
+  /** The page's `<h1>`. */
+  name: string;
+  entries: ListEntry[];
+};
+
+const toAbsolute = (siteUrl: string, url: string) =>
+  /^https?:\/\//.test(url) ? url : encodeURI(`${siteUrl}${url}`);
+
+/** Entries with a name and a link, in page order. A card without either claims nothing. */
+const cleanEntries = (siteUrl: string, entries: ListEntry[]) =>
+  entries
+    .map(({ name, url, date }) => ({
+      name: tidy(name ?? ''),
+      url: url ? toAbsolute(siteUrl, url) : '',
+      date: isoDate(date),
+    }))
+    .filter(({ name, url }) => name && url);
+
+const listElements = (entries: ReturnType<typeof cleanEntries>) => ({
+  '@type': 'ItemList' as const,
+  numberOfItems: entries.length,
+  itemListElement: entries.map(({ name, url }, index) => ({
+    '@type': 'ListItem' as const,
+    position: index + 1,
+    name,
+    url,
+  })),
+});
+
+/**
+ * An index page that lists documents or posts (/case-studies, /quarterly-updates,
+ * /whitepaper) as an `ItemList` of what its cards link to.
+ *
+ * These pages fetch their lists in the browser, so to anything that does not run
+ * JavaScript they are a heading over nothing; this block is their machine-readable
+ * contents. `null` when there is nothing to list — an empty list is not worth publishing.
+ */
+export const buildItemList = ({ siteUrl, path, name, entries }: ListPageInput) => {
+  const clean = cleanEntries(siteUrl, entries);
+  if (clean.length === 0) return null;
+  return {
+    '@context': SCHEMA_CONTEXT,
+    ...listElements(clean),
+    name: tidy(name),
+    url: `${siteUrl}${path}`,
+  };
+};
+
+/** /blog as a `Blog` whose posts are the cards it shows, each with its date. */
+export const buildBlog = ({ siteUrl, path, name, entries }: ListPageInput) => {
+  const clean = cleanEntries(siteUrl, entries);
+  if (clean.length === 0) return null;
+  return {
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'Blog' as const,
+    name: tidy(name),
+    url: `${siteUrl}${path}`,
+    publisher: { '@id': ORGANIZATION_ID },
+    blogPost: clean.map(({ name: headline, url, date }) => ({
+      '@type': 'BlogPosting' as const,
+      headline,
+      url,
+      ...(date ? { datePublished: date } : {}),
+    })),
+  };
+};
+
+/**
+ * /videos as a `VideoGallery` whose main entity is the list of what its cards link to.
+ * The entries are plain `ListItem`s, not `VideoObject`s: some are podcast episodes, and
+ * the CMS carries no duration or upload metadata a VideoObject would need to be true.
+ */
+export const buildVideoGallery = ({ siteUrl, path, name, entries }: ListPageInput) => {
+  const clean = cleanEntries(siteUrl, entries);
+  if (clean.length === 0) return null;
+  return {
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'VideoGallery' as const,
+    name: tidy(name),
+    url: `${siteUrl}${path}`,
+    mainEntity: listElements(clean),
+  };
+};
+
 /**
  * Serialises a block for a `<script type="application/ld+json">` tag.
  *

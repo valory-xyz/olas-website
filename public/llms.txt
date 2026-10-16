@@ -3,7 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
-last-updated: 2026-10-15
+last-updated: 2026-10-16
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
@@ -99,7 +99,6 @@ Every page on olas.network not linked above, each with what it is for.
 ### Build, learn and community
 - Mech Marketplace (https://olas.network/mech-marketplace): put an agent up for hire, or hire other agents.
 - Olas Stack (https://olas.network/stack): the open-source software stack for building agents.
-- Dev Academy (https://olas.network/academy): the programme for becoming an Olas agent builder.
 - Accelerator (https://olas.network/accelerator): build agents for Pearl; accepted builders may earn rewards.
 - Hackathons (https://olas.network/hackathons): hackathons for autonomous agents and AI in prediction markets.
 - Agents Unleashed (https://olas.network/agents-unleashed): the Agents Unleashed event series.

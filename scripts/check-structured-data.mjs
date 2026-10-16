@@ -14,7 +14,9 @@
  *     search engines read the site name and logo from,
  *   - a FAQ with no questions, or a question with no answer text,
  *   - on /data: a Dataset whose anchor is not on the page, whose name is not one of the
- *     page's own `<h2>` headings, or a heading the catalog does not list.
+ *     page's own `<h2>` headings, or a heading the catalog does not list,
+ *   - an index page's list (ItemList, Blog, VideoGallery) with no entries, an entry with
+ *     no name or no absolute URL, positions out of order, or a count that disagrees.
  *
  * Runs in `postbuild`, so every Vercel build checks it. Blog posts are server-rendered and
  * so are not in the static output; their Article block is pinned by the unit tests instead.
@@ -30,7 +32,16 @@ import { pathToFileURL } from 'node:url';
 
 const PAGES_DIR = path.join(process.cwd(), '.next', 'server', 'pages');
 
-const KNOWN_TYPES = new Set(['Organization', 'WebSite', 'FAQPage', 'DataCatalog', 'Article']);
+const KNOWN_TYPES = new Set([
+  'Organization',
+  'WebSite',
+  'FAQPage',
+  'DataCatalog',
+  'Article',
+  'ItemList',
+  'Blog',
+  'VideoGallery',
+]);
 
 const collectHtmlFiles = async (dir) => {
   let entries;
@@ -146,6 +157,50 @@ const checkArticle = (data, errors) => {
   if (!data.publisher) errors.push('Article: missing publisher');
 };
 
+const isAbsoluteUrl = (url) => typeof url === 'string' && /^https?:\/\/\S+$/.test(url);
+
+/** The index pages' lists: what a crawler that runs no JavaScript learns the page holds. */
+const checkItemList = (data, errors, label = 'ItemList') => {
+  const items = data?.itemListElement;
+  if (!Array.isArray(items) || items.length === 0) {
+    errors.push(`${label}: no entries`);
+    return;
+  }
+  if (data.numberOfItems !== items.length) {
+    errors.push(`${label}: numberOfItems ${data.numberOfItems} but ${items.length} entries`);
+  }
+  items.forEach((item, i) => {
+    if (item?.['@type'] !== 'ListItem') errors.push(`${label}: entry ${i + 1} is not a ListItem`);
+    if (item?.position !== i + 1)
+      errors.push(`${label}: entry ${i + 1} has position ${item?.position}`);
+    if (!item?.name) errors.push(`${label}: entry ${i + 1} has no name`);
+    if (!isAbsoluteUrl(item?.url))
+      errors.push(`${label}: "${item?.name ?? i + 1}" has no absolute url`);
+  });
+};
+
+const checkBlog = (data, errors) => {
+  if (!Array.isArray(data.blogPost) || data.blogPost.length === 0) {
+    errors.push('Blog: no posts');
+    return;
+  }
+  data.blogPost.forEach((post, i) => {
+    if (post?.['@type'] !== 'BlogPosting' || !post.headline) {
+      errors.push(`Blog: post ${i + 1} has no headline`);
+    }
+    if (!isAbsoluteUrl(post?.url))
+      errors.push(`Blog: "${post?.headline ?? i + 1}" has no absolute url`);
+  });
+};
+
+const checkVideoGallery = (data, errors) => {
+  if (data.mainEntity?.['@type'] !== 'ItemList') {
+    errors.push('VideoGallery: mainEntity is not an ItemList');
+    return;
+  }
+  checkItemList(data.mainEntity, errors, 'VideoGallery');
+};
+
 /**
  * Checks one built page. Returns the errors found and how many blocks of each type it
  * saw, so the caller can report coverage rather than only failures.
@@ -181,6 +236,9 @@ export const checkPage = (html, { isHomepage = false } = {}) => {
       if (type === 'FAQPage') checkFaqPage(entity, errors);
       if (type === 'DataCatalog') checkDataCatalog(entity, html, errors);
       if (type === 'Article') checkArticle(entity, errors);
+      if (type === 'ItemList') checkItemList(entity, errors);
+      if (type === 'Blog') checkBlog(entity, errors);
+      if (type === 'VideoGallery') checkVideoGallery(entity, errors);
     }
   }
 

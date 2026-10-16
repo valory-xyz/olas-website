@@ -12,6 +12,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
+import { buildBlog, buildItemList, buildVideoGallery } from '../common-util/structured-data.ts';
 import { checkPage } from './check-structured-data.mjs';
 
 const block = (data) => `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
@@ -156,4 +157,45 @@ test('headings with entities and nested markup still match', () => {
   )}</head><body><section id="x"><h2><span>Treasury&#x27;s</span>  Fees</h2></section></body></html>`;
   const { errors } = checkPage(html);
   assert.deepEqual(errors, []);
+});
+
+const SITE = 'https://olas.network';
+const ENTRIES = [
+  { name: 'First', url: '/blog/first', date: '2026-10-01' },
+  { name: 'Second', url: '/blog/second' },
+];
+const list = (build) => build({ siteUrl: SITE, path: '/x', name: 'X', entries: ENTRIES });
+
+test('the index-page lists the builders emit are clean', () => {
+  for (const build of [buildItemList, buildBlog, buildVideoGallery]) {
+    const { errors, counts } = checkPage(page(block(list(build))));
+    assert.deepEqual(errors, [], build.name);
+    assert.equal(Object.values(counts)[0], 1);
+  }
+});
+
+test('an index list with no entries is reported', () => {
+  const empty = { ...list(buildItemList), numberOfItems: 0, itemListElement: [] };
+  assert.match(checkPage(page(block(empty))).errors.join('\n'), /ItemList: no entries/);
+  const blog = { ...list(buildBlog), blogPost: [] };
+  assert.match(checkPage(page(block(blog))).errors.join('\n'), /Blog: no posts/);
+});
+
+test('an entry with a relative url, a skipped position or a wrong count is reported', () => {
+  const broken = list(buildItemList);
+  broken.itemListElement[0].url = '/blog/first';
+  broken.itemListElement[1].position = 3;
+  broken.numberOfItems = 5;
+  const errors = checkPage(page(block(broken))).errors.join('\n');
+  assert.match(errors, /"First" has no absolute url/);
+  assert.match(errors, /entry 2 has position 3/);
+  assert.match(errors, /numberOfItems 5 but 2 entries/);
+});
+
+test('a VideoGallery whose list is missing or empty is reported', () => {
+  const gallery = list(buildVideoGallery);
+  const noList = { ...gallery, mainEntity: undefined };
+  assert.match(checkPage(page(block(noList))).errors.join('\n'), /mainEntity is not an ItemList/);
+  const empty = { ...gallery, mainEntity: { ...gallery.mainEntity, itemListElement: [] } };
+  assert.match(checkPage(page(block(empty))).errors.join('\n'), /VideoGallery: no entries/);
 });

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { CARD_CLASS } from 'common-util/classes';
 import { formatDate } from 'common-util/formatDate';
 
-type VideoItem = {
+export type VideoItem = {
   id?: string;
   platform_link?: string;
   drive_link?: string;
@@ -23,20 +23,18 @@ type VideoProps = {
   video: VideoItem;
 };
 
+/** Where a video card links; `''` when the CMS gave it nowhere to go. */
+export const videoHref = (video: VideoItem) =>
+  video.platform_link ||
+  video.drive_link ||
+  video.video_url ||
+  video.apple_link ||
+  video.spotify_link ||
+  video.rss_link ||
+  '';
+
 const Video = ({ video }: VideoProps) => (
-  <a
-    href={
-      video.platform_link ||
-      video.drive_link ||
-      video.video_url ||
-      video.apple_link ||
-      video.spotify_link ||
-      video.rss_link ||
-      '#'
-    }
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <a href={videoHref(video) || '#'} target="_blank" rel="noopener noreferrer">
     <div className={`${CARD_CLASS} max-w-full h-full overflow-hidden min-h-[300px] `}>
       {video.imageFilename && (
         <Image

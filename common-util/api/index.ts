@@ -53,6 +53,39 @@ export const getBlogs = async () => {
 };
 
 /**
+ * Title, slug and date of every post, optionally in one funnel (the Case Studies and
+ * Quarterly Updates folders), newest first — what the index pages' cards show, for their
+ * structured data. Paged like `getBlogs`, without the bodies. `[]` on failure.
+ */
+export const getBlogPostEntries = async ({ funnelId }: { funnelId?: number } = {}) => {
+  const posts = [];
+  let page = 1;
+  let pageCount = 1;
+
+  do {
+    const params = {
+      sort: ['datePublished:desc'],
+      fields: ['title', 'slug', 'datePublished'],
+      'pagination[page]': page,
+      'pagination[pageSize]': STRAPI_MAX_PAGE_SIZE,
+      ...(funnelId ? { filters: { funnel: { id: { $eq: funnelId } } } } : {}),
+    };
+    const json = await apiCall('blog-posts', params);
+    if (!json?.data) return [];
+    posts.push(...json.data);
+
+    pageCount = get(json, 'meta.pagination.pageCount') || 1;
+    page += 1;
+  } while (page <= pageCount && page <= 50);
+
+  return posts.map(({ id, title, slug, datePublished }) => ({
+    name: title ?? '',
+    url: `/blog/${slug ?? id}`,
+    date: datePublished ?? null,
+  }));
+};
+
+/**
  * `Blog` should be able to return a response if queried with `id` or `slug`.
  * If `filters` query is used, the response will be an array hence return the 1st element fetched
  *
