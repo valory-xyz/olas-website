@@ -29,6 +29,7 @@
     "llms:test": "node --test scripts/check-llms.test.mjs",
     "roi-math:test": "node --test common-util/api/predict/roi-math.test.mjs",
     "mech-fees-math:test": "node --test common-util/api/mech-marketplace-fees/math.test.mjs",
+    "mech-requests-math:test": "node --test common-util/api/agent-economies/mech-requests-math.test.mjs",
     "rpc-retry:test": "node --test common-util/rpc-retry.test.mjs",
     "rpc-pace:test": "node --test common-util/rpc-pace.test.mjs"
   },

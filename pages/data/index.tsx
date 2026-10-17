@@ -12,6 +12,7 @@ import { FeesInfo } from 'components/DataPage/Fees';
 import { GovernVeOlasInfo } from 'components/DataPage/GovernVeOlasInfo';
 import { MechCategorizedRequestsInfo } from 'components/DataPage/MechCategorizedRequests';
 import { MechGlobalsInfo } from 'components/DataPage/MechGlobals';
+import { MechOffChainShareInfo } from 'components/DataPage/MechOffChainShare';
 import { MechTurnoverInfo } from 'components/DataPage/MechTurnover';
 import { OlasStakedInfo } from 'components/DataPage/OlasStaked';
 import {
@@ -54,6 +55,7 @@ const DataVerifyPage = () => (
       <BabydegenMetricsInfo />
       <ConnectMetricsInfo />
       <MechGlobalsInfo />
+      <MechOffChainShareInfo />
       <MechCategorizedRequestsInfo />
       <TokenHolders />
       <GovernVeOlasInfo />

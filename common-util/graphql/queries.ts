@@ -147,6 +147,75 @@ export const mechMarketplaceTotalRequestsSquidQuery = gql`
   }
 `;
 
+// Off-chain page walks behind `splitChainRequests`, pinned to the globals' block.
+export const mechOffChainDeliveriesPageQuery = gql`
+  query MechOffChainDeliveriesPage($block: Int!, $lastId: Bytes!) {
+    marketplaceDeliveryWithSignatures_collection(
+      block: { number: $block }
+      where: { id_gt: $lastId }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+      numDeliveries
+    }
+    _meta {
+      hasIndexingErrors
+    }
+  }
+`;
+
+export const mechOffChainDeliveriesPageSquidQuery = gql`
+  query MechOffChainDeliveriesPageSquid($lastId: String!) {
+    marketplaceDeliveryWithSignatures_collection: marketplaceDeliveryWithSignatures(
+      where: { id_gt: $lastId }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+      numDeliveries
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const mechOffChainSendersPageQuery = gql`
+  query MechOffChainSendersPage($block: Int!, $lastId: Bytes!) {
+    senders(
+      block: { number: $block }
+      where: { totalOffChainRequests_gt: 0, id_gt: $lastId }
+      orderBy: id
+      orderDirection: asc
+      first: 1000
+    ) {
+      id
+      totalOffChainRequests
+    }
+    _meta {
+      hasIndexingErrors
+    }
+  }
+`;
+
+export const mechOffChainSendersPageSquidQuery = gql`
+  query MechOffChainSendersPageSquid($lastId: String!) {
+    senders(
+      where: { totalOffChainRequests_gt: "0", id_gt: $lastId }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+      totalOffChainRequests
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const getMechRequestsQuery = ({ timestamp_gt, first, skip, pages }) => gql`
   query MechRequests {
     ${Array.from({ length: pages })
