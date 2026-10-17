@@ -116,6 +116,11 @@ Every page on olas.network not linked above, each with what it is for.
 - Disclaimer (https://olas.network/disclaimer): the olas.network disclaimer.
 - Pearl Terms (https://olas.network/pearl-terms): terms governing the Pearl application.
 
+## Press
+
+- Press enquiries: press@valory.xyz
+- Brand and press kit: https://olas.network/brand-and-press-kit
+
 ## Which app to use
 
 - Want to use AI agents on your own device? → https://pearl.you/llms.txt (download and run agents locally)
