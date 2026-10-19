@@ -1,8 +1,12 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { MARKETPLACE_CHAIN_KEYS } from 'common-util/indexers';
-import { requestMarketplace } from 'common-util/graphql/indexer-requests';
+import {
+  MARKETPLACE_CHAIN_KEYS,
+  MARKETPLACE_SETTLEMENT_WALK_CHAINS,
+  type MarketplaceChain,
+} from 'common-util/indexers';
+import { type IndexerQuery, requestMarketplace } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -16,9 +20,22 @@ import {
   mechMarketplaceRequestsPerAgentsQuery,
   mechMarketplaceTotalRequestsQuery,
   mechMarketplaceTotalRequestsSquidQuery,
+  mechOffChainDeliveriesPageQuery,
+  mechOffChainDeliveriesPageSquidQuery,
+  mechOffChainSendersPageQuery,
+  mechOffChainSendersPageSquidQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+import {
+  type ChainRequestSplit,
+  collectChainSplits,
+  type MechRequestTotals,
+  type PageRetry,
+  type RawGlobals,
+  readChainSplit,
+  sumPages,
+} from './mech-requests-math';
 
 type DailyMechAgentPerformancesResult = WithMeta<{
   dailyAgentPerformances: {
@@ -96,9 +113,59 @@ type MechGlobalsResult = WithMeta<{
   };
 }>;
 
-const fetchMechGlobals = async (): Promise<
-  MetricWithStatus<{ requests: number; deliveries: number } | null>
-> => {
+const OFF_CHAIN_MAX_PAGES = 500;
+
+const OFF_CHAIN_PAGE_RETRY: PageRetry = {
+  attempts: 3,
+  delayMs: 1000,
+  sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+};
+
+type MarketplacePageWalk = { query: IndexerQuery; rowsKey: string; field: string };
+
+const OFF_CHAIN_SENDERS_WALK: MarketplacePageWalk = {
+  query: { subgraph: mechOffChainSendersPageQuery, squid: mechOffChainSendersPageSquidQuery },
+  rowsKey: 'senders',
+  field: 'totalOffChainRequests',
+};
+
+const OFF_CHAIN_DELIVERIES_WALK: MarketplacePageWalk = {
+  query: {
+    subgraph: mechOffChainDeliveriesPageQuery,
+    squid: mechOffChainDeliveriesPageSquidQuery,
+  },
+  rowsKey: 'marketplaceDeliveryWithSignatures_collection',
+  field: 'numDeliveries',
+};
+
+const sumMarketplacePages = (
+  chain: MarketplaceChain,
+  { query, rowsKey, field }: MarketplacePageWalk,
+  block: number | undefined
+): Promise<number> =>
+  sumPages({
+    fetchPage: (variables) => requestMarketplace<Record<string, unknown>>(chain, query, variables),
+    rowsKey,
+    field,
+    isSubgraph: chain in MARKETPLACE_GRAPH_CLIENTS,
+    block,
+    maxPages: OFF_CHAIN_MAX_PAGES,
+    retry: OFF_CHAIN_PAGE_RETRY,
+  });
+
+const marketplaceGlobalsQuery: IndexerQuery = {
+  subgraph: mechMarketplaceTotalRequestsQuery,
+  squid: mechMarketplaceTotalRequestsSquidQuery,
+};
+
+const readGlobals = async (chain: MarketplaceChain): Promise<RawGlobals> => {
+  const data = await requestMarketplace<MechGlobalsResult>(chain, marketplaceGlobalsQuery);
+  return data.global ?? { totalRequests: '0', totalDeliveries: '0' };
+};
+
+// Lifetime requests and deliveries across marketplace chains, with the settled
+// off-chain part; see `splitChainRequests`.
+const fetchMechGlobals = async (): Promise<MetricWithStatus<MechRequestTotals | null>> => {
   const chains = MARKETPLACE_CHAIN_KEYS;
 
   const indexingErrors: string[] = [];
@@ -107,51 +174,61 @@ const fetchMechGlobals = async (): Promise<
 
   try {
     const queryPromises = chains.map((chain) =>
-      requestMarketplace(chain, {
-        subgraph: mechMarketplaceTotalRequestsQuery,
-        squid: mechMarketplaceTotalRequestsSquidQuery,
-      })
+      requestMarketplace<MechGlobalsResult>(chain, marketplaceGlobalsQuery)
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
-    let totalRequests = 0;
-    let totalDeliveries = 0;
+    const readers: Record<string, () => Promise<ChainRequestSplit>> = {};
 
     chains.forEach((chain, index) => {
       const queryResult = results[index];
       const blockResult = results[index + chains.length];
+      const source = `marketplace:${chain}`;
 
       if (queryResult.status === 'rejected') {
-        console.error(`marketplace:${chain}`, queryResult.reason);
-        fetchErrors.push(`marketplace:${chain}`);
-      } else {
-        const data = queryResult.value as MechGlobalsResult;
-        const chainBlock =
-          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
-
-        if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(`marketplace:${chain}`);
-        }
-        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(`marketplace:${chain}`);
-        }
-
-        // The query didn't fail, so a null Global just means no marketplace activity on
-        // this chain yet — expected, chains are wired up ahead of launch.
-        const source = `marketplace:${chain}`;
-        const globalEntity = data.global ?? { totalRequests: '0', totalDeliveries: '0' };
-        const requests = readGlobalField(globalEntity, 'totalRequests', source, fetchErrors);
-        const deliveries = readGlobalField(globalEntity, 'totalDeliveries', source, fetchErrors);
-        if (requests === null || deliveries === null) return;
-
-        totalRequests += Number(requests);
-        totalDeliveries += Number(deliveries);
+        console.error(source, queryResult.reason);
+        fetchErrors.push(source);
+        return;
       }
+      const data = queryResult.value as MechGlobalsResult;
+      const chainBlock = blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+
+      if (data._meta?.hasIndexingErrors) {
+        indexingErrors.push(source);
+      }
+      if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+        laggingSubgraphs.push(source);
+      }
+
+      // The query didn't fail, so a null Global just means no marketplace activity on
+      // this chain yet — expected, chains are wired up ahead of launch.
+      const globalEntity = data.global ?? { totalRequests: '0', totalDeliveries: '0' };
+      const requests = readGlobalField(globalEntity, 'totalRequests', source, fetchErrors);
+      const deliveries = readGlobalField(globalEntity, 'totalDeliveries', source, fetchErrors);
+      if (requests === null || deliveries === null) return;
+
+      const block = data._meta?.block?.number;
+      const isSubgraph = chain in MARKETPLACE_GRAPH_CLIENTS;
+      readers[chain] = () =>
+        readChainSplit({
+          globals: { totalRequests: requests, totalDeliveries: deliveries },
+          sumSenders: () => sumMarketplacePages(chain, OFF_CHAIN_SENDERS_WALK, block),
+          sumSettlements: MARKETPLACE_SETTLEMENT_WALK_CHAINS.includes(chain)
+            ? () => sumMarketplacePages(chain, OFF_CHAIN_DELIVERIES_WALK, block)
+            : null,
+          rereadGlobals: isSubgraph ? null : () => readGlobals(chain),
+        });
+    });
+
+    const { totals, failed } = await collectChainSplits(readers);
+    failed.forEach(({ chain, stage, error }) => {
+      console.error(`marketplace:${chain}:${stage}`, error);
+      fetchErrors.push(`marketplace:${chain}:${stage}`);
     });
 
     return {
-      value: { requests: totalRequests, deliveries: totalDeliveries },
+      value: totals,
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {
@@ -333,6 +410,10 @@ export const fetchMechMetrics = async () => {
         value: globals.value?.deliveries ?? null,
         status: globals.status,
       },
+      offChainRequests: {
+        value: globals.value?.offChainRequests ?? null,
+        status: globals.status,
+      },
       predictTxs: {
         value: categorized.value ? predictTxsValue : null,
         status: categorized.status,
@@ -381,6 +462,7 @@ export const fetchMechMetrics = async () => {
       dailyActiveAgents: errorMetric,
       totalRequests: errorMetric,
       totalDeliveries: errorMetric,
+      offChainRequests: errorMetric,
       predictTxs: errorMetric,
       contributeTxs: errorMetric,
       governatooorrTxs: errorMetric,

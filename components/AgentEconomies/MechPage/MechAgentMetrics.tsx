@@ -8,9 +8,16 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
 import { isFrozen } from 'common-util/graphql/metric-utils';
-import { buildMetricContext } from 'components/ui/MetricContext';
+import type { AgentEconomiesMetricsData } from 'common-util/api/agent-economies';
+import { offChainSharePercent } from 'common-util/api/agent-economies/mech-requests-math';
+import { buildMetricContext, type MetricContextProps } from 'components/ui/MetricContext';
 
-export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
+type MechAgentMetricsProps = {
+  metrics: AgentEconomiesMetricsData['mech'] | null;
+  snapshotTimestamp?: MetricContextProps['asOfFallback'];
+};
+
+export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }: MechAgentMetricsProps) => {
   const data = useMemo(
     () => [
       {
@@ -88,6 +95,14 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
     [metrics]
   );
 
+  const offChainShare = offChainSharePercent(
+    metrics?.offChainRequests?.value,
+    metrics?.totalRequests?.value
+  );
+  const offChainShareFrozen = isFrozen(metrics?.offChainRequests?.status);
+  const offChainShareLabel = offChainShare === null ? null : `${offChainShare.toFixed(2)}%`;
+  const onChainShareLabel = offChainShare === null ? null : `${(100 - offChainShare).toFixed(2)}%`;
+
   const summaryLines = [
     buildMetricContext({
       // Floored to match the number the card renders; the raw 7-day mean is fractional.
@@ -108,6 +123,14 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
       value: metrics?.totalDeliveries?.value,
       status: metrics?.totalDeliveries?.status,
       noun: 'task deliveries completed by Olas Mech agents',
+      window: 'all time',
+      asOfFallback: snapshotTimestamp,
+    }),
+    buildMetricContext({
+      value: offChainShareLabel,
+      status: metrics?.offChainRequests?.status,
+      noun: 'of Olas Mech task requests were sent off-chain through the Mech API and later settled on-chain, with the rest requested on-chain',
+      label: 'requested off-chain (API)',
       window: 'all time',
       asOfFallback: snapshotTimestamp,
     }),
@@ -188,6 +211,23 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }) => {
           )}{' '}
           deliveries from other AI agent economies.
         </p>
+        {offChainShareLabel && (
+          <p className="text-base text-slate-700 mt-0 mb-8 mx-auto">
+            <Link className="font-bold" href="/data#mech-offchain-share">
+              <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
+                {offChainShareLabel}
+              </span>
+            </Link>{' '}
+            requested <span className="whitespace-nowrap">off-chain (API),</span>{' '}
+            <span className="whitespace-nowrap">
+              <span className={`font-bold ${offChainShareFrozen ? 'text-gray-400' : ''}`}>
+                {onChainShareLabel}
+              </span>{' '}
+              on-chain
+            </span>{' '}
+            <StaleIndicator status={metrics.offChainRequests.status} />
+          </p>
+        )}
         <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">Requests are broken up as:</p>
       </div>
       <div className="w-full border-y mb-8">

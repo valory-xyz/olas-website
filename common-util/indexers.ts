@@ -123,6 +123,17 @@ export type MarketplaceChain = (typeof MARKETPLACE_CHAIN_KEYS)[number];
 export const MECH_FEES_CHAIN_KEYS = chainKeys(MECH_FEES_SUBGRAPH_URLS, MECH_FEES_SQUID_URLS);
 export type MechFeesChain = (typeof MECH_FEES_CHAIN_KEYS)[number];
 
+// Marketplace chains whose subgraph runs the signed-delivery handler twice per event
+// (autonolas-subgraph#140), so `Sender.totalOffChainRequests` is doubled there and the
+// off-chain count comes from the settlement rows. Elsewhere the sender sum is exact and the
+// settlement rows, which grow with every request, are not walked. Empty once #140 is fixed.
+export const MARKETPLACE_SETTLEMENT_WALK_CHAINS: readonly MarketplaceChain[] = [
+  'polygon',
+  'optimism',
+  'arbitrum',
+  'ethereum',
+];
+
 /**
  * "all N chains … (A, B and C)" for a set of chain keys.
  *
