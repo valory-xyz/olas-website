@@ -41,12 +41,10 @@ export const MechOffChainShareInfo = () => {
         <p>For each chain:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li>
-            Off-chain requests are the sum of <code>Sender.totalOffChainRequests</code>, which the
-            settlement handler adds to once per settlement. On {settlementWalkChainNames} the
-            subgraph currently runs that handler twice per settlement, so there they are instead the
-            sum of <code>numDeliveries</code> over all{' '}
-            <code>MarketplaceDeliveryWithSignatures</code> rows, which are stored once per
-            settlement.
+            Off-chain requests are the sum of <code>numDeliveries</code> over all{' '}
+            <code>MarketplaceDeliveryWithSignatures</code> rows on {settlementWalkChainNames}, and
+            the sum of <code>Sender.totalOffChainRequests</code> on the other chains. Both count
+            each settled off-chain request once.
           </li>
           <li>
             On-chain requests are <code>global.totalRequests</code> minus the sum of{' '}

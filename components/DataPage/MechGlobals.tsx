@@ -20,12 +20,12 @@ export const MechGlobalsInfo = () => {
       <div className="space-y-6 mt-4">
         <p>
           Total requests and deliveries are aggregated from Mech Marketplace subgraphs and squids
-          across {MARKETPLACE_CHAIN_SCOPE}. Each chain&apos;s total is rebuilt as on-chain plus
-          off-chain (API) requests (see{' '}
+          across {MARKETPLACE_CHAIN_SCOPE}. Each chain&apos;s total is its on-chain plus off-chain
+          (API) requests (see{' '}
           <a className="text-purple-600" href="#mech-offchain-share">
             Mech Off-chain Share
           </a>
-          ), so every signed delivery counts once.
+          ).
         </p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Mech Marketplace Globals Query</h3>
