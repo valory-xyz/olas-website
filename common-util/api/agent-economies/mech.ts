@@ -26,6 +26,7 @@ import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import {
   type ChainRequestSplit,
   type MechRequestTotals,
+  type PageRetry,
   parseCount,
   splitChainRequests,
   sumChainSplits,
@@ -110,6 +111,12 @@ type MechGlobalsResult = WithMeta<{
 
 const OFF_CHAIN_MAX_PAGES = 500;
 
+const OFF_CHAIN_PAGE_RETRY: PageRetry = {
+  attempts: 3,
+  delayMs: 1000,
+  sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+};
+
 type MarketplacePageWalk = { query: IndexerQuery; rowsKey: string; field: string };
 
 const OFF_CHAIN_SENDERS_WALK: MarketplacePageWalk = {
@@ -139,6 +146,7 @@ const sumMarketplacePages = (
     isSubgraph: chain in MARKETPLACE_GRAPH_CLIENTS,
     block,
     maxPages: OFF_CHAIN_MAX_PAGES,
+    retry: OFF_CHAIN_PAGE_RETRY,
   });
 
 const fetchChainRequestSplit = async (

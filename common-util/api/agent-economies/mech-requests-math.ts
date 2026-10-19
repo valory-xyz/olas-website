@@ -70,6 +70,42 @@ export const parseCount = (raw: string | number): number => {
 
 export type PageVariables = { block?: number; lastId: string };
 
+export type PageRetry = {
+  // Total tries per page, including the first.
+  attempts: number;
+  // Wait before retry n is `delayMs * n`.
+  delayMs: number;
+  sleep: (ms: number) => Promise<void>;
+};
+
+const TRANSIENT_HTTP_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
+
+/**
+ * True for failures a second request can fix: no HTTP response at all (network error,
+ * timeout) or a throttling or server status. A response that came back with GraphQL
+ * errors fails the same way every time, so it is not retried.
+ */
+export const isTransientPageError = (error: unknown): boolean => {
+  const response = (error as { response?: { status?: unknown } } | null)?.response;
+  if (response === undefined || response === null) return true;
+  return typeof response.status === 'number' && TRANSIENT_HTTP_STATUSES.has(response.status);
+};
+
+const fetchPageWithRetry = async (
+  fetchPage: SumPagesOptions['fetchPage'],
+  variables: PageVariables,
+  { attempts, delayMs, sleep }: PageRetry
+): Promise<Record<string, unknown>> => {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await fetchPage(variables);
+    } catch (error) {
+      if (attempt >= attempts || !isTransientPageError(error)) throw error;
+      await sleep(delayMs * attempt);
+    }
+  }
+};
+
 export type SumPagesOptions = {
   fetchPage: (variables: PageVariables) => Promise<Record<string, unknown>>;
   rowsKey: string;
@@ -79,12 +115,14 @@ export type SumPagesOptions = {
   isSubgraph: boolean;
   block: number | undefined;
   maxPages: number;
+  retry: PageRetry;
 };
 
 /**
- * Walks an id-ordered page query until an empty page and sums one count field. A response
- * without a `rowsKey` array, or a walk needing more than `maxPages` pages, throws so the
- * chain is refused instead of publishing a partial sum.
+ * Walks an id-ordered page query until an empty page and sums one count field. A page
+ * request that fails transiently is retried per `retry`. A response without a `rowsKey`
+ * array, or a walk needing more than `maxPages` pages, throws so the chain is refused
+ * instead of publishing a partial sum.
  */
 export const sumPages = async ({
   fetchPage,
@@ -93,6 +131,7 @@ export const sumPages = async ({
   isSubgraph,
   block,
   maxPages,
+  retry,
 }: SumPagesOptions): Promise<number> => {
   if (isSubgraph && block === undefined) {
     throw new Error('no block to pin subgraph pages to');
@@ -100,7 +139,11 @@ export const sumPages = async ({
   let sum = 0;
   let lastId = isSubgraph ? '0x' : '';
   for (let pages = 1; ; pages += 1) {
-    const page = await fetchPage(isSubgraph ? { block, lastId } : { lastId });
+    const page = await fetchPageWithRetry(
+      fetchPage,
+      isSubgraph ? { block, lastId } : { lastId },
+      retry
+    );
     const rows = page?.[rowsKey];
     if (!Array.isArray(rows)) throw new Error(`response has no ${rowsKey} array`);
     if (rows.length === 0) return sum;
