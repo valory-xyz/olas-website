@@ -42,7 +42,12 @@ export const MechOffChainShareInfo = () => {
             same amount to the sender counter and to both globals, so this removes exactly the
             off-chain part of the globals.
           </li>
-          <li>On subgraphs, both page walks are pinned to the block the globals were read at.</li>
+          <li>
+            On subgraphs, both page walks are pinned to the block the globals were read at, so the
+            split is exact. Squids cannot read at a past block, so on squid chains the walks read
+            the latest state, and a settlement landing between reads can shift that chain&apos;s
+            split by a few requests until the next refresh.
+          </li>
         </ul>
         <p>
           The share is off-chain requests divided by on-chain plus off-chain requests, summed over

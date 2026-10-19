@@ -211,34 +211,23 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }: MechAgen
           )}{' '}
           deliveries from other AI agent economies.
         </p>
-        <div className="text-base text-slate-700 max-w-[560px] mx-auto mb-8">
-          <div className="flex justify-between gap-4 mb-2">
+        {offChainShareLabel && (
+          <p className="text-base text-slate-700 mt-0 mb-8 mx-auto">
             <span className="inline-flex items-center gap-1">
-              {offChainShareLabel ? (
-                <Link className="font-bold" href="/data#mech-offchain-share">
-                  <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
-                    {offChainShareLabel}
-                  </span>
-                </Link>
-              ) : (
-                <span className="font-bold">--</span>
-              )}{' '}
-              settled off-chain (API)
-              {offChainShareLabel && <StaleIndicator status={metrics.offChainRequests.status} />}
+              <Link className="font-bold" href="/data#mech-offchain-share">
+                <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
+                  {offChainShareLabel}
+                </span>
+              </Link>{' '}
+              settled off-chain (API),{' '}
+              <span className={`font-bold ${offChainShareFrozen ? 'text-gray-400' : ''}`}>
+                {onChainShareLabel}
+              </span>{' '}
+              on-chain
+              <StaleIndicator status={metrics.offChainRequests.status} />
             </span>
-            <span>
-              <span className="font-bold">{onChainShareLabel ?? '--'}</span> on-chain
-            </span>
-          </div>
-          <div className="flex h-2 w-full overflow-hidden rounded-full bg-purple-100" aria-hidden>
-            {offChainShare !== null && (
-              <div
-                className={offChainShareFrozen ? 'bg-gray-400' : 'bg-purple-600'}
-                style={{ width: `${offChainShare}%`, minWidth: offChainShare > 0 ? 2 : 0 }}
-              />
-            )}
-          </div>
-        </div>
+          </p>
+        )}
         <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">Requests are broken up as:</p>
       </div>
       <div className="w-full border-y mb-8">
