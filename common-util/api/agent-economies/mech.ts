@@ -1,7 +1,11 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
 import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
-import { MARKETPLACE_CHAIN_KEYS, type MarketplaceChain } from 'common-util/indexers';
+import {
+  MARKETPLACE_CHAIN_KEYS,
+  MARKETPLACE_SETTLEMENT_WALK_CHAINS,
+  type MarketplaceChain,
+} from 'common-util/indexers';
 import { type IndexerQuery, requestMarketplace } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
@@ -25,11 +29,11 @@ import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import {
   type ChainRequestSplit,
+  collectChainSplits,
   type MechRequestTotals,
   type PageRetry,
-  parseCount,
-  splitChainRequests,
-  sumChainSplits,
+  type RawGlobals,
+  readChainSplit,
   sumPages,
 } from './mech-requests-math';
 
@@ -149,30 +153,14 @@ const sumMarketplacePages = (
     retry: OFF_CHAIN_PAGE_RETRY,
   });
 
-const fetchChainRequestSplit = async (
-  chain: MarketplaceChain,
-  data: MechGlobalsResult,
-  source: string,
-  fetchErrors: string[]
-): Promise<ChainRequestSplit | null> => {
-  // The query didn't fail, so a null Global just means no marketplace activity on
-  // this chain yet — expected, chains are wired up ahead of launch.
-  const globalEntity = data.global ?? { totalRequests: '0', totalDeliveries: '0' };
-  const requests = readGlobalField(globalEntity, 'totalRequests', source, fetchErrors);
-  const deliveries = readGlobalField(globalEntity, 'totalDeliveries', source, fetchErrors);
-  if (requests === null || deliveries === null) return null;
+const marketplaceGlobalsQuery: IndexerQuery = {
+  subgraph: mechMarketplaceTotalRequestsQuery,
+  squid: mechMarketplaceTotalRequestsSquidQuery,
+};
 
-  const block = data._meta?.block?.number;
-  const [senderOffChain, offChain] = await Promise.all([
-    sumMarketplacePages(chain, OFF_CHAIN_SENDERS_WALK, block),
-    sumMarketplacePages(chain, OFF_CHAIN_DELIVERIES_WALK, block),
-  ]);
-  return splitChainRequests({
-    totalRequests: parseCount(requests),
-    totalDeliveries: parseCount(deliveries),
-    senderOffChain,
-    offChain,
-  });
+const readGlobals = async (chain: MarketplaceChain): Promise<RawGlobals> => {
+  const data = await requestMarketplace<MechGlobalsResult>(chain, marketplaceGlobalsQuery);
+  return data.global ?? { totalRequests: '0', totalDeliveries: '0' };
 };
 
 // Lifetime requests and deliveries across marketplace chains, with the settled
@@ -186,52 +174,61 @@ const fetchMechGlobals = async (): Promise<MetricWithStatus<MechRequestTotals | 
 
   try {
     const queryPromises = chains.map((chain) =>
-      requestMarketplace(chain, {
-        subgraph: mechMarketplaceTotalRequestsQuery,
-        squid: mechMarketplaceTotalRequestsSquidQuery,
-      })
+      requestMarketplace<MechGlobalsResult>(chain, marketplaceGlobalsQuery)
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
 
-    const splits: ChainRequestSplit[] = [];
+    const readers: Record<string, () => Promise<ChainRequestSplit>> = {};
 
-    await Promise.all(
-      chains.map(async (chain, index) => {
-        const queryResult = results[index];
-        const blockResult = results[index + chains.length];
-        const source = `marketplace:${chain}`;
+    chains.forEach((chain, index) => {
+      const queryResult = results[index];
+      const blockResult = results[index + chains.length];
+      const source = `marketplace:${chain}`;
 
-        if (queryResult.status === 'rejected') {
-          console.error(source, queryResult.reason);
-          fetchErrors.push(source);
-          return;
-        }
-        const data = queryResult.value as MechGlobalsResult;
-        const chainBlock =
-          blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
+      if (queryResult.status === 'rejected') {
+        console.error(source, queryResult.reason);
+        fetchErrors.push(source);
+        return;
+      }
+      const data = queryResult.value as MechGlobalsResult;
+      const chainBlock = blockResult.status === 'fulfilled' ? (blockResult.value as number) : null;
 
-        if (data._meta?.hasIndexingErrors) {
-          indexingErrors.push(source);
-        }
-        if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
-          laggingSubgraphs.push(source);
-        }
+      if (data._meta?.hasIndexingErrors) {
+        indexingErrors.push(source);
+      }
+      if (checkSubgraphLag(chainBlock, data._meta?.block?.number, chain)) {
+        laggingSubgraphs.push(source);
+      }
 
-        let split: ChainRequestSplit | null;
-        try {
-          split = await fetchChainRequestSplit(chain, data, source, fetchErrors);
-        } catch (error) {
-          console.error(`${source}:offchain`, error);
-          fetchErrors.push(`${source}:offchain`);
-          return;
-        }
-        if (split !== null) splits.push(split);
-      })
-    );
+      // The query didn't fail, so a null Global just means no marketplace activity on
+      // this chain yet — expected, chains are wired up ahead of launch.
+      const globalEntity = data.global ?? { totalRequests: '0', totalDeliveries: '0' };
+      const requests = readGlobalField(globalEntity, 'totalRequests', source, fetchErrors);
+      const deliveries = readGlobalField(globalEntity, 'totalDeliveries', source, fetchErrors);
+      if (requests === null || deliveries === null) return;
+
+      const block = data._meta?.block?.number;
+      const isSubgraph = chain in MARKETPLACE_GRAPH_CLIENTS;
+      readers[chain] = () =>
+        readChainSplit({
+          globals: { totalRequests: requests, totalDeliveries: deliveries },
+          sumSenders: () => sumMarketplacePages(chain, OFF_CHAIN_SENDERS_WALK, block),
+          sumSettlements: MARKETPLACE_SETTLEMENT_WALK_CHAINS.includes(chain)
+            ? () => sumMarketplacePages(chain, OFF_CHAIN_DELIVERIES_WALK, block)
+            : null,
+          rereadGlobals: isSubgraph ? null : () => readGlobals(chain),
+        });
+    });
+
+    const { totals, failed } = await collectChainSplits(readers);
+    failed.forEach(({ chain, stage, error }) => {
+      console.error(`marketplace:${chain}:${stage}`, error);
+      fetchErrors.push(`marketplace:${chain}:${stage}`);
+    });
 
     return {
-      value: sumChainSplits(splits),
+      value: totals,
       status: createStaleStatus({ indexingErrors, fetchErrors, laggingSubgraphs }),
     };
   } catch (error) {

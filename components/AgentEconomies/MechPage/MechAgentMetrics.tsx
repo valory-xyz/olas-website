@@ -129,8 +129,8 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }: MechAgen
     buildMetricContext({
       value: offChainShareLabel,
       status: metrics?.offChainRequests?.status,
-      noun: 'of Olas Mech task requests were sent off-chain through the Mech API and settled on-chain in batches, with the rest requested on-chain',
-      label: 'settled off-chain (API)',
+      noun: 'of Olas Mech task requests were sent off-chain through the Mech API and later settled on-chain, with the rest requested on-chain',
+      label: 'requested off-chain (API)',
       window: 'all time',
       asOfFallback: snapshotTimestamp,
     }),
@@ -213,19 +213,19 @@ export const MechAgentMetrics = ({ metrics, snapshotTimestamp = null }: MechAgen
         </p>
         {offChainShareLabel && (
           <p className="text-base text-slate-700 mt-0 mb-8 mx-auto">
-            <span className="inline-flex items-center gap-1">
-              <Link className="font-bold" href="/data#mech-offchain-share">
-                <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
-                  {offChainShareLabel}
-                </span>
-              </Link>{' '}
-              settled off-chain (API),{' '}
+            <Link className="font-bold" href="/data#mech-offchain-share">
+              <span className={offChainShareFrozen ? 'text-gray-400' : ''}>
+                {offChainShareLabel}
+              </span>
+            </Link>{' '}
+            requested <span className="whitespace-nowrap">off-chain (API),</span>{' '}
+            <span className="whitespace-nowrap">
               <span className={`font-bold ${offChainShareFrozen ? 'text-gray-400' : ''}`}>
                 {onChainShareLabel}
               </span>{' '}
               on-chain
-              <StaleIndicator status={metrics.offChainRequests.status} />
-            </span>
+            </span>{' '}
+            <StaleIndicator status={metrics.offChainRequests.status} />
           </p>
         )}
         <p className="text-xl text-slate-700 mt-0 mb-0 mx-auto">Requests are broken up as:</p>

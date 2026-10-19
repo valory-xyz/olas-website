@@ -4,7 +4,7 @@
  * type-stripping to load the .ts module directly. Run with `yarn mech-requests-math:test`.
  *
  * These decide the published request and delivery totals and the off-chain share: how a
- * chain's globals split into on-chain and settled off-chain counts, how the off-chain
+ * chain's globals split into on-chain and off-chain counts, how the off-chain
  * page walks sum, and when a reading is refused instead of published.
  */
 
@@ -14,9 +14,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  ChainSplitError,
+  collectChainSplits,
   isTransientPageError,
   offChainSharePercent,
   parseCount,
+  readChainSplit,
   splitChainRequests,
   sumChainSplits,
   sumPages,
@@ -266,6 +269,140 @@ test('isTransientPageError retries network, throttling and server failures only'
     assert.equal(isTransientPageError(httpError(status)), false, `status ${status}`);
   }
   assert.equal(isTransientPageError(graphqlError()), false);
+});
+
+const asRawGlobals = ({ totalRequests, totalDeliveries }) => ({
+  totalRequests: String(totalRequests),
+  totalDeliveries: String(totalDeliveries),
+});
+
+const fixed = (value) => async () => value;
+const failing = (error) => async () => {
+  throw error;
+};
+
+test('readChainSplit takes the sender sum as the off-chain count where counters are exact', async () => {
+  const split = await readChainSplit({
+    globals: asRawGlobals(SINGLE_CHAIN),
+    sumSenders: fixed(SINGLE_CHAIN.senderOffChain),
+    sumSettlements: null,
+    rereadGlobals: null,
+  });
+  assert.deepEqual(split, splitChainRequests(SINGLE_CHAIN));
+});
+
+test('readChainSplit takes the settlement sum where the sender counters are doubled', async () => {
+  const split = await readChainSplit({
+    globals: asRawGlobals(DOUBLED_CHAIN),
+    sumSenders: fixed(DOUBLED_CHAIN.senderOffChain),
+    sumSettlements: fixed(DOUBLED_CHAIN.offChain),
+    rereadGlobals: null,
+  });
+  assert.deepEqual(split, { onChainRequests: 377, onChainDeliveries: 375, offChain: 4577 });
+});
+
+test('readChainSplit re-reads squid globals after the walks so newer settlements fit', async () => {
+  const order = [];
+  const split = await readChainSplit({
+    globals: { totalRequests: '18', totalDeliveries: '16' },
+    // Four settlements landed after the first globals read.
+    sumSenders: async () => {
+      order.push('senders');
+      return 17;
+    },
+    sumSettlements: null,
+    rereadGlobals: async () => {
+      order.push('globals');
+      return { totalRequests: '22', totalDeliveries: '20' };
+    },
+  });
+  assert.deepEqual(order, ['senders', 'globals']);
+  assert.deepEqual(split, { onChainRequests: 5, onChainDeliveries: 3, offChain: 17 });
+});
+
+test('readChainSplit refuses walks newer than the globals when they are not re-read', async () => {
+  await assert.rejects(
+    readChainSplit({
+      globals: { totalRequests: '18', totalDeliveries: '16' },
+      sumSenders: fixed(17),
+      sumSettlements: null,
+      rereadGlobals: null,
+    }),
+    (error) => error instanceof ChainSplitError && error.stage === 'offchain'
+  );
+});
+
+test('readChainSplit reports a malformed global as a global failure without walking', async () => {
+  let walked = false;
+  await assert.rejects(
+    readChainSplit({
+      globals: { totalRequests: 'NaN', totalDeliveries: '0' },
+      sumSenders: async () => {
+        walked = true;
+        return 0;
+      },
+      sumSettlements: null,
+      rereadGlobals: null,
+    }),
+    (error) => error instanceof ChainSplitError && error.stage === 'global'
+  );
+  assert.equal(walked, false);
+});
+
+test('readChainSplit reports a failed walk as an off-chain failure', async () => {
+  for (const sources of [
+    { sumSenders: failing(httpError(503)), sumSettlements: fixed(0) },
+    { sumSenders: fixed(0), sumSettlements: failing(httpError(503)) },
+  ]) {
+    await assert.rejects(
+      readChainSplit({ globals: asRawGlobals(SINGLE_CHAIN), rereadGlobals: null, ...sources }),
+      (error) => error instanceof ChainSplitError && error.stage === 'offchain'
+    );
+  }
+});
+
+test('readChainSplit reports a failed or malformed squid re-read as a global failure', async () => {
+  for (const rereadGlobals of [
+    failing(networkError()),
+    fixed({ totalRequests: '1', totalDeliveries: undefined }),
+  ]) {
+    await assert.rejects(
+      readChainSplit({
+        globals: asRawGlobals(SINGLE_CHAIN),
+        sumSenders: fixed(SINGLE_CHAIN.senderOffChain),
+        sumSettlements: null,
+        rereadGlobals,
+      }),
+      (error) => error instanceof ChainSplitError && error.stage === 'global'
+    );
+  }
+});
+
+test('collectChainSplits refuses a failing chain and still sums the others', async () => {
+  const globalFailure = new ChainSplitError('global', new Error('bad global'));
+  const { totals, failed } = await collectChainSplits({
+    optimism: fixed(splitChainRequests(DOUBLED_CHAIN)),
+    gnosis: fixed(splitChainRequests(SINGLE_CHAIN)),
+    base: failing(new ChainSplitError('offchain', httpError(503))),
+    robinhood: failing(globalFailure),
+    polygon: failing(new Error('not a ChainSplitError')),
+  });
+  assert.deepEqual(
+    totals,
+    sumChainSplits([splitChainRequests(DOUBLED_CHAIN), splitChainRequests(SINGLE_CHAIN)])
+  );
+  assert.deepEqual(
+    failed.map(({ chain, stage }) => `${chain}:${stage}`),
+    ['base:offchain', 'robinhood:global', 'polygon:offchain']
+  );
+  assert.equal(failed[1].error, globalFailure);
+});
+
+test('collectChainSplits of no chains is zero with no failures', async () => {
+  assert.deepEqual(await collectChainSplits({}), {
+    totals: { requests: 0, deliveries: 0, offChainRequests: 0 },
+    failed: [],
+  });
 });
 
 test('parseCount accepts subgraph BigInt strings and integers', () => {

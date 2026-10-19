@@ -1,5 +1,6 @@
 import {
   MARKETPLACE_CHAIN_SCOPE,
+  MARKETPLACE_SETTLEMENT_WALK_CHAINS,
   MARKETPLACE_SQUID_URLS,
   MARKETPLACE_SUBGRAPH_URLS,
 } from 'common-util/indexers';
@@ -14,6 +15,15 @@ import SectionWrapper from 'components/Layout/SectionWrapper';
 import { CodeSnippet } from './CodeSnippet';
 import { IndexerLinks } from './IndexerLinks';
 
+const settlementWalkChainNames = (() => {
+  const names = MARKETPLACE_SETTLEMENT_WALK_CHAINS.map(
+    (k) => k.charAt(0).toUpperCase() + k.slice(1)
+  );
+  return names.length > 1
+    ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+    : names.join('');
+})();
+
 export const MechOffChainShareInfo = () => {
   return (
     <SectionWrapper id="mech-offchain-share">
@@ -23,7 +33,7 @@ export const MechOffChainShareInfo = () => {
         <p>
           Splits all-time Mech requests across {MARKETPLACE_CHAIN_SCOPE} into requests made on-chain
           and requests sent off-chain through the Mech API. An off-chain request has no on-chain
-          request transaction. It appears on-chain only when the mech settles it in a signed batch
+          request transaction. It appears on-chain only when the mech settles it in a signed
           delivery, so off-chain requests and off-chain deliveries are the same count, and requests
           that were never settled are not included.
         </p>
@@ -31,9 +41,12 @@ export const MechOffChainShareInfo = () => {
         <p>For each chain:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li>
-            Off-chain requests are the sum of <code>numDeliveries</code> over all{' '}
+            Off-chain requests are the sum of <code>Sender.totalOffChainRequests</code>, which the
+            settlement handler adds to once per settlement. On {settlementWalkChainNames} the
+            subgraph currently runs that handler twice per settlement, so there they are instead the
+            sum of <code>numDeliveries</code> over all{' '}
             <code>MarketplaceDeliveryWithSignatures</code> rows, which are stored once per
-            settlement event.
+            settlement.
           </li>
           <li>
             On-chain requests are <code>global.totalRequests</code> minus the sum of{' '}
@@ -43,10 +56,10 @@ export const MechOffChainShareInfo = () => {
             off-chain part of the globals.
           </li>
           <li>
-            On subgraphs, both page walks are pinned to the block the globals were read at, so the
-            split is exact. Squids cannot read at a past block, so on squid chains the walks read
-            the latest state, and a settlement landing between reads can shift that chain&apos;s
-            split by a few requests until the next refresh.
+            On subgraphs, every page walk is pinned to the block the globals were read at, so the
+            split is exact. Squids cannot read at a past block, so on squid chains the globals are
+            read again after the walks, and a settlement landing between reads can shift that
+            chain&apos;s split by a few requests until the next refresh.
           </li>
         </ul>
         <p>

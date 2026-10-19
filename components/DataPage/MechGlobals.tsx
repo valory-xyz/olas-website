@@ -21,7 +21,7 @@ export const MechGlobalsInfo = () => {
         <p>
           Total requests and deliveries are aggregated from Mech Marketplace subgraphs and squids
           across {MARKETPLACE_CHAIN_SCOPE}. Each chain&apos;s total is rebuilt as on-chain plus
-          settled off-chain requests (see{' '}
+          off-chain (API) requests (see{' '}
           <a className="text-purple-600" href="#mech-offchain-share">
             Mech Off-chain Share
           </a>

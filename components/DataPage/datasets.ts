@@ -79,13 +79,13 @@ export const DATASETS: DatasetEntry[] = [
     id: 'mech-globals',
     name: 'Mech Globals',
     description:
-      'Total Mech requests and deliveries across every Mech Marketplace chain, rebuilt per chain as on-chain plus settled off-chain requests.',
+      'Total Mech requests and deliveries across every Mech Marketplace chain, rebuilt per chain as on-chain plus off-chain (API) requests.',
   },
   {
     id: 'mech-offchain-share',
     name: 'Mech Off-chain Share',
     description:
-      'Share of all-time Mech requests sent off-chain through the Mech API and settled on-chain in signed batch deliveries, against requests made on-chain.',
+      'Share of all-time Mech requests sent off-chain through the Mech API and later settled on-chain, against requests made on-chain.',
   },
   {
     id: 'mech-requests-categorized',
