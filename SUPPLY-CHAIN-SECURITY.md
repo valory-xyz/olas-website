@@ -133,7 +133,7 @@ Before adding a new direct dependency:
 - [x] Migrate from Next.js 14.2.x to 15.x (React 18 → 19, `outputFileTracingIncludes` graduated out of `experimental`, `outputFileTracingRoot` pinned). Cleared the last 4 high advisories.
 - [x] Move the audit gate to a wrapper script ([`scripts/audit.mjs`](./scripts/audit.mjs)) backed by [`.supply-chain/audit-allowlist.json`](./.supply-chain/audit-allowlist.json) (started empty); add the install-hook diff gate ([`scripts/audit-install-hooks.mjs`](./scripts/audit-install-hooks.mjs) + [`.supply-chain/install-hooks.allowlist`](./.supply-chain/install-hooks.allowlist)) and skip install scripts by default ([`.yarnrc`](./.yarnrc)).
 - [x] Add `gitleaks` secret scanning ([`.github/workflows/secret-scan.yml`](./.github/workflows/secret-scan.yml)) — pinned, checksum-verified CLI (license-free on org repos).
-- [x] Pin Node via [`.nvmrc`](./.nvmrc) (`22.22.3`) and read it in CI via `node-version-file`.
+- [x] Pin Node via [`.nvmrc`](./.nvmrc) (`22.23.4`) and read it in CI via `node-version-file`.
 - [ ] **Fill in real team handles in [`.github/CODEOWNERS`](./.github/CODEOWNERS)** and enable "Require review from Code Owners" in branch protection — the placeholder `@valory-xyz/REPLACE-*` handles route nothing until replaced.
 - [ ] **Add `gitleaks` as a required status check** in branch protection (it is a separate workflow, so it is not covered by the `all-checks-passed` aggregator).
 - [ ] **Sandbox-test each gate's failure mode** on a throwaway branch (vulnerable dep → audit fails; new postinstall → install-hooks fails; fake secret → gitleaks fails) before relying on them.
