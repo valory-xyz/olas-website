@@ -23,23 +23,8 @@ const list = [
 ];
 
 export const OwnYourAgent = () => (
-  <div className="relative bg-gradient-to-t from-[#E7EAF4] to-white">
-    <div className="absolute inset-0 top-[60px] w-full flex justify-center">
-      <Image
-        src="/images/homepage/pearl-hero-bg.png"
-        alt="hero bg"
-        width={1512}
-        height={620}
-        className="mx-auto object-contain opacity-60"
-      />
-      <div
-        className="
-          absolute inset-0
-          pointer-events-none
-          bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_60%,rgba(255,255,255,1)_100%)]
-        "
-      />
-    </div>
+  <div className="relative bg-white">
+    <div className="pearl-grid" aria-hidden="true" />
     <SectionWrapper
       id="pearl"
       customClasses="py-12 px-4 md:px-8 lg:p-24 relative"

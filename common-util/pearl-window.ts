@@ -1,75 +1,230 @@
 /*
- * Pearl app window motion (homepage design handoff 2026-09-28). Ported as-is from the handoff
- * scene; only the root lookup, asset paths and types differ. Builds the window inside
- * `.pw-window` (rendered empty by `components/HomepageSection/PearlWindow.tsx`), so a re-init
- * replaces it cleanly.
+ * Pearl app window with the agent chat, from the homepage design handoff of 2026-10-21 (timings,
+ * layout and texts unchanged). Builds the window inside `.pc-window` (rendered empty by
+ * `components/HomepageSection/PearlWindow.tsx`), so a re-init replaces it cleanly.
  */
 
-// Pearl window: a representative Pearl desktop app. Three agents take turns: the selected
-// agent starts, works (its current action changes), the user looks at its Profile and scrolls
-// a little, returns to Overview, the agent earns its staking rewards, the user pauses it and
-// picks the next agent in the sidebar. Styles follow the Figma design; texts, states and
-// order follow the shipped app (Pearl 1.9.9). One clock drives everything, so any moment can
-// be rendered on demand; it pauses off-screen, in hidden tabs and in the page cache. Reduced
-// motion shows one still frame with the first agent at work.
+// Pearl window with the agent chat (Figma file Pearl-1.0, section "New Agent Chat UI"). Two agents
+// take turns. Polystrat places a trade in its feed; the user asks it to raise the max trade size,
+// the agent asks to confirm, the user says yes, and the change shows up as a card once the user
+// turns off Messages only. Then the user opens Basius and asks why it chose its pool. One clock
+// drives everything, so any moment can be rendered on demand; it pauses off-screen, in hidden tabs
+// and in the page cache. Reduced motion shows one still frame of the Polystrat conversation.
+
+type Span = [number, number];
+type Point = [number, number];
+type ChatKey = 'polystrat' | 'basius';
+type AgentKey = ChatKey | 'omenstrat' | 'connect';
+
+type Timeline = {
+  toStart: Span;
+  startClick: number;
+  starting: number;
+  running: number;
+  trade?: number;
+  toInput: Span;
+  inputClick: number;
+  type1: Span;
+  toSend: Span;
+  send1: number;
+  reply1: number;
+  type2?: Span;
+  send2?: number;
+  reply2?: number;
+  config?: number;
+  toChip?: Span;
+  chipClick?: number;
+  toPause: Span;
+  pauseClick: number;
+  stopping: number;
+  stopped: number;
+  toNext: Span;
+  nextClick: number;
+  swap: number;
+  end: number;
+};
+// Moments that add an entry to the feed.
+type Moment = 'trade' | 'send1' | 'reply1' | 'send2' | 'reply2' | 'config';
+
+type Field = [label: string, value: string, kind?: 'link' | 'gain'];
+type FeedEntry =
+  | { kind: 'day'; at?: never; text: string }
+  | { kind: 'user'; at: Moment; time: string; text: string }
+  | { kind: 'agent'; at: Moment; time: string; text: string }
+  | { kind: 'event'; at?: Moment; time: string; title: string; fields: Field[] };
+
+type Agent = { name: string; icon: string; instance?: string; beta?: boolean };
+type ChatAgent = Agent & {
+  instance: string;
+  chain: string;
+  metrics: [label: string, value: string, info?: boolean][];
+  streak: number;
+  badges: [boolean, boolean];
+  typed: string[];
+  // Loader steps: [from, text].
+  steps: [number, string][];
+  // While a reply is on its way.
+  pending: Span[];
+  messagesOnly: Span[];
+  feed: FeedEntry[];
+};
+
+type Status = { text: string; since: number };
+
 export function initPearlWindow(
   root: HTMLElement,
   options: { assetBase: string }
 ): { dispose: () => void } {
-  const stage = root.querySelector<HTMLElement>('.pw-stage');
-  const win = root.querySelector<HTMLElement>('.pw-window');
+  const stage = root.querySelector<HTMLElement>('.pc-stage');
+  const win = root.querySelector<HTMLElement>('.pc-window');
   const reduced = matchMedia('(prefers-reduced-motion: reduce), (update: slow)');
   const A = `${options.assetBase}assets/`;
+  const W = 1080;
+
+  // ---- Timeline, in seconds within one agent's turn ----------------------------------------
+
+  // Pearl runs one agent at a time, so each turn starts the agent and ends by pausing it.
+  const T: Record<ChatKey, Timeline> = {
+    polystrat: {
+      toStart: [0.6, 1.5],
+      startClick: 1.6, // cursor clicks Start agent
+      starting: 1.65,
+      running: 3.0, // "Starting" and "Agent is loading", then at work
+      trade: 5.0, // a new trade lands in the feed
+      toInput: [5.9, 6.7],
+      inputClick: 6.8, // cursor clicks into the input
+      type1: [7.0, 8.6],
+      toSend: [8.8, 9.4],
+      send1: 9.5, // types the request, clicks Send
+      reply1: 11.9, // the agent asks to confirm
+      type2: [13.0, 13.5],
+      send2: 13.9, // "Yes, please"
+      reply2: 15.5,
+      config: 16.0, // the agent confirms; the change is written
+      toChip: [16.6, 17.3],
+      chipClick: 17.4, // cursor turns Messages only off
+      toPause: [18.6, 19.3],
+      pauseClick: 19.4, // cursor pauses the agent
+      stopping: 19.45,
+      stopped: 20.0,
+      toNext: [21.0, 21.8],
+      nextClick: 21.9,
+      swap: 22.05,
+      end: 23.2,
+    },
+    basius: {
+      toStart: [0.6, 1.5],
+      startClick: 1.6,
+      starting: 1.65,
+      running: 3.0,
+      toInput: [4.4, 5.2],
+      inputClick: 5.3,
+      type1: [5.5, 7.7],
+      toSend: [7.9, 8.5],
+      send1: 8.6,
+      reply1: 11.0,
+      toPause: [12.4, 13.1],
+      pauseClick: 13.2,
+      stopping: 13.25,
+      stopped: 13.8,
+      toNext: [14.8, 15.6],
+      nextClick: 15.7,
+      swap: 15.85,
+      end: 17.0,
+    },
+  };
+  const CYCLE: ChatKey[] = ['polystrat', 'basius'];
+  const PASS = Object.fromEntries(CYCLE.map((k) => [k, T[k].end])) as Record<ChatKey, number>;
+  const CYCLE_LENGTH = CYCLE.reduce((sum, k) => sum + PASS[k], 0);
 
   // ---- Content ---------------------------------------------------------------------------
 
-  // Sidebar order follows the app's agent config; Connect is the only Beta agent.
-  const SIDEBAR = ['omenstrat', 'polystrat', 'basius', 'connect'];
-  const CYCLE = ['polystrat', 'omenstrat', 'basius'];
-  // Figures match the captured profiles (Roman's agents, 2026-09-28, slightly adjusted upwards);
-  // Total ROI is all-time profit over funds used.
-  const AGENTS = {
+  // Sidebar order follows the Figma design; Connect is the only Beta agent.
+  const SIDEBAR: AgentKey[] = ['connect', 'polystrat', 'omenstrat', 'basius'];
+  const CHAT: Record<ChatKey, ChatAgent> = {
     polystrat: {
       name: 'Polystrat',
       instance: 'fafon-norlo48',
       icon: 'agent-polymarket_trader-icon.webp',
-      chain: 'polygon-chain.png',
+      chain: 'chain-polygon.svg',
       metrics: [
-        ['Total ROI', '3%', true],
-        ['Prediction accuracy', '55%', true],
+        ['Total ROI', '10.22%', true],
+        ['Prediction accuracy', '69%'],
       ],
-      behavior: 'Trade sizes adapt to market conditions and agent confidence.',
-      streak: 18,
-      epoch: '21:37:14',
-      tokens: [
-        ['USDC', 'usdc-icon.png'],
-        ['POL', 'pol-icon.png'],
+      streak: 24,
+      badges: [true, false],
+      typed: ['Set my max trade size to $2', 'Yes, please'],
+      // The FSM names Pearl shows, with the "..." of the design.
+      steps: [
+        [3.0, 'Making a prediction'],
+        [4.3, 'Opening a trade on Polymarket'],
+        [6.4, 'Taking a short break'],
+        [11.9, 'Checking reward status'],
+        [15.5, 'Sampling a trade'],
+        [18.6, 'Making a prediction'],
       ],
-      actions: [
-        'Fetching Polymarket markets',
-        'Making a prediction',
-        'Opening a trade on Polymarket',
-        'Checking reward status',
+      pending: [
+        [9.5, 11.9],
+        [13.9, 15.5],
       ],
-    },
-    omenstrat: {
-      name: 'Omenstrat',
-      instance: 'corzim-vardor96',
-      icon: 'agent-trader-icon.webp',
-      chain: 'gnosis-chain.png',
-      metrics: [
-        ['Total ROI', '15%', true],
-        ['Prediction accuracy', '68%', true],
-      ],
-      behavior: 'Adopting a conservative strategy with small, high-confidence trades.',
-      streak: 41,
-      epoch: '16:48:05',
-      tokens: [['XDAI', 'xdai-icon.png']],
-      actions: [
-        'Sampling a trade',
-        'Making a prediction',
-        'Opening a trade',
-        'Checking reward status',
+      messagesOnly: [[9.6, 17.45]],
+      feed: [
+        { kind: 'day', text: 'Today' },
+        {
+          kind: 'event',
+          time: '09:12',
+          title: 'Placed a trade',
+          fields: [
+            ['Market', 'Will Apple announce a new iPad this month?', 'link'],
+            ['Prediction', 'No'],
+            ['Amount traded', '$1.00'],
+            ['AI confidence', '81%'],
+            ['Potential payout', '$1.29'],
+          ],
+        },
+        {
+          kind: 'event',
+          time: '09:40',
+          title: 'Skipped a market',
+          fields: [
+            ['Market', 'Will it rain in London tomorrow?', 'link'],
+            ['Reason', 'The price already matched the AI tool’s estimate'],
+          ],
+        },
+        {
+          kind: 'event',
+          at: 'trade',
+          time: '10:05',
+          title: 'Placed a trade',
+          fields: [
+            ['Market', 'Will Trump insult MapQuest this week?', 'link'],
+            ['Prediction', 'Yes'],
+            ['Amount traded', '$1.00'],
+            ['AI confidence', '88%'],
+            ['Potential payout', '$1.32'],
+          ],
+        },
+        { kind: 'user', at: 'send1', time: '10:12', text: 'Set my max trade size to $2' },
+        {
+          kind: 'agent',
+          at: 'reply1',
+          time: '10:12',
+          text: 'I can raise your max trade size from $1 to $2. Bigger trades can earn more, and they also put more of your funds at risk. Do you want me to set it to $2?',
+        },
+        { kind: 'user', at: 'send2', time: '10:13', text: 'Yes, please' },
+        {
+          kind: 'agent',
+          at: 'reply2',
+          time: '10:13',
+          text: 'Got it. I’ll set your max trade size to $2 before my next trade.',
+        },
+        {
+          kind: 'event',
+          at: 'config',
+          time: '10:14',
+          title: 'Changed the configuration',
+          fields: [['Max trade size', '$1 → $2']],
+        },
       ],
     },
     basius: {
@@ -78,184 +233,208 @@ export function initPearlWindow(
       icon: 'agent-basius-icon.webp',
       chain: 'base-chain.png',
       metrics: [
-        ['Portfolio Balance', '$15.47', true],
         ['Total ROI', '2.4%', true],
+        ['Portfolio value', '$15.47'],
       ],
-      behavior:
-        'Conservative volatile exposure across DEXs and lending markets with advanced functionalities enabled.',
       streak: 9,
-      epoch: '13:22:51',
-      tokens: [['USDC', 'usdc-icon.png']],
-      actions: [
-        'Checking portfolio',
-        'Evaluating strategies',
-        'Executing trades',
-        'Checking staking reward status',
+      badges: [true, false],
+      typed: ['Why did you choose your current pool?'],
+      steps: [
+        [3.0, 'Checking portfolio'],
+        [4.2, 'Evaluating strategies'],
       ],
-      scroll: 0, // the profile's first screen is enough
+      pending: [[8.6, 11.0]],
+      messagesOnly: [[8.7, Infinity]],
+      feed: [
+        { kind: 'day', text: 'Today' },
+        {
+          kind: 'event',
+          time: '08:30',
+          title: 'Exited a pool',
+          fields: [
+            ['Pool', 'WETH/USDC on Aerodrome'],
+            ['Result', '+$0.21', 'gain'],
+            ['Amount entered', '$14.80'],
+            ['Entered', 'Yesterday'],
+          ],
+        },
+        {
+          kind: 'event',
+          time: '08:32',
+          title: 'Entered a pool',
+          fields: [
+            ['Pool', 'USDC/eUSD on Aerodrome'],
+            ['Amount entered', '$15.01'],
+          ],
+        },
+        { kind: 'user', at: 'send1', time: '11:20', text: 'Why did you choose your current pool?' },
+        // The agent answers from its recent activity and its settings only (no yields), as its
+        // chat prompt asks.
+        {
+          kind: 'agent',
+          at: 'reply1',
+          time: '11:20',
+          text: 'This morning I moved your funds from WETH/USDC to USDC/eUSD on Aerodrome. You’re on the Balanced strategy, and a pool of two stablecoins keeps your funds steadier than one with WETH.',
+        },
+      ],
     },
-    connect: {
-      name: 'Connect',
-      instance: 'My Connect',
-      icon: 'agent-connect-icon.webp',
-      beta: true,
-    },
+  };
+  const AGENTS: Record<AgentKey, Agent> = {
+    ...CHAT,
+    omenstrat: { name: 'Omenstrat', icon: 'agent-trader-icon.webp' },
+    connect: { name: 'Connect', icon: 'agent-connect-icon.webp', beta: true },
   };
 
   // ---- Markup ------------------------------------------------------------------------------
 
-  const img = (src, w, h, alt = '') =>
-    `<img src="${A}${src}" width="${w}" height="${h}" alt="${alt}">`;
-  const infoIcon = img('info-small.svg', 16, 16);
+  // Every string in the markup is a constant from this file; esc() covers the characters the
+  // texts can contain.
+  const img = (src: string, w: number, h: number) =>
+    `<img src="${A}${src}" width="${w}" height="${h}" alt="">`;
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const entryHtml = (e: FeedEntry, agent: ChatAgent) => {
+    if (e.kind === 'day') return `<div class="pc-entry pc-day"><span>${esc(e.text)}</span></div>`;
+    if (e.kind === 'user')
+      return `<div class="pc-entry pc-user"><p class="pc-bubble"><span>${esc(e.text)}</span><time>${e.time}</time></p></div>`;
+    if (e.kind === 'agent')
+      return `<div class="pc-entry pc-agent"><span class="pc-mark">${img(agent.icon, 20, 20)}</span><div class="pc-body"><div class="pc-title"><p>${esc(e.text)}</p><time>${e.time}</time></div></div></div>`;
+    const fields = e.fields
+      .map(
+        ([label, value, kind]) =>
+          `<div><dt>${esc(label)}:</dt><dd${kind === 'gain' ? ' class="is-gain"' : ''}>${esc(value)}${kind === 'link' ? ' <span class="pc-ext">↗</span>' : ''}</dd></div>`
+      )
+      .join('');
+    return `<div class="pc-entry pc-event"><span class="pc-mark"><i></i></span><div class="pc-body"><div class="pc-title"><p>${esc(e.title)}</p><time>${e.time}</time></div><dl class="pc-fields">${fields}</dl></div></div>`;
+  };
+  const markers = (feed: FeedEntry[]) =>
+    feed.filter((e) => e.kind === 'event' || e.kind === 'agent').length;
+
   win.innerHTML = `
-    <aside class="pw-sidebar">
-      <div class="pw-side-head">
-        <div class="pw-lights"><i style="background:#ff6056"></i><i style="background:#febc2e"></i><i style="background:#29c742"></i></div>
-        <div class="pw-logo">${img('logo-happy-robot.svg', 35, 39)}</div>
+    <aside class="pc-sidebar">
+      <div class="pc-side-head">
+        <div class="pc-lights"><i style="background:#ff6056"></i><i style="background:#febc2e"></i><i style="background:#29c742"></i></div>
+        <div class="pc-logo">${img('logo-happy-robot.svg', 35, 39)}</div>
       </div>
-      <div class="pw-side-body">
-        <div class="pw-myagents"><p>My agents</p><div class="pw-autorun"><span>Off</span><span class="pw-mini-btn">${img('autorun-refresh.svg', 16, 16)}</span></div></div>
-        <div class="pw-list">${SIDEBAR.map((key) => {
+      <div class="pc-side-body">
+        <div class="pc-myagents"><p>My agents</p><div class="pc-autorun"><span>Off</span><span class="pc-mini-btn">${img('autorun-refresh.svg', 16, 16)}</span></div></div>
+        <div class="pc-list">${SIDEBAR.map((key) => {
           const a = AGENTS[key];
-          const open = CYCLE.includes(key);
-          return `<div class="pw-group${open ? ' is-open' : ''}" data-agent="${key}">
-            <div class="pw-group-row">
-              <span class="pw-chev">${img(open ? 'chevron-down.svg' : 'chevron-right.svg', 16, 16)}</span>
-              <span class="pw-thumb">${img(a.icon, 28, 28)}</span>
-              <span class="pw-group-name">${a.name}</span>${a.beta ? '<span class="pw-tag">Beta</span>' : ''}
-            </div>
-            <div class="pw-instances"><div class="pw-instances-inner"><span class="pw-rail"></span>
-              <div class="pw-inst"><p>${a.instance}</p><span class="pw-dot-box"><span class="pw-dot"></span></span></div>
-            </div></div>
+          const open = (CYCLE as AgentKey[]).includes(key);
+          return `<div class="pc-group" data-agent="${key}">
+            <div class="pc-group-row">${img(open ? 'chevron-down.svg' : 'chevron-right.svg', 16, 16)}<span class="pc-thumb">${img(a.icon, 28, 28)}</span><span>${a.name}</span>${a.beta ? '<span class="pc-tag">Beta</span>' : ''}</div>
+            ${open ? `<div class="pc-instances"><span class="pc-rail"></span><div class="pc-inst"><p>${a.instance}</p><span class="pc-dot-box"><span class="pc-dot"></span></span></div></div>` : ''}
           </div>`;
         }).join('')}</div>
-        <div class="pw-add">${img('plus.svg', 20, 20)}Add Agent</div>
+        <div class="pc-add">${img('plus.svg', 20, 20)}Add Agent</div>
       </div>
-      <div class="pw-side-foot">
-        <div class="pw-nav">${img('nav-wallet.svg', 20, 20)}Pearl Wallet</div>
-        <div class="pw-nav">${img('nav-help.svg', 20, 20)}Help Center</div>
-        <div class="pw-nav">${img('nav-settings.svg', 20, 20)}Settings</div>
+      <div class="pc-side-foot">
+        <div class="pc-nav">${img('nav-wallet.svg', 20, 20)}Pearl Wallet</div>
+        <div class="pc-nav">${img('nav-help.svg', 20, 20)}Help Center</div>
+        <div class="pc-nav">${img('nav-settings.svg', 20, 20)}Settings</div>
       </div>
     </aside>
-    <section class="pw-main">
-      <div class="pw-tabs-wrap"><div class="pw-tabs">
-        <span class="pw-tab-pill"></span>
-        <span class="pw-tab is-active" data-tab="overview"><span class="pw-tab-icon">${img('tab-overview-idle.svg', 20, 20)}${img('tab-overview.svg', 20, 20)}</span>Overview</span>
-        <span class="pw-tab" data-tab="profile"><span class="pw-tab-icon">${img('tab-profile.svg', 20, 20)}${img('tab-profile-active.svg', 20, 20)}</span>Profile</span>
-      </div></div>
-      <div class="pw-overview"><div class="pw-ov-inner">
-        <div class="pw-agent-card">
-          <span class="pw-card-bg idle"></span><span class="pw-card-bg loading"></span><span class="pw-card-bg running"></span><span class="pw-card-bg rewards"></span>
-          <div class="pw-agent-main">
-            <div class="pw-avatar"><img class="pw-avatar-img" width="88" height="88" alt=""></div>
-            <div class="pw-agent-info">
-              <div class="pw-agent-head"><p class="pw-agent-name"></p>
-                <div class="pw-ctas"><span class="pw-chain"><img class="pw-chain-img" width="16" height="16" alt=""></span><span class="pw-icon-btn">${img('btn-info.svg', 20, 20)}</span></div>
-              </div>
-              <div class="pw-run-slot"><span class="pw-run is-start"><span class="pw-spin"></span><span class="pw-run-label">Start agent</span></span></div>
+    <section class="pc-main">
+      <div class="pc-tabs">
+        <span class="pc-tab is-active">${img('tab-overview.svg', 20, 20)}Overview</span>
+        <span class="pc-tab">${img('tab-profile.svg', 20, 20)}Profile</span>
+      </div>
+      <div class="pc-column">
+        <div class="pc-head">
+          <div class="pc-avatar"><img class="pc-avatar-img" width="112" height="112" alt=""></div>
+          <div class="pc-info">
+            <p class="pc-name"><span class="pc-name-text"></span><img class="pc-chain" width="16" height="16" alt=""></p>
+            <span class="pc-run is-start"><span class="pc-spin"></span><span class="pc-run-label">Start agent</span></span>
+          </div>
+          <div class="pc-panel">
+            <div class="pc-ctas"><span class="pc-cta">${img('btn-info.svg', 16, 16)}</span><span class="pc-cta">${img('btn-wallet.svg', 16, 16)}</span><span class="pc-cta is-streak">${img('btn-flame.svg', 16, 16)}<span class="pc-streak"></span></span></div>
+            <dl class="pc-metrics">${[0, 1].map(() => `<div class="pc-metric"><dt></dt><dd></dd></div>`).join('')}</dl>
+          </div>
+        </div>
+        <div class="pc-chat">
+          <div class="pc-scroll">${CYCLE.map((key) => `<div class="pc-feed" data-agent="${key}" hidden>${CHAT[key].feed.map((e) => entryHtml(e, CHAT[key])).join('')}${'<span class="pc-line"></span>'.repeat(markers(CHAT[key].feed))}</div>`).join('')}</div>
+          <div class="pc-status">
+            <span class="pc-dmx">${'<i></i>'.repeat(25)}</span>
+            <span class="pc-status-text"><span></span><span></span></span>
+            <span class="pc-badges"><span class="pc-badge"></span><span class="pc-badge"></span></span>
+          </div>
+          <div class="pc-input-wrap"><p class="pc-start-note">Start the agent to chat</p><div class="pc-input">
+            <div class="pc-text"><span class="pc-placeholder">Ask your agent or give it guidance...</span><span class="pc-typed"></span><span class="pc-caret"></span></div>
+            <div class="pc-bar">
+              <span class="pc-chip"><span class="pc-chip-bg"></span><span class="pc-chip-icon">${img('msg-only.svg', 16, 16)}${img('msg-only-on.svg', 16, 16)}</span><span class="pc-chip-label">Messages only</span><span class="pc-chip-x"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7e22ce" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+              <span class="pc-actions"><span class="pc-info-btn">${img('info-input.svg', 16, 16)}</span><span class="pc-send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></span>
             </div>
-          </div>
-          <div class="pw-status">
-            <div class="pw-st idle">Agent is not running</div>
-            <div class="pw-st loading">Agent is loading</div>
-            <div class="pw-st running"><span class="pw-st-label">Current action:</span><span class="pw-actions"><span class="pw-action"><span></span></span><span class="pw-action"><span></span></span></span>${img('chevrons-up-down.svg', 20, 20)}</div>
-            <div class="pw-st rewards">Agent has earned staking rewards and is in standby mode for the next epoch <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
-          </div>
-        </div>
-        <div class="pw-section">
-          <div class="pw-sub"><h3>Performance</h3></div>
-          <div class="pw-card">
-            <div class="pw-metrics">${[0, 1].map(() => `<div class="pw-metric"><div class="pw-metric-label"><span class="pw-metric-name"></span>${infoIcon}</div><p class="pw-metric-value"></p></div>`).join('')}</div>
-            <div class="pw-behavior"><div class="pw-metric-label">Agent behavior</div>
-              <div class="pw-behavior-box"><p class="pw-behavior-text"></p><span class="pw-btn-sm pw-behavior-btn">Update</span></div></div>
-          </div>
-        </div>
-        <div class="pw-section">
-          <div class="pw-sub"><h3>Staking</h3><span class="pw-btn-sm">Manage Staking</span></div>
-          <div class="pw-card"><div class="pw-metrics">
-            <div class="pw-metric"><div class="pw-metric-label">Epoch lifetime</div><div class="pw-metric-inline">${img('clock.svg', 24, 24)}<span class="pw-epoch">21:37:14</span></div></div>
-            <div class="pw-metric"><div class="pw-metric-label">Streak</div><div class="pw-metric-inline"><span class="pw-flame">${img('flame.svg', 24, 24)}${img('flame-lit.svg', 24, 24)}</span><span class="pw-streak"></span></div></div>
           </div></div>
         </div>
-        <div class="pw-section">
-          <div class="pw-sub"><h3>Wallet</h3><span class="pw-btn-sm">Manage Wallet</span></div>
-          <div class="pw-card"><div class="pw-metric"><div class="pw-metric-label">Tokens</div><div class="pw-tokens"></div></div></div>
-        </div>
-      </div></div>
-      <div class="pw-profile"></div>
+      </div>
     </section>
-    <div class="pw-cursor">
-      <span class="pw-ripple"></span>
+    <div class="pc-cursor">
+      <span class="pc-ripple"></span>
       <img class="arrow" src="${A}cursor-default.svg" width="32" height="32" alt="">
       <img class="hand" src="${A}cursor-hand.svg" width="32" height="32" alt="">
     </div>`;
 
-  // Profiles: pictures of the agents' own web UIs (tools/capture-profiles.ts, then
-  // tools/render-profiles.ts), as tall as the window can show; the picture slides to scroll.
-  const PROFILE_HEIGHT = { polystrat: 970, omenstrat: 970, basius: 700 }; // tools/render-profiles.ts
-  root.querySelector('.pw-profile').innerHTML = CYCLE.map(
-    (key) =>
-      `<div class="pw-pp" data-agent="${key}"><img class="pw-pp-scroll" src="${options.assetBase}profiles/${key}.webp" width="776" height="${PROFILE_HEIGHT[key]}" alt="" decoding="async"></div>`
-  ).join('');
-
   // ---- Elements ----------------------------------------------------------------------------
 
-  const $ = (s: string) => root.querySelector<HTMLElement>(s);
-  const $$ = (s: string) => [...root.querySelectorAll<HTMLElement>(s)];
-  const groups = Object.fromEntries(
-    $$('.pw-group').map((g) => [
-      g.dataset.agent,
-      {
-        el: g,
-        row: g.querySelector('.pw-group-row'),
-        chev: g.querySelector('.pw-chev'),
-        instances: g.querySelector('.pw-instances'),
-        inner: g.querySelector('.pw-instances-inner'),
-        inst: g.querySelector('.pw-inst'),
-        dot: g.querySelector('.pw-dot'),
-      },
+  const $ = <E extends HTMLElement = HTMLElement>(s: string) => root.querySelector<E>(s);
+  const $$ = (s: string, from: ParentNode = root) => [...from.querySelectorAll<HTMLElement>(s)];
+  const inst = Object.fromEntries(
+    $$('.pc-group')
+      .filter((g) => g.querySelector('.pc-inst'))
+      .map((g) => [g.dataset.agent, g.querySelector<HTMLElement>('.pc-inst')])
+  ) as Record<ChatKey, HTMLElement>;
+  const dots = Object.fromEntries(
+    Object.entries(inst).map(([k, node]) => [k, node.querySelector<HTMLElement>('.pc-dot')])
+  ) as Record<ChatKey, HTMLElement>;
+  const feeds = Object.fromEntries(
+    $$('.pc-feed').map((f) => [
+      f.dataset.agent,
+      { el: f, entries: $$('.pc-entry', f), lines: $$('.pc-line', f) },
     ])
+  ) as Record<ChatKey, { el: HTMLElement; entries: HTMLElement[]; lines: HTMLElement[] }>;
+  const badgeImgs = [true, false].map((on) =>
+    img(on ? 'badge-filled.svg' : 'badge-outline.svg', 16, 16)
   );
   const el = {
-    overview: $('.pw-overview'),
-    profile: $('.pw-profile'),
-    pages: Object.fromEntries($$('.pw-pp').map((p) => [p.dataset.agent, p])),
-    pill: $('.pw-tab-pill'),
-    tabs: Object.fromEntries($$('.pw-tab').map((t) => [t.dataset.tab, t])),
-    avatar: $('.pw-avatar-img') as HTMLImageElement,
-    name: $('.pw-agent-name'),
-    chain: $('.pw-chain-img') as HTMLImageElement,
-    run: $('.pw-run'),
-    runLabel: $('.pw-run-label'),
-    cardBg: Object.fromEntries($$('.pw-card-bg').map((b) => [b.classList[1], b])),
-    status: Object.fromEntries($$('.pw-st').map((s) => [s.classList[1], s])),
-    actions: $$('.pw-action'),
-    metricNames: $$('.pw-metric-name'),
-    metricValues: $$('.pw-metric-value'),
-    behavior: $('.pw-behavior-text'),
-    behaviorBtn: $('.pw-behavior-btn'),
-    epoch: $('.pw-epoch'),
-    streak: $('.pw-streak'),
-    flameLit: $$('.pw-flame img')[1],
-    tokens: $('.pw-tokens'),
-    cursor: $('.pw-cursor'),
-    arrow: $('.pw-cursor .arrow'),
-    hand: $('.pw-cursor .hand'),
-    ripple: $('.pw-ripple'),
+    column: $('.pc-column'),
+    avatar: $<HTMLImageElement>('.pc-avatar-img'),
+    name: $('.pc-name-text'),
+    chain: $<HTMLImageElement>('.pc-chain'),
+    streak: $('.pc-streak'),
+    metrics: $$('.pc-metric'),
+    dots: $$('.pc-dmx i'),
+    status: $$('.pc-status-text span'),
+    statusRow: $('.pc-status'),
+    badges: $('.pc-badges'),
+    badge: $$('.pc-badge'),
+    run: $('.pc-run'),
+    runLabel: $('.pc-run-label'),
+    startNote: $('.pc-start-note'),
+    input: $('.pc-input'),
+    placeholder: $('.pc-placeholder'),
+    typed: $('.pc-typed'),
+    caret: $('.pc-caret'),
+    send: $('.pc-send'),
+    chip: $('.pc-chip'),
+    chipBg: $('.pc-chip-bg'),
+    chipIcons: $$('.pc-chip-icon img'),
+    chipLabel: $('.pc-chip-label'),
+    chipX: $('.pc-chip-x'),
+    cursor: $('.pc-cursor'),
+    arrow: $('.pc-cursor .arrow'),
+    hand: $('.pc-cursor .hand'),
+    ripple: $('.pc-ripple'),
   };
-  el.tabs.overview.querySelectorAll('img')[0].style.opacity = '0';
-  el.tabs.profile.querySelectorAll('img')[1].style.opacity = '0';
 
   // ---- Helpers -----------------------------------------------------------------------------
 
-  const clamp01 = (v) => Math.max(0, Math.min(1, v));
-  const prog = (t, at, dur) => clamp01((t - at) / dur);
-  const easeInOut = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
-  const easeOut = (v) => 1 - Math.pow(1 - v, 3);
-  const bump = (v) => Math.sin(Math.PI * clamp01(v));
+  const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+  const prog = (t: number, at: number, dur: number) => clamp01((t - at) / dur);
+  const easeInOut = (v: number) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
+  const easeOut = (v: number) => 1 - Math.pow(1 - v, 3);
+  const bump = (v: number) => Math.sin(Math.PI * clamp01(v));
   // Writes only when a value changes, so a still frame costs almost nothing.
-  const memo = new WeakMap();
-  const put = (node, key, value, write) => {
+  const memo = new WeakMap<HTMLElement, Record<string, unknown>>();
+  const put = <V>(node: HTMLElement, key: string, value: V, write: (v: V) => void) => {
     let m = memo.get(node);
     if (!m) memo.set(node, (m = {}));
     if (m[key] !== value) {
@@ -263,225 +442,346 @@ export function initPearlWindow(
       write(value);
     }
   };
-  const css = (node, prop, value) =>
+  type StyleProp =
+    | 'transform'
+    | 'opacity'
+    | 'visibility'
+    | 'clipPath'
+    | 'background'
+    | 'borderColor'
+    | 'color'
+    | 'width';
+  const css = (node: HTMLElement, prop: StyleProp, value: string) =>
     put(node, prop, value, (v) => {
       node.style[prop] = v;
     });
-  const cls = (node, name, on) => put(node, `.${name}`, on, (v) => node.classList.toggle(name, v));
-  const txt = (node, value) =>
+  const txt = (node: HTMLElement, value: string) =>
     put(node, 'text', value, (v) => {
       node.textContent = v;
     });
+  const cls = (node: HTMLElement, name: string, on: boolean) =>
+    put(node, `.${name}`, on, (v) => node.classList.toggle(name, v));
   let scale = 1;
+  let scaleY = 1;
   // Centre of an element in window coordinates (the window is scaled with a transform).
-  const centre = (node, dx = 0, dy = 0) => {
+  const centre = (node: HTMLElement, dx = 0, dy = 0): Point => {
     const w = win.getBoundingClientRect();
     const r = node.getBoundingClientRect();
     return [
       (r.left - w.left + r.width / 2) / scale + dx,
-      (r.top - w.top + r.height / 2) / scale + dy,
+      (r.top - w.top + r.height / 2) / scaleY + dy,
     ];
   };
+  const within = (u: number, spans: Span[]) => spans.some(([a, b]) => u >= a && u < b);
+  // 0 → 1 → 0 over each [from, to] span, easing `dur` seconds at both ends.
+  const spanLevel = (u: number, spans: Span[], dur: number) =>
+    spans.reduce(
+      (o, [a, b]) => Math.max(o, easeInOut(prog(u, a, dur)) * (1 - easeInOut(prog(u, b, dur)))),
+      0
+    );
+  const spanLinear = (u: number, spans: Span[], dur: number) =>
+    spans.reduce((o, [a, b]) => Math.max(o, prog(u, a, dur) * (1 - prog(u, b, dur))), 0);
 
-  // ---- Timeline, in seconds within one agent's turn ----------------------------------------
+  // ---- Feed layout -------------------------------------------------------------------------
 
-  const T = {
-    toStart: [0.6, 1.5],
-    startClick: 1.6, // cursor goes to "Start agent" and clicks
-    loading: 1.65,
-    running: 3.0, // "Starting" / "Agent is loading", then at work
-    actions: [3.0, 4.8, 7.6, 12.8], // current action changes
-    toProfile: [5.6, 6.4],
-    profileClick: 6.5, // cursor goes to the Profile tab and clicks
-    toPage: [7.3, 7.8],
-    scroll: [8.2, 9.6], // into the page, then scrolls a little
-    toOverview: [10.6, 11.4],
-    overviewClick: 11.5, // back to Overview
-    rewards: 14.2, // rewards earned: green strip, streak +1
-    toPause: [16.2, 16.9],
-    pauseClick: 17.0, // cursor pauses the agent
-    stopping: 17.05,
-    idle: 17.6,
-    toNext: [18.6, 19.4],
-    nextClick: 19.5, // cursor picks the next agent in the sidebar
-    swap: 19.65,
-    end: 20.8,
-  };
-  const PASS = T.end;
-  const CYCLE_LENGTH = PASS * CYCLE.length;
-  const SCROLL = 280; // how far the profile scrolls, unless the agent sets its own
+  // Heights are measured once the fonts are in; positions are then pure arithmetic, so a frame
+  // moves entries with transforms only and never asks the browser for layout.
+  const heights = {} as Record<ChatKey, number[]>;
+  function measure() {
+    CYCLE.forEach((key) => {
+      const f = feeds[key];
+      const hidden = f.el.hidden;
+      f.el.hidden = false;
+      heights[key] = f.entries.map((e) => e.offsetHeight);
+      f.el.hidden = hidden;
+    });
+  }
+  // Space between two entries, from the Figma frames: events in a run sit 12px apart, an agent
+  // line is followed by a 16px connector spacer on top of the usual 24px (40px in all), and
+  // everything else is 24px apart.
+  const gapBetween = (prev: FeedEntry['kind'], next: FeedEntry['kind']) =>
+    prev === 'event' && next === 'event' ? 12 : prev === 'agent' ? 40 : 24;
+  const PAD_TOP = 24;
+  const SCROLL_H = 318;
 
-  let shownKey = null;
-  function showAgent(key) {
+  function renderFeed(u: number, key: ChatKey, mo: number) {
+    const a = CHAT[key];
+    const f = feeds[key];
+    const t = T[key];
+    let y = PAD_TOP;
+    let prev: FeedEntry['kind'] | null = null;
+    const placed = a.feed.map((e, i) => {
+      const at = e.at ? t[e.at] : -Infinity;
+      const grow = at === -Infinity ? 1 : easeInOut(prog(u, at, 0.45));
+      // Messages only: an event folds up like an accordion while it fades (and back again).
+      const fold = e.kind === 'event' ? easeInOut(mo) : 0;
+      const fade = e.kind === 'event' ? clamp01(mo / 0.6) : 0;
+      const w = grow * (1 - fold);
+      if (prev) y += gapBetween(prev, e.kind) * w;
+      const top = y;
+      y += heights[key][i] * w;
+      prev = e.kind;
+      const fadeIn = at === -Infinity ? 1 : prog(u, at + 0.15, 0.35);
+      const opacity = fadeIn * (1 - fade);
+      return { e, top, w, opacity, clip: heights[key][i] * fold, node: f.entries[i] };
+    });
+    // The feed follows the newest entry; a short feed stays at the top, as in the app.
+    const scroll = Math.max(0, y - SCROLL_H);
+    placed.forEach(({ top, opacity, clip, node }) => {
+      css(node, 'transform', `translateY(${(top - scroll).toFixed(1)}px)`);
+      css(node, 'clipPath', clip > 0.5 ? `inset(0 0 ${clip.toFixed(1)}px 0)` : 'none');
+      css(node, 'opacity', opacity.toFixed(3));
+      css(node, 'visibility', opacity > 0 ? 'visible' : 'hidden');
+    });
+    // Connectors run from each marker to the next one still on screen, past user messages.
+    const marks = placed.filter((p) => p.e.kind === 'event' || p.e.kind === 'agent');
+    marks.forEach((m, i) => {
+      const line = f.lines[i];
+      const next = marks.slice(i + 1).find((n) => n.opacity > 0.02);
+      if (!next || m.opacity <= 0.02) {
+        css(line, 'opacity', '0');
+        return;
+      }
+      const from = m.top + (m.e.kind === 'agent' ? 26 : 20);
+      const to = next.top - (m.e.kind === 'event' && next.e.kind === 'event' ? 0 : 8);
+      css(
+        line,
+        'transform',
+        `translateY(${(from - scroll).toFixed(1)}px) scaleY(${Math.max(0, to - from).toFixed(1)})`
+      );
+      css(line, 'opacity', Math.min(m.opacity, next.opacity).toFixed(3));
+    });
+  }
+
+  // ---- Status row --------------------------------------------------------------------------
+
+  // Loader dots: each dot's place in the diagonal sweep sets its animation delay (the CSS runs the
+  // animation). Without motion the dots keep the library's still pattern, alternate diagonals.
+  const DMX_PERIOD = 1.5 / 0.66;
+  el.dots.forEach((dot, i) => {
+    const slice = Math.floor(i / 5) + (4 - (i % 5));
+    const phase = (slice / 8) * 0.2 + (slice % 2) * 0.5;
+    dot.style.setProperty('--pc-dmx-delay', `${(-(1 - phase) * DMX_PERIOD).toFixed(3)}s`);
+    dot.style.opacity = slice % 2 ? '0.14' : '0.88';
+  });
+
+  // The row shows the agent's current step and "Thinking..." while a reply is on its way. While
+  // Messages only is on and no reply is pending, the app hides the row: those are the quiet spans.
+  const quietSpans = (a: ChatAgent) =>
+    a.messagesOnly.flatMap(([s, e]) => {
+      const spans: Span[] = [];
+      let from = s;
+      a.pending
+        .filter(([ps, pe]) => pe > s && ps < e)
+        .forEach(([ps, pe]) => {
+          if (ps > from) spans.push([from, ps]);
+          from = Math.max(from, pe);
+        });
+      if (from < e) spans.push([from, e]);
+      return spans;
+    });
+  const QUIET = Object.fromEntries(CYCLE.map((k) => [k, quietSpans(CHAT[k])])) as Record<
+    ChatKey,
+    Span[]
+  >;
+
+  function statusAt(u: number, key: ChatKey): Status {
+    const a = CHAT[key];
+    const t = T[key];
+    const quiet = QUIET[key];
+    // Hidden before the start; "Agent is loading" while starting; the last text while stopping.
+    if (u < t.running) return { text: 'Agent is loading', since: -9 };
+    if (u >= t.stopping) return { text: statusAt(t.stopping - 0.001, key).text, since: -9 };
+    const pending = a.pending.find(([s, e]) => u >= s && u < e);
+    if (pending) return { text: 'Thinking...', since: pending[0] };
+    // Hidden rows keep their last text while they fade out.
+    if (within(u, quiet)) return { text: 'Thinking...', since: -9 };
+    let step = a.steps[0];
+    a.steps.forEach((s) => {
+      if (u >= s[0]) step = s;
+    });
+    // A step that starts while the row is hidden appears without the slide.
+    const ends = a.pending
+      .map(([, e]) => e)
+      .concat(quiet.map(([, e]) => e))
+      .filter((e) => e <= u);
+    const quietEnd = quiet.map(([, e]) => e).filter((e) => e <= u && e >= step[0]);
+    const since = quietEnd.length ? -9 : Math.max(step[0], ...ends, -9);
+    return { text: `${step[1]}...`, since };
+  }
+
+  function renderStatus(u: number, key: ChatKey, mo: number) {
+    const now = statusAt(u, key);
+    const prior = now.since > -9 ? statusAt(now.since - 0.001, key) : null;
+    const before = prior && prior.text !== now.text ? prior : null;
+    const p = before ? easeOut(prog(u, now.since, 0.35)) : 1;
+    const [out, inc] = el.status;
+    txt(out, before && p < 1 ? before.text : '');
+    txt(inc, now.text);
+    css(out, 'transform', `translateY(${(-20 * p).toFixed(1)}px)`);
+    css(out, 'opacity', before ? (1 - p).toFixed(3) : '0');
+    css(inc, 'transform', `translateY(${(20 * (1 - p)).toFixed(1)}px)`);
+    css(inc, 'opacity', (before ? p : 1).toFixed(3));
+    const t = T[key];
+    const shown = prog(u, t.starting, 0.3) * (1 - prog(u, t.stopping, 0.3));
+    css(el.statusRow, 'opacity', (shown * (1 - spanLevel(u, QUIET[key], 0.3))).toFixed(3));
+    // The reward badges are hidden in Messages only.
+    css(el.badges, 'opacity', (1 - mo).toFixed(3));
+  }
+
+  // ---- Agent on screen ---------------------------------------------------------------------
+
+  let shownKey: ChatKey | null = null;
+  function showAgent(key: ChatKey) {
     if (shownKey === key) return;
     shownKey = key;
-    const a = AGENTS[key];
+    const a = CHAT[key];
     el.avatar.src = A + a.icon;
     el.name.textContent = a.instance;
     el.chain.src = A + a.chain;
-    a.metrics.forEach(([label, value], i) => {
-      el.metricNames[i].textContent = label;
-      el.metricValues[i].textContent = value;
+    txt(el.streak, String(a.streak));
+    a.metrics.forEach(([label, value, info], i) => {
+      el.metrics[i].querySelector('dt').textContent = `${label}:`;
+      el.metrics[i].querySelector('dd').innerHTML =
+        `${info ? img('info-14.svg', 14, 14) : ''}${esc(value)}`;
     });
-    el.behavior.textContent = a.behavior;
-    el.tokens.innerHTML = a.tokens
-      .map(([sym, icon]) => `<span class="pw-token">${img(icon, 20, 20)}${sym}</span>`)
-      .join('');
-    Object.entries(el.pages).forEach(([k, p]) => p.classList.toggle('is-shown', k === key));
+    el.badge.forEach((b, i) => {
+      b.innerHTML = badgeImgs[a.badges[i] ? 0 : 1];
+    });
+    Object.entries(feeds).forEach(([k, f]) => {
+      f.el.hidden = k !== key;
+    });
   }
 
-  // Crossfaded states: each [from, to] window fades in and out over `fade` seconds.
-  const windowed = (u, spans, fade = 0.25) =>
-    spans.reduce(
-      (o, [a, b]) => Math.max(o, prog(u, a, fade) * (b === Infinity ? 1 : 1 - prog(u, b, fade))),
-      0
-    );
+  // ---- One agent's turn --------------------------------------------------------------------
 
-  function renderTurn(u, key, nextKey, turn) {
-    const a = AGENTS[key];
-    const swapped = u >= T.swap;
-    showAgent(swapped ? nextKey : key);
-    const at = swapped ? -1 : u; // the next agent starts idle
+  // Where the cursor goes, in window coordinates (measured in measureSpots below).
+  let spots: {
+    run: Point;
+    input: Point;
+    send: Point;
+    chip: Point;
+    inst: Record<ChatKey, Point>;
+  } | null = null;
 
-    // Run button and status strip.
+  function renderTurn(u: number, key: ChatKey, nextKey: ChatKey) {
+    const t = T[key];
+    const swapped = u >= t.swap;
+    const shown = swapped ? nextKey : key;
+    showAgent(shown);
+    const at = swapped ? -1 : u; // the next agent starts at the top of its turn
+    const a = CHAT[shown];
+
+    // Messages only switches on by itself when the first message goes out, and off on a click.
+    const mo = swapped ? 0 : spanLinear(at, a.messagesOnly, 0.8);
+    const chipOn = swapped ? 0 : within(at, a.messagesOnly) ? 1 : 0;
+    renderFeed(at, shown, mo);
+    renderStatus(at, shown, mo);
+
+    // Input: focus, typing, send. The text clears when the message goes out.
+    const tk = swapped ? T[shown] : t;
+    const typing: [Span, number, string][] = [];
+    if (tk.type1) typing.push([tk.type1, tk.send1, a.typed[0]]);
+    if (tk.type2) typing.push([tk.type2, tk.send2, a.typed[1]]);
+    let text = '';
+    let isTyping = false;
+    typing.forEach(([[s, e], sent, value]) => {
+      if (at >= s && at < sent) {
+        text = value.slice(0, Math.round(value.length * prog(at, s, e - s)));
+        isTyping = at < e;
+      }
+    });
+    const focused = !swapped && at >= tk.inputClick && at < (tk.chipClick ?? tk.pauseClick);
+    txt(el.typed, text);
+    css(el.placeholder, 'opacity', text ? '0' : '1');
+    css(el.caret, 'opacity', focused && (isTyping || Math.floor(at * 2) % 2 === 0) ? '1' : '0');
+    css(el.input, 'borderColor', focused ? '#d8b4fe' : '#dfe6ec');
+    const sends = [tk.send1, tk.send2].filter(Boolean);
+    const press = Math.max(0, ...sends.map((s) => bump(prog(at, s - 0.04, 0.2))));
+    css(el.send, 'opacity', text ? '1' : '0.4');
+    css(el.send, 'transform', `scale(${(1 - 0.1 * press).toFixed(3)})`);
+
+    // Run button: Start agent → Starting → Pause Agent → Stopping → Start agent.
     const phase =
-      at < T.loading
-        ? 'idle'
-        : at < T.running
-          ? 'loading'
-          : at < T.rewards
-            ? 'running'
-            : at < T.stopping
-              ? 'rewards'
-              : at < T.idle
-                ? 'stopping'
-                : 'idle';
-    const button = {
-      idle: 'start',
-      loading: 'starting',
-      running: 'pause',
-      rewards: 'pause',
-      stopping: 'stopping',
-    }[phase];
-    ['start', 'starting', 'pause', 'stopping'].forEach((b) => cls(el.run, `is-${b}`, b === button));
+      at < tk.starting
+        ? 'start'
+        : at < tk.running
+          ? 'starting'
+          : at < tk.stopping
+            ? 'pause'
+            : at < tk.stopped
+              ? 'stopping'
+              : 'start';
+    ['start', 'starting', 'pause', 'stopping'].forEach((b) => cls(el.run, `is-${b}`, b === phase));
     txt(
       el.runLabel,
       { start: 'Start agent', starting: 'Starting', pause: 'Pause Agent', stopping: 'Stopping' }[
-        button
+        phase
       ]
     );
-    const hover =
-      (at > T.toStart[1] - 0.1 && at < T.startClick + 0.1) ||
-      (at > T.toPause[1] - 0.1 && at < T.pauseClick + 0.1);
-    cls(el.run, 'is-hover', hover);
-    const press =
-      bump(prog(at, T.startClick - 0.04, 0.2)) + bump(prog(at, T.pauseClick - 0.04, 0.2));
-    css(el.run, 'transform', `scale(${1 - 0.05 * press})`);
-    const states = {
-      idle: [
-        [-9, T.loading],
-        [T.stopping, Infinity],
-      ],
-      loading: [[T.loading, T.running]],
-      running: [[T.running, T.rewards]],
-      rewards: [[T.rewards, T.stopping]],
-    };
-    Object.entries(states).forEach(([s, spans]) => {
-      const o = at < 0 ? (s === 'idle' ? 1 : 0) : windowed(at, spans).toFixed(3);
-      css(el.status[s], 'opacity', String(o));
-      css(el.cardBg[s], 'opacity', String(o));
-    });
-    // Current action: the new line slides up as the old one leaves.
-    let k = -1;
-    T.actions.forEach((t, i) => {
-      if (at >= t) k = i;
-    });
-    const p = k < 0 ? 0 : easeOut(prog(at, T.actions[k], 0.35));
-    const [out, inc] = el.actions;
-    txt(out.firstChild, k > 0 ? a.actions[k - 1] : '');
-    txt(inc.firstChild, k >= 0 ? a.actions[k] : '');
-    css(out, 'transform', `translateY(${-20 * p}px)`);
-    css(out, 'opacity', String(k > 0 ? 1 - p : 0));
-    css(inc, 'transform', `translateY(${20 * (1 - p)}px)`);
-    css(inc, 'opacity', String(k >= 0 ? p : 0));
-    txt(
-      el.behaviorBtn,
-      phase === 'idle' || phase === 'stopping' ? 'Start Agent to Update' : 'Update'
+    cls(
+      el.run,
+      'is-hover',
+      !swapped &&
+        ((at > t.toStart[1] - 0.1 && at < t.startClick + 0.1) ||
+          (at > t.toPause[1] - 0.1 && at < t.pauseClick + 0.1))
     );
-    cls(el.behaviorBtn, 'is-disabled', phase === 'idle' || phase === 'stopping');
+    const runPress = swapped
+      ? 0
+      : bump(prog(at, t.startClick - 0.04, 0.2)) + bump(prog(at, t.pauseClick - 0.04, 0.2));
+    css(el.run, 'transform', `scale(${(1 - 0.05 * runPress).toFixed(3)})`);
 
-    // Staking: the epoch clock ticks; the streak flame lights and counts up with the rewards.
-    const lit = at >= 0 ? prog(at, T.rewards, 0.3) : 0;
-    css(el.flameLit, 'opacity', String(lit));
-    txt(el.streak, String(AGENTS[swapped ? nextKey : key].streak + (lit > 0.5 ? 1 : 0)));
+    // A stopped agent can't chat: "Start the agent to chat" stands where the input was. While it
+    // starts or stops, the input is there but dimmed.
+    const live = prog(at, tk.starting, 0.25) * (1 - prog(at, tk.stopped, 0.25));
+    css(el.input, 'opacity', (live * (at >= tk.running && at < tk.stopping ? 1 : 0.6)).toFixed(3));
+    css(el.startNote, 'opacity', (1 - live).toFixed(3));
 
-    // Tabs and views: Overview ⇄ Profile, and the fade between agents (8px slide, as in the app).
-    const toProfile = easeInOut(prog(at, T.profileClick + 0.03, 0.3));
-    const toOverview = easeInOut(prog(at, T.overviewClick + 0.03, 0.3));
-    const profile = at < 0 ? 0 : toProfile - toOverview;
-    css(el.pill, 'transform', `translateX(${130 * profile}px)`);
-    cls(el.tabs.overview, 'is-active', profile < 0.5);
-    cls(el.tabs.profile, 'is-active', profile >= 0.5);
-    css(el.tabs.overview.querySelectorAll('img')[1], 'opacity', String(1 - profile));
-    css(el.tabs.overview.querySelectorAll('img')[0], 'opacity', String(profile));
-    css(el.tabs.profile.querySelectorAll('img')[0], 'opacity', String(1 - profile));
-    css(el.tabs.profile.querySelectorAll('img')[1], 'opacity', String(profile));
-    const leaving = prog(u, T.nextClick + 0.03, T.swap - T.nextClick - 0.03);
-    const arriving = swapped ? easeOut(prog(u, T.swap, 0.18)) : 1;
-    const ovOpacity = (1 - profile) * (swapped ? arriving : 1 - leaving);
-    css(el.overview, 'opacity', String(ovOpacity));
+    // Sidebar: the agent on screen pulses purple from its start until it has stopped; a stopped
+    // agent that has earned its rewards is green.
+    Object.entries(dots).forEach(([g, dot]) =>
+      cls(dot, 'is-running', !swapped && g === key && at >= t.starting && at < t.stopped)
+    );
+
+    // Messages only chip: purple with a cross while on.
+    css(el.chipBg, 'opacity', String(chipOn));
+    css(el.chipIcons[1], 'opacity', String(chipOn));
+    css(el.chipLabel, 'color', chipOn ? '#7e22ce' : '#617084');
+    css(el.chipX, 'width', chipOn ? '12px' : '0px');
+    const chipPress = t.chipClick && !swapped ? bump(prog(at, t.chipClick - 0.04, 0.2)) : 0;
+    css(el.chip, 'transform', `scale(${(1 - 0.06 * chipPress).toFixed(3)})`);
+
+    // Switching agents: the column fades out on the click and the next agent slides in.
+    const leaving = prog(u, t.nextClick + 0.03, t.swap - t.nextClick - 0.03);
+    const arriving = swapped ? easeOut(prog(u, t.swap, 0.18)) : 1;
+    css(el.column, 'opacity', (swapped ? arriving : 1 - leaving).toFixed(3));
     css(
-      el.overview,
+      el.column,
       'transform',
-      `translateY(${swapped ? 8 * (1 - arriving) : -8 * leaving + (profile > 0 ? -8 * profile : 0)}px)`
+      `translateY(${(swapped ? 8 * (1 - arriving) : -8 * leaving).toFixed(1)}px)`
     );
-    css(el.profile, 'opacity', String(profile));
-    css(el.profile, 'visibility', profile > 0 ? 'visible' : 'hidden');
-    css(el.profile, 'transform', `translateY(${8 * (1 - profile)}px)`);
-    const scrolled =
-      (a.scroll ?? SCROLL) * easeInOut(prog(at, T.scroll[0], T.scroll[1] - T.scroll[0]));
-    const page = el.pages[key];
-    if (page) css(page.firstElementChild, 'transform', `translateY(${-scrolled}px)`);
-
-    // Sidebar: the selection moves to the next agent on click; the running dot pulses;
-    // rewards turn it green.
-    Object.entries(groups).forEach(([g, grp]) => {
-      const selected = (g === key && u < T.nextClick) || (g === nextKey && u >= T.nextClick);
-      css(grp.inst, 'background', selected ? '#edf2f7' : 'transparent');
-      const order = CYCLE.indexOf(g);
-      let dot = 'idle';
-      if (order >= 0) {
-        const ranBefore = order < turn || passIndex >= CYCLE.length; // earlier this round, or last round
-        if (ranBefore) dot = 'rewarded';
-        if (order === turn)
-          dot =
-            u >= T.idle ? 'rewarded' : u >= T.loading ? 'running' : ranBefore ? 'rewarded' : 'idle';
-      }
-      cls(grp.dot, 'is-running', dot === 'running');
-      cls(grp.dot, 'is-rewarded', dot === 'rewarded');
+    Object.entries(inst).forEach(([g, node]) => {
+      const selected = (g === key && u < t.nextClick) || (g === nextKey && u >= t.nextClick);
+      css(node, 'background', selected ? '#edf2f7' : 'transparent');
     });
 
     // Cursor.
-    const places: Record<string, () => number[]> = {
-      start: () => centre(el.run, -10, 2),
-      profileTab: () => centre(el.tabs.profile, -8, 2),
-      page: () => centre(el.profile, 60, -40),
-      overviewTab: () => centre(el.tabs.overview, -8, 2),
-      next: () => centre(groups[nextKey].inst, -30, 1),
-      rest: () => [1010, 520],
+    const places = {
+      run: () => spots.run,
+      input: () => spots.input,
+      send: () => spots.send,
+      chip: () => spots.chip,
+      next: () => spots.inst[nextKey],
+      here: () => spots.inst[key],
     };
-    const legs: Array<[number[], () => number[], () => number[]]> = [
-      [
-        T.toStart,
-        turn === 0 && passIndex === 0 ? places.rest : () => centre(groups[key].inst, -30, 1),
-        places.start,
-      ],
-      [T.toProfile, places.start, places.profileTab],
-      [T.toPage, places.profileTab, places.page],
-      [T.toOverview, places.page, places.overviewTab],
-      [T.toPause, places.overviewTab, places.start],
-      [T.toNext, places.start, places.next],
+    const legs: [Span, () => Point, () => Point][] = [
+      [t.toStart, places.here, places.run],
+      [t.toInput, places.run, places.input],
+      [t.toSend, places.input, places.send],
     ];
+    if (t.toChip) legs.push([t.toChip, places.send, places.chip]);
+    legs.push([t.toPause, t.toChip ? places.chip : places.send, places.run]);
+    legs.push([t.toNext, places.run, places.next]);
     let pos = legs[0][1]();
     for (const [[t0, t1], a0, a1] of legs) {
       if (u >= t1) pos = a1();
@@ -494,20 +794,31 @@ export function initPearlWindow(
         break;
       } else break;
     }
-    const clicks = [T.startClick, T.profileClick, T.overviewClick, T.pauseClick, T.nextClick];
+    const clicks = [
+      t.startClick,
+      t.inputClick,
+      t.send1,
+      t.send2,
+      t.chipClick,
+      t.pauseClick,
+      t.nextClick,
+    ].filter(Boolean);
     const click = Math.max(...clicks.map((c) => bump(prog(u, c - 0.04, 0.18))));
     const ripple = Math.max(...clicks.map((c) => (u >= c && u < c + 0.45 ? prog(u, c, 0.45) : 0)));
-    const pointing = [
-      [T.toStart[1] - 0.15, T.startClick + 0.25],
-      [T.toProfile[1] - 0.15, T.profileClick + 0.25],
-      [T.toOverview[1] - 0.15, T.overviewClick + 0.25],
-      [T.toPause[1] - 0.15, T.pauseClick + 0.25],
-      [T.toNext[1] - 0.15, T.nextClick + 0.25],
-    ].some(([a0, b0]) => u > a0 && u < b0);
+    const pointing = (
+      [
+        [t.toStart[1] - 0.15, t.startClick + 0.25],
+        [t.toSend[1] - 0.15, (t.send2 ?? t.send1) + 0.25],
+        [t.toPause[1] - 0.15, t.pauseClick + 0.25],
+        [t.toNext[1] - 0.15, t.nextClick + 0.25],
+      ] as Span[]
+    )
+      .concat(t.toChip ? [[t.toChip[1] - 0.15, t.chipClick + 0.25]] : [])
+      .some(([a0, b0]) => u > a0 && u < b0);
     css(
       el.cursor,
       'transform',
-      `translate(${pos[0].toFixed(1)}px, ${pos[1].toFixed(1)}px) scale(${1 - 0.12 * click})`
+      `translate(${pos[0].toFixed(1)}px, ${pos[1].toFixed(1)}px) scale(${(1 - 0.12 * click).toFixed(3)})`
     );
     css(el.arrow, 'opacity', pointing ? '0' : '1');
     css(el.hand, 'opacity', pointing ? '1' : '0');
@@ -515,56 +826,96 @@ export function initPearlWindow(
     css(el.ripple, 'transform', `scale(${0.4 + ripple})`);
   }
 
-  let passIndex = 0;
-  function render(time) {
-    const pass = Math.floor(time / PASS);
-    passIndex = pass;
-    const u = time - pass * PASS;
-    const turn = pass % CYCLE.length;
-    const key = CYCLE[turn];
-    const nextKey = CYCLE[(turn + 1) % CYCLE.length];
-    renderTurn(u, key, nextKey, turn);
-    // Each agent's epoch clock counts down in real seconds while the agent is on screen
-    // (it appears at T.swap of the pass before its turn).
-    const shown = u >= T.swap ? nextKey : key;
-    const [h, m, s] = AGENTS[shown].epoch.split(':').map(Number);
-    const left = h * 3600 + m * 60 + s - Math.floor(u >= T.swap ? u - T.swap : u + PASS - T.swap);
-    txt(
-      el.epoch,
-      [Math.floor(left / 3600), Math.floor(left / 60) % 60, left % 60]
-        .map((n) => String(n).padStart(2, '0'))
-        .join(':')
-    );
+  // Scene time → which agent's turn, and how far into it.
+  function locate(time: number) {
+    let u = ((time % CYCLE_LENGTH) + CYCLE_LENGTH) % CYCLE_LENGTH;
+    for (let i = 0; i < CYCLE.length; i += 1) {
+      if (u < PASS[CYCLE[i]]) return { turn: i, u };
+      u -= PASS[CYCLE[i]];
+    }
+    return { turn: 0, u: 0 };
+  }
+  function render(time: number) {
+    const { turn, u } = locate(time);
+    renderTurn(u, CYCLE[turn], CYCLE[(turn + 1) % CYCLE.length]);
   }
   function renderStill() {
-    render(5.3); // the first agent at work: "Making a prediction"
+    render(18.4); // Polystrat after the change: the conversation and the new configuration card
     css(el.cursor, 'opacity', '0');
   }
 
   // ---- Clock and lifecycle ------------------------------------------------------------------
 
   let sceneTime = 0;
-  let speed = 1;
-  let paused = false;
   let armed = false; // a third of the window is on screen; it stays armed until the window leaves
   let disposed = false;
   let frozenForPageCache = false;
   let frame = 0;
   let lastUpdate = 0;
 
-  const resize = () => {
-    scale = stage.clientWidth / 1124;
-    win.style.transform = `scale(${scale})`;
+  // The stage gets a whole-pixel height and starts on a whole device pixel, so the edge lines fall
+  // on pixel rows: with the height the aspect ratio gives (754.72px at 1024 wide), the bottom line
+  // was drawn across two rows at partial strength and read as half a pixel. The window is scaled
+  // to fill that height exactly (a 0.04% stretch at most).
+  // Content above the window can move it after it was sized (fonts, images), so the snap runs
+  // again on load, when the fonts arrive and when the window comes on screen.
+  const snap = () => {
+    const dpr = window.devicePixelRatio || 1;
+    stage.style.transform = '';
+    const offset = ((stage.getBoundingClientRect().top + window.scrollY) * dpr) % 1;
+    stage.style.transform =
+      offset > 0.01 && offset < 0.99 ? `translateY(${(-offset / dpr).toFixed(4)}px)` : '';
   };
+  // The layout inside the window doesn't move, so the cursor targets are measured here rather
+  // than on every frame.
+  const measureSpots = () => {
+    const column = el.column.style.transform;
+    el.column.style.transform = 'none';
+    const runBox = el.run.getBoundingClientRect();
+    const winBox = win.getBoundingClientRect();
+    spots = {
+      // The button changes width with its label, so the cursor aims at a fixed point on its left.
+      run: [
+        (runBox.left - winBox.left) / scale + 52,
+        (runBox.top - winBox.top + runBox.height / 2) / scaleY + 2,
+      ],
+      input: centre(el.placeholder, -60, 0),
+      send: centre(el.send, -2, 1),
+      chip: centre(el.chipLabel, -10, 1),
+      inst: Object.fromEntries(
+        Object.entries(inst).map(([k, node]) => [k, centre(node, -30, 1)])
+      ) as Record<ChatKey, Point>,
+    };
+    el.column.style.transform = column;
+  };
+  const resize = () => {
+    stage.style.transform = '';
+    const box = stage.getBoundingClientRect();
+    const height = Math.round((box.width * 796) / W);
+    stage.style.height = `${height}px`;
+    scale = box.width / W;
+    scaleY = height / 796;
+    win.style.transform = `scale(${scale}, ${scaleY})`;
+    stage.style.setProperty('--pc-scale', String(scale));
+    snap();
+    measureSpots();
+  };
+  // resize() sets the stage's own height, so it runs in the next frame: inside the callback the
+  // observer would see the stage change again in the same frame.
+  let sizeFrame = 0;
   const sizeObserver = new ResizeObserver(() => {
-    resize();
-    sync();
+    cancelAnimationFrame(sizeFrame);
+    sizeFrame = requestAnimationFrame(() => {
+      sizeFrame = 0;
+      if (disposed) return;
+      resize();
+      sync();
+    });
   });
 
   function canAnimate() {
     return (
       !disposed &&
-      !paused &&
       !reduced.matches &&
       !document.hidden &&
       !frozenForPageCache &&
@@ -572,7 +923,7 @@ export function initPearlWindow(
       armed
     );
   }
-  function tick(now) {
+  function tick(now: number) {
     frame = 0;
     if (!canAnimate()) {
       sync();
@@ -580,7 +931,7 @@ export function initPearlWindow(
     }
     const dt = Math.max(0, Math.min((now - lastUpdate) / 1000, 0.08)); // the first frame can be stamped before lastUpdate
     lastUpdate = now;
-    sceneTime += dt * speed;
+    sceneTime += dt;
     render(sceneTime);
     frame = requestAnimationFrame(tick);
   }
@@ -602,7 +953,7 @@ export function initPearlWindow(
       frame = requestAnimationFrame(tick);
     }
   }
-  const onPageHide = (event) => {
+  const onPageHide = (event: PageTransitionEvent) => {
     if (event.persisted) {
       frozenForPageCache = true;
       sync();
@@ -612,19 +963,23 @@ export function initPearlWindow(
     frozenForPageCache = false;
     sync();
   };
-  // The window starts once a third of it is on screen (the Start button is in view by then).
-  // After it has left the screen it comes back at the start of the current agent's turn, so
-  // the visitor sees the story from the Start click rather than from its middle.
+  // The window starts once a third of it is on screen. After it has left the screen it comes back
+  // at the start of the current agent's turn, so the visitor sees the story from its beginning.
   const START_RATIO = 1 / 3;
   const visibilityObserver = new IntersectionObserver(
     (entries) => {
       const entry = entries[entries.length - 1];
       if (!entry.isIntersecting && armed) {
         armed = false;
-        const pass = Math.floor(sceneTime / PASS);
-        sceneTime = (sceneTime - pass * PASS >= T.swap ? pass + 1 : pass) * PASS;
+        const base = Math.floor(sceneTime / CYCLE_LENGTH) * CYCLE_LENGTH;
+        const { turn, u } = locate(sceneTime);
+        const key = CYCLE[turn];
+        let start = base + CYCLE.slice(0, turn).reduce((s, k) => s + PASS[k], 0);
+        if (u >= T[key].swap) start += PASS[key];
+        sceneTime = start;
       }
       if (entry.intersectionRatio >= START_RATIO) armed = true;
+      snap();
       sync();
     },
     { threshold: [0, START_RATIO] }
@@ -633,21 +988,35 @@ export function initPearlWindow(
     if (disposed) return;
     disposed = true;
     if (frame) cancelAnimationFrame(frame);
+    if (sizeFrame) cancelAnimationFrame(sizeFrame);
     visibilityObserver.disconnect();
     sizeObserver.disconnect();
     reduced.removeEventListener('change', sync);
     document.removeEventListener('visibilitychange', sync);
     window.removeEventListener('pagehide', onPageHide);
     window.removeEventListener('pageshow', onPageShow);
+    window.removeEventListener('load', snap);
   }
   resize();
+  measure();
   visibilityObserver.observe(root);
   sizeObserver.observe(stage);
   reduced.addEventListener('change', sync);
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('pagehide', onPageHide);
   window.addEventListener('pageshow', onPageShow);
+  window.addEventListener('load', snap);
   sync();
+  // Text wraps differently once Inter arrives, so the feed is measured again.
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      if (disposed) return;
+      measure();
+      snap();
+      measureSpots();
+      sync();
+    });
+  }
 
   return { dispose };
 }
