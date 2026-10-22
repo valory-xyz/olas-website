@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
 // OFAC comprehensively sanctioned countries and specific regions
-// Cuba, Iran, North Korea, Syria, Russia (comprehensive sanctions)
+// Cuba, Iran, North Korea, Russia (comprehensive sanctions)
 // Belarus (sectoral sanctions - often included in web3 compliance)
-const BLOCKED_COUNTRIES = ['CU', 'IR', 'KP', 'SY', 'RU', 'BY'];
+const BLOCKED_COUNTRIES = ['CU', 'IR', 'KP', 'RU', 'BY'];
 // Ukrainian regions: Donetsk (14), Luhansk (09), Crimea (43/65), Sevastopol (23)
 const BLOCKED_REGIONS = ['UA-14', 'UA-09', 'UA-43', 'UA-65', 'UA-23'];
 
