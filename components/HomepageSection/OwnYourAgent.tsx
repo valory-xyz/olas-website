@@ -57,7 +57,7 @@ export const OwnYourAgent = () => (
 
       <PearlWindow />
 
-      <div className="w-fit mt-14 mx-auto gap-4 flex max-md:flex-col">
+      <div className="mt-14 mx-auto flex flex-wrap justify-center gap-4 max-md:flex-col max-md:items-stretch">
         <Button variant="default" size="lg" asChild>
           <SubsiteLink
             href={`${PEARL_YOU_URL_WITH_UTM_SOURCE}&utm_campaign=homepage&utm_content=own-your-agent-button`}
