@@ -1,7 +1,7 @@
-import { STAKING_SUBGRAPH_URLS } from 'common-util/indexers';
+import { STAKING_SQUID_URLS, STAKING_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 
-import { stakingGlobalsQuery } from 'common-util/graphql/queries';
+import { stakingGlobalsQuery, stakingGlobalsSquidQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
@@ -26,6 +26,10 @@ export const OlasStakedInfo = () => {
           Subgraph links: <IndexerLinks urls={STAKING_SUBGRAPH_URLS} />
         </p>
         <CodeSnippet>{stakingGlobalsQuery}</CodeSnippet>
+        <p className="text-purple-600">
+          Squid links (OpenReader dialect): <IndexerLinks urls={STAKING_SQUID_URLS} />
+        </p>
+        <CodeSnippet>{stakingGlobalsSquidQuery}</CodeSnippet>
       </div>
     </SectionWrapper>
   );

@@ -1,4 +1,4 @@
-import { REGISTRY_SUBGRAPH_URLS } from 'common-util/indexers';
+import { REGISTRY_SQUID_URLS, REGISTRY_SUBGRAPH_URLS } from 'common-util/indexers';
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import {
   OMENSTRAT_AGENT_CLASSIFICATION,
@@ -6,16 +6,19 @@ import {
 } from 'common-util/constants';
 import {
   dailyAgentPerformancesQuery,
-  dailyAgentsFunPerformancesQuery,
+  dailyAgentPerformancesSquidQuery,
+  dailyAgentsFunPerformancesSquidQuery,
   dailyBabydegenPerformancesQuery,
-  dailyBasiusPerformancesQuery,
-  dailyContributePerformancesQuery,
+  dailyBasiusPerformancesSquidQuery,
+  dailyContributePerformancesSquidQuery,
   dailyMechAgentPerformancesQuery,
+  dailyMechAgentPerformancesSquidQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
+import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 export const DailyActiveAgentsInfo = () => {
   return (
@@ -40,6 +43,16 @@ export const DailyActiveAgentsInfo = () => {
             Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} />
           </p>
           <CodeSnippet>{dailyAgentPerformancesQuery}</CodeSnippet>
+          <p className="text-purple-600">
+            Squid link (OpenReader dialect):{' '}
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
+          </p>
+          <CodeSnippet>
+            {dailyAgentPerformancesSquidQuery(
+              getMidnightUtcTimestampDaysAgo(8),
+              getMidnightUtcTimestampDaysAgo(0)
+            )}
+          </CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="babydegen-daily-active-agents">
@@ -70,9 +83,10 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Basius Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
+            Squid link (OpenReader dialect):{' '}
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
           </p>
-          <CodeSnippet>{dailyBasiusPerformancesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyBasiusPerformancesSquidQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="agentsfun-daily-active-agents">
@@ -91,9 +105,10 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
+            Squid link (OpenReader dialect):{' '}
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
           </p>
-          <CodeSnippet>{dailyAgentsFunPerformancesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyAgentsFunPerformancesSquidQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="mech-daily-active-agents">
@@ -116,10 +131,15 @@ export const DailyActiveAgentsInfo = () => {
             Subgraph links:{' '}
             <IndexerLinks
               urls={REGISTRY_SUBGRAPH_URLS}
-              chains={['gnosis', 'base', 'polygon', 'optimism']}
+              chains={['gnosis', 'polygon', 'optimism']}
             />
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
+          <p className="text-purple-600">
+            Squid link (OpenReader dialect):{' '}
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
+          </p>
+          <CodeSnippet>{dailyMechAgentPerformancesSquidQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="omenstrat-daily-active-agents">
@@ -218,9 +238,10 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph links: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['base']} />
+            Squid link (OpenReader dialect):{' '}
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
           </p>
-          <CodeSnippet>{dailyContributePerformancesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyContributePerformancesSquidQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
     </>
