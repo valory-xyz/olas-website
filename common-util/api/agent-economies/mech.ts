@@ -1,12 +1,16 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
-import { MARKETPLACE_GRAPH_CLIENTS, REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { MARKETPLACE_GRAPH_CLIENTS } from 'common-util/graphql/client';
 import {
   MARKETPLACE_CHAIN_KEYS,
   MARKETPLACE_SETTLEMENT_WALK_CHAINS,
   type MarketplaceChain,
 } from 'common-util/indexers';
-import { type IndexerQuery, requestMarketplace } from 'common-util/graphql/indexer-requests';
+import {
+  type IndexerQuery,
+  requestMarketplace,
+  requestRegistry,
+} from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -16,7 +20,9 @@ import {
 } from 'common-util/graphql/metric-utils';
 import {
   agentTxCountsQuery,
+  agentTxCountsSquidQuery,
   dailyMechAgentPerformancesQuery,
+  dailyMechAgentPerformancesSquidQuery,
   mechMarketplaceRequestsPerAgentsQuery,
   mechMarketplaceTotalRequestsQuery,
   mechMarketplaceTotalRequestsSquidQuery,
@@ -54,10 +60,11 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
 
   try {
     const queryPromises = chains.map((chain) =>
-      REGISTRY_GRAPH_CLIENTS[chain].request(dailyMechAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      })
+      requestRegistry(
+        chain,
+        { subgraph: dailyMechAgentPerformancesQuery, squid: dailyMechAgentPerformancesSquidQuery },
+        { timestamp_gt, timestamp_lt }
+      )
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -257,9 +264,11 @@ const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>>
   try {
     const agentIds = MECH_AGENT_CLASSIFICATION.agentsfun;
     const [result, block] = await Promise.all([
-      REGISTRY_GRAPH_CLIENTS.base.request(agentTxCountsQuery, {
-        agentIds,
-      }) as Promise<AgentPerformance>,
+      requestRegistry(
+        'base',
+        { subgraph: agentTxCountsQuery, squid: agentTxCountsSquidQuery(agentIds) },
+        { agentIds }
+      ) as Promise<AgentPerformance>,
       getChainBlockNumber('base'),
     ]);
 

@@ -76,6 +76,39 @@ export const stakingChainSets = (cursors: Record<string, string>, hasClaimedTota
       ]),
 ];
 
+// OpenReader twins of `pagedSet` / `stakingChainSets` for the staking squids. Pair with
+// `SQUID_META_FIELDS`; `requestStaking` turns `squidStatus` into `_meta`.
+export const SQUID_META_FIELDS = `squidStatus { height }`;
+
+const pagedSquidSet = (entity: string, idGt: string, fields: string, where = '') =>
+  `${entity}(
+      limit: 1000
+      orderBy: id_ASC
+      where: { id_gt: "${idGt}"${where} }
+    ) { id ${fields} }`;
+
+export const stakingChainSquidSets = (
+  cursors: Record<string, string>,
+  hasClaimedTotals: boolean
+) => [
+  pagedSquidSet('deposits', cursors.deposits, 'amount blockTimestamp'),
+  pagedSquidSet(
+    'cumulativeDailyStakingGlobals',
+    cursors.cumulativeDailyStakingGlobals,
+    `timestamp totalRewards ${hasClaimedTotals ? 'totalRewardsClaimed' : ''}`
+  ),
+  ...(hasClaimedTotals
+    ? []
+    : [
+        pagedSquidSet(
+          'rewardUpdates',
+          cursors.rewardUpdates,
+          'amount blockTimestamp',
+          ', type_eq: "Claimed"'
+        ),
+      ]),
+];
+
 export const balancerGetPoolQuery = (poolId: string) => gql`
   query GetPool {
     pool(id: "${poolId}") {
@@ -96,6 +129,21 @@ export const stakingContractsQuery = (addresses) => gql`
       }
     }
     stakingContracts${addresses.length > 0 ? `(where: {instance_in: [${addresses.map((address) => `"${address}"`)}]})` : ''} {
+      id
+      rewardsPerSecond
+      minStakingDeposit
+      numAgentInstances
+    }
+  }
+`;
+
+// OpenReader twin of `stakingContractsQuery` (see `stakingGlobalsSquidQuery`).
+export const stakingContractsSquidQuery = (addresses: string[]) => gql`
+  {
+    squidStatus {
+      height
+    }
+    stakingContracts(${addresses.length > 0 ? `where: { instance_in: [${addresses.map((address) => `"${address.toLowerCase()}"`)}] }, ` : ''}orderBy: id_ASC) {
       id
       rewardsPerSecond
       minStakingDeposit
@@ -279,6 +327,20 @@ export const stakingGlobalsQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `stakingGlobalsQuery` for the staking squids. Aliased to the subgraph
+// shape; `requestStaking` (indexer-requests.ts) turns `squidStatus` into `_meta`.
+export const stakingGlobalsSquidQuery = gql`
+  query StakingGlobalsSquid {
+    global: globalById(id: "") {
+      totalRewards
+      currentOlasStaked
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -540,6 +602,23 @@ export const dailyBasiusPerformancesQuery = gql`
   }
 `;
 
+// OpenReader twin of `dailyBasiusPerformancesQuery` (see `registryGlobalsSquidQuery`).
+export const dailyBasiusPerformancesSquidQuery = gql`
+  query DailyPerformanceSquid($timestamp_gt: BigInt!, $timestamp_lt: BigInt!) {
+    dailyAgentPerformances(
+      where: { agentId_eq: 115, dayTimestamp_gt: $timestamp_gt, dayTimestamp_lt: $timestamp_lt }
+      orderBy: [dayTimestamp_DESC, id_DESC]
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
 export const dailyAgentsFunPerformancesQuery = gql`
   query DailyPerformance($timestamp_gt: Int!, $timestamp_lt: Int!) {
     dailyAgentPerformances(
@@ -562,6 +641,23 @@ export const dailyAgentsFunPerformancesQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `dailyAgentsFunPerformancesQuery` (see `registryGlobalsSquidQuery`).
+export const dailyAgentsFunPerformancesSquidQuery = gql`
+  query DailyPerformanceSquid($timestamp_gt: BigInt!, $timestamp_lt: BigInt!) {
+    dailyAgentPerformances(
+      where: { agentId_eq: 43, dayTimestamp_gt: $timestamp_gt, dayTimestamp_lt: $timestamp_lt }
+      orderBy: [dayTimestamp_DESC, id_DESC]
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -589,6 +685,26 @@ export const dailyMechAgentPerformancesQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `dailyMechAgentPerformancesQuery` (see `registryGlobalsSquidQuery`).
+export const dailyMechAgentPerformancesSquidQuery = gql`
+  query DailyPerformanceSquid($timestamp_gt: BigInt!, $timestamp_lt: BigInt!) {
+    dailyAgentPerformances(
+      where: {
+        agentId_in: [9, 26, 29, 36, 37]
+        dayTimestamp_gt: $timestamp_gt
+        dayTimestamp_lt: $timestamp_lt
+      }
+      orderBy: [dayTimestamp_DESC, id_DESC]
+    ) {
+      id
+      activeMultisigCount
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -654,7 +770,8 @@ export const explorerOmenstratSeriesQuery = gql`
   }
 `;
 
-// The same daily registry series in OpenReader syntax (Robinhood Chain).
+// The same daily registry series in OpenReader syntax (Base, Robinhood Chain). Several agent
+// ids share a day, so `id_ASC` keeps offset paging stable, as graph-node's implicit id order does.
 export const explorerRegistrySeriesSquidQuery = gql`
   query ExplorerRegistrySeriesSquid(
     $agentIds: [Int!]!
@@ -668,7 +785,7 @@ export const explorerRegistrySeriesSquidQuery = gql`
         dayTimestamp_gt: $timestamp_gt
         dayTimestamp_lt: $timestamp_lt
       }
-      orderBy: dayTimestamp_ASC
+      orderBy: [dayTimestamp_ASC, id_ASC]
       limit: 1000
       offset: $skip
     ) {
@@ -693,6 +810,23 @@ export const agentTxCountsQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `agentTxCountsQuery`. Squid ids are strings, so the ids are inlined
+// as such rather than passed as the subgraph's [Int!]! variable.
+export const agentTxCountsSquidQuery = (agentIds: number[]) => gql`
+  query AgentTxsSquid {
+    agentPerformances(
+      where: { id_in: [${agentIds.map((id) => `"${id}"`).join(', ')}] }
+      orderBy: id_ASC
+    ) {
+      id
+      txCount
+    }
+    squidStatus {
+      height
     }
   }
 `;
@@ -737,6 +871,30 @@ export const dailyAgentPerformancesQuery = gql`
     }
   }
 `;
+
+// OpenReader twin of `dailyAgentPerformancesQuery`. The squid's `dailyActiveMultisigs` list
+// is the per-Safe join rows (`DailyActiveMultisig`), so the per-day totals are read by id,
+// one alias per UTC day strictly inside the window; `toDailyActiveMultisigsCollection`
+// folds them back into the subgraph's `dailyActiveMultisigs_collection` shape.
+export const DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX = 'day_';
+
+export const dailyAgentPerformancesSquidQuery = (timestamp_gt: number, timestamp_lt: number) => {
+  const days: number[] = [];
+  for (let day = timestamp_lt - 86400; day > timestamp_gt; day -= 86400) days.push(day);
+  return gql`
+  query DailyActiveMultisigsSquid {
+    ${days
+      .map(
+        (day) =>
+          `${DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX}${day}: dailyActiveMultisigsById(id: "day-${day}") { id count }`
+      )
+      .join(' ')}
+    squidStatus {
+      height
+    }
+  }
+`;
+};
 
 export const registryGlobalsQuery = gql`
   query RegistryGlobals {
@@ -1345,6 +1503,23 @@ export const dailyContributePerformancesQuery = gql`
       block {
         number
       }
+    }
+  }
+`;
+
+// OpenReader twin of `dailyContributePerformancesQuery` (see `registryGlobalsSquidQuery`).
+export const dailyContributePerformancesSquidQuery = gql`
+  query DailyPerformanceSquid($timestamp_gt: BigInt!, $timestamp_lt: BigInt!) {
+    dailyAgentPerformances(
+      where: { agentId_eq: 41, dayTimestamp_gt: $timestamp_gt, dayTimestamp_lt: $timestamp_lt }
+      orderBy: [dayTimestamp_DESC, id_DESC]
+    ) {
+      id
+      dayTimestamp
+      activeMultisigCount
+    }
+    squidStatus {
+      height
     }
   }
 `;

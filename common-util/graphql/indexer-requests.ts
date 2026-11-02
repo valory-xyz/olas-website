@@ -7,6 +7,8 @@ import {
   MECH_FEES_SQUID_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   REGISTRY_SQUID_CLIENTS,
+  STAKING_GRAPH_CLIENTS,
+  STAKING_SQUID_CLIENTS,
 } from 'common-util/graphql/client';
 import { WithMeta } from 'common-util/graphql/types';
 
@@ -64,3 +66,4 @@ export const requestMarketplace = createRequester(
   MARKETPLACE_SQUID_CLIENTS
 );
 export const requestMechFees = createRequester(MECH_FEES_GRAPH_CLIENTS, MECH_FEES_SQUID_CLIENTS);
+export const requestStaking = createRequester(STAKING_GRAPH_CLIENTS, STAKING_SQUID_CLIENTS);

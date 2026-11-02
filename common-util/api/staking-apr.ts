@@ -1,7 +1,8 @@
 import { WindowedMetric } from 'common-util/api/predict/brier';
-import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { requestStaking } from 'common-util/graphql/indexer-requests';
+import type { StakingChain } from 'common-util/indexers';
 import { createStaleStatus, executeGraphQLQuery } from 'common-util/graphql/metric-utils';
-import { stakingContractsQuery } from 'common-util/graphql/queries';
+import { stakingContractsQuery, stakingContractsSquidQuery } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getContractApr } from 'common-util/olasApr';
 import { loadSnapshot } from 'common-util/snapshot-storage';
@@ -11,8 +12,6 @@ import { getAllStakingNominees } from 'common-util/web3';
 export const STAKING_APR_CATEGORY = 'staking-apr';
 
 const DAY = 86400;
-
-type StakingChain = keyof typeof STAKING_GRAPH_CLIENTS;
 
 const CHAIN_ID_TO_STAKING_CHAIN: Record<string, StakingChain> = {
   '10': 'optimism',
@@ -174,9 +173,12 @@ export const fetchAllStakingAprs = async (): Promise<StakingAprSnapshot | null> 
       }
 
       const fresh = await executeGraphQLQuery<StakingContractsResponse, Record<string, number>>({
-        client: STAKING_GRAPH_CLIENTS[chain],
+        request: () =>
+          requestStaking<StakingContractsResponse>(chain, {
+            subgraph: stakingContractsQuery(addresses),
+            squid: stakingContractsSquidQuery(addresses),
+          }),
         chain,
-        query: stakingContractsQuery(addresses),
         source: `staking:${chain}`,
         transform: (data) => {
           const aprByContract: Record<string, number> = {};

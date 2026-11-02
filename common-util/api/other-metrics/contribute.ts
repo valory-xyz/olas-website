@@ -1,11 +1,14 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
-import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { requestRegistry } from 'common-util/graphql/indexer-requests';
 import {
   createStaleStatus,
   executeGraphQLQuery,
   getFetchErrorAndCreateStaleStatus,
 } from 'common-util/graphql/metric-utils';
-import { dailyContributePerformancesQuery } from 'common-util/graphql/queries';
+import {
+  dailyContributePerformancesQuery,
+  dailyContributePerformancesSquidQuery,
+} from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
@@ -21,13 +24,19 @@ type DailyContributePerformancesResult = WithMeta<{
 
 const fetchContributeDaa7dAvg = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<DailyContributePerformancesResult, number>({
-    client: REGISTRY_GRAPH_CLIENTS.base,
+    request: () =>
+      requestRegistry<DailyContributePerformancesResult>(
+        'base',
+        {
+          subgraph: dailyContributePerformancesQuery,
+          squid: dailyContributePerformancesSquidQuery,
+        },
+        {
+          timestamp_gt: getMidnightUtcTimestampDaysAgo(8),
+          timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
+        }
+      ),
     chain: 'base',
-    query: dailyContributePerformancesQuery,
-    variables: {
-      timestamp_gt: getMidnightUtcTimestampDaysAgo(8),
-      timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
-    },
     source: 'contribute:daa',
     transform: (data) => {
       const rows = data?.dailyAgentPerformances ?? [];
