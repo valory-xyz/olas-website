@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request';
+import { DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX } from './daily-active-multisigs';
 
 // Cursor-paged by counter, which is the epoch id. A capped query would drop the oldest
 // epochs from every emissions chart without erroring.
@@ -875,12 +876,9 @@ export const dailyAgentPerformancesQuery = gql`
 // OpenReader twin of `dailyAgentPerformancesQuery`. The squid's `dailyActiveMultisigs` list
 // is the per-Safe join rows (`DailyActiveMultisig`), so the per-day totals are read by id,
 // one alias per UTC day strictly inside the window; `toDailyActiveMultisigsCollection`
-// folds them back into the subgraph's `dailyActiveMultisigs_collection` shape.
-export const DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX = 'day_';
-
-export const dailyAgentPerformancesSquidQuery = (timestamp_gt: number, timestamp_lt: number) => {
-  const days: number[] = [];
-  for (let day = timestamp_lt - 86400; day > timestamp_gt; day -= 86400) days.push(day);
+// folds them back into the subgraph's `dailyActiveMultisigs_collection` shape. `days` are
+// the midnight UTC timestamps (`dailyActiveMultisigsDays`), or named placeholders on /data.
+export const dailyAgentPerformancesSquidQuery = (days: ReadonlyArray<number | string>) => {
   return gql`
   query DailyActiveMultisigsSquid {
     ${days

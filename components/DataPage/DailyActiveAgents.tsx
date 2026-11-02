@@ -18,7 +18,12 @@ import {
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
-import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
+
+// The fetcher inlines midnight UTC of each of the last 7 full days; shown here as named
+// placeholders so the static page doesn't bake in build-time dates.
+const dailyAgentPerformancesSquidDays = Array.from({ length: 7 }, (_, index) =>
+  index === 0 ? '$midnightUtc1DayAgo' : `$midnightUtc${index + 1}DaysAgo`
+);
 
 export const DailyActiveAgentsInfo = () => {
   return (
@@ -48,10 +53,7 @@ export const DailyActiveAgentsInfo = () => {
             <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
           </p>
           <CodeSnippet>
-            {dailyAgentPerformancesSquidQuery(
-              getMidnightUtcTimestampDaysAgo(8),
-              getMidnightUtcTimestampDaysAgo(0)
-            )}
+            {dailyAgentPerformancesSquidQuery(dailyAgentPerformancesSquidDays)}
           </CodeSnippet>
         </div>
       </SectionWrapper>

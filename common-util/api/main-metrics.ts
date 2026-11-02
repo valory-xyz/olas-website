@@ -22,7 +22,6 @@ import {
 import {
   ataTransactionsQuery,
   ataTransactionsSquidQuery,
-  DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX,
   dailyAgentPerformancesQuery,
   dailyAgentPerformancesSquidQuery,
   legacyMechFeesQuery,
@@ -36,38 +35,17 @@ import {
   stakingGlobalsSquidQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
+import {
+  DailyAgentPerformancesResult,
+  dailyActiveMultisigsDays,
+  toDailyActiveMultisigsCollection,
+} from 'common-util/graphql/daily-active-multisigs';
 import { fetchMechMarketplaceFees, MechFeesByToken } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
 const STAKING_CHAINS = STAKING_CHAIN_KEYS;
-
-type DailyAgentPerformancesResult = WithMeta<{
-  dailyActiveMultisigs_collection: {
-    id: string;
-    count: number;
-  }[];
-}>;
-
-// Squid responses carry one `day_<ts>` alias per day (null when the day has no row); fold
-// them, newest first, into the subgraph shape. Subgraph responses pass through untouched.
-const toDailyActiveMultisigsCollection = (
-  data: Record<string, unknown>
-): DailyAgentPerformancesResult => {
-  if ('dailyActiveMultisigs_collection' in data) return data as DailyAgentPerformancesResult;
-  const dayKeys = Object.keys(data)
-    .filter((key) => key.startsWith(DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX))
-    .sort()
-    .reverse();
-  if (dayKeys.length === 0) return data as DailyAgentPerformancesResult;
-  return {
-    _meta: data._meta as DailyAgentPerformancesResult['_meta'],
-    dailyActiveMultisigs_collection: dayKeys
-      .map((key) => data[key] as { id: string; count: number } | null)
-      .filter((row) => row != null),
-  };
-};
 
 const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
@@ -83,7 +61,9 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
         chain,
         {
           subgraph: dailyAgentPerformancesQuery,
-          squid: dailyAgentPerformancesSquidQuery(timestamp_gt, timestamp_lt),
+          squid: dailyAgentPerformancesSquidQuery(
+            dailyActiveMultisigsDays(timestamp_gt, timestamp_lt)
+          ),
         },
         { timestamp_gt, timestamp_lt }
       ).then(toDailyActiveMultisigsCollection)
