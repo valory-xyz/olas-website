@@ -106,8 +106,7 @@ export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; l
     ])
   );
 
-// Mode is excluded as it can't be reindexed. Base is read from the staking squid now, which
-// also has the claimed totals, so keep it in the list.
+// Mode is excluded as it can't be reindexed. Base's staking squid has claimed totals.
 export const STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS: Exclude<
   'gnosis' | 'base' | 'optimism' | 'polygon' | 'mode',
   'mode'

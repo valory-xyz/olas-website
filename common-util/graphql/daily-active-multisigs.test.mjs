@@ -3,9 +3,6 @@
  * Unit tests for the daily active multisigs squid fold. Uses Node's built-in test runner
  * with type-stripping to load the .ts module directly. Run with
  * `yarn daily-active-multisigs:test`.
- *
- * The squid answers with one `day_<ts>` alias per day instead of the subgraph's list, so a
- * wrong order or a kept null would silently change the published 7-day average.
  */
 import assert from 'node:assert/strict';
 import { test } from 'node:test';

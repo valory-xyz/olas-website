@@ -1,7 +1,6 @@
 /**
  * Pure helpers behind the squid twin of the daily active multisigs query, kept free of
- * runtime imports so `node --test` can load this file directly. Run with
- * `yarn daily-active-multisigs:test`.
+ * runtime imports so `node --test` can load this file directly.
  *
  * The squid's `dailyActiveMultisigs` list is the per-Safe join rows, so the per-day totals
  * are read by id, one `day_<ts>` alias per UTC day, and folded back into the subgraph's

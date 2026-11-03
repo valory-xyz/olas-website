@@ -873,18 +873,18 @@ export const dailyAgentPerformancesQuery = gql`
   }
 `;
 
-// OpenReader twin of `dailyAgentPerformancesQuery`. The squid's `dailyActiveMultisigs` list
-// is the per-Safe join rows (`DailyActiveMultisig`), so the per-day totals are read by id,
-// one alias per UTC day strictly inside the window; `toDailyActiveMultisigsCollection`
-// folds them back into the subgraph's `dailyActiveMultisigs_collection` shape. `days` are
-// the midnight UTC timestamps (`dailyActiveMultisigsDays`), or named placeholders on /data.
-export const dailyAgentPerformancesSquidQuery = (days: ReadonlyArray<number | string>) => {
+// OpenReader twin of `dailyAgentPerformancesQuery`; see `daily-active-multisigs.ts`. `aliases`
+// overrides the `day_<ts>` aliases for the /data snippet only; the fetcher relies on them.
+export const dailyAgentPerformancesSquidQuery = (
+  days: ReadonlyArray<number | string>,
+  aliases?: ReadonlyArray<string>
+) => {
   return gql`
   query DailyActiveMultisigsSquid {
     ${days
       .map(
-        (day) =>
-          `${DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX}${day}: dailyActiveMultisigsById(id: "day-${day}") { id count }`
+        (day, index) =>
+          `${aliases?.[index] ?? `${DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX}${day}`}: dailyActiveMultisigsById(id: "day-${day}") { id count }`
       )
       .join(' ')}
     squidStatus {

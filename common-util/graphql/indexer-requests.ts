@@ -45,14 +45,12 @@ const createRequester = <
       variables
     );
     // Squids have no indexing-error flag: a failed handler stops the processor, which
-    // surfaces as lag instead.
+    // surfaces as lag instead. A missing height can't prove freshness, so report block 0
+    // and let the lag check flag it, the same as `checkSquidLag`.
     const height = squidStatus?.height;
     return {
       ...(data as T),
-      _meta:
-        height == null
-          ? undefined
-          : { hasIndexingErrors: false, block: { number: Number(height) } },
+      _meta: { hasIndexingErrors: false, block: { number: height == null ? 0 : Number(height) } },
     };
   };
 

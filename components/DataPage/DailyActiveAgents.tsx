@@ -20,9 +20,14 @@ import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
 
 // The fetcher inlines midnight UTC of each of the last 7 full days; shown here as named
-// placeholders so the static page doesn't bake in build-time dates.
+// placeholders so the static page doesn't bake in build-time dates. The snippet uses stable
+// `day1`…`day7` aliases so it stays valid GraphQL.
 const dailyAgentPerformancesSquidDays = Array.from({ length: 7 }, (_, index) =>
   index === 0 ? '$midnightUtc1DayAgo' : `$midnightUtc${index + 1}DaysAgo`
+);
+const dailyAgentPerformancesSquidAliases = Array.from(
+  { length: 7 },
+  (_, index) => `day${index + 1}`
 );
 
 export const DailyActiveAgentsInfo = () => {
@@ -53,8 +58,15 @@ export const DailyActiveAgentsInfo = () => {
             <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
           </p>
           <CodeSnippet>
-            {dailyAgentPerformancesSquidQuery(dailyAgentPerformancesSquidDays)}
+            {dailyAgentPerformancesSquidQuery(
+              dailyAgentPerformancesSquidDays,
+              dailyAgentPerformancesSquidAliases
+            )}
           </CodeSnippet>
+          <p>
+            Replace each <code>$midnightUtc…</code> placeholder with that day&apos;s midnight UTC
+            unix timestamp.
+          </p>
         </div>
       </SectionWrapper>
       <SectionWrapper id="babydegen-daily-active-agents">

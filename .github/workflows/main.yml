@@ -128,6 +128,10 @@ jobs:
       # the boundaries and the paging termination are pinned here.
       - name: Run staking-emissions math unit tests
         run: yarn staking-emissions-math:test
+      # The daily active multisigs fold turns the squid's per-day aliases back into the
+      # published 7-day series; a wrong order or a kept null changes the average silently.
+      - name: Run daily-active-multisigs unit tests
+        run: yarn daily-active-multisigs:test
       # roi-math holds the published Predict ROI arithmetic; every rule it encodes
       # shipped wrong at least once (docs/predict-roi-accounting.md, History).
       - name: Run roi-math unit tests

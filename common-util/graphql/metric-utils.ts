@@ -139,8 +139,6 @@ export const checkSquidLag = (
 
 type GraphQLQueryOptions<TData, TResult> = (
   | { client: GraphQLClient; query: RequestDocument; variables?: Variables; request?: never }
-  // A dialect-aware read (`common-util/graphql/indexer-requests.ts`) for chains that may be
-  // served by a squid; it already returns the subgraph shape with `_meta`.
   | { request: () => Promise<TData>; client?: never; query?: never; variables?: never }
 ) & {
   source: string;
