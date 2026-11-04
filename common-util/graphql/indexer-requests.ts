@@ -7,6 +7,8 @@ import {
   MECH_FEES_SQUID_CLIENTS,
   REGISTRY_GRAPH_CLIENTS,
   REGISTRY_SQUID_CLIENTS,
+  STAKING_GRAPH_CLIENTS,
+  STAKING_SQUID_CLIENTS,
 } from 'common-util/graphql/client';
 import { WithMeta } from 'common-util/graphql/types';
 
@@ -43,14 +45,12 @@ const createRequester = <
       variables
     );
     // Squids have no indexing-error flag: a failed handler stops the processor, which
-    // surfaces as lag instead.
+    // surfaces as lag instead. A missing height can't prove freshness, so report block 0
+    // and let the lag check flag it, the same as `checkSquidLag`.
     const height = squidStatus?.height;
     return {
       ...(data as T),
-      _meta:
-        height == null
-          ? undefined
-          : { hasIndexingErrors: false, block: { number: Number(height) } },
+      _meta: { hasIndexingErrors: false, block: { number: height == null ? 0 : Number(height) } },
     };
   };
 
@@ -64,3 +64,4 @@ export const requestMarketplace = createRequester(
   MARKETPLACE_SQUID_CLIENTS
 );
 export const requestMechFees = createRequester(MECH_FEES_GRAPH_CLIENTS, MECH_FEES_SQUID_CLIENTS);
+export const requestStaking = createRequester(STAKING_GRAPH_CLIENTS, STAKING_SQUID_CLIENTS);

@@ -1,7 +1,15 @@
 import { STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { STAKING_SQUID_CLIENTS, TOKENOMICS_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { requestStaking } from 'common-util/graphql/indexer-requests';
 import { checkSubgraphLag, getChainBlockNumber } from 'common-util/graphql/metric-utils';
-import { META_FIELDS, mintedForStakingSets, stakingChainSets } from 'common-util/graphql/queries';
+import {
+  META_FIELDS,
+  mintedForStakingSets,
+  SQUID_META_FIELDS,
+  stakingChainSets,
+  stakingChainSquidSets,
+} from 'common-util/graphql/queries';
+import { STAKING_CHAIN_KEYS, type StakingChain } from 'common-util/indexers';
 import {
   CumulativePoint,
   EpochBoundary,
@@ -48,8 +56,6 @@ type PayoutRow = { amount: string; blockTimestamp: string };
 type SingleClaimRow = { transferAmount: string; blockTimestamp: string };
 type BatchClaimRow = { totalTransferAmount: string; blockTimestamp: string };
 
-type StakingClient = (typeof STAKING_GRAPH_CLIENTS)[keyof typeof STAKING_GRAPH_CLIENTS];
-
 type ChainSeries = {
   deposits: TimestampedAmount[];
   claimable: CumulativePoint[];
@@ -93,8 +99,7 @@ const fetchMinted = async (epochs: EpochBoundary[], errors: SeriesErrors): Promi
 
 /** Deposits, claimable and claimed from one staking chain, in one request. */
 const fetchChain = async (
-  chain: string,
-  client: StakingClient,
+  chain: StakingChain,
   epochs: EpochBoundary[],
   errors: SeriesErrors,
   // Set on the retry below; not passed by callers
@@ -103,14 +108,23 @@ const fetchChain = async (
   const hasClaimedTotals =
     !forceFallback && (STAKING_SUBGRAPHS_WITH_CLAIMED_TOTALS as string[]).includes(chain);
   const empty: ChainSeries = { deposits: [], claimable: [], claimed: [] };
+  // `pageSets` builds raw query text, so pick the dialect here; `requestStaking` hands
+  // either back in the subgraph shape with `_meta`.
+  const isSquid = chain in STAKING_SQUID_CLIENTS;
+  const client = {
+    request: (query: string) => requestStaking(chain, { subgraph: query, squid: query }),
+  };
 
   try {
     const [{ rows, meta }, block] = await Promise.all([
       pageSets(
         client,
-        (cursors) => stakingChainSets(cursors, hasClaimedTotals),
+        (cursors) =>
+          isSquid
+            ? stakingChainSquidSets(cursors, hasClaimedTotals)
+            : stakingChainSets(cursors, hasClaimedTotals),
         hasClaimedTotals ? CHAIN_KEYS : [...CHAIN_KEYS, 'rewardUpdates'],
-        META_FIELDS
+        isSquid ? SQUID_META_FIELDS : META_FIELDS
       ),
       getChainBlockNumber(chain),
     ]);
@@ -162,7 +176,7 @@ const fetchChain = async (
     // Retry once on the payout path, which every version of the subgraph can answer.
     if (hasClaimedTotals) {
       console.warn(`${chain} rejected the claimed accumulator, retrying on the payout path`);
-      return fetchChain(chain, client, epochs, errors, true);
+      return fetchChain(chain, epochs, errors, true);
     }
     console.error(`Error fetching staking emissions from ${chain}:`, error);
     errors.fetchErrors.push(`staking-rewards:${chain}`);
@@ -180,11 +194,7 @@ export const fetchStakingEmissionsSeries = async (
 
   const [minted, chains] = await Promise.all([
     fetchMinted(epochs, errors),
-    Promise.all(
-      Object.entries(STAKING_GRAPH_CLIENTS).map(([chain, client]) =>
-        fetchChain(chain, client, epochs, errors)
-      )
-    ),
+    Promise.all(STAKING_CHAIN_KEYS.map((chain) => fetchChain(chain, epochs, errors))),
   ]);
 
   // Each chain's curve is differenced on its own before the chains are added

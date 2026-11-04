@@ -1,18 +1,16 @@
 import { calculate7DayAverage } from 'common-util/calculate7DayAverage';
-import {
-  legacyMechFeesGraphClient,
-  REGISTRY_GRAPH_CLIENTS,
-  STAKING_GRAPH_CLIENTS,
-} from 'common-util/graphql/client';
+import { legacyMechFeesGraphClient } from 'common-util/graphql/client';
 import {
   MARKETPLACE_CHAIN_KEYS,
   MECH_FEES_CHAIN_KEYS,
   REGISTRY_CHAIN_KEYS,
+  STAKING_CHAIN_KEYS,
 } from 'common-util/indexers';
 import {
   requestMarketplace,
   requestMechFees,
   requestRegistry,
+  requestStaking,
 } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
@@ -25,6 +23,7 @@ import {
   ataTransactionsQuery,
   ataTransactionsSquidQuery,
   dailyAgentPerformancesQuery,
+  dailyAgentPerformancesSquidQuery,
   legacyMechFeesQuery,
   newMechFeesQuery,
   newMechFeesSquidQuery,
@@ -33,21 +32,20 @@ import {
   registryGlobalsQuery,
   registryGlobalsSquidQuery,
   stakingGlobalsQuery,
+  stakingGlobalsSquidQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
+import {
+  DailyAgentPerformancesResult,
+  dailyActiveMultisigsDays,
+  toDailyActiveMultisigsCollection,
+} from 'common-util/graphql/daily-active-multisigs';
 import { fetchMechMarketplaceFees, MechFeesByToken } from 'common-util/api/mech-marketplace-fees';
 import { formatEthNumber, formatWeiNumber } from 'common-util/numberFormatter';
 import { formatUnits } from 'viem';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 
-const STAKING_CHAINS = Object.keys(STAKING_GRAPH_CLIENTS);
-
-type DailyAgentPerformancesResult = WithMeta<{
-  dailyActiveMultisigs_collection: {
-    id: string;
-    count: number;
-  }[];
-}>;
+const STAKING_CHAINS = STAKING_CHAIN_KEYS;
 
 const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | null>> => {
   const timestamp_lt = getMidnightUtcTimestampDaysAgo(0);
@@ -59,10 +57,16 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
 
   try {
     const queryPromises = STAKING_CHAINS.map((chain) =>
-      REGISTRY_GRAPH_CLIENTS[chain].request(dailyAgentPerformancesQuery, {
-        timestamp_gt,
-        timestamp_lt,
-      })
+      requestRegistry<Record<string, unknown>>(
+        chain,
+        {
+          subgraph: dailyAgentPerformancesQuery,
+          squid: dailyAgentPerformancesSquidQuery(
+            dailyActiveMultisigsDays(timestamp_gt, timestamp_lt)
+          ),
+        },
+        { timestamp_gt, timestamp_lt }
+      ).then(toDailyActiveMultisigsCollection)
     );
     const blockPromises = STAKING_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);
@@ -129,7 +133,7 @@ const fetchTotalOlasStaked = async (): Promise<MetricWithStatus<string | null>> 
 
   try {
     const queryPromises = STAKING_CHAINS.map((chain) =>
-      STAKING_GRAPH_CLIENTS[chain].request(stakingGlobalsQuery)
+      requestStaking(chain, { subgraph: stakingGlobalsQuery, squid: stakingGlobalsSquidQuery })
     );
     const blockPromises = STAKING_CHAINS.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);

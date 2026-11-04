@@ -18,7 +18,6 @@ export type IndexerUrls = Record<string, string | undefined>;
 export const TOKENOMICS_SUBGRAPH_URLS = {
   ethereum: process.env.NEXT_PUBLIC_TOKENOMICS_ETHEREUM_SUBGRAPH_URL,
   arbitrum: process.env.NEXT_PUBLIC_TOKENOMICS_ARBITRUM_SUBGRAPH_URL,
-  base: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SUBGRAPH_URL,
   celo: process.env.NEXT_PUBLIC_TOKENOMICS_CELO_SUBGRAPH_URL,
   gnosis: process.env.NEXT_PUBLIC_TOKENOMICS_GNOSIS_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_TOKENOMICS_OPTIMISM_SUBGRAPH_URL,
@@ -28,6 +27,7 @@ export const TOKENOMICS_SUBGRAPH_URLS = {
 
 // Token holder counts only — see `common-util/api/other-metrics/token-holders.ts`.
 export const TOKENOMICS_SQUID_URLS = {
+  base: process.env.NEXT_PUBLIC_TOKENOMICS_BASE_SQUID_URL,
   robinhood: process.env.NEXT_PUBLIC_TOKENOMICS_ROBINHOOD_SQUID_URL,
 } satisfies IndexerUrls;
 
@@ -35,15 +35,17 @@ export const TOKENOMICS_SQUID_URLS = {
 export const STAKING_SUBGRAPH_URLS = {
   gnosis: process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL,
-  base: process.env.NEXT_PUBLIC_BASE_STAKING_SUBGRAPH_URL,
   mode: process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL,
   polygon: process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL,
+} satisfies IndexerUrls;
+
+export const STAKING_SQUID_URLS = {
+  base: process.env.NEXT_PUBLIC_STAKING_BASE_SQUID_URL,
 } satisfies IndexerUrls;
 
 export const REGISTRY_SUBGRAPH_URLS = {
   ethereum: process.env.NEXT_PUBLIC_ETHEREUM_REGISTRY_SUBGRAPH_URL,
   gnosis: process.env.NEXT_PUBLIC_GNOSIS_REGISTRY_SUBGRAPH_URL,
-  base: process.env.NEXT_PUBLIC_BASE_REGISTRY_SUBGRAPH_URL,
   mode: process.env.NEXT_PUBLIC_MODE_REGISTRY_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
   celo: process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL,
@@ -52,6 +54,7 @@ export const REGISTRY_SUBGRAPH_URLS = {
 } satisfies IndexerUrls;
 
 export const REGISTRY_SQUID_URLS = {
+  base: process.env.NEXT_PUBLIC_REGISTRY_BASE_SQUID_URL,
   robinhood: process.env.NEXT_PUBLIC_REGISTRY_ROBINHOOD_SQUID_URL,
 } satisfies IndexerUrls;
 
@@ -74,12 +77,12 @@ export const MECH_FEES_SUBGRAPH_URLS = {
   gnosis: process.env.NEXT_PUBLIC_NEW_MECH_FEES_GNOSIS_SUBGRAPH_URL,
   arbitrum: process.env.NEXT_PUBLIC_MECH_FEES_ARBITRUM_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_MECH_FEES_OPTIMISM_SUBGRAPH_URL,
-  base: process.env.NEXT_PUBLIC_NEW_MECH_FEES_BASE_SUBGRAPH_URL,
   celo: process.env.NEXT_PUBLIC_MECH_FEES_CELO_SUBGRAPH_URL,
   polygon: process.env.NEXT_PUBLIC_MECH_FEES_POLYGON_SUBGRAPH_URL,
 } satisfies IndexerUrls;
 
 export const MECH_FEES_SQUID_URLS = {
+  base: process.env.NEXT_PUBLIC_MECH_FEES_BASE_SQUID_URL,
   robinhood: process.env.NEXT_PUBLIC_MECH_FEES_ROBINHOOD_SQUID_URL,
 } satisfies IndexerUrls;
 
@@ -113,6 +116,9 @@ export const BALANCER_SUBGRAPH_URLS = {
 // Read off the URL maps, never derived from `CHAIN_LAG_CONFIG` (that is the RPC table).
 const chainKeys = <S extends IndexerUrls, Q extends IndexerUrls>(subgraphs: S, squids: Q) =>
   [...Object.keys(subgraphs), ...Object.keys(squids)] as Array<Extract<keyof S | keyof Q, string>>;
+
+export const STAKING_CHAIN_KEYS = chainKeys(STAKING_SUBGRAPH_URLS, STAKING_SQUID_URLS);
+export type StakingChain = (typeof STAKING_CHAIN_KEYS)[number];
 
 export const REGISTRY_CHAIN_KEYS = chainKeys(REGISTRY_SUBGRAPH_URLS, REGISTRY_SQUID_URLS);
 export type RegistryChain = (typeof REGISTRY_CHAIN_KEYS)[number];

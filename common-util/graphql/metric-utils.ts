@@ -137,10 +137,10 @@ export const checkSquidLag = (
   return lagging;
 };
 
-type GraphQLQueryOptions<TData, TResult> = {
-  client: GraphQLClient;
-  query: RequestDocument;
-  variables?: Variables;
+type GraphQLQueryOptions<TData, TResult> = (
+  | { client: GraphQLClient; query: RequestDocument; variables?: Variables; request?: never }
+  | { request: () => Promise<TData>; client?: never; query?: never; variables?: never }
+) & {
   source: string;
   chain: string;
   /**
@@ -151,21 +151,19 @@ type GraphQLQueryOptions<TData, TResult> = {
   transform: (data: TData, fetchErrors: string[]) => TResult;
 };
 
-export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResult>({
-  client,
-  query,
-  variables,
-  source,
-  transform,
-  chain,
-}: GraphQLQueryOptions<TData, TResult>): Promise<MetricWithStatus<TResult | null>> {
+export async function executeGraphQLQuery<TData extends WithMeta<unknown>, TResult>(
+  options: GraphQLQueryOptions<TData, TResult>
+): Promise<MetricWithStatus<TResult | null>> {
+  const { source, transform, chain } = options;
   const indexingErrors: string[] = [];
   const laggingSubgraphs: string[] = [];
   const fetchErrors: string[] = [];
 
   try {
     const [data, chainBlock] = await Promise.all([
-      client.request(query, variables) as Promise<TData>,
+      options.request
+        ? options.request()
+        : (options.client.request(options.query, options.variables) as Promise<TData>),
       getChainBlockNumber(chain),
     ]);
 

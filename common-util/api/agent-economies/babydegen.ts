@@ -10,6 +10,7 @@ import {
   REGISTRY_GRAPH_CLIENTS,
   STAKING_GRAPH_CLIENTS,
 } from 'common-util/graphql/client';
+import { requestRegistry, requestStaking } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -20,7 +21,9 @@ import {
   dailyBabydegenPerformancesQuery,
   dailyBabydegenPopulationMetricsQuery,
   dailyBasiusPerformancesQuery,
+  dailyBasiusPerformancesSquidQuery,
   stakingContractsQuery,
+  stakingContractsSquidQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
 import { getMaxApr } from 'common-util/olasApr';
@@ -282,10 +285,11 @@ const fetchDailyAgentPerformance = async (): Promise<MetricWithStatus<number | n
           timestamp_gt,
           timestamp_lt,
         }),
-        REGISTRY_GRAPH_CLIENTS.base.request(dailyBasiusPerformancesQuery, {
-          timestamp_gt,
-          timestamp_lt,
-        }),
+        requestRegistry(
+          'base',
+          { subgraph: dailyBasiusPerformancesQuery, squid: dailyBasiusPerformancesSquidQuery },
+          { timestamp_gt, timestamp_lt }
+        ),
         getChainBlockNumber('mode'),
         getChainBlockNumber('optimism'),
         getChainBlockNumber('base'),
@@ -378,9 +382,12 @@ const fetchOptimusOlasApr = async (): Promise<MetricWithStatus<number | null>> =
 
 const fetchBasiusOlasApr = async (): Promise<MetricWithStatus<number | null>> => {
   return executeGraphQLQuery<StakingContractsResult, number | null>({
-    client: STAKING_GRAPH_CLIENTS.base,
+    request: () =>
+      requestStaking<StakingContractsResult>('base', {
+        subgraph: stakingContractsQuery(BASIUS_STAKING_CONTRACTS),
+        squid: stakingContractsSquidQuery(BASIUS_STAKING_CONTRACTS),
+      }),
     chain: 'base',
-    query: stakingContractsQuery(BASIUS_STAKING_CONTRACTS),
     source: 'staking:base',
     transform: (data) => {
       const contracts = data?.stakingContracts;

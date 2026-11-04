@@ -21,14 +21,14 @@ export const FeesInfo = () => {
           the DAO drains it. The &quot;fees collected&quot; figure is the sum of two parts: the
           not-yet-drained balance, read on-chain from each tracker&apos;s <code>collectedFees</code>
           , plus everything already drained, read from the <code>DrainTotals</code> entity of the
-          mech fees subgraphs, or the mech fees squid on Robinhood Chain (one row per payment model,
-          priced in USD at drain time). Counted trackers: USDC on Ethereum, Arbitrum, Celo,
-          Optimism, Polygon and Base; xDAI on Gnosis; ETH on Base and Optimism; POL on Polygon; USDG
-          on Robinhood Chain. ETH and POL are valued with the same Chainlink feeds the subgraphs
-          use. Not counted: the ETH trackers on Ethereum, Arbitrum and Robinhood Chain, the CELO
-          tracker, and OLAS-denominated fees — when fees are distributed, non-OLAS fees are sent to
-          the Olas Treasury and OLAS fees are burned. A reading is held back if any token&apos;s
-          lifetime amount would fall below the previous snapshot.
+          mech fees subgraphs, or the mech fees squids on Base and Robinhood Chain (one row per
+          payment model, priced in USD at drain time). Counted trackers: USDC on Ethereum, Arbitrum,
+          Celo, Optimism, Polygon and Base; xDAI on Gnosis; ETH on Base and Optimism; POL on
+          Polygon; USDG on Robinhood Chain. ETH and POL are valued with the same Chainlink feeds the
+          subgraphs use. Not counted: the ETH trackers on Ethereum, Arbitrum and Robinhood Chain,
+          the CELO tracker, and OLAS-denominated fees — when fees are distributed, non-OLAS fees are
+          sent to the Olas Treasury and OLAS fees are burned. A reading is held back if any
+          token&apos;s lifetime amount would fall below the previous snapshot.
         </p>
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>
           Verify un-drained fees (balance tracker <code>collectedFees</code> on each counted chain):

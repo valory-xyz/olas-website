@@ -40,9 +40,9 @@ export const TokenHolders = () => {
       <div className="space-y-6 mt-4">
         <p>
           Aggregates the number of unique OLAS token holders across supported networks. Each
-          network&apos;s tokenomics subgraph (or squid, on Robinhood) is queried for the token
-          holder count, and results are summed to obtain the total holders metric shown on the OLAS
-          Token page.
+          network&apos;s tokenomics subgraph (or squid, on Base and Robinhood) is queried for the
+          token holder count, and results are summed to obtain the total holders metric shown on the
+          OLAS Token page.
         </p>
 
         <div>
