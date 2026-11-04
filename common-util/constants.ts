@@ -95,7 +95,8 @@ const CHAIN_LAG_CONFIG: Record<
   polygon: { rpc: process.env.POLYGON_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
   mode: { rpc: process.env.MODE_RPC, blockTimeSec: 2, lagToleranceHours: 48 },
   // Arbitrum Orbit rollup. Indexed by SQD squids, not subgraphs.
-  robinhood: { rpc: process.env.ROBINHOOD_RPC, blockTimeSec: 0.25, lagToleranceHours: 48 },
+  // Blocks are ~0.1 s apart: 1,000,000 blocks spanned 104,494 s (measured 2026-10-31).
+  robinhood: { rpc: process.env.ROBINHOOD_RPC, blockTimeSec: 0.1, lagToleranceHours: 48 },
 };
 
 export const CHAIN_CONFIG: Record<string, { rpc: string; blockTimeSec: number; lagLimit: number }> =
