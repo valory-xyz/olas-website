@@ -18,7 +18,7 @@ export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node: _node, ...props }) => (
     <a
-      className="text-purple-700 hover:text-purple-800"
+      className="text-purple-700 hover:text-purple-800 break-words [overflow-wrap:anywhere]"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
