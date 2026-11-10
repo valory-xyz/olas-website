@@ -88,7 +88,7 @@ export const markdownComponents = {
   ),
   th: ({ node: _node, ...props }) => (
     <th
-      className="px-3 py-2 text-left align-top font-semibold text-gray-900 whitespace-nowrap"
+      className="px-3 py-2 text-left align-top font-semibold text-gray-900 whitespace-nowrap md:whitespace-normal"
       {...props}
     />
   ),
