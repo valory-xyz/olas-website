@@ -18,7 +18,7 @@ export const markdownComponents = {
   // Apply tailwind classes to style links
   a: ({ node: _node, ...props }) => (
     <a
-      className="text-purple-700 hover:text-purple-800"
+      className="text-purple-700 hover:text-purple-800 break-words [overflow-wrap:anywhere]"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
@@ -75,4 +75,22 @@ export const markdownComponents = {
       {children}
     </blockquote>
   ),
+  // Wide GFM tables scroll inside their own container instead of widening the page
+  table: ({ node: _node, ...props }) => (
+    <div className="w-full overflow-x-auto mb-4 last:mb-0">
+      <table className="w-full text-base" {...props} />
+    </div>
+  ),
+  thead: ({ node: _node, ...props }) => <thead className="border-b border-gray-300" {...props} />,
+  tbody: ({ node: _node, ...props }) => <tbody {...props} />,
+  tr: ({ node: _node, ...props }) => (
+    <tr className="border-b border-gray-200 last:border-b-0" {...props} />
+  ),
+  th: ({ node: _node, ...props }) => (
+    <th
+      className="px-3 py-2 text-left align-top font-semibold text-gray-900 whitespace-nowrap md:whitespace-normal"
+      {...props}
+    />
+  ),
+  td: ({ node: _node, ...props }) => <td className="px-3 py-2 text-left align-top" {...props} />,
 };
