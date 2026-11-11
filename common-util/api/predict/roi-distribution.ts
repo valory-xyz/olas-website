@@ -436,7 +436,8 @@ const fetchAllTimeAgents = async (
     }
   }
 
-  // 2. Paginate senders from marketplace subgraph (Global Mech Cost)
+  // 2. Read lifetime sender counters from Graph or SQD into allTimeAgents.
+  // Published windowed ROI uses byDay; these counters do not change its cost basis.
   const senderMap = new Map<string, number>();
   skip = 0;
   while (true) {

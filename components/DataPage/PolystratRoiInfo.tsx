@@ -146,7 +146,7 @@ export const PolystratRoiInfo = () => {
           window). The windowed sum is valued at the current OLAS/USD price for Final ROI.
         </p>
         <p className="text-purple-600">
-          Squid counters:{' '}
+          Subgraph link:{' '}
           <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL}>
             Polygon
           </SubgraphLink>
