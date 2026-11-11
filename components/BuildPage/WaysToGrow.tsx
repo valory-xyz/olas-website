@@ -36,6 +36,10 @@ const ways = [
           </li>
         </ul>
         <p className="mt-4">And then register on Marketplace.</p>
+        <p className="mt-4">
+          Add your entity&apos;s name and website to your agent&apos;s listing, so the Know Your
+          Agent (KYA) report shows who runs the Mech, what it offers and how it has delivered.
+        </p>
       </>
     ),
     link: (

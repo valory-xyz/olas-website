@@ -3,13 +3,13 @@ import { OPERATE_URL } from 'common-util/constants';
 import { InfoCardList } from 'components/InfoCardList';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubsiteLink } from 'components/ui/typography';
-import { Bot, Cog, FileStack, Gem } from 'lucide-react';
+import { Bot, Cog, FileStack, Gauge, Gem } from 'lucide-react';
 
 const list = [
   {
     title: 'Stake & Earn OLAS',
     icon: <Gem />,
-    desc: "Run agents through Pearl, and earn OLAS for keeping them active and useful. As your agent completes its' goals, you earn.",
+    desc: 'Run agents through Pearl, and earn OLAS for keeping them active and useful. As your agent completes its goals, you earn.',
   },
   {
     title: 'Run AI Agents Your Way',
@@ -17,7 +17,12 @@ const list = [
     desc: "Whether you're just starting or a seasoned builder, there’s an option for you. Pearl is beginner-friendly and fast to deploy.",
   },
   {
-    title: 'Easily Run Mulitple Agents on Pearl',
+    title: 'Your Agent, Your Pace',
+    icon: <Gauge />,
+    desc: 'Want more activity? Tell your agent in its chat, for example "Place 10 trades a day". After earning its OLAS activity rewards, the agent is designed to keep working until it reaches its daily activity target.',
+  },
+  {
+    title: 'Easily Run Multiple Agents on Pearl',
     icon: <Bot />,
     desc: 'Pearl makes running agents as easy as clicking a button, so you can get started without technical expertise. Simply choose from a variety of AI agents — prediction agents, AI influencers, asset managers, and more.',
   },
