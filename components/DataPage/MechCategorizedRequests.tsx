@@ -1,8 +1,16 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
 import { MECH_AGENT_CLASSIFICATION } from 'common-util/constants';
-import { mechMarketplaceRequestsPerAgentsQuery } from 'common-util/graphql/queries';
+import {
+  mechMarketplaceRequestsPerAgentsQuery,
+  mechMarketplaceRequestsPerAgentsSquidQuery,
+} from 'common-util/graphql/queries';
+import {
+  MARKETPLACE_SUBGRAPH_URLS,
+  MARKETPLACE_SQUID_URLS,
+  MARKETPLACE_CHAIN_KEYS,
+} from 'common-util/indexers';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import { SubgraphLink } from './SubgraphLink';
+import { IndexerLinks } from './IndexerLinks';
 import { CodeSnippet } from './CodeSnippet';
 
 const allMechIds = [
@@ -20,7 +28,7 @@ export const MechCategorizedRequestsInfo = () => (
     <div className="space-y-6 mt-4">
       <p>
         Predict, Contribute, and Governatooorr request counts are computed by summing per-agent
-        totals across subgraphs using fixed agent IDs: Predict [
+        totals across subgraphs and squids using fixed agent IDs: Predict [
         {MECH_AGENT_CLASSIFICATION.predict.join(', ')}], Contribute [
         {MECH_AGENT_CLASSIFICATION.contribute.join(', ')}], Governatooorr [
         {MECH_AGENT_CLASSIFICATION.governatooor.join(', ')}]. The &quot;Other&quot; bucket is
@@ -29,35 +37,28 @@ export const MechCategorizedRequestsInfo = () => (
 
       <p>
         The query returns <code>requestsPerAgents</code> (marketplace requests) and{' '}
-        <code>requestsPerAgentOnchains</code> (legact mech requests). The requestsCounts from both
+        <code>requestsPerAgentOnchains</code> (legacy mech requests). The requestsCounts from both
         are summed together for the final totals.
       </p>
 
       <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Mech Marketplace Requests (per agent)</h3>
       <p className="text-purple-600">
-        Subgraph links:{' '}
-        <SubgraphLink
-          apiUrl={process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL}
-          className="mr-2"
-        >
-          Gnosis
-        </SubgraphLink>
-        <SubgraphLink
-          apiUrl={process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL}
-          className="mr-2"
-        >
-          Base
-        </SubgraphLink>
-        <SubgraphLink
-          apiUrl={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}
-          className="mr-2"
-        >
-          Polygon
-        </SubgraphLink>
-        <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL}>
-          Optimism
-        </SubgraphLink>
+        Subgraph links: <IndexerLinks urls={MARKETPLACE_SUBGRAPH_URLS} />
       </p>
+      <p className="text-purple-600">
+        Squid links:{' '}
+        <IndexerLinks
+          urls={MARKETPLACE_SQUID_URLS}
+          chains={MARKETPLACE_CHAIN_KEYS.filter((chain) => chain !== 'robinhood')}
+        />
+      </p>
+      <p>
+        Base and Polygon use the squid query below. Their marketplace counts are stored in{' '}
+        <code>requestsPerAgents</code>.
+      </p>
+      <CodeSnippet>
+        {mechMarketplaceRequestsPerAgentsSquidQuery(allMechIds.map(String))}
+      </CodeSnippet>
       <CodeSnippet>{MARKETPLACE_QUERY}</CodeSnippet>
     </div>
   </SectionWrapper>

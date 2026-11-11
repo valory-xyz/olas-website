@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request';
-import { DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX } from './daily-active-multisigs';
+import { DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX } from './daily-active-multisigs.ts';
 
 // Cursor-paged by counter, which is the epoch id. A capped query would drop the oldest
 // epochs from every emissions chart without erroring.
@@ -1858,6 +1858,49 @@ export const getExplorerMarketplaceRequestEventsSquidQuery = ({
       id
       blockTimestamp
       count: ${offchain ? 'numDeliveries' : 'numRequests'}
+    }
+    squidStatus { height }
+  }
+`;
+
+// SQD stores the marketplace on-chain and signed counts in one per-agent entity.
+export const mechMarketplaceRequestsPerAgentsSquidQuery = (ids: string[]) => gql`
+  query MechMarketplaceRequestsPerAgents {
+    requestsPerAgents(limit: 1000, where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
+      id
+      requestsCount
+    }
+    squidStatus { height }
+  }
+`;
+
+export const mechAtaTransactionsSquidQuery = gql`
+  query MechAtaTransactions($gte: BigInt!, $lt: BigInt!) {
+    ataTransactions(
+      limit: 1000
+      where: { blockTimestamp_gte: $gte, blockTimestamp_lt: $lt }
+      orderBy: [blockTimestamp_ASC, id_ASC]
+    ) {
+      id
+      blockTimestamp
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const getMarketplaceSendersSquidQuery = ({
+  first,
+  skip,
+}: {
+  first: number;
+  skip: number;
+}) => gql`
+  query MarketplaceSenders {
+    senders(limit: ${first}, offset: ${skip}, orderBy: id_ASC) {
+      id
+      totalLegacyRequests
     }
     squidStatus { height }
   }

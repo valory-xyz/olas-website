@@ -1,12 +1,11 @@
 import { SUB_HEADER_LG_CLASS, TEXT_MEDIUM_CLASS } from 'common-util/classes';
-import { PREDICT_MARKET_DURATION_DAYS } from 'common-util/constants';
 import {
-  getMechRequestsQuery,
+  getMarketplaceSendersSquidQuery,
   getPolymarketDailyProfitStatsQuery,
   getPolymarketTraderAgentsQuery,
   getStakingRewardsByTimeRangeQuery,
-  totalMechRequestsQuery,
 } from 'common-util/graphql/queries';
+import { MARKETPLACE_SQUID_URLS } from 'common-util/indexers';
 import { getMidnightUtcTimestampDaysAgo } from 'common-util/time';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { SubgraphLink } from './SubgraphLink';
@@ -16,8 +15,6 @@ import { CodeSnippet } from './CodeSnippet';
 
 export const PolystratRoiInfo = () => {
   const [copied, setCopied] = useState(false);
-  const marketOpenTimestamp = getMidnightUtcTimestampDaysAgo(PREDICT_MARKET_DURATION_DAYS);
-  const totalMechRequests = totalMechRequestsQuery;
   const dailyProfitStats = getPolymarketDailyProfitStatsQuery({
     date_gte: getMidnightUtcTimestampDaysAgo(7),
     date_lte: getMidnightUtcTimestampDaysAgo(1),
@@ -31,12 +28,7 @@ export const PolystratRoiInfo = () => {
     timestamp_gte: getMidnightUtcTimestampDaysAgo(7),
     timestamp_lt: getMidnightUtcTimestampDaysAgo(0),
   });
-  const mechRequests = getMechRequestsQuery({
-    timestamp_gt: marketOpenTimestamp,
-    first: 1000,
-    skip: 0,
-    pages: 10,
-  });
+  const mechRequests = getMarketplaceSendersSquidQuery({ first: 1000, skip: 0 });
 
   const copyEndpointToClipboard = async () => {
     const url = process.env.NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL;
@@ -95,14 +87,16 @@ export const PolystratRoiInfo = () => {
           </ul>
         </div>
         <p className="text-purple-600">
-          Subgraph link:{' '}
-          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL}>
-            Polygon
-          </SubgraphLink>
+          Squid counters:{' '}
+          <SubgraphLink apiUrl={MARKETPLACE_SQUID_URLS.polygon}>Polygon</SubgraphLink>
         </p>
-        <CodeSnippet>
-          {totalMechRequests} {mechRequests}
-        </CodeSnippet>
+        <CodeSnippet>{mechRequests}</CodeSnippet>
+
+        <p>
+          Request question titles come from the Mech Analytics scored-rows API (
+          <code>/v1/data/scored-rows?chain_id=137</code>), because the squid does not index parsed
+          IPFS data.
+        </p>
 
         <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>2) Trading Data Queries</h3>
 
@@ -152,7 +146,7 @@ export const PolystratRoiInfo = () => {
           window). The windowed sum is valued at the current OLAS/USD price for Final ROI.
         </p>
         <p className="text-purple-600">
-          Subgraph link:{' '}
+          Squid counters:{' '}
           <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL}>
             Polygon
           </SubgraphLink>
