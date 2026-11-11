@@ -1,5 +1,5 @@
 import { PREDICT_STAKING_AGENT_IDS } from 'common-util/constants';
-import { STAKING_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { requestStaking } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -7,6 +7,8 @@ import {
 } from 'common-util/graphql/metric-utils';
 import {
   getStakingRewardsByTimeRangeQuery,
+  getStakingRewardsByTimeRangeSquidQuery,
+  stakingContractAgentIdsSquidQuery,
   stakingContractAgentIdsQuery,
 } from 'common-util/graphql/queries';
 import { MetricWithStatus, WithMeta } from 'common-util/graphql/types';
@@ -45,13 +47,11 @@ type StakingContractAgentIdsResponse = {
 
 // Predict staking contract addresses, resolved from each contract's staked agent ids —
 // no hardcoded program list to maintain, and non-predict programs (LST, mech) drop out.
-const fetchPredictContractAddresses = async (
-  client: (typeof STAKING_GRAPH_CLIENTS)['gnosis'],
-  chain: 'gnosis' | 'polygon'
-): Promise<string[]> => {
-  const response = (await client.request(
-    stakingContractAgentIdsQuery
-  )) as StakingContractAgentIdsResponse;
+const fetchPredictContractAddresses = async (chain: 'gnosis' | 'polygon'): Promise<string[]> => {
+  const response = (await requestStaking<StakingContractAgentIdsResponse>(chain, {
+    subgraph: stakingContractAgentIdsQuery,
+    squid: stakingContractAgentIdsSquidQuery,
+  })) as StakingContractAgentIdsResponse;
   const predictAgentIds = PREDICT_STAKING_AGENT_IDS[chain];
   const addresses = (response?.stakingContracts || [])
     .filter((contract) =>
@@ -72,7 +72,6 @@ const dayOf = (ts: number): number => Math.floor(ts / DAY) * DAY;
 // Sums rewardAmount per placement day for [startDay, endDay], cursor-paged by
 // blockTimestamp. Mutates indexingErrors/laggingSubgraphs as a side effect.
 const fetchDayBuckets = async (
-  client: (typeof STAKING_GRAPH_CLIENTS)['gnosis'],
   contractAddresses: string[],
   chain: 'gnosis' | 'polygon',
   startDay: number,
@@ -89,14 +88,11 @@ const fetchDayBuckets = async (
   const source = `staking:${chain}`;
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const response = (await client.request(
-      getStakingRewardsByTimeRangeQuery({
-        first: LIMIT,
-        contractAddresses,
-        timestamp_gte: startDay,
-        timestamp_lt: cursor,
-      })
-    )) as RewardsResponse;
+    const args = { first: LIMIT, contractAddresses, timestamp_gte: startDay, timestamp_lt: cursor };
+    const response = await requestStaking<RewardsResponse>(chain, {
+      subgraph: getStakingRewardsByTimeRangeQuery(args),
+      squid: getStakingRewardsByTimeRangeSquidQuery(args),
+    });
 
     if (!metaChecked) {
       if (response?._meta?.hasIndexingErrors) indexingErrors.push(source);
@@ -144,7 +140,6 @@ const buildWindowedStakingRewards = async (
   const source = `staking:${chain}`;
 
   const yesterday = getMidnightUtcTimestampDaysAgo(1);
-  const client = STAKING_GRAPH_CLIENTS[chain];
 
   // A transient blob read failure must not restart the genesis backfill: bail with a
   // fetchError (mergeWithFallback holds the previous windows) and leave the blob untouched.
@@ -163,7 +158,7 @@ const buildWindowedStakingRewards = async (
   try {
     const [chainBlock, contractAddresses] = await Promise.all([
       getChainBlockNumber(chain),
-      fetchPredictContractAddresses(client, chain),
+      fetchPredictContractAddresses(chain),
     ]);
 
     const buckets: Record<string, string> = { ...(existing?.buckets ?? {}) };
@@ -181,7 +176,6 @@ const buildWindowedStakingRewards = async (
     );
     applyBuckets(
       await fetchDayBuckets(
-        client,
         contractAddresses,
         chain,
         headStart,
@@ -198,7 +192,6 @@ const buildWindowedStakingRewards = async (
       const lo = Math.max(genesisDay, backfilledTo - BACKFILL_CHUNK_DAYS * DAY);
       applyBuckets(
         await fetchDayBuckets(
-          client,
           contractAddresses,
           chain,
           lo,

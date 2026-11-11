@@ -1,13 +1,13 @@
 import { SUB_HEADER_LG_CLASS } from 'common-util/classes';
 import { ETHERSCAN_URL, VOTE_WEIGHTING_ADDRESS } from 'common-util/constants';
-import { stakingContractsQuery } from 'common-util/graphql/queries';
+import { stakingContractsSquidQuery } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { ExternalLink } from 'components/ui/typography';
 import { SubgraphLink } from './SubgraphLink';
 import { CodeSnippet } from './CodeSnippet';
 
 export const PolystratAprInfo = () => {
-  const query = stakingContractsQuery(['<active staking contracts on Polygon>']);
+  const query = stakingContractsSquidQuery(['<active staking contracts on Polygon>']);
 
   return (
     <SectionWrapper id="polystrat-predict-apr">
@@ -21,14 +21,14 @@ export const PolystratAprInfo = () => {
             VoteWeighting contract
           </ExternalLink>{' '}
           on Ethereum (getAllNominees). For each of them we query rewards per second, minimum
-          staking deposit, and number of agent instances from the staking subgraph, then take the
+          staking deposit, and number of agent instances from the staking squid, then take the
           maximum APR across contracts. For each time range, contracts nominated at any point within
           that range are considered.
         </p>
 
         <p className="text-purple-600">
-          Subgraph link:{' '}
-          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL}>
+          Squid link:{' '}
+          <SubgraphLink apiUrl={process.env.NEXT_PUBLIC_STAKING_POLYGON_SQUID_URL}>
             Polygon
           </SubgraphLink>
         </p>

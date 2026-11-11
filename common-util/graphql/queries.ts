@@ -1905,3 +1905,70 @@ export const getMarketplaceSendersSquidQuery = ({
     squidStatus { height }
   }
 `;
+
+// Polygon registry and staking use OpenReader; aliases retain the existing consumer shape.
+export const dailyPredictAgentsPerformancesSquidQuery = gql`
+  query DailyPredictPerformancesSquid(
+    $agentIds: [Int!]!
+    $timestamp_gt: BigInt!
+    $timestamp_lt: BigInt!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        agentId_in: $agentIds
+        dayTimestamp_gt: $timestamp_gt
+        dayTimestamp_lt: $timestamp_lt
+      }
+      orderBy: dayTimestamp_ASC
+      limit: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const agentServicesSquidQuery = gql`
+  query AgentServicesSquid($agentIds: [Int!]!, $id_gt: String!) {
+    services(
+      where: { agentIds_containsAll: $agentIds, id_gt: $id_gt }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const stakingContractAgentIdsSquidQuery = gql`
+  query StakingContractAgentIdsSquid {
+    stakingContracts(limit: 1000) {
+      instance
+      agentIds
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const getStakingRewardsByTimeRangeSquidQuery = ({
+  first,
+  contractAddresses,
+  timestamp_gte,
+  timestamp_lt,
+}: Parameters<typeof getStakingRewardsByTimeRangeQuery>[0]) => gql`
+  query StakingRewardsByTimeRangeSquid {
+    serviceRewardsHistories(limit: ${first}, where: {
+      contractAddress_in: [${contractAddresses.map((a) => `"${a.toLowerCase()}"`).join(', ')}]
+      blockTimestamp_gte: ${timestamp_gte} blockTimestamp_lt: ${timestamp_lt}
+    }, orderBy: blockTimestamp_DESC) { rewardAmount blockTimestamp }
+    squidStatus { height }
+  }
+`;

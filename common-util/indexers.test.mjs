@@ -6,14 +6,21 @@ import {
   MARKETPLACE_SETTLEMENT_WALK_CHAINS,
   REGISTRY_SUBGRAPH_URLS,
   REGISTRY_SQUID_URLS,
+  STAKING_SUBGRAPH_URLS,
+  STAKING_SQUID_URLS,
 } from './indexers.ts';
 
-test('Base and Polygon use exactly one Marketplace backend without changing registry routing', () => {
+test('Base and Polygon use exactly one Marketplace backend alongside registry and staking', () => {
   for (const chain of ['base', 'polygon']) {
     assert.ok(chain in MARKETPLACE_SQUID_URLS);
     assert.ok(!(chain in MARKETPLACE_SUBGRAPH_URLS));
   }
   assert.ok('base' in REGISTRY_SQUID_URLS);
-  assert.ok('polygon' in REGISTRY_SUBGRAPH_URLS);
+  for (const chain of ['base', 'polygon']) {
+    assert.ok(chain in REGISTRY_SQUID_URLS);
+    assert.ok(!(chain in REGISTRY_SUBGRAPH_URLS));
+    assert.ok(chain in STAKING_SQUID_URLS);
+    assert.ok(!(chain in STAKING_SUBGRAPH_URLS));
+  }
   assert.ok(!MARKETPLACE_SETTLEMENT_WALK_CHAINS.includes('polygon'));
 });

@@ -6,6 +6,7 @@ import {
 } from 'common-util/constants';
 import {
   agentTxCountsQuery,
+  agentTxCountsSquidQuery,
   registryGlobalsQuery,
   registryGlobalsSquidQuery,
 } from 'common-util/graphql/queries';
@@ -108,15 +109,19 @@ export const TransactionsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Agent Performances query</h3>
 
           <p className="text-purple-600">
-            Subgraph link:{' '}
+            Squid link:{' '}
             <SubgraphLink
-              apiUrl={process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL}
+              apiUrl={process.env.NEXT_PUBLIC_REGISTRY_POLYGON_SQUID_URL}
               className="mr-2"
             >
               Polygon
             </SubgraphLink>
           </p>
-          <CodeSnippet>{agentTxCountsQuery}</CodeSnippet>
+          <CodeSnippet>
+            {agentTxCountsSquidQuery(
+              Object.values(POLYSTRAT_AGENT_CLASSIFICATION).flat().map(Number)
+            )}
+          </CodeSnippet>
         </div>
       </SectionWrapper>
     </>
