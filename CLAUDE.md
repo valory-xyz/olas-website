@@ -1,5 +1,11 @@
 # CLAUDE.md
 
+Base/Polygon cutover: marketplace, registry and staking now use SQD OpenReader. Polygon
+uses `NEXT_PUBLIC_REGISTRY_POLYGON_SQUID_URL` and `NEXT_PUBLIC_STAKING_POLYGON_SQUID_URL`;
+Base uses `NEXT_PUBLIC_REGISTRY_BASE_SQUID_URL` and `NEXT_PUBLIC_STAKING_BASE_SQUID_URL`.
+These replace the earlier Graph envs for those sources. See `docs/base-polygon-squid-cutover.md`
+at the repository root.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
@@ -53,6 +59,7 @@ yarn lint:lockfile  # Validate yarn.lock integrity (lockfile-lint)
 
 **Multi-chain GraphQL clients** (`common-util/graphql/client.ts`, built from the URL maps in `common-util/indexers.ts`):
 The site queries multiple chains — Ethereum, Gnosis, Base, Optimism, Mode, Celo, Arbitrum, Polygon, and Robinhood Chain (Base and Robinhood partly or wholly via SQD squids) — through these client groups:
+
 - `TOKENOMICS_GRAPH_CLIENTS`, `STAKING_GRAPH_CLIENTS`, `REGISTRY_GRAPH_CLIENTS`, `MARKETPLACE_GRAPH_CLIENTS`, `BABYDEGEN_GRAPH_CLIENTS`, `MECH_FEES_GRAPH_CLIENTS`, `LIQUIDITY_GRAPH_CLIENTS`, `BALANCER_GRAPH_CLIENTS`
 - Squid groups (OpenReader dialect): `REGISTRY_SQUID_CLIENTS`, `STAKING_SQUID_CLIENTS`, `TOKENOMICS_SQUID_CLIENTS`, `MARKETPLACE_SQUID_CLIENTS`, `MECH_FEES_SQUID_CLIENTS`, `LIQUIDITY_SQUID_CLIENTS`
 - Standalone clients: `predictAgentsGraphClient`, `polymarketAgentsGraphClient`, `legacyMechFeesGraphClient`, `autonolasGraphClient`
@@ -60,21 +67,24 @@ The site queries multiple chains — Ethereum, Gnosis, Base, Optimism, Mode, Cel
 Coverage varies by category (e.g. `BABYDEGEN_GRAPH_CLIENTS` only has Optimism + Mode; `BALANCER_GRAPH_CLIENTS` only Gnosis + Polygon). Always check the client map before assuming a chain is queryable.
 
 **Snapshot-based metrics pipeline** (the dominant pattern — replaces ad-hoc CDN-cached API routes):
+
 1. Vercel cron triggers `pages/api/refresh-metrics/<category>.ts` on the schedule defined in `vercel.json`.
 2. The handler calls a `fetch*` function in `common-util/api/<category>` that runs all subgraph queries via `Promise.allSettled` (with parallel `getChainBlockNumber` calls for lag detection) and returns a `{ data, timestamp }` snapshot of `MetricWithStatus<T>` values.
 3. `saveSnapshot({ category, data })` in `common-util/snapshot-storage.ts` merges with the previous blob via `mergeWithFallback`, which delegates the per-metric decision to `resolveMergedMetric` in `common-util/graphql/metric-status.ts`: it keeps the last valid value only when the new value is null or a source **hard-failed** (`fetchErrors`/`indexingErrors`), marking `status.frozen = true`. A **lagging** subgraph still publishes its live value — lag sets `status.stale` (the indicator) but not `frozen` (the grey-out). It then writes to Vercel Blob with `addRandomSuffix: false` and `allowOverwrite: true` so the filename is stable.
 4. Pages read snapshots in `getStaticProps` via `getSnapshot({ category })` (e.g. `pages/index.tsx` for the `main` snapshot) and surface staleness through `<StaleIndicator>` UI. Grey out a value with `isFrozen(status)`, never `status.stale` — otherwise a live-but-lagging number renders as dead.
 
-Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus daily snapshots for `predict-roi-distribution` (per agent), `predict-tool-accuracy`, and `staking-apr` (per-chain history of the *active* staking programs — the nominees of the `VoteWeighting` contract on Ethereum — and their APRs, appended daily; the hourly `predict` refresh derives windowed max APR from this blob via `computeAprWindows` in `common-util/api/staking-apr.ts` instead of querying subgraphs itself).
+Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus daily snapshots for `predict-roi-distribution` (per agent), `predict-tool-accuracy`, and `staking-apr` (per-chain history of the _active_ staking programs — the nominees of the `VoteWeighting` contract on Ethereum — and their APRs, appended daily; the hourly `predict` refresh derives windowed max APR from this blob via `computeAprWindows` in `common-util/api/staking-apr.ts` instead of querying subgraphs itself).
 
 **`MetricWithStatus<T>` shape**: every metric is `{ value, status: { stale, frozen, lastValidAt, indexingErrors, fetchErrors, laggingSubgraphs } }`. Use `createStaleStatus`, `getFetchErrorAndCreateStaleStatus`, and `checkSubgraphLag` from `common-util/graphql/metric-utils.ts` to populate it, and `readGlobalField` to read off a subgraph's singleton `global` — never `data.global?.x ?? 0`, which turns a mid-reindex `global: null` into a silent zero published as healthy. The pure decision helpers live in `metric-status.ts` and are covered by `yarn metric-status:test` (a required CI check); the "fees collected" arithmetic and its publish guards live in `common-util/api/mech-marketplace-fees/math.ts`, covered by `yarn mech-fees-math:test`. `CHAIN_CONFIG` in `common-util/constants.ts` derives each chain's `lagLimit` from a measured `blockTimeSec` and a `lagToleranceHours` that scales with the chain's share of the totals (12h for ethereum/gnosis, 48h for the sub-2% chains). Set the tolerance in hours — never hand-write a block count.
 
 **Strapi CMS data flow**:
+
 - `common-util/api/index.ts` and `common-util/useFetchApi.ts` call `${NEXT_PUBLIC_API_URL}/api/<resource>` with `qs`-stringified params.
 - `pages/blog/[id].tsx` uses `getServerSideProps` (blog ID can be numeric or slug — see `isIdUsedToFetchBlog`).
 - Videos / podcasts use `useFetchVideos` (SWR-backed).
 
 **Regional restrictions** (`middleware.ts`):
+
 - Blocks OFAC-sanctioned countries (CU, IR, KP, SY, RU, BY) and Ukrainian regions (UA-14, UA-09, UA-43, UA-65, UA-23 — Donetsk, Luhansk, Crimea, Sevastopol) using `x-vercel-ip-country` / `x-vercel-ip-country-region` headers.
 - Redirects to `/restricted`. `/restricted` and `/disclaimer` are excluded; the matcher also excludes `/api`, `_next/*`, and static assets.
 
@@ -95,9 +105,10 @@ Categories: `main`, `predict`, `agent-economies`, `other`, `explorer`. Plus dail
 ### Environment Variables
 
 All env vars use `NEXT_PUBLIC_` prefix when needed client-side. Categories (see `.env.example`):
+
 - **CMS**: `NEXT_PUBLIC_API_URL` (Strapi)
 - **Vercel Blob**: `BLOB_READ_WRITE_TOKEN`
-- **Subgraphs** (per chain): `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`, `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`, `NEXT_PUBLIC_TOKENOMICS_*_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MARKETPLACE_SUBGRAPH_URL`, `NEXT_PUBLIC_*_BABYDEGEN_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MECH_FEES_*_SUBGRAPH_URL`, `NEXT_PUBLIC_LIQUIDITY_*_SUBGRAPH_URL`, plus `NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL`, `NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL`, `NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL`; the polymarket data source is an SQD squid (OpenReader dialect): `NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL`; Robinhood Chain has squids instead of subgraphs: `NEXT_PUBLIC_REGISTRY_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MARKETPLACE_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MECH_FEES_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_TOKENOMICS_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_LIQUIDITY_ROBINHOOD_SQUID_URL` (swap fees only); Base reads registry, staking, tokenomics and mech fees from squids: `NEXT_PUBLIC_REGISTRY_BASE_SQUID_URL`, `NEXT_PUBLIC_STAKING_BASE_SQUID_URL`, `NEXT_PUBLIC_TOKENOMICS_BASE_SQUID_URL`, `NEXT_PUBLIC_MECH_FEES_BASE_SQUID_URL` (marketplace and babydegen stay on subgraphs)
+- **Subgraphs** (per chain): `NEXT_PUBLIC_*_STAKING_SUBGRAPH_URL`, `NEXT_PUBLIC_*_REGISTRY_SUBGRAPH_URL`, `NEXT_PUBLIC_TOKENOMICS_*_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MARKETPLACE_SUBGRAPH_URL`, `NEXT_PUBLIC_*_BABYDEGEN_SUBGRAPH_URL`, `NEXT_PUBLIC_*_MECH_FEES_*_SUBGRAPH_URL`, `NEXT_PUBLIC_LIQUIDITY_*_SUBGRAPH_URL`, plus `NEXT_PUBLIC_AUTONOLAS_SUBGRAPH_URL`, `NEXT_PUBLIC_LEGACY_MECH_FEES_GNOSIS_SUBGRAPH_URL`, `NEXT_PUBLIC_OLAS_PREDICT_AGENTS_SUBGRAPH_URL`; the polymarket data source is an SQD squid (OpenReader dialect): `NEXT_PUBLIC_OLAS_POLYMARKET_AGENTS_SQUID_URL`; Robinhood Chain has squids instead of subgraphs: `NEXT_PUBLIC_REGISTRY_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MARKETPLACE_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_MECH_FEES_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_TOKENOMICS_ROBINHOOD_SQUID_URL`, `NEXT_PUBLIC_LIQUIDITY_ROBINHOOD_SQUID_URL` (swap fees only); Base reads registry, staking, tokenomics and mech fees from squids: `NEXT_PUBLIC_REGISTRY_BASE_SQUID_URL`, `NEXT_PUBLIC_STAKING_BASE_SQUID_URL`, `NEXT_PUBLIC_TOKENOMICS_BASE_SQUID_URL`, `NEXT_PUBLIC_MECH_FEES_BASE_SQUID_URL`; Base and Polygon marketplace use `NEXT_PUBLIC_MARKETPLACE_BASE_SQUID_URL` and `NEXT_PUBLIC_MARKETPLACE_POLYGON_SQUID_URL`; Base babydegen and liquidity remain on subgraphs
 - **Balancer**: `NEXT_PUBLIC_GNOSIS_BALANCER_URL`, `NEXT_PUBLIC_POLYGON_BALANCER_URL`
 - **RPCs** (server-only, no `NEXT_PUBLIC_`): `ETHEREUM_RPC`, `GNOSIS_RPC`, `ARBITRUM_RPC`, `OPTIMISM_RPC`, `BASE_RPC`, `CELO_RPC`, `POLYGON_RPC`, `MODE_RPC`, `SOLANA_RPC`
 - **Other**: `NEXT_PUBLIC_AFMDB_URL`, `NEXT_PUBLIC_QUOTE_TWEET_URL`, irrelevant-tools allow-lists for Omenstrat/Polystrat
@@ -132,6 +143,7 @@ Index of design documents. Read the matching spec BEFORE you change the listed a
 ### GraphQL Queries
 
 Queries live in `common-util/graphql/queries.ts`. When adding a new query:
+
 1. Define the query in `queries.ts`. Always include `_meta { hasIndexingErrors block { number } }` if the metric will be promoted to a snapshot — `mergeWithFallback`/lag detection rely on it.
 2. If the chain isn't covered, add its URL to the matching map in `common-util/indexers.ts` (and `.env.example`); the client follows.
 3. Implement aggregation in `common-util/api/<category>/...` returning `MetricWithStatus<T>` and using `createStaleStatus` / `checkSubgraphLag` / `getFetchErrorAndCreateStaleStatus` helpers.
@@ -140,6 +152,7 @@ Queries live in `common-util/graphql/queries.ts`. When adding a new query:
 ### Adding a New Refresh-Metrics Endpoint
 
 Follow the pattern in `pages/api/refresh-metrics/main.ts`:
+
 1. Guard non-`GET` methods with 405.
 2. Call your `fetchAll*` builder; throw if it returns `null`.
 3. `saveSnapshot({ category, data })`. Pass `overwrite: true` only when you intend to drop the previous blob (skip the merge).
@@ -157,6 +170,7 @@ Follow the pattern in `pages/api/refresh-metrics/main.ts`:
 ### Blob Snapshot Schema Changes
 
 The blob filename is `metrics-${process.env.NODE_ENV}-<schemaVersion>-<category>.json`, where the schema version is resolved **per category** from `SCHEMA_VERSIONS` in `snapshot-storage.ts` (keyed by the category's first path segment, falling back to `DEFAULT_SCHEMA_VERSION`). When making a **breaking** change to a snapshot schema:
+
 1. Bump only the changed category's entry in `SCHEMA_VERSIONS` (e.g. a date suffix) so its new and old blobs don't collide. Do **not** bump globally — that would also reset unrelated categories, including slow-to-rebuild accumulators (`roi-distribution`, `predict-brier`, etc.) that backfill from genesis over many cron runs.
 2. Manually trigger the affected `refresh-metrics` endpoints on a Vercel preview to populate the new blobs before merging. For accumulator categories that can't rebuild in one run, copy the old blobs to the new filenames instead (schema permitting).
 3. Clean up old blobs from the Vercel Blob dashboard after the rollout.
@@ -207,6 +221,7 @@ Applied to all paths: `Content-Security-Policy: frame-ancestors 'none'`, `X-Cont
 ## Testing Considerations
 
 There is no test runner configured in this repo — verification relies on `yarn lint`, `yarn build`, and manual checks against the dev server. When changing snapshot pipelines:
+
 - Manually hit the `refresh-metrics` endpoint locally (or on a Vercel preview) and inspect the returned JSON.
 - Verify graceful degradation: temporarily point a subgraph URL at a bad host and confirm `mergeWithFallback` preserves the previous valid value with `status.stale = true`.
 - Spot-check large `BigInt` values for formatting regressions.

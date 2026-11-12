@@ -24,6 +24,7 @@ import {
   dailyMechAgentPerformancesQuery,
   dailyMechAgentPerformancesSquidQuery,
   mechMarketplaceRequestsPerAgentsQuery,
+  mechMarketplaceRequestsPerAgentsSquidQuery,
   mechMarketplaceTotalRequestsQuery,
   mechMarketplaceTotalRequestsSquidQuery,
   mechOffChainDeliveriesPageQuery,
@@ -300,7 +301,7 @@ const fetchAgentsFunTxCount = async (): Promise<MetricWithStatus<number | null>>
 
 type MarketplaceRequestsPerAgentsResult = WithMeta<{
   requestsPerAgents: { id: string; requestsCount: number }[];
-  requestsPerAgentOnchains: { id: string; requestsCount: number }[];
+  requestsPerAgentOnchains?: { id: string; requestsCount: number }[];
 }>;
 
 // Classified totals derived from subgraphs (Marketplace)
@@ -311,10 +312,10 @@ const fetchCategorizedRequestTotals = async (): Promise<
     governatooorrTxs: number;
   } | null>
 > => {
-  // Subgraph chains only: the agent ids are classified per chain and the squids have no
-  // `requestsPerAgentOnchains`.
-  const allClients = MARKETPLACE_GRAPH_CLIENTS;
-  const chains = Object.keys(allClients);
+  // SQD's requestsPerAgents covers both marketplace request paths; the Graph
+  // also has a separate legacy on-chain entity. Preserve the existing classified
+  // chain scope: Robinhood agent IDs have not been classified here.
+  const chains = MARKETPLACE_CHAIN_KEYS.filter((chain) => chain !== 'robinhood');
 
   const predictTraderIds = MECH_AGENT_CLASSIFICATION.predict;
   const contributeIds = MECH_AGENT_CLASSIFICATION.contribute;
@@ -327,7 +328,10 @@ const fetchCategorizedRequestTotals = async (): Promise<
 
   try {
     const queryPromises = chains.map((chain) =>
-      allClients[chain].request(mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)))
+      requestMarketplace<MarketplaceRequestsPerAgentsResult>(chain, {
+        subgraph: mechMarketplaceRequestsPerAgentsQuery(allIds.map(String)),
+        squid: mechMarketplaceRequestsPerAgentsSquidQuery(allIds.map(String)),
+      })
     );
     const blockPromises = chains.map((chain) => getChainBlockNumber(chain));
     const results = await Promise.allSettled([...queryPromises, ...blockPromises]);

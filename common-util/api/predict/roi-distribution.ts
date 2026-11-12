@@ -6,6 +6,7 @@ import {
 } from 'common-util/graphql/client';
 import {
   getMarketplaceSendersQuery,
+  getMarketplaceSendersSquidQuery,
   getMechRequestsIncrementalQuery,
   getMechRequestsAtTimestampQuery,
   getMechRequestsInRangeQuery,
@@ -23,7 +24,18 @@ import {
   POLYGON_MECH_REQUESTS_GENESIS_TS,
   POLYMARKET_GENESIS_TS,
 } from './genesis';
-import { USE_MECH_ANALYTICS, fetchMechRequestsFromAnalytics } from './mech-analytics';
+import {
+  USE_MECH_ANALYTICS,
+  fetchMechRequestsFromAnalytics,
+  iterateScoredRows,
+  MECH_ANALYTICS_CHAIN_IDS,
+} from './mech-analytics';
+import { requestMarketplace } from 'common-util/graphql/indexer-requests';
+import { MARKETPLACE_SQUID_URLS } from 'common-util/indexers';
+import {
+  scanAnalyticsRequestRows,
+  usesMechAnalyticsForRequests,
+} from './marketplace-request-source';
 import { mergeQmr, roiPercent, senderLifetimeRequests, windowedNetGainAndCosts } from './roi-math';
 
 const LIMIT = 1000;
@@ -328,7 +340,7 @@ const fetchIncrementalMechRequests = async (
   let latestTs = lastTimestamp;
   let skip = 0;
   let ok = true;
-  const client = MARKETPLACE_GRAPH_CLIENTS[chain];
+  const client = MARKETPLACE_GRAPH_CLIENTS[chain as keyof typeof MARKETPLACE_GRAPH_CLIENTS];
 
   while (true) {
     try {
@@ -424,14 +436,16 @@ const fetchAllTimeAgents = async (
     }
   }
 
-  // 2. Paginate senders from marketplace subgraph (Global Mech Cost)
+  // 2. Read lifetime sender counters from Graph or SQD into allTimeAgents.
+  // Published windowed ROI uses byDay; these counters do not change its cost basis.
   const senderMap = new Map<string, number>();
   skip = 0;
   while (true) {
     try {
-      const response = (await MARKETPLACE_GRAPH_CLIENTS[chain].request(
-        getMarketplaceSendersQuery({ first: LIMIT, skip })
-      )) as { senders: SenderEntry[] };
+      const response = await requestMarketplace<{ senders: SenderEntry[] }>(chain, {
+        subgraph: getMarketplaceSendersQuery({ first: LIMIT, skip }),
+        squid: getMarketplaceSendersSquidQuery({ first: LIMIT, skip }),
+      });
       const page = response?.senders ?? [];
       for (const sender of page) {
         const agentId = sender.id.toLowerCase();
@@ -592,7 +606,7 @@ const updateAgentBlueprintData = async (
   // count the same rows twice.
   let newMechAnalytics: QmrData['mechAnalytics'];
 
-  if (USE_MECH_ANALYTICS) {
+  if (usesMechAnalyticsForRequests(chain, USE_MECH_ANALYTICS)) {
     const result = await fetchMechRequestsFromAnalytics(
       chain,
       existingQmr?.mechAnalytics?.lastComputedAt,
@@ -841,7 +855,27 @@ const scanMechRequests = async (
   toTs: number,
   onRequest: (agentId: string, questionTitle: string | null, ts: number) => void
 ): Promise<boolean> => {
-  const client = MARKETPLACE_GRAPH_CLIENTS[chain];
+  // Historical ROI needs parsed question titles, which SQD does not index.
+  if (chain in MARKETPLACE_SQUID_URLS) {
+    try {
+      await scanAnalyticsRequestRows(
+        iterateScoredRows({
+          chain_id: String(MECH_ANALYTICS_CHAIN_IDS[chain]),
+          since: new Date(fromTs * 1000).toISOString(),
+          until: new Date(toTs * 1000).toISOString(),
+          limit: '5000',
+        }),
+        fromTs,
+        toTs,
+        onRequest
+      );
+      return true;
+    } catch (error) {
+      console.error(`Error fetching historical mech requests for ${chain}`, error);
+      return false;
+    }
+  }
+  const client = MARKETPLACE_GRAPH_CLIENTS[chain as keyof typeof MARKETPLACE_GRAPH_CLIENTS];
   // One retry: a scan is thousands of pages, and a single gateway blip would
   // otherwise throw away the whole chunk.
   const fetchPage = async (query: string): Promise<MechRequestInRange[] | null> => {

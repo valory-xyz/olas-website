@@ -19,7 +19,8 @@ export const MECH_ANALYTICS_URL = 'https://mech-analytics-api.autonolas.tech';
  * marketplace subgraph). Setting ``USE_MECH_ANALYTICS=false`` (case-
  * insensitive so a typo under pressure like ``FALSE`` / ``False`` still
  * rolls back) is the operator rollback lever that sends reads back
- * through the subgraph. */
+ * through the subgraph on Graph-backed chains. SQD chains keep enriched
+ * requests on this API because their indexers do not expose parsed IPFS data. */
 const rawFlag = process.env.USE_MECH_ANALYTICS ?? '';
 export const USE_MECH_ANALYTICS = rawFlag.toLowerCase() !== 'false';
 

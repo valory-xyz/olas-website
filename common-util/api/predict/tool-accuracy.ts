@@ -15,6 +15,7 @@ import {
   fetchScoredRowsForRequester,
   isoToUnixSec,
 } from './mech-analytics';
+import { usesMechAnalyticsForRequests } from './marketplace-request-source';
 
 const INVALID_ANSWER_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const BET_PAGE_SIZE = 1000;
@@ -121,7 +122,9 @@ async function fetchMechRequestsForSenderFromSubgraph(
 
   for (let i = 0; i < MECH_MAX_PAGES; i++) {
     const skip = i * MECH_PAGE_SIZE;
-    const data = await MARKETPLACE_GRAPH_CLIENTS[chain].request<{
+    const data = await MARKETPLACE_GRAPH_CLIENTS[
+      chain as keyof typeof MARKETPLACE_GRAPH_CLIENTS
+    ].request<{
       requests: MechRequest[];
     }>(
       getMechRequestsBySenderWithToolQuery({
@@ -145,7 +148,7 @@ async function fetchMechRequestsForSender(
   sender: string,
   timestampGt: number
 ): Promise<MechRequest[]> {
-  if (USE_MECH_ANALYTICS) {
+  if (usesMechAnalyticsForRequests(chain, USE_MECH_ANALYTICS)) {
     return fetchMechRequestsForSenderFromAnalytics(chain, sender, timestampGt);
   }
   return fetchMechRequestsForSenderFromSubgraph(chain, sender, timestampGt);

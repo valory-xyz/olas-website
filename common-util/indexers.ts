@@ -36,10 +36,10 @@ export const STAKING_SUBGRAPH_URLS = {
   gnosis: process.env.NEXT_PUBLIC_GNOSIS_STAKING_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_OPTIMISM_STAKING_SUBGRAPH_URL,
   mode: process.env.NEXT_PUBLIC_MODE_STAKING_SUBGRAPH_URL,
-  polygon: process.env.NEXT_PUBLIC_POLYGON_STAKING_SUBGRAPH_URL,
 } satisfies IndexerUrls;
 
 export const STAKING_SQUID_URLS = {
+  polygon: process.env.NEXT_PUBLIC_STAKING_POLYGON_SQUID_URL,
   base: process.env.NEXT_PUBLIC_STAKING_BASE_SQUID_URL,
 } satisfies IndexerUrls;
 
@@ -50,10 +50,10 @@ export const REGISTRY_SUBGRAPH_URLS = {
   optimism: process.env.NEXT_PUBLIC_OPTIMISM_REGISTRY_SUBGRAPH_URL,
   celo: process.env.NEXT_PUBLIC_CELO_REGISTRY_SUBGRAPH_URL,
   arbitrum: process.env.NEXT_PUBLIC_ARBITRUM_REGISTRY_SUBGRAPH_URL,
-  polygon: process.env.NEXT_PUBLIC_POLYGON_REGISTRY_SUBGRAPH_URL,
 } satisfies IndexerUrls;
 
 export const REGISTRY_SQUID_URLS = {
+  polygon: process.env.NEXT_PUBLIC_REGISTRY_POLYGON_SQUID_URL,
   base: process.env.NEXT_PUBLIC_REGISTRY_BASE_SQUID_URL,
   robinhood: process.env.NEXT_PUBLIC_REGISTRY_ROBINHOOD_SQUID_URL,
 } satisfies IndexerUrls;
@@ -64,11 +64,11 @@ export const MARKETPLACE_SUBGRAPH_URLS = {
   gnosis: process.env.NEXT_PUBLIC_GNOSIS_MARKETPLACE_SUBGRAPH_URL,
   arbitrum: process.env.NEXT_PUBLIC_ARBITRUM_MARKETPLACE_SUBGRAPH_URL,
   optimism: process.env.NEXT_PUBLIC_OPTIMISM_MARKETPLACE_SUBGRAPH_URL,
-  base: process.env.NEXT_PUBLIC_BASE_MARKETPLACE_SUBGRAPH_URL,
-  polygon: process.env.NEXT_PUBLIC_POLYGON_MARKETPLACE_SUBGRAPH_URL,
 } satisfies IndexerUrls;
 
 export const MARKETPLACE_SQUID_URLS = {
+  base: process.env.NEXT_PUBLIC_MARKETPLACE_BASE_SQUID_URL,
+  polygon: process.env.NEXT_PUBLIC_MARKETPLACE_POLYGON_SQUID_URL,
   robinhood: process.env.NEXT_PUBLIC_MARKETPLACE_ROBINHOOD_SQUID_URL,
 } satisfies IndexerUrls;
 
@@ -134,7 +134,6 @@ export type MechFeesChain = (typeof MECH_FEES_CHAIN_KEYS)[number];
 // off-chain count comes from the settlement rows. Elsewhere the sender sum is exact and the
 // settlement rows, which grow with every request, are not walked. Empty once #140 is fixed.
 export const MARKETPLACE_SETTLEMENT_WALK_CHAINS: readonly MarketplaceChain[] = [
-  'polygon',
   'optimism',
   'arbitrum',
   'ethereum',

@@ -14,6 +14,7 @@ import {
   dailyMechAgentPerformancesQuery,
   dailyMechAgentPerformancesSquidQuery,
   dailyPredictAgentsPerformancesQuery,
+  dailyPredictAgentsPerformancesSquidQuery,
 } from 'common-util/graphql/queries';
 import SectionWrapper from 'components/Layout/SectionWrapper';
 import { IndexerLinks } from './IndexerLinks';
@@ -55,7 +56,7 @@ export const DailyActiveAgentsInfo = () => {
           <CodeSnippet>{dailyAgentPerformancesQuery}</CodeSnippet>
           <p className="text-purple-600">
             Squid link (OpenReader dialect):{' '}
-            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base']} />
+            <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['base', 'polygon']} />
           </p>
           <CodeSnippet>
             {dailyAgentPerformancesSquidQuery(
@@ -143,10 +144,7 @@ export const DailyActiveAgentsInfo = () => {
 
           <p className="text-purple-600">
             Subgraph links:{' '}
-            <IndexerLinks
-              urls={REGISTRY_SUBGRAPH_URLS}
-              chains={['gnosis', 'polygon', 'optimism']}
-            />
+            <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['gnosis', 'optimism']} />
           </p>
           <CodeSnippet>{dailyMechAgentPerformancesQuery}</CodeSnippet>
           <p className="text-purple-600">
@@ -195,7 +193,7 @@ export const DailyActiveAgentsInfo = () => {
           <h3 className={`${TEXT_MEDIUM_CLASS} font-bold`}>Daily Performance query</h3>
 
           <p className="text-purple-600">
-            Subgraph link: <IndexerLinks urls={REGISTRY_SUBGRAPH_URLS} chains={['polygon']} />
+            Squid link: <IndexerLinks urls={REGISTRY_SQUID_URLS} chains={['polygon']} />
           </p>
 
           <p>
@@ -205,7 +203,7 @@ export const DailyActiveAgentsInfo = () => {
             </code>
           </p>
 
-          <CodeSnippet>{dailyPredictAgentsPerformancesQuery}</CodeSnippet>
+          <CodeSnippet>{dailyPredictAgentsPerformancesSquidQuery}</CodeSnippet>
         </div>
       </SectionWrapper>
       <SectionWrapper id="pearl-daily-active-agents">
