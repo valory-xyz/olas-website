@@ -64,8 +64,9 @@ export const RunItYourself = () => (
         <h2 className="mb-4 text-[32px] font-semibold text-black">Run it yourself</h2>
         <p className={`${TEXT_SMALL_CLASS} mb-3`}>
           The model is published on Hugging Face as a 319 MB adapter for the open-weight Qwen3.8-27B
-          base model, both under the Apache License 2.0. The base model with the adapter takes about
-          54 GB of GPU memory, which fits a single 80 GB GPU such as an H100 or A100.
+          base model, both under the Apache License 2.0. The weights take about 54 GB of GPU memory.
+          The evaluation ran on a single H200. An 80 GB GPU such as an H100 or A100 is expected to
+          work at lower concurrency.
         </p>
         <p className={`${TEXT_SMALL_CLASS} mb-3`}>
           The prompt must include the evidence for the question. The model does not retrieve

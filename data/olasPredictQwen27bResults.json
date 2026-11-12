@@ -5,7 +5,7 @@
     {
       "id": "base",
       "name": "Base model",
-      "description": "No training",
+      "description": "Before domain training",
       "accuracy": 66.4,
       "brier": 0.2235
     },

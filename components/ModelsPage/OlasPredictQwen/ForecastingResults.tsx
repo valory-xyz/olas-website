@@ -50,8 +50,8 @@ export const ForecastingResults = () => {
           <p className="mx-auto max-w-[872px] text-base leading-6 text-[#4d596a]">
             {olas.name} reached {olas.accuracy}% balanced accuracy on{' '}
             {results.requests.toLocaleString('en-US')} production requests covering{' '}
-            {results.markets} markets, delivered after GPT-5.6&apos;s training cutoff. Both models
-            were given the same market evidence.
+            {results.markets} markets, delivered after GPT-5.6&apos;s training cutoff. All three
+            systems were given the same market evidence.
           </p>
         </div>
         {/* The charts are drawn on the client as images, so their numbers are also given as
