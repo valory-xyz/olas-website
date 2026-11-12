@@ -203,3 +203,34 @@ current status.
   and flag-off runs. Expect only the backfill coverage delta.
 - Failure modes: remove `MECH_ANALYTICS_URL` with the flag on. Expect the
   `'mech-requests'` fetchError, and the watermark must not advance.
+
+## Base and Polygon Marketplace squid cutover
+
+Set `NEXT_PUBLIC_MARKETPLACE_BASE_SQUID_URL` and
+`NEXT_PUBLIC_MARKETPLACE_POLYGON_SQUID_URL` to the corresponding
+`https://subgraph.autonolas.tech/squid/marketplace-<chain>/graphql` endpoints,
+then rebuild/redeploy. The runtime Marketplace client maps no longer use the
+Base/Polygon `*_MARKETPLACE_SUBGRAPH_URL` variables. The manual parity verifier
+may still use the old Graph URLs as explicit reference sources.
+
+Marketplace globals, categorized counts, Explorer ATA history and lifetime
+sender counts use OpenReader on these chains. Classified totals retain their
+existing chain scope; Robinhood is not newly classified. Polygon no longer
+needs the duplicate-subscription settlement walk used by the old subgraph.
+
+SQD does not index `parsedRequest` or `parsedDelivery`. Polygon tool accuracy,
+ROI request attribution and historical ROI replay use the existing Mech Analytics
+API for enriched request rows. `USE_MECH_ANALYTICS=false` retains the Gnosis
+Graph rollback path; it cannot restore a Polygon Graph path after this cutover.
+Existing ROI arithmetic, timestamp bounds, request deduplication and stale/error
+handling are retained. Other logical indexers are unchanged.
+
+Polygon's old overlapping V1/V2 subscriptions inflate raw globals, sender counts
+and per-agent categorized counts for signed deliveries (see
+[autonolas-subgraph#140](https://github.com/valory-xyz/autonolas-subgraph/issues/140)).
+The SQD cutover therefore lowers these raw counters. The website's overall
+request metric already corrects duplicate settlements, while categorized Predict
+counts still include the old inflation before this cutover. See the
+[captured before/after counts and ROI comparison](marketplace-polygon-cutover.md).
+Current windowed ROI reads daily attribution, so replacing lifetime sender
+counters alone does not change the 7D/30D/90D/1Y values.
