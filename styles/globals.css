@@ -190,6 +190,26 @@ video {
   background-color: #F2F4F9;
 }
 
+/* Model logos on the /models cards drift up and down a few pixels. Transform only, so the
+   title under the logo never moves; each card sets its own delay to keep them out of step. */
+@keyframes model-logo-float {
+  0%,
+  100% {
+    transform: translateY(3px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1deg);
+  }
+}
+.model-logo-float {
+  animation: model-logo-float 5.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .model-logo-float {
+    animation: none;
+  }
+}
+
 .operate-card {
   box-shadow: 0px 0px 0px 4px #FFF inset;
 }

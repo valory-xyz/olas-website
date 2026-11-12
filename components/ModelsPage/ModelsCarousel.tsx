@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
 
 import { Card } from 'components/ui/card';
+import { Tag } from 'components/ui/tag';
 import models from 'data/models.json';
 import { cn } from 'lib/utils';
 
@@ -19,7 +20,10 @@ const DRAG_THRESHOLD = 5;
 type Slide = {
   key: string;
   title?: string;
+  /** What the model is for, the same wording across models. */
   description?: string;
+  /** The commercial model it is measured against. */
+  comparison?: string;
   image?: string;
   link?: string;
   gradientColor?: string;
@@ -69,15 +73,41 @@ const ARROW_CLASS =
 const CARD_CLASS =
   'agent-economy-card agent-economy-card-opaque p-10 flex flex-col gap-y-8 place-items-center text-center w-full h-full justify-center';
 
-const ModelCard = ({ slide }: { slide: Slide }) => (
+/** A model card holds more than the placeholder, so it is packed tighter, most of all on phones. */
+const MODEL_CARD_CLASS = cn(CARD_CLASS, 'p-6 sm:p-10 gap-y-6');
+
+/** Every model logo is exported on the same 240x208 canvas, so one size fits all of them. */
+const LOGO_WIDTH = 240;
+const LOGO_HEIGHT = 208;
+
+/** Seconds between neighbouring logos' float cycles, so no two cards move in step. */
+const FLOAT_STAGGER = 2.1;
+
+const ModelCard = ({ slide, index }: { slide: Slide; index: number }) => (
   <Card
-    className={CARD_CLASS}
+    className={MODEL_CARD_CLASS}
     style={{ '--gradient-color': slide.gradientColor } as React.CSSProperties}
   >
-    <Image src={slide.image} alt={slide.title} width={64} height={64} draggable={false} />
-    <div className="flex flex-col">
+    {/* Decorative: the title right below names the model. */}
+    <Image
+      src={slide.image}
+      alt=""
+      width={LOGO_WIDTH}
+      height={LOGO_HEIGHT}
+      draggable={false}
+      className="model-logo-float h-16 w-auto"
+      style={{ animationDelay: `${-index * FLOAT_STAGGER}s` }}
+    />
+    <div className="flex flex-col items-center">
       <h5 className="font-semibold text-xl mb-2">{slide.title}</h5>
       <p className="text-slate-600">{slide.description}</p>
+      {slide.comparison && (
+        // 40px under the focus line. Most of that is an offset, not margin, so the logo and
+        // the texts stay where the card's vertical centring put them.
+        <Tag variant="primary" className="top-7 mt-3 w-fit text-sm">
+          {slide.comparison}
+        </Tag>
+      )}
     </div>
   </Card>
 );
@@ -206,7 +236,7 @@ export const ModelsCarousel = () => {
                     }}
                     className="block h-full w-full"
                   >
-                    <ModelCard slide={slide} />
+                    <ModelCard slide={slide} index={index} />
                   </Link>
                 )}
               </div>

@@ -1,8 +1,17 @@
 [
   {
+    "title": "Olas-Predict-Qwen3.8-27B",
+    "description": "Forecasts real-world events",
+    "comparison": "Approaches GPT-5.6",
+    "image": "/images/models-page/model-logo-qwen3.8-27b.png",
+    "link": "/models/olas-predict-qwen3.8-27b",
+    "gradientColor": "rgba(126, 34, 237, 0.15)"
+  },
+  {
     "title": "Olas-Predict-R1-14B",
-    "description": "A model fine-tuned for forecasting.",
-    "image": "/images/agents/predict.png",
+    "description": "Forecasts real-world events",
+    "comparison": "Comparable to GPT-4.1",
+    "image": "/images/models-page/model-logo-r1-14b.png",
     "link": "/models/olas-predict-r1-14b",
     "gradientColor": "rgba(126, 34, 237, 0.15)"
   }
