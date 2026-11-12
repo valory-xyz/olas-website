@@ -1,7 +1,7 @@
 import { cn } from 'lib/utils';
 import type { ReactNode } from 'react';
 
-type Stat = {
+export type Stat = {
   value: string;
   qualifier?: string;
   label: ReactNode;
@@ -24,16 +24,16 @@ const STATS: Stat[] = [
   { value: 'GPT-4.1', qualifier: 'comparable performance', label: 'In a six-week evaluation' },
 ];
 
-export const StatsStrip = () => (
+export const StatsStrip = ({ stats = STATS }: { stats?: Stat[] }) => (
   <div className="flex w-full justify-center border-b border-[#e8eaee]">
     <dl className="flex w-full max-w-[1095px] flex-col border-x border-[#e8eaee] md:flex-row">
-      {STATS.map((stat, i) => (
+      {stats.map((stat, i) => (
         <div
           key={stat.value}
           className={cn(
             'flex flex-1 flex-col gap-2 p-6 md:max-w-[365px]',
             // Stacked on mobile → divider along the bottom; row on md+ → divider on the right.
-            i < STATS.length - 1 && 'border-b border-[#e8eaee] md:border-b-0 md:border-r'
+            i < stats.length - 1 && 'border-b border-[#e8eaee] md:border-b-0 md:border-r'
           )}
         >
           <dt className="order-2 text-[14px] leading-5 tracking-[0.14px] text-[#7d8a9e]">

@@ -3,10 +3,10 @@ import { useCallback, useState } from 'react';
 
 import { SECTION_BOX_CLASS } from 'common-util/classes';
 import SectionWrapper from 'components/Layout/SectionWrapper';
-import forecasts from 'data/olasPredictR1Forecasts.json';
+import r1Forecasts from 'data/olasPredictR1Forecasts.json';
 import { cn } from 'lib/utils';
 
-type Forecast = {
+export type Forecast = {
   question: string;
   /** Model's probability of Yes, 0–1. */
   prediction: number;
@@ -142,7 +142,11 @@ const ForecastCard = ({ forecast, index }: { forecast: Forecast; index: number }
   );
 };
 
-export const ExampleForecasts = () => (
+export const ExampleForecasts = ({
+  forecasts = r1Forecasts as Forecast[],
+}: {
+  forecasts?: Forecast[];
+}) => (
   <SectionWrapper backgroundType="NONE" customClasses={`${SECTION_BOX_CLASS} bg-white`}>
     <div className="mx-auto flex max-w-[872px] flex-col">
       <h2 className="mb-4 text-center text-[40px] font-semibold text-black">Example forecasts</h2>
@@ -152,7 +156,7 @@ export const ExampleForecasts = () => (
         Compare the model&apos;s probability of Yes with the final outcome.
       </p>
       <ol className="flex flex-col gap-3">
-        {(forecasts as Forecast[]).map((forecast, index) => (
+        {forecasts.map((forecast, index) => (
           <ForecastCard key={forecast.question} forecast={forecast} index={index} />
         ))}
       </ol>

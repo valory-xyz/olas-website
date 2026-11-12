@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useRef } from 'react';
 
+import type { ModelShape, Point } from 'common-util/model-illustration';
 import { initModelIllustration } from 'common-util/model-illustration';
+import { cn } from 'lib/utils';
 
 import { MODEL_NAME } from 'components/ModelsPage/OlasPredictR1/constants';
 
@@ -121,22 +123,57 @@ const Corner = ({ position }: { position: 'tr' | 'br' | 'tl' | 'bl' }) => {
   );
 };
 
+export type ModelIllustrationSceneProps = {
+  modelName: string;
+  question: string;
+  /** Probability of Yes, 0–100. */
+  probability: number;
+  /** The middle card: its label and the lines under it (each line stays unbroken). */
+  toolLabel: string;
+  toolLines: string[];
+  /** The model's silhouette and lines. Default: the cloud. */
+  modelShape?: ModelShape;
+  /**
+   * Where the connectors meet the model, as offsets from its centre; pass a module-level
+   * constant. Default: the cloud's.
+   */
+  modelAnchors?: { in: Point; out: Point };
+  /** The name under the model. */
+  showModelName?: boolean;
+  className?: string;
+};
+
 /**
  * The animated hero scene. Renders its final layout on the server; the animation
  * (`common-util/model-illustration.ts`) takes over after mount and is torn down on
  * unmount. Single instance per page — the SVG filter/gradient ids are fixed.
  */
-export const ModelIllustration = () => {
+export const ModelIllustrationScene = ({
+  modelName,
+  question,
+  probability,
+  toolLabel,
+  toolLines,
+  modelShape,
+  modelAnchors,
+  showModelName = true,
+  className,
+}: ModelIllustrationSceneProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const { dispose } = initModelIllustration(rootRef.current, { probability: PROBABILITY });
+    const { dispose } = initModelIllustration(rootRef.current, {
+      probability,
+      shape: modelShape,
+      modelIn: modelAnchors?.in,
+      modelOut: modelAnchors?.out,
+    });
     return dispose;
-  }, []);
+  }, [probability, modelShape, modelAnchors]);
 
   return (
-    <div ref={rootRef} className="oi-root">
-      <div className="oi-scene" role="group" aria-label={`${MODEL_NAME} example forecast`}>
+    <div ref={rootRef} className={cn('oi-root', className)}>
+      <div className="oi-scene" role="group" aria-label={`${modelName} example forecast`}>
         <CardShadowFilter />
         <Routes />
 
@@ -145,7 +182,7 @@ export const ModelIllustration = () => {
           <div className="oi-label">Question</div>
           <p>
             {/* One span per word so the entrance can stagger them. */}
-            {QUESTION.split(' ').map((word, index) => (
+            {question.split(' ').map((word, index) => (
               <Fragment key={`${index}-${word}`}>
                 {index > 0 && ' '}
                 <span className="oi-word">{word}</span>
@@ -160,15 +197,16 @@ export const ModelIllustration = () => {
             <Corner position="br" />
             <Corner position="tl" />
             <Corner position="bl" />
-            <div className="oi-label">Prediction tool</div>
+            <div className="oi-label">{toolLabel}</div>
             <div className="oi-tool-id">
-              <span>{TOOL_ID[0]}</span>
-              <span>{TOOL_ID[1]}</span>
+              {toolLines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
             </div>
           </div>
-          <div className="oi-model" role="img" aria-label={`Animated ${MODEL_NAME} model`}>
+          <div className="oi-model" role="img" aria-label={`Animated ${modelName} model`}>
             <canvas aria-hidden="true" />
-            <span className="oi-model-name">{MODEL_NAME}</span>
+            {showModelName && <span className="oi-model-name">{modelName}</span>}
           </div>
         </div>
 
@@ -177,14 +215,14 @@ export const ModelIllustration = () => {
           <div className="oi-result">
             <div className="oi-label">Forecast</div>
             <div className="oi-values">
-              <strong>{PROBABILITY}%</strong>
+              <strong>{probability}%</strong>
               <span>Probability of Yes</span>
             </div>
           </div>
           <div
             className="oi-bar"
             aria-hidden="true"
-            style={{ '--oi-fill': `${PROBABILITY}%` } as React.CSSProperties}
+            style={{ '--oi-fill': `${probability}%` } as React.CSSProperties}
           >
             <div className="oi-bar-glow" />
             <span />
@@ -196,3 +234,13 @@ export const ModelIllustration = () => {
     </div>
   );
 };
+
+export const ModelIllustration = () => (
+  <ModelIllustrationScene
+    modelName={MODEL_NAME}
+    question={QUESTION}
+    probability={PROBABILITY}
+    toolLabel="Prediction tool"
+    toolLines={TOOL_ID}
+  />
+);

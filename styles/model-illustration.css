@@ -1,5 +1,6 @@
 /*
- * Olas-Predict-R1-14B hero illustration (design handoff 2026-09-22, "corners" layout).
+ * Model pages' hero illustration (Olas-Predict-R1-14B design handoff 2026-09-22, "corners"
+ * layout; the `.oi-qwen` rules adapt it for Olas-Predict-Qwen3.8-27B).
  * Scoped under `.oi-root`; the animation in `common-util/model-illustration.ts` drives the
  * `oi-*` hooks, so keep class names in sync with `components/ModelsPage/OlasPredictR1/
  * ModelIllustration.tsx`.
@@ -322,6 +323,25 @@
 .oi-root .oi-corner-active::after {
   filter: blur(3px);
   opacity: 0.25;
+}
+
+/* Olas-Predict-Qwen3.8-27B: a shorter question, and no name under the model, so the
+   forecast card sits closer to it. */
+.oi-root.oi-qwen .oi-question {
+  width: 380px;
+}
+.oi-root.oi-qwen .oi-model-space {
+  margin: 82px 0 12px;
+  gap: 20px;
+}
+/* Static fallback until the canvas takes over: a rounded diamond in place of the cloud. */
+.oi-root.oi-qwen .oi-model::before {
+  width: 104px;
+  height: 104px;
+  left: 63px;
+  top: 53px;
+  border-radius: 30%;
+  transform: rotate(45deg) skew(-4deg, -4deg);
 }
 
 @media (max-width: 460px) {
