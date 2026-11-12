@@ -27,7 +27,7 @@ const list = [
   {
     title: 'Transparency',
     icon: <FileSearch color="#606F85" />,
-    desc: "A Mech's Know Your Agent (KYA) report shows who claims to run it, what it offers and how it has delivered.",
+    desc: "A Mech's Know Your Agent (KYA) report shows who claims to run it, what it offers and how it has\u00A0delivered.",
   },
 ];
 
