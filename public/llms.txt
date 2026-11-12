@@ -3,7 +3,7 @@
 website: https://olas.network
 name: Olas
 tagline: Co-own AI
-last-updated: 2026-10-16
+last-updated: 2026-11-12
 
 > For AI agents: see "Which app to use" below for intent-based routing to the right Olas app.
 
@@ -85,6 +85,7 @@ Every page on olas.network not linked above, each with what it is for.
 
 ### Models
 - Models (https://olas.network/models): specialised models trained for the agents running on Olas.
+- Olas-Predict-Qwen3.8-27B (https://olas.network/models/olas-predict-qwen3.8-27b): a specialised, open-weight 27B-parameter model that estimates the probability of real-world events from evidence supplied in the prompt; shows its balanced accuracy and Brier error next to GPT-5.6, example forecasts against their outcomes, and how to self-host it from Hugging Face.
 - Olas-Predict-R1-14B (https://olas.network/models/olas-predict-r1-14b): a specialised, open-weight 14B-parameter model that estimates the probability of future events; shows example forecasts against their outcomes and how to run it through the Olas Marketplace with mech-client.
 
 ### Agent economies

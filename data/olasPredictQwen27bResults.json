@@ -1,0 +1,27 @@
+{
+  "requests": 6824,
+  "markets": 348,
+  "models": [
+    {
+      "id": "base",
+      "name": "Base model",
+      "description": "No training",
+      "accuracy": 66.4,
+      "brier": 0.2235
+    },
+    {
+      "id": "olas",
+      "name": "Olas-Predict-Qwen3.8-27B",
+      "description": "The released model",
+      "accuracy": 67.3,
+      "brier": 0.2124
+    },
+    {
+      "id": "gpt",
+      "name": "GPT-5.6",
+      "description": "Commercial reference",
+      "accuracy": 68.5,
+      "brier": 0.2029
+    }
+  ]
+}
