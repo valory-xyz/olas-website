@@ -1,9 +1,11 @@
 /**
- * Animation for the Olas-Predict-R1-14B hero illustration: question → prediction tool →
- * model → forecast, with signals travelling the connectors and a Canvas 2D "cloud" for
- * the model. Ported from the design handoff (`olas-model-animation-handoff-2026-09-22/
- * scene.html`); the timing table and geometry are kept verbatim so the handoff's
- * `preview.html` stays the visual reference.
+ * Animation for the model pages' hero illustration: question → prediction tool → model →
+ * forecast, with signals travelling the connectors and a Canvas 2D body for the model: the
+ * "cloud" (Olas-Predict-R1-14B) by default, or the Olas-Predict-Qwen3.8-27B logo's diamond
+ * with its ten lines through the options. Ported
+ * from the design handoff (`olas-model-animation-handoff-2026-09-22/scene.html`); the timing
+ * table and geometry are kept verbatim so the handoff's `preview.html` stays the visual
+ * reference.
  *
  * `initModelIllustration(root)` binds to the DOM rendered by
  * `components/ModelsPage/OlasPredictR1/ModelIllustration.tsx` and returns `dispose()`.
@@ -12,7 +14,7 @@
  * Reduced motion (or a slow-update display) shows the completed scene.
  */
 
-type Point = { x: number; y: number };
+export type Point = { x: number; y: number };
 type Box = { element: HTMLElement; x: number; y: number; w: number; h: number };
 type Pose = { x: number; y: number; angle: number; scale: number; opacity: number };
 type Signal = { group: SVGGElement; paths: SVGPathElement[]; gradient: SVGLinearGradientElement };
@@ -28,7 +30,30 @@ type Tracked = {
 export type ModelIllustrationOptions = {
   /** Probability of Yes (0–100) announced to screen readers once the forecast lands. */
   probability: number;
+  /**
+   * Silhouette of the model and the lines inside it: the cloud with five lines, or the
+   * Olas-Predict-Qwen3.8-27B logo's diamond with its ten. Same material, colours and motion
+   * either way. Default: cloud.
+   */
+  shape?: ModelShape;
+  /** Where the connectors meet the model, as offsets from its centre. Default: the cloud's. */
+  modelIn?: Point;
+  modelOut?: Point;
 };
+
+export type ModelShape = 'cloud' | 'diamond';
+/** What the canvas draws: an outline that breathes with time, and the lines inside it. */
+type ModelBody = {
+  outline: (time: number, energy: number, padding?: number) => Point[];
+  lines: number;
+  /** Fixed resting paths for the lines, one cubic each; without them the cloud's tables apply. */
+  curves?: number[][];
+  /** The lighter second shape behind: its offset from the body and how much larger it is. */
+  back: { x: number; y: number; padding: number };
+};
+
+const CLOUD_IN: Point = { x: -28, y: -58 };
+const CLOUD_OUT: Point = { x: 48, y: 14 };
 
 const TAU = Math.PI * 2;
 const FRAME_INTERVAL = 1000 / 60;
@@ -94,6 +119,75 @@ function cloudOutline(time: number, energy: number, padding = 0) {
   return points;
 }
 
+// The Olas-Predict-Qwen3.8-27B logo, in canvas units (150 wide, centred): its outline as x, y
+// pairs, sampled evenly along the brand file's path, and its ten lines as one cubic each
+// (x0, y0, x1, y1, x2, y2, x3, y3).
+const DIAMOND_OUTLINE = [
+  9.4, 67.4, 3.4, 67.3, -2.4, 66.5, -8.2, 64.9, -13.7, 62.6, -19.0, 60.0, -24.1, 57.0, -29.1, 53.7,
+  -34.0, 50.4, -39.0, 47.2, -44.0, 43.9, -48.9, 40.6, -53.8, 37.2, -58.6, 33.7, -63.1, 29.8, -67.1,
+  25.5, -70.6, 20.7, -73.2, 15.3, -74.7, 9.6, -74.9, 3.6, -74.0, -2.2, -72.0, -7.8, -69.2, -13.1,
+  -65.9, -18.0, -62.3, -22.7, -58.5, -27.3, -54.7, -31.9, -51.0, -36.5, -47.2, -41.1, -43.5, -45.7,
+  -39.6, -50.2, -35.4, -54.4, -30.9, -58.3, -26.0, -61.7, -20.7, -64.4, -15.1, -66.3, -9.3, -67.4,
+  -3.3, -67.4, 2.5, -66.6, 8.3, -65.0, 13.7, -62.7, 18.9, -59.8, 23.9, -56.5, 28.6, -53.0, 33.3,
+  -49.3, 37.9, -45.6, 42.6, -41.9, 47.4, -38.3, 52.1, -34.7, 56.8, -31.1, 61.3, -27.2, 65.5, -23.0,
+  69.2, -18.4, 72.2, -13.2, 74.2, -7.6, 75.0, -1.8, 74.6, 4.2, 73.1, 9.9, 70.7, 15.4, 67.8, 20.5,
+  64.3, 25.4, 60.7, 30.0, 56.9, 34.6, 53.0, 39.1, 49.0, 43.5, 44.9, 47.8, 40.7, 52.0, 36.2, 56.0,
+  31.5, 59.5, 26.4, 62.6, 21.0, 65.0, 15.3, 66.6,
+];
+const DIAMOND_LINES = [
+  [-82.7, -53.1, -30.0, -61.0, 18.0, -20.0, 82.6, -31.2],
+  [-82.7, -36.7, -30.0, -26.8, 18.0, -40.7, 82.6, -26.8],
+  [-82.7, -30.7, -30.0, -39.7, 18.0, -8.1, 82.6, -20.7],
+  [-82.7, -22.0, -30.0, -16.1, 18.0, -19.7, 82.6, -11.4],
+  [-82.7, -3.7, -30.0, -6.7, 18.0, -2.0, 82.6, -6.2],
+  [-82.7, 9.5, -30.0, 11.9, 18.0, 4.6, 82.6, 8.1],
+  [-82.7, 14.3, -30.0, 9.6, 18.0, 17.3, 82.6, 10.7],
+  [-82.7, 26.5, -30.0, 34.5, 18.0, 2.6, 82.6, 13.9],
+  [-82.7, 45.0, -30.0, 35.1, 18.0, 47.1, 82.6, 33.2],
+  [-82.7, 54.7, -30.0, 63.6, 18.0, 22.5, 82.6, 35.0],
+];
+const DIAMOND_POLAR = Array.from({ length: DIAMOND_OUTLINE.length / 2 }, (_, i) => {
+  const x = DIAMOND_OUTLINE[i * 2];
+  const y = DIAMOND_OUTLINE[i * 2 + 1];
+  return { angle: Math.atan2(y, x), radius: Math.hypot(x, y) };
+});
+
+/**
+ * The logo's rounded square, turned slightly. It breathes with the cloud's wave at a small
+ * amplitude laid over the fixed outline, so the four corners keep their roundness.
+ */
+function diamondOutline(time: number, energy: number, padding = 0) {
+  return DIAMOND_POLAR.map(({ angle, radius }) => {
+    const wave =
+      0.9 * Math.sin(angle * 3 + time * 0.3) +
+      1.1 * Math.cos(angle * 2 - time * 0.23 + 1.1) +
+      0.5 * Math.sin(angle * 5 + time * 0.22);
+    const r = (radius + padding + wave) * (1 - energy * 0.045);
+    return { x: Math.cos(angle) * r, y: Math.sin(angle) * r };
+  });
+}
+
+const BODIES: Record<ModelShape, ModelBody> = {
+  cloud: { outline: cloudOutline, lines: 5, back: { x: -4.2, y: 2.8, padding: 1.4 } },
+  diamond: {
+    outline: diamondOutline,
+    lines: DIAMOND_LINES.length,
+    curves: DIAMOND_LINES,
+    back: { x: -4.6, y: 4.2, padding: 1.6 },
+  },
+};
+/** How far the logo's fixed lines sway, as a share of the cloud lines' wave. */
+const CURVE_SWAY = 0.35;
+
+/** Value at a fractional index, so any line count reads the cloud's five-line tables. */
+const sample = (table: number[], at: number) => {
+  const low = Math.floor(at);
+  const high = Math.min(low + 1, table.length - 1);
+  return table[low] + (table[high] - table[low]) * (at - low);
+};
+/** A line's position on the five-line scale: 0 for the first line, 4 for the last. */
+const lineIndex = (line: number, body: ModelBody) => (line * 4) / (body.lines - 1);
+
 function colorField(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -120,24 +214,47 @@ function filamentPoint(
   line: number,
   time: number,
   energy: number,
-  variant: string
+  variant: string,
+  body: ModelBody
 ): Point {
-  const startX = -76 + line * 4;
-  const endX = 68 - line * 3;
-  const x = startX + (endX - startX) * progress;
-  let y =
-    FILAMENT_BASELINES[line] +
-    Math.sin(x * 0.023 + time * 0.32 + FILAMENT_PHASES[line]) * 11 +
-    Math.cos(x * 0.031 - time * 0.22) * 5;
+  const at = lineIndex(line, body);
+  let x: number;
+  let y: number;
+  if (body.curves) {
+    const [x0, y0, x1, y1, x2, y2, x3, y3] = body.curves[line];
+    const rest = curvePoint(
+      [
+        { x: x0, y: y0 },
+        { x: x1, y: y1 },
+        { x: x2, y: y2 },
+        { x: x3, y: y3 },
+      ],
+      progress
+    );
+    x = rest.x;
+    y =
+      rest.y +
+      (Math.sin(x * 0.023 + time * 0.32 + sample(FILAMENT_PHASES, at)) * 11 +
+        Math.cos(x * 0.031 - time * 0.22) * 5) *
+        CURVE_SWAY;
+  } else {
+    const startX = -76 + at * 4;
+    const endX = 68 - at * 3;
+    x = startX + (endX - startX) * progress;
+    y =
+      sample(FILAMENT_BASELINES, at) +
+      Math.sin(x * 0.023 + time * 0.32 + sample(FILAMENT_PHASES, at)) * 11 +
+      Math.cos(x * 0.031 - time * 0.22) * 5;
+  }
   const focusX = 17 + Math.sin(time * 0.17) * 4;
   const focusY = -3 + Math.cos(time * 0.21) * 3;
   const focus = variant === 'focus' ? 0.85 : variant === 'signals' ? 0.2 : 0;
   const gather = Math.exp(-Math.pow((x - focusX) / 31, 2)) * Math.min(1, energy) * focus;
-  y = y * (1 - gather) + (focusY + (line - 2) * 2.1) * gather;
+  y = y * (1 - gather) + (focusY + (at - 2) * 2.1) * gather;
   if (variant === 'wave') {
     const waveX = ((time * 0.24) % 1) * 250 - 125;
     const local = Math.exp(-Math.pow((x - waveX) / 28, 2));
-    y += local * Math.sin(line * 0.75 + 0.4) * 11 * energy;
+    y += local * Math.sin(at * 0.75 + 0.4) * 11 * energy;
   }
   return { x, y };
 }
@@ -148,32 +265,46 @@ function traceFilament(
   time: number,
   energy: number,
   variant: string,
+  body: ModelBody,
   from = 0,
   to = 1,
   steps = 64
 ) {
   ctx.beginPath();
   for (let i = 0; i <= steps; i++) {
-    const point = filamentPoint(from + ((to - from) * i) / steps, line, time, energy, variant);
+    const point = filamentPoint(
+      from + ((to - from) * i) / steps,
+      line,
+      time,
+      energy,
+      variant,
+      body
+    );
     if (i === 0) ctx.moveTo(point.x, point.y);
     else ctx.lineTo(point.x, point.y);
   }
 }
 
-function drawSignals(ctx: CanvasRenderingContext2D, line: number, time: number, energy: number) {
-  const cycle = (((time * 0.26 - line * 0.22) % 1) + 1) % 1;
+function drawSignals(
+  ctx: CanvasRenderingContext2D,
+  line: number,
+  time: number,
+  energy: number,
+  body: ModelBody
+) {
+  const cycle = (((time * 0.26 - lineIndex(line, body) * 0.22) % 1) + 1) % 1;
   if (cycle > 0.35 || energy < 0.01) return;
   const travel = cycle / 0.35;
   const strength = Math.sin(travel * Math.PI) * Math.min(1, energy * energy);
   const from = Math.max(0, travel - 0.16);
   const to = Math.min(1, travel + 0.035);
-  const start = filamentPoint(from, line, time, energy, 'signals');
-  const end = filamentPoint(to, line, time, energy, 'signals');
+  const start = filamentPoint(from, line, time, energy, 'signals', body);
+  const end = filamentPoint(to, line, time, energy, 'signals', body);
   const light = ctx.createLinearGradient(start.x, start.y, end.x, end.y);
   light.addColorStop(0, 'rgba(255,255,255,0)');
   light.addColorStop(0.6, `rgba(255,255,255,${strength * 0.9})`);
   light.addColorStop(1, 'rgba(255,255,255,0)');
-  traceFilament(ctx, line, time, energy, 'signals', from, to, 20);
+  traceFilament(ctx, line, time, energy, 'signals', body, from, to, 20);
   ctx.strokeStyle = `rgba(247,222,255,${strength * 0.17})`;
   ctx.lineWidth = 4;
   ctx.lineCap = 'round';
@@ -201,7 +332,8 @@ function drawFilaments(
   ctx: CanvasRenderingContext2D,
   time: number,
   energy: number,
-  variant: string
+  variant: string,
+  body: ModelBody
 ) {
   if (variant === 'wave') drawWave(ctx, time, energy);
   if (variant === 'focus' && energy > 0.01) {
@@ -215,20 +347,20 @@ function drawFilaments(
     ctx.fillRect(-40, -40, 80, 80);
     ctx.restore();
   }
-  for (let line = 0; line < 5; line++) {
-    const start = filamentPoint(0, line, time, energy, variant);
-    const end = filamentPoint(1, line, time, energy, variant);
+  for (let line = 0; line < body.lines; line++) {
+    const start = filamentPoint(0, line, time, energy, variant, body);
+    const end = filamentPoint(1, line, time, energy, variant, body);
     const fade = ctx.createLinearGradient(start.x, 0, end.x, 0);
-    const alpha = FILAMENT_WEIGHTS[line] * (0.67 + energy * 0.23);
+    const alpha = sample(FILAMENT_WEIGHTS, lineIndex(line, body)) * (0.67 + energy * 0.23);
     fade.addColorStop(0, 'rgba(255,255,255,0)');
     fade.addColorStop(0.28, `rgba(255,255,255,${alpha * 0.62})`);
     fade.addColorStop(0.64, `rgba(255,255,255,${alpha})`);
     fade.addColorStop(1, 'rgba(255,255,255,0)');
-    traceFilament(ctx, line, time, energy, variant);
+    traceFilament(ctx, line, time, energy, variant, body);
     ctx.strokeStyle = fade;
     ctx.lineWidth = 0.72 + energy * 0.16;
     ctx.stroke();
-    if (variant === 'signals') drawSignals(ctx, line, time, energy);
+    if (variant === 'signals') drawSignals(ctx, line, time, energy, body);
   }
 }
 
@@ -237,21 +369,22 @@ function drawCloud(
   time: number,
   filamentTime: number,
   energy: number,
-  variant: string
+  variant: string,
+  body: ModelBody
 ) {
   ctx.save();
   ctx.translate(Math.sin(time * 0.18) * 2.6, Math.cos(time * 0.22) * 2.4);
   ctx.rotate(Math.sin(time * 0.14) * 0.065);
   ctx.save();
-  ctx.translate(-4.2 + Math.sin(time * 0.25) * 1.2, 2.8 + Math.cos(time * 0.22));
-  shape(ctx, cloudOutline(time, energy, 1.4));
+  ctx.translate(body.back.x + Math.sin(time * 0.25) * 1.2, body.back.y + Math.cos(time * 0.22));
+  shape(ctx, body.outline(time, energy, body.back.padding));
   const membrane = ctx.createLinearGradient(-72, -43, 23, 57);
   membrane.addColorStop(0, color(278, 58, 75 - energy * 8, 0.22));
   membrane.addColorStop(1, color(291, 59, 85 - energy * 9, 0.06));
   ctx.fillStyle = membrane;
   ctx.fill();
   ctx.restore();
-  const outline = cloudOutline(time, energy);
+  const outline = body.outline(time, energy);
   shape(ctx, outline);
   const base = ctx.createLinearGradient(-66 + Math.sin(time * 0.18) * 10, -63, 55, 68);
   base.addColorStop(0, color(294, 60 + energy * 12, 88 - energy * 10, 0.96));
@@ -312,7 +445,7 @@ function drawCloud(
     ctx.fillStyle = wash;
     ctx.fill();
   });
-  drawFilaments(ctx, filamentTime, energy, variant);
+  drawFilaments(ctx, filamentTime, energy, variant, body);
   ctx.restore();
   ctx.restore();
 }
@@ -384,6 +517,9 @@ export function initModelIllustration(root: HTMLElement, options: ModelIllustrat
   const art = q<HTMLElement>('.oi-model');
   const canvas = art.querySelector('canvas');
   const context = canvas.getContext('2d');
+  const body = BODIES[options.shape ?? 'cloud'];
+  const modelInOffset = options.modelIn ?? CLOUD_IN;
+  const modelOutOffset = options.modelOut ?? CLOUD_OUT;
   const status = q<HTMLElement>('.oi-sr');
   const routes = q<SVGSVGElement>('.oi-routes');
   const inputPath = q<SVGPathElement>('.oi-route-in');
@@ -567,7 +703,7 @@ export function initModelIllustration(root: HTMLElement, options: ModelIllustrat
     const target = transformAnchor(boxes[1], poses[1], boxes[1].w * 0.8, 0.5);
     const toolIn = { x: toolBox.x + toolBox.w * 0.5, y: toolBox.y };
     const toolOut = { x: toolBox.x + toolBox.w * 0.5, y: toolBox.y + toolBox.h + 2 };
-    const modelIn = { x: cx - 28, y: cy - 58 };
+    const modelIn = { x: cx + modelInOffset.x, y: cy + modelInOffset.y };
     const inputGap = toolIn.y - source.y;
     const input = [
       source,
@@ -583,8 +719,8 @@ export function initModelIllustration(root: HTMLElement, options: ModelIllustrat
       modelIn,
     ];
     const outputCurve = [
-      { x: cx + 48, y: cy + 14 },
-      { x: cx + 114, y: cy + 14 },
+      { x: cx + modelOutOffset.x, y: cy + modelOutOffset.y },
+      { x: cx + modelOutOffset.x + 66, y: cy + modelOutOffset.y },
       { x: target.x, y: target.y - 40 },
       target,
     ];
@@ -654,7 +790,7 @@ export function initModelIllustration(root: HTMLElement, options: ModelIllustrat
     context.setTransform(scale, 0, 0, scale, 0, 0);
     context.translate(width / 2, height / 2);
     context.scale(Math.min(width, height) / 210, Math.min(width, height) / 210);
-    drawCloud(context, bodyPhase, phase, activity, 'signals');
+    drawCloud(context, bodyPhase, phase, activity, 'signals', body);
   }
   function resize() {
     const bounds = scene.getBoundingClientRect();

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SECTION_BOX_CLASS } from 'common-util/classes';
@@ -74,6 +75,34 @@ const DATE_TICKS = ['2026-07-27', '2026-08-03', '2026-08-10', '2026-08-17', '202
 
 const formatTick = (metric: Metric, v: number) => (metric === 'accuracy' ? `${v}%` : v.toFixed(2));
 
+/** Everything a bar chart draws, so another model page can render its own numbers. */
+export type BarChartSpec = {
+  title: string;
+  hint: string;
+  /** x-domain of the bars. */
+  domain: [number, number];
+  ticks: number[];
+  /** Sparser ticks for the narrow layout, where the full set collides. */
+  narrowTicks: number[];
+  format: (v: number) => string;
+  formatTick: (v: number) => string;
+  /** Width of the name column beside the bars; widen it for a longer model name. */
+  labelColumn?: number;
+  /** `id` picks the bar colour: `base`, `research`, `olas` or `gpt`; anything else is grey. */
+  models: { id: string; name: string; description: string; value: number }[];
+};
+
+const barSpec = (metric: Metric): BarChartSpec => ({
+  title: METRIC[metric].title,
+  hint: METRIC[metric].hint,
+  domain: METRIC[metric].barDomain,
+  ticks: METRIC[metric].barTicks,
+  narrowTicks: METRIC[metric].narrowBarTicks,
+  format: METRIC[metric].format,
+  formatTick: (v) => formatTick(metric, v),
+  models: results.models.map((model) => ({ ...model, value: model[metric] })),
+});
+
 const modelOf = (id: ModelId) => results.models.find((m) => m.id === id);
 
 /** Width of the element, tracked through resizes; 0 until measured on the client. */
@@ -90,15 +119,23 @@ const useContainerWidth = () => {
   return { ref, width };
 };
 
-/** One bar per model. Below 400px the name sits above its bar instead of beside it. */
-const BarChart = ({ metric, width }: { metric: Metric; width: number }) => {
-  const { barDomain, format, title, hint } = METRIC[metric];
+/** Narrowest plot (bars plus value column) that still fits the full set of ticks. */
+const MIN_PLOT_WIDTH = 224;
+const DEFAULT_LABEL_COLUMN = 176;
+
+/**
+ * One bar per model. Below 400px the name sits above its bar instead of beside it. A wider
+ * label column can leave the plot short of room for every tick; the sparser set is used then,
+ * and the layout with its grid lines stays.
+ */
+const BarChart = ({ spec, width }: { spec: BarChartSpec; width: number }) => {
+  const { domain, format, title, hint, models } = spec;
   const narrow = width < 400;
-  const ticks = narrow ? METRIC[metric].narrowBarTicks : METRIC[metric].barTicks;
-  const labelColumn = narrow ? 0 : 176;
+  const labelColumn = narrow ? 0 : (spec.labelColumn ?? DEFAULT_LABEL_COLUMN);
+  const ticks = narrow || width - labelColumn < MIN_PLOT_WIDTH ? spec.narrowTicks : spec.ticks;
   const rowHeight = narrow ? 74 : 52;
-  const plotHeight = results.models.length * rowHeight;
-  const [min, max] = barDomain;
+  const plotHeight = models.length * rowHeight;
+  const [min, max] = domain;
   const x = (v: number) => labelColumn + ((v - min) / (max - min)) * (width - labelColumn - 68);
 
   return (
@@ -119,14 +156,14 @@ const BarChart = ({ metric, width }: { metric: Metric; width: number }) => {
             fontSize={12}
             textAnchor={tick === min && narrow ? 'start' : 'middle'}
           >
-            {formatTick(metric, tick)}
+            {spec.formatTick(tick)}
           </text>
         </g>
       ))}
-      {results.models.map((model, i) => {
+      {models.map((model, i) => {
         const top = i * rowHeight;
         const barY = top + (narrow ? 42 : 13);
-        const value = model[metric];
+        const { value } = model;
         const isOlas = model.id === 'olas';
         return (
           <g key={model.id} aria-label={`${model.name}, ${model.description}: ${format(value)}`}>
@@ -149,7 +186,7 @@ const BarChart = ({ metric, width }: { metric: Metric; width: number }) => {
               width={Math.max(0, x(value) - labelColumn)}
               height={24}
               rx={2}
-              fill={SERIES_COLOR[model.id as ModelId]}
+              fill={SERIES_COLOR[model.id as ModelId] ?? SERIES_COLOR.base}
             />
             <text
               x={width}
@@ -283,10 +320,19 @@ const Legend = ({ metric }: { metric: Metric }) => (
   </ul>
 );
 
-const ChartCard = ({ metric, kind }: { metric: Metric; kind: 'bar' | 'time' }) => {
+const ChartFrame = ({
+  heading,
+  hint,
+  legend = null,
+  children,
+}: {
+  heading: string;
+  hint: string;
+  legend?: ReactNode;
+  /** Draws the chart at the measured width. */
+  children: (width: number) => ReactNode;
+}) => {
   const { ref, width } = useContainerWidth();
-  const { title, hint } = METRIC[metric];
-  const heading = kind === 'time' ? `${title} over time` : title;
   return (
     <article className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-[#dfe5ee] bg-white">
       <header className="border-b border-[#dfe5ee] px-4 py-3.5">
@@ -295,19 +341,30 @@ const ChartCard = ({ metric, kind }: { metric: Metric; kind: 'bar' | 'time' }) =
         </h3>
         <p className="mt-1 text-sm leading-5 text-[#4d596a]">{hint}</p>
       </header>
-      {kind === 'time' && <Legend metric={metric} />}
+      {legend}
       {/* Bar cards share a row with the taller time-series cards; centring the plot fills
           the stretched height evenly instead of leaving it all below the bars. */}
       <div ref={ref} className="flex flex-1 flex-col justify-center p-4">
         {/* Charts lay out against the measured width, so nothing renders until we have it. */}
-        {width > 0 &&
-          (kind === 'bar' ? (
-            <BarChart metric={metric} width={width} />
-          ) : (
-            <TimeChart metric={metric} width={width} />
-          ))}
+        {width > 0 && children(width)}
       </div>
     </article>
+  );
+};
+
+export const BarChartCard = ({ spec }: { spec: BarChartSpec }) => (
+  <ChartFrame heading={spec.title} hint={spec.hint}>
+    {(width) => <BarChart spec={spec} width={width} />}
+  </ChartFrame>
+);
+
+const ChartCard = ({ metric, kind }: { metric: Metric; kind: 'bar' | 'time' }) => {
+  if (kind === 'bar') return <BarChartCard spec={barSpec(metric)} />;
+  const { title, hint } = METRIC[metric];
+  return (
+    <ChartFrame heading={`${title} over time`} hint={hint} legend={<Legend metric={metric} />}>
+      {(width) => <TimeChart metric={metric} width={width} />}
+    </ChartFrame>
   );
 };
 
