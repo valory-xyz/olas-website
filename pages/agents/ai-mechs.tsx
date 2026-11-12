@@ -136,16 +136,14 @@ const AiMechs = () => (
           <H2 className="mb-8">How it works</H2>
           <ol className="text-xl list-decimal mb-6 pl-5 leading-loose">
             <li>
-              An agent or application sends an on-chain request to access a Mech agent’s service,
-              paying a fee in crypto.
+              An agent or application sends a request to a Mech agent: on-chain or, for Mechs that
+              support it, off-chain over HTTP.
             </li>
+            <li>The Mech agent reads the request and identifies the tool to use to process it.</li>
+            <li>It executes the request and returns the response.</li>
             <li>
-              The Mech agent reads the request and identifies the tool to use to process it. It
-              executes the request and provides the response.
-            </li>
-            <li>
-              The Mech records the response on-chain, making it available to the requesting agent or
-              application to use.
+              The Mech settles delivered requests on-chain. With an off-chain request the answer can
+              reach the requester before settlement.
             </li>
           </ol>
           <div className="text-slate-500">

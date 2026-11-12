@@ -44,6 +44,10 @@ const faq = [
       </p>
     ),
   },
+  {
+    title: 'Does Omenstrat stop once it earns its OLAS activity rewards?',
+    desc: 'When Omenstrat earns its OLAS activity rewards, it\'s designed to keep trading until it reaches its daily activity target. Each agent comes with a default target. To raise or lower it, ask in the agent\'s chat, for example "Place 10 trades a day".',
+  },
 ];
 
 export const FAQ = () => (

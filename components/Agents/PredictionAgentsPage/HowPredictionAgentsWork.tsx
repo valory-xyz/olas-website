@@ -12,13 +12,20 @@ const list = [
     title: 'Make Intelligent Predictions',
     description: (
       <div>
-        The agent accesses the{' '}
-        <Link href="/mech-marketplace" className="text-purple-600">
-          AI Agent Bazaar (Mech Marketplace)
-        </Link>{' '}
-        to procure data from trusted information brokers. Mechs use external AI tools to analyze
-        real-time news and data, calculating the most likely outcomes to inform its trading
-        strategy.
+        <p>
+          The agent accesses the{' '}
+          <Link href="/mech-marketplace" className="text-purple-600">
+            AI Agent Bazaar (Mech Marketplace)
+          </Link>{' '}
+          to procure data from information brokers called Mechs. Mechs use external AI tools to
+          analyze real-time news and data, calculating the most likely outcomes to inform its
+          trading strategy.
+        </p>
+        <p className="mt-4">
+          The agent can hire any Mech on the Marketplace. Ask it in the chat to check a Mech before
+          it hires one. The Know Your Agent (KYA) report shows who claims to run it, what it offers
+          and how it has delivered.
+        </p>
       </div>
     ),
     imgSrc: 'intelligent-predictions',

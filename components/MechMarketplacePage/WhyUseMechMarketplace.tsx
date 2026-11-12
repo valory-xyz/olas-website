@@ -28,8 +28,14 @@ const list = [
   {
     title: 'Autonomous by Default',
     description:
-      'Agents act independently — making decisions, delegating tasks, and working with others. Every action is visible, verifiable, and built on open standards for trust and extensibility.',
+      'Agents act independently — making decisions, delegating tasks, and working with others. On-chain actions are visible, verifiable, and built on open standards for trust and extensibility.',
     imgSrc: 'autonomous-by-default',
+  },
+  {
+    title: 'Know Your Agent',
+    description:
+      'See who claims to run a Mech, what it offers and how it has delivered before you hire it. Each piece of information is labeled with where it comes from.',
+    imgSrc: 'know-your-agent',
   },
 ];
 

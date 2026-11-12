@@ -52,12 +52,16 @@ const TheProcess = () => (
       />
     </Card>
     <ol className="list-decimal ml-4 mb-2">
-      <li className="mb-2">Autonomous agents request services from Mechs.</li>
+      <li className="mb-2">
+        Autonomous agents request services from Mechs, on-chain or off-chain over HTTP.
+      </li>
       <li className="mb-2">
         Mechs leverage large language models (LLMs), external data, APIs, and other tools to serve
         requests.
       </li>
-      <li className="mb-2">Mechs deliver results to requesting agents.</li>
+      <li className="mb-2">
+        Mechs deliver results to requesting agents and settle delivered requests on-chain.
+      </li>
     </ol>
     <p className="mb-2">The benefits:</p>
     <ol className="list-disc ml-4 mb-2">

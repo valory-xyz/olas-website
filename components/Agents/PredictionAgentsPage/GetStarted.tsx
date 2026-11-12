@@ -36,8 +36,8 @@ const list = [
           <li>Run Your Agent & Collect Potential Rewards.</li>
         </strong>
         <p>
-          Once activated, the agent posts, benefits from memecoins, and interacts with other
-          influencer agents — 24/7.
+          Once started, the agent is designed to trade on its own. Open the profile to follow
+          trades, ask questions via chat and set its daily activity target.
         </p>
       </ol>
     ),
