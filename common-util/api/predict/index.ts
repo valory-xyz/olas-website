@@ -8,6 +8,7 @@ import {
   POLYSTRAT_AGENT_CLASSIFICATION,
 } from 'common-util/constants';
 import { REGISTRY_GRAPH_CLIENTS } from 'common-util/graphql/client';
+import { requestRegistry } from 'common-util/graphql/indexer-requests';
 import {
   checkSubgraphLag,
   createStaleStatus,
@@ -17,6 +18,9 @@ import {
 } from 'common-util/graphql/metric-utils';
 import {
   agentServicesQuery,
+  agentServicesSquidQuery,
+  agentTxCountsSquidQuery,
+  dailyPredictAgentsPerformancesSquidQuery,
   agentTxCountsQuery,
   dailyPredictAgentsPerformancesQuery,
 } from 'common-util/graphql/queries';
@@ -96,14 +100,16 @@ const fetchPredictDaa7dAvg = async (): Promise<{
       transform: (data) => transformDaaData(data, timestamp_lt),
     }),
     executeGraphQLQuery<DailyPredictPerformancesResponse, number>({
-      client: REGISTRY_GRAPH_CLIENTS.polygon,
+      request: () =>
+        requestRegistry<DailyPredictPerformancesResponse>(
+          'polygon',
+          {
+            subgraph: dailyPredictAgentsPerformancesQuery,
+            squid: dailyPredictAgentsPerformancesSquidQuery,
+          },
+          { agentIds: POLYSTRAT_AGENT_CLASSIFICATION.valory_trader, timestamp_gt, timestamp_lt }
+        ),
       chain: 'polygon',
-      query: dailyPredictAgentsPerformancesQuery,
-      variables: {
-        agentIds: POLYSTRAT_AGENT_CLASSIFICATION.valory_trader,
-        timestamp_gt,
-        timestamp_lt,
-      },
       source: 'registry:polygon',
       transform: (data) => transformDaaData(data, timestamp_lt),
     }),
@@ -144,7 +150,6 @@ const fetchTotalAgents = async (
   agentIds: number[]
 ): Promise<MetricWithStatus<number | null>> => {
   const source = `registry:${chain}`;
-  const client = REGISTRY_GRAPH_CLIENTS[chain];
 
   try {
     const chainBlockPromise = getChainBlockNumber(chain);
@@ -155,10 +160,14 @@ const fetchTotalAgents = async (
       let cursor = '';
       let page = 0;
       for (;;) {
-        const data = (await client.request(agentServicesQuery, {
-          agentIds: [agentId],
-          id_gt: cursor,
-        })) as AgentServicesResponse;
+        const data = (await requestRegistry<AgentServicesResponse>(
+          chain,
+          { subgraph: agentServicesQuery, squid: agentServicesSquidQuery },
+          {
+            agentIds: [agentId],
+            id_gt: cursor,
+          }
+        )) as AgentServicesResponse;
         meta = data._meta;
         const rows = data.services || [];
         rows.forEach((row) => serviceIds.add(row.id));
@@ -225,10 +234,16 @@ const fetchPolystratTxsByAgentType = async (): Promise<
   MetricWithStatus<Record<string, number> | null>
 > => {
   return executeGraphQLQuery<AgentTxCountsResponse, Record<string, number>>({
-    client: REGISTRY_GRAPH_CLIENTS.polygon, // Polystrat agents on Polygon
+    request: () =>
+      requestRegistry<AgentTxCountsResponse>(
+        'polygon',
+        {
+          subgraph: agentTxCountsQuery,
+          squid: agentTxCountsSquidQuery(POLYSTRAT_AGENT_IDS_FLAT),
+        },
+        { agentIds: POLYSTRAT_AGENT_IDS_FLAT }
+      ),
     chain: 'polygon',
-    query: agentTxCountsQuery,
-    variables: { agentIds: POLYSTRAT_AGENT_IDS_FLAT },
     source: 'registry:polygon',
     transform: (data) => {
       const rows = data?.agentPerformances || [];

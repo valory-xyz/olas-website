@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request';
-import { DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX } from './daily-active-multisigs';
+import { DAILY_ACTIVE_MULTISIGS_ALIAS_PREFIX } from './daily-active-multisigs.ts';
 
 // Cursor-paged by counter, which is the epoch id. A capped query would drop the oldest
 // epochs from every emissions chart without erroring.
@@ -1859,6 +1859,116 @@ export const getExplorerMarketplaceRequestEventsSquidQuery = ({
       blockTimestamp
       count: ${offchain ? 'numDeliveries' : 'numRequests'}
     }
+    squidStatus { height }
+  }
+`;
+
+// SQD stores the marketplace on-chain and signed counts in one per-agent entity.
+export const mechMarketplaceRequestsPerAgentsSquidQuery = (ids: string[]) => gql`
+  query MechMarketplaceRequestsPerAgents {
+    requestsPerAgents(limit: 1000, where: { id_in: [${ids.map((id) => `"${id}"`).join(', ')}] }) {
+      id
+      requestsCount
+    }
+    squidStatus { height }
+  }
+`;
+
+export const mechAtaTransactionsSquidQuery = gql`
+  query MechAtaTransactions($gte: BigInt!, $lt: BigInt!) {
+    ataTransactions(
+      limit: 1000
+      where: { blockTimestamp_gte: $gte, blockTimestamp_lt: $lt }
+      orderBy: [blockTimestamp_ASC, id_ASC]
+    ) {
+      id
+      blockTimestamp
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const getMarketplaceSendersSquidQuery = ({
+  first,
+  skip,
+}: {
+  first: number;
+  skip: number;
+}) => gql`
+  query MarketplaceSenders {
+    senders(limit: ${first}, offset: ${skip}, orderBy: id_ASC) {
+      id
+      totalLegacyRequests
+    }
+    squidStatus { height }
+  }
+`;
+
+// Polygon registry and staking use OpenReader; aliases retain the existing consumer shape.
+export const dailyPredictAgentsPerformancesSquidQuery = gql`
+  query DailyPredictPerformancesSquid(
+    $agentIds: [Int!]!
+    $timestamp_gt: BigInt!
+    $timestamp_lt: BigInt!
+  ) {
+    dailyAgentPerformances(
+      where: {
+        agentId_in: $agentIds
+        dayTimestamp_gt: $timestamp_gt
+        dayTimestamp_lt: $timestamp_lt
+      }
+      orderBy: dayTimestamp_ASC
+      limit: 1000
+    ) {
+      dayTimestamp
+      activeMultisigCount
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const agentServicesSquidQuery = gql`
+  query AgentServicesSquid($agentIds: [Int!]!, $id_gt: String!) {
+    services(
+      where: { agentIds_containsAll: $agentIds, id_gt: $id_gt }
+      orderBy: id_ASC
+      limit: 1000
+    ) {
+      id
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const stakingContractAgentIdsSquidQuery = gql`
+  query StakingContractAgentIdsSquid {
+    stakingContracts(limit: 1000) {
+      instance
+      agentIds
+    }
+    squidStatus {
+      height
+    }
+  }
+`;
+
+export const getStakingRewardsByTimeRangeSquidQuery = ({
+  first,
+  contractAddresses,
+  timestamp_gte,
+  timestamp_lt,
+}: Parameters<typeof getStakingRewardsByTimeRangeQuery>[0]) => gql`
+  query StakingRewardsByTimeRangeSquid {
+    serviceRewardsHistories(limit: ${first}, where: {
+      contractAddress_in: [${contractAddresses.map((a) => `"${a.toLowerCase()}"`).join(', ')}]
+      blockTimestamp_gte: ${timestamp_gte} blockTimestamp_lt: ${timestamp_lt}
+    }, orderBy: blockTimestamp_DESC) { rewardAmount blockTimestamp }
     squidStatus { height }
   }
 `;

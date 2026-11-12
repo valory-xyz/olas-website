@@ -9,7 +9,6 @@ import {
 import { DaaSeriesPoint } from 'common-util/explorer';
 import {
   BABYDEGEN_GRAPH_CLIENTS,
-  MARKETPLACE_GRAPH_CLIENTS,
   polymarketAgentsGraphClient,
   predictAgentsGraphClient,
 } from 'common-util/graphql/client';
@@ -31,6 +30,7 @@ import {
   getExplorerDailyProfitStatsQuery,
   getPolymarketBetsByTimeRangeQuery,
   mechAtaTransactionsQuery,
+  mechAtaTransactionsSquidQuery,
   PolymarketBetRow,
   PolymarketBetsResponse,
 } from 'common-util/graphql/queries';
@@ -824,9 +824,11 @@ const fetchMechAtaSeries = async (
     try {
       const counts = await fetchChainEventCounts(
         async (cursor) => {
-          const data = await MARKETPLACE_GRAPH_CLIENTS[chain].request<{
-            ataTransactions: EventRow[];
-          }>(mechAtaTransactionsQuery, { gte: String(cursor), lt: String(endTs) });
+          const data = await requestMarketplace<{ ataTransactions: EventRow[] }>(
+            chain,
+            { subgraph: mechAtaTransactionsQuery, squid: mechAtaTransactionsSquidQuery },
+            { gte: String(cursor), lt: String(endTs) }
+          );
           return data.ataTransactions;
         },
         startTs,
