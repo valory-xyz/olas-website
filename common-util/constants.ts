@@ -229,14 +229,14 @@ export const FEE_LIVE_SINCE_SEC = 1781503200; // 2026-06-15 06:00 UTC
 
 // Hero feature card — temporary. Remove after the run; greppable by HERO_FEATURE.
 export const HERO_FEATURE = {
-  headline: 'Valory turns Olas agent data into a stronger AI forecaster',
-  model: 'Olas-Predict-R1-14B',
-  imageSrc: '/images/homepage/olas-predict-r1-blob-solo.png',
-  url: '/models/olas-predict-r1-14b',
+  headline: "Valory's open forecasting model approaches GPT-5.6",
+  // Two lines: the full name doesn't fit the card's width on one.
+  modelLines: ['Olas-Predict-', 'Qwen3.8-27B'],
+  url: '/blog/meet-olas-predict-qwen3.8-27B',
 } as const;
 
-// A month after launch (2026-09-22). Keep the explicit Z.
-export const HERO_FEATURE_END = '2026-10-22T23:59:59Z';
+// A month after launch (2026-11-11). Keep the explicit Z.
+export const HERO_FEATURE_END = '2026-12-11T23:59:59Z';
 
 export const isHeroFeatureActive = (now: number = Date.now()): boolean => {
   const endsAt = Date.parse(HERO_FEATURE_END);

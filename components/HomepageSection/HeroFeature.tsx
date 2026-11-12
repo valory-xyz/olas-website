@@ -1,7 +1,10 @@
+import { Fragment } from 'react';
+
 import { HERO_FEATURE } from 'common-util/constants';
 import { cn } from 'lib/utils';
-import Image from 'next/image';
 import Link from 'next/link';
+
+import { ModelBlob } from './ModelBlob';
 
 const CARD_HOVER_SHADOW =
   'group-hover:[box-shadow:0_32px_9px_0_rgba(88,92,101,0.00),0_21px_8px_0_rgba(88,92,101,0.01),0_11px_7px_0_rgba(88,92,101,0.03),0_5px_5px_0_rgba(88,92,101,0.05),0_1px_3px_0_rgba(88,92,101,0.06)]';
@@ -18,9 +21,17 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 
 const ModelName = () => (
   <div
-    className={cn('mt-1 text-[11px] lg:text-[13px] font-semibold leading-none text-center', PURPLE)}
+    className={cn(
+      'mt-1 text-[11px] lg:text-[13px] font-semibold leading-tight text-center',
+      PURPLE
+    )}
   >
-    {HERO_FEATURE.model}
+    {HERO_FEATURE.modelLines.map((line, i) => (
+      <Fragment key={line}>
+        {i > 0 && <br />}
+        {line}
+      </Fragment>
+    ))}
   </div>
 );
 
@@ -46,13 +57,7 @@ export const HeroFeature = ({ className }: { className?: string }) => {
         style={CARD_FRAME}
       >
         <Eyebrow>New model</Eyebrow>
-        <Image
-          src={HERO_FEATURE.imageSrc}
-          alt=""
-          width={600}
-          height={465}
-          className="mx-auto mt-6 mb-4 w-[88px] lg:w-[110px] h-auto saturate-[.55] opacity-80"
-        />
+        <ModelBlob className="mx-auto mt-4 mb-3 w-[80px] lg:mt-6 lg:mb-4 lg:w-[110px]" />
         <ModelName />
       </div>
 
