@@ -259,17 +259,17 @@ const PearlTerms = () => {
                 provided by Valory or another Third-Party and the Agents run locally on users&apos;
                 own devices. Agents in Pearl currently available to create and maintain (“Available
                 Agents”) include: Basius, Connect, Omenstrat and Polystrat. Agents that can only be
-                maintained and not created (“Agents Under Development”) include Optimus and Modius.
-                Agents that can no longer be run, but whose funds you can still withdraw (“Retired
-                Agents”), include Agents.fun and Pettbro. Agents pay for services they request from
+                maintained and not created (“Agents Under Development”) include Optimus. Agents that
+                can no longer be run, but whose funds you can still withdraw (“Retired Agents”),
+                include Agents.fun, Pettbro and Modius. Agents pay for services they request from
                 Mechs (<Link href="#section-2">Section 2</Link>), including the Olas Protocol fee,
                 from their own wallet. Some Agents let you chat with them, for example to ask about
                 their activity or to set a daily activity target; AI interprets your messages and
                 may misunderstand them, its answers may be inaccurate (
-                <Link href="#section-3">Section 3</Link>), and a higher target spends more on fees
-                and gas. Certain Agents require your acknowledgment of Agent-specific risks before
-                you can create them, in addition to your acceptance of these Pearl Terms. Find more
-                information about each Agent below:
+                <Link href="#section-3">Section 3</Link>), and a higher target may spend more on
+                fees and gas. Certain Agents require your acknowledgment of Agent-specific risks
+                before you can create them, in addition to your acceptance of these Pearl Terms.
+                Find more information about each Agent below:
               </p>
               <div className="space-y-4 mt-4 ml-8">
                 <div>
@@ -292,7 +292,7 @@ const PearlTerms = () => {
                         <ExternalLink href="https://www.mode.network/">Mode network</ExternalLink>,
                         and “Basius” is the{' '}
                         <ExternalLink href="https://www.base.org/">Base network</ExternalLink>{' '}
-                        version of Optimus; all three share the same agent logic. The DeFAI Agent(s)
+                        version of Optimus; all three use similar agent logic. The DeFAI Agent(s)
                         are operated and executed locally on the user&apos;s device and, at the
                         user&apos;s sole discretion and risk, interact with third-party
                         decentralized exchanges (the “DEXs”) and other decentralized market
@@ -417,13 +417,14 @@ const PearlTerms = () => {
                         6.1.3 Omenstrat and Polystrat (“Prediction Agents”)
                       </AnchorHeading>
                       <p className="mt-2">
-                        Omenstrat and Polystrat are autonomous Agents developed by Valory that trade
-                        on prediction markets, Omen and Polymarket respectively (
-                        <Link href="#section-7-5">Section 7.5</Link>), using predictions they
-                        request from Mechs (<Link href="#section-2">Section 2</Link>). The size and
-                        frequency of their trades follow the strategy you choose, and riskier
-                        strategies can lose more. Selling a position before its market resolves may
-                        realise a loss. The risk and liability provisions of{' '}
+                        Omenstrat and Polystrat are Agents developed by Valory that initiate your
+                        trades on prediction markets, Omen and Polymarket respectively (
+                        <Link href="#section-7-5">Section 7.5</Link>), within the strategy and
+                        settings you choose and informed by predictions they request from Mechs (
+                        <Link href="#section-2">Section 2</Link>). Your trades are your own
+                        responsibility. Their size and frequency follow the strategy you choose, and
+                        riskier strategies may lose more. Selling a position before its market
+                        resolves may realise a loss. The risk and liability provisions of{' '}
                         <Link href="#section-6-1-1">Section 6.1.1</Link> apply to them as to the
                         DeFAI Agents.
                       </p>
