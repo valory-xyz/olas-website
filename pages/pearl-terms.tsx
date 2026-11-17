@@ -140,16 +140,18 @@ const PearlTerms = () => {
                 independently registering for, maintaining, funding, and complying with the terms of
                 such Third-Party Integrations. Valory does not provide, resell, bundle, monitor, or
                 guarantee access to any such APIs or credit-based services. Agents may request and
-                pay for services, such as AI model outputs, from “Mechs” (software registered on the
-                permissionless{' '}
+                pay for services from “Mechs” (software registered on the{' '}
                 <ExternalLink href="https://marketplace.olas.network/">
                   Olas Marketplace
-                </ExternalLink>
-                , described at{' '}
-                <Link href="/mech-marketplace">https://olas.network/mech-marketplace</Link>). Mechs
-                operated by Valory (“Valory Mechs”) are governed by the{' '}
-                <ExternalLink href="https://www.valory.xyz/terms/mechs">Mech Terms</ExternalLink>;
-                Mechs operated by others are Third-Party Integrations.
+                </ExternalLink>{' '}
+                that performs tasks such as producing a prediction, researching a question or
+                generating an image, as defined in the{' '}
+                <ExternalLink href="https://www.valory.xyz/terms/mechs">Mech Terms</ExternalLink>).
+                Mechs may be operated by anyone. Mechs owned and operated by Valory (“Valory Mechs”)
+                are governed by the Mech Terms: they call third-party models, data sources and
+                services, process their outputs and deliver a transformed result, which is not
+                access to or a resale of any third-party service. Mechs operated by others are
+                Third-Party Integrations.
               </p>
             </section>
 
@@ -257,12 +259,13 @@ const PearlTerms = () => {
                 provided by Valory or another Third-Party and the Agents run locally on users&apos;
                 own devices. Agents in Pearl currently available to create and maintain (“Available
                 Agents”) include: Basius, Connect, Omenstrat and Polystrat. Agents that can only be
-                maintained and not created (“Agents Under Development”) include Optimus, Agents.fun,
-                Modius and Pettbro. Agents pay for services they request from Mechs (
-                <Link href="#section-2">Section 2</Link>), including the Olas Protocol fee, from
-                their own wallet. Some Agents let you chat with them, for example to ask about their
-                activity or to set a daily activity target; AI interprets your messages and may
-                misunderstand them, its answers may be inaccurate (
+                maintained and not created (“Agents Under Development”) include Optimus and Modius.
+                Agents that can no longer be run, but whose funds you can still withdraw (“Retired
+                Agents”), include Agents.fun and Pettbro. Agents pay for services they request from
+                Mechs (<Link href="#section-2">Section 2</Link>), including the Olas Protocol fee,
+                from their own wallet. Some Agents let you chat with them, for example to ask about
+                their activity or to set a daily activity target; AI interprets your messages and
+                may misunderstand them, its answers may be inaccurate (
                 <Link href="#section-3">Section 3</Link>), and a higher target spends more on fees
                 and gas. Certain Agents require your acknowledgment of Agent-specific risks before
                 you can create them, in addition to your acceptance of these Pearl Terms. Find more
@@ -335,8 +338,8 @@ const PearlTerms = () => {
                         6.1.2 Connect
                       </AnchorHeading>
                       <p className="mt-2">
-                        Pearl Connect (“Connect”) is a Pearl Agent; each instance you create is a
-                        “Connect Agent”. Connect Agents are Pearl Agents that can connect to any
+                        Pearl Connect (“Connect”) is a beta Pearl Agent; each instance you create is
+                        a “Connect Agent”. Connect Agents are Pearl Agents that can connect to any
                         agent harness (e.g.{' '}
                         <ExternalLink href="https://claude.com/product/claude-code">
                           Claude Code
@@ -429,7 +432,7 @@ const PearlTerms = () => {
                 </div>
                 <div>
                   <AnchorHeading as="h5" id="section-6-2">
-                    6.2 Agents Under Development
+                    6.2 Agents Under Development and Retired Agents
                   </AnchorHeading>
                   <div className="space-y-4 mt-4 ml-8">
                     <div>
@@ -513,11 +516,10 @@ const PearlTerms = () => {
                         6.2.3 Agents.fun
                       </AnchorHeading>
                       <p className="mt-2">
-                        Agents.fun Agents are autonomous Agents developed by Valory that post on X
-                        from an account you connect, request images, videos and other content from
-                        Mechs (<Link href="#section-2">Section 2</Link>), and may create or trade
-                        memecoins on Base or Celo. You are responsible for the account, for what
-                        your Agent posts, and for complying with{' '}
+                        Agents.fun Agents are Retired Agents developed by Valory that posted on X
+                        from an account you connected and could create or trade memecoins on Base.
+                        You remain responsible for that account, for what your Agent posted, and for
+                        complying with{' '}
                         <ExternalLink href="https://x.com/en/tos">X&apos;s terms</ExternalLink> (
                         <Link href="#section-8">Section 8</Link>). Memecoins may have no value. The
                         risk and liability provisions of{' '}
@@ -787,12 +789,11 @@ const PearlTerms = () => {
                   <p className="mt-2">
                     When you fund an Agent from another chain or token, Pearl Application routes the
                     transfer through third-party bridging and swap services (currently{' '}
-                    <ExternalLink href="https://li.fi/legal/terms-and-conditions/">
-                      LiFi
-                    </ExternalLink>{' '}
-                    and <ExternalLink href="https://relay.link/terms">Relay</ExternalLink>).
-                    Transfers can be delayed, mispriced or lost, and Valory does not control or
-                    guarantee them.
+                    <ExternalLink href="https://relay.link/terms">Relay</ExternalLink>,{' '}
+                    <ExternalLink href="https://mayan.finance/terms-of-use">Mayan</ExternalLink> and{' '}
+                    <ExternalLink href="https://balancer.fi/terms-of-use">Balancer</ExternalLink>,
+                    and the chains&apos; own bridges). Transfers can be delayed, mispriced or lost,
+                    and Valory does not control or guarantee them.
                   </p>
                 </div>
               </div>
