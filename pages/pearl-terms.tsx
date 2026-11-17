@@ -312,17 +312,17 @@ const PearlTerms = () => {
                         <ExternalLink href="https://claude.com/product/claude-code">
                           Claude Code
                         </ExternalLink>{' '}
-                        (see <Link href="#section-7-6">Section 7.6</Link>), hereafter “Agent
-                        Harness”), and optionally any Independent Agent you create independently via
-                        the Agent Harness (hereafter “Independent Agent”, totally distinct from
-                        Pearl&apos;s Agents). Together the Agent Harness and any Independent Agent
-                        are each termed a “Connected Agent”, collectively “Connected Agents”. Unlike
-                        other Pearl Agents, Connect is not autonomous: it is designed as a co-pilot
-                        for the Connected Agents, giving them the ability to act on-chain —
-                        including transferring funds, paying for Agent services via the Olas
-                        Protocol, or trading on Market Protocols, such as Polymarket or Omen (see{' '}
-                        <Link href="#section-7-5">Section 7.5</Link>) — only when you direct them
-                        to, live.
+                        (see <Link href="#section-7-6">Section 7.6</Link>) or the OCB Agent,
+                        hereafter “Agent Harness”), and optionally any Independent Agent you create
+                        independently via the Agent Harness (hereafter “Independent Agent”, totally
+                        distinct from Pearl&apos;s Agents). Together the Agent Harness and any
+                        Independent Agent are each termed a “Connected Agent”, collectively
+                        “Connected Agents”. Unlike other Pearl Agents, Connect is not autonomous: it
+                        is designed as a co-pilot for the Connected Agents, giving them the ability
+                        to act on-chain — including transferring funds, paying for Agent services
+                        via the Olas Protocol, or trading on Market Protocols, such as Polymarket or
+                        Omen (see <Link href="#section-7-5">Section 7.5</Link>) — only when you
+                        direct them to, live.
                       </p>
                       <p className="mt-2">
                         Connect is non-custodial in the manner described in{' '}
@@ -375,6 +375,13 @@ const PearlTerms = () => {
                         require a signature, so such additions can access and transmit that data to
                         third-parties regardless of any restrictions you apply to the Connect Agent,
                         which govern what can be signed, not what can be read.
+                      </p>
+                      <p className="mt-2">
+                        The “OCB Agent” is a beta Agent Harness whose open-source code Valory
+                        provides. Its model requests are served by a Mech operated by Valory and
+                        paid from your Agent Wallet. This Section applies to it as to any Connected
+                        Agent, except the references to an Agent Harness being independent of
+                        Valory.
                       </p>
                     </div>
                   </div>
