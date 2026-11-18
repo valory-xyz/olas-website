@@ -133,12 +133,23 @@ const PearlTerms = () => {
                 Functionality in Pearl Application may interact with Third-Party Integrations - any
                 such interactions occur under their respective terms and conditions and are
                 initiated, configured, and controlled by the user and at the user&apos;s sole
-                direction and risk. Certain Agents or functionalities may depend on external
-                infrastructure, including third-party APIs, developer accounts, or credit-based
-                services. Users are solely responsible for independently registering for,
-                maintaining, funding, and complying with the terms of such Third-Party Integrations.
-                Valory does not provide, resell, bundle, monitor, or guarantee access to any such
-                APIs or credit-based services.
+                direction and risk, including where features such as Auto-run start and stop Agents
+                automatically within the settings the user chooses. Certain Agents or
+                functionalities may depend on external infrastructure, including third-party APIs,
+                developer accounts, or credit-based services. Users are solely responsible for
+                independently registering for, maintaining, funding, and complying with the terms of
+                such Third-Party Integrations. Valory does not provide, resell, bundle, monitor, or
+                guarantee access to any such APIs or credit-based services. Agents may request and
+                pay for services from “Mechs” (software registered on the{' '}
+                <ExternalLink href="https://marketplace.olas.network/">
+                  Olas Marketplace
+                </ExternalLink>{' '}
+                that performs tasks such as producing a prediction, researching a question or
+                generating an image, as defined in the{' '}
+                <ExternalLink href="https://www.valory.xyz/terms/mechs">Mech Terms</ExternalLink>).
+                Mechs may be operated by anyone. Mechs owned and operated by Valory (“Valory Mechs”)
+                are governed by the Mech Terms, which set out what a Valory Mech delivers (Mech
+                Terms, Section 10.1). Mechs operated by others are Third-Party Integrations.
               </p>
             </section>
 
@@ -149,31 +160,35 @@ const PearlTerms = () => {
               <p className="mt-2">
                 The Conditions explain the risks involved in using Offerings like Pearl Application,
                 which are based on emerging technologies (such as blockchain). Nothing in Pearl
-                Application or related materials constitutes investment advice, a financial
-                promotion, or an offer to manage assets. Pearl Application and any functionality
-                within Pearl Application may not behave as expected, may fail, or may underperform.
-                Any assets used with Pearl Application are at risk and you may lose some or all of
-                your assets. You remain solely responsible for your financial decisions and
-                blockchain transactions, and for understanding any legal, tax, or regulatory
-                obligations that may apply. Valory does not provide legal, tax, financial, or
-                trading advice nor does it assess user suitability, appropriateness, or risk
-                tolerance.
+                Application or related materials, including performance figures, rankings and
+                leaderboards, constitutes investment advice, a financial promotion, or an offer to
+                manage assets. Pearl Application and any functionality within Pearl Application may
+                not behave as expected, may fail, or may underperform. Any assets used with Pearl
+                Application are at risk and you may lose some or all of your assets. You remain
+                solely responsible for your financial decisions and blockchain transactions, and for
+                understanding any legal, tax, or regulatory obligations that may apply. Valory does
+                not provide legal, tax, financial, or trading advice nor does it assess user
+                suitability, appropriateness, or risk tolerance.
               </p>
               <p className="mt-2">
                 By using Pearl Application, you acknowledge that access to any and all functionality
                 may be restricted based on jurisdiction, residency, sanctions, or eligibility
-                requirements imposed by Valory and/or third-parties. In particular, Valory may
-                restrict your use of Pearl Application based on IP-address checks.
+                requirements imposed by Valory and/or third parties, including for assets such as
+                tokenised stocks, which may be securities that only eligible persons may hold or
+                trade. In particular, Valory may restrict your use of Pearl Application based on
+                IP-address checks.
               </p>
               <p className="mt-2">
                 While using Pearl Application, users may interact with or receive{' '}
                 <Link href="/olas-token">Olas tokens</Link> (hereafter “Olas Token(s)”, a digital
                 asset associated with the Olas Protocol, specifically its native token:{' '}
                 <Link href="/olas-token">https://olas.network/olas-token</Link>, via the Olas
-                Protocol). Any issuance, distribution or receipt of Olas Tokens is not guaranteed
-                and is governed by the Olas Protocol (not Pearl Application, Pearl Site, or Valory),
+                Protocol). Any issuance, distribution or receipt of Olas Tokens, including staking
+                rewards, reward rates and streaks shown in Pearl Application, is not guaranteed and
+                is governed by the Olas Protocol (not Pearl Application, Pearl Site, or Valory),
                 which is in turn governed by the “Olas DAO” (a decentralized autonomous organization
-                where decisions are made by token holders rather than a central authority). Users
+                where decisions are made by token holders rather than a central authority). OLAS you
+                stake is locked under the rules of the staking contract, which can change. Users
                 assume all risks associated with acquiring, holding, or transacting with Olas
                 Tokens, including potential loss of assets or value, irretrievability, or tax or
                 regulatory obligations. Valory is not responsible for any token-related losses,
@@ -187,14 +202,15 @@ const PearlTerms = () => {
               </AnchorHeading>
               <p className="mt-2">
                 <AlertTriangle size={18} className="inline-block mb-1" /> Warning: Pearl Application
-                is experimental open-source software that is provided “as is”, without any
-                representation or warranty that it has been fully audited, tested, or secured. If
-                you choose to use Pearl Application, you do so at your own risk. To the maximum
-                extent permitted by law, and except where mandatory consumer protections apply,
-                Valory is not liable and responsible for any delays, losses, damages, or issues
-                resulting from or arising out of the access, use, cessation or interruption of use
-                of Pearl Application, related Agents, Third-Party Integrations, or underlying
-                technologies, nor for paying any costs related to the same.
+                is experimental open-source software, developed in part with AI agents, that is
+                provided “as is”, without any representation or warranty that it has been fully
+                audited, tested, or secured. If you choose to use Pearl Application, you do so at
+                your own risk. To the maximum extent permitted by law, and except where mandatory
+                consumer protections apply, Valory is not liable and responsible for any delays,
+                losses, damages, or issues resulting from or arising out of the access, use,
+                cessation or interruption of use of Pearl Application, related Agents, Third-Party
+                Integrations, or underlying technologies, nor for paying any costs related to the
+                same.
               </p>
               <p className="mt-2">
                 You agree to hold harmless and indemnify Valory, and its affiliates, from any
@@ -213,11 +229,15 @@ const PearlTerms = () => {
                 or data processor on behalf of users. Valory does not sell, nor rent, nor share
                 personal data, nor store personal data via Pearl Application. Any technical data
                 generated by Pearl Application is processed locally on your device solely to enable
-                the software&apos;s functionality and is never shared with Valory. All wallet keys,
-                configurations, and operational data remain local to your device. Valory does not
-                approve, reject, modify, or reverse any transaction initiated through/by Pearl
-                Application or any functionality therein, nor does it access or control funds held
-                in user wallets or smart-contract wallets used by Agents or users.
+                the software&apos;s functionality and is never shared with Valory, except requests
+                your Agents send to Valory Mechs (<Link href="#section-2">Section 2</Link>) and
+                anything you choose to send to Valory (<Link href="#section-7-3">Section 7.3</Link>
+                ). Do not include personal data, credentials or private keys in instructions you
+                give an Agent. All wallet keys, configurations, and operational data remain local to
+                your device. Valory does not approve, reject, modify, or reverse any transaction
+                initiated through/by Pearl Application or any functionality therein, nor does it
+                access or control funds held in user wallets or smart-contract wallets used by
+                Agents or users.
               </p>
               <p className="mt-2">
                 Where Pearl Application displays on-chain information such as balances, positions,
@@ -237,9 +257,17 @@ const PearlTerms = () => {
                 provided by Valory or another Third-Party and the Agents run locally on users&apos;
                 own devices. Agents in Pearl currently available to create and maintain (“Available
                 Agents”) include: Basius, Connect, Omenstrat and Polystrat. Agents that can only be
-                maintained and not created (“Agents Under Development”) include Optimus, Agents.fun,
-                Modius and Pettbro. Find more information about some of the Available Agents and
-                Agents Under Development below:
+                maintained and not created (“Agents Under Development”) include Optimus. Agents that
+                can no longer be run, but whose funds you can still withdraw (“Retired Agents”),
+                include Agents.fun, Pettbro and Modius. Agents pay for services they request from
+                Mechs (<Link href="#section-2">Section 2</Link>), including the Olas Protocol fee,
+                from their own wallet. Some Agents let you chat with them, for example to ask about
+                their activity or to set a daily activity target; AI interprets your messages and
+                may misunderstand them, its answers may be inaccurate (
+                <Link href="#section-3">Section 3</Link>), and a higher target may spend more on
+                fees and gas. Certain Agents require your acknowledgment of Agent-specific risks
+                before you can create them, in addition to your acceptance of these Pearl Terms.
+                Find more information about each Agent below:
               </p>
               <div className="space-y-4 mt-4 ml-8">
                 <div>
@@ -253,15 +281,18 @@ const PearlTerms = () => {
                       </AnchorHeading>
                       <p className="mt-2">
                         Pearl Application allows users to run Optimus and Basius, autonomous Agents
-                        developed by Valory (together, the “DeFAI Agent(s)”). “Optimus” is a DeFAI
-                        Agent that operates on the{' '}
+                        developed by Valory. Together with Modius, a Retired Agent (see{' '}
+                        <Link href="#section-6-2-4">Section 6.2.4</Link>), they are the “DeFAI
+                        Agent(s)”. “Optimus” is a DeFAI Agent that operates on the{' '}
                         <ExternalLink href="https://www.optimism.io/">
                           Optimism network
-                        </ExternalLink>{' '}
+                        </ExternalLink>
+                        , “Modius” operated on the{' '}
+                        <ExternalLink href="https://www.mode.network/">Mode network</ExternalLink>,
                         and “Basius” is the{' '}
                         <ExternalLink href="https://www.base.org/">Base network</ExternalLink>{' '}
-                        version of Optimus and shares the same agent logic. The DeFAI Agent(s) are
-                        operated and executed locally on the user&apos;s device and, at the
+                        version of Optimus; all three use similar agent logic. The DeFAI Agent(s)
+                        are operated and executed locally on the user&apos;s device and, at the
                         user&apos;s sole discretion and risk, interact with third-party
                         decentralized exchanges (the “DEXs”) and other decentralized market
                         protocols like “
@@ -306,23 +337,26 @@ const PearlTerms = () => {
                         6.1.2 Connect
                       </AnchorHeading>
                       <p className="mt-2">
-                        Pearl Connect (“Connect”) is a Pearl Agent; each instance you create is a
-                        “Connect Agent”. Connect Agents are Pearl Agents that can connect to any
+                        Pearl Connect (“Connect”) is a beta Pearl Agent; each instance you create is
+                        a “Connect Agent”. Connect Agents are Pearl Agents that can connect to any
                         agent harness (e.g.{' '}
                         <ExternalLink href="https://claude.com/product/claude-code">
                           Claude Code
                         </ExternalLink>{' '}
-                        (see <Link href="#section-7-6">Section 7.6</Link>), hereafter “Agent
-                        Harness”), and optionally any Independent Agent you create independently via
-                        the Agent Harness (hereafter “Independent Agent”, totally distinct from
-                        Pearl&apos;s Agents). Together the Agent Harness and any Independent Agent
-                        are each termed a “Connected Agent”, collectively “Connected Agents”. Unlike
-                        other Pearl Agents, Connect is not autonomous: it is designed as a co-pilot
-                        for the Connected Agents, giving them the ability to act on-chain —
-                        including transferring funds, paying for Agent services via the Olas
-                        Protocol, or trading on Market Protocols, such as Polymarket or Omen (see{' '}
-                        <Link href="#section-7-5">Section 7.5</Link>) — only when you direct them
-                        to, live.
+                        (see <Link href="#section-7-6">Section 7.6</Link>), Codex (see{' '}
+                        <Link href="#section-7-7">Section 7.7</Link>) or the OCB Agent (see{' '}
+                        <Link href="#section-6-3">Section 6.3</Link>), hereafter “Agent Harness”),
+                        and optionally any Independent Agent you create independently via the Agent
+                        Harness (hereafter “Independent Agent”, totally distinct from Pearl&apos;s
+                        Agents). Together the Agent Harness and any Independent Agent are each
+                        termed a “Connected Agent”, collectively “Connected Agents”. Connect is
+                        designed as a co-pilot for the Connected Agents, giving them the ability to
+                        act on-chain — including transferring funds, paying for Agent services via
+                        the Olas Protocol, or trading on Market Protocols, such as Polymarket or
+                        Omen (see <Link href="#section-7-5">Section 7.5</Link>) — only within the
+                        instructions and settings you give them, including a daily activity target
+                        under which Auto-run starts them, or a task you set that continues over
+                        time.
                       </p>
                       <p className="mt-2">
                         Connect is non-custodial in the manner described in{' '}
@@ -338,10 +372,10 @@ const PearlTerms = () => {
                         you or Connected Agents and are your own responsibility, regardless of
                         whether they are executed by the Connect Agent and whether they are informed
                         by predictions requested by the Connect Agent. Any prediction, forecast, or
-                        other output returned by the Connect Agent is generated by processes
-                        involving independent Third-Parties, is not reviewed or verified by Valory,
-                        and does not constitute financial, investment, or trading advice (
-                        <Link href="#section-3">Section 3</Link>).
+                        other output returned by an Agent offered through the Olas Protocol is
+                        generated by processes involving independent Third-Parties, is not reviewed
+                        or verified by Valory, and does not constitute financial, investment, or
+                        trading advice (<Link href="#section-3">Section 3</Link>).
                       </p>
                       <p className="mt-2">
                         <AlertTriangle size={18} className="inline-block mb-1" /> Connect Agents
@@ -349,21 +383,21 @@ const PearlTerms = () => {
                         <Link href="#section-3">3</Link>, <Link href="#section-4">4</Link>, and{' '}
                         <Link href="#section-7">7</Link>. By creating and using your Connect Agent
                         you are agreeing that any funds in your Agent Wallet can be used by your
-                        Connect and Connected Agent. You understand that these technologies are
-                        AI-mediated and may result in the loss of any and all funds associated. Only
-                        fund your Agent Wallet with funds you agree to spend. As with any AI Agent
-                        that acts on content it processes, your Connected Agent could be manipulated
-                        by content it encounters into requesting a transaction you did not intend
-                        (“prompt injection”). The Connect Agents&apos; design can mitigate some
-                        risks but cannot fully eliminate risks and your Agent&apos;s risk profile is
-                        affected by how you configure it. Connect Agents&apos; protections also
-                        depend on the ordinary security of your own device and Connected Agent
-                        installations, and on the independent conduct of the Connected Agent
-                        provider and any Third-Party Integrations you choose to interact with
-                        through it. You acknowledge that using Connect Agents carry a non-zero risk
-                        of loss of some or all funds held in the Agent Wallet, and that you are
-                        solely responsible for the Connected Agent you use, the content it is
-                        exposed to, and how you configure your Connect Agent.
+                        Connect Agent, at the request of your Connected Agent. You understand that
+                        these technologies are AI-mediated and may result in the loss of any and all
+                        funds associated. Only fund your Agent Wallet with funds you agree to spend.
+                        As with any AI Agent that acts on content it processes, your Connected Agent
+                        could be manipulated by content it encounters into requesting a transaction
+                        you did not intend (“prompt injection”). The Connect Agents&apos; design can
+                        mitigate some risks but cannot fully eliminate risks and your Agent&apos;s
+                        risk profile is affected by how you configure it. Connect Agents&apos;
+                        protections also depend on the ordinary security of your own device and
+                        Connected Agent installations, and on the independent conduct of the
+                        Connected Agent provider and any Third-Party Integrations you choose to
+                        interact with through it. You acknowledge that using Connect Agents carries
+                        a non-zero risk of loss of some or all funds held in the Agent Wallet, and
+                        that you are solely responsible for the Connected Agent you use, the content
+                        it is exposed to, and how you configure your Connect Agent.
                       </p>
                       <p className="mt-2">
                         Anything beyond what Connect Agents themselves provide — any MCP server,
@@ -373,15 +407,32 @@ const PearlTerms = () => {
                         from its use is your sole responsibility. This is true even for additions
                         that never touch signing: reading wallet, balance, or position data does not
                         require a signature, so such additions can access and transmit that data to
-                        third-parties regardless of any restrictions you apply to the Connect Agent,
+                        third parties regardless of any restrictions you apply to the Connect Agent,
                         which govern what can be signed, not what can be read.
+                      </p>
+                    </div>
+                    <div>
+                      <AnchorHeading as="h6" id="section-6-1-3">
+                        6.1.3 Omenstrat and Polystrat (“Prediction Agents”)
+                      </AnchorHeading>
+                      <p className="mt-2">
+                        Omenstrat and Polystrat are Agents developed by Valory that initiate your
+                        trades on prediction markets, Omen and Polymarket respectively (
+                        <Link href="#section-7-5">Section 7.5</Link>), within the strategy and
+                        settings you choose and informed by predictions they request from Mechs (
+                        <Link href="#section-2">Section 2</Link>). Your trades are your own
+                        responsibility. Their size and frequency follow the strategy you choose, and
+                        riskier strategies may lose more. Selling a position before its market
+                        resolves may realise a loss. The risk and liability provisions of{' '}
+                        <Link href="#section-6-1-1">Section 6.1.1</Link> apply to them as to the
+                        DeFAI Agents.
                       </p>
                     </div>
                   </div>
                 </div>
                 <div>
                   <AnchorHeading as="h5" id="section-6-2">
-                    6.2 Agents Under Development
+                    6.2 Agents Under Development and Retired Agents
                   </AnchorHeading>
                   <div className="space-y-4 mt-4 ml-8">
                     <div>
@@ -460,7 +511,50 @@ const PearlTerms = () => {
                         opportunities.
                       </p>
                     </div>
+                    <div>
+                      <AnchorHeading as="h6" id="section-6-2-3">
+                        6.2.3 Agents.fun
+                      </AnchorHeading>
+                      <p className="mt-2">
+                        Agents.fun Agents are Retired Agents developed by Valory that posted on X
+                        from an account you connected and could create or trade memecoins on Base.
+                        You remain responsible for that account, for what your Agent posted, and for
+                        complying with{' '}
+                        <ExternalLink href="https://x.com/en/tos">X&apos;s terms</ExternalLink> (
+                        <Link href="#section-8">Section 8</Link>). Memecoins may have no value. The
+                        risk and liability provisions of{' '}
+                        <Link href="#section-6-1-1">Section 6.1.1</Link> apply to them as to the
+                        DeFAI Agents.
+                      </p>
+                    </div>
+                    <div>
+                      <AnchorHeading as="h6" id="section-6-2-4">
+                        6.2.4 Modius
+                      </AnchorHeading>
+                      <p className="mt-2">
+                        See <Link href="#section-6-1-1">Section 6.1.1</Link>.
+                      </p>
+                    </div>
                   </div>
+                </div>
+                <div>
+                  <AnchorHeading as="h5" id="section-6-3">
+                    6.3 OCB Agent
+                  </AnchorHeading>
+                  <p className="mt-2">
+                    The{' '}
+                    <ExternalLink href="https://github.com/valory-xyz/olas-ocb-agent">
+                      OCB Agent
+                    </ExternalLink>{' '}
+                    (“OCB Agent”) is a beta Agent Harness whose open-source code Valory provides,
+                    used with Connect (<Link href="#section-6-1-2">Section 6.1.2</Link>). By
+                    default, when launched from Connect, its model requests are served by a Valory
+                    Mech (<Link href="#section-2">Section 2</Link>) and paid from your Agent Wallet.
+                    If you configure another model or provider, that provider&apos;s terms apply.{' '}
+                    <Link href="#section-6-1-2">Section 6.1.2</Link> applies to it as to any
+                    Connected Agent, except the references to an Agent Harness being independent of
+                    Valory.
+                  </p>
                 </div>
               </div>
             </section>
@@ -560,13 +654,20 @@ const PearlTerms = () => {
                     , hereafter: “the Zendesk Platform”), a third-party support platform integrated
                     into Pearl Application by Valory for handling support requests submitted by
                     users using the “Contact Support” form in Pearl Application. When submitting the
-                    form, users are required to provide their email address, a description of the
-                    issue, and may optionally attach files, including app logs. This data is stored
-                    by the Zendesk Platform and is collected by Valory. The Valory support team may
-                    access, use, export, or analyze the data for support purposes. While any data
-                    use or support provision is handled by the Valory team, the full operation,
-                    processing, and management of the Zendesk Platform and its integration is
-                    performed by Zendesk and subject to the Zendesk Platform provider&apos;s{' '}
+                    form, users are required to provide their email address, a subject, a
+                    description of the issue, and may optionally attach files, including app logs.
+                    This data is stored by the Zendesk Platform and is collected by Valory. The
+                    Valory support team may access, use, export, or analyze the data for support
+                    purposes and to improve Pearl Application, including with AI agents and
+                    third-party AI model providers that review it and propose changes. The{' '}
+                    <ExternalLink href="https://www.valory.xyz/privacy">
+                      Valory Privacy Policy
+                    </ExternalLink>{' '}
+                    explains how this data is processed. Do not include private keys, seed phrases
+                    or other secrets. While any data use or support provision is handled by the
+                    Valory team, the full operation, processing, and management of the Zendesk
+                    Platform and its integration is performed by Zendesk and subject to the Zendesk
+                    Platform provider&apos;s{' '}
                     <ExternalLink href="https://www.zendesk.com/company/agreements-and-terms/terms-of-use/">
                       Terms of Use
                     </ExternalLink>{' '}
@@ -602,7 +703,7 @@ const PearlTerms = () => {
                   </AnchorHeading>
                   <p className="mt-2">
                     Some functionality in Pearl Application may interact with decentralized or
-                    centralized market protocols operated by third-parties (“Market Protocols”).
+                    centralized market protocols operated by third parties (“Market Protocols”).
                     Valory does not operate, control, or manage any Market Protocols, does not
                     execute, or clear trades on Market Protocols, and does not determine
                     eligibility, pricing, outcomes, settlement nor has custody or control of your
@@ -673,6 +774,33 @@ const PearlTerms = () => {
                     Software, including any output it generates or action it takes.
                   </p>
                 </div>
+                <div>
+                  <AnchorHeading as="h5" id="section-7-7">
+                    <LinkIcon size={18} className="inline-block mb-1" /> 7.7 OpenAI (Codex)
+                  </AnchorHeading>
+                  <p className="mt-2">
+                    <ExternalLink href="https://openai.com/codex/">Codex</ExternalLink>, including
+                    its CLI and desktop forms, is software independently developed, owned and
+                    operated by OpenAI (available at{' '}
+                    <ExternalLink href="https://openai.com/">openai.com</ExternalLink>).{' '}
+                    <Link href="#section-7-6">Section 7.6</Link> applies to it as it does to the
+                    Anthropic Software, with OpenAI in place of Anthropic.
+                  </p>
+                </div>
+                <div>
+                  <AnchorHeading as="h5" id="section-7-8">
+                    <LinkIcon size={18} className="inline-block mb-1" /> 7.8 Bridging and swaps
+                  </AnchorHeading>
+                  <p className="mt-2">
+                    When you fund an Agent from another chain or token, Pearl Application routes the
+                    transfer through third-party bridging and swap services (currently{' '}
+                    <ExternalLink href="https://relay.link/terms">Relay</ExternalLink>,{' '}
+                    <ExternalLink href="https://mayan.finance/terms-of-use">Mayan</ExternalLink> and{' '}
+                    <ExternalLink href="https://balancer.fi/terms-of-use">Balancer</ExternalLink>,
+                    and the chains&apos; own bridges). Transfers can be delayed, mispriced or lost,
+                    and Valory does not control or guarantee them.
+                  </p>
+                </div>
               </div>
             </section>
 
@@ -697,13 +825,14 @@ const PearlTerms = () => {
                 restrictions imposed by Valory or Third-Party Integrations.
               </p>
               <p className="mt-2">
-                You may not use Pearl Application to violate laws, infringe IP, introduce malware,
-                reverse-engineer the software, or interfere with any networks. Valory may suspend or
-                terminate access to Pearl Application through which the user interacts with their
-                Agent (or specific functionality of the Pearl Application) at any time for violation
-                of these Pearl Terms, including for breach of eligibility, sanctions, or
-                jurisdictional restrictions, without any obligation to compensate you or any
-                third-party for resulting losses. Pearl Application may include or rely on
+                You are responsible for anything you share from Pearl Application, such as trades
+                shared to X. You may not use Pearl Application to violate laws, infringe IP,
+                introduce malware, reverse-engineer the software, or interfere with any networks.
+                Valory may suspend or terminate access to Pearl Application through which the user
+                interacts with their Agent (or specific functionality of the Pearl Application) at
+                any time for violation of these Pearl Terms, including for breach of eligibility,
+                sanctions, or jurisdictional restrictions, without any obligation to compensate you
+                or any third-party for resulting losses. Pearl Application may include or rely on
                 open-source libraries, which are subject to their respective licenses; you agree to
                 comply with such licenses, and Valory makes no warranties and assumes no liability
                 regarding such third-party open-source components.
@@ -718,9 +847,8 @@ const PearlTerms = () => {
                 Valory may update these Pearl Terms from time to time to reflect changes in the
                 product or legal requirements. Updates will be effective when posted on the Pearl
                 Site or within Pearl Application, and continued use after posting constitutes
-                acceptance. Continued use of Pearl Application after such updates constitutes
-                acceptance of the revised terms. If you do not agree to the Conditions your sole
-                remedy is to discontinue your use of Pearl Application.
+                acceptance. If you do not agree to the Conditions your sole remedy is to discontinue
+                your use of Pearl Application.
               </p>
               <p className="mt-2">
                 These Pearl Terms are governed by and constructed in accordance with the laws of
