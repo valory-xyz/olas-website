@@ -369,7 +369,8 @@ const PearlTerms = () => {
                         the necessary actions (including transfers of funds from your Agent Wallet),
                         and your Connect Agent or Connected Agent can send the signed trade to the
                         Market Protocol, depending on the Market Protocol. Trades are initiated by
-                        you or Connected Agents and are your own responsibility, regardless of
+                        you, or by Connected Agents within the instructions and settings you give
+                        them, and are your own responsibility, regardless of
                         whether they are executed by the Connect Agent and whether they are informed
                         by predictions requested by the Connect Agent. Any prediction, forecast, or
                         other output returned by an Agent offered through the Olas Protocol is
@@ -553,7 +554,14 @@ const PearlTerms = () => {
                     If you configure another model or provider, that provider&apos;s terms apply.{' '}
                     <Link href="#section-6-1-2">Section 6.1.2</Link> applies to it as to any
                     Connected Agent, except the references to an Agent Harness being independent of
-                    Valory.
+                    Valory. Its output, including model output served by a Valory Mech, does not
+                    constitute financial, investment, or trading advice (
+                    <Link href="#section-3">Section 3</Link>). Its default settings may ask for your
+                    approval before transactions that use funds and may limit spending per session.
+                    These settings may change between versions, may not cover every type of
+                    transaction (such as token approvals) and depend on the security of your device,
+                    so they may reduce, but cannot remove, the risks described in{' '}
+                    <Link href="#section-6-1-2">Section 6.1.2</Link>.
                   </p>
                 </div>
               </div>
