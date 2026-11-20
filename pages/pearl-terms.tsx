@@ -752,7 +752,12 @@ const PearlTerms = () => {
                     wallets), however, Valory has no control over the Market Protocols and their
                     geographic limitations, for example, withdrawal of assets held in Market
                     Protocols in unresolved positions may be limited outside of approved
-                    jurisdictions.
+                    jurisdictions. Such limits may not apply to every Agent, including Connected
+                    Agents (<Link href="#section-6-1-2">Section 6.1.2</Link>), and their absence
+                    does not mean a use is permitted where you are: under{' '}
+                    <Link href="#section-8">Section 8</Link> you remain responsible for checking
+                    that your use, and any Market Protocol you or your Connected Agents use, is
+                    lawful for you.
                   </p>
                 </div>
                 <div>
@@ -818,7 +823,8 @@ const PearlTerms = () => {
               </AnchorHeading>
               <p className="mt-2">
                 You represent and warrant that your access to and use of the Pearl Application, any
-                Agent or Third-Party Integrations accessed through Pearl Application complies with
+                Agent, Connected Agent or Third-Party Integrations accessed through Pearl
+                Application complies with
                 all applicable laws, regulations, and third-party terms (including restrictions
                 based on jurisdiction, sanctions, or residency) and that you are solely responsible
                 for such compliance. Without limitation, you represent and warrant that: (i) you
