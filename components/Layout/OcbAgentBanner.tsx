@@ -16,8 +16,8 @@ const OcbAgentBanner = () => (
   >
     <NewBadgeIcon color="#FFFFFF" lettersColor={BANNER_PURPLE} className="shrink-0 max-md:hidden" />
     <span className="max-md:text-base max-md:text-left">
-      Introducing <span className="font-semibold">olas-ocb-agent</span>: one AI agent to pay, swap
-      and lend onchain
+      Introducing <span className="font-semibold">olas-ocb-agent</span> (beta): one AI agent to pay,
+      swap and lend onchain
     </span>
     <ChevronRight size={20} className="shrink-0" aria-hidden />
   </Link>
