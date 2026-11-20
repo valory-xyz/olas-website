@@ -1,10 +1,16 @@
 type NewBadgeIconProps = {
   color?: string;
+  lettersColor?: string;
   size?: number;
   className?: string;
 };
 
-const NewBadgeIcon = ({ color = '#FF335C', size = 40, className }: NewBadgeIconProps) => (
+const NewBadgeIcon = ({
+  color = '#FF335C',
+  lettersColor = 'white',
+  size = 40,
+  className,
+}: NewBadgeIconProps) => (
   <svg
     width={size}
     height={size}
@@ -21,15 +27,15 @@ const NewBadgeIcon = ({ color = '#FF335C', size = 40, className }: NewBadgeIconP
     />
     <path
       d="M25.285 23.0344L21.6797 15.6738L23.7505 15.3135L25.8043 20.1904L25.8686 20.1792L26.321 14.8662L28.0095 14.5724L30.2318 19.4317L30.2962 19.4205L30.5838 14.1245L32.6508 13.7649L31.7473 21.91L29.9415 22.2242L27.7265 17.7654L27.6659 17.7759L27.087 22.7209L25.285 23.0344Z"
-      fill="white"
+      fill={lettersColor}
     />
     <path
       d="M16.4203 24.5769L15.0713 16.8237L20.4774 15.883L20.7422 17.4049L17.21 18.0195L17.4867 19.6095L20.7424 19.043L21.0079 20.5687L17.7521 21.1352L18.0295 22.729L21.5616 22.1144L21.8264 23.6363L16.4203 24.5769Z"
-      fill="white"
+      fill={lettersColor}
     />
     <path
       d="M13.4667 17.1028L14.8158 24.856L13.2257 25.1327L9.36177 21.1948L9.31255 21.2033L10.0911 25.6781L8.21718 26.0042L6.86816 18.2509L8.4809 17.9703L12.3095 21.9066L12.3738 21.8954L11.5966 17.4282L13.4667 17.1028Z"
-      fill="white"
+      fill={lettersColor}
     />
   </svg>
 );
