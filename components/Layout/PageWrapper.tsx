@@ -1,6 +1,6 @@
 import Footer from './Footer';
 import Header from './Header';
-import ConnectBanner from './ConnectBanner';
+import OcbAgentBanner from './OcbAgentBanner';
 
 type PageWrapperProps = {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ type PageWrapperProps = {
 
 const PageWrapper = ({ children }: PageWrapperProps) => (
   <>
-    <ConnectBanner />
+    <OcbAgentBanner />
     <Header />
 
     {children}
