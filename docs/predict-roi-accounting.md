@@ -49,8 +49,15 @@ A follow-up rename in the subgraph (`Sender.totalLegacyRequests` →
 `totalRequests`) is desirable; until then the misleading name is documented at
 the query (`getMarketplaceSendersQuery`) and in `roi-math.ts`.
 
-Each settled request costs `DEFAULT_MECH_FEE` (0.01, 18-dec) and enters both
-the numerator (net gain −) and the denominator (cost base +).
+Each settled request costs its real charge (mech-analytics `charge_usd`,
+18-dec) and enters both the numerator (net gain −) and the denominator (cost
+base +). A request with no charge (before dynamic pricing, or from the subgraph
+path) costs `DEFAULT_MECH_FEE` (0.01); a never-delivered one costs
+`UNDELIVERED_MECH_FEE_WEI` (0.01 for now). Open requests carry non-0.01 charges
+in the QMR blob's `questionMechCharges`; a `byDay` entry stores `mechFeesWei`
+only when its total differs from `mechRequests` × 0.01, so days stored before
+real charges keep their count × 0.01 (`entryMechFeesWei`). Rows are ingested
+once, so a charge landing after first scoring stays 0.01. The alarm stays count-based.
 
 ## QMR lifecycle (windowed mech attribution)
 

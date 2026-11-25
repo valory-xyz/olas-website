@@ -1,5 +1,6 @@
 import { MARKETPLACE_SQUID_URLS } from '../../indexers.ts';
 import type { MechAnalyticsChain, ScoredRow } from './mech-analytics';
+import { mechChargeWei } from './roi-math.ts';
 
 /** SQD has no parsed IPFS entities, so its enriched reads cannot roll back to Graph. */
 export const usesMechAnalyticsForRequests = (chain: MechAnalyticsChain, enabled: boolean) =>
@@ -10,7 +11,7 @@ export const scanAnalyticsRequestRows = async (
   pages: AsyncIterable<ScoredRow[]>,
   fromTs: number,
   toTs: number,
-  onRequest: (requester: string, title: string | null, timestamp: number) => void
+  onRequest: (requester: string, title: string | null, timestamp: number, feeWei: bigint) => void
 ): Promise<void> => {
   const seen = new Set<string>();
   for await (const page of pages) {
@@ -25,7 +26,7 @@ export const scanAnalyticsRequestRows = async (
       )
         continue;
       seen.add(row.request_id);
-      onRequest(row.requester.toLowerCase(), row.question_title, ts);
+      onRequest(row.requester.toLowerCase(), row.question_title, ts, mechChargeWei(row));
     }
   }
 };

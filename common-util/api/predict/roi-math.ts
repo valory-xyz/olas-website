@@ -10,6 +10,108 @@
 /** QMR open set: market title → agentId → ascending request timestamps. */
 export type QmrMap = Record<string, Record<string, number[]>>;
 
+// ─── Per-request mech charge ──────────────────────────────────────────────────
+
+/** 0.01, 18-dec: a request with no known charge. = `DEFAULT_MECH_FEE` (constants.ts, not importable here). */
+export const DEFAULT_MECH_FEE_WEI = 10n ** 16n;
+
+/** Never-delivered requests: 0.01 as before. The one switch: 0n = mech-analytics' requester rule. */
+export const UNDELIVERED_MECH_FEE_WEI = DEFAULT_MECH_FEE_WEI;
+
+const USD_DECIMAL = /^\d+(\.\d+)?$/;
+
+/** Exact USD decimal string ("0.0118") → 18-dec bigint, truncating past 18 decimals; else null. */
+export const usdToWei = (value: unknown): bigint | null => {
+  const text = typeof value === 'number' ? String(value) : value;
+  if (typeof text !== 'string' || !USD_DECIMAL.test(text)) return null;
+  const [whole, fraction = ''] = text.split('.');
+  return BigInt(whole) * 10n ** 18n + BigInt(fraction.slice(0, 18).padEnd(18, '0'));
+};
+
+/** One scored row's cost, 18-dec: undelivered rule, else `charge_usd`, else 0.01. Same rule as KPIs. */
+export const mechChargeWei = (row: {
+  delivered_at?: string | null;
+  charge_usd?: string | number | null;
+}): bigint => {
+  if (!row.delivered_at) return UNDELIVERED_MECH_FEE_WEI;
+  return usdToWei(row.charge_usd) ?? DEFAULT_MECH_FEE_WEI;
+};
+
+/** Mech cost of a stored day entry; entries without `mechFeesWei` (older days) book count × 0.01. */
+export const entryMechFeesWei = (entry: { mechRequests: number; mechFeesWei?: string }): bigint =>
+  entry.mechFeesWei !== undefined
+    ? BigInt(entry.mechFeesWei)
+    : BigInt(entry.mechRequests) * DEFAULT_MECH_FEE_WEI;
+
+/** Books `count` requests costing `feesWei` in total onto a day entry (mutates it). */
+export const addMechRequests = (
+  entry: { mechRequests: number; mechFeesWei?: string },
+  count: number,
+  feesWei: bigint
+): void => {
+  const total = entryMechFeesWei(entry) + feesWei;
+  entry.mechRequests += count;
+  if (total === BigInt(entry.mechRequests) * DEFAULT_MECH_FEE_WEI) delete entry.mechFeesWei;
+  else entry.mechFeesWei = total.toString();
+};
+
+/**
+ * Non-0.01 charges of open QMR requests: title → agentId → timestamp → wei strings, one per
+ * request (a sub-multiset of the QmrMap timestamps). Unlisted requests and older blobs book 0.01.
+ */
+export type QmrChargeMap = Record<string, Record<string, Record<string, string[]>>>;
+
+/** Records one ingested request's charge (only when it is not 0.01). */
+export const recordCharge = (
+  charges: QmrChargeMap,
+  title: string,
+  agentId: string,
+  ts: number,
+  feeWei: bigint
+): void => {
+  if (feeWei === DEFAULT_MECH_FEE_WEI) return;
+  charges[title] ??= {};
+  charges[title][agentId] ??= {};
+  (charges[title][agentId][String(ts)] ??= []).push(feeWei.toString());
+};
+
+/** Removes and returns one open request's charge (0.01 if none). Call for every request leaving QMR. */
+export const popCharge = (
+  charges: QmrChargeMap,
+  title: string,
+  agentId: string,
+  ts: number
+): bigint => {
+  const byTs = charges[title]?.[agentId];
+  const list = byTs?.[String(ts)];
+  if (!byTs || !list || list.length === 0) return DEFAULT_MECH_FEE_WEI;
+  const fee = BigInt(list.shift() as string);
+  if (list.length === 0) delete byTs[String(ts)];
+  if (Object.keys(byTs).length === 0) delete charges[title][agentId];
+  if (Object.keys(charges[title]).length === 0) delete charges[title];
+  return fee;
+};
+
+/** Merges ingested charges (mutates `existing`): rebuild keeps the longer list per ts, like `mergeQmr`. */
+export const mergeQmrCharges = (
+  existing: QmrChargeMap,
+  additions: QmrChargeMap,
+  dedupeTimestamps: boolean
+): QmrChargeMap => {
+  for (const [title, agents] of Object.entries(additions)) {
+    for (const [agentId, byTs] of Object.entries(agents)) {
+      for (const [ts, fees] of Object.entries(byTs)) {
+        existing[title] ??= {};
+        existing[title][agentId] ??= {};
+        const held = existing[title][agentId][ts] ?? [];
+        if (!dedupeTimestamps) existing[title][agentId][ts] = [...held, ...fees];
+        else if (fees.length > held.length) existing[title][agentId][ts] = [...fees];
+      }
+    }
+  }
+  return existing;
+};
+
 /** netGain / totalCosts as a percentage with 2-decimal precision. */
 export const roiPercent = (netGain: bigint, totalCosts: bigint): number =>
   Number((netGain * 10000n) / totalCosts) / 100;
@@ -38,12 +140,12 @@ export const windowedNetGainAndCosts = (totals: {
   profit: bigint;
   tradedSettled: bigint;
   feesSettled: bigint;
-  mechRequests: number;
   scale: bigint;
-  mechFeeWei: bigint;
+  /** Booked mech cost over the window, 18-dec (sum of `entryMechFeesWei`). */
+  mechFeesWei: bigint;
 }): { netGain: bigint; totalCosts: bigint } => {
   const tradingCosts = (totals.tradedSettled + totals.feesSettled) * totals.scale;
-  const mechFees = BigInt(totals.mechRequests) * totals.mechFeeWei;
+  const mechFees = totals.mechFeesWei;
   return {
     netGain: totals.profit * totals.scale - mechFees,
     totalCosts: tradingCosts + mechFees,

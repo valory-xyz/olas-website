@@ -1,5 +1,7 @@
 import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
 
+import { mechChargeWei, recordCharge, type QmrChargeMap } from './roi-math';
+
 /**
  * Client for the mech-analytics `/v1/data/scored-rows` endpoint.
  * It replaces the per-request reads from the marketplace subgraph,
@@ -48,6 +50,9 @@ export type ScoredRow = {
   tool: string | null;
   resolution_status: string;
   computed_at: string; // ISO 8601, tz-aware
+  delivered_at?: string | null; // null = never delivered
+  /** Real per-request charge in USD, a decimal string; null before pricing. */
+  charge_usd?: string | number | null;
 };
 
 type ScoredRowsPage = {
@@ -90,6 +95,8 @@ export async function* iterateScoredRows(
 
 type QmrFetchData = {
   additions: Record<string, Record<string, number[]>>;
+  /** Charges of the added requests that did not cost 0.01 (see `mechChargeWei`). */
+  charges: QmrChargeMap;
   /** New computed_at watermark to save. */
   lastComputedAt: string;
   /** Ids of rows we already processed (request_id → requested_at, unix seconds). */
@@ -145,6 +152,7 @@ export const fetchMechRequestsFromAnalytics = async (
   const runStart = new Date().toISOString();
 
   const additions: Record<string, Record<string, number[]>> = {};
+  const charges: QmrChargeMap = {};
   const ingestedRequestIds: Record<string, number> = { ...(previousIngestedIds ?? {}) };
   let lastTimestamp = previousLastTimestamp;
   // Updated row by row, before the skip checks below. This order is safe only
@@ -204,6 +212,7 @@ export const fetchMechRequestsFromAnalytics = async (
         if (!additions[questionTitle]) additions[questionTitle] = {};
         if (!additions[questionTitle][agentId]) additions[questionTitle][agentId] = [];
         additions[questionTitle][agentId].push(ts);
+        recordCharge(charges, questionTitle, agentId, ts, mechChargeWei(row));
         ingestedRequestIds[row.request_id] = ts;
         if (ts > lastTimestamp) lastTimestamp = ts;
       }
@@ -240,6 +249,7 @@ export const fetchMechRequestsFromAnalytics = async (
 
   const data: QmrFetchData = {
     additions,
+    charges,
     lastComputedAt: isRebuild ? runStart : (maxComputedAt as string),
     ingestedRequestIds,
     lastTimestamp,

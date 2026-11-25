@@ -32,9 +32,10 @@ test('historical replay keeps [from,to) bounds, deduplicates across pages and pr
     102,
     (...args) => emitted.push(args)
   );
+  // No delivered_at / charge_usd on these rows → undelivered rule (0.01).
   assert.deepEqual(emitted, [
-    ['0xabc', 'question', 100],
-    ['0xdef', null, 101],
+    ['0xabc', 'question', 100, 10n ** 16n],
+    ['0xdef', null, 101, 10n ** 16n],
   ]);
 });
 
@@ -47,4 +48,20 @@ test('an incomplete analytics history rejects so the caller cannot save a succes
     scanAnalyticsRequestRows(broken(), 100, 102, () => {}),
     /page unavailable/
   );
+});
+
+test("historical replay passes each row's real charge, 0.01 before pricing", async () => {
+  const fees = [];
+  const at = (id, ts, charge_usd) => ({
+    ...row(id, ts),
+    delivered_at: new Date(ts * 1000).toISOString(),
+    charge_usd,
+  });
+  await scanAnalyticsRequestRows(
+    pages([at('a', 100, null), at('b', 100, '0.0118')]),
+    100,
+    102,
+    (...args) => fees.push(args[3])
+  );
+  assert.deepEqual(fees, [10n ** 16n, 11_800_000_000_000_000n]);
 });
