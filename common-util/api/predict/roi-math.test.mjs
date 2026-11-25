@@ -32,6 +32,8 @@ import {
   recordCharge,
   popCharge,
   mergeQmrCharges,
+  consumeSettledRequests,
+  addDayToWindow,
 } from './roi-math.ts';
 
 const MECH_FEE = 10n ** 16n; // 0.01, DEFAULT_MECH_FEE in constants.ts
@@ -292,4 +294,40 @@ test('mergeQmrCharges: incremental appends, rebuild keeps the longer list per ti
     '3',
   ]);
   assert.deepEqual(mergeQmrCharges(stored(), { r: { b: { 5: ['4'] } } }, false).r.b[5], ['4']);
+});
+
+test('consumeSettledRequests: a settled market books each request at its real charge, 0.01 when none', () => {
+  const qmr = { 'Will it rain?': { a: [100, 100, 200] }, Other: { a: [300] } };
+  const charges = {};
+  recordCharge(charges, 'Will it rain?', 'a', 100, usd('0.0118'));
+  recordCharge(charges, 'Will it rain?', 'a', 200, usd('0.02'));
+  const normalized = new Map([['willitrain', 'Will it rain?']]);
+  const keysUsed = new Set();
+  const stat = {
+    profitParticipants: [{ metadata: { title: 'WILL it rain' } }, { question: 'Nope' }],
+  };
+  // Two charged requests plus one with no stored charge (0.01); the unsettled market is untouched.
+  assert.deepEqual(consumeSettledRequests(qmr, charges, normalized, stat, 'a', keysUsed), {
+    count: 3,
+    feesWei: usd('0.0118') + usd('0.02') + MECH_FEE,
+  });
+  assert.deepEqual(qmr['Will it rain?'].a, []);
+  assert.deepEqual(qmr.Other.a, [300]);
+  assert.deepEqual([...keysUsed], ['Will it rain?']);
+  assert.deepEqual(charges, {});
+});
+
+test('addDayToWindow: sums stored real charges, and count × 0.01 for days stored before them', () => {
+  const totals = new Map();
+  addDayToWindow(totals, { a: { profit: '5', payout: '7', mechRequests: 2, mechFeesWei: '30' } });
+  addDayToWindow(totals, {
+    a: { profit: '1', payout: '0', mechRequests: 3, tradedSettled: '4', feesSettled: '2' },
+  });
+  assert.deepEqual(totals.get('a'), {
+    profit: 6n,
+    payout: 7n,
+    mechFeesWei: 30n + 3n * MECH_FEE,
+    tradedSettled: 4n,
+    feesSettled: 2n,
+  });
 });

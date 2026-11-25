@@ -112,6 +112,94 @@ export const mergeQmrCharges = (
   return existing;
 };
 
+/** Title match key: lower-case alphanumerics, 100-char prefix (handles truncation/punctuation). */
+export const normalizeTitle = (title: string): string =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .slice(0, 100);
+
+/**
+ * Consumes the open QMR entries for every market this agent's stat settled, and returns
+ * how many requests that booked onto the settlement day and their summed real charges
+ * (product intent: all market costs are grouped on the day the market settles, not on
+ * the day the request was made). Shared by the daily run and the history backfill so
+ * both match titles the same way.
+ */
+export const consumeSettledRequests = (
+  qmr: QmrMap,
+  charges: QmrChargeMap,
+  normalizedQmrMap: Map<string, string>,
+  stat: { profitParticipants?: Array<{ question?: string; metadata?: { title: string } }> },
+  agentId: string,
+  keysUsed: Set<string>
+): { count: number; feesWei: bigint } => {
+  // Unique titles from the predict subgraph
+  const uniqueTitles = new Set<string>();
+  for (const p of stat.profitParticipants ?? []) {
+    const title = p.question ?? p.metadata?.title;
+    if (title) uniqueTitles.add(title);
+  }
+
+  let mechRequests = 0;
+  let feesWei = 0n;
+  for (const title of uniqueTitles) {
+    let matchedKey = qmr[title] ? title : null;
+    if (!matchedKey) {
+      matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
+    }
+    const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
+    if (matchedKey && tsList && tsList.length > 0) {
+      mechRequests += tsList.length;
+      for (const ts of tsList) feesWei += popCharge(charges, matchedKey, agentId, ts);
+      qmr[matchedKey][agentId] = [];
+      keysUsed.add(matchedKey);
+    }
+  }
+  return { count: mechRequests, feesWei };
+};
+
+export type WindowTotals = {
+  profit: bigint;
+  payout: bigint;
+  mechFeesWei: bigint;
+  tradedSettled: bigint;
+  feesSettled: bigint; // omenstrat only — 0n for polystrat
+};
+
+/** Adds one stored day's agent entries to the per-agent window totals (mutates `totals`). */
+export const addDayToWindow = (
+  totals: Map<string, WindowTotals>,
+  agents: Record<
+    string,
+    {
+      profit: string;
+      payout: string;
+      mechRequests: number;
+      mechFeesWei?: string;
+      tradedSettled?: string;
+      feesSettled?: string;
+    }
+  >
+): void => {
+  for (const [agentId, entry] of Object.entries(agents)) {
+    const prev: WindowTotals = totals.get(agentId) ?? {
+      profit: 0n,
+      payout: 0n,
+      mechFeesWei: 0n,
+      tradedSettled: 0n,
+      feesSettled: 0n,
+    };
+    prev.profit += BigInt(entry.profit);
+    prev.payout += BigInt(entry.payout);
+    // Real charges where stored; count × 0.01 for days stored before them.
+    prev.mechFeesWei += entryMechFeesWei(entry);
+    if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
+    if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
+    totals.set(agentId, prev);
+  }
+};
+
 /** netGain / totalCosts as a percentage with 2-decimal precision. */
 export const roiPercent = (netGain: bigint, totalCosts: bigint): number =>
   Number((netGain * 10000n) / totalCosts) / 100;

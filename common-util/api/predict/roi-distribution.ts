@@ -37,17 +37,20 @@ import {
   usesMechAnalyticsForRequests,
 } from './marketplace-request-source';
 import {
+  addDayToWindow,
   addMechRequests,
+  consumeSettledRequests,
   DEFAULT_MECH_FEE_WEI,
-  entryMechFeesWei,
   mergeQmr,
   mergeQmrCharges,
+  normalizeTitle,
   popCharge,
   recordCharge,
   roiPercent,
   senderLifetimeRequests,
   windowedNetGainAndCosts,
   type QmrChargeMap,
+  type WindowTotals,
 } from './roi-math';
 
 const LIMIT = 1000;
@@ -518,16 +521,6 @@ const fetchAllTimeAgents = async (
 // ─── Agent data updater ───────────────────────────────────────────────────
 
 /**
- * Normalizes titles to handle truncation, special characters, and casing.
- * Removes non-alphanumeric chars and takes a 100-char prefix.
- */
-const normalizeTitle = (title: string): string =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-    .slice(0, 100);
-
-/**
  * Legacy blobs stored QMR values as plain counts (`number`) instead of timestamp
  * arrays. Normalize on load so the rest of the pipeline only sees the new shape.
  * Legacy entries have no real per-request timestamps, so we stamp them with
@@ -554,46 +547,6 @@ const normalizeQmrShape = (
     out[title] = normalizedAgents;
   }
   return out;
-};
-
-/**
- * Consumes the open QMR entries for every market this agent's stat settled, and returns
- * how many requests that booked onto the settlement day (product intent: all market
- * costs are grouped on the day the market settles, not on the day the request was
- * made). Shared by the daily run and the history backfill so both match titles the
- * same way.
- */
-const consumeSettledRequests = (
-  qmr: Record<string, Record<string, number[]>>,
-  charges: QmrChargeMap,
-  normalizedQmrMap: Map<string, string>,
-  stat: DailyStatEntry,
-  agentId: string,
-  keysUsed: Set<string>
-): { count: number; feesWei: bigint } => {
-  // Unique titles from the predict subgraph
-  const uniqueTitles = new Set<string>();
-  for (const p of stat.profitParticipants ?? []) {
-    const title = p.question ?? p.metadata?.title;
-    if (title) uniqueTitles.add(title);
-  }
-
-  let mechRequests = 0;
-  let feesWei = 0n;
-  for (const title of uniqueTitles) {
-    let matchedKey = qmr[title] ? title : null;
-    if (!matchedKey) {
-      matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
-    }
-    const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
-    if (matchedKey && tsList && tsList.length > 0) {
-      mechRequests += tsList.length;
-      for (const ts of tsList) feesWei += popCharge(charges, matchedKey, agentId, ts);
-      qmr[matchedKey][agentId] = [];
-      keysUsed.add(matchedKey);
-    }
-  }
-  return { count: mechRequests, feesWei };
 };
 
 const updateAgentBlueprintData = async (
@@ -1238,14 +1191,6 @@ const emptyHistogram = (): HistogramResult => ({
 const assignBin = (roi: number): number =>
   ROI_BINS.findIndex((bin) => roi >= bin.min && roi < bin.max);
 
-type WindowTotals = {
-  profit: bigint;
-  payout: bigint;
-  mechFeesWei: bigint;
-  tradedSettled: bigint;
-  feesSettled: bigint; // omenstrat only — 0n for polystrat
-};
-
 const genesisOf = (isPolystrat: boolean) => (isPolystrat ? POLYMARKET_GENESIS_TS : OMEN_GENESIS_TS);
 
 /**
@@ -1288,22 +1233,7 @@ const sumWindowByAgent = (
     // Counts [daysBack] full days excluding today
     if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
-    for (const [agentId, entry] of Object.entries(dayData.agents)) {
-      const prev: WindowTotals = agentTotals.get(agentId) ?? {
-        profit: 0n,
-        payout: 0n,
-        mechFeesWei: 0n,
-        tradedSettled: 0n,
-        feesSettled: 0n,
-      };
-      prev.profit += BigInt(entry.profit);
-      prev.payout += BigInt(entry.payout);
-      // Real charges where stored; count × 0.01 for days stored before them.
-      prev.mechFeesWei += entryMechFeesWei(entry);
-      if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
-      if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
-      agentTotals.set(agentId, prev);
-    }
+    addDayToWindow(agentTotals, dayData.agents);
   }
   return agentTotals;
 };
