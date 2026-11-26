@@ -55,7 +55,8 @@ Held constant: the production Polystrat ROI snapshot from **04:05:47.898 UTC**,
 the open-request/QMR snapshot from **04:05:47.903 UTC**, the same 195 trading
 agents, and the same payouts, settled trading costs and open-request exclusions.
 Only lifetime sender counters were replaced. The existing ROI helpers were used
-without changing their arithmetic; the assumed mech fee remains **$0.01/request**.
+without changing their arithmetic; the assumed mech fee remained **$0.01/request** at the time. Since
+dynamic pricing each request is booked at its `charge_usd` (see `predict-roi-accounting.md`).
 
 | Legacy all-time diagnostic | Old Graph counters | SQD counters |
 |---|---:|---:|

@@ -23,6 +23,16 @@ import {
   mergeQmr,
   isLowMechAttribution,
   MIN_MECH_FEE_BPS,
+  DEFAULT_MECH_FEE_WEI,
+  usdToWei,
+  mechChargeWei,
+  entryMechFeesWei,
+  addMechRequests,
+  recordCharge,
+  popCharge,
+  mergeQmrCharges,
+  consumeSettledRequests,
+  addDayToWindow,
 } from './roi-math.ts';
 
 const MECH_FEE = 10n ** 16n; // 0.01, DEFAULT_MECH_FEE in constants.ts
@@ -69,9 +79,8 @@ test('windowedNetGainAndCosts: polystrat (scale 1e12, feesSettled 0) reproduces 
     profit,
     tradedSettled,
     feesSettled: 0n,
-    mechRequests,
     scale,
-    mechFeeWei: MECH_FEE,
+    mechFeesWei: BigInt(mechRequests) * MECH_FEE,
   });
   // The pre-refactor polystrat formula: costs = traded * scale (no fee term).
   const mechFees = BigInt(mechRequests) * MECH_FEE;
@@ -88,9 +97,8 @@ test('windowedNetGainAndCosts: omenstrat (scale 1) reproduces traded + fees', ()
     profit,
     tradedSettled,
     feesSettled,
-    mechRequests,
     scale: 1n,
-    mechFeeWei: MECH_FEE,
+    mechFeesWei: BigInt(mechRequests) * MECH_FEE,
   });
   // The pre-refactor omenstrat formula: costs = traded + fees.
   const mechFees = BigInt(mechRequests) * MECH_FEE;
@@ -183,4 +191,149 @@ test('isLowMechAttribution: threshold boundary — exactly MIN_MECH_FEE_BPS is n
     }),
     true
   );
+});
+
+// --- real per-request mech charges ----------------------------------------------------
+
+const usd = usdToWei;
+
+test('DEFAULT_MECH_FEE_WEI is 0.01', () => {
+  assert.equal(DEFAULT_MECH_FEE_WEI, MECH_FEE);
+});
+
+test('usdToWei: exact decimal-string parse, no float rounding, truncates past 18 decimals', () => {
+  assert.equal(usdToWei('0.0118'), 11_800_000_000_000_000n);
+  assert.equal(usdToWei('0.01'), MECH_FEE);
+  assert.equal(usdToWei('2'), 2n * 10n ** 18n);
+  assert.equal(usdToWei('0.1234567890123456789'), 123_456_789_012_345_678n);
+  assert.equal(usdToWei(0.02), 2n * MECH_FEE);
+  for (const bad of [null, undefined, '', '-0.01', 'abc', '.5', '1.', ' 0.02', '1E-37', '1E', {}]) {
+    assert.equal(usdToWei(bad), null, String(bad));
+  }
+});
+
+test('usdToWei: reads the exponent form str(Decimal) uses below 0.000001', () => {
+  assert.equal(usdToWei('1E-18'), 1n);
+  assert.equal(usdToWei('5E-7'), 500_000_000_000n);
+  assert.equal(usdToWei('1.23E-7'), 123_000_000_000n);
+  assert.equal(usdToWei('1E+2'), 100n * 10n ** 18n);
+  assert.equal(usdToWei('1E-30'), 0n);
+  assert.equal(usdToWei(1e-7), 100_000_000_000n);
+});
+
+test('mechChargeWei: real charge, else 0.01', () => {
+  assert.equal(mechChargeWei({ charge_usd: '0.0118' }), usd('0.0118'));
+  assert.equal(mechChargeWei({ charge_usd: '0' }), 0n);
+  assert.equal(mechChargeWei({ charge_usd: '1E-18' }), 1n);
+  assert.equal(mechChargeWei({ charge_usd: null }), MECH_FEE);
+  assert.equal(mechChargeWei({}), MECH_FEE);
+  assert.equal(mechChargeWei({ charge_usd: 'abc' }), MECH_FEE);
+});
+
+test('entryMechFeesWei: old blob entries (no mechFeesWei) book count × 0.01 — history does not shift', () => {
+  const oldEntry = JSON.parse('{"profit":"0","payout":"0","mechRequests":580}');
+  assert.equal(entryMechFeesWei(oldEntry), 580n * MECH_FEE);
+  assert.equal(
+    entryMechFeesWei({ mechRequests: 3, mechFeesWei: '25000000000000000' }),
+    25n * 10n ** 15n
+  );
+});
+
+test('addMechRequests: all-0.01 requests leave the entry shaped like before; a real charge stores the total', () => {
+  const entry = { mechRequests: 0 };
+  addMechRequests(entry, 2, 2n * MECH_FEE);
+  assert.deepEqual(entry, { mechRequests: 2 });
+  // TTL flush of one charged request onto a day stored before the change.
+  const oldDay = { mechRequests: 10 };
+  addMechRequests(oldDay, 1, usd('0.0118'));
+  assert.deepEqual(oldDay, {
+    mechRequests: 11,
+    mechFeesWei: String(10n * MECH_FEE + usd('0.0118')),
+  });
+});
+
+test('mixed window: charged days use real charges, uncharged and old days count × 0.01', () => {
+  const days = [
+    { mechRequests: 100 }, // stored before the change
+    { mechRequests: 0 },
+    { mechRequests: 0 },
+  ];
+  addMechRequests(days[1], 50, 50n * MECH_FEE); // pre-pricing rows, null charge
+  addMechRequests(days[2], 3, usd('0.0118') + usd('0.02') + MECH_FEE);
+  const mechFeesWei = days.reduce((sum, d) => sum + entryMechFeesWei(d), 0n);
+  assert.equal(mechFeesWei, 151n * MECH_FEE + usd('0.0118') + usd('0.02'));
+  const { netGain, totalCosts } = windowedNetGainAndCosts({
+    profit: 10n * 10n ** 18n,
+    tradedSettled: 100n * 10n ** 18n,
+    feesSettled: 0n,
+    scale: 1n,
+    mechFeesWei,
+  });
+  assert.equal(totalCosts, 100n * 10n ** 18n + mechFeesWei);
+  assert.equal(netGain, 10n * 10n ** 18n - mechFeesWei);
+});
+
+test('QMR charges: settlement pops every charged request, uncharged ones book 0.01', () => {
+  const charges = {};
+  recordCharge(charges, 'q', 'a', 100, usd('0.0118'));
+  recordCharge(charges, 'q', 'a', 100, MECH_FEE); // 0.01 is not stored
+  recordCharge(charges, 'q', 'a', 200, usd('0.02'));
+  assert.deepEqual(charges, {
+    q: { a: { 100: [String(usd('0.0118'))], 200: [String(usd('0.02'))] } },
+  });
+  // Open set: q → a → [100, 100, 200, 300]
+  const fees = [100, 100, 200, 300].map((ts) => popCharge(charges, 'q', 'a', ts));
+  assert.deepEqual(fees, [usd('0.0118'), MECH_FEE, usd('0.02'), MECH_FEE]);
+  assert.deepEqual(charges, {}); // emptied containers are removed
+  assert.equal(popCharge({}, 'q', 'a', 100), MECH_FEE); // old blob: no charge map
+});
+
+test('mergeQmrCharges: incremental appends, rebuild keeps the longer list per timestamp', () => {
+  const stored = () => ({ q: { a: { 100: ['1'] } } });
+  assert.deepEqual(mergeQmrCharges(stored(), { q: { a: { 100: ['2'] } } }, false).q.a[100], [
+    '1',
+    '2',
+  ]);
+  assert.deepEqual(mergeQmrCharges(stored(), { q: { a: { 100: ['2'] } } }, true).q.a[100], ['1']);
+  assert.deepEqual(mergeQmrCharges(stored(), { q: { a: { 100: ['2', '3'] } } }, true).q.a[100], [
+    '2',
+    '3',
+  ]);
+  assert.deepEqual(mergeQmrCharges(stored(), { r: { b: { 5: ['4'] } } }, false).r.b[5], ['4']);
+});
+
+test('consumeSettledRequests: a settled market books each request at its real charge, 0.01 when none', () => {
+  const qmr = { 'Will it rain?': { a: [100, 100, 200] }, Other: { a: [300] } };
+  const charges = {};
+  recordCharge(charges, 'Will it rain?', 'a', 100, usd('0.0118'));
+  recordCharge(charges, 'Will it rain?', 'a', 200, usd('0.02'));
+  const normalized = new Map([['willitrain', 'Will it rain?']]);
+  const keysUsed = new Set();
+  const stat = {
+    profitParticipants: [{ metadata: { title: 'WILL it rain' } }, { question: 'Nope' }],
+  };
+  // Two charged requests plus one with no stored charge (0.01); the unsettled market is untouched.
+  assert.deepEqual(consumeSettledRequests(qmr, charges, normalized, stat, 'a', keysUsed), {
+    count: 3,
+    feesWei: usd('0.0118') + usd('0.02') + MECH_FEE,
+  });
+  assert.deepEqual(qmr['Will it rain?'].a, []);
+  assert.deepEqual(qmr.Other.a, [300]);
+  assert.deepEqual([...keysUsed], ['Will it rain?']);
+  assert.deepEqual(charges, {});
+});
+
+test('addDayToWindow: sums stored real charges, and count × 0.01 for days stored before them', () => {
+  const totals = new Map();
+  addDayToWindow(totals, { a: { profit: '5', payout: '7', mechRequests: 2, mechFeesWei: '30' } });
+  addDayToWindow(totals, {
+    a: { profit: '1', payout: '0', mechRequests: 3, tradedSettled: '4', feesSettled: '2' },
+  });
+  assert.deepEqual(totals.get('a'), {
+    profit: 6n,
+    payout: 7n,
+    mechFeesWei: 30n + 3n * MECH_FEE,
+    tradedSettled: 4n,
+    feesSettled: 2n,
+  });
 });

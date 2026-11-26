@@ -1,5 +1,7 @@
 import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
 
+import { mechChargeWei, recordCharge, usdToWei, type QmrChargeMap } from './roi-math';
+
 /**
  * Client for the mech-analytics `/v1/data/scored-rows` endpoint.
  * It replaces the per-request reads from the marketplace subgraph,
@@ -48,6 +50,9 @@ export type ScoredRow = {
   tool: string | null;
   resolution_status: string;
   computed_at: string; // ISO 8601, tz-aware
+  delivered_at?: string | null;
+  /** Real per-request charge in USD, a decimal string; null before pricing. */
+  charge_usd?: string | number | null;
 };
 
 type ScoredRowsPage = {
@@ -90,6 +95,8 @@ export async function* iterateScoredRows(
 
 type QmrFetchData = {
   additions: Record<string, Record<string, number[]>>;
+  /** Charges of the added requests that did not cost 0.01 (see `mechChargeWei`). */
+  charges: QmrChargeMap;
   /** New computed_at watermark to save. */
   lastComputedAt: string;
   /** Ids of rows we already processed (request_id → requested_at, unix seconds). */
@@ -145,6 +152,7 @@ export const fetchMechRequestsFromAnalytics = async (
   const runStart = new Date().toISOString();
 
   const additions: Record<string, Record<string, number[]>> = {};
+  const charges: QmrChargeMap = {};
   const ingestedRequestIds: Record<string, number> = { ...(previousIngestedIds ?? {}) };
   let lastTimestamp = previousLastTimestamp;
   // Updated row by row, before the skip checks below. This order is safe only
@@ -153,7 +161,7 @@ export const fetchMechRequestsFromAnalytics = async (
   let maxComputedAt = isRebuild ? null : (lastComputedAt as string);
   let ok = true;
   let rowsSeen = 0;
-  const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0 };
+  const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0, unreadableCharge: 0 };
 
   const params: Record<string, string> = {
     chain_id: String(MECH_ANALYTICS_CHAIN_IDS[chain]),
@@ -204,6 +212,9 @@ export const fetchMechRequestsFromAnalytics = async (
         if (!additions[questionTitle]) additions[questionTitle] = {};
         if (!additions[questionTitle][agentId]) additions[questionTitle][agentId] = [];
         additions[questionTitle][agentId].push(ts);
+        // An unreadable charge still books 0.01; counted so a format change shows in the log.
+        if (row.charge_usd != null && usdToWei(row.charge_usd) === null) skips.unreadableCharge++;
+        recordCharge(charges, questionTitle, agentId, ts, mechChargeWei(row));
         ingestedRequestIds[row.request_id] = ts;
         if (ts > lastTimestamp) lastTimestamp = ts;
       }
@@ -235,11 +246,12 @@ export const fetchMechRequestsFromAnalytics = async (
     `[mech-analytics:${chain}] ${isRebuild ? 'rebuild' : 'incremental'} ok=${ok} ` +
       `ingestedIds=${Object.keys(ingestedRequestIds).length} ` +
       `skipped: dup=${skips.duplicate} old=${skips.outOfWindow} ` +
-      `invalid=${skips.invalid} noKey=${skips.missingKey}`
+      `invalid=${skips.invalid} noKey=${skips.missingKey} badCharge=${skips.unreadableCharge}`
   );
 
   const data: QmrFetchData = {
     additions,
+    charges,
     lastComputedAt: isRebuild ? runStart : (maxComputedAt as string),
     ingestedRequestIds,
     lastTimestamp,

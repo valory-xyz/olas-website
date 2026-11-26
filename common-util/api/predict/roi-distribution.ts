@@ -1,4 +1,4 @@
-import { DEFAULT_MECH_FEE, QMR_MAX_AGE_DAYS } from 'common-util/constants';
+import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
 import {
   MARKETPLACE_GRAPH_CLIENTS,
   polymarketAgentsGraphClient,
@@ -36,7 +36,22 @@ import {
   scanAnalyticsRequestRows,
   usesMechAnalyticsForRequests,
 } from './marketplace-request-source';
-import { mergeQmr, roiPercent, senderLifetimeRequests, windowedNetGainAndCosts } from './roi-math';
+import {
+  addDayToWindow,
+  addMechRequests,
+  consumeSettledRequests,
+  DEFAULT_MECH_FEE_WEI,
+  mergeQmr,
+  mergeQmrCharges,
+  normalizeTitle,
+  popCharge,
+  recordCharge,
+  roiPercent,
+  senderLifetimeRequests,
+  windowedNetGainAndCosts,
+  type QmrChargeMap,
+  type WindowTotals,
+} from './roi-math';
 
 const LIMIT = 1000;
 // conditionIds per getPolymarketQuestionTitlesQuery batch (keeps the inlined
@@ -83,6 +98,8 @@ const legacyHistoryFrom = (data: AgentBlueprintRoiData): number =>
  */
 export type QmrData = {
   questionMechRequests: Record<string, Record<string, number[]>>; // title → agentId → sorted asc timestamps
+  /** Real charges of open requests that did not cost 0.01. Missing on older blobs. */
+  questionMechCharges?: QmrChargeMap;
   lastMechRequestTimestamp: number;
   /**
    * mech-analytics path only — see docs/mech-analytics-migration.md
@@ -106,6 +123,12 @@ export type DailyAgentEntry = {
    * market's requests entry once, not once per bet.
    */
   mechRequests: number;
+  /**
+   * Booked mech cost of those requests, 18-dec, at each request's real charge.
+   * Written only when it differs from mechRequests × 0.01, so it is missing on
+   * every day stored before real charges; read it via `entryMechFeesWei`.
+   */
+  mechFeesWei?: string;
   /**
    * Cost basis of bets that *settled* on this day — the denominator for
    * windowed ROI (`payout - profit` derivation is wrong here: the money fields
@@ -498,16 +521,6 @@ const fetchAllTimeAgents = async (
 // ─── Agent data updater ───────────────────────────────────────────────────
 
 /**
- * Normalizes titles to handle truncation, special characters, and casing.
- * Removes non-alphanumeric chars and takes a 100-char prefix.
- */
-const normalizeTitle = (title: string): string =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-    .slice(0, 100);
-
-/**
  * Legacy blobs stored QMR values as plain counts (`number`) instead of timestamp
  * arrays. Normalize on load so the rest of the pipeline only sees the new shape.
  * Legacy entries have no real per-request timestamps, so we stamp them with
@@ -536,43 +549,6 @@ const normalizeQmrShape = (
   return out;
 };
 
-/**
- * Consumes the open QMR entries for every market this agent's stat settled, and returns
- * how many requests that booked onto the settlement day (product intent: all market
- * costs are grouped on the day the market settles, not on the day the request was
- * made). Shared by the daily run and the history backfill so both match titles the
- * same way.
- */
-const consumeSettledRequests = (
-  qmr: Record<string, Record<string, number[]>>,
-  normalizedQmrMap: Map<string, string>,
-  stat: DailyStatEntry,
-  agentId: string,
-  keysUsed: Set<string>
-): number => {
-  // Unique titles from the predict subgraph
-  const uniqueTitles = new Set<string>();
-  for (const p of stat.profitParticipants ?? []) {
-    const title = p.question ?? p.metadata?.title;
-    if (title) uniqueTitles.add(title);
-  }
-
-  let mechRequests = 0;
-  for (const title of uniqueTitles) {
-    let matchedKey = qmr[title] ? title : null;
-    if (!matchedKey) {
-      matchedKey = normalizedQmrMap.get(normalizeTitle(title)) ?? null;
-    }
-    const tsList = matchedKey ? qmr[matchedKey]?.[agentId] : null;
-    if (matchedKey && tsList && tsList.length > 0) {
-      mechRequests += tsList.length;
-      qmr[matchedKey][agentId] = [];
-      keysUsed.add(matchedKey);
-    }
-  }
-  return mechRequests;
-};
-
 const updateAgentBlueprintData = async (
   agentBlueprint: 'omenstrat' | 'polystrat',
   existing: AgentBlueprintRoiData | null,
@@ -593,11 +569,13 @@ const updateAgentBlueprintData = async (
       | undefined,
     existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs
   );
+  const charges: QmrChargeMap = existingQmr?.questionMechCharges ?? {};
   // Subgraph failures during this run — persisted on the blob so downstream
   // consumers can surface staleness instead of trusting silently-empty data.
   const runFetchErrors: string[] = [];
 
   let additions: Record<string, Record<string, number[]>> = {};
+  let chargeAdditions: QmrChargeMap = {};
   let newMechTs = existingQmr?.lastMechRequestTimestamp ?? mechGenesisTs;
   let mechRequestsOk = false;
   let wasRebuild = false;
@@ -618,6 +596,7 @@ const updateAgentBlueprintData = async (
     if (result !== null) {
       wasRebuild = result.kind === 'rebuild';
       additions = result.additions;
+      chargeAdditions = result.charges;
       newMechTs = result.lastTimestamp;
       newMechAnalytics = {
         lastComputedAt: result.lastComputedAt,
@@ -640,6 +619,7 @@ const updateAgentBlueprintData = async (
   // `added` is post-dedupe, so mechAttribution counters reconcile.
   const { merged, added: ingestedCount } = mergeQmr(qmr, additions, wasRebuild);
   qmr = merged;
+  mergeQmrCharges(charges, chargeAdditions, wasRebuild);
 
   // Pre-calculate normalized mapping for Step 2 matching
   // normalizedKey -> originalKey
@@ -703,24 +683,17 @@ const updateAgentBlueprintData = async (
         for (const stat of dayStats) {
           const agentId = stat.traderAgent.id.toLowerCase();
 
-          const mechRequests = consumeSettledRequests(
+          const matched = consumeSettledRequests(
             qmr,
+            charges,
             normalizedQmrMap,
             stat,
             agentId,
             qmrKeysUsedThisDay
           );
-          matchedCount += mechRequests;
+          matchedCount += matched.count;
 
-          agents[agentId] = {
-            profit: stat.dailyProfit,
-            payout: stat.totalPayout,
-            mechRequests,
-            tradedSettled: stat.dailyTradedSettled ?? '0',
-            ...(agentBlueprint === 'omenstrat'
-              ? { feesSettled: stat.dailyFeesSettled ?? '0' }
-              : {}),
-          };
+          agents[agentId] = toDailyEntry(stat, matched, agentBlueprint === 'polystrat');
         }
 
         if (Object.keys(agents).length > 0) {
@@ -734,6 +707,7 @@ const updateAgentBlueprintData = async (
             for (const agentList of Object.values(qmr[key])) total += agentList?.length ?? 0;
             if (total === 0) {
               delete qmr[key];
+              delete charges[key];
               normalizedQmrMap.delete(normalizeTitle(key));
             }
           }
@@ -754,7 +728,11 @@ const updateAgentBlueprintData = async (
           const kept: number[] = [];
           for (const ts of tsList) {
             if (ts < ttlCutoff) {
-              ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+              addMechRequests(
+                ensureEntry(dayKeyOf(ts), agentId),
+                1,
+                popCharge(charges, title, agentId, ts)
+              );
               expiredCount++;
             } else {
               kept.push(ts);
@@ -765,6 +743,7 @@ const updateAgentBlueprintData = async (
         }
         if (Object.keys(agentMap).length === 0) {
           delete qmr[title];
+          delete charges[title];
           normalizedQmrMap.delete(normalizeTitle(title));
         }
       }
@@ -828,6 +807,7 @@ const updateAgentBlueprintData = async (
     },
     qmrData: {
       questionMechRequests: qmr,
+      questionMechCharges: charges,
       lastMechRequestTimestamp: newMechTs,
       mechAnalytics: newMechAnalytics,
     },
@@ -853,7 +833,7 @@ const scanMechRequests = async (
   chain: 'gnosis' | 'polygon',
   fromTs: number,
   toTs: number,
-  onRequest: (agentId: string, questionTitle: string | null, ts: number) => void
+  onRequest: (agentId: string, questionTitle: string | null, ts: number, feeWei: bigint) => void
 ): Promise<boolean> => {
   // Historical ROI needs parsed question titles, which SQD does not index.
   if (chain in MARKETPLACE_SQUID_URLS) {
@@ -899,7 +879,8 @@ const scanMechRequests = async (
       const agentId = req.sender?.id?.toLowerCase();
       const ts = Number(req.blockTimestamp ?? 0);
       if (!agentId || ts <= 0) continue;
-      onRequest(agentId, req.parsedRequest?.questionTitle ?? null, ts);
+      // The subgraph has no charges: every request books 0.01.
+      onRequest(agentId, req.parsedRequest?.questionTitle ?? null, ts, DEFAULT_MECH_FEE_WEI);
     }
   };
 
@@ -942,15 +923,19 @@ const statsByDayKey = (stats: DailyStatEntry[]) => {
 
 const toDailyEntry = (
   stat: DailyStatEntry,
-  mechRequests: number,
+  matched: { count: number; feesWei: bigint },
   isPolystrat: boolean
-): DailyAgentEntry => ({
-  profit: stat.dailyProfit,
-  payout: stat.totalPayout,
-  mechRequests,
-  tradedSettled: stat.dailyTradedSettled ?? '0',
-  ...(isPolystrat ? {} : { feesSettled: stat.dailyFeesSettled ?? '0' }),
-});
+): DailyAgentEntry => {
+  const entry: DailyAgentEntry = {
+    profit: stat.dailyProfit,
+    payout: stat.totalPayout,
+    mechRequests: 0,
+    tradedSettled: stat.dailyTradedSettled ?? '0',
+    ...(isPolystrat ? {} : { feesSettled: stat.dailyFeesSettled ?? '0' }),
+  };
+  addMechRequests(entry, matched.count, matched.feesWei);
+  return entry;
+};
 
 /**
  * Progress of a history replay, carried between calls in its own blob so a replay
@@ -966,6 +951,8 @@ export type RoiHistoryReplayState = {
   scannedTo: number;
   /** Open requests, title → agentId → timestamps — the QMR shape. */
   qmr: Record<string, Record<string, number[]>>;
+  /** Charges of open requests that did not cost 0.01; missing on older states. */
+  charges?: QmrChargeMap;
   /** Processed days, dayKey → agentId → entry; written to `byDay` only when done. */
   days: Record<string, Record<string, DailyAgentEntry>>;
 };
@@ -1019,7 +1006,8 @@ export const backfillRoiHistory = async (
       ? previousState
       : { floor, until, cursor: floor, scannedTo: floor - ttl, qmr: {}, days: {} };
 
-  const { qmr, days } = state;
+  state.charges ??= {};
+  const { qmr, days, charges } = state;
   const normalizedQmrMap = new Map<string, string>();
   for (const title of Object.keys(qmr)) normalizedQmrMap.set(normalizeTitle(title), title);
 
@@ -1034,7 +1022,10 @@ export const backfillRoiHistory = async (
     for (const [title, agentMap] of Object.entries(qmr)) {
       for (const [agentId, tsList] of Object.entries(agentMap)) {
         for (const ts of tsList) {
-          if (ts < cutoff && ts >= state.floor) ensureEntry(dayKeyOf(ts), agentId).mechRequests++;
+          if (ts >= cutoff) continue;
+          // Popped even when dropped, so the charges never outlive their request.
+          const feeWei = popCharge(charges, title, agentId, ts);
+          if (ts >= state.floor) addMechRequests(ensureEntry(dayKeyOf(ts), agentId), 1, feeWei);
         }
         const kept = tsList.filter((ts) => ts >= cutoff);
         if (kept.length === 0) delete agentMap[agentId];
@@ -1042,6 +1033,7 @@ export const backfillRoiHistory = async (
       }
       if (Object.keys(agentMap).length === 0) {
         delete qmr[title];
+        delete charges[title];
         normalizedQmrMap.delete(normalizeTitle(title));
       }
     }
@@ -1054,11 +1046,11 @@ export const backfillRoiHistory = async (
     const hi = Math.min(until - DAY_SECONDS, lo + (HISTORY_CHUNK_DAYS - 1) * DAY_SECONDS);
 
     // Untitled requests are skipped, as the live ingest skips them.
-    const pending: Array<{ title: string; agentId: string; ts: number }> = [];
+    const pending: Array<{ title: string; agentId: string; ts: number; feeWei: bigint }> = [];
     const [{ stats, ok: statsOk }, requestsOk] = await Promise.all([
       fetchStats(lo, hi),
-      scanMechRequests(chain, state.scannedTo, hi + DAY_SECONDS, (agentId, title, ts) => {
-        if (title && traders.has(agentId)) pending.push({ title, agentId, ts });
+      scanMechRequests(chain, state.scannedTo, hi + DAY_SECONDS, (agentId, title, ts, feeWei) => {
+        if (title && traders.has(agentId)) pending.push({ title, agentId, ts, feeWei });
       }),
     ]);
     // Incomplete: apply nothing from this chunk, and stop.
@@ -1073,17 +1065,25 @@ export const backfillRoiHistory = async (
     for (let dayTs = lo; dayTs <= hi; dayTs += DAY_SECONDS) {
       // Requests made by the end of this day are known when its settlements are matched.
       while (next < pending.length && pending[next].ts < dayTs + DAY_SECONDS) {
-        const { title, agentId, ts } = pending[next++];
+        const { title, agentId, ts, feeWei } = pending[next++];
         if (!qmr[title]) qmr[title] = {};
         if (!qmr[title][agentId]) qmr[title][agentId] = [];
         qmr[title][agentId].push(ts);
+        recordCharge(charges, title, agentId, ts, feeWei);
         normalizedQmrMap.set(normalizeTitle(title), title);
       }
 
       const keysUsed = new Set<string>();
       for (const stat of byKey.get(String(dayTs)) ?? []) {
         const agentId = stat.traderAgent.id.toLowerCase();
-        const matched = consumeSettledRequests(qmr, normalizedQmrMap, stat, agentId, keysUsed);
+        const matched = consumeSettledRequests(
+          qmr,
+          charges,
+          normalizedQmrMap,
+          stat,
+          agentId,
+          keysUsed
+        );
         // Nothing is flushed onto this day yet — a flush lands at least a TTL back.
         if (!days[String(dayTs)]) days[String(dayTs)] = {};
         days[String(dayTs)][agentId] = toDailyEntry(stat, matched, isPolystrat);
@@ -1191,14 +1191,6 @@ const emptyHistogram = (): HistogramResult => ({
 const assignBin = (roi: number): number =>
   ROI_BINS.findIndex((bin) => roi >= bin.min && roi < bin.max);
 
-type WindowTotals = {
-  profit: bigint;
-  payout: bigint;
-  mechRequests: number;
-  tradedSettled: bigint;
-  feesSettled: bigint; // omenstrat only — 0n for polystrat
-};
-
 const genesisOf = (isPolystrat: boolean) => (isPolystrat ? POLYMARKET_GENESIS_TS : OMEN_GENESIS_TS);
 
 /**
@@ -1241,21 +1233,7 @@ const sumWindowByAgent = (
     // Counts [daysBack] full days excluding today
     if (dayTs < cutoffTs || dayTs > yesterdayTs) continue;
 
-    for (const [agentId, entry] of Object.entries(dayData.agents)) {
-      const prev: WindowTotals = agentTotals.get(agentId) ?? {
-        profit: 0n,
-        payout: 0n,
-        mechRequests: 0,
-        tradedSettled: 0n,
-        feesSettled: 0n,
-      };
-      prev.profit += BigInt(entry.profit);
-      prev.payout += BigInt(entry.payout);
-      prev.mechRequests += entry.mechRequests;
-      if (entry.tradedSettled) prev.tradedSettled += BigInt(entry.tradedSettled);
-      if (entry.feesSettled) prev.feesSettled += BigInt(entry.feesSettled);
-      agentTotals.set(agentId, prev);
-    }
+    addDayToWindow(agentTotals, dayData.agents);
   }
   return agentTotals;
 };
@@ -1299,9 +1277,8 @@ const computeAgentBlueprintHistogram = (
       profit: totals.profit,
       tradedSettled: totals.tradedSettled,
       feesSettled: totals.feesSettled,
-      mechRequests: totals.mechRequests,
       scale,
-      mechFeeWei: DEFAULT_MECH_FEE,
+      mechFeesWei: totals.mechFeesWei,
     });
     const roi = roiPercent(netGain, totalCosts);
 
@@ -1369,9 +1346,8 @@ export const computeWindowedNetGainAndCosts = (
       profit: totals.profit,
       tradedSettled: totals.tradedSettled,
       feesSettled: totals.feesSettled,
-      mechRequests: totals.mechRequests,
       scale,
-      mechFeeWei: DEFAULT_MECH_FEE,
+      mechFeesWei: totals.mechFeesWei,
     });
     netGain += agent.netGain;
     totalCosts += agent.totalCosts;
