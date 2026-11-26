@@ -52,8 +52,8 @@ the query (`getMarketplaceSendersQuery`) and in `roi-math.ts`.
 Each settled request costs its real charge (mech-analytics `charge_usd`,
 18-dec) and enters both the numerator (net gain −) and the denominator (cost
 base +). A request with no charge (before dynamic pricing, or from the subgraph
-path) costs `DEFAULT_MECH_FEE` (0.01); a never-delivered one costs
-`UNDELIVERED_MECH_FEE_WEI` (0.01 for now). Open requests carry non-0.01 charges
+path) costs `DEFAULT_MECH_FEE` (0.01). Undelivered requests are not in
+mech-analytics scored-rows, so they aren't counted (as before). Open requests carry non-0.01 charges
 in the QMR blob's `questionMechCharges`; a `byDay` entry stores `mechFeesWei`
 only when its total differs from `mechRequests` × 0.01, so days stored before
 real charges keep their count × 0.01 (`entryMechFeesWei`). Rows are ingested

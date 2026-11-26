@@ -15,27 +15,28 @@ export type QmrMap = Record<string, Record<string, number[]>>;
 /** 0.01, 18-dec: a request with no known charge. = `DEFAULT_MECH_FEE` (constants.ts, not importable here). */
 export const DEFAULT_MECH_FEE_WEI = 10n ** 16n;
 
-/** Never-delivered requests: 0.01 as before. The one switch: 0n = mech-analytics' requester rule. */
-export const UNDELIVERED_MECH_FEE_WEI = DEFAULT_MECH_FEE_WEI;
+// Python `str(Decimal)` form: plain ("0.0118") or exponent below 1e-6 ("1E-18", "5E-7").
+const USD_DECIMAL = /^(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/;
 
-const USD_DECIMAL = /^\d+(\.\d+)?$/;
-
-/** Exact USD decimal string ("0.0118") → 18-dec bigint, truncating past 18 decimals; else null. */
+/** Exact USD decimal string ("0.0118", "1E-18") → 18-dec bigint, truncating past 18 decimals; else null. */
 export const usdToWei = (value: unknown): bigint | null => {
   const text = typeof value === 'number' ? String(value) : value;
-  if (typeof text !== 'string' || !USD_DECIMAL.test(text)) return null;
-  const [whole, fraction = ''] = text.split('.');
-  return BigInt(whole) * 10n ** 18n + BigInt(fraction.slice(0, 18).padEnd(18, '0'));
+  const match = typeof text === 'string' ? USD_DECIMAL.exec(text) : null;
+  if (!match) return null;
+  const fraction = match[2] ?? '';
+  const exponent = Number(match[3] ?? 0);
+  if (Math.abs(exponent) > 36) return null;
+  const shift = 18 + exponent - fraction.length;
+  const digits = BigInt(match[1] + fraction);
+  return shift >= 0 ? digits * 10n ** BigInt(shift) : digits / 10n ** BigInt(-shift);
 };
 
-/** One scored row's cost, 18-dec: undelivered rule, else `charge_usd`, else 0.01. Same rule as KPIs. */
-export const mechChargeWei = (row: {
-  delivered_at?: string | null;
-  charge_usd?: string | number | null;
-}): bigint => {
-  if (!row.delivered_at) return UNDELIVERED_MECH_FEE_WEI;
-  return usdToWei(row.charge_usd) ?? DEFAULT_MECH_FEE_WEI;
-};
+/**
+ * One scored row's cost, 18-dec: `charge_usd`, else 0.01. Same rule as KPIs. Scored rows
+ * are all delivered (undelivered requests are not in scored-rows, so they aren't counted).
+ */
+export const mechChargeWei = (row: { charge_usd?: string | number | null }): bigint =>
+  usdToWei(row.charge_usd) ?? DEFAULT_MECH_FEE_WEI;
 
 /** Mech cost of a stored day entry; entries without `mechFeesWei` (older days) book count × 0.01. */
 export const entryMechFeesWei = (entry: { mechRequests: number; mechFeesWei?: string }): bigint =>

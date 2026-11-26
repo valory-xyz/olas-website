@@ -1,6 +1,6 @@
 import { QMR_MAX_AGE_DAYS } from 'common-util/constants';
 
-import { mechChargeWei, recordCharge, type QmrChargeMap } from './roi-math';
+import { mechChargeWei, recordCharge, usdToWei, type QmrChargeMap } from './roi-math';
 
 /**
  * Client for the mech-analytics `/v1/data/scored-rows` endpoint.
@@ -50,7 +50,7 @@ export type ScoredRow = {
   tool: string | null;
   resolution_status: string;
   computed_at: string; // ISO 8601, tz-aware
-  delivered_at?: string | null; // null = never delivered
+  delivered_at?: string | null;
   /** Real per-request charge in USD, a decimal string; null before pricing. */
   charge_usd?: string | number | null;
 };
@@ -161,7 +161,7 @@ export const fetchMechRequestsFromAnalytics = async (
   let maxComputedAt = isRebuild ? null : (lastComputedAt as string);
   let ok = true;
   let rowsSeen = 0;
-  const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0 };
+  const skips = { duplicate: 0, outOfWindow: 0, invalid: 0, missingKey: 0, unreadableCharge: 0 };
 
   const params: Record<string, string> = {
     chain_id: String(MECH_ANALYTICS_CHAIN_IDS[chain]),
@@ -212,6 +212,8 @@ export const fetchMechRequestsFromAnalytics = async (
         if (!additions[questionTitle]) additions[questionTitle] = {};
         if (!additions[questionTitle][agentId]) additions[questionTitle][agentId] = [];
         additions[questionTitle][agentId].push(ts);
+        // An unreadable charge still books 0.01; counted so a format change shows in the log.
+        if (row.charge_usd != null && usdToWei(row.charge_usd) === null) skips.unreadableCharge++;
         recordCharge(charges, questionTitle, agentId, ts, mechChargeWei(row));
         ingestedRequestIds[row.request_id] = ts;
         if (ts > lastTimestamp) lastTimestamp = ts;
@@ -244,7 +246,7 @@ export const fetchMechRequestsFromAnalytics = async (
     `[mech-analytics:${chain}] ${isRebuild ? 'rebuild' : 'incremental'} ok=${ok} ` +
       `ingestedIds=${Object.keys(ingestedRequestIds).length} ` +
       `skipped: dup=${skips.duplicate} old=${skips.outOfWindow} ` +
-      `invalid=${skips.invalid} noKey=${skips.missingKey}`
+      `invalid=${skips.invalid} noKey=${skips.missingKey} badCharge=${skips.unreadableCharge}`
   );
 
   const data: QmrFetchData = {

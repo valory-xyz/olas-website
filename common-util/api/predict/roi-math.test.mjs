@@ -24,7 +24,6 @@ import {
   isLowMechAttribution,
   MIN_MECH_FEE_BPS,
   DEFAULT_MECH_FEE_WEI,
-  UNDELIVERED_MECH_FEE_WEI,
   usdToWei,
   mechChargeWei,
   entryMechFeesWei,
@@ -198,9 +197,8 @@ test('isLowMechAttribution: threshold boundary — exactly MIN_MECH_FEE_BPS is n
 
 const usd = usdToWei;
 
-test('DEFAULT_MECH_FEE_WEI is 0.01; undelivered requests still book 0.01', () => {
+test('DEFAULT_MECH_FEE_WEI is 0.01', () => {
   assert.equal(DEFAULT_MECH_FEE_WEI, MECH_FEE);
-  assert.equal(UNDELIVERED_MECH_FEE_WEI, MECH_FEE);
 });
 
 test('usdToWei: exact decimal-string parse, no float rounding, truncates past 18 decimals', () => {
@@ -209,19 +207,27 @@ test('usdToWei: exact decimal-string parse, no float rounding, truncates past 18
   assert.equal(usdToWei('2'), 2n * 10n ** 18n);
   assert.equal(usdToWei('0.1234567890123456789'), 123_456_789_012_345_678n);
   assert.equal(usdToWei(0.02), 2n * MECH_FEE);
-  for (const bad of [null, undefined, '', '-0.01', 'abc', '1e-7', '.5', {}]) {
+  for (const bad of [null, undefined, '', '-0.01', 'abc', '.5', '1.', ' 0.02', '1E-37', '1E', {}]) {
     assert.equal(usdToWei(bad), null, String(bad));
   }
 });
 
-test('mechChargeWei: real charge, else 0.01; undelivered uses the undelivered rule', () => {
-  const delivered_at = '2026-11-25T10:00:00Z';
-  assert.equal(mechChargeWei({ delivered_at, charge_usd: '0.0118' }), usd('0.0118'));
-  assert.equal(mechChargeWei({ delivered_at, charge_usd: '0' }), 0n);
-  assert.equal(mechChargeWei({ delivered_at, charge_usd: null }), MECH_FEE);
-  assert.equal(mechChargeWei({ delivered_at }), MECH_FEE);
-  assert.equal(mechChargeWei({ delivered_at: null, charge_usd: '0.02' }), UNDELIVERED_MECH_FEE_WEI);
-  assert.equal(mechChargeWei({ delivered_at: '', charge_usd: null }), UNDELIVERED_MECH_FEE_WEI);
+test('usdToWei: reads the exponent form str(Decimal) uses below 0.000001', () => {
+  assert.equal(usdToWei('1E-18'), 1n);
+  assert.equal(usdToWei('5E-7'), 500_000_000_000n);
+  assert.equal(usdToWei('1.23E-7'), 123_000_000_000n);
+  assert.equal(usdToWei('1E+2'), 100n * 10n ** 18n);
+  assert.equal(usdToWei('1E-30'), 0n);
+  assert.equal(usdToWei(1e-7), 100_000_000_000n);
+});
+
+test('mechChargeWei: real charge, else 0.01', () => {
+  assert.equal(mechChargeWei({ charge_usd: '0.0118' }), usd('0.0118'));
+  assert.equal(mechChargeWei({ charge_usd: '0' }), 0n);
+  assert.equal(mechChargeWei({ charge_usd: '1E-18' }), 1n);
+  assert.equal(mechChargeWei({ charge_usd: null }), MECH_FEE);
+  assert.equal(mechChargeWei({}), MECH_FEE);
+  assert.equal(mechChargeWei({ charge_usd: 'abc' }), MECH_FEE);
 });
 
 test('entryMechFeesWei: old blob entries (no mechFeesWei) book count × 0.01 — history does not shift', () => {
